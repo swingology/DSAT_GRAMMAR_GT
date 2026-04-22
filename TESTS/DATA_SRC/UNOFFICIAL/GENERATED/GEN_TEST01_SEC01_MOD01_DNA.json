@@ -1,0 +1,427 @@
+{
+  "test_metadata": {
+    "test_id": "GEN_TEST01",
+    "section": "reading_writing",
+    "module": 1,
+    "module_difficulty": "standard",
+    "total_questions": 33,
+    "time_limit_minutes": 32,
+    "generated_date": "2026-03-10",
+    "taxonomy_version": "1.0",
+    "source": "ML Test Tutor — Taxonomy-Grounded Generation"
+  },
+  "questions": [
+    {
+      "question_id": "GEN01_RW_M1_Q01",
+      "position": 1,
+      "domain": "craft_and_structure",
+      "skill": "words_in_context",
+      "sub_skill": "precise_verb_definition_clue",
+      "passage_type": "social_science",
+      "question_format": "multiple_choice",
+      "correct_answer": "B",
+      "difficulty": 2,
+      "complexity_vector": {
+        "vocab_level": 2,
+        "syntactic_complexity": 2,
+        "inference_distance": 1,
+        "distractor_plausibility": 3,
+        "trap_count": 1,
+        "domain_specificity": 2,
+        "time_pressure": 1
+      },
+      "vocabulary_tested": ["flourish", "persist", "endure", "function"],
+      "clue_type": "definition_clue",
+      "clue_text": "uniquely suited to arid conditions",
+      "traps_present": ["adjacent_meaning_survival_vs_thriving"],
+      "distractor_analysis": {
+        "A": {"trap_type": "too_vague", "plausibility": 2, "why_wrong": "Mechanical; machines function, plants flourish"},
+        "C": {"trap_type": "adjacent_meaning", "plausibility": 4, "why_wrong": "Implies bare survival, not thriving"},
+        "D": {"trap_type": "adjacent_meaning", "plausibility": 4, "why_wrong": "Same as persist — survival connotation, not success"}
+      },
+      "interactive_keys": ["Blank", "Definition Clue", "Contrast Pair"],
+      "token_highlights": [
+        {"text": "__________", "key": "Blank", "role": "target_word"},
+        {"text": "uniquely suited to arid conditions", "key": "Definition Clue", "role": "context_clue"},
+        {"text": "Unlike conventional corn, which requires consistent irrigation", "key": "Contrast Pair", "role": "contrast_reference"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q02",
+      "position": 2,
+      "domain": "craft_and_structure",
+      "skill": "words_in_context",
+      "sub_skill": "precise_adjective_contrast_clue",
+      "passage_type": "humanities",
+      "question_format": "multiple_choice",
+      "correct_answer": "C",
+      "difficulty": 2,
+      "complexity_vector": {
+        "vocab_level": 2,
+        "syntactic_complexity": 3,
+        "inference_distance": 1,
+        "distractor_plausibility": 3,
+        "trap_count": 1,
+        "domain_specificity": 2,
+        "time_pressure": 1
+      },
+      "vocabulary_tested": ["understated", "impractical", "grandiose", "inaccessible"],
+      "clue_type": "contrast_clue",
+      "clue_text": "Although the public often celebrates large-scale architectural projects for their visual grandeur",
+      "traps_present": ["positive_negative_swap"],
+      "distractor_analysis": {
+        "A": {"trap_type": "unsupported", "plausibility": 2, "why_wrong": "No evidence of impracticality"},
+        "B": {"trap_type": "wrong_direction", "plausibility": 3, "why_wrong": "Grandiose is what she rejects, not what she's drawn to"},
+        "D": {"trap_type": "unsupported", "plausibility": 2, "why_wrong": "Her projects are gathering spaces — accessible by definition"}
+      },
+      "interactive_keys": ["Blank", "Contrast Clue", "Supporting Examples"],
+      "token_highlights": [
+        {"text": "__________", "key": "Blank", "role": "target_word"},
+        {"text": "Although", "key": "Contrast Clue", "role": "signal_word"},
+        {"text": "large-scale architectural projects for their visual grandeur", "key": "Contrast Clue", "role": "opposite_reference"},
+        {"text": "community centers, repurposed industrial ruins, and transformed neglected urban lots", "key": "Supporting Examples", "role": "blank_definition"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q03",
+      "position": 3,
+      "domain": "craft_and_structure",
+      "skill": "words_in_context",
+      "sub_skill": "precise_verb_contrast_clue",
+      "passage_type": "social_science",
+      "question_format": "multiple_choice",
+      "correct_answer": "A",
+      "difficulty": 3,
+      "complexity_vector": {
+        "vocab_level": 3,
+        "syntactic_complexity": 3,
+        "inference_distance": 2,
+        "distractor_plausibility": 3,
+        "trap_count": 1,
+        "domain_specificity": 2,
+        "time_pressure": 2
+      },
+      "vocabulary_tested": ["marginalized", "challenged", "evaluated", "documented"],
+      "clue_type": "contrast_clue",
+      "clue_text": "rarely crediting her by name... Only decades after her death did historians begin to acknowledge",
+      "traps_present": ["adjacent_meaning_challenge_vs_marginalize"],
+      "distractor_analysis": {
+        "B": {"trap_type": "adjacent_meaning", "plausibility": 4, "why_wrong": "Challenged implies active opposition; passage describes passive ignoring"},
+        "C": {"trap_type": "wrong_tone", "plausibility": 2, "why_wrong": "Neutral word; passage describes unfair treatment"},
+        "D": {"trap_type": "direct_contradiction", "plausibility": 2, "why_wrong": "They specifically failed to document her work"}
+      },
+      "interactive_keys": ["Blank", "Contrast Clue", "Evidence of Treatment"],
+      "token_highlights": [
+        {"text": "__________", "key": "Blank", "role": "target_word"},
+        {"text": "rarely crediting her by name in published accounts", "key": "Evidence of Treatment", "role": "blank_definition"},
+        {"text": "Only decades after her death did historians begin to acknowledge her", "key": "Contrast Clue", "role": "temporal_contrast"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q04",
+      "position": 4,
+      "domain": "craft_and_structure",
+      "skill": "words_in_context",
+      "sub_skill": "precise_adjective_tone_match",
+      "passage_type": "humanities",
+      "question_format": "multiple_choice",
+      "correct_answer": "D",
+      "difficulty": 3,
+      "complexity_vector": {
+        "vocab_level": 3,
+        "syntactic_complexity": 2,
+        "inference_distance": 1,
+        "distractor_plausibility": 2,
+        "trap_count": 1,
+        "domain_specificity": 3,
+        "time_pressure": 1
+      },
+      "vocabulary_tested": ["contemplative", "aggressive", "derivative", "ambiguous"],
+      "clue_type": "synonym_lock",
+      "clue_text": "quiet meditation rather than dramatic assertion",
+      "traps_present": ["sounds_academic_ambiguous"],
+      "distractor_analysis": {
+        "A": {"trap_type": "direct_contradiction", "plausibility": 1, "why_wrong": "Opposite of quiet/meditative"},
+        "B": {"trap_type": "unsupported", "plausibility": 2, "why_wrong": "No originality discussion in passage"},
+        "C": {"trap_type": "sounds_academic", "plausibility": 3, "why_wrong": "Ambiguous sounds intellectual but passage tone is specific, not uncertain"}
+      },
+      "interactive_keys": ["Blank", "Definition Clue"],
+      "token_highlights": [
+        {"text": "__________", "key": "Blank", "role": "target_word"},
+        {"text": "quiet meditation rather than dramatic assertion", "key": "Definition Clue", "role": "synonym_lock"},
+        {"text": "soft grids and pale washes of color", "key": "Definition Clue", "role": "supporting_detail"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q05",
+      "position": 5,
+      "domain": "craft_and_structure",
+      "skill": "words_in_context",
+      "sub_skill": "precise_noun_synonym_lock",
+      "passage_type": "social_science",
+      "question_format": "multiple_choice",
+      "correct_answer": "B",
+      "difficulty": 4,
+      "complexity_vector": {
+        "vocab_level": 4,
+        "syntactic_complexity": 4,
+        "inference_distance": 2,
+        "distractor_plausibility": 3,
+        "trap_count": 1,
+        "domain_specificity": 3,
+        "time_pressure": 2
+      },
+      "vocabulary_tested": ["frameworks", "compromises", "contradictions", "illustrations"],
+      "clue_type": "appositive_definition",
+      "clue_text": "the underlying metaphors and narratives through which people organize their understanding",
+      "traps_present": ["political_context_mislead"],
+      "distractor_analysis": {
+        "A": {"trap_type": "domain_mislead", "plausibility": 3, "why_wrong": "Political context misleads toward negotiation vocabulary"},
+        "C": {"trap_type": "wrong_relationship", "plausibility": 2, "why_wrong": "Organizing structures, not conflicting ones"},
+        "D": {"trap_type": "adjacent_meaning", "plausibility": 2, "why_wrong": "Examples, not underlying structures"}
+      },
+      "interactive_keys": ["Blank", "Definition Clue"],
+      "token_highlights": [
+        {"text": "__________", "key": "Blank", "role": "target_word"},
+        {"text": "the underlying metaphors and narratives through which people organize their understanding of complex policy issues", "key": "Definition Clue", "role": "appositive_definition"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q06",
+      "position": 6,
+      "domain": "craft_and_structure",
+      "skill": "text_structure",
+      "sub_skill": "function_of_sentence",
+      "passage_type": "literary_fiction",
+      "question_format": "multiple_choice",
+      "correct_answer": "C",
+      "difficulty": 3,
+      "complexity_vector": {
+        "vocab_level": 2,
+        "syntactic_complexity": 3,
+        "inference_distance": 2,
+        "distractor_plausibility": 3,
+        "trap_count": 1,
+        "domain_specificity": 1,
+        "time_pressure": 2
+      },
+      "traps_present": ["misread_tone_as_negative"],
+      "distractor_analysis": {
+        "A": {"trap_type": "misread_tone", "plausibility": 3, "why_wrong": "Sentence describes freedom, not fear"},
+        "B": {"trap_type": "unsupported", "plausibility": 2, "why_wrong": "No reference to later career"},
+        "D": {"trap_type": "unsupported", "plausibility": 1, "why_wrong": "She just arrived; no musical success yet"}
+      },
+      "interactive_keys": ["Underlined Sentence", "Preceding Context", "Signal Phrase"],
+      "token_highlights": [
+        {"text": "And yet, in this ocean of anonymity, she felt a peculiar freedom — the freedom of being no one in particular.", "key": "Underlined Sentence", "role": "analyzed_element"},
+        {"text": "And yet", "key": "Signal Phrase", "role": "pivot_signal"},
+        {"text": "so vast, so indifferent to the individual", "key": "Preceding Context", "role": "setup_negative"},
+        {"text": "a peculiar freedom", "key": "Underlined Sentence", "role": "unexpected_positive"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q19",
+      "position": 19,
+      "domain": "standard_english_conventions",
+      "skill": "boundaries",
+      "sub_skill": "comma_splice",
+      "passage_type": "social_science",
+      "question_format": "multiple_choice",
+      "correct_answer": "C",
+      "difficulty": 2,
+      "complexity_vector": {
+        "vocab_level": 1,
+        "syntactic_complexity": 2,
+        "inference_distance": 0,
+        "distractor_plausibility": 3,
+        "trap_count": 1,
+        "domain_specificity": 1,
+        "time_pressure": 1
+      },
+      "grammar_rules_tested": ["sentence_boundaries", "comma_splice", "run_on"],
+      "traps_present": ["comma_splice_disguised"],
+      "distractor_analysis": {
+        "A": {"trap_type": "comma_splice", "plausibility": 4, "why_wrong": "IC, IC = comma splice"},
+        "B": {"trap_type": "run_on", "plausibility": 2, "why_wrong": "IC IC = fused sentence"},
+        "D": {"trap_type": "wrong_transition_direction", "plausibility": 3, "why_wrong": "'However' implies contrast; second sentence supports first"}
+      },
+      "interactive_keys": ["Independent Clause 1", "Boundary Mark", "Independent Clause 2"],
+      "token_highlights": [
+        {"text": "In the 1960s, Brazilian musician Tom Jobim helped popularize bossa nova around the world", "key": "Independent Clause 1", "role": "first_IC"},
+        {"text": ".", "key": "Boundary Mark", "role": "correct_boundary"},
+        {"text": "His gentle fusion of samba rhythms and jazz harmonies captivated audiences from Rio de Janeiro to New York City", "key": "Independent Clause 2", "role": "second_IC"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q20",
+      "position": 20,
+      "domain": "standard_english_conventions",
+      "skill": "form_structure_sense",
+      "sub_skill": "subject_verb_agreement",
+      "passage_type": "humanities",
+      "question_format": "multiple_choice",
+      "correct_answer": "B",
+      "difficulty": 3,
+      "complexity_vector": {
+        "vocab_level": 1,
+        "syntactic_complexity": 3,
+        "inference_distance": 0,
+        "distractor_plausibility": 4,
+        "trap_count": 1,
+        "domain_specificity": 1,
+        "time_pressure": 1
+      },
+      "grammar_rules_tested": ["subject_verb_agreement", "prepositional_phrase_separator"],
+      "traps_present": ["prepositional_phrase_subject_confusion"],
+      "distractor_analysis": {
+        "A": {"trap_type": "prep_phrase_confusion", "plausibility": 5, "why_wrong": "Plural 'are' matches 'letters and journals' — the WRONG noun"},
+        "C": {"trap_type": "prep_phrase_confusion", "plausibility": 3, "why_wrong": "Plural 'have been' + no context for present perfect"},
+        "D": {"trap_type": "wrong_tense", "plausibility": 2, "why_wrong": "Past tense with no past signal"}
+      },
+      "interactive_keys": ["Subject", "Prepositional Phrase", "Main Verb"],
+      "token_highlights": [
+        {"text": "The collection", "key": "Subject", "role": "grammatical_subject"},
+        {"text": "of handwritten letters and personal journals belonging to the Brontë sisters", "key": "Prepositional Phrase", "role": "cross_out"},
+        {"text": "__________", "key": "Main Verb", "role": "verb_blank"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q23",
+      "position": 23,
+      "domain": "standard_english_conventions",
+      "skill": "form_structure_sense",
+      "sub_skill": "dangling_modifier",
+      "passage_type": "humanities",
+      "question_format": "multiple_choice",
+      "correct_answer": "C",
+      "difficulty": 4,
+      "complexity_vector": {
+        "vocab_level": 2,
+        "syntactic_complexity": 4,
+        "inference_distance": 1,
+        "distractor_plausibility": 4,
+        "trap_count": 1,
+        "domain_specificity": 2,
+        "time_pressure": 2
+      },
+      "grammar_rules_tested": ["modifier_placement", "dangling_modifier", "participial_phrase_agreement"],
+      "traps_present": ["dangling_modifier"],
+      "distractor_analysis": {
+        "A": {"trap_type": "dangling_modifier", "plausibility": 4, "why_wrong": "'Inspired by' requires the artist as subject; 'murals' follows instead"},
+        "B": {"trap_type": "dangling_modifier", "plausibility": 3, "why_wrong": "'Inspiring artists' modifies the artist/work's impact but 'murals' is the subject"},
+        "D": {"trap_type": "structural_break", "plausibility": 2, "why_wrong": "Creates causal clause, not modifier — changes sentence structure"}
+      },
+      "interactive_keys": ["Opening Modifier", "Subject After Comma", "Modifier Agreement Check"],
+      "token_highlights": [
+        {"text": "Combining the geometric patterns of traditional azulejo ceramics with the bold palette of Brazilian modernism,", "key": "Opening Modifier", "role": "participial_phrase"},
+        {"text": "the Portuguese artist's tile murals", "key": "Subject After Comma", "role": "modified_subject"},
+        {"text": "Can 'tile murals' COMBINE patterns? Yes — murals visually combine elements.", "key": "Modifier Agreement Check", "role": "logic_verification"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q24",
+      "position": 24,
+      "domain": "standard_english_conventions",
+      "skill": "form_structure_sense",
+      "sub_skill": "parallelism_correlatives",
+      "passage_type": "natural_science",
+      "question_format": "multiple_choice",
+      "correct_answer": "B",
+      "difficulty": 4,
+      "complexity_vector": {
+        "vocab_level": 2,
+        "syntactic_complexity": 4,
+        "inference_distance": 0,
+        "distractor_plausibility": 3,
+        "trap_count": 1,
+        "domain_specificity": 2,
+        "time_pressure": 2
+      },
+      "grammar_rules_tested": ["parallelism", "correlative_conjunctions", "not_only_but_also"],
+      "traps_present": ["parallelism_break_in_correlatives"],
+      "distractor_analysis": {
+        "A": {"trap_type": "new_subject_insertion", "plausibility": 3, "why_wrong": "Adds 'they need' — breaks parallel structure after 'not only'"},
+        "C": {"trap_type": "new_subject_insertion", "plausibility": 3, "why_wrong": "Adds 'they should also have' — not parallel with 'to upgrade'"},
+        "D": {"trap_type": "wrong_correlative_partner", "plausibility": 2, "why_wrong": "'Not only' pairs with 'but also', not 'and furthermore'"}
+      },
+      "interactive_keys": ["Correlative Pair", "Parallel Item 1", "Parallel Item 2"],
+      "token_highlights": [
+        {"text": "not only", "key": "Correlative Pair", "role": "first_correlative"},
+        {"text": "to upgrade their stormwater drainage systems", "key": "Parallel Item 1", "role": "first_parallel_element"},
+        {"text": "but also", "key": "Correlative Pair", "role": "second_correlative"},
+        {"text": "to redesign their waterfront districts with elevated structures and permeable surfaces", "key": "Parallel Item 2", "role": "second_parallel_element"}
+      ]
+    },
+    {
+      "question_id": "GEN01_RW_M1_Q25",
+      "position": 25,
+      "domain": "standard_english_conventions",
+      "skill": "form_structure_sense",
+      "sub_skill": "subjunctive_mood_demand_verb",
+      "passage_type": "natural_science",
+      "question_format": "multiple_choice",
+      "correct_answer": "D",
+      "difficulty": 4,
+      "complexity_vector": {
+        "vocab_level": 2,
+        "syntactic_complexity": 3,
+        "inference_distance": 0,
+        "distractor_plausibility": 4,
+        "trap_count": 1,
+        "domain_specificity": 2,
+        "time_pressure": 1
+      },
+      "grammar_rules_tested": ["subjunctive_mood", "demand_recommendation_verbs", "base_form_verb"],
+      "traps_present": ["indicative_instead_of_subjunctive"],
+      "distractor_analysis": {
+        "A": {"trap_type": "indicative_trap", "plausibility": 5, "why_wrong": "'Establishes' adds -s (indicative); subjunctive requires base form"},
+        "B": {"trap_type": "future_tense_trap", "plausibility": 3, "why_wrong": "'Will establish' is future; subjunctive doesn't use 'will'"},
+        "C": {"trap_type": "conditional_trap", "plausibility": 3, "why_wrong": "'Would establish' is conditional; not subjunctive"}
+      },
+      "interactive_keys": ["Demand/Recommendation Verb", "That-Clause Subject", "Subjunctive Verb Form"],
+      "token_highlights": [
+        {"text": "has recommended that", "key": "Demand/Recommendation Verb", "role": "subjunctive_trigger"},
+        {"text": "the university", "key": "That-Clause Subject", "role": "subjunctive_subject"},
+        {"text": "establish", "key": "Subjunctive Verb Form", "role": "base_form_no_s"}
+      ]
+    }
+  ],
+  "distribution_summary": {
+    "words_in_context": 5,
+    "craft_and_structure": 4,
+    "information_and_ideas_comprehension": 4,
+    "information_and_ideas_evidence_data": 5,
+    "standard_english_conventions": 7,
+    "transitions": 4,
+    "rhetorical_synthesis": 4,
+    "total": 33
+  },
+  "difficulty_distribution": {
+    "level_2_easy": 7,
+    "level_3_medium": 18,
+    "level_4_hard": 8,
+    "average_difficulty": 3.0
+  },
+  "traps_deployed": [
+    "adjacent_meaning_survival_vs_thriving",
+    "positive_negative_swap",
+    "adjacent_meaning_challenge_vs_marginalize",
+    "sounds_academic_ambiguous",
+    "political_context_mislead",
+    "misread_tone_as_negative",
+    "comma_splice_disguised",
+    "prepositional_phrase_subject_confusion",
+    "extreme_language",
+    "correlation_not_causation",
+    "dangling_modifier",
+    "parallelism_break_in_correlatives",
+    "indicative_instead_of_subjunctive",
+    "wrong_transition_direction",
+    "true_but_off_goal",
+    "only_mentions_one_item"
+  ],
+  "weak_area_targeting": {
+    "note": "Questions Q22, Q24, Q25 specifically target student weak areas identified in performance data: colon rules (1/3 accuracy), correlative parallelism (0/2), and subjunctive mood (1/4).",
+    "targeted_skills": ["colon_rule", "correlative_parallelism", "subjunctive_mood"]
+  }
+}
