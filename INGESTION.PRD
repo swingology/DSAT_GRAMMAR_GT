@@ -10,7 +10,7 @@ This document specifies the product requirements for the DSAT Grammar Ingestion 
 - **Out-of-scope inputs:** Video, audio, handwritten scans (unless OCR-able), bulk ZIP archives (future phase).
 - **In-scope outputs:**
   - Staged ingestion jobs (`question_ingestion_jobs` table)
-  - Approved production records (`questions`, `question_classifications`, `question_options`, `question_reasoning`, `question_generation_profiles`)
+  - Approved production records (single `questions` table using the Hybrid JSON-in-SQL strategy)
   - Official-item archives (`archive/official/` as JSON or YAML)
   - LLM-processed annotations conforming to the V3 ingestion/generation rule set.
 
@@ -149,11 +149,17 @@ The following additions are required on top of the existing migrations 001–014
 | `image_path` | `text` | Path to stored image (null if no image) |
 | `ground_truth_verified` | `boolean` | For official items: has a human confirmed the correct answer against a trusted key? |
 
-### 6.2 `questions` table
+### 6.2 `questions` table (Hybrid JSON-in-SQL Strategy)
+
+Instead of maintaining 5 rigid relational tables for taxonomy, options, and reasoning, the pipeline uses a hybrid approach. Fast-query metadata is stored in rigid columns, while the entire V3 question payload is stored as a flexible JSON blob. This prevents database migrations when the prompt rules evolve.
 
 | Column | Type | Description |
 |---|---|---|
-| `source_classification` | `text` | `official` or `unofficial` (denormalized for fast filtering) |
+| `id` | `uuid` | Primary Key |
+| `source_classification` | `text` | `official` or `unofficial` |
+| `grammar_focus_key` | `text` | Indexed column for fast targeted recall (e.g., `subject_verb_agreement`) |
+| `syntactic_trap_key` | `text` | Indexed column for trap querying (e.g., `nearest_noun_attraction`) |
+| `content` | `json` | The full V3 payload (stem, classification, options, reasoning, generation_profile). |
 | `image_url` | `text` | Reference to stored image |
 | `ground_truth_verified` | `boolean` | Whether the correct answer has been verified against an official key |
 
@@ -227,11 +233,11 @@ Input (PDF / Image / Markdown / JSON / Text)
 [On approve]
     │
     ├── If official:
-    │      ├── Upsert to 5 production tables
+    │      ├── Upsert to single `questions` table (Hybrid JSON blob)
     │      └── Write JSON/YAML archive to archive/official/
     │
     └── If unofficial:
-           └── Upsert to 5 production tables only
+           └── Upsert to single `questions` table (Hybrid JSON blob)
            └── (Optionally flag for generation reuse)
 ```
 
