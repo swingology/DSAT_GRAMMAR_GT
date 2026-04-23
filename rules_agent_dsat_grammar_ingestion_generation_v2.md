@@ -5,6 +5,7 @@
 This document is the operational rule file for an agent that ingests, classifies, validates, and generates Digital SAT Reading & Writing questions, with special focus on Standard English Conventions and grammar-adjacent Expression of Ideas.
 
 The agent must use this document to produce consistent structured outputs for:
+
 - question classification
 - option-level distractor analysis
 - grammar rule identification
@@ -18,7 +19,9 @@ The agent must not invent new taxonomy keys unless explicitly using the amendmen
 ## 1. Operating Principles
 
 ### 1.1 Separate the tasks
+
 For every question, separate:
+
 1. what the item tests
 2. how the item is structured
 3. what rule or reasoning mechanism solves it
@@ -28,16 +31,21 @@ For every question, separate:
 7. what pattern should be used to generate a similar item
 
 ### 1.2 Do not write directly to the database
+
 The agent must output structured JSON or markdown records for validation. A deterministic backend validator should check all keys before insertion.
 
 ### 1.3 Use controlled keys
+
 The agent must use only approved lookup keys. If no key fits, it must propose an amendment instead of inventing a new production key.
 
 ### 1.4 Meaning over surface form
+
 When grammar and meaning overlap, classify the item by the main reason the correct answer is required. A sentence can be grammatically possible but logically invalid.
 
 ### 1.5 Official SAT alignment
+
 For Standard English Conventions, classify according to:
+
 - sentence boundaries
 - form, structure, and sense
 - grammar role
@@ -140,6 +148,7 @@ The following schemas formally define fields that appear in examples but were pr
 ```
 
 ### 3.1 stimulus_mode_key values
+
 - `sentence_only`
 - `passage_excerpt`
 - `prose_single`
@@ -150,6 +159,7 @@ The following schemas formally define fields that appear in examples but were pr
 - `poem`
 
 ### 3.2 stem_type_key values
+
 - `complete_the_text`
 - `choose_main_idea`
 - `choose_main_purpose`
@@ -167,19 +177,19 @@ The following schemas formally define fields that appear in examples but were pr
 
 Fields appearing in JSON examples that require controlled vocabularies:
 
-| Field | Approved values |
-|---|---|
-| `answer_mechanism_key` | `rule_application`, `pattern_matching`, `evidence_location`, `inference`, `data_synthesis` |
-| `solver_pattern_key` | `apply_grammar_rule_directly`, `locate_error_zone`, `compare_register`, `evaluate_transition`, `synthesize_notes`, `eliminate_by_boundary` |
-| `semantic_relation_key` | `nearest_noun_agreement`, `comma_splice`, `boundary_not_closed`, `boundary_overly_strong`, `wrong_boundary_type`, `correct_agreement`, `correct_boundary`, `unnecessary_auxiliary`, `tense_mismatch`, `modifier_misplaced`, `pronoun_ambiguous`, `parallel_broken`, `idiom_violation` |
-| `evidence_scope_key` | `sentence`, `paragraph`, `passage`, `paired_passage`, `table`, `graph`, `notes` |
-| `evidence_location_key` | `main_clause`, `subordinate_clause`, `surrounding_sentence`, `opening_sentence`, `closing_sentence`, `transition_zone`, `data_zone`, `entire_passage` |
-| `distractor_strength` | `low`, `medium`, `high` |
-| `difficulty_overall`, `difficulty_reading`, `difficulty_grammar`, `difficulty_inference`, `difficulty_vocab` | `low`, `medium`, `high` |
-| `skill_family` | `Sentence Boundaries`, `Form, Structure, and Sense`, `Agreement`, `Punctuation`, `Transitions`, `Rhetorical Synthesis`, `Craft and Structure` |
-| `subskill` | Free-text describing the specific skill within the family. Examples: `sentence boundary with interruption`, `subject-verb agreement with intervening noun`, `comma mechanics in compound sentences`. Use the most specific description possible. |
-| `topic_broad` | `science`, `history`, `literature`, `social_studies`, `arts`, `economics`, `technology`, `environment` |
-| `topic_fine` | Free-text subtopic under `topic_broad`. Examples: `marine biology`, `ancient civilizations`, `modern poetry`, `labor economics`. |
+| Field                                                                                                        | Approved values                                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `answer_mechanism_key`                                                                                       | `rule_application`, `pattern_matching`, `evidence_location`, `inference`, `data_synthesis`                                                                                                                                                                                            |
+| `solver_pattern_key`                                                                                         | `apply_grammar_rule_directly`, `locate_error_zone`, `compare_register`, `evaluate_transition`, `synthesize_notes`, `eliminate_by_boundary`                                                                                                                                            |
+| `semantic_relation_key`                                                                                      | `nearest_noun_agreement`, `comma_splice`, `boundary_not_closed`, `boundary_overly_strong`, `wrong_boundary_type`, `correct_agreement`, `correct_boundary`, `unnecessary_auxiliary`, `tense_mismatch`, `modifier_misplaced`, `pronoun_ambiguous`, `parallel_broken`, `idiom_violation` |
+| `evidence_scope_key`                                                                                         | `sentence`, `paragraph`, `passage`, `paired_passage`, `table`, `graph`, `notes`                                                                                                                                                                                                       |
+| `evidence_location_key`                                                                                      | `main_clause`, `subordinate_clause`, `surrounding_sentence`, `opening_sentence`, `closing_sentence`, `transition_zone`, `data_zone`, `entire_passage`                                                                                                                                 |
+| `distractor_strength`                                                                                        | `low`, `medium`, `high`                                                                                                                                                                                                                                                               |
+| `difficulty_overall`, `difficulty_reading`, `difficulty_grammar`, `difficulty_inference`, `difficulty_vocab` | `low`, `medium`, `high`                                                                                                                                                                                                                                                               |
+| `skill_family`                                                                                               | `Sentence Boundaries`, `Form, Structure, and Sense`, `Agreement`, `Punctuation`, `Transitions`, `Rhetorical Synthesis`, `Craft and Structure`                                                                                                                                         |
+| `subskill`                                                                                                   | Free-text describing the specific skill within the family. Examples: `sentence boundary with interruption`, `subject-verb agreement with intervening noun`, `comma mechanics in compound sentences`. Use the most specific description possible.                                      |
+| `topic_broad`                                                                                                | `science`, `history`, `literature`, `social_studies`, `arts`, `economics`, `technology`, `environment`                                                                                                                                                                                |
+| `topic_fine`                                                                                                 | Free-text subtopic under `topic_broad`. Examples: `marine biology`, `ancient civilizations`, `modern poetry`, `labor economics`.                                                                                                                                                      |
 
 ---
 
@@ -223,6 +233,7 @@ Fields appearing in JSON examples that require controlled vocabularies:
 Use `grammar_role_key` only when the question is Standard English Conventions or grammar-adjacent.
 
 Approved keys:
+
 - `sentence_boundary`
 - `agreement`
 - `verb_form`
@@ -233,7 +244,9 @@ Approved keys:
 - `expression_of_ideas`
 
 ### 5.1 When to use `sentence_boundary`
+
 Use for:
+
 - fragments
 - run-ons
 - comma splices
@@ -241,14 +254,18 @@ Use for:
 - boundary problems involving periods, semicolons, commas, or dashes
 
 ### 5.2 When to use `agreement`
+
 Use for:
+
 - subject-verb agreement
 - pronoun-antecedent agreement
 - countability and number agreement
 - determiners/articles where noun number or specificity is the central issue
 
 ### 5.3 When to use `verb_form`
+
 Use for:
+
 - tense consistency
 - finite vs nonfinite verbs
 - gerunds and infinitives
@@ -257,7 +274,9 @@ Use for:
 - scientific present / general truth
 
 ### 5.4 When to use `modifier`
+
 Use for:
+
 - dangling modifiers
 - misplaced modifiers
 - modifier scope
@@ -265,7 +284,9 @@ Use for:
 - logical predication when subject-predicate compatibility is central
 
 ### 5.5 When to use `punctuation`
+
 Use for:
+
 - comma mechanics
 - semicolon mechanics
 - colon/dash mechanics
@@ -275,20 +296,26 @@ Use for:
 - hyphens
 
 ### 5.6 When to use `parallel_structure`
+
 Use for:
+
 - parallel lists
 - correlative conjunctions
 - comparison structures when form symmetry is primary
 - elliptical constructions
 
 ### 5.7 When to use `pronoun`
+
 Use for:
+
 - pronoun case
 - pronoun clarity
 - ambiguous pronoun reference
 
 ### 5.8 When to use `expression_of_ideas`
+
 Use only when the question is grammar-adjacent but primarily about:
+
 - concision
 - register
 - transition logic
@@ -307,12 +334,14 @@ If the question is officially an Expression of Ideas question, do not force it i
 Use the most specific applicable `grammar_focus_key`.
 
 ### 6.1 Sentence boundary focus keys
+
 - `sentence_fragment`
 - `comma_splice`
 - `run_on_sentence`
 - `sentence_boundary`
 
 ### 6.2 Agreement focus keys
+
 - `subject_verb_agreement`
 - `pronoun_antecedent_agreement`
 - `noun_countability`
@@ -320,22 +349,26 @@ Use the most specific applicable `grammar_focus_key`.
 - `affirmative_agreement`
 
 ### 6.3 Pronoun focus keys
+
 - `pronoun_case`
 - `pronoun_clarity`
 
 ### 6.4 Verb form focus keys
+
 - `verb_tense_consistency`
 - `verb_form`
 - `voice_active_passive`
 - `negation`
 
 ### 6.5 Modifier focus keys
+
 - `modifier_placement`
 - `comparative_structures`
 - `logical_predication`
 - `relative_pronouns`
 
 ### 6.6 Punctuation focus keys
+
 - `punctuation_comma`
 - `colon_dash_use`
 - `semicolon_use`
@@ -347,11 +380,13 @@ Use the most specific applicable `grammar_focus_key`.
 - `quotation_punctuation`
 
 ### 6.7 Parallel structure focus keys
+
 - `parallel_structure`
 - `elliptical_constructions`
 - `conjunction_usage`
 
 ### 6.8 Expression of Ideas focus keys
+
 - `redundancy_concision`
 - `precision_word_choice`
 - `register_style_consistency`
@@ -388,21 +423,26 @@ Always write the selected rule in `disambiguation_rule_applied` if a conflict wa
 ## 8. Decision Tree for Grammar Annotation
 
 ### Step 1: Is this Standard English Conventions?
+
 If the answer is chosen because of grammar, punctuation, sentence structure, or usage, classify as `conventions_grammar`.
 
 If the answer is chosen because of transition logic, note synthesis, concision, or rhetorical goal, classify under Expression of Ideas rather than SEC.
 
 ### Step 2: Is the issue a sentence boundary?
+
 Use sentence-boundary keys if the item tests whether sentence units are correctly joined or separated.
 
 Examples:
+
 - fragment
 - comma splice
 - run-on
 - period vs semicolon vs comma
 
 ### Step 3: Is the issue punctuation mechanics?
+
 Use the specific punctuation focus:
+
 - comma → `punctuation_comma`
 - semicolon → `semicolon_use`
 - colon/dash → `colon_dash_use`
@@ -411,39 +451,50 @@ Use the specific punctuation focus:
 - appositive punctuation → `appositive_punctuation`
 
 ### Step 4: Is the issue agreement?
+
 Use:
+
 - `subject_verb_agreement`
 - `pronoun_antecedent_agreement`
 - `noun_countability`
 - `determiners_articles`
 
 ### Step 5: Is the issue verb form?
+
 Use:
+
 - `verb_tense_consistency`
 - `verb_form`
 - `voice_active_passive`
 - `negation`
 
 ### Step 6: Is the issue modifier logic?
+
 Use:
+
 - `modifier_placement`
 - `comparative_structures`
 - `logical_predication`
 - `relative_pronouns`
 
 ### Step 7: Is the issue pronoun-specific?
+
 Use:
+
 - `pronoun_case`
 - `pronoun_clarity`
 - `pronoun_antecedent_agreement`
 
 ### Step 8: Is the issue parallel or idiomatic structure?
+
 Use:
+
 - `parallel_structure`
 - `elliptical_constructions`
 - `conjunction_usage`
 
 ### Step 9: If multiple rules apply
+
 Choose the primary rule that eliminates the most wrong options. Store other applicable rules in `secondary_grammar_focus_keys`.
 
 ---
@@ -453,6 +504,7 @@ Choose the primary rule that eliminates the most wrong options. Store other appl
 Use `syntactic_trap_key` to describe the difficulty mechanism, not the rule being tested.
 
 Approved keys:
+
 - `none`
 - `nearest_noun_attraction`
 - `garden_path`
@@ -468,7 +520,9 @@ Approved keys:
 - `multiple`
 
 ### Example
+
 A question can have:
+
 - `grammar_focus_key`: `subject_verb_agreement`
 - `syntactic_trap_key`: `nearest_noun_attraction`
 
@@ -499,9 +553,11 @@ Each option must include:
 ```
 
 ### 10.1 option_error_focus_key
+
 For grammar items, every wrong option should point to the specific grammar focus key that explains its error when possible.
 
 Examples:
+
 - wrong apostrophe → `apostrophe_use`
 - wrong tense → `verb_tense_consistency`
 - wrong semicolon → `semicolon_use`
@@ -511,6 +567,7 @@ Examples:
 ### 10.2 Distractor type keys
 
 **For distractors (wrong options):**
+
 - `semantic_imprecision`
 - `logical_mismatch`
 - `scope_error`
@@ -526,11 +583,13 @@ Examples:
 - `rhetorical_irrelevance`
 
 **For the correct option:**
+
 - `correct`
 
 The value `correct` is reserved for the single correct option and is not a distractor type.
 
 ### 10.3 Grammar-specific plausibility sources
+
 - `nearest_noun_attraction`
 - `punctuation_style_bias`
 - `auditory_similarity`
@@ -540,20 +599,20 @@ The value `correct` is reserved for the single correct option and is not a distr
 
 ### 10.4 precision_score scale
 
-| Value | Meaning |
-|---|---|
-| `1` | Incorrect option. Contains a clear grammar error or fails the tested rule. |
-| `2` | Partially acceptable but inferior. Grammatically valid in isolation but less effective than the correct answer (e.g., a period where a semicolon is better). |
-| `3` | Correct option. Fully satisfies the tested rule with no compromise. |
+| Value | Meaning                                                                                                                                                      |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `1`   | Incorrect option. Contains a clear grammar error or fails the tested rule.                                                                                   |
+| `2`   | Partially acceptable but inferior. Grammatically valid in isolation but less effective than the correct answer (e.g., a period where a semicolon is better). |
+| `3`   | Correct option. Fully satisfies the tested rule with no compromise.                                                                                          |
 
 Only the correct option may have `precision_score: 3`. Distractors must have `precision_score: 1` or, in rare cases, `precision_score: 2`.
 
 ### 10.5 grammar_fit and tone_match semantics
 
-| Field | `yes` | `no` |
-|---|---|---|
+| Field         | `yes`                                                                                   | `no`                                                                                        |
+| ------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | `grammar_fit` | The option is grammatically possible in some context, even if it fails the tested rule. | The option contains a clear grammar error that makes it impossible in any standard context. |
-| `tone_match` | The option maintains the formal academic register of the passage. | The option introduces slang, contractions, colloquialisms, or a register shift. |
+| `tone_match`  | The option maintains the formal academic register of the passage.                       | The option introduces slang, contractions, colloquialisms, or a register shift.             |
 
 ---
 
@@ -582,6 +641,7 @@ If the original wording is correct, explain why no correction is needed.
 Some questions contain multiple possible error types across choices.
 
 The agent must:
+
 1. classify the primary tested rule in `grammar_focus_key`
 2. store secondary rules in `secondary_grammar_focus_keys`
 3. store option-specific errors in `option_error_focus_key`
@@ -596,6 +656,7 @@ Do not label the whole question by a distractor-only error unless that error is 
 For verb-tense questions, determine passage-level tense expectations.
 
 ### 13.1 Tense register keys
+
 - `narrative_past`
 - `scientific_general_present`
 - `historical_past`
@@ -604,6 +665,7 @@ For verb-tense questions, determine passage-level tense expectations.
 - `mixed_with_explicit_shift`
 
 ### 13.2 Expected patterns
+
 - narrative/literary passages usually use past tense
 - scientific facts use simple present
 - historical accounts use past tense
@@ -643,14 +705,18 @@ When generating a grammar item, the agent must specify:
 ```
 
 ### 14.1 Generation must include distractor design
+
 Do not generate four random options. Each distractor must have a reason:
+
 - rule violation
 - plausible surface attraction
 - common student error
 - relation to correct answer
 
 ### 14.2 Generation must match SAT style
+
 Generated items should be:
+
 - concise
 - formal or neutral academic
 - self-contained
@@ -659,7 +725,9 @@ Generated items should be:
 - one correct answer only
 
 ### 14.3 Generation must respect frequency
+
 Prioritize high-frequency rules in practice sets:
+
 - punctuation comma
 - subject-verb agreement
 - verb tense consistency
@@ -700,6 +768,7 @@ Do not insert proposed keys into production records until reviewed.
 ## 16. Review Flags
 
 Set `needs_human_review` to true when:
+
 - more than one grammar focus seems equally plausible
 - the question tests grammar and rhetoric at the same time
 - option text is incomplete or extracted poorly
@@ -731,16 +800,16 @@ The agent must never emit a `grammar_focus_key` that does not belong to the decl
 
 Approved mapping:
 
-| `grammar_role_key` | Allowed `grammar_focus_key` values |
-|---|---|
-| `sentence_boundary` | `sentence_fragment`, `comma_splice`, `run_on_sentence`, `sentence_boundary` |
-| `agreement` | `subject_verb_agreement`, `pronoun_antecedent_agreement`, `noun_countability`, `determiners_articles`, `affirmative_agreement` |
-| `verb_form` | `verb_tense_consistency`, `verb_form`, `voice_active_passive`, `negation` |
-| `modifier` | `modifier_placement`, `comparative_structures`, `logical_predication`, `relative_pronouns` |
-| `punctuation` | `punctuation_comma`, `colon_dash_use`, `semicolon_use`, `conjunctive_adverb_usage`, `apostrophe_use`, `possessive_contraction`, `appositive_punctuation`, `hyphen_usage`, `quotation_punctuation` |
-| `parallel_structure` | `parallel_structure`, `elliptical_constructions`, `conjunction_usage` |
-| `pronoun` | `pronoun_case`, `pronoun_clarity`, `pronoun_antecedent_agreement` |
-| `expression_of_ideas` | `redundancy_concision`, `precision_word_choice`, `register_style_consistency`, `logical_relationships`, `emphasis_meaning_shifts`, `data_interpretation_claims`, `transition_logic` |
+| `grammar_role_key`    | Allowed `grammar_focus_key` values                                                                                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sentence_boundary`   | `sentence_fragment`, `comma_splice`, `run_on_sentence`, `sentence_boundary`                                                                                                                       |
+| `agreement`           | `subject_verb_agreement`, `pronoun_antecedent_agreement`, `noun_countability`, `determiners_articles`, `affirmative_agreement`                                                                    |
+| `verb_form`           | `verb_tense_consistency`, `verb_form`, `voice_active_passive`, `negation`                                                                                                                         |
+| `modifier`            | `modifier_placement`, `comparative_structures`, `logical_predication`, `relative_pronouns`                                                                                                        |
+| `punctuation`         | `punctuation_comma`, `colon_dash_use`, `semicolon_use`, `conjunctive_adverb_usage`, `apostrophe_use`, `possessive_contraction`, `appositive_punctuation`, `hyphen_usage`, `quotation_punctuation` |
+| `parallel_structure`  | `parallel_structure`, `elliptical_constructions`, `conjunction_usage`                                                                                                                             |
+| `pronoun`             | `pronoun_case`, `pronoun_clarity`, `pronoun_antecedent_agreement`                                                                                                                                 |
+| `expression_of_ideas` | `redundancy_concision`, `precision_word_choice`, `register_style_consistency`, `logical_relationships`, `emphasis_meaning_shifts`, `data_interpretation_claims`, `transition_logic`               |
 
 If the agent cannot map a focus key to its role, it must propose an amendment.
 
@@ -750,12 +819,12 @@ Do not classify an Expression of Ideas question under `grammar_role_key` or `gra
 
 Use this triage:
 
-| Official SAT domain | `question_family_key` | `grammar_role_key` usage |
-|---|---|---|
-| Standard English Conventions | `conventions_grammar` | Required |
-| Expression of Ideas | `expression_of_ideas` | Optional; only if a grammar pattern is genuinely adjacent |
-| Craft and Structure | `craft_and_structure` | Forbidden |
-| Information and Ideas | `information_and_ideas` | Forbidden |
+| Official SAT domain          | `question_family_key`   | `grammar_role_key` usage                                  |
+| ---------------------------- | ----------------------- | --------------------------------------------------------- |
+| Standard English Conventions | `conventions_grammar`   | Required                                                  |
+| Expression of Ideas          | `expression_of_ideas`   | Optional; only if a grammar pattern is genuinely adjacent |
+| Craft and Structure          | `craft_and_structure`   | Forbidden                                                 |
+| Information and Ideas        | `information_and_ideas` | Forbidden                                                 |
 
 If a question tests transition logic, concision, register, rhetorical synthesis, or data-claim accuracy, classify it under Expression of Ideas. Do not force it into SEC.
 
@@ -777,13 +846,13 @@ For every wrong option in a Standard English Conventions question, the agent mus
 Examples of required specificity:
 
 | Wrong option surface error | Forbidden general label | Required `option_error_focus_key` |
-|---|---|---|
-| Wrong semicolon | `punctuation_error` | `semicolon_use` |
-| Wrong apostrophe | `punctuation_error` | `apostrophe_use` |
-| Wrong tense | `grammar_error` | `verb_tense_consistency` |
-| Wrong relative clause | `grammar_error` | `relative_pronouns` |
-| Comma splice | `grammar_error` | `comma_splice` |
-| Dangling modifier | `grammar_error` | `modifier_placement` |
+| -------------------------- | ----------------------- | --------------------------------- |
+| Wrong semicolon            | `punctuation_error`     | `semicolon_use`                   |
+| Wrong apostrophe           | `punctuation_error`     | `apostrophe_use`                  |
+| Wrong tense                | `grammar_error`         | `verb_tense_consistency`          |
+| Wrong relative clause      | `grammar_error`         | `relative_pronouns`               |
+| Comma splice               | `grammar_error`         | `comma_splice`                    |
+| Dangling modifier          | `grammar_error`         | `modifier_placement`              |
 
 If no specific key fits, use the amendment process.
 
@@ -815,6 +884,7 @@ For every question where `grammar_role_key` is `verb_form` or `grammar_focus_key
 ```
 
 Allowed values for `passage_tense_register_key`:
+
 - `narrative_past`
 - `scientific_general_present`
 - `historical_past`
@@ -823,6 +893,7 @@ Allowed values for `passage_tense_register_key`:
 - `mixed_with_explicit_shift`
 
 Allowed values for `expected_tense_key`:
+
 - `simple_present`
 - `simple_past`
 - `present_perfect`
@@ -848,6 +919,7 @@ For generation profiles, also populate:
 ```
 
 Allowed values for `syntactic_trap_intensity`:
+
 - `low`
 - `medium`
 - `high`
@@ -891,13 +963,13 @@ The `proposed_parent_role_key` must be an existing `grammar_role_key` or a new r
 
 When generating practice items, the agent must respect SAT frequency bands:
 
-| Frequency band | Grammar focus keys |
-|---|---|
-| `very_high` | `punctuation_comma`, `subject_verb_agreement` |
-| `high` | `verb_tense_consistency`, `semicolon_use`, `apostrophe_use`, `sentence_boundary`, `appositive_punctuation` |
-| `medium` | `relative_pronouns`, `modifier_placement`, `colon_dash_use`, `pronoun_antecedent_agreement`, `parallel_structure` |
-| `low` | `voice_active_passive`, `logical_predication`, `possessive_contraction`, `hyphen_usage`, `quotation_punctuation` |
-| `very_low` | `affirmative_agreement`, `negation`, `noun_countability`, `determiners_articles`, `elliptical_constructions` |
+| Frequency band | Grammar focus keys                                                                                                |
+| -------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `very_high`    | `punctuation_comma`, `subject_verb_agreement`                                                                     |
+| `high`         | `verb_tense_consistency`, `semicolon_use`, `apostrophe_use`, `sentence_boundary`, `appositive_punctuation`        |
+| `medium`       | `relative_pronouns`, `modifier_placement`, `colon_dash_use`, `pronoun_antecedent_agreement`, `parallel_structure` |
+| `low`          | `voice_active_passive`, `logical_predication`, `possessive_contraction`, `hyphen_usage`, `quotation_punctuation`  |
+| `very_low`     | `affirmative_agreement`, `negation`, `noun_countability`, `determiners_articles`, `elliptical_constructions`      |
 
 The generation profile must include:
 
@@ -915,14 +987,17 @@ The agent must not generate a `very_low` frequency item unless explicitly instru
 For generated items, option text must follow one of these formats:
 
 1. **Fill-in-blank format** (default for `complete_the_text`): Options contain only the word or phrase that fills the blank.
+   
    - Example: options are `"play"`, `"have played"`, `"plays"`, `"is playing"`
    - The passage contains `"______"` at the blank location.
 
 2. **Full-replacement format** (for `choose_best_grammar_revision`): Options contain the full revised sentence or clause.
+   
    - Example: options are `"The colony plays..."`, `"The colony play..."`
    - The stem must explicitly instruct the test-taker to choose the best revision.
 
 3. **Punctuation-only format** (for punctuation focus keys): Options contain only the punctuation mark.
+   
    - Example: options are `";"`, `"."`, `";"`, `";"`
    - The passage shows the blank at the punctuation location.
 
@@ -932,13 +1007,13 @@ The agent must not mix formats within a single item. All four options must use t
 
 Use this rubric to assign `difficulty_overall` and sub-difficulty fields:
 
-| Dimension | `low` | `medium` | `high` |
-|---|---|---|---|
-| `difficulty_reading` | Common vocabulary, short sentences, familiar topic | Some academic vocabulary, compound sentences, neutral topic | Dense academic prose, embedded clauses, unfamiliar topic |
-| `difficulty_grammar` | Single, visible rule application (e.g., simple S-V agreement) | Rule requires cross-sentence parsing or trap navigation | Multiple rules interact, or trap is deeply embedded |
-| `difficulty_inference` | No inference required; answer is directly in the text | One-step inference (e.g., register shift) | Multi-step inference combining grammar and rhetoric |
-| `difficulty_vocab` | All words below 10th-grade level | Some words at 11th–12th grade or academic register | Rare words, technical terms, or archaic usage |
-| `distractor_strength` | Distractors are obviously wrong on inspection | One distractor is tempting; others are moderate | All three distractors are plausible on first read |
+| Dimension              | `low`                                                         | `medium`                                                    | `high`                                                   |
+| ---------------------- | ------------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------- |
+| `difficulty_reading`   | Common vocabulary, short sentences, familiar topic            | Some academic vocabulary, compound sentences, neutral topic | Dense academic prose, embedded clauses, unfamiliar topic |
+| `difficulty_grammar`   | Single, visible rule application (e.g., simple S-V agreement) | Rule requires cross-sentence parsing or trap navigation     | Multiple rules interact, or trap is deeply embedded      |
+| `difficulty_inference` | No inference required; answer is directly in the text         | One-step inference (e.g., register shift)                   | Multi-step inference combining grammar and rhetoric      |
+| `difficulty_vocab`     | All words below 10th-grade level                              | Some words at 11th–12th grade or academic register          | Rare words, technical terms, or archaic usage            |
+| `distractor_strength`  | Distractors are obviously wrong on inspection                 | One distractor is tempting; others are moderate             | All three distractors are plausible on first read        |
 
 `difficulty_overall` is not an average. It reflects the dimension that creates the most challenge. A sentence with easy reading but a high-strength trap is `medium` or `high` overall.
 
@@ -947,22 +1022,24 @@ Use this rubric to assign `difficulty_overall` and sub-difficulty fields:
 `evidence_span_text` must quote the minimal text that justifies the correct answer.
 
 Rules:
+
 - Include the grammatical subject and the corrected element.
 - Use `"..."` ellipsis to omit intervening text when the span exceeds 8 words.
 - Do not include the full sentence unless the entire sentence is the evidence.
 - For punctuation items, include the words immediately before and after the punctuation decision.
 
 Examples:
+
 - S-V agreement: `"The colony ... plays"` (subject + verb, ellipsis for intervening clause)
 - Semicolon: `"distances ; they"` (words surrounding the punctuation)
 - Modifier: `"After reviewing the data, the team revised"` (participial phrase + corrected subject)
 
 ### 17.14 Explanation content requirements
 
-| Field | Maximum length | Required content |
-|---|---|---|
-| `explanation_short` | 25 words | State the core rule and why the correct answer satisfies it. |
-| `explanation_full` | 150 words | Explain why the correct answer is correct. Explain why each wrong option is wrong, naming the specific error. Reference evidence from the passage when relevant. |
+| Field               | Maximum length | Required content                                                                                                                                                 |
+| ------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `explanation_short` | 25 words       | State the core rule and why the correct answer satisfies it.                                                                                                     |
+| `explanation_full`  | 150 words      | Explain why the correct answer is correct. Explain why each wrong option is wrong, naming the specific error. Reference evidence from the passage when relevant. |
 
 For No-Change items, `explanation_full` must explicitly state why the original text needs no correction.
 
@@ -979,6 +1056,7 @@ The following examples show how to upgrade broad free-text labels to exact schem
 **Old label:** plural possessive
 
 **Correct classification:**
+
 ```json
 {
   "grammar_role_key": "punctuation",
@@ -994,6 +1072,7 @@ The item asks for "people's stories." The wrong options are apostrophe/plural tr
 **Old label:** sentence boundary with interruption
 
 **Correct classification:**
+
 ```json
 {
   "grammar_role_key": "sentence_boundary",
@@ -1009,6 +1088,7 @@ The correct answer must create a valid sentence boundary: "ran—fast. During...
 **Old label:** relative clause / modifier
 
 **Correct classification:**
+
 ```json
 {
   "grammar_role_key": "modifier",
@@ -1024,6 +1104,7 @@ The correct option is "company that," which creates an essential relative clause
 ## 19. Final Output Requirements (Revised)
 
 The agent must return:
+
 - valid JSON only when used in ingestion mode
 - no invented lookup keys
 - exactly four answer options for SAT multiple-choice items
@@ -1072,6 +1153,7 @@ The agent receives a generation request as structured input:
 ```
 
 The agent must reject any request that:
+
 - Uses an unapproved `grammar_focus_key`
 - Maps a `grammar_focus_key` to the wrong `grammar_role_key`
 - Requests a `very_low` frequency item without explicit justification
@@ -1083,6 +1165,7 @@ The agent must generate in this exact order. Each step is blocking: the next ste
 #### Step 1: Generate the passage sentence
 
 Requirements:
+
 - 20–40 words for `sentence_only` items; 80–150 for passage excerpts
 - One clear, non-trivia-dependent sentence that hosts the target grammar pattern
 - Formal academic register; no contractions, slang, or first person
@@ -1091,19 +1174,20 @@ Requirements:
 
 The passage must embed the target syntactic trap naturally. Examples:
 
-| `target_syntactic_trap_key` | Passage construction rule |
-|---|---|
-| `nearest_noun_attraction` | Place a plural noun or nominalization between the singular subject and the verb |
-| `interruption_breaks_subject_verb` | Insert a parenthetical phrase between subject and verb |
-| `modifier_attachment_ambiguity` | Open with a participial phrase whose implied subject differs from the sentence subject |
-| `garden_path` | Begin with a noun that looks like a subject but is actually an object in a reduced relative clause |
-| `nominalization_obscures_subject` | Use a nominalized verb form that hides the true grammatical subject |
-| `long_distance_dependency` | Separate a pronoun from its antecedent by multiple clauses |
-| `scope_of_negation` | Place negation where it can scope over two different constituents |
+| `target_syntactic_trap_key`        | Passage construction rule                                                                          |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `nearest_noun_attraction`          | Place a plural noun or nominalization between the singular subject and the verb                    |
+| `interruption_breaks_subject_verb` | Insert a parenthetical phrase between subject and verb                                             |
+| `modifier_attachment_ambiguity`    | Open with a participial phrase whose implied subject differs from the sentence subject             |
+| `garden_path`                      | Begin with a noun that looks like a subject but is actually an object in a reduced relative clause |
+| `nominalization_obscures_subject`  | Use a nominalized verb form that hides the true grammatical subject                                |
+| `long_distance_dependency`         | Separate a pronoun from its antecedent by multiple clauses                                         |
+| `scope_of_negation`                | Place negation where it can scope over two different constituents                                  |
 
 #### Step 2: Generate the stem
 
 Requirements:
+
 - Standard SAT stem wording: "Which choice completes the text so that it conforms to the conventions of Standard English?" or equivalent
 - The stem must point to the exact location of the grammar decision
 - For `choose_best_grammar_revision` items, the stem must explicitly name the revision goal
@@ -1111,6 +1195,7 @@ Requirements:
 #### Step 3: Generate the correct option
 
 Requirements:
+
 - The correct option must be grammatically flawless
 - It must resolve the syntactic trap without introducing a new error
 - It must preserve register, tone, and meaning of the original passage
@@ -1121,6 +1206,7 @@ Requirements:
 Each distractor must have a distinct, documented failure mode. See 20.4 and 20.15 for heuristics by focus key.
 
 Requirements:
+
 - Exactly three wrong options
 - Each must be tempting on first read
 - No two distractors may fail for the exact same grammar reason
@@ -1141,85 +1227,103 @@ See 20.6. If any check fails, return to the failed step. Maximum 3 retries per c
 These rules constrain the passage so the target grammar error is natural and testable.
 
 #### `subject_verb_agreement`
+
 - Use a singular collective, abstract, or inverted subject
 - Insert a plural prepositional object or appositive between subject and verb
 - Example: "The flock of migratory birds ______ overhead each autumn."
 
 #### `pronoun_antecedent_agreement`
+
 - Use a singular antecedent that looks plural ("the team," "everyone")
 - Place a plural noun nearby to attract the wrong pronoun
 - Example: "Every student must submit their ______ before Friday."
 
 #### `verb_tense_consistency`
+
 - Open with a time marker that sets tense expectation
 - Place a distractor tense that matches a nearby noun's temporal implication
 - Example: "By the time researchers arrived, the specimen ______ (had vanished / vanished / has vanished / would vanish)."
 
 #### `modifier_placement` / `dangling_modifier`
+
 - Start the sentence with a participial phrase whose logical subject is not the grammatical subject
 - Example: "After reviewing the data, the hypothesis ______ (was revised by the team / the team revised the hypothesis)."
 
 #### `punctuation_comma`
+
 - Create a compound sentence with or without a coordinating conjunction
 - Test FANBOYS comma, introductory phrase comma, or nonrestrictive element comma
 - Example: "The artist worked tirelessly on the sculpture and ______ (it was displayed / displayed it / it displayed) in the gallery."
 
 #### `semicolon_use`
+
 - Use two closely related independent clauses
 - Place a transitional phrase after the semicolon zone
 - Example: "The theory remains controversial ______ (however, it / ; however, it / , however it / : however it) has gained support."
 
 #### `apostrophe_use`
+
 - Use a plural possessive or a possessive pronoun that looks like a contraction
 - Example: "The ______ (students' / student's / students / students's) projects were evaluated by a panel."
 
 #### `appositive_punctuation`
+
 - Use a noun phrase that renames an adjacent noun
 - Test comma vs no comma for essential vs nonessential appositive
 - Example: "The novel Beloved ______ (a powerful work / , a powerful work / ; a powerful work / : a powerful work) explores memory."
 
 #### `relative_pronouns`
+
 - Use a clause that is either essential or nonessential
 - Test `that` vs `which` or comma placement around the clause
 - Example: "The experiment ______ (that yielded / , which yielded / , that yielded / which yielded) surprising results was repeated."
 
 #### `colon_dash_use`
+
 - Create a sentence where an independent clause is followed by an explanation, list, or elaboration
 - Test colon vs dash vs comma vs no punctuation
 - Example: "The researchers identified one primary cause ______ (a deficiency / : a deficiency / — a deficiency / , a deficiency) in nutrient uptake."
 
 #### `conjunctive_adverb_usage`
+
 - Join two independent clauses with a conjunctive adverb
 - Test semicolon + comma vs comma only vs period + comma
 - Example: "The proposal was rejected ______ (however, the team / ; however, the team / , however, the team / . However, the team) revised it."
 
 #### `parallel_structure`
+
 - Create a list or correlative construction where one element breaks form symmetry
 - Test gerund vs infinitive vs noun phrase consistency
 - Example: "The artist is known for painting murals, sculpting bronze figures, and ______ (to create / creating / creation / create) public installations."
 
 #### `pronoun_case`
+
 - Use a compound subject or object where pronoun case is tested
 - Place the pronoun next to a noun that suggests the wrong case
 - Example: "The award was given to Maria and ______ (I / me / myself / mine) for our contributions."
 
 #### `pronoun_clarity`
+
 - Create a sentence with multiple possible antecedents for a pronoun
 - Example: "When the architect met with the engineer, ______ (he / she / they / the architect) presented the revised blueprints."
 
 #### `possessive_contraction`
+
 - Use a context where `it's` vs `its` or `who's` vs `whose` is tested
 - Example: "The company expanded ______ (its / it's / its' / it is) operations overseas."
 
 #### `hyphen_usage`
+
 - Use a compound modifier before a noun where hyphenation is required
 - Example: "The ______ (well known / well-known / well, known / well known-) author signed copies of her novel."
 
 #### `logical_predication`
+
 - Create a sentence where the subject and predicate are grammatically possible but logically incompatible
 - Example: "The discovery of the ancient manuscript ______ (was exciting to historians / excited historians / was exciting to read / excited the reading) when it was found."
 
 #### `comparative_structures`
+
 - Create a comparison where the things being compared are not grammatically parallel
 - Example: "The novel is more challenging than ______ (the play / the playwright / writing / to write)."
 
@@ -1228,88 +1332,100 @@ These rules constrain the passage so the target grammar error is natural and tes
 For each focus key, the agent must use the exact distractor pattern listed below. The pattern is ordered: distractor 1 targets the primary trap; distractors 2 and 3 introduce distinct secondary errors.
 
 #### `subject_verb_agreement`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Plural verb (nearest noun attraction) | `nearest_noun_attraction` |
-| 2 | Singular verb but wrong tense | `auditory_similarity` / `formal_register_match` |
-| 3 | Compound or auxiliary verb that breaks agreement | `grammar_fit_only` |
+
+| Distractor | Error                                            | Plausibility source                             |
+| ---------- | ------------------------------------------------ | ----------------------------------------------- |
+| 1          | Plural verb (nearest noun attraction)            | `nearest_noun_attraction`                       |
+| 2          | Singular verb but wrong tense                    | `auditory_similarity` / `formal_register_match` |
+| 3          | Compound or auxiliary verb that breaks agreement | `grammar_fit_only`                              |
 
 #### `verb_tense_consistency`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Tense that matches a nearby temporal noun | `temporal_sequence_ambiguity` |
-| 2 | Present perfect when simple past is required | `formal_register_match` |
-| 3 | Conditional/future that sounds sophisticated | `grammar_fit_only` |
+
+| Distractor | Error                                        | Plausibility source           |
+| ---------- | -------------------------------------------- | ----------------------------- |
+| 1          | Tense that matches a nearby temporal noun    | `temporal_sequence_ambiguity` |
+| 2          | Present perfect when simple past is required | `formal_register_match`       |
+| 3          | Conditional/future that sounds sophisticated | `grammar_fit_only`            |
 
 #### `punctuation_comma`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Missing comma (comma splice or run-on) | `punctuation_style_bias` |
-| 2 | Unnecessary comma (before essential clause) | `grammar_fit_only` |
-| 3 | Semicolon where comma is correct | `formal_register_match` |
+
+| Distractor | Error                                       | Plausibility source      |
+| ---------- | ------------------------------------------- | ------------------------ |
+| 1          | Missing comma (comma splice or run-on)      | `punctuation_style_bias` |
+| 2          | Unnecessary comma (before essential clause) | `grammar_fit_only`       |
+| 3          | Semicolon where comma is correct            | `formal_register_match`  |
 
 #### `semicolon_use`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Comma splice | `punctuation_style_bias` |
-| 2 | Colon instead of semicolon | `formal_register_match` |
-| 3 | Period that creates a fragment | `grammar_fit_only` |
+
+| Distractor | Error                          | Plausibility source      |
+| ---------- | ------------------------------ | ------------------------ |
+| 1          | Comma splice                   | `punctuation_style_bias` |
+| 2          | Colon instead of semicolon     | `formal_register_match`  |
+| 3          | Period that creates a fragment | `grammar_fit_only`       |
 
 #### `apostrophe_use`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | No apostrophe (plural instead of possessive) | `auditory_similarity` |
-| 2 | Apostrophe after s (wrong singular possessive) | `nearest_noun_attraction` |
-| 3 | Apostrophe in a pronoun (it's vs its) | `common_idiom_pull` |
+
+| Distractor | Error                                          | Plausibility source       |
+| ---------- | ---------------------------------------------- | ------------------------- |
+| 1          | No apostrophe (plural instead of possessive)   | `auditory_similarity`     |
+| 2          | Apostrophe after s (wrong singular possessive) | `nearest_noun_attraction` |
+| 3          | Apostrophe in a pronoun (it's vs its)          | `common_idiom_pull`       |
 
 #### `modifier_placement`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Modifier placed next to wrong noun | `modifier_attachment_ambiguity` |
-| 2 | Modifier split from its head noun | `grammar_fit_only` |
-| 3 | Dangling modifier preserved | `formal_register_match` |
+
+| Distractor | Error                              | Plausibility source             |
+| ---------- | ---------------------------------- | ------------------------------- |
+| 1          | Modifier placed next to wrong noun | `modifier_attachment_ambiguity` |
+| 2          | Modifier split from its head noun  | `grammar_fit_only`              |
+| 3          | Dangling modifier preserved        | `formal_register_match`         |
 
 #### `relative_pronouns`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | `which` without comma for essential clause | `punctuation_style_bias` |
-| 2 | `that` with comma for nonessential clause | `grammar_fit_only` |
-| 3 | `who` for inanimate antecedent | `nearest_noun_attraction` |
+
+| Distractor | Error                                      | Plausibility source       |
+| ---------- | ------------------------------------------ | ------------------------- |
+| 1          | `which` without comma for essential clause | `punctuation_style_bias`  |
+| 2          | `that` with comma for nonessential clause  | `grammar_fit_only`        |
+| 3          | `who` for inanimate antecedent             | `nearest_noun_attraction` |
 
 #### `colon_dash_use`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Comma instead of colon/dash | `punctuation_style_bias` |
-| 2 | Semicolon where colon is required | `formal_register_match` |
-| 3 | No punctuation (run-on elaboration) | `grammar_fit_only` |
+
+| Distractor | Error                               | Plausibility source      |
+| ---------- | ----------------------------------- | ------------------------ |
+| 1          | Comma instead of colon/dash         | `punctuation_style_bias` |
+| 2          | Semicolon where colon is required   | `formal_register_match`  |
+| 3          | No punctuation (run-on elaboration) | `grammar_fit_only`       |
 
 #### `appositive_punctuation`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Comma around essential appositive | `punctuation_style_bias` |
-| 2 | No comma around nonessential appositive | `grammar_fit_only` |
-| 3 | Dash where comma is sufficient | `formal_register_match` |
+
+| Distractor | Error                                   | Plausibility source      |
+| ---------- | --------------------------------------- | ------------------------ |
+| 1          | Comma around essential appositive       | `punctuation_style_bias` |
+| 2          | No comma around nonessential appositive | `grammar_fit_only`       |
+| 3          | Dash where comma is sufficient          | `formal_register_match`  |
 
 #### `parallel_structure`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Gerund where infinitive is required | `grammar_fit_only` |
-| 2 | Noun phrase where verb phrase is required | `nearest_noun_attraction` |
-| 3 | Prepositional phrase that breaks parallelism | `formal_register_match` |
+
+| Distractor | Error                                        | Plausibility source       |
+| ---------- | -------------------------------------------- | ------------------------- |
+| 1          | Gerund where infinitive is required          | `grammar_fit_only`        |
+| 2          | Noun phrase where verb phrase is required    | `nearest_noun_attraction` |
+| 3          | Prepositional phrase that breaks parallelism | `formal_register_match`   |
 
 #### `pronoun_case`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Subject pronoun in object position | `nearest_noun_attraction` |
-| 2 | Reflexive pronoun where simple object is required | `formal_register_match` |
-| 3 | Possessive pronoun where object pronoun is required | `common_idiom_pull` |
+
+| Distractor | Error                                               | Plausibility source       |
+| ---------- | --------------------------------------------------- | ------------------------- |
+| 1          | Subject pronoun in object position                  | `nearest_noun_attraction` |
+| 2          | Reflexive pronoun where simple object is required   | `formal_register_match`   |
+| 3          | Possessive pronoun where object pronoun is required | `common_idiom_pull`       |
 
 #### `conjunctive_adverb_usage`
-| Distractor | Error | Plausibility source |
-|---|---|---|
-| 1 | Comma only (comma splice) | `punctuation_style_bias` |
-| 2 | Period before conjunctive adverb with lowercase | `grammar_fit_only` |
-| 3 | Semicolon but no comma after adverb | `formal_register_match` |
+
+| Distractor | Error                                           | Plausibility source      |
+| ---------- | ----------------------------------------------- | ------------------------ |
+| 1          | Comma only (comma splice)                       | `punctuation_style_bias` |
+| 2          | Period before conjunctive adverb with lowercase | `grammar_fit_only`       |
+| 3          | Semicolon but no comma after adverb             | `formal_register_match`  |
 
 ### 20.5 Complete Generation Examples
 
@@ -1605,31 +1721,32 @@ The following examples show the full JSON output the agent must produce.
 
 Before emitting any generated item, the agent must verify every check below. If any check fails, the agent must regenerate the failing component.
 
-| # | Check | Failure action |
-|---|---|---|
-| 1 | `grammar_focus_key` belongs to `grammar_role_key` per 17.1 | Regenerate classification block |
-| 2 | Exactly 4 options exist | Regenerate all options |
-| 3 | Exactly 1 option has `is_correct: true` | Regenerate options |
-| 4 | No two distractors share the same `option_error_focus_key` | Regenerate one distractor |
-| 5 | At least one distractor targets the declared `target_syntactic_trap_key` | Regenerate distractors |
-| 6 | Correct option contains no grammar error | Regenerate correct option |
-| 7 | Passage is 20–40 words for sentence-only items | Regenerate passage |
-| 8 | Passage requires no outside knowledge | Regenerate passage |
-| 9 | Register is formal academic; no contractions or slang | Regenerate passage |
-| 10 | `difficulty_overall` matches declared target | Regenerate item |
-| 11 | `target_frequency_band` is not `very_low` without justification | Reject request or add justification |
-| 12 | `disambiguation_rule_applied` is present if any label conflict exists | Add rule or set `needs_human_review: true` |
-| 13 | `explanation_full` explains why every wrong option is wrong | Regenerate explanations |
-| 14 | `generation_profile` includes all required fields from 19 | Add missing fields |
-| 15 | All JSON keys are from approved lists; no invented keys | Replace with approved key or propose amendment |
-| 16 | `evidence_span_text` follows format rules from 17.13 | Reformat evidence span |
-| 17 | Option text format is consistent (all fill-in-blank or all full-replacement) | Regenerate options |
+| #   | Check                                                                        | Failure action                                 |
+| --- | ---------------------------------------------------------------------------- | ---------------------------------------------- |
+| 1   | `grammar_focus_key` belongs to `grammar_role_key` per 17.1                   | Regenerate classification block                |
+| 2   | Exactly 4 options exist                                                      | Regenerate all options                         |
+| 3   | Exactly 1 option has `is_correct: true`                                      | Regenerate options                             |
+| 4   | No two distractors share the same `option_error_focus_key`                   | Regenerate one distractor                      |
+| 5   | At least one distractor targets the declared `target_syntactic_trap_key`     | Regenerate distractors                         |
+| 6   | Correct option contains no grammar error                                     | Regenerate correct option                      |
+| 7   | Passage is 20–40 words for sentence-only items                               | Regenerate passage                             |
+| 8   | Passage requires no outside knowledge                                        | Regenerate passage                             |
+| 9   | Register is formal academic; no contractions or slang                        | Regenerate passage                             |
+| 10  | `difficulty_overall` matches declared target                                 | Regenerate item                                |
+| 11  | `target_frequency_band` is not `very_low` without justification              | Reject request or add justification            |
+| 12  | `disambiguation_rule_applied` is present if any label conflict exists        | Add rule or set `needs_human_review: true`     |
+| 13  | `explanation_full` explains why every wrong option is wrong                  | Regenerate explanations                        |
+| 14  | `generation_profile` includes all required fields from 19                    | Add missing fields                             |
+| 15  | All JSON keys are from approved lists; no invented keys                      | Replace with approved key or propose amendment |
+| 16  | `evidence_span_text` follows format rules from 17.13                         | Reformat evidence span                         |
+| 17  | Option text format is consistent (all fill-in-blank or all full-replacement) | Regenerate options                             |
 
 Maximum 3 retries per component. After 3 failures, abort and return an error response (see 20.9).
 
 ### 20.7 Real-Time Constraints
 
 For production generation pipelines, the agent must:
+
 - Emit valid JSON on the first attempt ≥90% of the time
 - Complete generation end-to-end in ≤3 reasoning steps
 - Never hallucinate an exam ID (use `"GENERATED"` for synthetic items)
@@ -1649,11 +1766,11 @@ Approximately 20% of official SAT grammar questions have the original text as th
 
 #### No-Change distractor requirements
 
-| Distractor | Must introduce... |
-|---|---|
-| B | A grammar error related to the target focus key |
-| C | A different grammar error (secondary focus key allowed) |
-| D | A plausible-sounding error that violates a common rule |
+| Distractor | Must introduce...                                       |
+| ---------- | ------------------------------------------------------- |
+| B          | A grammar error related to the target focus key         |
+| C          | A different grammar error (secondary focus key allowed) |
+| D          | A plausible-sounding error that violates a common rule  |
 
 #### No-Change example specification
 
@@ -1668,6 +1785,7 @@ Approximately 20% of official SAT grammar questions have the original text as th
 ```
 
 Output must include:
+
 ```json
 {
   "is_no_change_question": true,
@@ -1697,6 +1815,7 @@ If the agent rejects a generation request or fails after 3 retries on any compon
 The agent may receive requests to generate multiple items at once.
 
 Requirements:
+
 - Maximum batch size: 10 items per request
 - Items in a batch must not share the same `(grammar_focus_key, syntactic_trap_key)` pair unless explicitly requested
 - Items in a batch must vary `topic_broad` and `topic_fine` to avoid clustering
@@ -1704,6 +1823,7 @@ Requirements:
 - If any item in the batch fails validation after 3 retries, the agent must return the error for that specific item index and halt the batch
 
 Batch response format:
+
 ```json
 {
   "batch_results": [
@@ -1727,11 +1847,11 @@ To ensure realistic module composition:
 
 The agent must calibrate `difficulty_overall` at generation time using this rubric:
 
-| Difficulty | Trap intensity | Distractor plausibility | Passage complexity |
-|---|---|---|---|
-| `low` | `none` or `low` | Obvious errors (e.g., gibberish not allowed, but clearly wrong form) | Short sentence, common vocabulary |
-| `medium` | `medium` | One strong distractor, two moderate | Standard academic vocabulary, one clause |
-| `high` | `high` | All three distractors plausible | Dense vocabulary, multiple clauses, unfamiliar topic |
+| Difficulty | Trap intensity  | Distractor plausibility                                              | Passage complexity                                   |
+| ---------- | --------------- | -------------------------------------------------------------------- | ---------------------------------------------------- |
+| `low`      | `none` or `low` | Obvious errors (e.g., gibberish not allowed, but clearly wrong form) | Short sentence, common vocabulary                    |
+| `medium`   | `medium`        | One strong distractor, two moderate                                  | Standard academic vocabulary, one clause             |
+| `high`     | `high`          | All three distractors plausible                                      | Dense vocabulary, multiple clauses, unfamiliar topic |
 
 When `target_syntactic_trap_key` is `none`, cap `difficulty_overall` at `medium` unless the passage uses intentionally complex syntax.
 
@@ -1752,6 +1872,7 @@ Generated items must include explanations that meet these standards:
 The correct answer may appear in any position (A, B, C, or D). The agent must randomize correct option placement.
 
 Distribution requirement over a batch of 10+ items:
+
 - Correct answer in position A: 20–30%
 - Correct answer in position B: 20–30%
 - Correct answer in position C: 20–30%
@@ -1764,42 +1885,52 @@ No individual module may have more than 40% of correct answers in any single pos
 For focus keys not covered in 20.3, use these construction rules:
 
 #### `sentence_fragment`
+
 - Create a subordinate clause presented as a complete sentence
 - Example: "Although the data supported the hypothesis. The researchers ______ (published / were published / publication / publishing) their findings immediately."
 
 #### `comma_splice`
+
 - Join two independent clauses with only a comma
 - Example: "The artist finished the sculpture, ______ (it was / ; it was / however, it was / it) displayed in the gallery the next day."
 
 #### `run_on_sentence`
+
 - Fuse two independent clauses with no punctuation or conjunction
 - Example: "The experiment succeeded ______ (the / ; the / , and the / . The) researchers celebrated their results."
 
 #### `noun_countability`
+
 - Use a mass noun with a plural article or vice versa
 - Example: "The researchers collected ______ (a data / data / datas / datum) from three separate sources."
 
 #### `determiners_articles`
+
 - Use an article where none is needed, or omit a required article
 - Example: "______ (The / A / An / —) oxygen is essential for cellular respiration."
 
 #### `affirmative_agreement`
+
 - Test `so` / `neither` / `nor` responses with inverted auxiliary matching
 - Example: "The first speaker supported the proposal, and ______ (so did / so the / the / did) the second speaker."
 
 #### `voice_active_passive`
+
 - Create a sentence where active/passive voice creates ambiguity or inconsistency
 - Example: "The novel ______ (was written by / wrote / written by / had wrote) the author in just three months."
 
 #### `negation`
+
 - Place negation where scope ambiguity creates multiple interpretations
 - Example: "The study did not find significant differences between the two groups ______ (in most cases / in any case / in no case / in some cases)."
 
 #### `logical_predication`
+
 - Create subject-predicate incompatibility
 - Example: "The discovery of the ancient manuscript ______ (was exciting to historians / excited historians / was exciting to read / excited the reading) when it was found."
 
 #### `quotation_punctuation`
+
 - Test comma placement with quotation marks
 - Example: "The critic wrote ______ ('The /, 'The /: 'The /; 'The) novel is a masterpiece of modern literature.'"
 
@@ -1807,43 +1938,43 @@ For focus keys not covered in 20.3, use these construction rules:
 
 ## 21. Reference Quick-Index
 
-| Concept | Section |
-|---|---|
-| Operating principles | 1 |
-| Required output shape | 2 |
-| Formal schemas (reasoning, generation_profile, review) | 2.1 |
-| Question fields | 3 |
-| stimulus_mode_key / stem_type_key values | 3.1, 3.2 |
-| Approved values for undocumented fields | 3.3 |
-| Classification fields | 4 |
-| Grammar role keys | 5 |
-| Grammar focus keys | 6 |
-| Disambiguation rules | 7 |
-| Decision tree | 8 |
-| Syntactic trap keys | 9 |
-| Option-level analysis | 10 |
-| precision_score scale | 10.4 |
-| grammar_fit / tone_match semantics | 10.5 |
-| No-change rule | 11 |
-| Multi-error rule | 12 |
-| Tense/register | 13 |
-| Generation rules | 14 |
-| Amendment process | 15 |
-| Review flags | 16 |
-| Schema guardrails | 17 |
-| Option text format rules | 17.11 |
-| Difficulty calibration rubric | 17.12 |
-| Evidence span selection rules | 17.13 |
-| Explanation content requirements | 17.14 |
-| Pilot corrections | 18 |
-| Final output requirements | 19 |
-| Real-time generation protocol | 20 |
-| No-Change generation | 20.8 |
-| Error response format | 20.9 |
-| Batch generation rules | 20.10 |
-| Topic rotation / deduplication | 20.11 |
-| Difficulty calibration for generation | 20.12 |
-| Explanation requirements for generation | 20.13 |
-| Option ordering rules | 20.14 |
-| Expanded passage generation rules | 20.15 |
-| Reference quick-index | 21 |
+| Concept                                                | Section  |
+| ------------------------------------------------------ | -------- |
+| Operating principles                                   | 1        |
+| Required output shape                                  | 2        |
+| Formal schemas (reasoning, generation_profile, review) | 2.1      |
+| Question fields                                        | 3        |
+| stimulus_mode_key / stem_type_key values               | 3.1, 3.2 |
+| Approved values for undocumented fields                | 3.3      |
+| Classification fields                                  | 4        |
+| Grammar role keys                                      | 5        |
+| Grammar focus keys                                     | 6        |
+| Disambiguation rules                                   | 7        |
+| Decision tree                                          | 8        |
+| Syntactic trap keys                                    | 9        |
+| Option-level analysis                                  | 10       |
+| precision_score scale                                  | 10.4     |
+| grammar_fit / tone_match semantics                     | 10.5     |
+| No-change rule                                         | 11       |
+| Multi-error rule                                       | 12       |
+| Tense/register                                         | 13       |
+| Generation rules                                       | 14       |
+| Amendment process                                      | 15       |
+| Review flags                                           | 16       |
+| Schema guardrails                                      | 17       |
+| Option text format rules                               | 17.11    |
+| Difficulty calibration rubric                          | 17.12    |
+| Evidence span selection rules                          | 17.13    |
+| Explanation content requirements                       | 17.14    |
+| Pilot corrections                                      | 18       |
+| Final output requirements                              | 19       |
+| Real-time generation protocol                          | 20       |
+| No-Change generation                                   | 20.8     |
+| Error response format                                  | 20.9     |
+| Batch generation rules                                 | 20.10    |
+| Topic rotation / deduplication                         | 20.11    |
+| Difficulty calibration for generation                  | 20.12    |
+| Explanation requirements for generation                | 20.13    |
+| Option ordering rules                                  | 20.14    |
+| Expanded passage generation rules                      | 20.15    |
+| Reference quick-index                                  | 21       |
