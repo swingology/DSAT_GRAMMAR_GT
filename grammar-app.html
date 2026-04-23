@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT Grammar Practice</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .header-text h1 {
+      font-size: 22px;
+      color: #1a202c;
+      margin-bottom: 4px;
+    }
+
+    .header-text p {
+      font-size: 13px;
+      color: #718096;
+      font-weight: 500;
+    }
+
+    .progress-bar {
+      width: 200px;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-left: auto;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      width: 10%;
+      transition: width 0.3s ease;
+    }
+
+    /* Main Card */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 24px;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .question-number {
+      font-size: 13px;
+      font-weight: 700;
+      color: #a0aec0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .question-badges {
+      display: flex;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+
+    .badge-difficulty {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-topic {
+      background: #e9d5ff;
+      color: #6b21a8;
+    }
+
+    .instruction {
+      font-size: 15px;
+      color: #4a5568;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* Sentence Display */
+    .sentence-box {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      font-size: 17px;
+      line-height: 1.8;
+      color: #2d3748;
+    }
+
+    .token {
+      display: inline;
+      padding: 2px 4px;
+      border-radius: 3px;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .blank {
+      background: #e2e8f0;
+      color: #718096;
+      font-weight: 700;
+      border: 2px dashed #a0aec0;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .blank.filled-correct {
+      background: #f0fdf4;
+      color: #15803d;
+      border: 2px solid #16a34a;
+      font-weight: 700;
+    }
+
+    .blank.filled-wrong {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 2px solid #ef4444;
+      font-weight: 700;
+    }
+
+    /* Options */
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .option {
+      border: 2px solid #e2e8f0;
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: inherit;
+      font-size: 14px;
+      color: #2d3748;
+      font-weight: 500;
+    }
+
+    .option:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f8fafc;
+    }
+
+    .option.selected {
+      border-color: #667eea;
+      background: #eef2ff;
+      color: #667eea;
+    }
+
+    .option.correct {
+      border-color: #16a34a;
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .option.incorrect {
+      border-color: #ef4444;
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .option:disabled {
+      cursor: default;
+    }
+
+    .option-label {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+      font-size: 13px;
+    }
+
+    .option.selected .option-label {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .option.correct .option-label {
+      background: #16a34a;
+      color: white;
+      border-color: #16a34a;
+    }
+
+    .option.incorrect .option-label {
+      background: #ef4444;
+      color: white;
+      border-color: #ef4444;
+    }
+
+    .option-text {
+      flex: 1;
+    }
+
+    .checkmark {
+      margin-left: auto;
+      font-size: 18px;
+    }
+
+    /* Feedback */
+    .feedback {
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.correct {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+
+    .feedback.incorrect {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    .feedback-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .feedback.correct .feedback-title {
+      color: #15803d;
+    }
+
+    .feedback.incorrect .feedback-title {
+      color: #dc2626;
+    }
+
+    .feedback-text {
+      font-size: 14px;
+      color: #374151;
+      line-height: 1.6;
+    }
+
+    .correct-answer {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .correct-answer strong {
+      color: #15803d;
+    }
+
+    /* Grammar Key Section */
+    .grammar-section {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+      font-size: 18px;
+      color: #1a202c;
+    }
+
+    .section-header p {
+      font-size: 13px;
+      color: #a0aec0;
+      margin-top: 4px;
+    }
+
+    .clear-btn {
+      background: none;
+      border: 1px solid #e2e8f0;
+      color: #a0aec0;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .section-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .find-btn {
+      background: #1a202c;
+      border: 1px solid #1a202c;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .find-btn:hover {
+      background: #2d3748;
+      border-color: #2d3748;
+    }
+
+    .clear-btn:hover {
+      border-color: #cbd5e0;
+      color: #718096;
+    }
+
+    .grammar-keys {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .key-group {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .key-group-title {
+      color: #4a5568;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      margin: 14px 0 4px;
+      text-transform: uppercase;
+    }
+
+    .key-btn {
+      padding: 8px 16px;
+      border-radius: 24px;
+      border: 2px solid;
+      background: white;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .key-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .key-btn.active {
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .key-btn::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .key-explanations {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .key-card {
+      padding: 18px 20px;
+      border-radius: 12px;
+      border: 1px solid;
+    }
+
+    .key-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .key-card-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .key-card-title {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .key-card-description {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .key-card-rule {
+      background: white;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border-left: 4px solid;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .key-card-rule strong {
+      font-weight: 700;
+    }
+
+    .trap-summary {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      padding: 16px;
+    }
+
+    .trap-summary-title {
+      color: #1a202c;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .trap-summary-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .trap-summary-note {
+      color: #4a5568;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    .trap-summary-item {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .trap-summary-label {
+      color: #718096;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .trap-summary-value {
+      color: #2d3748;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      border: 2px dashed #e2e8f0;
+      border-radius: 12px;
+      color: #a0aec0;
+    }
+
+    .empty-state-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state-text {
+      font-size: 14px;
+      color: #718096;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .btn-next {
+      padding: 12px 32px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .btn-next:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .options {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .progress-bar {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .question-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .question-badges {
+        align-self: flex-start;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .grammar-section {
+        padding: 20px;
+      }
+
+      .trap-summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <div class="header-icon">✦</div>
+        <div class="header-text">
+          <h1>SAT Grammar Practice</h1>
+          <p>Reading & Writing · Master verb forms and sentence boundaries</p>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="card">
+      <div class="question-header">
+        <div>
+          <div class="question-number">Question <span id="currentQuestion">1</span> of 10</div>
+        </div>
+        <div class="question-badges">
+          <span class="badge badge-difficulty">Medium</span>
+          <span class="badge badge-topic">Verb Tense</span>
+        </div>
+      </div>
+
+      <p class="instruction">Which choice completes the text so that it conforms to the conventions of Standard English?</p>
+
+      <!-- Sentence -->
+      <div class="sentence-box" id="sentenceBox">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Answer Options -->
+      <div class="options" id="optionsContainer">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Feedback -->
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div class="feedback-text" id="feedbackText"></div>
+        <div class="correct-answer" id="correctAnswer"></div>
+      </div>
+    </div>
+
+    <!-- Grammar Keys Section -->
+    <div class="grammar-section">
+      <div class="section-header">
+        <div>
+          <h2>Grammar Analysis Key</h2>
+          <p>Find traps from approved grammar, syntax, and writing-style keys</p>
+        </div>
+        <div class="section-actions">
+          <button class="find-btn" id="findTrapsBtn">Find traps</button>
+          <button class="clear-btn" id="clearBtn">Clear all</button>
+        </div>
+      </div>
+
+      <div class="grammar-keys" id="grammarKeysContainer">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="trap-summary" id="trapSummary">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="key-explanations" id="explanationsContainer">
+        <div class="empty-state">
+          <div class="empty-state-icon">✦</div>
+          <div class="empty-state-text">Click any grammar key to see explanations</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <button class="btn-next">Next Question →</button>
+    </div>
+  </div>
+
+  <script>
+    const GRAMMAR_KEYS = [
+      {
+        id: "subordinate_clause",
+        label: "Subordinate Clause",
+        group: "Sentence Anatomy",
+        color: "#7c3aed",
+        lightBg: "#f5f3ff",
+        midBg: "#ddd6fe",
+        priority: 10,
+        description: "A dependent clause that begins with a subordinating conjunction. It cannot stand alone as a sentence.",
+        rule: "A subordinate clause ('Although...', 'Because...', 'Since...') must attach to a main clause. Using one alone creates a sentence fragment - a classic SAT trap.",
+      },
+      {
+        id: "subject",
+        label: "Primary Subject",
+        group: "Sentence Anatomy",
+        color: "#1d4ed8",
+        lightBg: "#eff6ff",
+        midBg: "#bfdbfe",
+        priority: 10,
+        description: "The main noun phrase that performs the action of the main verb.",
+        rule: "Subject-verb agreement: the verb must match the subject in number. Watch out for intervening phrases that can fool you into misidentifying the subject.",
+      },
+      {
+        id: "main_verb",
+        label: "Main Verb",
+        group: "Sentence Anatomy",
+        color: "#15803d",
+        lightBg: "#f0fdf4",
+        midBg: "#bbf7d0",
+        priority: 20,
+        description: "The primary action or state of the main independent clause.",
+        rule: "Verb tense must be logical and consistent. Simple past ('reflected') is used for completed past actions. Past perfect ('had reflected') only applies when describing an action completed before another past event.",
+      },
+      {
+        id: "relative_clause",
+        label: "Relative Clause",
+        group: "Sentence Anatomy",
+        color: "#b45309",
+        lightBg: "#fffbeb",
+        midBg: "#fde68a",
+        priority: 10,
+        description: "A clause introduced by 'which', 'who', or 'that' that modifies a noun.",
+        rule: "Non-restrictive relative clauses use 'which' and are set off by commas. They add extra info that can be removed without changing the core meaning.",
+      },
+      {
+        id: "subordinating_conj",
+        label: "Sub. Conjunction",
+        group: "Sentence Anatomy",
+        color: "#b91c1c",
+        lightBg: "#fff1f2",
+        midBg: "#fecdd3",
+        priority: 20,
+        description: "A conjunction that introduces the subordinate clause and links it to the main clause.",
+        rule: "'Although' signals contrast; the main clause should present a result that seems unexpected given the subordinate clause.",
+      },
+      {
+        id: "modifier",
+        label: "Modifier",
+        group: "Sentence Anatomy",
+        color: "#0e7490",
+        lightBg: "#ecfeff",
+        midBg: "#a5f3fc",
+        priority: 10,
+        description: "A word or phrase that describes or qualifies another element in the sentence.",
+        rule: "Modifiers must be placed close to what they modify. A misplaced modifier changes meaning entirely.",
+      },
+      {
+        id: "verb_form",
+        label: "role: verb_form",
+        group: "Approved Grammar Keys",
+        color: "#166534",
+        lightBg: "#f0fdf4",
+        midBg: "#bbf7d0",
+        priority: 30,
+        description: "The v3 grammar_role_key for questions about tense, finite/nonfinite verbs, voice, mood, or scientific present/general truth.",
+        rule: "Use verb_form when the answer depends on whether the verb form matches the time logic and sentence structure.",
+      },
+      {
+        id: "verb_tense_consistency",
+        label: "focus: verb_tense_consistency",
+        group: "Approved Grammar Keys",
+        color: "#047857",
+        lightBg: "#ecfdf5",
+        midBg: "#a7f3d0",
+        priority: 80,
+        description: "The v3 grammar_focus_key for selecting a verb tense that fits the passage's time register.",
+        rule: "Here the blanked verb must fit the simple-past narrative established by 'reflected'; perfect and present forms create unsupported time relationships.",
+      },
+      {
+        id: "temporal_sequence_ambiguity",
+        label: "trap: temporal_sequence_ambiguity",
+        group: "Syntactic Trap Keys",
+        color: "#c2410c",
+        lightBg: "#fff7ed",
+        midBg: "#fed7aa",
+        priority: 70,
+        description: "A v3 syntactic_trap_key for choices that sound plausible because they imply a sequence of events the sentence does not actually establish.",
+        rule: "Past perfect is tempting after a long opening clause, but the sentence does not say the committee finished deliberating before another past event.",
+      },
+      {
+        id: "early_clause_anchor",
+        label: "trap: early_clause_anchor",
+        group: "Syntactic Trap Keys",
+        color: "#9f1239",
+        lightBg: "#fff1f2",
+        midBg: "#fecdd3",
+        priority: 60,
+        description: "A v3 syntactic_trap_key for over-weighting the opening clause instead of checking the whole sentence.",
+        rule: "The 'Although' clause is only the setup. The answer must also agree with the main-clause verb and the sentence's completed-past frame.",
+      },
+      {
+        id: "formal_academic_register",
+        label: "style: formal register",
+        group: "Writing Style Keys",
+        color: "#4338ca",
+        lightBg: "#eef2ff",
+        midBg: "#c7d2fe",
+        priority: 50,
+        description: "A writing-style cue from the v3 generation rules: SAT grammar passages use formal academic register and self-contained meaning.",
+        rule: "Prefer the concise, standard form unless a more complex tense is forced by meaning. A formal-sounding option is not automatically correct.",
+      },
+      {
+        id: "contrast_signal",
+        label: "style: contrast signal",
+        group: "Writing Style Keys",
+        color: "#6d28d9",
+        lightBg: "#f5f3ff",
+        midBg: "#ddd6fe",
+        priority: 50,
+        description: "A writing-style cue that tracks the rhetorical relationship created by 'Although'.",
+        rule: "The contrast signal explains the sentence logic, but it does not require a perfect tense in the blank.",
+      },
+    ];
+
+    const TRAP_ANALYSIS = {
+      grammarRoleKey: "verb_form",
+      grammarFocusKey: "verb_tense_consistency",
+      syntacticTrapKeys: ["temporal_sequence_ambiguity", "early_clause_anchor"],
+      writingStyleKeys: ["formal_academic_register", "contrast_signal"],
+      trapIntensity: "medium",
+      primaryRule: "Choose the verb tense required by the sentence's time frame, not the tense that sounds more formal.",
+      trapMechanism: "The opening subordinate clause and the formal SAT style make past perfect sound attractive, but the main clause 'reflected' sets a completed-past frame with no earlier-past sequence.",
+    };
+
+    const TOKENS = [
+      { text: "Although",    tags: ["subordinating_conj", "subordinate_clause", "early_clause_anchor", "contrast_signal"] },
+      { text: " the",        tags: ["subordinate_clause"] },
+      { text: " committee",  tags: ["subordinate_clause"] },
+      { text: " ",           tags: [] },
+      { text: "deliberated", tags: ["subordinate_clause", "verb_form", "verb_tense_consistency"], isBlank: true },
+      { text: " for",        tags: ["subordinate_clause", "modifier"] },
+      { text: " weeks",      tags: ["subordinate_clause", "modifier", "temporal_sequence_ambiguity"] },
+      { text: ",",           tags: ["subordinate_clause"] },
+      { text: " its",        tags: ["subject"] },
+      { text: " final",      tags: ["subject", "modifier"] },
+      { text: " decision",   tags: ["subject"] },
+      { text: ",",           tags: [] },
+      { text: " which",      tags: ["relative_clause"] },
+      { text: " surprised",  tags: ["relative_clause"] },
+      { text: " many",       tags: ["relative_clause", "modifier"] },
+      { text: " observers",  tags: ["relative_clause"] },
+      { text: ",",           tags: ["relative_clause"] },
+      { text: " reflected",  tags: ["main_verb", "verb_tense_consistency"] },
+      { text: " a",          tags: [] },
+      { text: " compromise", tags: [] },
+      { text: " between",    tags: [] },
+      { text: " competing",  tags: ["modifier"] },
+      { text: " interests",  tags: [] },
+      { text: ".",           tags: [] },
+    ];
+
+    const OPTIONS = [
+      {
+        id: "A",
+        text: "had deliberated",
+        correct: false,
+        trapTags: ["temporal_sequence_ambiguity", "formal_academic_register"],
+        explanation: "Incorrect. Past perfect implies this action was completed before another past event, but no such sequence is described here. Simple past is the right choice.",
+      },
+      {
+        id: "B",
+        text: "deliberated",
+        correct: true,
+        trapTags: [],
+        explanation: "Correct! Simple past matches the main verb 'reflected' and accurately describes a completed past action with no need to imply a sequence.",
+      },
+      {
+        id: "C",
+        text: "has deliberated",
+        correct: false,
+        trapTags: [],
+        optionErrorFocusKey: "verb_tense_consistency",
+        explanation: "Incorrect. Present perfect implies a connection to the present — but the sentence describes an entirely past situation.",
+      },
+      {
+        id: "D",
+        text: "deliberates",
+        correct: false,
+        trapTags: [],
+        optionErrorFocusKey: "verb_tense_consistency",
+        explanation: "Incorrect. Simple present tense contradicts the past context established by 'reflected' and the rest of the passage.",
+      },
+    ];
+
+    let activeKeys = new Set();
+    let selectedAnswer = null;
+    let answered = false;
+
+    function renderSentence() {
+      const box = document.getElementById("sentenceBox");
+      box.innerHTML = "";
+
+      TOKENS.forEach((token) => {
+        const span = document.createElement("span");
+        const matchingKey = findActiveKey(token.tags);
+
+        if (token.isBlank) {
+          span.className = "token blank";
+          if (answered) {
+            const isCorrect = selectedAnswer && OPTIONS.find(o => o.id === selectedAnswer)?.correct;
+            span.className += isCorrect ? " filled-correct" : " filled-wrong";
+            span.textContent = selectedAnswer ? OPTIONS.find(o => o.id === selectedAnswer)?.text : "_____";
+          } else {
+            span.textContent = "________";
+          }
+
+          if (matchingKey) {
+            span.style.boxShadow = `0 0 0 3px ${matchingKey.midBg}`;
+            span.style.borderColor = matchingKey.color;
+          }
+        } else {
+          span.className = "token";
+          span.textContent = token.text;
+
+          if (matchingKey) {
+            span.style.backgroundColor = matchingKey.lightBg;
+            span.style.borderBottom = `2.5px solid ${matchingKey.color}`;
+            span.style.padding = "1px 3px";
+          }
+        }
+
+        box.appendChild(span);
+      });
+    }
+
+    function renderOptions() {
+      const container = document.getElementById("optionsContainer");
+      container.innerHTML = "";
+
+      OPTIONS.forEach((opt) => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.disabled = answered;
+
+        if (selectedAnswer === opt.id) {
+          button.classList.add("selected");
+          if (answered) {
+            button.classList.add(opt.correct ? "correct" : "incorrect");
+          }
+        } else if (answered && opt.correct) {
+          button.classList.add("correct");
+        }
+
+        const optionTrapKey = findActiveKey(opt.trapTags || []);
+        if (optionTrapKey && !answered) {
+          button.style.borderColor = optionTrapKey.color;
+          button.style.backgroundColor = optionTrapKey.lightBg;
+        }
+
+        button.innerHTML = `
+          <div class="option-label">${opt.id}</div>
+          <div class="option-text">${opt.text}</div>
+          ${answered && selectedAnswer === opt.id && opt.correct ? '<div class="checkmark">✓</div>' : ''}
+          ${answered && selectedAnswer === opt.id && !opt.correct ? '<div class="checkmark">✗</div>' : ''}
+        `;
+
+        button.addEventListener("click", () => selectAnswer(opt.id));
+        container.appendChild(button);
+      });
+    }
+
+    function renderGrammarKeys() {
+      const container = document.getElementById("grammarKeysContainer");
+      container.innerHTML = "";
+      const groups = [...new Set(GRAMMAR_KEYS.map(key => key.group || "Other"))];
+
+      groups.forEach((group) => {
+        const groupWrap = document.createElement("div");
+        groupWrap.className = "key-group";
+        groupWrap.innerHTML = `<div class="key-group-title">${group}</div>`;
+        container.appendChild(groupWrap);
+
+        GRAMMAR_KEYS.filter(key => (key.group || "Other") === group).forEach((key) => {
+          const button = document.createElement("button");
+          button.className = "key-btn";
+          if (activeKeys.has(key.id)) button.classList.add("active");
+
+          button.style.borderColor = key.color;
+          button.style.color = activeKeys.has(key.id) ? "white" : key.color;
+          button.style.backgroundColor = activeKeys.has(key.id) ? key.color : key.lightBg;
+
+          button.innerHTML = `${key.label}${activeKeys.has(key.id) ? ' ✕' : ''}`;
+
+          button.addEventListener("click", () => toggleKey(key.id));
+          container.appendChild(button);
+        });
+      });
+    }
+
+    function renderTrapSummary() {
+      const container = document.getElementById("trapSummary");
+      const grammarFocus = getKey(TRAP_ANALYSIS.grammarFocusKey);
+      const trapLabels = TRAP_ANALYSIS.syntacticTrapKeys.map(id => getKey(id)?.label || id).join(", ");
+      const styleLabels = TRAP_ANALYSIS.writingStyleKeys.map(id => getKey(id)?.label || id).join(", ");
+
+      container.innerHTML = `
+        <div class="trap-summary-title">Detected trap profile</div>
+        <div class="trap-summary-grid">
+          <div class="trap-summary-item">
+            <div class="trap-summary-label">Rule</div>
+            <div class="trap-summary-value">${grammarFocus?.label || TRAP_ANALYSIS.grammarFocusKey}</div>
+          </div>
+          <div class="trap-summary-item">
+            <div class="trap-summary-label">Trap</div>
+            <div class="trap-summary-value">${trapLabels}</div>
+          </div>
+          <div class="trap-summary-item">
+            <div class="trap-summary-label">Style Cues</div>
+            <div class="trap-summary-value">${styleLabels}</div>
+          </div>
+        </div>
+        <div class="trap-summary-note">
+          <strong>Trap mechanism:</strong> ${TRAP_ANALYSIS.trapMechanism}
+        </div>
+      `;
+    }
+
+    function renderExplanations() {
+      const container = document.getElementById("explanationsContainer");
+
+      if (activeKeys.size === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">✦</div>
+            <div class="empty-state-text">Click any grammar key to see explanations</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = "";
+      const activeKeyData = GRAMMAR_KEYS.filter(k => activeKeys.has(k.id));
+
+      activeKeyData.forEach((key) => {
+        const card = document.createElement("div");
+        card.className = "key-card";
+        card.style.borderColor = key.midBg;
+        card.style.backgroundColor = key.lightBg;
+
+        card.innerHTML = `
+          <div class="key-card-header">
+            <div class="key-card-dot" style="background-color: ${key.color}"></div>
+            <div class="key-card-title" style="color: ${key.color}">${key.label}</div>
+          </div>
+          <div class="key-card-description">${key.description}</div>
+          <div class="key-card-rule" style="border-left-color: ${key.color}">
+            <strong style="color: ${key.color}">SAT Rule: </strong>${key.rule}
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function selectAnswer(optionId) {
+      if (answered) return;
+
+      selectedAnswer = optionId;
+      answered = true;
+
+      renderSentence();
+      renderOptions();
+      renderFeedback();
+
+      // Update progress bar
+      document.querySelector(".progress-fill").style.width = "10%";
+    }
+
+    function renderFeedback() {
+      const selected = OPTIONS.find(o => o.id === selectedAnswer);
+      const feedbackBox = document.getElementById("feedbackBox");
+      const feedbackTitle = document.getElementById("feedbackTitle");
+      const feedbackText = document.getElementById("feedbackText");
+      const correctAnswer = document.getElementById("correctAnswer");
+
+      feedbackBox.classList.add("show");
+      feedbackBox.className = "feedback show " + (selected.correct ? "correct" : "incorrect");
+
+      feedbackTitle.textContent = selected.correct ? "✓  Correct!" : "✗  Not quite";
+      feedbackText.textContent = selected.explanation;
+
+      if (!selected.correct) {
+        correctAnswer.innerHTML = 'Correct answer: <strong>B — deliberated</strong>';
+      } else {
+        correctAnswer.innerHTML = '';
+      }
+    }
+
+    function toggleKey(keyId) {
+      if (activeKeys.has(keyId)) {
+        activeKeys.delete(keyId);
+      } else {
+        activeKeys.add(keyId);
+      }
+
+      renderGrammarKeys();
+      renderSentence();
+      renderOptions();
+      renderExplanations();
+    }
+
+    function clearKeys() {
+      activeKeys.clear();
+      renderGrammarKeys();
+      renderSentence();
+      renderOptions();
+      renderExplanations();
+    }
+
+    function findTraps() {
+      [
+        TRAP_ANALYSIS.grammarRoleKey,
+        TRAP_ANALYSIS.grammarFocusKey,
+        ...TRAP_ANALYSIS.syntacticTrapKeys,
+        ...TRAP_ANALYSIS.writingStyleKeys,
+      ].forEach(keyId => activeKeys.add(keyId));
+
+      renderGrammarKeys();
+      renderSentence();
+      renderOptions();
+      renderExplanations();
+    }
+
+    function getKey(keyId) {
+      return GRAMMAR_KEYS.find(key => key.id === keyId);
+    }
+
+    function findActiveKey(tags) {
+      return GRAMMAR_KEYS
+        .filter(key => tags.includes(key.id) && activeKeys.has(key.id))
+        .sort((a, b) => (b.priority || 0) - (a.priority || 0))[0];
+    }
+
+    // Event listeners
+    document.getElementById("clearBtn").addEventListener("click", clearKeys);
+    document.getElementById("findTrapsBtn").addEventListener("click", findTraps);
+
+    // Initial render
+    renderSentence();
+    renderOptions();
+    renderGrammarKeys();
+    renderTrapSummary();
+    renderExplanations();
+  </script>
+</body>
+</html>
