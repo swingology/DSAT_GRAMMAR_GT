@@ -69,13 +69,13 @@ class Question(Base):
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
     jobs = relationship("QuestionJob", back_populates="question", foreign_keys="[QuestionJob.question_id]")
-    versions = relationship("QuestionVersion", back_populates="question", order_by="QuestionVersion.version_number")
-    annotations = relationship("QuestionAnnotation", back_populates="question")
-    options = relationship("QuestionOption", back_populates="question", order_by="QuestionOption.option_label")
-    assets = relationship("QuestionAsset", back_populates="question")
+    versions = relationship("QuestionVersion", back_populates="question", order_by="QuestionVersion.version_number", foreign_keys="[QuestionVersion.question_id]")
+    annotations = relationship("QuestionAnnotation", back_populates="question", foreign_keys="[QuestionAnnotation.question_id]")
+    options = relationship("QuestionOption", back_populates="question", order_by="QuestionOption.option_label", foreign_keys="[QuestionOption.question_id]")
+    assets = relationship("QuestionAsset", back_populates="question", foreign_keys="[QuestionAsset.question_id]")
     outgoing_relations = relationship("QuestionRelation", back_populates="from_question", foreign_keys="[QuestionRelation.from_question_id]")
     incoming_relations = relationship("QuestionRelation", back_populates="to_question", foreign_keys="[QuestionRelation.to_question_id]")
-    progress_records = relationship("UserProgress", back_populates="question")
+    progress_records = relationship("UserProgress", back_populates="question", foreign_keys="[UserProgress.question_id]")
 
 
 class QuestionVersion(Base):
@@ -94,7 +94,7 @@ class QuestionVersion(Base):
     change_notes = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
-    question = relationship("Question", back_populates="versions")
+    question = relationship("Question", back_populates="versions", foreign_keys=[question_id])
 
 
 class QuestionAnnotation(Base):
@@ -140,7 +140,7 @@ class QuestionOption(Base):
     distractor_competition_score = Column(Float, nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
-    question = relationship("Question", back_populates="options")
+    question = relationship("Question", back_populates="options", foreign_keys=[question_id])
 
 
 class QuestionAsset(Base):
@@ -162,7 +162,7 @@ class QuestionAsset(Base):
     checksum = Column(String(64), nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
-    question = relationship("Question", back_populates="assets")
+    question = relationship("Question", back_populates="assets", foreign_keys=[question_id])
 
 
 class QuestionRelation(Base):
@@ -225,4 +225,4 @@ class UserProgress(Base):
     timestamp = Column(DateTime(timezone=True), default=_utcnow)
 
     user = relationship("User", back_populates="progress_records")
-    question = relationship("Question", back_populates="progress_records")
+    question = relationship("Question", back_populates="progress_records", foreign_keys=[question_id])
