@@ -97,3 +97,37 @@ def test_question_recall_response():
     }
     r = QuestionRecallResponse(**data)
     assert r.practice_status == "active"
+
+
+def test_generation_request_valid():
+    from app.models.payload import GenerationRequest
+    req = GenerationRequest(
+        target_grammar_role_key="agreement",
+        target_grammar_focus_key="subject_verb_agreement",
+        target_syntactic_trap_key="nearest_noun_attraction",
+        difficulty_overall="medium",
+    )
+    assert req.target_grammar_focus_key == "subject_verb_agreement"
+
+
+def test_generation_compare_request_valid():
+    from app.models.payload import GenerationCompareRequest
+    req = GenerationCompareRequest(
+        target_grammar_role_key="agreement",
+        target_grammar_focus_key="subject_verb_agreement",
+        providers=["anthropic", "openai"],
+    )
+    assert len(req.providers) == 2
+
+
+def test_job_response_model():
+    from app.models.payload import JobResponse
+    j = JobResponse(id="abc-123", job_type="ingest", status="parsing", question_id=None)
+    assert j.status == "parsing"
+
+
+def test_ingest_pdf_request_defaults():
+    from app.models.payload import IngestPdfRequest
+    req = IngestPdfRequest()
+    assert req.provider_name == "anthropic"
+    assert req.model_name == "claude-sonnet-4-6"

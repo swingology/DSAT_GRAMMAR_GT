@@ -73,3 +73,37 @@ class EvaluationScoreRequest(BaseModel):
     score_generation: Optional[float] = Field(default=None, ge=0.0, le=10.0)
     review_notes: Optional[str] = None
     recommended_for_default: Optional[bool] = None
+
+
+class GenerationRequest(BaseModel):
+    target_grammar_role_key: str
+    target_grammar_focus_key: str
+    target_syntactic_trap_key: str = "none"
+    difficulty_overall: str = "medium"
+    source_question_ids: Optional[List[str]] = None
+
+
+class GenerationCompareRequest(BaseModel):
+    target_grammar_role_key: str
+    target_grammar_focus_key: str
+    target_syntactic_trap_key: str = "none"
+    difficulty_overall: str = "medium"
+    providers: List[str] = Field(default_factory=lambda: ["anthropic"])
+    source_question_ids: Optional[List[str]] = None
+
+
+class JobResponse(BaseModel):
+    id: str
+    job_type: str
+    status: str
+    question_id: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+    model_config = {"from_attributes": True}
+
+
+class IngestPdfRequest(BaseModel):
+    source_exam_code: Optional[str] = None
+    source_module_code: Optional[str] = None
+    provider_name: str = "anthropic"
+    model_name: str = "claude-sonnet-4-6"
