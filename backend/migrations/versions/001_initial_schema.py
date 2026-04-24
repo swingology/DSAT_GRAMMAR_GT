@@ -35,32 +35,37 @@ CHANGE_SOURCE_VALUES = ("ingest", "generate", "admin_edit", "reprocess")
 
 def upgrade() -> None:
     # ── Create PostgreSQL ENUM types ────────────────────────────────────
-    # Each enum name must match what SQLAlchemy generates in the ORM.
     enums = [
         ("job_type_enum", JOB_TYPE_VALUES),
         ("content_origin_enum", CONTENT_ORIGIN_VALUES),
-        ("content_origin_enum2", CONTENT_ORIGIN_VALUES),
-        ("content_origin_enum3", CONTENT_ORIGIN_VALUES),
-        ("job_status_enum", JOB_STATUS_VALUES),
         ("practice_status_enum", PRACTICE_STATUS_VALUES),
         ("overlap_status_enum", OVERLAP_STATUS_VALUES),
         ("relation_type_enum", RELATION_TYPE_VALUES),
         ("asset_type_enum", ASSET_TYPE_VALUES),
         ("change_source_enum", CHANGE_SOURCE_VALUES),
+        ("job_status_enum", JOB_STATUS_VALUES),
     ]
     for name, values in enums:
         postgresql.ENUM(*values, name=name).create(op.get_bind(), checkfirst=True)
 
-    # ── Create tables in dependency order ────────────────────────────────
+    # ── Create tables WITHOUT circular foreign keys first ─────────────
 
-    # 1. question_assets (FK → questions, but questions doesn't exist yet;
-    #    we create the FK without the referenced table first and add it
-    #    after questions is created. SQLAlchemy ORM has this same circularity.)
+    # 1. users (no FKs to other tables)
+    op.create_table(
+        "users",
+        sa.Column("id", sa.Integer(), primary_key=True),
+        sa.Column("username", sa.String(100), unique=True, nullable=False),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=True),
+    )
+    op.create_index("ix_users_id", "users", ["id"])
+    op.create_index("ix_users_username", "users", ["username"])
+
+    # 2. question_assets (no FKs yet — add FK to questions later)
     op.create_table(
         "question_assets",
         sa.Column("id", sa.Uuid(), primary_key=True),
-        sa.Column("question_id", sa.Uuid(), sa.ForeignKey("questions.id"), nullable=True),
-        sa.Column("content_origin", postgresql.ENUM("official", "unofficial", "generated", name="content_origin_enum3", create_type=False), nullable=False),
+        sa.Column("question_id", sa.Uuid(), nullable=True),
+        sa.Column("content_origin", postgresql.ENUM("official", "unofficial", "generated", name="content_origin_enum", create_type=False), nullable=False),
         sa.Column("asset_type", postgresql.ENUM("pdf", "image", "screenshot", "markdown", "json", "text", name="asset_type_enum", create_type=False), nullable=False),
         sa.Column("storage_path", sa.Text(), nullable=False),
         sa.Column("mime_type", sa.String(100), nullable=True),
@@ -75,33 +80,11 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=True),
     )
 
-    # 2. question_jobs (FK → question_assets, questions)
-    op.create_table(
-        "question_jobs",
-        sa.Column("id", sa.Uuid(), primary_key=True),
-        sa.Column("job_type", postgresql.ENUM("ingest", "generate", "reannotate", "overlap_check", name="job_type_enum", create_type=False), nullable=False),
-        sa.Column("content_origin", postgresql.ENUM("official", "unofficial", "generated", name="content_origin_enum", create_type=False), nullable=False),
-        sa.Column("input_format", sa.String(20), nullable=False),
-        sa.Column("status", postgresql.ENUM("pending", "parsing", "extracting", "generating", "annotating", "overlap_checking", "validating", "approved", "needs_review", "failed", name="job_status_enum", create_type=False), nullable=False),
-        sa.Column("provider_name", sa.String(50), nullable=False),
-        sa.Column("model_name", sa.String(100), nullable=False),
-        sa.Column("prompt_version", sa.String(20), nullable=False),
-        sa.Column("rules_version", sa.String(100), nullable=False),
-        sa.Column("raw_asset_id", sa.Uuid(), sa.ForeignKey("question_assets.id"), nullable=True),
-        sa.Column("pass1_json", postgresql.JSONB(), nullable=True),
-        sa.Column("pass2_json", postgresql.JSONB(), nullable=True),
-        sa.Column("validation_errors_jsonb", postgresql.JSONB(), nullable=True),
-        sa.Column("comparison_group_id", sa.Uuid(), nullable=True),
-        sa.Column("question_id", sa.Uuid(), sa.ForeignKey("questions.id"), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=True),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
-    )
-
-    # 3. questions (self-referential FKs, FK → question_annotations, question_versions)
+    # 3. questions (no FKs yet — add self-referential and cross-FKs later)
     op.create_table(
         "questions",
         sa.Column("id", sa.Uuid(), primary_key=True),
-        sa.Column("content_origin", postgresql.ENUM("official", "unofficial", "generated", name="content_origin_enum2", create_type=False), nullable=False),
+        sa.Column("content_origin", postgresql.ENUM("official", "unofficial", "generated", name="content_origin_enum", create_type=False), nullable=False),
         sa.Column("source_exam_code", sa.String(20), nullable=True),
         sa.Column("source_module_code", sa.String(10), nullable=True),
         sa.Column("source_question_number", sa.Integer(), nullable=True),
@@ -113,18 +96,18 @@ def upgrade() -> None:
         sa.Column("current_explanation_text", sa.Text(), nullable=True),
         sa.Column("practice_status", postgresql.ENUM("draft", "active", "retired", name="practice_status_enum", create_type=False), nullable=False),
         sa.Column("official_overlap_status", postgresql.ENUM("none", "possible", "confirmed", name="overlap_status_enum", create_type=False), nullable=False),
-        sa.Column("canonical_official_question_id", sa.Uuid(), sa.ForeignKey("questions.id"), nullable=True),
-        sa.Column("derived_from_question_id", sa.Uuid(), sa.ForeignKey("questions.id"), nullable=True),
+        sa.Column("canonical_official_question_id", sa.Uuid(), nullable=True),
+        sa.Column("derived_from_question_id", sa.Uuid(), nullable=True),
         sa.Column("generation_source_set", postgresql.JSONB(), nullable=True),
         sa.Column("is_admin_edited", sa.Boolean(), nullable=False),
         sa.Column("metadata_managed_by_llm", sa.Boolean(), nullable=False),
-        sa.Column("latest_annotation_id", sa.Uuid(), sa.ForeignKey("question_annotations.id"), nullable=True),
-        sa.Column("latest_version_id", sa.Uuid(), sa.ForeignKey("question_versions.id"), nullable=True),
+        sa.Column("latest_annotation_id", sa.Uuid(), nullable=True),
+        sa.Column("latest_version_id", sa.Uuid(), nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
     )
 
-    # 4. question_versions (FK → questions)
+    # 4. question_versions (FK → questions, now exists)
     op.create_table(
         "question_versions",
         sa.Column("id", sa.Uuid(), primary_key=True),
@@ -183,7 +166,7 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=True),
     )
 
-    # 7. question_relations (FK → questions x2)
+    # 7. question_relations (FK → questions)
     op.create_table(
         "question_relations",
         sa.Column("id", sa.Uuid(), primary_key=True),
@@ -197,7 +180,29 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=True),
     )
 
-    # 8. llm_evaluations (FK → question_jobs, questions)
+    # 8. question_jobs (FK → question_assets, questions)
+    op.create_table(
+        "question_jobs",
+        sa.Column("id", sa.Uuid(), primary_key=True),
+        sa.Column("job_type", postgresql.ENUM("ingest", "generate", "reannotate", "overlap_check", name="job_type_enum", create_type=False), nullable=False),
+        sa.Column("content_origin", postgresql.ENUM("official", "unofficial", "generated", name="content_origin_enum", create_type=False), nullable=False),
+        sa.Column("input_format", sa.String(20), nullable=False),
+        sa.Column("status", postgresql.ENUM("pending", "parsing", "extracting", "generating", "annotating", "overlap_checking", "validating", "approved", "needs_review", "failed", name="job_status_enum", create_type=False), nullable=False),
+        sa.Column("provider_name", sa.String(50), nullable=False),
+        sa.Column("model_name", sa.String(100), nullable=False),
+        sa.Column("prompt_version", sa.String(20), nullable=False),
+        sa.Column("rules_version", sa.String(100), nullable=False),
+        sa.Column("raw_asset_id", sa.Uuid(), sa.ForeignKey("question_assets.id"), nullable=True),
+        sa.Column("pass1_json", postgresql.JSONB(), nullable=True),
+        sa.Column("pass2_json", postgresql.JSONB(), nullable=True),
+        sa.Column("validation_errors_jsonb", postgresql.JSONB(), nullable=True),
+        sa.Column("comparison_group_id", sa.Uuid(), nullable=True),
+        sa.Column("question_id", sa.Uuid(), sa.ForeignKey("questions.id"), nullable=True),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
+    )
+
+    # 9. llm_evaluations (FK → question_jobs, questions)
     op.create_table(
         "llm_evaluations",
         sa.Column("id", sa.Uuid(), primary_key=True),
@@ -215,16 +220,6 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=True),
     )
 
-    # 9. users
-    op.create_table(
-        "users",
-        sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("username", sa.String(100), unique=True, nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=True),
-    )
-    op.create_index("ix_users_id", "users", ["id"])
-    op.create_index("ix_users_username", "users", ["username"])
-
     # 10. user_progress (FK → users, questions)
     op.create_table(
         "user_progress",
@@ -239,19 +234,33 @@ def upgrade() -> None:
     )
     op.create_index("ix_user_progress_id", "user_progress", ["id"])
 
+    # ── Add deferred foreign keys (circular references) ────────────────
+    op.create_foreign_key("fk_question_assets_question_id", "question_assets", "questions", ["question_id"], ["id"])
+    op.create_foreign_key("fk_questions_canonical_official", "questions", "questions", ["canonical_official_question_id"], ["id"])
+    op.create_foreign_key("fk_questions_derived_from", "questions", "questions", ["derived_from_question_id"], ["id"])
+    op.create_foreign_key("fk_questions_latest_annotation", "questions", "question_annotations", ["latest_annotation_id"], ["id"])
+    op.create_foreign_key("fk_questions_latest_version", "questions", "question_versions", ["latest_version_id"], ["id"])
+
 
 def downgrade() -> None:
+    # ── Drop foreign keys first ────────────────────────────────────────
+    op.drop_constraint("fk_question_assets_question_id", "question_assets", type_="foreignkey")
+    op.drop_constraint("fk_questions_canonical_official", "questions", type_="foreignkey")
+    op.drop_constraint("fk_questions_derived_from", "questions", type_="foreignkey")
+    op.drop_constraint("fk_questions_latest_annotation", "questions", type_="foreignkey")
+    op.drop_constraint("fk_questions_latest_version", "questions", type_="foreignkey")
+
     # ── Drop tables in reverse creation order ───────────────────────────
     op.drop_table("user_progress")
-    op.drop_table("users")
     op.drop_table("llm_evaluations")
+    op.drop_table("question_jobs")
     op.drop_table("question_relations")
     op.drop_table("question_options")
     op.drop_table("question_annotations")
     op.drop_table("question_versions")
     op.drop_table("questions")
-    op.drop_table("question_jobs")
     op.drop_table("question_assets")
+    op.drop_table("users")
 
     # ── Drop ENUM types ─────────────────────────────────────────────────
     for name, _ in reversed(enums):

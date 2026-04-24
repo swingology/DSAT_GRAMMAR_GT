@@ -3,7 +3,7 @@ from typing import List
 
 
 class Settings(BaseSettings):
-    database_url: str = "postgresql+asyncpg://dsat:dsat@localhost:5432/dsat"
+    database_url: str = "postgresql+asyncpg://dsat:dsat_dev@localhost:5434/dsat_dev"
 
     # Auth
     admin_api_keys: str = "admin-key-change-me"
