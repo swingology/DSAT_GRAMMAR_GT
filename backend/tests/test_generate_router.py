@@ -31,3 +31,31 @@ def test_generate_run_not_found(client):
         headers=AUTH,
     )
     assert resp.status_code == 404
+
+
+def test_generate_question_custom_provider_accepted(client):
+    """provider_name/model_name in body are accepted (not 422)."""
+    resp = client.post(
+        "/generate/questions",
+        headers={**AUTH, "Content-Type": "application/json"},
+        json={
+            "target_grammar_role_key": "agreement",
+            "target_grammar_focus_key": "subject_verb_agreement",
+            "provider_name": "openai",
+            "model_name": "gpt-4o",
+        },
+    )
+    assert resp.status_code != 422
+
+
+def test_generate_question_without_provider_uses_default(client):
+    """Omitting provider_name/model_name still succeeds (uses settings defaults)."""
+    resp = client.post(
+        "/generate/questions",
+        headers={**AUTH, "Content-Type": "application/json"},
+        json={
+            "target_grammar_role_key": "agreement",
+            "target_grammar_focus_key": "subject_verb_agreement",
+        },
+    )
+    assert resp.status_code != 422

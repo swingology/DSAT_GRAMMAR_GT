@@ -81,6 +81,8 @@ class GenerationRequest(BaseModel):
     target_syntactic_trap_key: str = "none"
     difficulty_overall: str = "medium"
     source_question_ids: Optional[List[str]] = None
+    provider_name: Optional[str] = None
+    model_name: Optional[str] = None
 
 
 class GenerationCompareRequest(BaseModel):

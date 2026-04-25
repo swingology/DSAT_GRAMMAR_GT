@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db, async_session
 from app.auth import admin_required
 from app.config import get_settings
-from app.models.db import QuestionJob, Question
+from app.models.db import QuestionJob, Question, QuestionVersion, QuestionAnnotation, QuestionOption
 from app.parsers.json_parser import extract_json_from_text
 from app.pipeline.validator import validate_question
 from app.models.payload import GenerationRequest, GenerationCompareRequest, JobResponse
@@ -61,17 +61,24 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
 
     if any(e["severity"] == "blocking" for e in errors):
         job.status = "needs_review"
-    else:
-        job.status = "approved"
+        await db.commit()
+        return
+
+    job.status = "approved"
 
     question_id = uuid.uuid4()
+    version_id = uuid.uuid4()
+    annotation_id = uuid.uuid4()
     now = datetime.now(timezone.utc)
+
+    # Create Question
+    correct_label = generated.get("correct_option_label", "")
     question = Question(
         id=question_id,
         content_origin="generated",
         current_question_text=generated.get("question_text", ""),
         current_passage_text=generated.get("passage_text"),
-        current_correct_option_label=generated.get("correct_option_label", ""),
+        current_correct_option_label=correct_label,
         current_explanation_text=annotate_json.get("explanation_short", ""),
         practice_status="draft",
         official_overlap_status="none",
@@ -82,6 +89,53 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
         updated_at=now,
     )
     db.add(question)
+
+    # Create QuestionVersion
+    db.add(QuestionVersion(
+        id=version_id,
+        question_id=question_id,
+        version_number=1,
+        change_source="generate",
+        question_text=generated.get("question_text", ""),
+        passage_text=generated.get("passage_text"),
+        choices_jsonb=generated.get("options", []),
+        correct_option_label=generated.get("correct_option_label", ""),
+        explanation_text=annotate_json.get("explanation_short"),
+        created_at=now,
+    ))
+
+    # Create QuestionAnnotation
+    db.add(QuestionAnnotation(
+        id=annotation_id,
+        question_id=question_id,
+        question_version_id=version_id,
+        provider_name=job.provider_name,
+        model_name=job.model_name,
+        prompt_version=job.prompt_version,
+        rules_version=job.rules_version,
+        annotation_jsonb=annotate_json,
+        explanation_jsonb={"explanation_full": annotate_json.get("explanation_full", "")},
+        generation_profile_jsonb=None,
+        confidence_jsonb={"annotation_confidence": annotate_json.get("annotation_confidence", 0.0), "needs_human_review": annotate_json.get("needs_human_review", False)},
+        created_at=now,
+    ))
+    await db.flush()
+    question.latest_annotation_id = annotation_id
+    question.latest_version_id = version_id
+
+    # Create QuestionOption rows
+    for opt in generated.get("options", []):
+        db.add(QuestionOption(
+            id=uuid.uuid4(),
+            question_id=question_id,
+            question_version_id=version_id,
+            option_label=opt.get("label", ""),
+            option_text=opt.get("text", ""),
+            is_correct=opt.get("label", "") == correct_label,
+            option_role="correct" if opt.get("label", "") == correct_label else "distractor",
+            created_at=now,
+        ))
+
     job.question_id = question_id
     await db.commit()
 
@@ -102,9 +156,9 @@ async def generate_questions(
         content_origin="generated",
         input_format="spec",
         status="extracting",
-        provider_name=settings.default_annotation_provider,
-        model_name=settings.default_annotation_model,
-        prompt_version="v1",
+        provider_name=body.provider_name or settings.default_annotation_provider,
+        model_name=body.model_name or settings.default_annotation_model,
+        prompt_version="v3.0",
         rules_version=settings.rules_version,
         created_at=now,
         updated_at=now,
@@ -145,7 +199,7 @@ async def generate_compare(
             status="extracting",
             provider_name=provider_name,
             model_name=settings.default_annotation_model,
-            prompt_version="v1",
+            prompt_version="v3.0",
             rules_version=settings.rules_version,
             comparison_group_id=comparison_group,
             created_at=now,
