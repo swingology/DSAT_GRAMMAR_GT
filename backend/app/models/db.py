@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy import (
     Column, String, Integer, SmallInteger, Float, Boolean, Text,
-    ForeignKey, DateTime, Enum, JSON,
+    ForeignKey, DateTime, Enum, JSON, UniqueConstraint,
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -81,6 +81,9 @@ class Question(Base):
 
 class QuestionVersion(Base):
     __tablename__ = "question_versions"
+    __table_args__ = (
+        UniqueConstraint("question_id", "version_number", name="uq_question_versions_question_version_number"),
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
@@ -119,6 +122,9 @@ class QuestionAnnotation(Base):
 
 class QuestionOption(Base):
     __tablename__ = "question_options"
+    __table_args__ = (
+        UniqueConstraint("question_version_id", "option_label", name="uq_question_options_version_label"),
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
@@ -158,6 +164,7 @@ class QuestionAsset(Base):
     source_url = Column(Text, nullable=True)
     source_name = Column(String(200), nullable=True)
     source_exam_code = Column(String(20), nullable=True)
+    source_section_code = Column(String(10), nullable=True)
     source_module_code = Column(String(10), nullable=True)
     source_question_number = Column(Integer, nullable=True)
     checksum = Column(String(64), nullable=True)
@@ -168,6 +175,9 @@ class QuestionAsset(Base):
 
 class QuestionRelation(Base):
     __tablename__ = "question_relations"
+    __table_args__ = (
+        UniqueConstraint("from_question_id", "to_question_id", "relation_type", name="uq_question_relations_pair_type"),
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     from_question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)

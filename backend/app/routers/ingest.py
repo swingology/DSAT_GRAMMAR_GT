@@ -205,11 +205,13 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             created_at=now,
         ))
 
-    # Link asset to question
+    # Link asset to question and backfill source_section_code if not already set
     if job.raw_asset_id:
         asset = await db.get(QuestionAsset, job.raw_asset_id)
         if asset:
             asset.question_id = question_id
+            if not asset.source_section_code and section_code:
+                asset.source_section_code = section_code
 
     if overlaps:
         from app.pipeline.overlap import persist_overlap_relations
@@ -314,6 +316,7 @@ async def ingest_official_pdf(
         page_end=len(pdf_result["pages"]) - 1,
         source_name=file.filename,
         source_exam_code=source_exam_code or None,
+        source_section_code=source_section_code or None,
         source_module_code=source_module_code or None,
         checksum=checksum,
         created_at=now,

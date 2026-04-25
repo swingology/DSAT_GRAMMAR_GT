@@ -14,12 +14,10 @@ target_metadata = Base.metadata
 
 settings = get_settings()
 
-# Only set the URL from settings if not already in the ini file
+# Only set the URL from settings if not already provided via the ini file
+# or the -x sqlalchemy.url=... command-line flag.
 url_from_ini = config.get_main_option("sqlalchemy.url")
 if not url_from_ini:
-    config.set_main_option("sqlalchemy.url", settings.database_url)
-else:
-    # Replace empty placeholder with settings value
     config.set_main_option("sqlalchemy.url", settings.database_url)
 
 
@@ -37,7 +35,7 @@ def do_run_migrations(connection):
 
 
 async def run_migrations_online():
-    connectable = create_async_engine(settings.database_url)
+    connectable = create_async_engine(config.get_main_option("sqlalchemy.url"))
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
     await connectable.dispose()
