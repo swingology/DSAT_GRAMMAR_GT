@@ -10,7 +10,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db, async_session
 from app.auth import admin_required
 from app.config import get_settings
-from app.models.db import QuestionJob, QuestionAsset, Question
+from app.models.db import (
+    QuestionJob, QuestionAsset, Question, QuestionVersion,
+    QuestionAnnotation, QuestionOption,
+)
 from app.storage.local_store import save_asset, compute_checksum
 from app.parsers.pdf_parser import parse_pdf
 from app.parsers.json_parser import extract_json_from_text
@@ -34,7 +37,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
     settings = get_settings()
     provider = get_provider(
-        settings.default_annotation_provider,
+        job.provider_name,
         api_key=settings.anthropic_api_key or settings.openai_api_key,
     )
     orch = JobOrchestrator(str(job.id), job.content_origin, job.job_type)
@@ -80,6 +83,27 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         await db.commit()
         return
 
+    overlaps = []
+
+    # Overlap check for unofficial/generated content
+    if job.content_origin in ("unofficial", "generated"):
+        orch.advance()
+        job.status = "overlap_checking"
+        await db.commit()
+
+        from app.pipeline.overlap import detect_overlaps
+
+        question_text = extract_json.get("question_text", "")
+        passage_text = extract_json.get("passage_text")
+
+        overlaps = await detect_overlaps(
+            question_id=job.id,
+            annotation_jsonb=annotate_json,
+            passage_text=passage_text,
+            question_text=question_text,
+            db=db,
+        )
+
     # Validate
     orch.advance()
     job.status = "validating"
@@ -89,8 +113,98 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
     if any(e["severity"] == "blocking" for e in errors):
         job.status = "needs_review"
-    else:
-        job.status = "approved"
+        await db.commit()
+        return
+
+    job.status = "approved"
+
+    # Persist question, options, annotation, and version
+    now = datetime.now(timezone.utc)
+    question_id = uuid.uuid4()
+    version_id = uuid.uuid4()
+    annotation_id = uuid.uuid4()
+
+    practice_status = "draft" if job.content_origin == "official" else "active"
+    overlap_status = "possible" if overlaps else "none"
+
+    question = Question(
+        id=question_id,
+        content_origin=job.content_origin,
+        source_exam_code=extract_json.get("source_exam_code"),
+        source_module_code=extract_json.get("source_module_code"),
+        source_question_number=extract_json.get("source_question_number"),
+        stimulus_mode_key=extract_json.get("stimulus_mode_key"),
+        stem_type_key=extract_json.get("stem_type_key"),
+        current_question_text=extract_json.get("question_text", ""),
+        current_passage_text=extract_json.get("passage_text"),
+        current_correct_option_label=extract_json.get("correct_option_label", ""),
+        current_explanation_text=annotate_json.get("explanation_short", ""),
+        practice_status=practice_status,
+        official_overlap_status=overlap_status,
+        is_admin_edited=False,
+        metadata_managed_by_llm=True,
+        created_at=now,
+        updated_at=now,
+    )
+    db.add(question)
+
+    question_version = QuestionVersion(
+        id=version_id,
+        question_id=question_id,
+        version_number=1,
+        change_source="ingest",
+        question_text=extract_json.get("question_text", ""),
+        passage_text=extract_json.get("passage_text"),
+        choices_jsonb=extract_json.get("options", []),
+        correct_option_label=extract_json.get("correct_option_label", ""),
+        explanation_text=annotate_json.get("explanation_short"),
+        created_at=now,
+    )
+    db.add(question_version)
+
+    question_annotation = QuestionAnnotation(
+        id=annotation_id,
+        question_id=question_id,
+        question_version_id=version_id,
+        provider_name=job.provider_name,
+        model_name=job.model_name,
+        prompt_version=job.prompt_version,
+        rules_version=job.rules_version,
+        annotation_jsonb=annotate_json,
+        explanation_jsonb={"explanation_full": annotate_json.get("explanation_full", "")},
+        generation_profile_jsonb=None,
+        confidence_jsonb={"annotation_confidence": annotate_json.get("annotation_confidence", 0.0), "needs_human_review": annotate_json.get("needs_human_review", False)},
+        created_at=now,
+    )
+    db.add(question_annotation)
+    await db.flush()
+    question.latest_annotation_id = annotation_id
+    question.latest_version_id = version_id
+
+    for opt in extract_json.get("options", []):
+        db.add(QuestionOption(
+            id=uuid.uuid4(),
+            question_id=question_id,
+            question_version_id=version_id,
+            option_label=opt.get("label", ""),
+            option_text=opt.get("text", ""),
+            is_correct=opt.get("label", "") == extract_json.get("correct_option_label", ""),
+            option_role="correct" if opt.get("label", "") == extract_json.get("correct_option_label", "") else "distractor",
+            created_at=now,
+        ))
+
+    # Link asset to question
+    if job.raw_asset_id:
+        asset = await db.get(QuestionAsset, job.raw_asset_id)
+        if asset:
+            asset.question_id = question_id
+
+    if overlaps:
+        from app.pipeline.overlap import persist_overlap_relations
+
+        await persist_overlap_relations(question_id=question_id, overlaps=overlaps, db=db)
+
+    job.question_id = question_id
     await db.commit()
 
 
@@ -99,6 +213,17 @@ async def _run_pipeline_with_session(job_id: uuid.UUID):
         job = await db.get(QuestionJob, job_id)
         if job:
             await _run_pipeline(job, db)
+
+
+async def _safe_read(file: UploadFile, max_bytes: int) -> bytes:
+    """Check Content-Length before reading to avoid loading oversized files into RAM."""
+    cl = file.headers.get("content-length")
+    if cl and int(cl) > max_bytes:
+        raise HTTPException(status_code=413, detail="File too large (max 50MB)")
+    content = await file.read()
+    if len(content) > max_bytes:
+        raise HTTPException(status_code=413, detail="File too large (max 50MB)")
+    return content
 
 
 def _asset_type_from_mime(mime: str) -> str:
@@ -123,9 +248,7 @@ async def ingest_official_pdf(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    content = await file.read()
-    if len(content) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=413, detail="File too large (max 50MB)")
+    content = await _safe_read(file, MAX_FILE_SIZE)
 
     storage_path = await save_asset(file.filename or "upload.pdf", content, subfolder="official")
     checksum = compute_checksum(content)
@@ -166,7 +289,7 @@ async def ingest_official_pdf(
         status="parsing",
         provider_name=provider_name,
         model_name=model_name,
-        prompt_version="v1",
+        prompt_version="v3.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
         pass1_json={"raw_text": raw_text[:50000], "pages": len(pdf_result["pages"]), "source_metadata": {
@@ -192,9 +315,7 @@ async def ingest_unofficial_file(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    content = await file.read()
-    if len(content) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=413, detail="File too large (max 50MB)")
+    content = await _safe_read(file, MAX_FILE_SIZE)
 
     storage_path = await save_asset(file.filename or "upload", content, subfolder="unofficial")
     checksum = compute_checksum(content)
@@ -242,7 +363,7 @@ async def ingest_unofficial_file(
         status="parsing",
         provider_name=provider_name,
         model_name=model_name,
-        prompt_version="v1",
+        prompt_version="v3.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
         pass1_json={"raw_text": raw_text[:50000]},
@@ -255,6 +376,105 @@ async def ingest_unofficial_file(
     asyncio.create_task(_run_pipeline_with_session(job_id))
 
     return JobResponse(id=str(job_id), job_type="ingest", status="parsing", created_at=now)
+
+
+async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
+    """Reannotation pipeline — skips extraction and goes straight to annotation."""
+    from app.llm.factory import get_provider
+    from app.prompts.annotate_prompt import build_annotate_prompt
+    from app.parsers.json_parser import extract_json_from_text
+
+    settings = get_settings()
+    provider = get_provider(
+        job.provider_name,
+        api_key=settings.anthropic_api_key or settings.openai_api_key,
+    )
+
+    extract_json = {}
+    if job.pass1_json:
+        extract_json = {k: v for k, v in job.pass1_json.items() if not k.startswith("_")}
+
+    # Skip extraction, go straight to annotation
+    job.status = "annotating"
+    await db.commit()
+
+    system, user = build_annotate_prompt(extract_json)
+    try:
+        result = await provider.complete(system=system, user=user, max_tokens=8192)
+        annotate_json = extract_json_from_text(result.raw_text)
+        job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
+    except Exception as e:
+        job.status = "failed"
+        job.validation_errors_jsonb = [{"step": "annotating", "error": str(e)}]
+        await db.commit()
+        return
+
+    # Validate
+    merged = {**extract_json, **annotate_json}
+    errors = validate_question(merged, content_origin=job.content_origin)
+    job.validation_errors_jsonb = errors
+
+    if any(e["severity"] == "blocking" for e in errors):
+        job.status = "needs_review"
+        await db.commit()
+        return
+
+    job.status = "approved"
+
+    # Create new annotation and version, update question
+    now = datetime.now(timezone.utc)
+    question = await db.get(Question, job.question_id)
+    if not question:
+        job.status = "failed"
+        job.validation_errors_jsonb = [{"step": "annotating", "error": "Question not found"}]
+        await db.commit()
+        return
+
+    latest_version = max(question.versions, key=lambda v: v.version_number) if question.versions else None
+    version_id = uuid.uuid4()
+    annotation_id = uuid.uuid4()
+
+    db.add(QuestionVersion(
+        id=version_id,
+        question_id=question.id,
+        version_number=(latest_version.version_number + 1) if latest_version else 1,
+        change_source="reprocess",
+        question_text=extract_json.get("question_text", question.current_question_text),
+        passage_text=extract_json.get("passage_text", question.current_passage_text),
+        choices_jsonb=extract_json.get("options", []),
+        correct_option_label=extract_json.get("correct_option_label", question.current_correct_option_label),
+        explanation_text=annotate_json.get("explanation_short", question.current_explanation_text),
+        created_at=now,
+    ))
+
+    db.add(QuestionAnnotation(
+        id=annotation_id,
+        question_id=question.id,
+        question_version_id=version_id,
+        provider_name=job.provider_name,
+        model_name=job.model_name,
+        prompt_version=job.prompt_version,
+        rules_version=job.rules_version,
+        annotation_jsonb=annotate_json,
+        explanation_jsonb={"explanation_full": annotate_json.get("explanation_full", "")},
+        confidence_jsonb={"annotation_confidence": annotate_json.get("annotation_confidence", 0.0), "needs_human_review": annotate_json.get("needs_human_review", False)},
+        created_at=now,
+    ))
+
+    question.current_explanation_text = annotate_json.get(
+        "explanation_short", question.current_explanation_text
+    )
+    question.latest_annotation_id = annotation_id
+    question.latest_version_id = version_id
+    question.updated_at = now
+    await db.commit()
+
+
+async def _run_reannotate_pipeline_with_session(job_id: uuid.UUID):
+    async with async_session() as db:
+        job = await db.get(QuestionJob, job_id)
+        if job:
+            await _run_reannotate_pipeline(job, db)
 
 
 @router.post("/unofficial/batch", response_model=list[JobResponse])
@@ -313,7 +533,7 @@ async def reannotate_question(
         status="annotating",
         provider_name=provider_name,
         model_name=model_name,
-        prompt_version="v1",
+        prompt_version="v3.0",
         rules_version=settings.rules_version,
         pass1_json=existing_job.pass1_json,
         question_id=qid,
@@ -323,6 +543,38 @@ async def reannotate_question(
     db.add(job)
     await db.commit()
 
-    asyncio.create_task(_run_pipeline_with_session(job_id))
+    asyncio.create_task(_run_reannotate_pipeline_with_session(job_id))
 
     return JobResponse(id=str(job_id), job_type="reannotate", status="annotating", question_id=question_id, created_at=now)
+
+
+@router.get("/jobs/{job_id}", response_model=JobResponse)
+async def get_job_status(
+    job_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Poll the status of an ingest/reannotate job."""
+    try:
+        jid = uuid.UUID(job_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid UUID")
+
+    job = await db.get(QuestionJob, jid)
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    validation_errors = []
+    if job.validation_errors_jsonb:
+        validation_errors = [
+            {"step": e.get("step"), "severity": e.get("severity"), "message": e.get("message")}
+            for e in job.validation_errors_jsonb
+        ]
+
+    return JobResponse(
+        id=str(job.id),
+        job_type=job.job_type,
+        status=job.status,
+        question_id=str(job.question_id) if job.question_id else None,
+        created_at=job.created_at,
+    )
