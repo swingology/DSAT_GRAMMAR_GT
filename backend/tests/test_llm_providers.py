@@ -104,3 +104,22 @@ async def test_ollama_complete():
         result = await provider.complete(system="You are a test", user="Extract this")
         assert result.provider == "ollama"
         assert result.raw_text == '{"question_text": "test"}'
+
+
+@pytest.mark.asyncio
+async def test_close_all_providers_calls_close():
+    """close_all_providers() calls close() on providers that have it and clears registry."""
+    from app.llm import factory
+    from unittest.mock import MagicMock
+
+    mock_provider = MagicMock()
+    mock_provider.close = AsyncMock()
+    original = factory._provider_registry[:]
+    factory._provider_registry.append(mock_provider)
+
+    await factory.close_all_providers()
+
+    mock_provider.close.assert_called_once()
+    assert mock_provider not in factory._provider_registry
+    # Restore any pre-existing entries that were cleared
+    factory._provider_registry.extend(original)
