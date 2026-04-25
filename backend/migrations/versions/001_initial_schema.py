@@ -33,19 +33,23 @@ ASSET_TYPE_VALUES = ("pdf", "image", "screenshot", "markdown", "json", "text")
 CHANGE_SOURCE_VALUES = ("ingest", "generate", "admin_edit", "reprocess")
 
 
+# ── ENUM type definitions (module-level for access by both upgrade and downgrade) ──
+
+ENUMS = [
+    ("job_type_enum", JOB_TYPE_VALUES),
+    ("content_origin_enum", CONTENT_ORIGIN_VALUES),
+    ("practice_status_enum", PRACTICE_STATUS_VALUES),
+    ("overlap_status_enum", OVERLAP_STATUS_VALUES),
+    ("relation_type_enum", RELATION_TYPE_VALUES),
+    ("asset_type_enum", ASSET_TYPE_VALUES),
+    ("change_source_enum", CHANGE_SOURCE_VALUES),
+    ("job_status_enum", JOB_STATUS_VALUES),
+]
+
+
 def upgrade() -> None:
     # ── Create PostgreSQL ENUM types ────────────────────────────────────
-    enums = [
-        ("job_type_enum", JOB_TYPE_VALUES),
-        ("content_origin_enum", CONTENT_ORIGIN_VALUES),
-        ("practice_status_enum", PRACTICE_STATUS_VALUES),
-        ("overlap_status_enum", OVERLAP_STATUS_VALUES),
-        ("relation_type_enum", RELATION_TYPE_VALUES),
-        ("asset_type_enum", ASSET_TYPE_VALUES),
-        ("change_source_enum", CHANGE_SOURCE_VALUES),
-        ("job_status_enum", JOB_STATUS_VALUES),
-    ]
-    for name, values in enums:
+    for name, values in ENUMS:
         postgresql.ENUM(*values, name=name).create(op.get_bind(), checkfirst=True)
 
     # ── Create tables WITHOUT circular foreign keys first ─────────────
@@ -263,5 +267,5 @@ def downgrade() -> None:
     op.drop_table("users")
 
     # ── Drop ENUM types ─────────────────────────────────────────────────
-    for name, _ in reversed(enums):
+    for name, _ in reversed(ENUMS):
         postgresql.ENUM(name=name).drop(op.get_bind(), checkfirst=True)

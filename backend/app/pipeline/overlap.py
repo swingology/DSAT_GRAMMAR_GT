@@ -50,7 +50,7 @@ async def detect_overlaps(
         )
         .where(
             Question.content_origin == "official",
-            Question.practice_status == "active",
+            Question.practice_status.in_(("active", "draft")),
         )
     )
     rows = (await db.execute(stmt)).all()

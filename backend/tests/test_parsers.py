@@ -1,7 +1,7 @@
 import pytest
 import os
 import tempfile
-from app.parsers.json_parser import extract_json_from_text
+from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.parsers.pdf_parser import parse_pdf
 from app.parsers.image_parser import parse_image
 from app.parsers.markdown_parser import parse_markdown
@@ -36,6 +36,53 @@ def test_extract_json_from_bracket_search():
     text = 'Some prefix text {"nested": {"key": 1}} some suffix'
     result = extract_json_from_text(text)
     assert result["nested"]["key"] == 1
+
+
+# --- Annotation Normalizer ---
+
+def test_normalize_annotation_flat_passthrough():
+    data = {"grammar_focus_key": "subject_verb_agreement", "explanation_short": "Good."}
+    assert normalize_annotation(data) == data
+
+
+def test_normalize_annotation_flattens_nested_keys():
+    data = {
+        "classification": {
+            "grammar_focus_key": "subject_verb_agreement",
+            "grammar_role_key": "error_identification",
+        },
+        "question": {
+            "explanation_short": "Because A.",
+            "explanation_full": "Long explanation.",
+        },
+        "annotation_confidence": 0.9,
+        "needs_human_review": False,
+    }
+    result = normalize_annotation(data)
+    assert result["grammar_focus_key"] == "subject_verb_agreement"
+    assert result["grammar_role_key"] == "error_identification"
+    assert result["explanation_short"] == "Because A."
+    assert result["explanation_full"] == "Long explanation."
+    assert result["annotation_confidence"] == 0.9
+    assert result["needs_human_review"] is False
+    assert "classification" not in result
+    assert "question" not in result
+
+
+def test_normalize_annotation_top_level_wins_over_nested():
+    data = {
+        "explanation_short": "Top-level wins.",
+        "nested": {"explanation_short": "Should be ignored."},
+    }
+    result = normalize_annotation(data)
+    assert result["explanation_short"] == "Top-level wins."
+
+
+def test_normalize_annotation_ignores_unknown_nested_keys():
+    data = {"wrapper": {"unknown_key": "value", "explanation_short": "Kept."}}
+    result = normalize_annotation(data)
+    assert result["explanation_short"] == "Kept."
+    assert "unknown_key" not in result
 
 
 # --- PDF Parser ---

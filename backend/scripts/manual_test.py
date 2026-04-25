@@ -81,7 +81,7 @@ async def ingest_pdf(pdf_path: str):
             status="parsing",
             provider_name=settings.default_annotation_provider,
             model_name=settings.default_annotation_model,
-            prompt_version="v1",
+            prompt_version="v3.0",
             rules_version=settings.rules_version,
             raw_asset_id=asset_id,
             pass1_json={"raw_text": raw_content[:50000], "pages": total_pages},

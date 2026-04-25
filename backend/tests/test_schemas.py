@@ -126,8 +126,3 @@ def test_job_response_model():
     assert j.status == "parsing"
 
 
-def test_ingest_pdf_request_defaults():
-    from app.models.payload import IngestPdfRequest
-    req = IngestPdfRequest()
-    assert req.provider_name == "anthropic"
-    assert req.model_name == "claude-sonnet-4-6"

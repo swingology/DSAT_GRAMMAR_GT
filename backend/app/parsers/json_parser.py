@@ -38,3 +38,25 @@ def extract_json_from_text(text: str) -> dict:
                         break
 
     raise ValueError("No valid JSON found in text")
+
+
+_FLAT_ANNOTATION_KEYS = {
+    "grammar_focus_key", "grammar_role_key", "stimulus_mode_key", "stem_type_key",
+    "explanation_short", "explanation_full", "annotation_confidence", "needs_human_review",
+}
+
+
+def normalize_annotation(data: dict) -> dict:
+    """Flatten nested annotation dicts from non-compliant LLMs (e.g. Qwen nesting under 'classification').
+
+    Claude and OpenAI already return flat output so this is a no-op for them.
+    Any key in _FLAT_ANNOTATION_KEYS found inside a nested dict is bubbled up
+    to the top level; existing top-level keys are never overwritten.
+    """
+    flat = {k: v for k, v in data.items() if not isinstance(v, dict)}
+    for v in data.values():
+        if isinstance(v, dict):
+            for key, val in v.items():
+                if key in _FLAT_ANNOTATION_KEYS and key not in flat:
+                    flat[key] = val
+    return flat

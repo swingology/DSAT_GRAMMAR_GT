@@ -22,9 +22,29 @@ async def recall_questions(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    stmt = select(Question).where(Question.practice_status == "active").offset(offset).limit(limit)
+    stmt = select(Question).where(Question.practice_status == "active")
+
+    if origin:
+        stmt = stmt.where(Question.content_origin == origin)
+
+    # Join annotations once when any annotation-backed filter is present.
+    if grammar_focus or difficulty:
+        stmt = stmt.join(
+            QuestionAnnotation,
+            Question.latest_annotation_id == QuestionAnnotation.id,
+        )
+        if grammar_focus:
+            stmt = stmt.where(
+                QuestionAnnotation.annotation_jsonb["grammar_focus_key"].astext == grammar_focus
+            )
+        if difficulty:
+            stmt = stmt.where(
+                QuestionAnnotation.annotation_jsonb["difficulty_overall"].astext == difficulty
+            )
+
+    stmt = stmt.offset(offset).limit(limit)
     result = await db.execute(stmt)
-    questions = result.scalars().all()
+    questions = result.unique().scalars().all()
 
     responses = []
     for q in questions:
@@ -38,13 +58,6 @@ async def recall_questions(
                 grammar_focus_key = ann.annotation_jsonb.get("grammar_focus_key")
                 difficulty_overall = ann.annotation_jsonb.get("difficulty_overall")
 
-        if grammar_focus and grammar_focus_key != grammar_focus:
-            continue
-        if difficulty and difficulty_overall != difficulty:
-            continue
-        if origin and q.content_origin != origin:
-            continue
-
         responses.append(QuestionRecallResponse(
             id=str(q.id),
             content_origin=q.content_origin,
@@ -55,7 +68,7 @@ async def recall_questions(
             grammar_role_key=grammar_role_key,
             grammar_focus_key=grammar_focus_key,
             difficulty_overall=difficulty_overall,
-            stimulus_mode_key=q.stem_type_key,
+            stimulus_mode_key=q.stimulus_mode_key,
             source_exam_code=q.source_exam_code,
         ))
     return responses

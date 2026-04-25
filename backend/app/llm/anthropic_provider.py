@@ -2,6 +2,7 @@ import time
 from typing import Optional
 import anthropic
 from app.llm.base import LLMResponse
+from app.llm.retry import with_retry
 
 
 class AnthropicProvider:
@@ -9,6 +10,7 @@ class AnthropicProvider:
         self.client = anthropic.AsyncAnthropic(api_key=api_key)
         self.default_model = default_model
 
+    @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
     async def complete(
         self,
         system: str,

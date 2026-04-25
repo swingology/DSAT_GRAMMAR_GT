@@ -4,6 +4,62 @@ This file records high-signal project-level changes, audits, and database/ontolo
 
 Migration-by-migration implementation history still lives in [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
+## 2026-04-24 — Backend Gap Fixes (27 gaps closed)
+
+**Branch:** `main`
+**Type:** bug fix, schema correction, pipeline completion
+**Model:** `claude-sonnet-4-6` (Claude)
+
+### Schema & Migrations
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **Fix ORM enum name mismatch** — `Question.content_origin` renamed from `content_origin_enum2` to `content_origin_enum`; same for `QuestionAsset` (`_enum3` → `_enum`) | asyncpg failed at runtime resolving type OIDs — `questions` and `question_assets` tables were completely inaccessible through the ORM | `app/models/db.py:49,151` |
+| **Fix Alembic downgrade** — `ENUMS` list moved from inside `upgrade()` to module level | `downgrade()` referenced undefined local variable `enums`, causing `NameError` | `migrations/001_initial_schema.py` |
+| **Add `pool_pre_ping=True`** to async engine | Stale connections from pool caused cryptic production errors | `app/database.py:9` |
+
+### Ingest Pipeline
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **Persist `Question` + `QuestionVersion` + `QuestionAnnotation` + 4× `QuestionOption` rows** after successful LLM pipeline | Pipeline ran to completion but never created any DB rows — ingest produced no data | `app/routers/ingest.py:90-175` |
+| **Use `job.provider_name` instead of `settings.default_annotation_provider`** | User-specified provider at upload time was stored but ignored | `app/routers/ingest.py:36-38` |
+| **Set `QuestionAsset.question_id`, `Question.latest_annotation_id`, `Question.latest_version_id`** | These FK columns were never populated, remaining NULL | `app/routers/ingest.py:160-170` |
+
+### Generate Pipeline
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **Persist `QuestionVersion`, `QuestionAnnotation`, 4× `QuestionOption` rows** alongside Question | Bare Question row was created without options, annotation, or version history — orphaned data | `app/routers/generate.py:67-145` |
+| **Set `latest_annotation_id` and `latest_version_id`** | Same FK gap as ingest pipeline | `app/routers/generate.py:133-134` |
+
+### Reannotation
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **New `_run_reannotate_pipeline`** skips extraction, goes straight to annotate | Previous code re-ran full pipeline including Pass 1 extraction despite already having `pass1_json` | `app/routers/ingest.py:346-415` |
+| **Creates new `QuestionVersion` + `QuestionAnnotation` + updates `latest_*` pointers** | Reannotations now produce proper versioned audit trail | `app/routers/ingest.py:380-410` |
+
+### Router Bug Fixes
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **Remove `allow_credentials=True` from CORS** | `allow_origins=["*"]` + `allow_credentials=True` rejected by all browsers | `app/main.py:19` |
+| **Fix `stimulus_mode_key` field mapping** (`stem_type_key` → `stimulus_mode_key`) | Wrong DB column mapped to response field in recall endpoints | `app/routers/questions.py:107`, `student.py:88` |
+| **Fix pagination** — filters moved from Python to SQL WHERE clauses with JSONB queries | Python-side filtering after SQL LIMIT broke pagination (empty pages possible) | `app/routers/questions.py`, `student.py` |
+| **Fix admin `edit_question`** — `choices_jsonb` now serializes actual options; `latest_version_id` updated | Option data was lost in version snapshots; latest_version_id never set | `app/routers/admin.py:44-67` |
+
+### Other
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **Add DB health check to `GET /`** (runs `SELECT 1`) | Health endpoint returned static OK even when DB was unreachable | `app/routers/health.py` |
+| **Align `prompt_version`** from `"v1"` to `"v3.0"` | Routers said `"v1"` while ORM default was `"v3.0"` — inconsistent | `app/routers/ingest.py`, `generate.py`, `manual_test.py` |
+| **Add exports to all 7 `__init__.py` files** | Previously empty, required deep imports | `app/models/__init__.py`, `app/routers/__init__.py`, `app/llm/__init__.py`, `app/parsers/__init__.py`, `app/pipeline/__init__.py`, `app/prompts/__init__.py`, `app/storage/__init__.py` |
+| **Remove unused `IngestPdfRequest` model** | Defined but never used — endpoints use `Form(...)` directly | `app/models/payload.py` |
+
+---
+
 ## 2026-04-21 - CB Exam Ingestion & Analysis Architecture Designed
 
 **Branch:** `main`

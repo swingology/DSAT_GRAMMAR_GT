@@ -10,7 +10,7 @@ from app.database import get_db, async_session
 from app.auth import admin_required
 from app.config import get_settings
 from app.models.db import QuestionJob, Question, QuestionVersion, QuestionAnnotation, QuestionOption
-from app.parsers.json_parser import extract_json_from_text
+from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.pipeline.validator import validate_question
 from app.models.payload import GenerationRequest, GenerationCompareRequest, JobResponse
 
@@ -26,6 +26,8 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     provider = get_provider(
         job.provider_name,
         api_key=settings.anthropic_api_key or settings.openai_api_key,
+        base_url=settings.ollama_base_url,
+        default_model=job.model_name,
     )
 
     # Generate
@@ -46,7 +48,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     system, user = build_annotate_prompt(generated)
     try:
         result = await provider.complete(system=system, user=user, max_tokens=8192)
-        annotate_json = extract_json_from_text(result.raw_text)
+        annotate_json = normalize_annotation(extract_json_from_text(result.raw_text))
         job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
     except Exception as e:
         job.status = "failed"
@@ -138,6 +140,17 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
 
     job.question_id = question_id
     await db.commit()
+
+    # Export to YAML after successful commit
+    from app.storage.yaml_export import export_generated_question
+
+    export_generated_question(
+        question_id=str(question_id),
+        extract_json=generated,
+        annotate_json=annotate_json,
+        generation_source_set=request_data,
+        base_dir=settings.local_archive_mirror,
+    )
 
 
 @router.post("/questions", response_model=JobResponse)

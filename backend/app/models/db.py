@@ -46,8 +46,9 @@ class Question(Base):
     __tablename__ = "questions"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    content_origin = Column(Enum(*CONTENT_ORIGINS, name="content_origin_enum2"), nullable=False)
+    content_origin = Column(Enum(*CONTENT_ORIGINS, name="content_origin_enum"), nullable=False)
     source_exam_code = Column(String(20), nullable=True)
+    source_section_code = Column(String(10), nullable=True)
     source_module_code = Column(String(10), nullable=True)
     source_question_number = Column(Integer, nullable=True)
     stimulus_mode_key = Column(String(30), nullable=True)
@@ -148,7 +149,7 @@ class QuestionAsset(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=True)
-    content_origin = Column(Enum(*CONTENT_ORIGINS, name="content_origin_enum3"), nullable=False)
+    content_origin = Column(Enum(*CONTENT_ORIGINS, name="content_origin_enum"), nullable=False)
     asset_type = Column(Enum(*ASSET_TYPES, name="asset_type_enum"), nullable=False)
     storage_path = Column(Text, nullable=False)
     mime_type = Column(String(100), nullable=True)
@@ -173,7 +174,7 @@ class QuestionRelation(Base):
     to_question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
     relation_type = Column(Enum(*RELATION_TYPES, name="relation_type_enum"), nullable=False)
     relation_strength = Column(Float, nullable=True)
-    detection_method = Column(String(30), nullable=True)
+    detection_method = Column(Text, nullable=True)
     is_human_confirmed = Column(Boolean, nullable=False, default=False)
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)

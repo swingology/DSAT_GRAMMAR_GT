@@ -20,6 +20,9 @@ class _ScalarResult:
     def first(self):
         return None
 
+    def unique(self):
+        return self
+
 
 class _MockSession(AsyncMock):
     async def get(self, model, pk):

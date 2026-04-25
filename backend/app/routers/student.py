@@ -1,13 +1,14 @@
 from collections import Counter
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 from uuid import UUID
 
 from app.database import get_db
-from app.auth import student_required
+from app.auth import student_required, admin_required
 from app.models.db import Question, User, UserProgress, QuestionAnnotation
 from app.models.payload import QuestionRecallResponse, UserProgressCreate, UserStats
 
@@ -24,9 +25,28 @@ async def student_recall(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(student_required),
 ):
-    stmt = select(Question).where(Question.practice_status == "active").offset(offset).limit(limit)
+    stmt = select(Question).where(Question.practice_status == "active")
+
+    if origin:
+        stmt = stmt.where(Question.content_origin == origin)
+
+    if grammar_focus or difficulty:
+        stmt = stmt.join(
+            QuestionAnnotation,
+            Question.latest_annotation_id == QuestionAnnotation.id,
+        )
+        if grammar_focus:
+            stmt = stmt.where(
+                QuestionAnnotation.annotation_jsonb["grammar_focus_key"].astext == grammar_focus
+            )
+        if difficulty:
+            stmt = stmt.where(
+                QuestionAnnotation.annotation_jsonb["difficulty_overall"].astext == difficulty
+            )
+
+    stmt = stmt.offset(offset).limit(limit)
     result = await db.execute(stmt)
-    questions = result.scalars().all()
+    questions = result.unique().scalars().all()
 
     responses = []
     for q in questions:
@@ -38,13 +58,6 @@ async def student_recall(
                 grammar_focus_key = ann.annotation_jsonb.get("grammar_focus_key")
                 difficulty_overall = ann.annotation_jsonb.get("difficulty_overall")
 
-        if grammar_focus and grammar_focus_key != grammar_focus:
-            continue
-        if difficulty and difficulty_overall != difficulty:
-            continue
-        if origin and q.content_origin != origin:
-            continue
-
         responses.append(QuestionRecallResponse(
             id=str(q.id),
             content_origin=q.content_origin,
@@ -54,7 +67,7 @@ async def student_recall(
             practice_status=q.practice_status,
             grammar_focus_key=grammar_focus_key,
             difficulty_overall=difficulty_overall,
-            stimulus_mode_key=q.stem_type_key,
+            stimulus_mode_key=q.stimulus_mode_key,
             source_exam_code=q.source_exam_code,
         ))
     return responses
@@ -118,3 +131,74 @@ async def get_user_stats(
         top_missed_focus_keys=[k for k, _ in focus_counts.most_common(5)],
         top_missed_trap_keys=[k for k, _ in trap_counts.most_common(5)],
     )
+
+
+from pydantic import BaseModel
+
+
+class UserCreate(BaseModel):
+    username: str
+
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    created_at: Optional[datetime] = None
+
+    model_config = {"from_attributes": True}
+
+
+@router.post("/users", response_model=UserResponse)
+async def create_user(
+    body: UserCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    """Register a new user."""
+    existing = await db.execute(select(User).where(User.username == body.username))
+    if existing.scalars().first():
+        raise HTTPException(status_code=409, detail="Username already exists")
+
+    user = User(username=body.username)
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
+@router.get("/users", response_model=list[UserResponse])
+async def list_users(
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """List all users (admin only)."""
+    result = await db.execute(select(User).order_by(User.id))
+    return result.scalars().all()
+
+
+@router.get("/users/{user_id}", response_model=UserResponse)
+async def get_user(
+    user_id: int,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Get a user by ID."""
+    user = await db.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@router.delete("/users/{user_id}")
+async def delete_user(
+    user_id: int,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Delete a user and their progress records (admin only)."""
+    user = await db.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    await db.execute(delete(UserProgress).where(UserProgress.user_id == user_id))
+    await db.delete(user)
+    await db.commit()
+    return {"detail": "User deleted"}

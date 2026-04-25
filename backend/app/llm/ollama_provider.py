@@ -2,6 +2,7 @@ import time
 from typing import Optional
 import httpx
 from app.llm.base import LLMResponse
+from app.llm.retry import with_retry
 
 
 class OllamaProvider:
@@ -10,6 +11,7 @@ class OllamaProvider:
         self.default_model = default_model
         self.client = httpx.AsyncClient(base_url=self.base_url, timeout=120.0)
 
+    @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
     async def complete(
         self,
         system: str,

@@ -2,6 +2,7 @@ import time
 from typing import Optional
 import openai
 from app.llm.base import LLMResponse
+from app.llm.retry import with_retry
 
 
 class OpenAIProvider:
@@ -9,6 +10,7 @@ class OpenAIProvider:
         self.client = openai.AsyncOpenAI(api_key=api_key)
         self.default_model = default_model
 
+    @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
     async def complete(
         self,
         system: str,

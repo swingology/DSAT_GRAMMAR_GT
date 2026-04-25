@@ -16,7 +16,7 @@ from app.models.db import (
 )
 from app.storage.local_store import save_asset, compute_checksum
 from app.parsers.pdf_parser import parse_pdf
-from app.parsers.json_parser import extract_json_from_text
+from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.pipeline.orchestrator import JobOrchestrator
 from app.pipeline.validator import validate_question
 from app.models.payload import JobResponse, ReannotateRequest
@@ -27,6 +27,7 @@ ALLOWED_MIME = {
     "application/pdf", "image/png", "image/jpeg", "image/webp",
     "text/markdown", "text/plain", "application/json",
 }
+IMAGE_MIME_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
 
@@ -39,6 +40,8 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     provider = get_provider(
         job.provider_name,
         api_key=settings.anthropic_api_key or settings.openai_api_key,
+        base_url=settings.ollama_base_url,
+        default_model=job.model_name,
     )
     orch = JobOrchestrator(str(job.id), job.content_origin, job.job_type)
 
@@ -74,7 +77,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     system, user = build_annotate_prompt(extract_json)
     try:
         result = await provider.complete(system=system, user=user, max_tokens=8192)
-        annotate_json = extract_json_from_text(result.raw_text)
+        annotate_json = normalize_annotation(extract_json_from_text(result.raw_text))
         job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
     except Exception as e:
         orch.fail("annotating", "llm_error", str(e))
@@ -116,7 +119,9 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         await db.commit()
         return
 
-    job.status = "approved"
+    # Official questions require human answer-key verification before active use.
+    # Job ends in needs_review (not approved) so the admin queue can surface them.
+    job.status = "needs_review" if job.content_origin == "official" else "approved"
 
     # Persist question, options, annotation, and version
     now = datetime.now(timezone.utc)
@@ -131,6 +136,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         id=question_id,
         content_origin=job.content_origin,
         source_exam_code=extract_json.get("source_exam_code"),
+        source_section_code=extract_json.get("source_section_code"),
         source_module_code=extract_json.get("source_module_code"),
         source_question_number=extract_json.get("source_question_number"),
         stimulus_mode_key=extract_json.get("stimulus_mode_key"),
@@ -162,6 +168,9 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     )
     db.add(question_version)
 
+    # Flush so version_id is visible to subsequent rows that FK to it
+    await db.flush()
+
     question_annotation = QuestionAnnotation(
         id=annotation_id,
         question_id=question_id,
@@ -177,7 +186,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         created_at=now,
     )
     db.add(question_annotation)
+
+    # Flush so annotation_id is visible to the question FK update below
     await db.flush()
+
     question.latest_annotation_id = annotation_id
     question.latest_version_id = version_id
 
@@ -206,6 +218,33 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
     job.question_id = question_id
     await db.commit()
+
+    # Export to YAML after successful commit
+    from app.storage.yaml_export import export_official_question, export_generated_question
+
+    source_meta = (job.pass1_json or {}).get("source_metadata", {})
+    exam_code = extract_json.get("source_exam_code") or source_meta.get("source_exam_code")
+    section_code = extract_json.get("source_section_code") or source_meta.get("source_section_code")
+    module_code = extract_json.get("source_module_code") or source_meta.get("source_module_code")
+
+    if job.content_origin == "official" and exam_code and module_code:
+        export_official_question(
+            question_id=str(question_id),
+            exam_code=exam_code,
+            module_code=module_code,
+            question_number=extract_json.get("source_question_number"),
+            extract_json=extract_json,
+            annotate_json=annotate_json,
+            section_code=section_code,
+            base_dir=settings.local_archive_mirror,
+        )
+    elif job.content_origin in ("unofficial", "generated"):
+        export_generated_question(
+            question_id=str(question_id),
+            extract_json=extract_json,
+            annotate_json=annotate_json,
+            base_dir=settings.local_archive_mirror,
+        )
 
 
 async def _run_pipeline_with_session(job_id: uuid.UUID):
@@ -242,6 +281,7 @@ def _asset_type_from_mime(mime: str) -> str:
 async def ingest_official_pdf(
     file: UploadFile = File(...),
     source_exam_code: str = Form(""),
+    source_section_code: str = Form(""),
     source_module_code: str = Form(""),
     provider_name: str = Form("anthropic"),
     model_name: str = Form("claude-sonnet-4-6"),
@@ -294,6 +334,7 @@ async def ingest_official_pdf(
         raw_asset_id=asset_id,
         pass1_json={"raw_text": raw_text[:50000], "pages": len(pdf_result["pages"]), "source_metadata": {
             "source_exam_code": source_exam_code,
+            "source_section_code": source_section_code,
             "source_module_code": source_module_code,
         }},
         created_at=now,
@@ -316,6 +357,13 @@ async def ingest_unofficial_file(
     _auth: str = Depends(admin_required),
 ):
     content = await _safe_read(file, MAX_FILE_SIZE)
+
+    if (file.content_type or "") in IMAGE_MIME_TYPES:
+        raise HTTPException(
+            status_code=422,
+            detail="Image ingestion requires OCR which is not yet implemented. "
+                   "Convert the image to PDF or extract the question text manually.",
+        )
 
     storage_path = await save_asset(file.filename or "upload", content, subfolder="unofficial")
     checksum = compute_checksum(content)
@@ -378,18 +426,68 @@ async def ingest_unofficial_file(
     return JobResponse(id=str(job_id), job_type="ingest", status="parsing", created_at=now)
 
 
+@router.post("/text", response_model=JobResponse)
+async def ingest_text(
+    text: str = Form(...),
+    content_origin: str = Form("unofficial"),
+    source_exam_code: str = Form(""),
+    source_section_code: str = Form(""),
+    source_module_code: str = Form(""),
+    provider_name: str = Form("anthropic"),
+    model_name: str = Form("claude-sonnet-4-6"),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    if content_origin not in ("official", "unofficial"):
+        raise HTTPException(status_code=422, detail="content_origin must be 'official' or 'unofficial'")
+
+    settings = get_settings()
+    now = datetime.now(timezone.utc)
+    job_id = uuid.uuid4()
+
+    source_metadata = {
+        k: v for k, v in {
+            "source_exam_code": source_exam_code or None,
+            "source_section_code": source_section_code or None,
+            "source_module_code": source_module_code or None,
+        }.items() if v
+    }
+
+    job = QuestionJob(
+        id=job_id,
+        job_type="ingest",
+        content_origin=content_origin,
+        input_format="text",
+        status="parsing",
+        provider_name=provider_name,
+        model_name=model_name,
+        prompt_version="v3.0",
+        rules_version=settings.rules_version,
+        pass1_json={"raw_text": text[:50000], "source_metadata": source_metadata},
+        created_at=now,
+        updated_at=now,
+    )
+    db.add(job)
+    await db.commit()
+
+    asyncio.create_task(_run_pipeline_with_session(job_id))
+
+    return JobResponse(id=str(job_id), job_type="ingest", status="parsing", created_at=now)
+
+
 async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     """Reannotation pipeline — skips extraction and goes straight to annotation."""
     from app.llm.factory import get_provider
     from app.prompts.annotate_prompt import build_annotate_prompt
-    from app.parsers.json_parser import extract_json_from_text
+    from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 
     settings = get_settings()
     provider = get_provider(
         job.provider_name,
         api_key=settings.anthropic_api_key or settings.openai_api_key,
+        base_url=settings.ollama_base_url,
+        default_model=job.model_name,
     )
-
     extract_json = {}
     if job.pass1_json:
         extract_json = {k: v for k, v in job.pass1_json.items() if not k.startswith("_")}
@@ -401,7 +499,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     system, user = build_annotate_prompt(extract_json)
     try:
         result = await provider.complete(system=system, user=user, max_tokens=8192)
-        annotate_json = extract_json_from_text(result.raw_text)
+        annotate_json = normalize_annotation(extract_json_from_text(result.raw_text))
         job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
     except Exception as e:
         job.status = "failed"
@@ -460,6 +558,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
         confidence_jsonb={"annotation_confidence": annotate_json.get("annotation_confidence", 0.0), "needs_human_review": annotate_json.get("needs_human_review", False)},
         created_at=now,
     ))
+    await db.flush()  # ensure new version/annotation IDs are visible before setting circular FKs
 
     question.current_explanation_text = annotate_json.get(
         "explanation_short", question.current_explanation_text
