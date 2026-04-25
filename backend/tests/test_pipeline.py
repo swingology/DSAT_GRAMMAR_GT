@@ -1,4 +1,6 @@
 import pytest
+import uuid
+from unittest.mock import AsyncMock, MagicMock
 from app.pipeline.orchestrator import (
     JobOrchestrator,
     can_transition,
@@ -192,3 +194,81 @@ def test_validate_valid_ontology_keys_no_ontology_errors():
     errors = validate_question(q, content_origin="official")
     ontology_fields = {"grammar_role_key", "grammar_focus_key", "stimulus_mode_key", "stem_type_key"}
     assert not any(e["field"] in ontology_fields for e in errors)
+
+
+# --- Overlap detection tests ---
+
+@pytest.mark.asyncio
+async def test_detect_overlaps_no_official_questions():
+    """When no official questions exist, detect_overlaps returns []."""
+    from app.pipeline.overlap import detect_overlaps
+
+    mock_db = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.all.return_value = []
+    mock_db.execute = AsyncMock(return_value=mock_result)
+
+    overlaps = await detect_overlaps(
+        question_id=uuid.uuid4(),
+        annotation_jsonb={"grammar_focus_key": "subject_verb_agreement"},
+        passage_text="The scientist observed",
+        question_text="Which word correctly fills the blank?",
+        db=mock_db,
+    )
+    assert overlaps == []
+
+
+@pytest.mark.asyncio
+async def test_detect_overlaps_high_passage_similarity():
+    """High Jaccard similarity on passage text triggers an overlap."""
+    from app.pipeline.overlap import detect_overlaps
+
+    official_q = MagicMock()
+    official_q.id = uuid.uuid4()
+    official_q.current_passage_text = "the scientist observed the phenomenon carefully"
+    official_q.current_question_text = "which choice completes the sentence"
+
+    official_ann = MagicMock()
+    official_ann.annotation_jsonb = {"grammar_focus_key": "subject_verb_agreement"}
+
+    mock_db = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.all.return_value = [(official_q, official_ann)]
+    mock_db.execute = AsyncMock(return_value=mock_result)
+
+    overlaps = await detect_overlaps(
+        question_id=uuid.uuid4(),
+        annotation_jsonb={"grammar_focus_key": "subject_verb_agreement"},
+        passage_text="the scientist observed the phenomenon carefully",
+        question_text="which choice completes the sentence",
+        db=mock_db,
+        threshold=0.4,
+    )
+    assert len(overlaps) == 1
+    assert overlaps[0]["strength"] >= 0.4
+
+
+@pytest.mark.asyncio
+async def test_detect_overlaps_skips_self():
+    """detect_overlaps never reports the question being checked as its own overlap."""
+    from app.pipeline.overlap import detect_overlaps
+
+    qid = uuid.uuid4()
+    official_q = MagicMock()
+    official_q.id = qid  # same ID
+    official_q.current_passage_text = "identical passage text here"
+    official_q.current_question_text = "identical question text here"
+
+    mock_db = AsyncMock()
+    mock_result = MagicMock()
+    mock_result.all.return_value = [(official_q, None)]
+    mock_db.execute = AsyncMock(return_value=mock_result)
+
+    overlaps = await detect_overlaps(
+        question_id=qid,
+        annotation_jsonb={},
+        passage_text="identical passage text here",
+        question_text="identical question text here",
+        db=mock_db,
+    )
+    assert overlaps == []
