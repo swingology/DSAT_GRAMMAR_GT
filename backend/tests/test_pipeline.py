@@ -125,3 +125,70 @@ def test_validate_bad_correct_label():
     }
     errors = validate_question(q, content_origin="official")
     assert any("correct_option_label" in e["field"] for e in errors)
+
+
+# --- V3 ontology key validation tests ---
+
+def _base_official_question(**kwargs):
+    q = {
+        "question_text": "Which choice completes the text?",
+        "options": [
+            {"label": "A", "text": "play"}, {"label": "B", "text": "have played"},
+            {"label": "C", "text": "plays"}, {"label": "D", "text": "is playing"},
+        ],
+        "correct_option_label": "C",
+        "explanation_short": "Short explanation.",
+        "source_exam_code": "PT1",
+        "source_module_code": "M1",
+        "source_question_number": 1,
+    }
+    q.update(kwargs)
+    return q
+
+
+def test_validate_bad_grammar_role_key():
+    q = _base_official_question(grammar_role_key="not_a_real_role")
+    errors = validate_question(q, content_origin="official")
+    review = [e for e in errors if e["severity"] == "review"]
+    assert any(e["field"] == "grammar_role_key" for e in review)
+
+
+def test_validate_bad_grammar_focus_key():
+    q = _base_official_question(grammar_focus_key="not_a_real_focus")
+    errors = validate_question(q, content_origin="official")
+    review = [e for e in errors if e["severity"] == "review"]
+    assert any(e["field"] == "grammar_focus_key" for e in review)
+
+
+def test_validate_bad_stimulus_mode_key():
+    q = _base_official_question(stimulus_mode_key="bad_mode")
+    errors = validate_question(q, content_origin="official")
+    review = [e for e in errors if e["severity"] == "review"]
+    assert any(e["field"] == "stimulus_mode_key" for e in review)
+
+
+def test_validate_bad_stem_type_key():
+    q = _base_official_question(stem_type_key="bad_stem")
+    errors = validate_question(q, content_origin="official")
+    review = [e for e in errors if e["severity"] == "review"]
+    assert any(e["field"] == "stem_type_key" for e in review)
+
+
+def test_validate_explanation_short_too_long():
+    q = _base_official_question(explanation_short="x" * 301)
+    errors = validate_question(q, content_origin="official")
+    review = [e for e in errors if e["severity"] == "review"]
+    assert any(e["field"] == "explanation_short" for e in review)
+
+
+def test_validate_valid_ontology_keys_no_ontology_errors():
+    """All valid V3 keys produce no ontology review errors."""
+    q = _base_official_question(
+        grammar_role_key="agreement",
+        grammar_focus_key="subject_verb_agreement",
+        stimulus_mode_key="sentence_only",
+        stem_type_key="complete_the_text",
+    )
+    errors = validate_question(q, content_origin="official")
+    ontology_fields = {"grammar_role_key", "grammar_focus_key", "stimulus_mode_key", "stem_type_key"}
+    assert not any(e["field"] in ontology_fields for e in errors)
