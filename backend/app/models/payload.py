@@ -107,3 +107,15 @@ class JobResponse(BaseModel):
 class ReannotateRequest(BaseModel):
     provider_name: str = "anthropic"
     model_name: str = "claude-sonnet-4-6"
+
+
+class UserCreate(BaseModel):
+    username: str = Field(min_length=1, max_length=100)
+
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    created_at: Optional[datetime] = None
+
+    model_config = {"from_attributes": True}

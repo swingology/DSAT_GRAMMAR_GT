@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.logging_config import configure_logging
 from app.middleware import RequestIDMiddleware
-from app.routers import health, questions, student, admin, ingest, generate
+from app.routers import health, questions, student, admin, ingest, generate, users
 
 
 @asynccontextmanager
@@ -34,3 +34,4 @@ app.include_router(student.router)
 app.include_router(admin.router)
 app.include_router(ingest.router)
 app.include_router(generate.router)
+app.include_router(users.router)
