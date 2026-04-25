@@ -26,6 +26,16 @@ def test_reannotate_not_found(client):
     assert resp.status_code == 404
 
 
+def test_reannotate_accepts_json_body(client):
+    """provider_name/model_name in JSON body — valid shape returns 404 (question not found), not 422."""
+    resp = client.post(
+        "/ingest/reannotate/00000000-0000-0000-0000-000000000000",
+        headers={**AUTH, "Content-Type": "application/json"},
+        json={"provider_name": "openai", "model_name": "gpt-4o"},
+    )
+    assert resp.status_code == 404
+
+
 import pytest
 
 

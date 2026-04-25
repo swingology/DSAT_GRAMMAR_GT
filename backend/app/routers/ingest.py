@@ -3,7 +3,7 @@ import asyncio
 import tempfile
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form, Body
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,7 +19,7 @@ from app.parsers.pdf_parser import parse_pdf
 from app.parsers.json_parser import extract_json_from_text
 from app.pipeline.orchestrator import JobOrchestrator
 from app.pipeline.validator import validate_question
-from app.models.payload import JobResponse
+from app.models.payload import JobResponse, ReannotateRequest
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
 
@@ -497,8 +497,7 @@ async def ingest_unofficial_batch(
 @router.post("/reannotate/{question_id}", response_model=JobResponse)
 async def reannotate_question(
     question_id: str,
-    provider_name: str = "anthropic",
-    model_name: str = "claude-sonnet-4-6",
+    body: ReannotateRequest = Body(default_factory=ReannotateRequest),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
@@ -531,8 +530,8 @@ async def reannotate_question(
         content_origin=q.content_origin,
         input_format="reannotate",
         status="annotating",
-        provider_name=provider_name,
-        model_name=model_name,
+        provider_name=body.provider_name,
+        model_name=body.model_name,
         prompt_version="v3.0",
         rules_version=settings.rules_version,
         pass1_json=existing_job.pass1_json,

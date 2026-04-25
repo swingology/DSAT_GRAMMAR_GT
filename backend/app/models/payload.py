@@ -102,8 +102,6 @@ class JobResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class IngestPdfRequest(BaseModel):
-    source_exam_code: Optional[str] = None
-    source_module_code: Optional[str] = None
+class ReannotateRequest(BaseModel):
     provider_name: str = "anthropic"
     model_name: str = "claude-sonnet-4-6"
