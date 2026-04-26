@@ -12,6 +12,7 @@ from app.config import get_settings
 from app.models.db import QuestionJob, Question, QuestionVersion, QuestionAnnotation, QuestionOption
 from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.pipeline.validator import validate_question
+from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields
 from app.models.payload import GenerationRequest, GenerationCompareRequest, JobResponse
 
 router = APIRouter(prefix="/generate", tags=["generate"])
@@ -125,17 +126,20 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     question.latest_annotation_id = annotation_id
     question.latest_version_id = version_id
 
-    # Create QuestionOption rows
+    # Create QuestionOption rows with full annotation hydration
+    opt_analyses = option_analyses_by_label(annotate_json)
     for opt in generated.get("options", []):
+        label = opt.get("label", "")
         db.add(QuestionOption(
             id=uuid.uuid4(),
             question_id=question_id,
             question_version_id=version_id,
-            option_label=opt.get("label", ""),
+            option_label=label,
             option_text=opt.get("text", ""),
-            is_correct=opt.get("label", "") == correct_label,
-            option_role="correct" if opt.get("label", "") == correct_label else "distractor",
+            is_correct=label == correct_label,
+            option_role="correct" if label == correct_label else "distractor",
             created_at=now,
+            **option_annotation_fields(opt_analyses.get(label, {})),
         ))
 
     job.question_id = question_id

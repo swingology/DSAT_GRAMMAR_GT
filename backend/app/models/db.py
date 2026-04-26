@@ -63,6 +63,7 @@ class Question(Base):
     derived_from_question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=True)
     generation_source_set = Column(JSONB, nullable=True)
     is_admin_edited = Column(Boolean, nullable=False, default=False)
+    annotation_stale = Column(Boolean, nullable=False, default=False)
     metadata_managed_by_llm = Column(Boolean, nullable=False, default=True)
     latest_annotation_id = Column(UUID(as_uuid=True), ForeignKey("question_annotations.id"), nullable=True)
     latest_version_id = Column(UUID(as_uuid=True), ForeignKey("question_versions.id"), nullable=True)

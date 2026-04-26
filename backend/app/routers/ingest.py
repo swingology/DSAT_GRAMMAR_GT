@@ -19,6 +19,7 @@ from app.parsers.pdf_parser import parse_pdf
 from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.pipeline.orchestrator import JobOrchestrator
 from app.pipeline.validator import validate_question
+from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields, apply_option_annotations
 from app.models.payload import JobResponse, ReannotateRequest
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
@@ -193,16 +194,19 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     question.latest_annotation_id = annotation_id
     question.latest_version_id = version_id
 
+    opt_analyses = option_analyses_by_label(annotate_json)
     for opt in extract_json.get("options", []):
+        label = opt.get("label", "")
         db.add(QuestionOption(
             id=uuid.uuid4(),
             question_id=question_id,
             question_version_id=version_id,
-            option_label=opt.get("label", ""),
+            option_label=label,
             option_text=opt.get("text", ""),
-            is_correct=opt.get("label", "") == extract_json.get("correct_option_label", ""),
-            option_role="correct" if opt.get("label", "") == extract_json.get("correct_option_label", "") else "distractor",
+            is_correct=label == extract_json.get("correct_option_label", ""),
+            option_role="correct" if label == extract_json.get("correct_option_label", "") else "distractor",
             created_at=now,
+            **option_annotation_fields(opt_analyses.get(label, {})),
         ))
 
     # Link asset to question and backfill source_section_code if not already set
@@ -568,7 +572,19 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     )
     question.latest_annotation_id = annotation_id
     question.latest_version_id = version_id
+    question.annotation_stale = False
     question.updated_at = now
+
+    # Refresh per-option annotation fields from the new annotation
+    opts_result = await db.execute(
+        select(QuestionOption).where(QuestionOption.question_id == question.id)
+    )
+    opt_analyses = option_analyses_by_label(annotate_json)
+    for option_row in opts_result.scalars().all():
+        analysis = opt_analyses.get(option_row.option_label, {})
+        if analysis:
+            apply_option_annotations(option_row, analysis)
+
     await db.commit()
 
 

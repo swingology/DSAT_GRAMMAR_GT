@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import Optional
@@ -11,9 +11,13 @@ from pydantic import BaseModel
 
 from app.database import get_db
 from app.auth import admin_required
-from app.models.db import Question, QuestionVersion, QuestionOption, QuestionRelation, LlmEvaluation
+from app.models.db import (
+    Question, QuestionAnnotation, QuestionVersion, QuestionOption,
+    QuestionRelation, QuestionJob, QuestionAsset, LlmEvaluation, UserProgress,
+)
 from app.models.ontology import RELATION_TYPES
 from app.models.payload import AdminEditRequest, EvaluationScoreRequest
+from app.pipeline.option_hydration import clear_option_annotations
 
 
 class EvaluationCreateRequest(BaseModel):
@@ -114,6 +118,7 @@ async def edit_question(
         q.current_explanation_text = changes["explanation_text"]
     q.latest_version_id = new_version.id
     q.is_admin_edited = True
+    q.annotation_stale = True
     q.updated_at = now
 
     await db.commit()
@@ -158,10 +163,80 @@ async def reject_question(
     q = await db.get(Question, qid)
     if not q:
         raise HTTPException(status_code=404, detail="Question not found")
+
     q.practice_status = "retired"
     q.updated_at = datetime.now(timezone.utc)
+
+    # Clear circular FK before deleting annotations
+    q.latest_annotation_id = None
+    await db.flush()
+
+    # Delete linked metadata: evaluations, annotations, relations
+    await db.execute(delete(LlmEvaluation).where(LlmEvaluation.question_id == qid))
+    await db.execute(delete(QuestionAnnotation).where(QuestionAnnotation.question_id == qid))
+    await db.execute(
+        delete(QuestionRelation).where(
+            (QuestionRelation.from_question_id == qid) | (QuestionRelation.to_question_id == qid)
+        )
+    )
+
+    # Null out per-option annotation fields — keep option structure but clear LLM analysis
+    opts_result = await db.execute(select(QuestionOption).where(QuestionOption.question_id == qid))
+    for opt in opts_result.scalars().all():
+        clear_option_annotations(opt)
+
     await db.commit()
     return {"id": str(q.id), "practice_status": "retired"}
+
+
+@router.delete("/questions/{question_id}")
+async def delete_question(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Hard-delete a question and all linked data.
+
+    Keeps job records (audit trail) and asset files on disk.
+    Nulls the question_id FK on related jobs and assets rather than deleting them.
+    """
+    qid = _parse_uuid(question_id)
+    q = await db.get(Question, qid)
+    if not q:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    # Clear all circular / self-referential FKs before cascading
+    q.latest_annotation_id = None
+    q.latest_version_id = None
+    q.canonical_official_question_id = None
+    q.derived_from_question_id = None
+    await db.flush()
+
+    # Delete linked metadata
+    await db.execute(delete(LlmEvaluation).where(LlmEvaluation.question_id == qid))
+    await db.execute(delete(QuestionAnnotation).where(QuestionAnnotation.question_id == qid))
+    await db.execute(
+        delete(QuestionRelation).where(
+            (QuestionRelation.from_question_id == qid) | (QuestionRelation.to_question_id == qid)
+        )
+    )
+    await db.execute(delete(UserProgress).where(UserProgress.question_id == qid))
+    await db.execute(delete(QuestionOption).where(QuestionOption.question_id == qid))
+    await db.execute(delete(QuestionVersion).where(QuestionVersion.question_id == qid))
+
+    # Detach jobs and assets rather than deleting (preserve audit trail / files)
+    jobs_result = await db.execute(select(QuestionJob).where(QuestionJob.question_id == qid))
+    for job in jobs_result.scalars().all():
+        job.question_id = None
+
+    assets_result = await db.execute(select(QuestionAsset).where(QuestionAsset.question_id == qid))
+    for asset in assets_result.scalars().all():
+        asset.question_id = None
+
+    await db.flush()
+    await db.delete(q)
+    await db.commit()
+    return {"id": question_id, "deleted": True}
 
 
 @router.post("/questions/{question_id}/confirm-overlap")
