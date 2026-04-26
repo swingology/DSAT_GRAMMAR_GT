@@ -1,5 +1,6 @@
 import pytest
 import uuid
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 from app.pipeline.orchestrator import (
     JobOrchestrator,
@@ -272,3 +273,360 @@ async def test_detect_overlaps_skips_self():
         db=mock_db,
     )
     assert overlaps == []
+
+
+# --- Multi-question passage tests ---
+
+class _ScalarResult:
+    def __init__(self, items=None, first_item=None):
+        self._items = items or []
+        self._first_item = first_item
+
+    def unique(self):
+        return self
+
+    def scalars(self):
+        return self
+
+    def all(self):
+        return self._items
+
+    def first(self):
+        return self._first_item
+
+
+class _FakeDB:
+    def __init__(self):
+        self.added = []
+        self.deleted = []
+        self.executed = []
+        self.get_map = {}
+        self.execute_results = []
+        self.commit_count = 0
+        self.flush_count = 0
+
+    def add(self, obj):
+        self.added.append(obj)
+
+    async def get(self, model, pk):
+        return self.get_map.get((model, pk))
+
+    async def execute(self, stmt):
+        self.executed.append(stmt)
+        if self.execute_results:
+            return self.execute_results.pop(0)
+        return _ScalarResult()
+
+    async def commit(self):
+        self.commit_count += 1
+
+    async def flush(self):
+        self.flush_count += 1
+
+    async def delete(self, obj):
+        self.deleted.append(obj)
+
+    async def refresh(self, obj):
+        return None
+
+
+def _make_mock_job(**overrides):
+    defaults = dict(
+        id=uuid.uuid4(),
+        content_origin="official",
+        job_type="ingest",
+        provider_name="anthropic",
+        model_name="model",
+        prompt_version="v3.0",
+        rules_version="rules",
+        pass1_json={"raw_text": "raw text"},
+        validation_errors_jsonb=None,
+        raw_asset_id=None,
+        status="parsing",
+        question_id=None,
+    )
+    defaults.update(overrides)
+    return SimpleNamespace(**defaults)
+
+
+def _make_mock_provider(responses: list) -> SimpleNamespace:
+    """Create a mock provider that returns canned LLM responses."""
+    return SimpleNamespace(
+        complete=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text=r, provider="anthropic", model="m1", latency_ms=10)
+                for r in responses
+            ]
+        )
+    )
+
+
+class TestNormalizeExtractedQuestions:
+    """Tests for _normalize_extracted_questions()."""
+
+    def test_new_format_with_questions_array(self):
+        """New format {passage_text, questions: [...]} extracts the array."""
+        from app.routers.ingest import _normalize_extracted_questions
+
+        extract = {
+            "passage_text": "Shared passage.",
+            "source_exam_code": "PT4",
+            "source_module_code": "M1",
+            "questions": [
+                {"question_text": "Q1", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "A", "source_question_number": 1},
+                {"question_text": "Q2", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "B", "source_question_number": 2},
+            ],
+        }
+        questions, shared_passage, shared_source = _normalize_extracted_questions(extract)
+
+        assert len(questions) == 2
+        assert questions[0]["question_text"] == "Q1"
+        assert questions[1]["question_text"] == "Q2"
+        assert shared_passage == "Shared passage."
+        assert shared_source["source_exam_code"] == "PT4"
+
+    def test_legacy_single_question_format(self):
+        """Legacy flat format wraps into a single-element list."""
+        from app.routers.ingest import _normalize_extracted_questions
+
+        extract = {
+            "question_text": "Single Q",
+            "passage_text": "A passage.",
+            "correct_option_label": "A",
+            "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}],
+            "source_exam_code": "PT1",
+            "source_question_number": 1,
+        }
+        questions, shared_passage, shared_source = _normalize_extracted_questions(extract)
+
+        assert len(questions) == 1
+        assert questions[0]["question_text"] == "Single Q"
+        assert shared_passage == "A passage."
+
+    def test_shared_source_merged_into_questions(self):
+        """Source fields from the top level propagate into each question dict."""
+        from app.routers.ingest import _normalize_extracted_questions
+
+        extract = {
+            "passage_text": "P",
+            "source_exam_code": "PT5",
+            "source_section_code": "S1",
+            "source_module_code": "M2",
+            "questions": [
+                {"question_text": "Q1", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "A", "source_question_number": 1},
+            ],
+        }
+        questions, _, _ = _normalize_extracted_questions(extract)
+
+        assert questions[0]["source_exam_code"] == "PT5"
+        assert questions[0]["source_section_code"] == "S1"
+        assert questions[0]["source_module_code"] == "M2"
+
+    def test_empty_questions_array(self):
+        """An empty questions array returns an empty list."""
+        from app.routers.ingest import _normalize_extracted_questions
+
+        extract = {"passage_text": "P", "questions": []}
+        questions, _, _ = _normalize_extracted_questions(extract)
+        assert questions == []
+
+
+class TestMultiQuestionPipeline:
+    """Integration tests for _run_pipeline with multi-question extracts."""
+
+    @pytest.mark.asyncio
+    async def test_multi_question_batch_creates_multiple_questions(self, monkeypatch):
+        """The pipeline creates N Question rows for N extracted questions."""
+        from app.routers import ingest as ingest_router
+        from app.models.db import Question
+
+        db = _FakeDB()
+        job = _make_mock_job(content_origin="unofficial")
+
+        extract_json = {
+            "passage_text": "Shared passage for two questions.",
+            "questions": [
+                {"question_text": "Q1", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "A", "source_question_number": 1},
+                {"question_text": "Q2", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "B", "source_question_number": 2},
+            ],
+        }
+        annotate_json = {"explanation_short": "E", "explanation_full": "F", "annotation_confidence": 0.9, "needs_human_review": False}
+
+        responses = iter([extract_json, annotate_json, annotate_json])
+        provider = _make_mock_provider(["extract", "annotate", "annotate"])
+
+        monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+        monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+        monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+        monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
+            anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
+            local_archive_mirror="/tmp/test_archive",
+        ))
+
+        await ingest_router._run_pipeline(job, db)
+
+        questions = [obj for obj in db.added if isinstance(obj, Question)]
+        assert len(questions) == 2
+        assert questions[0].current_question_text == "Q1"
+        assert questions[1].current_question_text == "Q2"
+        # Shared passage text stored on each question
+        assert questions[0].current_passage_text == "Shared passage for two questions."
+        assert questions[1].current_passage_text == "Shared passage for two questions."
+        # passage_group_id is set and identical for multi-question batches
+        assert questions[0].passage_group_id is not None
+        assert questions[0].passage_group_id == questions[1].passage_group_id
+        # Source question numbers from the array
+        assert questions[0].source_question_number == 1
+        assert questions[1].source_question_number == 2
+
+    @pytest.mark.asyncio
+    async def test_single_question_legacy_format_no_passage_group_id(self, monkeypatch):
+        """Single-question legacy format sets passage_group_id to None."""
+        from app.routers import ingest as ingest_router
+        from app.models.db import Question
+
+        db = _FakeDB()
+        job = _make_mock_job(content_origin="unofficial")
+
+        extract_json = {
+            "question_text": "Single Q",
+            "passage_text": "A passage.",
+            "correct_option_label": "A",
+            "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}],
+            "source_question_number": 1,
+        }
+        annotate_json = {"explanation_short": "E", "explanation_full": "F", "annotation_confidence": 0.9, "needs_human_review": False}
+
+        responses = iter([extract_json, annotate_json])
+        provider = _make_mock_provider(["extract", "annotate"])
+
+        monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+        monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+        monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+        monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
+            anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
+            local_archive_mirror="/tmp/test_archive",
+        ))
+
+        await ingest_router._run_pipeline(job, db)
+
+        questions = [obj for obj in db.added if isinstance(obj, Question)]
+        assert len(questions) == 1
+        assert questions[0].passage_group_id is None
+
+    @pytest.mark.asyncio
+    async def test_partial_failure_second_question_fails(self, monkeypatch):
+        """When question 2 of 3 fails annotation, questions 1 and 3 are persisted."""
+        from app.routers import ingest as ingest_router
+        from app.models.db import Question
+
+        db = _FakeDB()
+        job = _make_mock_job(content_origin="unofficial")
+
+        extract_json = {
+            "passage_text": "Shared passage.",
+            "questions": [
+                {"question_text": "Q1", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "A", "source_question_number": 1},
+                {"question_text": "Q2", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "B", "source_question_number": 2},
+                {"question_text": "Q3", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "C", "source_question_number": 3},
+            ],
+        }
+
+        annotate_json = {"explanation_short": "E", "explanation_full": "F", "annotation_confidence": 0.9, "needs_human_review": False}
+
+        # LLM returns annotate OK, then FAIL, then OK
+        provider = _make_mock_provider(["extract", "annotate", "annotate", "annotate"])
+
+        call_log = {"count": 0}
+
+        def mock_extract_json(text):
+            idx = call_log["count"]
+            call_log["count"] += 1
+            # idx 0 = extraction pass, idx 1 = q1 annotate, idx 2 = q2 annotate (fail), idx 3 = q3 annotate
+            if idx == 2:
+                raise ValueError("LLM error on question 2")
+            if idx == 0:
+                return extract_json
+            return annotate_json
+
+        monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+        monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr(ingest_router, "extract_json_from_text", mock_extract_json)
+        monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+        monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
+            anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
+            local_archive_mirror="/tmp/test_archive",
+        ))
+
+        await ingest_router._run_pipeline(job, db)
+
+        questions = [obj for obj in db.added if isinstance(obj, Question)]
+        assert len(questions) == 2  # Q1 and Q3 persisted, Q2 failed
+        assert questions[0].current_question_text == "Q1"
+        assert questions[1].current_question_text == "Q3"
+        # passage_group_id links them
+        assert questions[0].passage_group_id == questions[1].passage_group_id
+        # Job status should not be "failed" (partial success)
+        assert job.status != "failed"
+
+    @pytest.mark.asyncio
+    async def test_all_questions_fail_job_fails(self, monkeypatch):
+        """When all sub-questions fail validation, job ends in failed."""
+        from app.routers import ingest as ingest_router
+        from app.models.db import Question
+
+        db = _FakeDB()
+        job = _make_mock_job(content_origin="unofficial")
+
+        extract_json = {
+            "passage_text": "Shared passage.",
+            "questions": [
+                {"question_text": "Q1", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "A", "source_question_number": 1},
+                {"question_text": "Q2", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "B", "source_question_number": 2},
+            ],
+        }
+        annotate_json = {"explanation_short": "E", "explanation_full": "F", "annotation_confidence": 0.9, "needs_human_review": False}
+
+        responses = iter([extract_json, annotate_json, annotate_json])
+        provider = _make_mock_provider(["extract", "annotate", "annotate"])
+
+        monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+        monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+        monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [{"severity": "blocking", "field": "question_text", "message": "Missing"}])
+        monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
+            anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
+            local_archive_mirror="/tmp/test_archive",
+        ))
+
+        await ingest_router._run_pipeline(job, db)
+
+        questions = [obj for obj in db.added if isinstance(obj, Question)]
+        assert len(questions) == 0
+        assert job.status == "failed"
+
+
+class TestExtractJsonArrayFromText:
+    """Tests for extract_json_array_from_text()."""
+
+    def test_direct_array(self):
+        from app.parsers.json_parser import extract_json_array_from_text
+        result = extract_json_array_from_text('[{"a": 1}, {"a": 2}]')
+        assert result == [{"a": 1}, {"a": 2}]
+
+    def test_markdown_fence_array(self):
+        from app.parsers.json_parser import extract_json_array_from_text
+        text = "Some text\n```json\n[{\"x\": 1}, {\"x\": 2}]\n```"
+        result = extract_json_array_from_text(text)
+        assert result == [{"x": 1}, {"x": 2}]
+
+    def test_single_object_fallback(self):
+        from app.parsers.json_parser import extract_json_array_from_text
+        result = extract_json_array_from_text('{"single": true}')
+        assert result == [{"single": True}]

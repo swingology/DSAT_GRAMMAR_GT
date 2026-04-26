@@ -2,9 +2,41 @@
 
 This file records high-signal project-level changes, audits, and database/ontology state reviews.
 
-Migration-by-migration implementation history still lives in [docs/CHANGELOG.md](docs/CHANGELOG.md).
+## 2026-04-25 — Multi-Question-Per-Passage Ingestion
 
-## 2026-04-24 — Backend Gap Fixes (27 gaps closed)
+**Branch:** `main`
+**Type:** feature, schema extension
+**Model:** `gpt-4o` (OpenAI, default), `qwen2.5-vl:7b` (Ollama, OCR vision)
+
+### Schema & Migrations
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **Add `passage_group_id` UUID column to `questions`** (nullable, indexed) | Groups questions sharing a passage without a full `Passage` table yet | `app/models/db.py`, `migrations/010_add_passage_group_id.py` |
+
+### Ingest Pipeline
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **Multi-question extraction** — prompt now returns `{passage_text, questions: [{question_text, options, ...}]}` | Official CB exams (PT4-PT11) and unofficial sources have 2-4 questions per passage | `app/prompts/extract_prompt.py` |
+| **Loop over sub-questions** — `_run_pipeline()` extracts once, then annotates/validates/persists each question individually | Keeps downstream pipeline unchanged; partial success if one question fails | `app/routers/ingest.py` |
+| **`_normalize_extracted_questions()` helper** — handles both new array format and legacy single-question format | Backwards compatible — existing uploads produce one Question with `passage_group_id = NULL` | `app/routers/ingest.py` |
+| **`_persist_single_question()` helper** — extracted from the old persist block | Avoids code duplication in the multi-question loop | `app/routers/ingest.py` |
+| **`passage_group_id` linking** — all questions from the same passage share one UUID | Traceability for future `Passage` table normalization | `app/routers/ingest.py` |
+| **Partial failure support** — if question 2 of 3 fails, questions 1 and 3 are persisted; job status is `needs_review` not `failed` | Prevents a single bad extraction from discarding all work | `app/routers/ingest.py` |
+
+### Configuration
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **Default provider changed to `openai`/`gpt-4o`** (was `anthropic`/`claude-sonnet-4-6`) | User preference | `backend/.env`, `app/config.py` |
+| **OCR vision settings added** — `OCR_VISION_PROVIDER`, `OCR_VISION_MODEL`, `OCR_STRATEGY`, `OCR_FALLBACK`, `VISION_MAX_IMAGES` | Prepares for scanned PDF/image OCR via `qwen2.5-vl:7b` | `app/config.py`, `backend/.env` |
+
+### Tests
+
+| Change | Reason | File(s) |
+|--------|--------|---------|
+| **11 new tests** — multi-question batch (2 questions → 2 Question rows), legacy single-question backwards compat, partial failure (Q2 fails → Q1+Q3 persisted), all-fail, `passage_group_id` assignment, `extract_json_array_from_text` | Coverage for the new pipeline path | `tests/test_pipeline.py` |
 
 **Branch:** `main`
 **Type:** bug fix, schema correction, pipeline completion

@@ -32,6 +32,184 @@ IMAGE_MIME_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
 
+def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str | None, dict]:
+    """Normalize LLM extract output to a list of per-question dicts.
+
+    Handles both the new format (``{passage_text, questions: [...]}``) and
+    the legacy single-question format (flat top-level fields).
+
+    Returns ``(questions, shared_passage, shared_source)`` where each question
+    dict has its own ``question_text``, ``options``, ``correct_option_label``,
+    ``source_question_number``, etc., with shared ``passage_text`` and source
+    fields merged in.
+    """
+    shared_passage = extract_root.get("passage_text")
+    shared_source = {
+        "source_exam_code": extract_root.get("source_exam_code"),
+        "source_section_code": extract_root.get("source_section_code"),
+        "source_module_code": extract_root.get("source_module_code"),
+    }
+
+    if "questions" in extract_root and isinstance(extract_root["questions"], list):
+        raw_questions = extract_root["questions"]
+    else:
+        raw_questions = [extract_root]
+
+    questions = []
+    for q in raw_questions:
+        enriched = dict(q)
+        for k, v in shared_source.items():
+            if v and not enriched.get(k):
+                enriched[k] = v
+        if shared_passage and not enriched.get("passage_text"):
+            enriched["passage_text"] = shared_passage
+        questions.append(enriched)
+
+    return questions, shared_passage, shared_source
+
+
+async def _persist_single_question(
+    db: AsyncSession,
+    job: QuestionJob,
+    q_data: dict,
+    annotate_json: dict,
+    passage_text: str | None,
+    passage_group_id: uuid.UUID | None,
+    overlaps: list,
+    section_code: str | None,
+) -> uuid.UUID:
+    """Create Question + QuestionVersion + QuestionAnnotation + QuestionOption rows.
+
+    Returns the newly created ``question_id`` UUID.
+    """
+    now = datetime.now(timezone.utc)
+    question_id = uuid.uuid4()
+    version_id = uuid.uuid4()
+    annotation_id = uuid.uuid4()
+
+    practice_status = "draft" if job.content_origin == "official" else "active"
+    overlap_status = "possible" if overlaps else "none"
+
+    question = Question(
+        id=question_id,
+        content_origin=job.content_origin,
+        source_exam_code=q_data.get("source_exam_code"),
+        source_section_code=q_data.get("source_section_code"),
+        source_module_code=q_data.get("source_module_code"),
+        source_question_number=q_data.get("source_question_number"),
+        stimulus_mode_key=q_data.get("stimulus_mode_key"),
+        stem_type_key=q_data.get("stem_type_key"),
+        current_question_text=q_data.get("question_text", ""),
+        current_passage_text=passage_text or q_data.get("passage_text"),
+        current_correct_option_label=q_data.get("correct_option_label", ""),
+        current_explanation_text=annotate_json.get("explanation_short", ""),
+        practice_status=practice_status,
+        official_overlap_status=overlap_status,
+        passage_group_id=passage_group_id,
+        is_admin_edited=False,
+        metadata_managed_by_llm=True,
+        created_at=now,
+        updated_at=now,
+    )
+    db.add(question)
+
+    db.add(QuestionVersion(
+        id=version_id,
+        question_id=question_id,
+        version_number=1,
+        change_source="ingest",
+        question_text=q_data.get("question_text", ""),
+        passage_text=passage_text or q_data.get("passage_text"),
+        choices_jsonb=q_data.get("options", []),
+        correct_option_label=q_data.get("correct_option_label", ""),
+        explanation_text=annotate_json.get("explanation_short"),
+        created_at=now,
+    ))
+
+    await db.flush()
+
+    db.add(QuestionAnnotation(
+        id=annotation_id,
+        question_id=question_id,
+        question_version_id=version_id,
+        provider_name=job.provider_name,
+        model_name=job.model_name,
+        prompt_version=job.prompt_version,
+        rules_version=job.rules_version,
+        annotation_jsonb=annotate_json,
+        explanation_jsonb={"explanation_full": annotate_json.get("explanation_full", "")},
+        generation_profile_jsonb=None,
+        confidence_jsonb={"annotation_confidence": annotate_json.get("annotation_confidence", 0.0), "needs_human_review": annotate_json.get("needs_human_review", False)},
+        created_at=now,
+    ))
+
+    await db.flush()
+
+    question.latest_annotation_id = annotation_id
+    question.latest_version_id = version_id
+
+    correct_label = q_data.get("correct_option_label", "")
+    opt_analyses = option_analyses_by_label(annotate_json)
+    for opt in q_data.get("options", []):
+        label = opt.get("label", "")
+        db.add(QuestionOption(
+            id=uuid.uuid4(),
+            question_id=question_id,
+            question_version_id=version_id,
+            option_label=label,
+            option_text=opt.get("text", ""),
+            is_correct=label == correct_label,
+            option_role="correct" if label == correct_label else "distractor",
+            created_at=now,
+            **option_annotation_fields(opt_analyses.get(label, {})),
+        ))
+
+    # Link asset to the first created question
+    if job.raw_asset_id and not job.question_id:
+        asset = await db.get(QuestionAsset, job.raw_asset_id)
+        if asset:
+            asset.question_id = question_id
+            if not asset.source_section_code and section_code:
+                asset.source_section_code = section_code
+
+    if overlaps:
+        from app.pipeline.overlap import persist_overlap_relations
+        await persist_overlap_relations(question_id=question_id, overlaps=overlaps, db=db)
+
+    return question_id
+
+
+def _export_question(job: QuestionJob, q_data: dict, annotate_json: dict, question_id: uuid.UUID) -> None:
+    """Export a single question to YAML after successful persistence."""
+    from app.storage.yaml_export import export_official_question, export_generated_question
+    from app.config import get_settings
+
+    settings = get_settings()
+    source_meta = (job.pass1_json or {}).get("source_metadata", {})
+    exam_code = q_data.get("source_exam_code") or source_meta.get("source_exam_code")
+    section_code = q_data.get("source_section_code") or source_meta.get("source_section_code")
+    module_code = q_data.get("source_module_code") or source_meta.get("source_module_code")
+
+    if job.content_origin == "official" and exam_code and module_code:
+        export_official_question(
+            question_id=str(question_id),
+            exam_code=exam_code,
+            module_code=module_code,
+            question_number=q_data.get("source_question_number"),
+            extract_json=q_data,
+            annotate_json=annotate_json,
+            section_code=section_code,
+            base_dir=settings.local_archive_mirror,
+        )
+    elif job.content_origin in ("unofficial", "generated"):
+        export_generated_question(
+            question_id=str(question_id),
+            extract_json=q_data,
+            annotate_json=annotate_json,
+            base_dir=settings.local_archive_mirror,
+        )
+
+
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     from app.llm.factory import get_provider
     from app.prompts.extract_prompt import build_extract_prompt
@@ -53,7 +231,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         await db.commit()
         return
 
-    # Pass 1: Extract
+    # ---- Pass 1: Extract (single call, may return multiple questions) ----
     orch.advance()
     job.status = "extracting"
     await db.commit()
@@ -61,8 +239,8 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     system, user = build_extract_prompt(raw_text[:30000])
     try:
         result = await provider.complete(system=system, user=user)
-        extract_json = extract_json_from_text(result.raw_text)
-        job.pass1_json = {**extract_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
+        extract_root = extract_json_from_text(result.raw_text)
+        job.pass1_json = {**extract_root, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
     except Exception as e:
         orch.fail("extracting", "llm_error", str(e))
         job.status = "failed"
@@ -70,187 +248,93 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         await db.commit()
         return
 
-    # Pass 2: Annotate
-    orch.advance()
-    job.status = "annotating"
-    await db.commit()
+    # Normalize to a list of per-question dicts (handles both new and legacy formats)
+    questions_data, shared_passage, shared_source = _normalize_extracted_questions(extract_root)
 
-    system, user = build_annotate_prompt(extract_json)
-    try:
-        result = await provider.complete(system=system, user=user, max_tokens=8192)
-        annotate_json = normalize_annotation(extract_json_from_text(result.raw_text))
-        job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
-    except Exception as e:
-        orch.fail("annotating", "llm_error", str(e))
-        job.status = "failed"
-        job.validation_errors_jsonb = [{"step": "annotating", "error": str(e)}]
-        await db.commit()
-        return
+    # Determine passage_group_id: set only for multi-question batches
+    passage_group_id = uuid.uuid4() if len(questions_data) > 1 else None
 
-    overlaps = []
-
-    # Overlap check for unofficial/generated content
-    if job.content_origin in ("unofficial", "generated"):
-        orch.advance()
-        job.status = "overlap_checking"
-        await db.commit()
-
-        from app.pipeline.overlap import detect_overlaps
-
-        question_text = extract_json.get("question_text", "")
-        passage_text = extract_json.get("passage_text")
-
-        overlaps = await detect_overlaps(
-            question_id=job.id,
-            annotation_jsonb=annotate_json,
-            passage_text=passage_text,
-            question_text=question_text,
-            db=db,
-        )
-
-    # Validate
-    orch.advance()
-    job.status = "validating"
-    merged = {**extract_json, **annotate_json}
-    errors = validate_question(merged, content_origin=job.content_origin)
-    job.validation_errors_jsonb = errors
-
-    if any(e["severity"] == "blocking" for e in errors):
-        job.status = "needs_review"
-        await db.commit()
-        return
-
-    # Official questions require human answer-key verification before active use.
-    # Job ends in needs_review (not approved) so the admin queue can surface them.
-    job.status = "needs_review" if job.content_origin == "official" else "approved"
-
-    # Persist question, options, annotation, and version
-    now = datetime.now(timezone.utc)
-    question_id = uuid.uuid4()
-    version_id = uuid.uuid4()
-    annotation_id = uuid.uuid4()
-
-    practice_status = "draft" if job.content_origin == "official" else "active"
-    overlap_status = "possible" if overlaps else "none"
-
-    question = Question(
-        id=question_id,
-        content_origin=job.content_origin,
-        source_exam_code=extract_json.get("source_exam_code"),
-        source_section_code=extract_json.get("source_section_code"),
-        source_module_code=extract_json.get("source_module_code"),
-        source_question_number=extract_json.get("source_question_number"),
-        stimulus_mode_key=extract_json.get("stimulus_mode_key"),
-        stem_type_key=extract_json.get("stem_type_key"),
-        current_question_text=extract_json.get("question_text", ""),
-        current_passage_text=extract_json.get("passage_text"),
-        current_correct_option_label=extract_json.get("correct_option_label", ""),
-        current_explanation_text=annotate_json.get("explanation_short", ""),
-        practice_status=practice_status,
-        official_overlap_status=overlap_status,
-        is_admin_edited=False,
-        metadata_managed_by_llm=True,
-        created_at=now,
-        updated_at=now,
-    )
-    db.add(question)
-
-    question_version = QuestionVersion(
-        id=version_id,
-        question_id=question_id,
-        version_number=1,
-        change_source="ingest",
-        question_text=extract_json.get("question_text", ""),
-        passage_text=extract_json.get("passage_text"),
-        choices_jsonb=extract_json.get("options", []),
-        correct_option_label=extract_json.get("correct_option_label", ""),
-        explanation_text=annotate_json.get("explanation_short"),
-        created_at=now,
-    )
-    db.add(question_version)
-
-    # Flush so version_id is visible to subsequent rows that FK to it
-    await db.flush()
-
-    question_annotation = QuestionAnnotation(
-        id=annotation_id,
-        question_id=question_id,
-        question_version_id=version_id,
-        provider_name=job.provider_name,
-        model_name=job.model_name,
-        prompt_version=job.prompt_version,
-        rules_version=job.rules_version,
-        annotation_jsonb=annotate_json,
-        explanation_jsonb={"explanation_full": annotate_json.get("explanation_full", "")},
-        generation_profile_jsonb=None,
-        confidence_jsonb={"annotation_confidence": annotate_json.get("annotation_confidence", 0.0), "needs_human_review": annotate_json.get("needs_human_review", False)},
-        created_at=now,
-    )
-    db.add(question_annotation)
-
-    # Flush so annotation_id is visible to the question FK update below
-    await db.flush()
-
-    question.latest_annotation_id = annotation_id
-    question.latest_version_id = version_id
-
-    opt_analyses = option_analyses_by_label(annotate_json)
-    for opt in extract_json.get("options", []):
-        label = opt.get("label", "")
-        db.add(QuestionOption(
-            id=uuid.uuid4(),
-            question_id=question_id,
-            question_version_id=version_id,
-            option_label=label,
-            option_text=opt.get("text", ""),
-            is_correct=label == extract_json.get("correct_option_label", ""),
-            option_role="correct" if label == extract_json.get("correct_option_label", "") else "distractor",
-            created_at=now,
-            **option_annotation_fields(opt_analyses.get(label, {})),
-        ))
-
-    # Link asset to question and backfill source_section_code if not already set
-    if job.raw_asset_id:
-        asset = await db.get(QuestionAsset, job.raw_asset_id)
-        if asset:
-            asset.question_id = question_id
-            if not asset.source_section_code and section_code:
-                asset.source_section_code = section_code
-
-    if overlaps:
-        from app.pipeline.overlap import persist_overlap_relations
-
-        await persist_overlap_relations(question_id=question_id, overlaps=overlaps, db=db)
-
-    job.question_id = question_id
-    await db.commit()
-
-    # Export to YAML after successful commit
-    from app.storage.yaml_export import export_official_question, export_generated_question
-
+    # Extract section_code for asset backfill
     source_meta = (job.pass1_json or {}).get("source_metadata", {})
-    exam_code = extract_json.get("source_exam_code") or source_meta.get("source_exam_code")
-    section_code = extract_json.get("source_section_code") or source_meta.get("source_section_code")
-    module_code = extract_json.get("source_module_code") or source_meta.get("source_module_code")
+    section_code = shared_source.get("source_section_code") or source_meta.get("source_section_code")
 
-    if job.content_origin == "official" and exam_code and module_code:
-        export_official_question(
-            question_id=str(question_id),
-            exam_code=exam_code,
-            module_code=module_code,
-            question_number=extract_json.get("source_question_number"),
-            extract_json=extract_json,
+    # ---- Per-question loop ----
+    created_question_ids: list[uuid.UUID] = []
+    all_errors: list[dict] = []
+
+    for i, q_data in enumerate(questions_data):
+        # ---- Pass 2: Annotate ----
+        job.status = "annotating"
+        await db.commit()
+
+        system, user = build_annotate_prompt(q_data)
+        try:
+            result = await provider.complete(system=system, user=user, max_tokens=8192)
+            annotate_json = normalize_annotation(extract_json_from_text(result.raw_text))
+        except Exception as e:
+            all_errors.append({"question_index": i, "step": "annotating", "error": str(e), "source_question_number": q_data.get("source_question_number")})
+            continue
+
+        # ---- Overlap check (unofficial/generated only) ----
+        overlaps: list = []
+        if job.content_origin in ("unofficial", "generated"):
+            job.status = "overlap_checking"
+            await db.commit()
+
+            from app.pipeline.overlap import detect_overlaps
+
+            question_text = q_data.get("question_text", "")
+            passage_text = shared_passage or q_data.get("passage_text")
+
+            overlaps = await detect_overlaps(
+                question_id=job.id,
+                annotation_jsonb=annotate_json,
+                passage_text=passage_text,
+                question_text=question_text,
+                db=db,
+            )
+
+        # ---- Validate ----
+        job.status = "validating"
+        merged = {**q_data, **annotate_json}
+        errors = validate_question(merged, content_origin=job.content_origin)
+
+        if any(e["severity"] == "blocking" for e in errors):
+            all_errors.append({"question_index": i, "step": "validating", "errors": errors, "source_question_number": q_data.get("source_question_number")})
+            continue
+
+        # ---- Persist ----
+        question_id = await _persist_single_question(
+            db=db,
+            job=job,
+            q_data=q_data,
             annotate_json=annotate_json,
+            passage_text=shared_passage,
+            passage_group_id=passage_group_id,
+            overlaps=overlaps,
             section_code=section_code,
-            base_dir=settings.local_archive_mirror,
         )
-    elif job.content_origin in ("unofficial", "generated"):
-        export_generated_question(
-            question_id=str(question_id),
-            extract_json=extract_json,
-            annotate_json=annotate_json,
-            base_dir=settings.local_archive_mirror,
-        )
+        created_question_ids.append(question_id)
+
+        # ---- YAML export ----
+        _export_question(job, q_data, annotate_json, question_id)
+
+    # ---- Final job status ----
+    job.validation_errors_jsonb = all_errors if all_errors else None
+
+    if created_question_ids:
+        # At least one question succeeded
+        job.question_id = created_question_ids[0]  # primary question for the job
+        if job.content_origin == "official":
+            job.status = "needs_review"
+        else:
+            job.status = "approved"
+        job.pass1_json["_created_question_ids"] = [str(qid) for qid in created_question_ids]
+    else:
+        # All questions failed
+        job.status = "failed"
+
+    await db.commit()
 
 
 async def _run_pipeline_with_session(job_id: uuid.UUID):

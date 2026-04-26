@@ -40,6 +40,53 @@ def extract_json_from_text(text: str) -> dict:
     raise ValueError("No valid JSON found in text")
 
 
+def extract_json_array_from_text(text: str) -> list:
+    """Extract a JSON array from text that may contain markdown fences or surrounding prose.
+
+    Useful when an LLM returns a raw ``[{...}, {...}]`` array instead of a
+    wrapped ``{questions: [...]}`` object. Falls back to extracting a single
+    object and wrapping it in a list.
+    """
+    # Try 1: Direct parse as array
+    try:
+        result = json.loads(text.strip())
+        if isinstance(result, list):
+            return result
+    except json.JSONDecodeError:
+        pass
+
+    # Try 2: Extract from markdown fence
+    fence_pattern = re.compile(r"```(?:json)?\s*\n?(.*?)\n?\s*```", re.DOTALL)
+    match = fence_pattern.search(text)
+    if match:
+        try:
+            result = json.loads(match.group(1).strip())
+            if isinstance(result, list):
+                return result
+        except json.JSONDecodeError:
+            pass
+
+    # Try 3: Find first [ ... ] using bracket counting
+    first_bracket = text.find("[")
+    if first_bracket != -1:
+        depth = 0
+        for i in range(first_bracket, len(text)):
+            if text[i] == "[":
+                depth += 1
+            elif text[i] == "]":
+                depth -= 1
+                if depth == 0:
+                    try:
+                        result = json.loads(text[first_bracket : i + 1])
+                        if isinstance(result, list):
+                            return result
+                    except json.JSONDecodeError:
+                        break
+
+    # Fallback: single object wrapped in a list
+    return [extract_json_from_text(text)]
+
+
 _FLAT_ANNOTATION_KEYS = {
     "grammar_focus_key", "grammar_role_key", "stimulus_mode_key", "stem_type_key",
     "explanation_short", "explanation_full", "annotation_confidence", "needs_human_review",
