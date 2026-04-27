@@ -5,6 +5,20 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-04-27
+
+### 14:35 — Added missing indexes to SQLAlchemy models
+**Commits:** *(pending)*
+
+- Added `Index()` declarations to `models/db.py` `__table_args__` to match migration 005:
+  - `Question`: `ix_questions_practice_status`, `ix_questions_content_origin`, `ix_questions_latest_annotation_id`
+  - `QuestionJob`: `ix_question_jobs_status`, `ix_question_jobs_created_at`
+  - `UserProgress`: `ix_user_progress_user_id`, `ix_user_progress_question_id`
+  - `QuestionRelation`: `ix_question_relations_from_question_id`, `ix_question_relations_to_question_id`
+- Added `Index` import to `models/db.py`
+
+---
+
 ## 2026-04-25
 
 ### 18:10 — Option annotation hydration & metadata lifecycle management

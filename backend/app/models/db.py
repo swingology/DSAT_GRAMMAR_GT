@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy import (
     Column, String, Integer, SmallInteger, Float, Boolean, Text,
-    ForeignKey, DateTime, Enum, JSON, UniqueConstraint,
+    ForeignKey, DateTime, Enum, JSON, UniqueConstraint, Index,
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -20,6 +20,10 @@ def _utcnow():
 
 class QuestionJob(Base):
     __tablename__ = "question_jobs"
+    __table_args__ = (
+        Index("ix_question_jobs_status", "status"),
+        Index("ix_question_jobs_created_at", "created_at"),
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     job_type = Column(Enum(*JOB_TYPES, name="job_type_enum"), nullable=False)
@@ -44,6 +48,11 @@ class QuestionJob(Base):
 
 class Question(Base):
     __tablename__ = "questions"
+    __table_args__ = (
+        Index("ix_questions_practice_status", "practice_status"),
+        Index("ix_questions_content_origin", "content_origin"),
+        Index("ix_questions_latest_annotation_id", "latest_annotation_id"),
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     content_origin = Column(Enum(*CONTENT_ORIGINS, name="content_origin_enum"), nullable=False)
@@ -179,6 +188,8 @@ class QuestionRelation(Base):
     __tablename__ = "question_relations"
     __table_args__ = (
         UniqueConstraint("from_question_id", "to_question_id", "relation_type", name="uq_question_relations_pair_type"),
+        Index("ix_question_relations_from_question_id", "from_question_id"),
+        Index("ix_question_relations_to_question_id", "to_question_id"),
     )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -227,6 +238,10 @@ class User(Base):
 
 class UserProgress(Base):
     __tablename__ = "user_progress"
+    __table_args__ = (
+        Index("ix_user_progress_user_id", "user_id"),
+        Index("ix_user_progress_question_id", "question_id"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)

@@ -2,6 +2,7 @@ import uuid
 import asyncio
 import tempfile
 from datetime import datetime, timezone
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form, Body
 from sqlalchemy import select
@@ -26,7 +27,7 @@ router = APIRouter(prefix="/ingest", tags=["ingest"])
 
 ALLOWED_MIME = {
     "application/pdf", "image/png", "image/jpeg", "image/webp",
-    "text/markdown", "text/plain", "application/json",
+    "image/gif", "text/markdown", "text/plain", "application/json",
 }
 IMAGE_MIME_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
@@ -355,6 +356,34 @@ async def _safe_read(file: UploadFile, max_bytes: int) -> bytes:
     return content
 
 
+def _normalize_mime(mime: str | None) -> str:
+    return (mime or "").split(";", 1)[0].strip().lower()
+
+
+def _validate_upload_mime(mime: str | None, allowed: set[str] = ALLOWED_MIME) -> str:
+    normalized = _normalize_mime(mime)
+    if normalized not in allowed:
+        allowed_list = ", ".join(sorted(allowed))
+        raise HTTPException(
+            status_code=415,
+            detail=f"Unsupported media type. Allowed: {allowed_list}",
+        )
+    return normalized
+
+
+def _parse_pdf_content(content: bytes) -> dict:
+    tmp_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+            tmp.write(content)
+            tmp.flush()
+            tmp_path = Path(tmp.name)
+        return parse_pdf(str(tmp_path))
+    finally:
+        if tmp_path:
+            tmp_path.unlink(missing_ok=True)
+
+
 def _asset_type_from_mime(mime: str) -> str:
     if "pdf" in mime:
         return "pdf"
@@ -378,6 +407,7 @@ async def ingest_official_pdf(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
+    mime_type = _validate_upload_mime(file.content_type, {"application/pdf"})
     content = await _safe_read(file, MAX_FILE_SIZE)
 
     storage_path = await save_asset(file.filename or "upload.pdf", content, subfolder="official")
@@ -387,11 +417,7 @@ async def ingest_official_pdf(
     asset_id = uuid.uuid4()
     job_id = uuid.uuid4()
 
-    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-        tmp.write(content)
-        tmp.flush()
-        pdf_result = parse_pdf(tmp.name)
-
+    pdf_result = _parse_pdf_content(content)
     raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
 
     asset = QuestionAsset(
@@ -399,7 +425,7 @@ async def ingest_official_pdf(
         content_origin="official",
         asset_type="pdf",
         storage_path=storage_path,
-        mime_type=file.content_type,
+        mime_type=mime_type,
         page_start=0,
         page_end=len(pdf_result["pages"]) - 1,
         source_name=file.filename,
@@ -447,9 +473,10 @@ async def ingest_unofficial_file(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
+    mime_type = _validate_upload_mime(file.content_type)
     content = await _safe_read(file, MAX_FILE_SIZE)
 
-    if (file.content_type or "") in IMAGE_MIME_TYPES:
+    if mime_type in IMAGE_MIME_TYPES:
         raise HTTPException(
             status_code=422,
             detail="Image ingestion requires OCR which is not yet implemented. "
@@ -462,14 +489,14 @@ async def ingest_unofficial_file(
     asset_id = uuid.uuid4()
     job_id = uuid.uuid4()
 
-    asset_type = _asset_type_from_mime(file.content_type or "")
+    asset_type = _asset_type_from_mime(mime_type)
 
     asset = QuestionAsset(
         id=asset_id,
         content_origin="unofficial",
         asset_type=asset_type,
         storage_path=storage_path,
-        mime_type=file.content_type,
+        mime_type=mime_type,
         source_name=file.filename,
         checksum=checksum,
         created_at=now,
@@ -478,11 +505,8 @@ async def ingest_unofficial_file(
 
     raw_text = ""
     if asset_type == "pdf":
-        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-            tmp.write(content)
-            tmp.flush()
-            pdf_result = parse_pdf(tmp.name)
-            raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
+        pdf_result = _parse_pdf_content(content)
+        raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
     elif asset_type in ("text", "markdown"):
         raw_text = content.decode("utf-8", errors="replace")
     elif asset_type == "json":
