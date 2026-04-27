@@ -17,6 +17,49 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
   - `QuestionRelation`: `ix_question_relations_from_question_id`, `ix_question_relations_to_question_id`
 - Added `Index` import to `models/db.py`
 
+### Rules — Grammar module expansion and realism rules upgrade
+
+Files changed: `rules/mcq_realism_rules.md`, `rules/rules_grammar_module_outline.md`, `rules/rules_core_generation_outline.md`, `rules/rules_reading_module_outline.md`
+
+**`mcq_realism_rules.md`**
+
+- Added **All-Four-Plausible Rule** section: every answer choice — including all three distractors — must produce plausible English on first read; nothing eliminable by ear-test alone; includes difficulty gradient table (low/medium/high)
+- Added **Student Failure Mode Requirement** section: 16 named psychological failure modes (`nearest_noun_reflex`, `comma_fix_illusion`, `formal_word_bias`, `possessive_contraction_confusion`, `tense_proximity_pull`, `parallel_shape_bias`, `pronoun_anchor_error`, `ear_test_pass`, etc.) now mandatory on every distractor via `student_failure_mode_key`
+- Added **SEC Distractor Architecture by Grammar Type** section: specific 4-option construction rules for all grammar categories including subject-verb agreement, verb tense, semicolons, apostrophes, modifiers, parallel structure, pronouns, adjective/adverb, illogical comparisons, sentence boundary, subjunctive mood, and transitions
+- Added **Step 2 (Syntactic Trap)** to Generator Workflow: trap must be named before distractors are written
+- Added **Step 6 (All-Four-Plausible Verification)**: explicit read-aloud check inserted before competitive ranking check
+- Added **Hard-Item Validator Checklist**: additional validation layer for `difficulty_overall: high` — no shared failure modes across distractors, correct answer not the only formal-sounding option, ear-test cannot resolve the item
+
+**`rules_grammar_module_outline.md`**
+
+- Converted from planning outline to full operational document
+- Full taxonomy tables for all grammar role keys and focus keys
+- Added 4 grammar types from research that were absent from the taxonomy:
+  - `adjective_adverb_distinction` (proposed key, parent: `modifier`)
+  - `illogical_comparison` (proposed key, parent: `modifier`)
+  - `commonly_confused_words` (proposed key, parent: `expression_of_ideas`)
+  - `subjunctive_mood` (added to `verb_form` family)
+- Added correlative conjunction rules under `parallel_structure` (both/and, either/or, neither/nor, not only/but also)
+- Added syntactic trap taxonomy table with grammar focus mappings
+- Added passage construction templates for every grammar focus key
+- Added distractor heuristic tables with `student_failure_mode_key` for every focus key
+- Added frequency band table for all focus keys
+- Added full grammar validation checklist
+
+**`rules_core_generation_outline.md`**
+
+- Converted from planning outline to full shared infrastructure document
+- Added SAT Realism Layer (Section 8): distractor distance, plausible wrong count, answer separation strength, all-four-plausible requirement, realism scoring thresholds
+- Added shared distractor engineering rules with `student_failure_mode_key` requirement
+- Added anti-clone and diversity controls
+- Added provenance and audit trail schema
+- Added shared validation lifecycle with core checklist
+
+**`rules_reading_module_outline.md`**
+
+- Added Section 14 with reading-specific `student_failure_mode_key` values: `local_detail_fixation`, `overreach`, `underreach`, `text_label_swap`, `topic_association`, `inverse_logic`, `false_agreement`
+- Added realism requirements aligned to core (all-four-plausible requirement for reading items)
+
 ---
 
 ## 2026-04-25

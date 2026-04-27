@@ -107,6 +107,38 @@ generation file is already loaded.
 - one paired-passage example
 - one quantitative evidence example
 
+## 14. Realism Requirements Aligned to Core
+
+Reading items must satisfy the same all-four-plausible requirement as grammar
+items.
+
+For reading items specifically:
+
+- All four options must describe plausible interpretations of the passage on
+  first read; no option may be obviously off-topic
+- Wrong options should contain information that appears in the passage, but
+  applied incorrectly (wrong scope, wrong inference, wrong attribution)
+- The correct answer must be directly and unambiguously supported by evidence
+  in the passage; the support cannot require an unanchored inference
+- Difficulty comes from evidence competition, not from obscure or ambiguous
+  passage content
+
+Reading-specific `student_failure_mode_key` values:
+
+- `local_detail_fixation` — student selects an option supported by a small
+  detail but not the broader claim
+- `overreach` — student selects an option that goes further than the passage
+  supports
+- `underreach` — student selects an option too narrow for the full claim
+- `text_label_swap` — in cross-text items, student assigns an author's position
+  to the wrong text
+- `topic_association` — student selects an option merely because it mentions
+  the same topic, without checking evidence
+- `inverse_logic` — student selects an option that inverts the passage's
+  direction of argument
+- `false_agreement` — in cross-text items, student assumes both texts agree
+  when they do not (or vice versa)
+
 ## Notes on Source Derivation
 
 Primary inputs:
@@ -117,3 +149,6 @@ Expansion required:
 
 - reading needs a more detailed generation workflow and distractor heuristics so
   it reaches parity with the grammar module's operational specificity
+- `student_failure_mode_key` values have been added in section 14 above and
+  should be required for all reading item distractors in the same way they are
+  required for grammar item distractors
