@@ -320,16 +320,19 @@ Use `syntactic_trap_key` for the mechanism that makes the grammar decision hard.
 
 Approved values:
 
-- `nearest_noun_attraction`
-- `interruption_breaks_subject_verb`
-- `modifier_attachment_ambiguity`
-- `garden_path`
-- `nominalization_obscures_subject`
-- `long_distance_dependency`
-- `scope_of_negation`
-- `parallel_shape_bias`
-- `punctuation_style_bias`
 - `none`
+- `nearest_noun_attraction`
+- `garden_path`
+- `early_clause_anchor`
+- `nominalization_obscures_subject`
+- `interruption_breaks_subject_verb`
+- `long_distance_dependency`
+- `pronoun_ambiguity`
+- `scope_of_negation`
+- `modifier_attachment_ambiguity`
+- `presupposition_trap`
+- `temporal_sequence_ambiguity`
+- `multiple`
 
 Generation profiles must also include:
 
@@ -385,6 +388,22 @@ Approved grammar plausibility source keys:
 - `transition_assumption`
 - `register_confusion`
 
+Approved grammar semantic relation keys:
+
+- `nearest_noun_agreement`
+- `comma_splice`
+- `boundary_not_closed`
+- `boundary_overly_strong`
+- `wrong_boundary_type`
+- `correct_agreement`
+- `correct_boundary`
+- `unnecessary_auxiliary`
+- `tense_mismatch`
+- `modifier_misplaced`
+- `pronoun_ambiguous`
+- `parallel_broken`
+- `idiom_violation`
+
 `grammar_fit` semantics:
 
 - `yes`: the option is grammatically possible in some context, even if it fails
@@ -418,6 +437,14 @@ No-change generation rules:
 3. The three distractors each introduce a different grammar error.
 4. The stem must be neutral and must not assume an error exists.
 5. `explanation_full` must explicitly justify why no change is needed.
+
+No-change distractor requirements:
+
+| Position | Must introduce... |
+| -------- | ----------------- |
+| B | Primary grammar error for the target focus key |
+| C | Different grammar error (secondary focus key) |
+| D | Plausible-sounding error that violates a common rule |
 
 No-change generation requests use:
 
@@ -599,65 +626,288 @@ high distractor competition to justify `high`.
 
 ## 17. Passage Generation Rules by Focus
 
-Use these as construction constraints, not as literal templates.
+Each grammar focus requires the passage to embed the rule in a specific way. Use these as construction constraints.
 
-| Focus key | Passage construction rule |
-|---|---|
-| `subject_verb_agreement` | Place an intervening plural noun or phrase between subject and verb. |
-| `pronoun_antecedent_agreement` | Separate pronoun from antecedent or introduce a number/gender distractor. |
-| `verb_tense_consistency` | Establish a clear tense/register, then make one option shift improperly. |
-| `modifier_placement` | Use an opening or embedded modifier with a plausible wrong attachment; dangling-modifier cases are classified under this approved focus key. |
-| `punctuation_comma` | Create appositive, nonessential, introductory, or list punctuation pressure. |
-| `semicolon_use` | Join two independent but closely related clauses. |
-| `apostrophe_use` | Contrast plural, singular possessive, plural possessive, or contraction forms. |
-| `appositive_punctuation` | Use essential vs nonessential naming logic. |
-| `relative_pronouns` | Contrast `who`, `whom`, `which`, `that`, comma use, or essential clause logic. |
-| `colon_dash_use` | Make the second element explain, define, list, or elaborate the first. |
-| `conjunctive_adverb_usage` | Place a conjunctive adverb between independent clauses. |
-| `parallel_structure` | Build a list, comparison, or correlative construction with one broken form. |
-| `pronoun_case` | Put the pronoun in subject/object/reflexive position. |
-| `pronoun_clarity` | Include competing antecedents and require clear reference. |
-| `possessive_contraction` | Contrast possessive pronoun with contraction forms. |
-| `hyphen_usage` | Use compound modifiers or number-word compounds. |
-| `sentence_fragment` | Create a subordinate clause or phrase presented as a complete sentence. |
-| `comma_splice` | Join two independent clauses with only a comma. |
-| `run_on_sentence` | Fuse two independent clauses without required punctuation or conjunction. |
-| `noun_countability` | Use a mass noun or count noun where article/number matters. |
-| `determiners_articles` | Test required, forbidden, or wrong article use. |
-| `affirmative_agreement` | Test `so`, `neither`, `nor`, or auxiliary inversion agreement. |
-| `voice_active_passive` | Make active/passive voice affect grammaticality or sense. |
-| `negation` | Place negation where scope matters. |
-| `logical_predication` | Require subject-predicate compatibility. |
-| `quotation_punctuation` | Test punctuation placement with quotation marks. |
-| `transition_logic` | Create clear logical relation between adjacent claims. |
-| `redundancy_concision` | Include repeated or unnecessary information. |
-| `precision_word_choice` | Contrast near-synonyms by meaning, connotation, or register. |
-| `register_style_consistency` | Make one option too casual, too formal, or stylistically inconsistent. |
-| `data_interpretation_claims` | Require a claim to accurately reflect provided data. |
+### Subject-Verb Agreement
+- Use a singular collective, abstract, or inverted subject.
+- Insert a plural prepositional phrase or relative clause between subject and verb.
+- Template: "The [singular collective noun] of [plural noun], [relative clause], ______ [verb phrase]."
 
-If a requested focus key is not listed here but is approved in Section 6, use
-the closest construction family above and document the choice in
-`classification_rationale`. If the requested focus is not approved in Section 6,
-reject or propose an amendment.
+### Verb Tense Consistency
+- Open the sentence with a strong time marker (last year, in 1984, by the time).
+- Include a second time marker or temporal clause that could pull the tense in a different direction.
+- Template: "[Time marker], [subject] [establishes action], and the [related noun] ______ [result]."
+
+### Modifier Placement / Dangling Modifier
+- Open with a participial phrase whose logical subject differs from the grammatical subject.
+- Template: "[Participial phrase], [noun that did NOT do the action] ______."
+
+### Punctuation — Semicolon
+- Use two closely related independent clauses.
+- Place a conjunctive adverb (however, therefore, moreover, thus) in the second clause if targeting `conjunctive_adverb_usage`.
+- Template: "[IC1] ______ [transition], [IC2]."
+
+### Apostrophe / Possessive
+- Use a possessive where the noun ends in s (plural possessive trap).
+- Or use a possessive pronoun next to a contraction homophone.
+- Template: "The [plural noun] ______ [relationship to something] were recognized at the ceremony."
+
+### Parallel Structure
+- Create a list of three where two items share form and one breaks form.
+- Or use a correlative conjunction (not only...but also) where both elements must match.
+- Template: "The program teaches students to [verb], [verb], and ______."
+
+### Pronoun Case
+- Use a compound subject or object so the case of the individual pronoun is less obvious.
+- Template: "The award was presented to [name] and ______ for outstanding work."
+
+### Comparative Structures / Illogical Comparisons
+- Create a comparison where the two things being compared are different types unless the correct answer adds the possessive or "other."
+- Template: "The [noun] of [subject] was greater than ______."
+
+### Adjective vs. Adverb
+- Use a linking verb followed by a blank where both adjective and adverb forms are common but only one is correct.
+- Or use a verb modified by an adverb where the adjective form feels natural in speech.
+- Template: "The results were [surprisingly / more surprisingly / surprising / more surprising] consistent."
+
+### Subjunctive Mood
+- Use a conditional, wish, or recommendation clause where subjunctive is required.
+- Template: "The review board recommended that the proposal ______ before publication."
+
+### Transition Logic
+- Write two clauses with a specific logical relationship (contrast, cause, continuation) and present four transition words — one correct, three from different logical relationships.
+- Template: "[Statement A] ______; [statement B that [contrasts / elaborates / results from] A]."
+
+### Pronoun Antecedent Agreement
+- Use a singular antecedent that looks plural ("the team," "everyone," "each").
+- Place a plural noun nearby to attract the wrong pronoun.
+- Template: "Every [singular noun] must submit [pronoun blank] ______ before [deadline]."
+
+### Pronoun Clarity
+- Create a sentence with two or more possible antecedents for a pronoun.
+- Template: "When [person A] met with [person B], ______ presented the revised [deliverable]."
+
+### Punctuation — Comma
+- Create a compound sentence with or without a coordinating conjunction.
+- Test FANBOYS comma, introductory phrase comma, or nonrestrictive element comma.
+- Template: "[Subject] [verb phrase] and ______ [second predicate or clause]."
+
+### Appositive Punctuation
+- Use a noun phrase that renames an adjacent noun.
+- Test comma vs no comma for essential vs nonessential appositive.
+- Template: "The [title] [proper noun] ______ [appositive] [verb phrase]."
+
+### Relative Pronouns
+- Use a clause that is either essential or nonessential.
+- Test `that` vs `which` or comma placement around the clause.
+- Template: "The [noun] ______ [relative clause] [main predicate]."
+
+### Colon and Dash Use
+- Create a sentence where an independent clause is followed by an explanation, list, or elaboration.
+- Test colon vs dash vs comma vs no punctuation.
+- Template: "The researchers identified one primary cause ______ [elaboration] in [subject area]."
+
+### Conjunctive Adverb Usage
+- Join two independent clauses with a conjunctive adverb (however, therefore, moreover, thus).
+- Test semicolon + comma vs comma only vs period + comma.
+- Template: "The proposal was rejected ______ [conjunctive adverb], [second independent clause]."
+
+### Possessive / Contraction Distinction
+- Use a context where `it's` vs `its`, `who's` vs `whose`, or `they're` vs `their` is tested.
+- Template: "The company expanded ______ operations overseas."
+
+### Hyphen Usage
+- Use a compound modifier before a noun where hyphenation is required or forbidden.
+- Template: "The ______ [compound modifier] [noun] [verb phrase]."
+
+### Sentence Fragment
+- Create a subordinate clause presented as a complete sentence.
+- The correct answer connects it to the main clause or rewrites it.
+- Template: "Although [subordinate clause]. [Subject] ______ [main clause]."
+
+### Comma Splice
+- Join two independent clauses with only a comma.
+- The correct answer repairs the splice with a semicolon, period, or conjunction.
+- Template: "[IC1], ______ [IC2]."
+
+### Run-On Sentence
+- Fuse two independent clauses with no punctuation or conjunction.
+- The correct answer inserts proper punctuation or a conjunction.
+- Template: "[IC1] ______ [IC2]."
+
+### Noun Countability
+- Use a mass noun with a plural article or vice versa.
+- Template: "The researchers collected ______ from three separate sources."
+
+### Determiners and Articles
+- Use an article where none is needed, or omit a required article.
+- Template: "______ [noun] is essential for [process or field]."
+
+### Affirmative Agreement
+- Test `so` / `neither` / `nor` responses with inverted auxiliary matching.
+- Template: "[First clause], and ______ [second subject]."
+
+### Voice — Active vs Passive
+- Create a sentence where active or passive voice creates ambiguity or inconsistency with surrounding text.
+- Template: "The [work] ______ [agent phrase] in [time frame]."
+
+### Negation
+- Place negation where scope ambiguity creates multiple interpretations.
+- Template: "The study did not find significant differences ______ [scope qualifier]."
+
+### Logical Predication
+- Create a sentence where the subject and predicate are grammatically possible but logically incompatible.
+- Template: "The [abstract nominalization] ______ [predicate that requires an animate or concrete subject]."
+
+### Quotation Punctuation
+- Test comma or colon placement with direct quotations.
+- Template: "The critic wrote ______ [opening quotation mark] [quoted text]."
+
+If a requested focus key is not listed here but is approved in Section 6, use the closest construction family above and document the choice in `classification_rationale`.
 
 ## 18. Distractor Heuristics by Grammar Focus
 
-| Focus key | Strong distractor pattern |
-|---|---|
-| `subject_verb_agreement` | verb agrees with nearest noun instead of true subject |
-| `verb_tense_consistency` | plausible tense shift based on nearby time phrase |
-| `punctuation_comma` | comma inserted where a stronger boundary or no punctuation is needed |
-| `semicolon_use` | comma splice, colon where not explanatory, or period that changes flow |
-| `apostrophe_use` | plural/possessive/contraction confusion |
-| `modifier_placement` | grammatically smooth but logically attached to wrong subject |
-| `relative_pronouns` | plausible pronoun with wrong essential/nonessential structure |
-| `colon_dash_use` | semicolon or comma where elaboration punctuation is required |
-| `appositive_punctuation` | missing or unnecessary commas around essential/nonessential appositive |
-| `parallel_structure` | same meaning but mismatched form |
-| `pronoun_case` | formal-sounding but wrong subject/object/reflexive case |
-| `conjunctive_adverb_usage` | comma-only or period-only treatment of conjunctive adverb |
-| `transition_logic` | same topic with wrong logical relation |
-| `precision_word_choice` | near-synonym with wrong precision or connotation |
+Every distractor must be wrong for a specific reason and include a `student_failure_mode_key`.
+
+### Subject-Verb Agreement
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Plural verb, attracted by nearest plural noun | `nearest_noun_reflex` |
+| 2 | Singular verb with wrong tense (often present perfect) | `formal_word_bias` |
+| 3 | Progressive or compound auxiliary that agrees in form but not convention | `grammar_fit_only` |
+
+### Verb Tense Consistency
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Tense matching nearest time-marker clause, not overall passage register | `tense_proximity_pull` |
+| 2 | Present perfect (sounds formal and correct) | `formal_word_bias` |
+| 3 | Conditional or future (sounds appropriately hedged) | `grammar_fit_only` |
+
+### Semicolon Use
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Comma alone (comma splice) | `comma_fix_illusion` |
+| 2 | Colon (looks sophisticated; wrong type) | `punctuation_intimidation` |
+| 3 | Period (valid but severs the relationship; precision_score: 2) | `scope_blindness` |
+
+### Apostrophe Use
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Plural without apostrophe | `ear_test_pass` |
+| 2 | Singular possessive when plural possessive required | `nearest_noun_reflex` |
+| 3 | Possessive/contraction homophone (its/it's, whose/who's) | `possessive_contraction_confusion` |
+
+### Modifier Placement
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Passive construction that hides the dangling modifier | `modifier_hitchhike` |
+| 2 | Modifier placed next to semantically related but grammatically wrong noun | `modifier_hitchhike` |
+| 3 | Restructured clause that sounds natural but preserves the dangle | `ear_test_pass` |
+
+### Parallel Structure
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Different form that sounds natural (gerund for infinitive or vice versa) | `parallel_shape_bias` |
+| 2 | Nominalization (sounds formal and educated) | `formal_word_bias` |
+| 3 | Prepositional phrase that reads naturally but breaks the established pattern | `grammar_fit_only` |
+
+### Pronoun Case
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Subject pronoun in object position (especially in compound; "between you and I") | `ear_test_pass` |
+| 2 | Reflexive pronoun (sounds more precise or emphatic) | `formal_word_bias` |
+| 3 | Possessive pronoun where object pronoun is required | `idiom_memory_pull` |
+
+### Comparative Structures / Illogical Comparisons
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Comparison between unlike things (noun compared to person) | `scope_blindness` |
+| 2 | Comparison omitting "other" ("more than any city" vs. "any other city") | `false_precision` |
+| 3 | Comparison with doubled comparative ("more better") | `grammar_fit_only` |
+
+### Adjective vs. Adverb
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Adjective where adverb required (sounds natural in speech) | `ear_test_pass` |
+| 2 | Comparative adverb where simple adverb is sufficient | `false_precision` |
+| 3 | Adverb attached to wrong element in sentence | `modifier_hitchhike` |
+
+### Subjunctive Mood
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Indicative "was" where subjunctive "were" required | `ear_test_pass` |
+| 2 | Past tense form that sounds naturally hypothetical | `tense_proximity_pull` |
+| 3 | Modal construction (would, could) that sounds appropriately tentative | `formal_word_bias` |
+
+### Punctuation — Comma
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Missing comma creating a run-on or comma splice | `comma_fix_illusion` |
+| 2 | Unnecessary comma before an essential clause | `punctuation_intimidation` |
+| 3 | Semicolon where comma is correct | `formal_word_bias` |
+
+### Relative Pronouns
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | `which` without comma for essential clause | `punctuation_intimidation` |
+| 2 | `that` with comma for nonessential clause | `grammar_fit_only` |
+| 3 | `who` for inanimate antecedent | `nearest_noun_reflex` |
+
+### Colon and Dash Use
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Comma instead of colon or dash | `comma_fix_illusion` |
+| 2 | Semicolon where colon is required | `formal_word_bias` |
+| 3 | No punctuation (run-on elaboration) | `grammar_fit_only` |
+
+### Appositive Punctuation
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Comma around essential appositive (overcorrection) | `punctuation_intimidation` |
+| 2 | No comma around nonessential appositive | `grammar_fit_only` |
+| 3 | Dash where comma is sufficient | `formal_word_bias` |
+
+### Conjunctive Adverb Usage
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Comma only before conjunctive adverb (comma splice) | `comma_fix_illusion` |
+| 2 | Period before conjunctive adverb with lowercase | `grammar_fit_only` |
+| 3 | Semicolon but no comma after the adverb | `formal_word_bias` |
+
+### Pronoun Antecedent Agreement
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Plural pronoun for singular antecedent (attracted by nearby plural) | `nearest_noun_reflex` |
+| 2 | Wrong-gender or ambiguous pronoun | `pronoun_anchor_error` |
+| 3 | Reflexive pronoun where simple pronoun is required | `formal_word_bias` |
+
+### Possessive / Contraction Distinction
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Contraction where possessive is required (it's for its) | `idiom_memory_pull` |
+| 2 | Possessive where contraction is required (its for it's) | `surface_similarity_bias` |
+| 3 | Nonstandard form (its', who'se) | `grammar_fit_only` |
+
+### Sentence Boundary (Fragment / Run-On / Comma Splice)
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Comma splice that sounds conversational | `comma_fix_illusion` |
+| 2 | Period that creates a fragment | `scope_blindness` |
+| 3 | Dash that looks stylish but does not repair the boundary | `punctuation_intimidation` |
+
+### Negation / Scope of Negation
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Negation scoping over the wrong constituent | `scope_blindness` |
+| 2 | Double negative that sounds emphatic | `ear_test_pass` |
+| 3 | Negation removed entirely, changing the meaning | `grammar_fit_only` |
+
+### Transition Logic
+| Distractor | Error | Student failure mode |
+| ---------- | ----- | -------------------- |
+| 1 | Transition with opposite logical direction (contrast when agreement needed) | `transition_assumption` |
+| 2 | Formal transition that sounds authoritative regardless of direction | `register_confusion` |
+| 3 | Additive transition that is plausible but weakens the relationship | `scope_blindness` |
 
 Forbidden distractor constructions:
 
@@ -668,10 +918,26 @@ Forbidden distractor constructions:
 - reading-only evidence traps in a SEC item
 - grammar-error distractors in a pure non-grammar Expression of Ideas item
 
-Every generated distractor must be plausible English and must be wrong for a
-specific named reason.
+## 19. Evidence Span Selection Rules (Grammar)
 
-## 19. Option Text Format Rules
+`evidence_span_text` must quote the minimal text that justifies the correct answer.
+
+Rules:
+
+- Include the grammatical subject and the corrected element.
+- Use `"..."` ellipsis to omit intervening text when the span exceeds 8 words.
+- Do not include the full sentence unless the entire sentence is the evidence.
+- For punctuation items, include the words immediately before and after the punctuation decision.
+
+Examples:
+
+- S-V agreement: `"The colony ... plays"` (subject + verb, ellipsis for intervening clause)
+- Semicolon: `"distances ; they"` (words surrounding the punctuation)
+- Modifier: `"After reviewing the data, the team revised"` (participial phrase + corrected subject)
+- Apostrophe: `"students' projects"` (possessive + noun)
+- Comma: `"sculpture, and it"` (comma + conjunction + pronoun)
+
+## 20. Option Text Format Rules
 
 Use one format per item:
 
@@ -683,7 +949,7 @@ Use one format per item:
 
 Do not mix formats within a single item.
 
-## 20. Grammar Explanation Requirements
+## 21. Grammar Explanation Requirements
 
 `explanation_short` must state the core rule in at most 25 words.
 
@@ -695,7 +961,7 @@ Do not mix formats within a single item.
 - reference `passage_tense_register_key` for verb-form items
 - explicitly justify no-change items when original text is correct
 
-## 21. Grammar Validator Checklist
+## 22. Grammar Validator Checklist
 
 Before finalizing a grammar item:
 
@@ -723,7 +989,312 @@ Before finalizing a grammar item:
 - [ ] no unapproved grammar keys are used
 - [ ] core validator checklist passes
 
-## 22. Minimal Worked Examples
+## 23. Complete Worked Generation Examples
+
+### Example A: Subject-Verb Agreement with Nearest Noun Attraction
+
+```json
+{
+  "generation_request": {
+    "domain": "grammar",
+    "target_grammar_role_key": "agreement",
+    "target_grammar_focus_key": "subject_verb_agreement",
+    "target_syntactic_trap_key": "nearest_noun_attraction",
+    "syntactic_trap_intensity": "high",
+    "target_frequency_band": "very_high",
+    "difficulty_overall": "medium",
+    "topic_broad": "science",
+    "topic_fine": "marine biology",
+    "passage_length_words": "25-35",
+    "stimulus_mode_key": "sentence_only",
+    "stem_type_key": "complete_the_text"
+  },
+  "question": {
+    "source_exam": "GENERATED",
+    "source_section": "RW",
+    "source_module": "M1",
+    "source_question_number": 999,
+    "stimulus_mode_key": "sentence_only",
+    "stem_type_key": "complete_the_text",
+    "prompt_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The colony of deep-sea corals, which live in near-total darkness off the coast of Australia, ______ an important role in the local ecosystem.",
+    "correct_option_label": "C",
+    "explanation_short": "The singular subject 'colony' requires the singular verb 'plays.'",
+    "explanation_full": "The grammatical subject is the singular noun 'colony,' not the plural 'corals' in the intervening relative clause. Therefore, the main verb must be singular: 'plays.' Option A ('play') incorrectly uses a plural verb attracted by the nearby noun 'corals.' Option B ('have played') uses a plural auxiliary. Option D ('is playing') introduces an unnecessary progressive form that changes the meaning.",
+    "evidence_span_text": "The colony ... plays"
+  },
+  "classification": {
+    "domain": "Standard English Conventions",
+    "skill_family": "Form, Structure, and Sense",
+    "subskill": "subject-verb agreement with intervening noun",
+    "question_family_key": "conventions_grammar",
+    "grammar_role_key": "agreement",
+    "grammar_focus_key": "subject_verb_agreement",
+    "secondary_grammar_focus_keys": [],
+    "syntactic_trap_key": "nearest_noun_attraction",
+    "evidence_scope_key": "sentence",
+    "evidence_location_key": "main_clause",
+    "answer_mechanism_key": "rule_application",
+    "solver_pattern_key": "apply_grammar_rule_directly",
+    "topic_broad": "science",
+    "topic_fine": "marine biology",
+    "reading_scope": "sentence-level",
+    "reasoning_demand": "rule application",
+    "register": "neutral informational",
+    "tone": "objective",
+    "difficulty_overall": "medium",
+    "difficulty_reading": "low",
+    "difficulty_grammar": "high",
+    "difficulty_inference": "low",
+    "difficulty_vocab": "low",
+    "distractor_strength": "high",
+    "disambiguation_rule_applied": null,
+    "classification_rationale": "The item tests subject-verb agreement with a singular subject separated from its verb by a plural intervening noun."
+  },
+  "options": [
+    {
+      "option_label": "A",
+      "option_text": "play",
+      "is_correct": false,
+      "option_role": "distractor",
+      "distractor_type_key": "grammar_error",
+      "semantic_relation_key": "nearest_noun_agreement",
+      "plausibility_source_key": "nearest_noun_attraction",
+      "option_error_focus_key": "subject_verb_agreement",
+      "student_failure_mode_key": "nearest_noun_reflex",
+      "why_plausible": "The plural noun 'corals' is the nearest noun to the verb slot.",
+      "why_wrong": "The grammatical subject is the singular 'colony,' not 'corals.'",
+      "grammar_fit": "no",
+      "tone_match": "yes",
+      "precision_score": 1,
+      "distractor_distance": "tight",
+      "distractor_competition_score": 0.91
+    },
+    {
+      "option_label": "B",
+      "option_text": "have played",
+      "is_correct": false,
+      "option_role": "distractor",
+      "distractor_type_key": "grammar_error",
+      "semantic_relation_key": "nearest_noun_agreement",
+      "plausibility_source_key": "formal_register_match",
+      "option_error_focus_key": "subject_verb_agreement",
+      "student_failure_mode_key": "formal_word_bias",
+      "why_plausible": "Present perfect sounds sophisticated and formal.",
+      "why_wrong": "The plural auxiliary 'have' does not agree with the singular subject 'colony.'",
+      "grammar_fit": "no",
+      "tone_match": "yes",
+      "precision_score": 1,
+      "distractor_distance": "moderate",
+      "distractor_competition_score": 0.82
+    },
+    {
+      "option_label": "C",
+      "option_text": "plays",
+      "is_correct": true,
+      "option_role": "correct",
+      "distractor_type_key": "correct",
+      "semantic_relation_key": "correct_agreement",
+      "plausibility_source_key": "none",
+      "option_error_focus_key": null,
+      "student_failure_mode_key": null,
+      "why_plausible": "Correct: singular verb agrees with singular subject 'colony.'",
+      "why_wrong": null,
+      "grammar_fit": "yes",
+      "tone_match": "yes",
+      "precision_score": 3,
+      "distractor_distance": null,
+      "distractor_competition_score": null
+    },
+    {
+      "option_label": "D",
+      "option_text": "is playing",
+      "is_correct": false,
+      "option_role": "distractor",
+      "distractor_type_key": "grammar_error",
+      "semantic_relation_key": "unnecessary_auxiliary",
+      "plausibility_source_key": "grammar_fit_only",
+      "option_error_focus_key": "verb_form",
+      "student_failure_mode_key": "grammar_fit_only",
+      "why_plausible": "Progressive form is grammatically valid in isolation.",
+      "why_wrong": "Present progressive changes meaning; general ecological roles use simple present.",
+      "grammar_fit": "no",
+      "tone_match": "yes",
+      "precision_score": 1,
+      "distractor_distance": "moderate",
+      "distractor_competition_score": 0.72
+    }
+  ],
+  "reasoning": {
+    "primary_rule": "Subject-verb agreement requires a singular subject to take a singular verb.",
+    "trap_mechanism": "A plural noun ('corals') intervenes between the singular subject and the verb, tempting plural verb selection.",
+    "correct_answer_reasoning": "The singular subject 'colony' requires the singular present-tense verb 'plays.'",
+    "distractor_analysis_summary": "A and B are plural verbs attracted by the nearest noun; D introduces an unnecessary progressive form.",
+    "similar_items": [
+      {
+        "pattern": "singular subject + intervening plural noun + verb blank",
+        "focus_key": "subject_verb_agreement",
+        "trap_key": "nearest_noun_attraction"
+      }
+    ]
+  },
+  "generation_profile": {
+    "target_grammar_role_key": "agreement",
+    "target_grammar_focus_key": "subject_verb_agreement",
+    "target_syntactic_trap_key": "nearest_noun_attraction",
+    "syntactic_trap_intensity": "high",
+    "target_frequency_band": "very_high",
+    "target_distractor_pattern": [
+      "one nearest-noun plural verb distractor",
+      "one plural auxiliary / compound verb distractor",
+      "one unnecessary progressive/auxiliary distractor"
+    ],
+    "passage_template": "The [singular collective noun] of [plural noun], [relative clause], ______ [role/action].",
+    "generation_timestamp": "2026-04-27T00:00:00Z",
+    "model_version": "rules_v2"
+  },
+  "review": {
+    "annotation_confidence": 0.95,
+    "needs_human_review": false,
+    "review_notes": "Clean S-V agreement item. No ambiguity in classification."
+  }
+}
+```
+
+### Example B: Semicolon Use
+
+```json
+{
+  "generation_request": {
+    "domain": "grammar",
+    "target_grammar_role_key": "punctuation",
+    "target_grammar_focus_key": "semicolon_use",
+    "target_syntactic_trap_key": "none",
+    "syntactic_trap_intensity": "medium",
+    "target_frequency_band": "high",
+    "difficulty_overall": "medium",
+    "topic_broad": "history",
+    "topic_fine": "ancient civilizations",
+    "stimulus_mode_key": "sentence_only",
+    "stem_type_key": "complete_the_text"
+  },
+  "question": {
+    "source_exam": "GENERATED",
+    "source_section": "RW",
+    "source_module": "M2",
+    "source_question_number": 999,
+    "stimulus_mode_key": "sentence_only",
+    "stem_type_key": "complete_the_text",
+    "prompt_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The Roman aqueducts transported water across vast distances ______ they enabled cities to grow far from natural sources.",
+    "correct_option_label": "B",
+    "explanation_short": "A semicolon correctly joins two closely related independent clauses.",
+    "explanation_full": "The sentence contains two independent clauses. A semicolon (B) is the most effective punctuation. Option A (comma) creates a comma splice. Option C (period) is grammatically correct but severs the close logical relationship. Option D (colon) incorrectly suggests the second clause explains the first.",
+    "evidence_span_text": "distances ; they"
+  },
+  "classification": {
+    "domain": "Standard English Conventions",
+    "skill_family": "Sentence Boundaries",
+    "subskill": "semicolon between independent clauses",
+    "question_family_key": "conventions_grammar",
+    "grammar_role_key": "punctuation",
+    "grammar_focus_key": "semicolon_use",
+    "secondary_grammar_focus_keys": ["sentence_boundary"],
+    "syntactic_trap_key": "none",
+    "disambiguation_rule_applied": "sentence_boundary > punctuation",
+    "classification_rationale": "The item tests the correct use of a semicolon between two independent clauses."
+  },
+  "options": [
+    {
+      "option_label": "A",
+      "option_text": ",",
+      "is_correct": false,
+      "option_role": "distractor",
+      "distractor_type_key": "punctuation_error",
+      "semantic_relation_key": "comma_splice",
+      "plausibility_source_key": "punctuation_style_bias",
+      "option_error_focus_key": "comma_splice",
+      "student_failure_mode_key": "comma_fix_illusion",
+      "why_plausible": "A comma is the most common punctuation; students default to it.",
+      "why_wrong": "A comma alone cannot join two independent clauses.",
+      "grammar_fit": "no",
+      "tone_match": "yes",
+      "precision_score": 1,
+      "distractor_distance": "tight",
+      "distractor_competition_score": 0.88
+    },
+    {
+      "option_label": "B",
+      "option_text": ";",
+      "is_correct": true,
+      "option_role": "correct",
+      "distractor_type_key": "correct",
+      "semantic_relation_key": "correct_boundary",
+      "plausibility_source_key": "none",
+      "option_error_focus_key": null,
+      "student_failure_mode_key": null,
+      "why_plausible": "Correct: semicolon joins two closely related independent clauses.",
+      "why_wrong": null,
+      "grammar_fit": "yes",
+      "tone_match": "yes",
+      "precision_score": 3
+    },
+    {
+      "option_label": "C",
+      "option_text": ".",
+      "is_correct": false,
+      "option_role": "distractor",
+      "distractor_type_key": "punctuation_error",
+      "semantic_relation_key": "boundary_overly_strong",
+      "plausibility_source_key": "punctuation_style_bias",
+      "option_error_focus_key": "sentence_boundary",
+      "student_failure_mode_key": "scope_blindness",
+      "why_plausible": "A period creates two complete sentences, which is grammatically acceptable.",
+      "why_wrong": "While valid, a period is less effective than a semicolon at showing the close relationship.",
+      "grammar_fit": "yes",
+      "tone_match": "yes",
+      "precision_score": 2,
+      "distractor_distance": "tight",
+      "distractor_competition_score": 0.90
+    },
+    {
+      "option_label": "D",
+      "option_text": ":",
+      "is_correct": false,
+      "option_role": "distractor",
+      "distractor_type_key": "punctuation_error",
+      "semantic_relation_key": "wrong_boundary_type",
+      "plausibility_source_key": "formal_register_match",
+      "option_error_focus_key": "colon_dash_use",
+      "student_failure_mode_key": "punctuation_intimidation",
+      "why_plausible": "A colon looks sophisticated in formal writing.",
+      "why_wrong": "A colon must introduce an explanation or list of the preceding clause. The second clause adds a consequence, not an explanation.",
+      "grammar_fit": "no",
+      "tone_match": "yes",
+      "precision_score": 1,
+      "distractor_distance": "moderate",
+      "distractor_competition_score": 0.78
+    }
+  ],
+  "generation_profile": {
+    "target_grammar_role_key": "punctuation",
+    "target_grammar_focus_key": "semicolon_use",
+    "target_syntactic_trap_key": "none",
+    "syntactic_trap_intensity": "medium",
+    "target_frequency_band": "high",
+    "target_distractor_pattern": [
+      "one comma splice distractor",
+      "one period distractor (grammatically valid but less effective)",
+      "one colon distractor (wrong boundary type)"
+    ],
+    "passage_template": "[IC1] ______ [IC2 related by consequence or contrast].",
+    "generation_timestamp": "2026-04-27T00:00:00Z",
+    "model_version": "rules_v2"
+  }
+}
+```
+
+## 24. Minimal Classification Examples
 
 Subject-verb agreement classification:
 

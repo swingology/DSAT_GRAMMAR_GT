@@ -291,10 +291,18 @@ Approved values:
 - `partial_agreement`
 - `broad_support`
 
-Response stems asking how Text 2 would respond to Text 1 are usually
-disagreement-oriented. Avoid generating simple full-endorsement response stems.
+**Critical rule (confirmed on released College Board items):** Response stems
+("how would Text 2 most likely respond to Text 1") are always
+*disagreement-oriented*. The College Board does not use response stems for
+agreement scenarios. A correct response-stem option will describe Text 2 as
+finding Text 1's claim "problematic," "unsupported," "only conditionally valid,"
+or "contradicted by evidence." Never select or generate an option that describes
+Text 2 as fully endorsing Text 1 for a response-type stem.
+
 The most realistic generated response relationships are
-`direct_contradiction` and `confirmation_with_qualification`.
+`direct_contradiction` and `confirmation_with_qualification`. Do not generate
+Cross-Text items where Text 2 fully endorses Text 1 with no qualification —
+the SAT does not test simple agreement without tension.
 
 ## 12. Reading Option Analysis
 
@@ -330,6 +338,41 @@ Approved reading plausibility source keys:
 - `near_synonym_appeal`
 - `rhetorical_surface_similarity`
 - `attribution_swap`
+
+### 12.1 `option_error_focus_key` in Reading Domains
+
+For reading distractors, `option_error_focus_key` maps to the `reading_focus_key`
+that the distractor fails on. This parallels grammar's use of `grammar_focus_key`
+for the same field.
+
+Examples:
+
+| Wrong option failure | `option_error_focus_key` |
+|---|---|
+| Topically related but does not prove the claim | `evidence_supports_claim` |
+| Accurate data point but wrong comparison | `data_comparison` |
+| Detail rather than main idea | `central_idea` |
+| Near-synonym with wrong connotation | `connotation_fit` |
+| Right content but wrong rhetorical verb | `overall_purpose` |
+| Attribution reversed between texts | `text2_response_to_text1` |
+
+### 12.2 Words in Context Three-Level Wrong-Answer Distinction
+
+For Words in Context distractors, the `why_wrong` field must classify the
+failure at one of three levels:
+
+1. **Wrong denotation**: the word's core meaning does not match the passage
+   context.
+2. **Right denotation, wrong connotation**: the word means roughly the right
+   thing but carries the wrong evaluative, emotional, or tonal charge.
+3. **Right denotation and connotation, wrong register or precision**: the word
+   fits broadly but is too formal, too informal, too vague, or too specific for
+   the passage context.
+
+This three-level distinction is diagnostic for both annotation quality and
+generation calibration.
+
+### 12.3 `grammar_fit` and `tone_match` in Reading Domains
 
 In reading domains, `grammar_fit` should almost always be `yes` for all four
 options. Wrongness should come from logic, evidence, scope, attribution,
@@ -581,7 +624,13 @@ Useful architecture keys:
 - `science_setup_finding_implication`
 - `science_hypothesis_method_result`
 - `history_claim_evidence_limitation`
+- `history_assumption_revision`
 - `literature_observation_interpretation_shift`
+- `literature_character_conflict_reveal`
+- `economics_theory_exception_example`
+- `economics_problem_solution_tradeoff`
+- `rhetoric_claim_counterclaim_resolution`
+- `notes_fact_selection_contrast`
 
 ## 17. Reading Generation Request Extension
 
@@ -648,22 +697,53 @@ Skill-specific generation controls:
 - Text Structure: all options should describe plausible rhetorical actions.
 - Cross-Text: summarize both texts internally before generating options.
 
-## 19. Reading Distractor Heuristics
+## 19. Reading Distractor Heuristics and Failure Modes
+
+Every reading distractor must be tied to a specific student failure mode.
+
+Reading-specific `student_failure_mode_key` values:
+- `local_detail_fixation` — student selects an option supported by a small detail but not the broader claim
+- `overreach` — student selects an option that goes further than the passage supports
+- `underreach` — student selects an option too narrow for the full claim
+- `text_label_swap` — in cross-text items, student assigns an author's position to the wrong text
+- `topic_association` — student selects an option merely because it mentions the same topic, without checking evidence
+- `inverse_logic` — student selects an option that inverts the passage's direction of argument
+- `false_agreement` — in cross-text items, student assumes both texts agree when they do not (or vice versa)
 
 | Skill | Strong distractor patterns |
 |---|---|
-| CoE Textual | topical but disconnected, indirect evidence, inverted support/weaken logic |
-| CoE Quantitative | accurate but irrelevant value, wrong comparison, trend misread |
-| Central Ideas | supporting detail as main idea, overbroad summary, topic without claim |
-| Inferences | plausible but not required, overreach, cause/effect misalignment |
+| CoE Textual | topical but disconnected (`topic_association`), indirect evidence (`local_detail_fixation`), inverted support/weaken logic (`inverse_logic`) |
+| CoE Quantitative | accurate but irrelevant value (`local_detail_fixation`), wrong comparison, trend misread |
+| Central Ideas | supporting detail as main idea (`local_detail_fixation`), overbroad summary (`overreach`), topic without claim (`topic_association`) |
+| Inferences | plausible but not required (`overreach`), cause/effect misalignment (`inverse_logic`) |
 | Words in Context | common dictionary meaning, near-synonym with wrong connotation, wrong register |
-| Text Structure/Purpose | right topic but wrong action verb, local function as whole purpose, overstated stance |
-| Cross-Text | reversed attribution, false agreement/disagreement, wrong qualification |
+| Text Structure/Purpose | right topic but wrong action verb, local function as whole purpose (`underreach`), overstated stance (`overreach`) |
+| Cross-Text | reversed attribution (`text_label_swap`), false agreement/disagreement (`false_agreement`), wrong qualification |
 
-Every generated distractor must survive a first-pass elimination check by a
-reasonable but mistaken student.
+Every generated distractor must survive a first-pass elimination check by a reasonable but mistaken student. Difficulty comes from evidence competition, not from obscure or ambiguous passage content. The correct answer must be directly and unambiguously supported by evidence in the passage; the support cannot require an unanchored inference.
 
-## 20. Forbidden Patterns
+## 20. Evidence Span Selection Rules (Reading)
+
+`evidence_span_text` must identify the minimal passage span that anchors the
+correct answer.
+
+Rules:
+
+- For CoE Textual, quote the specific claim sentence or clause that the correct
+  option directly supports or weakens.
+- For CoE Quantitative, cite the specific data values or trend description.
+- For Central Ideas, quote the sentence or sentences that express the main point.
+- For Inferences, quote the passage text that logically requires the inference.
+- For Words in Context, quote the surrounding context clue(s) that determine the
+  correct word.
+- For Text Structure and Purpose, quote the sentence or structural element
+  whose function is being tested.
+- For Cross-Text, quote the key claim from each text that establishes their
+  relationship.
+- Use `"..."` ellipsis to omit intervening text when the span exceeds 10 words.
+- Do not quote the full passage unless the full passage is the evidence.
+
+## 21. Forbidden Patterns
 
 Reject any reading-domain output containing:
 
@@ -677,7 +757,7 @@ Reject any reading-domain output containing:
 - Quantitative CoE with missing `table_data` or `graph_data`
 - a correct answer that is merely consistent with, but not required by, the text
 
-## 21. Reading Validator Checklist
+## 22. Reading Validator Checklist
 
 Before finalizing a reading item:
 

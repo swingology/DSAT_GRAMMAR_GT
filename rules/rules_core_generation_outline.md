@@ -58,7 +58,7 @@ The agent must use only approved lookup keys. If no key fits, propose an
 amendment. Do not invent production keys.
 
 ### 2.3 Evidence before invention
-
+               
 The correct answer must be supportable from the passage alone. If the passage
 does not provide enough information to justify the correct answer, rewrite
 the passage.

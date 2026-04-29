@@ -2,57 +2,43 @@
 
 ## 1. Purpose
 
-This file defines shared rules for DSAT Reading and Writing ingestion,
-classification, validation, and generation. It is domain-neutral infrastructure.
-It must be loaded before a domain module.
+This file defines shared rules for DSAT Reading and Writing ingestion, classification, validation, and generation. It is domain-neutral infrastructure. It must be loaded before a domain module.
 
 Core owns:
-
 - top-level output shape
 - shared question fields
 - shared option fields
 - generation request controls
-- difficulty, topic, realism, provenance, anti-clone, and validation lifecycle
+- passage quality, distractor engineering, SAT realism, difficulty, topic, provenance, anti-clone, and validation lifecycle
 - error and batch response formats
 
 Core does not own:
-
-- `grammar_role_key`
-- `grammar_focus_key`
-- `syntactic_trap_key`
-- `skill_family_key`
-- `reading_focus_key`
-- `reasoning_trap_key`
-- `text_relationship_key`
+- domain-specific taxonomy keys (`grammar_role_key`, `skill_family_key`, etc.)
 - domain-specific stem families or passage constraints
 
-## 2. Operating Principles
+## 2. Core Operating Principles
 
 For every item, separate these layers:
-
 1. what the item tests
 2. how the item is structured
 3. what rule or reasoning mechanism solves it
 4. why the correct answer is correct
 5. why each wrong answer is tempting
 6. why each wrong answer is wrong
-7. what pattern could generate a similar item
 
-Use controlled keys only. If no approved key fits, output an amendment proposal
-instead of inventing a production key.
+**Controlled keys only.** Use approved lookup keys. If no key fits, output an amendment proposal instead of inventing a production key.
 
-Do not write directly to the database. The LLM emits JSON or markdown records;
-the backend validator decides whether they can be persisted.
+**Evidence before invention.** The correct answer must be supportable from the passage alone. If the passage does not provide enough information to justify exactly one correct answer, rewrite the passage.
 
-Difficulty must come from reasoning competition, not trivia, ambiguity,
-malformed distractors, or obscure vocabulary.
+**No direct database writes.** The LLM emits JSON or markdown records; a deterministic backend validator performs all database writes.
+
+**One active domain module per item.** Do not mix grammar keys and reading keys within a single item's classification.
 
 ## 3. Domain Selection
 
 Classify the domain before filling domain-specific fields.
 
 Approved domain families:
-
 | Domain family | Covered by |
 |---|---|
 | Standard English Conventions | grammar module |
@@ -61,20 +47,13 @@ Approved domain families:
 | Craft and Structure | reading module |
 
 Domain isolation rules:
-
-- Information and Ideas and Craft and Structure must not use grammar taxonomy
-  keys.
-- SEC and grammar-adjacent Expression of Ideas must not use reading-only
-  taxonomy keys.
-- If a stem appears grammar-like but the correct answer requires evidence,
-  purpose, word meaning, or cross-text comparison, use the reading module.
-- If a reading bucket contains Transitions, Rhetorical Synthesis, concision,
-  register, or grammar-adjacent Expression of Ideas, route to the grammar
-  module's Expression of Ideas handling.
+- Information and Ideas and Craft and Structure must not use grammar taxonomy keys.
+- SEC and grammar-adjacent Expression of Ideas must not use reading-only taxonomy keys.
+- If a reading bucket contains Transitions, Rhetorical Synthesis, concision, register, or grammar-adjacent Expression of Ideas, route to the grammar module's Expression of Ideas handling.
 
 ## 4. Required Output Shape
 
-Every accepted annotation or generated item must produce:
+Every accepted annotation or generated item must produce exactly this top-level shape:
 
 ```json
 {
@@ -87,14 +66,13 @@ Every accepted annotation or generated item must produce:
 }
 ```
 
-All generated DSAT multiple-choice items must include exactly four answer
-options labeled A, B, C, and D, and exactly one correct option.
+All generated DSAT multiple-choice items must include exactly four answer options labeled A, B, C, and D, and exactly one correct option.
 
-## 5. Shared Question Fields
+### 4.1 Shared Question Fields
 
 ```json
 {
-  "source_exam": "PT4 | PT1 | GENERATED | null",
+  "source_exam": "GENERATED | PT1 | null",
   "source_section": "RW | null",
   "source_module": "M1 | M2 | null",
   "source_question_number": 1,
@@ -113,32 +91,19 @@ options labeled A, B, C, and D, and exactly one correct option.
 }
 ```
 
-Shared `stimulus_mode_key` values:
-
-- `sentence_only`
-- `passage_excerpt`
-- `prose_single`
-- `prose_paired`
-- `prose_plus_table`
-- `prose_plus_graph`
-- `notes_bullets`
-- `poem`
-
-Domain modules restrict which modes and stems are legal for a given skill.
-
-## 6. Shared Classification Fields
-
-These fields can appear in either domain when applicable:
+### 4.2 Shared Classification Fields
 
 ```json
 {
   "domain": "Standard English Conventions | Expression of Ideas | Information and Ideas | Craft and Structure",
+  "skill_family": "Sentence Boundaries | Craft and Structure | ...",
+  "subskill": "Free-text specific skill description",
   "question_family_key": "...",
   "evidence_scope_key": "sentence | paragraph | passage | paired_passage | table | graph | notes",
   "evidence_location_key": "main_clause | subordinate_clause | surrounding_sentence | opening_sentence | closing_sentence | transition_zone | data_zone | entire_passage",
   "answer_mechanism_key": "...",
   "solver_pattern_key": "...",
-  "topic_broad": "science",
+  "topic_broad": "science | history | literature | social_studies | arts | economics | technology | environment",
   "topic_fine": "marine biology",
   "reading_scope": "sentence-level | passage-level | cross-text | data-integrated",
   "reasoning_demand": "...",
@@ -154,13 +119,7 @@ These fields can appear in either domain when applicable:
 }
 ```
 
-Shared topic controls:
-
-- `topic_broad`: `science`, `history`, `literature`, `social_studies`,
-  `arts`, `economics`, `technology`, `environment`
-- `topic_fine`: free-text subtopic under `topic_broad`
-
-## 7. Shared Reasoning Section
+### 4.3 Shared Reasoning Section
 
 ```json
 {
@@ -178,7 +137,68 @@ Shared topic controls:
 }
 ```
 
-## 8. Shared Option Contract
+## 5. Shared Stimulus Mode and Stem Type Approved Values
+
+### 5.1 `stimulus_mode_key` values
+
+- `sentence_only`
+- `passage_excerpt`
+- `prose_single`
+- `prose_paired`
+- `prose_plus_table`
+- `prose_plus_graph`
+- `notes_bullets`
+- `poem`
+
+### 5.2 `stem_type_key` values
+
+Grammar and Expression of Ideas stems (grammar module):
+
+- `complete_the_text`
+- `choose_best_grammar_revision`
+- `choose_best_transition`
+- `choose_best_notes_synthesis`
+
+Reading stems (reading module):
+
+- `choose_best_support`
+- `choose_best_illustration`
+- `choose_best_weakener`
+- `choose_best_completion_from_data`
+- `choose_main_idea`
+- `choose_detail`
+- `most_logically_completes`
+- `choose_word_in_context`
+- `choose_main_purpose`
+- `choose_sentence_function`
+- `choose_text_relationship`
+- `choose_agreement_across_texts`
+- `choose_difference_across_texts`
+
+Shared stems (appear in both domains):
+
+- `choose_structure_description`
+- `choose_likely_response`
+- `choose_best_quote`
+
+## 6. Shared Passage and Stimulus Quality Rules
+
+All passages must be:
+- **Self-contained**: No outside knowledge is required.
+- **Academic register**: No contractions, slang, or first person.
+- **One unambiguous correct answer**: The passage must provide enough information to justify exactly one choice.
+- **Formal and neutral**: No partisan, offensive, or trivially entertaining content.
+- **Not trivia-dependent**: The grammar or reasoning should be testable without knowing facts about the topic.
+
+Passage length by stimulus mode:
+| Mode | Word count |
+|---|---|
+| `sentence_only` | 20–40 |
+| `passage_excerpt` | 80–150 |
+| `prose_single` | 100–200 |
+| `prose_paired` | 80–120 each |
+
+## 7. Shared Option Contract and Distractor Engineering Rules
 
 Each option must include:
 
@@ -203,39 +223,25 @@ Each option must include:
 }
 ```
 
-Correct option requirements:
-
+### 7.1 Correct Option Requirements
 - `is_correct: true`
 - `option_role: "correct"`
 - `distractor_type_key: "correct"`
 - `precision_score: 3`
-- `why_wrong` may be omitted or set to null
+- `why_wrong` may be omitted or set to null.
 
-Distractor requirements:
+### 7.2 Distractor Engineering Rules
+A distractor counts as functioning only if a reasonable but mistaken student could select it for a specific articulable reason. Filler distractors fail validation.
 
-- exactly three wrong options
-- each has one primary failure mode
-- each has one plausibility source
-- each has a specific `why_plausible`
-- each has a specific `why_wrong`
-- no two distractors should fail for the exact same reason
-- no distractor may contain an accidental second error that makes it obviously
-  inferior
+- **One named failure mode per distractor**: Every distractor must fail for exactly one primary reason. Do not create distractors that are wrong for multiple unrelated reasons; they are too easy to eliminate.
+- **One plausibility source per distractor**: Every distractor must be tempting for a documented reason: vocabulary overlap, near-synonym appeal, partial truth, register match, local detail match, or structural resemblance.
+- **One student failure mode per distractor**: Every distractor must include a `student_failure_mode_key` identifying the psychological mechanism causing students to select it (e.g., `nearest_noun_reflex`, `scope_blindness`, `surface_similarity_bias`).
+- **No accidental second error**: A distractor that contains two unrelated errors is easier to eliminate than one with a single precise error. Do not introduce extra errors to make a distractor feel "more wrong."
+- **Distractors must survive first-pass elimination**: Every wrong option must be plausible to a moderately skilled reader on first encounter.
 
-`precision_score` scale:
+## 8. SAT Realism Layer and Distractor Competition
 
-| Value | Meaning |
-|---|---|
-| `1` | Incorrect; clear rule, logic, scope, attribution, evidence, or fit error |
-| `2` | Partially acceptable but inferior; rare for distractors |
-| `3` | Correct; fully satisfies the target rule or evidence requirement |
-
-Only the correct option may have `precision_score: 3`.
-
-## 9. Realism and Distractor Competition
-
-Generated items should be hard because wrong answers compete, not because the
-question is vague.
+Generated items should be hard because wrong answers compete, not because the question is vague, the vocabulary is obscure, or the text is confusing.
 
 Required realism fields for generation:
 
@@ -251,18 +257,23 @@ Required realism fields for generation:
 }
 ```
 
-Targets:
+### 8.1 Distractor Distance and Separation
+- **`distractor_distance`**: `tight` means wrong answers are closely competitive. Required for `high` difficulty, preferred for `medium`.
+- **`answer_separation_strength`**: `low` means multiple choices look competitive and only careful analysis resolves the conflict. Target `low` for hard items.
+- **`distractor_competition_score`**: Minimum acceptable target is `0.75`; preferred is `0.85+`.
 
-- `tight` distractor distance is expected for high-difficulty items.
-- `distractor_competition_score` minimum acceptable target is `0.75`;
-  preferred is `0.85+`.
-- `plausible_wrong_count` should be `3`; minimum acceptable is `2` only for
-  review-mode drafts.
-- `official_similarity_score` target is `0.82+`; preferred is `0.90+`.
-- If `structural_similarity_score > 0.75`, regenerate the passage or option
-  structure.
+### 8.2 All-Four-Plausible Requirement
+For `difficulty_overall: medium` or `high`:
+- Every option—including all three wrong answers—must be plausible English when read in isolation.
+- No option may be eliminated by ear-test alone.
+- The correct answer must not "sound better" to a reader who has not applied the target rule.
 
-Approved `student_failure_mode_key` values:
+### 8.3 Difficulty comes from reasoning, not obscurity
+Hard SAT items are hard because the syntactic trap is deeply embedded, multiple options seem equally good on first pass, elimination requires precise rule application, and formal academic register makes all options "feel" right. Hard items are NOT hard because vocabulary is rare, the topic is unfamiliar, the stem is confusing, or the passage is ambiguous.
+
+### 8.4 Approved Student Failure Modes
+
+Shared (used in both grammar and reading domains):
 
 - `nearest_noun_reflex`
 - `comma_fix_illusion`
@@ -284,19 +295,25 @@ Approved `student_failure_mode_key` values:
 - `idiom_memory_pull`
 - `false_precision`
 
-Generation must reject:
+Grammar-specific (used in grammar module distractor heuristics):
 
-- answer sets with one visibly longer or more polished correct answer
-- one option in a different grammatical form or semantic category
-- one option that directly answers the stem while others do not
-- "all of the above" or "none of the above"
-- bizarre, joke-like, or filler distractors
+- `ear_test_pass` — option sounds natural in speech but violates a written rule
+- `tense_proximity_pull` — tense attracted by a nearby time-marker clause rather than the passage register
+- `possessive_contraction_confusion` — student confuses possessive/contraction homophones (its/it's, whose/who's)
 
-## 10. Generation Request Contract
+Reading-specific (used in reading module distractor heuristics):
 
-Generation requests may target domain, difficulty, topics, focus keys, traps,
-passage architecture, and option style. A request must be rejected if it asks for
-illegal key combinations.
+- `local_detail_fixation` — student selects an option supported by a small detail but not the broader claim
+- `overreach` — student selects an option that goes further than the passage supports
+- `underreach` — student selects an option too narrow for the full claim
+- `text_label_swap` — in cross-text items, student assigns an author's position to the wrong text
+- `topic_association` — student selects an option merely because it mentions the same topic
+- `inverse_logic` — student selects an option that inverts the passage's direction of argument
+- `false_agreement` — in cross-text items, student assumes both texts agree when they do not
+
+## 9. Generation Request Contract
+
+Requests may target domain, difficulty, topics, focus keys, traps, passage architecture, and option style. Reject a request if it asks for illegal key combinations or maps a focus key to the wrong role.
 
 ```json
 {
@@ -308,99 +325,73 @@ illegal key combinations.
     "target_stimulus_mode_key": "...",
     "target_stem_type_key": "...",
     "target_difficulty_overall": "low | medium | high",
-    "target_difficulty_reading": "low | medium | high",
-    "target_difficulty_grammar": "low | medium | high",
-    "target_difficulty_inference": "low | medium | high",
-    "target_difficulty_vocab": "low | medium | high",
-    "target_distractor_strength": "low | medium | high",
     "topic_broad": "science",
     "topic_fine": "marine biology",
     "passage_length_words": "25-35",
     "passage_architecture_key": "science_setup_finding_implication",
-    "avoid_recent_exam_ids": ["PT4", "PT5"],
-    "generation_context": "Module needs one medium item targeting this focus."
+    "avoid_recent_exam_ids": ["PT4"],
+    "generation_context": "Module needs one medium item."
   }
 }
 ```
 
-Approved shared `passage_architecture_key` values:
+Approved shared `passage_architecture_key` values: `science_setup_finding_implication`, `science_hypothesis_method_result`, `history_claim_evidence_limitation`, `history_assumption_revision`, `literature_observation_interpretation_shift`, `literature_character_conflict_reveal`, `economics_theory_exception_example`, `economics_problem_solution_tradeoff`, `rhetoric_claim_counterclaim_resolution`, `notes_fact_selection_contrast`, `research_summary`, `claim_evidence_explanation`, `unexpected_finding`, `cautionary_framing`, `problem_solution`, `compare_contrast`, `chronological_sequence`
 
-- `science_setup_finding_implication`
-- `science_hypothesis_method_result`
-- `history_claim_evidence_limitation`
-- `history_assumption_revision`
-- `literature_observation_interpretation_shift`
-- `literature_character_conflict_reveal`
-- `economics_theory_exception_example`
-- `economics_problem_solution_tradeoff`
-- `rhetoric_claim_counterclaim_resolution`
-- `notes_fact_selection_contrast`
-- `research_summary`
-- `claim_evidence_explanation`
-- `unexpected_finding`
-- `cautionary_framing`
-- `problem_solution`
-- `compare_contrast`
-- `chronological_sequence`
+## 10. Common Generation Workflow
 
-Domain modules define additional required generation request fields.
-
-## 11. Generation Workflow
-
-Generate in this order. Each step is blocking.
+Execute in this exact order. Each step is blocking.
 
 1. Validate request keys against core and selected domain.
 2. Select domain module and reject cross-domain fields.
-3. Build passage, sentence, data, notes, or paired text.
+3. Build passage, sentence, data, notes, or paired text. Ensure correct answer is *required*, not merely plausible.
 4. Build stem using approved stem wording.
 5. Pre-answer before generating options.
 6. Generate correct option.
-7. Generate three distractors from explicit failure modes.
-8. Normalize option set for length, register, category, grammatical frame, and
-   abstraction level.
+7. Generate three distractors from explicit failure modes (no random associations).
+8. Normalize option set for length, register, category, grammatical frame, and abstraction level.
 9. Assemble metadata, reasoning, generation profile, provenance, and review.
 10. Run core validation.
 11. Run domain validation.
-12. Retry the failed component, or return a structured error after three failed
-    attempts.
+12. Retry the failed component, or return a structured error after three failed attempts.
 
-## 12. Difficulty Targeting
+## 11. Difficulty Targeting
 
-Difficulty fields are not averaged. `difficulty_overall` reflects the dimension
-that creates the most challenge.
-
-General anchors:
-
-| Level | Reading / passage | Rule or evidence demand | Distractors |
-|---|---|---|---|
-| `low` | direct, short, familiar | one visible rule or direct evidence span | mostly obvious |
-| `medium` | one inference or moderate syntax | one trap or distributed clue | one strong distractor |
-| `high` | dense, indirect, multi-part | multiple constraints or subtle evidence | all three plausible |
+Difficulty fields are not averaged. `difficulty_overall` reflects the dimension that creates the most challenge.
 
 To generate a harder item:
+- Increase distractor closeness before increasing passage obscurity.
+- Make wrong answers partially true or structurally appealing.
+- Keep the correct answer precise but not visually signaled.
+- Preserve one unambiguous correct answer.
 
-- increase distractor closeness before increasing passage obscurity
-- make wrong answers partially true or structurally appealing
-- keep the correct answer precise but not visually signaled
-- preserve one unambiguous correct answer
+To generate a focused item: target one domain focus key, target one primary trap key, and keep passage topic and stem wording from creating a second hidden skill test.
 
-To generate a focused item:
+## 12. Anti-Clone, Diversity Controls, and Batching
 
-- target one domain focus key
-- target one primary trap key
-- document secondary keys only when they are actually present
-- keep passage topic and stem wording from creating a second hidden skill test
+Batch requirements (max batch size: 10 items):
+- Vary `topic_broad` and `topic_fine`. No two consecutive items share `topic_broad`.
+- No two items within a 5-item window share `topic_fine`.
+- Avoid repeated `(focus_key, trap_key)` pairs.
+- Distribute correct answer positions equally (A/B/C/D around 25% each).
+
+Anti-Clone threshold:
+- If `structural_similarity_score > 0.75` to any item in the anti-clone pool, regenerate the passage.
+- If `avoid_recent_exam_ids` is provided, generated passages must not closely resemble items from those exams.
+
+Batch response format:
+```json
+{
+  "batch_results": [
+    { "item_index": 0, "status": "success", "item": {} },
+    { "item_index": 1, "status": "error", "error": {} }
+  ]
+}
+```
 
 ## 13. Explanation Requirements
 
-Generated and ingested items must include:
-
-- `explanation_short`: at most 25 words; states the core rule or evidence basis
-- `explanation_full`: at most 150 words; explains why the correct answer is
-  correct and why every wrong option is wrong by label
-
-For generated items, `explanation_full` must reference the relevant passage
-evidence or target rule. Domain modules add extra requirements.
+- `explanation_short`: ≤25 words. States the core rule or evidence basis.
+- `explanation_full`: ≤150 words. Explains why the correct answer is correct and why *every* wrong option is wrong by label. Must reference the relevant passage evidence or target rule.
 
 ## 14. Review Object
 
@@ -413,13 +404,7 @@ evidence or target rule. Domain modules add extra requirements.
 }
 ```
 
-Set `needs_human_review: true` when:
-
-- classification depends on an unresolved domain boundary
-- no approved key fits
-- evidence is only plausible rather than required
-- the answer set may have two defensible correct answers
-- generated output needed more than three repair attempts
+Set `needs_human_review: true` when classification depends on an unresolved boundary, no approved key fits, the evidence is only plausible (not required), or output needed >3 repairs.
 
 ## 15. Provenance and Audit Trail
 
@@ -428,54 +413,17 @@ Generated items must include:
 ```json
 {
   "generation_provenance": {
-    "source_template_used": "template_key_or_description",
-    "generation_chain": [
-      "request_validated",
-      "passage_generated",
-      "stem_generated",
-      "correct_option_generated",
-      "distractors_generated",
-      "validator_adjusted"
-    ],
+    "source_template_used": "...",
+    "generation_chain": ["request_validated", "passage_generated", "stem_generated", "correct_option_generated", "distractors_generated", "validator_adjusted"],
     "avoid_recent_exam_ids": [],
-    "validator_interventions": [],
-    "model_version": "rules_v2"
+    "model_version": "rules_v2",
+    "generation_timestamp": "..."
   }
 }
 ```
-
 Never hallucinate an official exam ID for synthetic content. Use `GENERATED`.
 
-## 16. Batch Generation
-
-Maximum batch size: 10 items.
-
-Batch requirements:
-
-- vary `topic_broad` and `topic_fine`
-- avoid repeated `(focus_key, trap_key)` pairs unless explicitly requested
-- distribute correct answer positions over 10+ items:
-  - A: 20-30%
-  - B: 20-30%
-  - C: 20-30%
-  - D: 20-30%
-- no module should have more than 40% of correct answers in one position
-
-Batch response:
-
-```json
-{
-  "batch_results": [
-    { "item_index": 0, "status": "success", "item": {} },
-    { "item_index": 1, "status": "error", "error": {} }
-  ]
-}
-```
-
-If an item fails after three retries, return the error for that item index and
-halt the batch unless the caller explicitly allows partial success.
-
-## 17. Amendment Process
+## 16. Amendment Process
 
 If no approved key fits:
 
@@ -494,40 +442,76 @@ If no approved key fits:
 }
 ```
 
-Do not use proposed keys in production fields until approved.
+`proposed_parent_key` must be an existing `grammar_role_key` (for grammar
+amendments) or `skill_family_key` (for reading amendments), or a new parent
+proposal with justification. `evidence_text` must quote the exact item text that
+triggered the proposal. `frequency_estimate` predicts how often this pattern
+appears on official SATs. `example_count` tracks how many observed items support
+the proposal. Both `frequency_estimate` and `example_count` are required for the
+proposal to be considered complete.
 
-## 18. Error Response
+Do not insert proposed keys into production records until reviewed and promoted
+to `approved`.
+
+## 17. Error Response
 
 ```json
 {
   "error": {
     "error_code": "INVALID_KEY | DOMAIN_MISMATCH | ROLE_FOCUS_MISMATCH | VERY_LOW_FREQUENCY_UNJUSTIFIED | GENERATION_FAILURE | VALIDATION_FAILURE",
-    "error_message": "Human-readable description of the failure.",
-    "failed_component": "domain | passage | stem | correct_option | distractor | metadata | validation",
-    "retry_count": 3,
-    "recommendation": "Suggested fix or fallback action."
+    "error_message": "Human-readable description.",
+    "failed_component": "passage | stem | correct_option | distractor | validation",
+    "retry_count": 3
   }
 }
 ```
 
-## 19. Core Validator Checklist
+## 18. `precision_score` Scale
 
-Before output:
+| Value | Meaning |
+|---|---|
+| `1` | Incorrect option. Contains a clear error (grammar, logic, scope, attribution, evidence). |
+| `2` | Partially acceptable but inferior. Grammatically or logically valid in isolation but less effective than the correct answer (e.g., a period where a semicolon is better, or a word that fits but is less precise). |
+| `3` | Correct option. Fully satisfies the tested rule or evidence requirement with no compromise. |
 
-- [ ] top-level sections are present
-- [ ] exactly four options exist
-- [ ] exactly one option is correct
-- [ ] correct option has `precision_score: 3`
-- [ ] no distractor has `precision_score: 3`
-- [ ] every distractor has `why_plausible` and `why_wrong`
-- [ ] every distractor has a named failure mode and plausibility source
-- [ ] all options share the same format, category, register, and grammatical
-      frame
-- [ ] `explanation_short` and `explanation_full` satisfy length and content
-      requirements
+Only the correct option may have `precision_score: 3`. Distractors must have
+`precision_score: 1` or, in rare cases, `precision_score: 2`.
+
+## 19. Difficulty Calibration Rubric
+
+Use this rubric to assign `difficulty_overall` and sub-difficulty fields:
+
+| Dimension | `low` | `medium` | `high` |
+|---|---|---|---|
+| `difficulty_reading` | Common vocabulary, short sentences, familiar topic | Some academic vocabulary, compound sentences, neutral topic | Dense academic prose, embedded clauses, unfamiliar topic |
+| `difficulty_grammar` | Single, visible rule application | Rule requires cross-sentence parsing or trap navigation | Multiple rules interact, or trap is deeply embedded |
+| `difficulty_inference` | No inference required; answer is directly in the text | One-step inference (e.g., register shift) | Multi-step inference combining grammar and rhetoric |
+| `difficulty_vocab` | All words below 10th-grade level | Some words at 11th–12th grade or academic register | Rare words, technical terms, or archaic usage |
+| `distractor_strength` | Distractors are obviously wrong on inspection | One distractor is tempting; others are moderate | All three distractors are plausible on first read |
+
+`difficulty_overall` is not an average. It reflects the dimension that creates the
+most challenge. A sentence with easy reading but a high-strength trap is `medium`
+or `high` overall.
+
+## 20. Core Validation Lifecycle
+
+Validation runs in two phases:
+1. **Core validation** (this checklist): output shape, shared distractor rules, realism thresholds, anti-clone checks.
+2. **Domain validation** (domain module): focus key mapping, trap coverage, domain-specific distractor heuristics.
+
+### Core Validator Checklist:
+- [ ] Top-level sections present
+- [ ] Exactly four options
+- [ ] Exactly one option is correct (`is_correct: true`, `precision_score: 3`)
+- [ ] No distractor has `precision_score: 3`
+- [ ] Every distractor has `why_plausible`, `why_wrong`, `student_failure_mode_key`, and `plausibility_source_key`
+- [ ] No two distractors fail for the exact same reason
+- [ ] All options share the same format, register, and grammatical frame
+- [ ] All options produce plausible English sentences (no elimination by ear-test alone)
+- [ ] `explanation_short` and `explanation_full` satisfy length and content requirements
+- [ ] Difficulty fields, `distractor_distance`, and `plausible_wrong_count` are present and calibrated
 - [ ] `classification_rationale` is present
-- [ ] difficulty fields are populated
-- [ ] generation provenance is complete for generated items
-- [ ] no unapproved keys are used
-- [ ] one and only one domain module's taxonomy appears in the final item
-
+- [ ] `structural_similarity_score` < 0.75
+- [ ] Generation provenance is complete
+- [ ] No unapproved keys are used
+- [ ] One and only one domain module's taxonomy appears in the final item
