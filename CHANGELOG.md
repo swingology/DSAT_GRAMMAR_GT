@@ -7,6 +7,42 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ## 2026-04-29
 
+### Rules — Grammar v7 taxonomy audit and corrections
+**LLM:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+
+Created `rules_agent_dsat_grammar_ingestion_generetion_v7.md` — taxonomy
+corrections and additions derived from a cross-referenced audit of the v6
+taxonomy against official College Board documentation (Assessment Framework,
+Sample Questions PDF, score report skill labels), Khan Academy, The Critical
+Reader, PrepScholar, Test Innovators, Albert.io, and released PT1–PT11.
+
+#### Amendment Table
+
+| Amendment | Type | Section | Detail |
+|---|---|---|---|
+| `skill_family` corrected to official CB names | **Fix** | C.1.3, A.3, B.12 | Replaced non-official values (`Sentence Boundaries`, `Agreement`, `Punctuation`, `Craft and Structure`) with the two official SEC skill names: `Boundaries` and `Form, Structure, and Sense`. All 10 official R&W skill families now enumerated, grouped by domain. |
+| `skill_family` example in A.3 schema | **Fix** | A.3 | Example value corrected from `"Agreement"` → `"Form, Structure, and Sense"` |
+| `skill_family` in Example A (B.12) | **Fix** | B.12 | Corrected from `"Agreement"` → `"Form, Structure, and Sense"` |
+| `stem_type_key` expanded | **Addition** | C.1.2 | Added 5 missing official question types: `choose_words_in_context` (Words in Context — most frequent type, ~28% of section), `choose_cross_text_connection` (Cross-Text Connections), `choose_best_inference` (Inferences), `choose_command_of_evidence_textual` (Command of Evidence textual), `choose_command_of_evidence_quantitative` (Command of Evidence quantitative). Total: 12 → 17 values. Legacy aliases noted for `choose_best_support`, `choose_best_quote`, `choose_best_completion_from_data`. |
+| `topic_broad` expanded | **Addition** | C.1.3 | Added `humanities` — official College Board fourth content area alongside Literature, History/Social Studies, and Science. Clarified that `arts`, `economics`, `technology`, `environment` are project-internal sub-tags, not official CB labels. |
+| `stimulus_mode_key` descriptions | **Clarification** | C.1.1 | Added inline descriptions for all 8 values. `prose_plus_graph` now lists all confirmed graphic subtypes: bar chart, line graph, scatterplot (with or without line of best fit), pie chart, map. |
+| `restatement_clarification` transition | **Addition** | B.5.2 | Added 24th `transition_subtype_key`: `restatement_clarification` — covers "in other words / that is / i.e." transitions that rephrase rather than add or contrast. |
+| `adjective_adverb_distinction` promoted | **Promotion** | D.2.5 | Moved from pending (D.2.9) to production under `modifier`. Covers adjective vs. adverb selection after linking verbs ("feel bad" not "feel badly"). Added to D.8.1 role→focus mapping and D.8.3 frequency table at `medium`. |
+| `illogical_comparison` promoted | **Promotion** | D.2.5 | Moved from pending (D.2.9) to production under `modifier`. Covers comparing nouns to dissimilar categories ("results of Study 1 were better than Study 2"). Distinct from `comparative_structures` (formal parallelism) — this error is logical. Added to D.8.1 and D.8.3 at `medium`. |
+| `commonly_confused_words` promoted | **Promotion** | D.2.8 | Moved from pending (D.2.9) to production under `expression_of_ideas`. Covers non-homophone semantic confusion pairs (affect/effect, allusion/illusion, elicit/illicit, principle/principal). Homophone possession confusion remains under `possessive_contraction`. Added to D.8.3 at `low`. |
+| `preposition_idiom` added | **Addition** | D.2.8 | New production focus key under `expression_of_ideas`. Covers verb-preposition and adjective-preposition collocations where the correct preposition is idiomatic (responsible *for*, different *from*, composed *of*, interested *in*). Added to D.8.1 mapping and D.8.3 at `low`. |
+| `affirmative_agreement` flagged | **Confidence flag** | D.2.2, D.8.3 | Marked `dsat_confidence: low`. so/neither inversion and tag questions appear primarily in ACT conventions. Retained in taxonomy for completeness but excluded from generation weighting. |
+| `negation` flagged | **Confidence flag** | D.2.4, D.8.3 | Marked `dsat_confidence: low`. Double negatives and hardly/scarcely inversions are ACT patterns. Key retained only for scope-of-negation coverage ("not all" vs "all not"); excluded from generation profiles. |
+| D.2.9 pending keys updated | **Housekeeping** | D.2.9 | Removed three promoted keys. Only `subjunctive_mood` remains pending (too rare for standalone key; documented as `verb_form` sub-pattern). |
+| D.8.1 role→focus mapping updated | **Update** | D.8.1 | `modifier` row extended with `illogical_comparison` and `adjective_adverb_distinction`. `expression_of_ideas` row extended with `commonly_confused_words` and `preposition_idiom`. |
+| D.8.2 domain separation table updated | **Update** | D.8.2 | Added official skill family column showing the 10 CB skill names by domain. |
+| D.8.3 frequency table updated | **Update** | D.8.3 | New keys placed: `adjective_adverb_distinction` and `illogical_comparison` at `medium`; `commonly_confused_words` and `preposition_idiom` at `low`; `affirmative_agreement` and `negation` marked ⚠️ at `very_low`. |
+| `model_version` bumped | **Housekeeping** | A.3, B.12 | All `model_version` fields updated from `rules_agent_v6.0` → `rules_agent_v7.0`. |
+
+**Sources consulted:** College Board Assessment Framework PDF, Digital SAT Sample Questions PDF, Khan Academy DSAT R&W course, The Critical Reader grammar analysis, PrepScholar SAT grammar guide, Test Innovators skill breakdown, Albert.io quantitative evidence review, dsat16.com transitions guide.
+
+---
+
 ### Rules — Grammar v6 reorganization and gap fixes
 **LLM:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
 

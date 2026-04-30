@@ -19,7 +19,6 @@ The agent must not invent new taxonomy keys unless explicitly using the amendmen
 ## 1. Operating Principles
 
 ### 1.1 Separate the tasks
-
 For every question, separate:
 
 1. what the item tests
@@ -31,11 +30,9 @@ For every question, separate:
 7. what pattern should be used to generate a similar item
 
 ### 1.2 Do not write directly to the database
-
 The agent must output structured JSON or markdown records for validation. A deterministic backend validator should check all keys before insertion.
 
 ### 1.3 Use controlled keys
-
 The agent must use only approved lookup keys. If no key fits, it must propose an amendment instead of inventing a new production key.
 
 ### 1.4 Meaning over surface form
@@ -125,7 +122,6 @@ The following schemas formally define fields that appear in examples but were pr
 ---
 
 ## 3. Question Fields
-
 ```json
 {
   "source_exam": "PT4",
@@ -148,7 +144,6 @@ The following schemas formally define fields that appear in examples but were pr
 ```
 
 ### 3.1 stimulus_mode_key values
-
 - `sentence_only`
 - `passage_excerpt`
 - `prose_single`
@@ -159,7 +154,6 @@ The following schemas formally define fields that appear in examples but were pr
 - `poem`
 
 ### 3.2 stem_type_key values
-
 - `complete_the_text`
 - `choose_main_idea`
 - `choose_main_purpose`
@@ -177,19 +171,19 @@ The following schemas formally define fields that appear in examples but were pr
 
 Fields appearing in JSON examples that require controlled vocabularies:
 
-| Field                                                                                                        | Approved values                                                                                                                                                                                                                                                                       |
-| ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `answer_mechanism_key`                                                                                       | `rule_application`, `pattern_matching`, `evidence_location`, `inference`, `data_synthesis`                                                                                                                                                                                            |
-| `solver_pattern_key`                                                                                         | `apply_grammar_rule_directly`, `locate_error_zone`, `compare_register`, `evaluate_transition`, `synthesize_notes`, `eliminate_by_boundary`                                                                                                                                            |
-| `semantic_relation_key`                                                                                      | `nearest_noun_agreement`, `comma_splice`, `boundary_not_closed`, `boundary_overly_strong`, `wrong_boundary_type`, `correct_agreement`, `correct_boundary`, `unnecessary_auxiliary`, `tense_mismatch`, `modifier_misplaced`, `pronoun_ambiguous`, `parallel_broken`, `idiom_violation` |
-| `evidence_scope_key`                                                                                         | `sentence`, `paragraph`, `passage`, `paired_passage`, `table`, `graph`, `notes`                                                                                                                                                                                                       |
-| `evidence_location_key`                                                                                      | `main_clause`, `subordinate_clause`, `surrounding_sentence`, `opening_sentence`, `closing_sentence`, `transition_zone`, `data_zone`, `entire_passage`                                                                                                                                 |
-| `distractor_strength`                                                                                        | `low`, `medium`, `high`                                                                                                                                                                                                                                                               |
-| `difficulty_overall`, `difficulty_reading`, `difficulty_grammar`, `difficulty_inference`, `difficulty_vocab` | `low`, `medium`, `high`                                                                                                                                                                                                                                                               |
-| `skill_family`                                                                                               | `Sentence Boundaries`, `Form, Structure, and Sense`, `Agreement`, `Punctuation`, `Transitions`, `Rhetorical Synthesis`, `Craft and Structure`                                                                                                                                         |
-| `subskill`                                                                                                   | Free-text describing the specific skill within the family. Examples: `sentence boundary with interruption`, `subject-verb agreement with intervening noun`, `comma mechanics in compound sentences`. Use the most specific description possible.                                      |
-| `topic_broad`                                                                                                | `science`, `history`, `literature`, `social_studies`, `arts`, `economics`, `technology`, `environment`                                                                                                                                                                                |
-| `topic_fine`                                                                                                 | Free-text subtopic under `topic_broad`. Examples: `marine biology`, `ancient civilizations`, `modern poetry`, `labor economics`.                                                                                                                                                      |
+| Field | Approved values |
+| --- | --- |
+| `answer_mechanism_key` | `rule_application`, `pattern_matching`, `evidence_location`, `inference`, `data_synthesis` |
+| `solver_pattern_key` | `apply_grammar_rule_directly`, `locate_error_zone`, `compare_register`, `evaluate_transition`, `synthesize_notes`, `eliminate_by_boundary` |
+| `semantic_relation_key` | `nearest_noun_agreement`, `comma_splice`, `boundary_not_closed`, `boundary_overly_strong`, `wrong_boundary_type`, `correct_agreement`, `correct_boundary`, `unnecessary_auxiliary`, `tense_mismatch`, `modifier_misplaced`, `pronoun_ambiguous`, `parallel_broken`, `idiom_violation` |
+| `evidence_scope_key` | `sentence`, `paragraph`, `passage`, `paired_passage`, `table`, `graph`, `notes` |
+| `evidence_location_key` | `main_clause`, `subordinate_clause`, `surrounding_sentence`, `opening_sentence`, `closing_sentence`, `transition_zone`, `data_zone`, `entire_passage` |
+| `distractor_strength` | `low`, `medium`, `high` |
+| `difficulty_overall`, `difficulty_reading`, `difficulty_grammar`, `difficulty_inference`, `difficulty_vocab` | `low`, `medium`, `high` |
+| `skill_family` | `Sentence Boundaries`, `Form, Structure, and Sense`, `Agreement`, `Punctuation`, `Transitions`, `Rhetorical Synthesis`, `Craft and Structure` |
+| `subskill` | Free-text describing the specific skill within the family. Examples: `sentence boundary with interruption`, `subject-verb agreement with intervening noun`, `comma mechanics in compound sentences`. Use the most specific description possible. |
+| `topic_broad` | `science`, `history`, `literature`, `social_studies`, `arts`, `economics`, `technology`, `environment` |
+| `topic_fine` | Free-text subtopic under `topic_broad`. Examples: `marine biology`, `ancient civilizations`, `modern poetry`, `labor economics`. |
 
 ---
 

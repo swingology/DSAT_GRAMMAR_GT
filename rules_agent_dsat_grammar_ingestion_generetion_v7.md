@@ -1,24 +1,42 @@
-# rules_agent_dsat_grammar_ingestion_generetion_v6.md
+# rules_agent_dsat_grammar_ingestion_generetion_v7.md
 
 ## Purpose
 
-This is the consolidated v6 production rule file for the DSAT grammar
-ingestion and generation agent. It merges and reorganizes:
+This is the consolidated v7 production rule file for the DSAT grammar
+ingestion and generation agent. It extends v6 with taxonomy corrections and
+additions derived from a cross-referenced audit against College Board official
+documentation, Khan Academy, The Critical Reader, PrepScholar, Test Innovators,
+Albert.io, and released practice tests PT1–PT11.
+
+**v7 changes from v6:**
+
+- `skill_family` values corrected to match official College Board skill names
+  (`Boundaries`, `Form, Structure, and Sense`) and expanded to include all
+  eleven official R&W skill types
+- `stem_type_key` expanded: added `choose_words_in_context`,
+  `choose_cross_text_connection`, `choose_best_inference`,
+  `choose_command_of_evidence_textual`, `choose_command_of_evidence_quantitative`
+- `topic_broad` expanded: added `humanities` (official College Board content area)
+- `stimulus_mode_key`: `prose_plus_graph` annotated with confirmed graphic
+  subtypes (bar chart, line graph, scatterplot, pie chart, map)
+- `transition_subtype_key`: added `restatement_clarification`
+- `adjective_adverb_distinction` and `illogical_comparison` promoted from
+  pending (D.2.9) to production modifier focus keys
+- `commonly_confused_words` promoted from pending to production under
+  `expression_of_ideas` (non-homophone semantic pairs only)
+- `preposition_idiom` added as new production focus key under `expression_of_ideas`
+- `affirmative_agreement` and `negation` marked `dsat_confidence: low`
+  (ACT-adjacent; exclude from generation weighting)
+- D.8.1 role→focus mapping updated for all new/promoted keys
+- D.8.3 frequency table updated for new keys
+- Example A (B.12) `skill_family` corrected from `"Agreement"` to
+  `"Form, Structure, and Sense"`
+- `model_version` updated to `rules_agent_v7.0`
+
+**v6 source:**
 
 - `rules_agent_dsat_grammar_ingestion_generation_v3.md` (base)
 - `rules_agent_dsat_grammar_ingestion_generation_v3_1.md` (PT4–PT11 gap additions)
-
-**v6 changes from v5:**
-
-- Reorganized into five explicit parts: Mode Routing → Generation → Annotation → Taxonomy → Quality
-- Generation workflow (Part B) now precedes annotation workflow (Part C)
-- Broken §20.5 reference replaced with two complete inline JSON examples (B.12)
-- `classification` schema added to formal schemas (A.3)
-- `synthesis_distractor_failure` field name standardized across annotation and generation
-- Mode-routing section added (A.2) for unambiguous task detection
-- Four proposed focus keys documented with pending status (D.2.9)
-- `transition_subtype_key` vs `target_transition_subtype_key` naming clarified (B.5)
-- §30 and §31 addenda integrated inline into Part B
 
 The agent must not invent new taxonomy keys unless explicitly using the
 amendment process (C.7).
@@ -148,7 +166,7 @@ Every item must produce these five top-level sections:
 ```json
 {
   "domain": "Standard English Conventions",
-  "skill_family": "Agreement",
+  "skill_family": "Form, Structure, and Sense",
   "subskill": "subject-verb agreement with plural prepositional object",
   "question_family_key": "conventions_grammar",
   "grammar_role_key": "agreement",
@@ -213,7 +231,7 @@ Every item must produce these five top-level sections:
   "test_format_key": "digital_app_adaptive",
   "source_stats_format": "official_digital",
   "generation_timestamp": "2026-04-29T00:00:00Z",
-  "model_version": "rules_agent_v6.0"
+  "model_version": "rules_agent_v7.0"
 }
 ```
 
@@ -795,6 +813,7 @@ with the wrong relationship the distractor signals.
 | `logical_consequence` | `as such`, `therefore`, `thus` | Logical inference from the preceding statement |
 | `concession_qualification` | `admittedly`, `granted`, `to be sure` | Concedes a point before a counter-argument |
 | `example` | `for example`, `for instance`, `to illustrate` | Specific instance of a general claim |
+| `restatement_clarification` | `in other words`, `that is`, `i.e.` | Rephrases or clarifies the prior statement without adding new information; distinct from `example` (which adds a concrete instance) and `addition` (which adds new material) |
 
 ---
 
@@ -1089,7 +1108,7 @@ correct, explain why no correction is needed. Populate:
   },
   "classification": {
     "domain": "Standard English Conventions",
-    "skill_family": "Agreement",
+    "skill_family": "Form, Structure, and Sense",
     "subskill": "subject-verb agreement with plural prepositional object",
     "question_family_key": "conventions_grammar",
     "grammar_role_key": "agreement",
@@ -1210,7 +1229,7 @@ correct, explain why no correction is needed. Populate:
     "test_format_key": "digital_app_adaptive",
     "source_stats_format": "official_digital",
     "generation_timestamp": "2026-04-29T00:00:00Z",
-    "model_version": "rules_agent_v6.0"
+    "model_version": "rules_agent_v7.0"
   },
   "review": {
     "annotation_confidence": 0.98,
@@ -1364,7 +1383,7 @@ correct, explain why no correction is needed. Populate:
     "test_format_key": "digital_app_adaptive",
     "source_stats_format": "official_digital",
     "generation_timestamp": "2026-04-29T00:00:00Z",
-    "model_version": "rules_agent_v6.0"
+    "model_version": "rules_agent_v7.0"
   },
   "review": {
     "annotation_confidence": 0.96,
@@ -1465,29 +1484,47 @@ end-to-end in ≤3 reasoning steps. Never hallucinate an exam ID (use
 
 ### C.1.1 `stimulus_mode_key` values
 
-- `sentence_only`
-- `passage_excerpt`
-- `prose_single`
-- `prose_paired`
-- `prose_plus_table`
-- `prose_plus_graph`
-- `notes_bullets`
-- `poem`
+- `sentence_only` — single sentence with a blank (default for SEC grammar questions)
+- `passage_excerpt` — short multi-sentence excerpt (2–4 sentences)
+- `prose_single` — single labeled prose passage (50–150 words), one question
+- `prose_paired` — two labeled texts (Text 1 / Text 2); exclusive to Cross-Text Connections questions
+- `prose_plus_table` — prose passage with an embedded data table
+- `prose_plus_graph` — prose passage with an embedded informational graphic.
+  Confirmed graphic subtypes: bar chart, line graph, scatterplot (with or
+  without line of best fit), pie chart, map. All subtypes share this key;
+  the specific graphic subtype is free-text in `graph_data`.
+- `notes_bullets` — bulleted student-notes stimulus ("While researching a
+  topic, a student has taken the following notes:"); exclusive to Rhetorical
+  Synthesis questions
+- `poem` — poetry excerpt
 
 ### C.1.2 `stem_type_key` values
 
-- `complete_the_text`
-- `choose_main_idea`
-- `choose_main_purpose`
-- `choose_structure_description`
-- `choose_sentence_function`
-- `choose_likely_response`
-- `choose_best_support`
-- `choose_best_quote`
-- `choose_best_completion_from_data`
-- `choose_best_grammar_revision`
-- `choose_best_transition`
-- `choose_best_notes_synthesis`
+**Standard English Conventions:**
+- `complete_the_text` — fill-in-the-blank grammar (SEC); most common SEC stem
+- `choose_best_grammar_revision` — full-sentence or clause replacement (SEC)
+
+**Information and Ideas:**
+- `choose_main_idea` — Central Ideas and Details: main idea of passage
+- `choose_central_detail` — Central Ideas and Details: specific supporting detail
+- `choose_best_inference` — Inferences: logical conclusion not explicitly stated
+- `choose_command_of_evidence_textual` — Command of Evidence (Textual): best quote or detail supporting a claim
+- `choose_best_quote` — alias for `choose_command_of_evidence_textual` (legacy; prefer explicit form)
+- `choose_command_of_evidence_quantitative` — Command of Evidence (Quantitative): best completion using data from table or graph
+- `choose_best_completion_from_data` — alias for `choose_command_of_evidence_quantitative` (legacy; prefer explicit form)
+
+**Craft and Structure:**
+- `choose_words_in_context` — Words in Context: meaning or function of a word/phrase in context; most frequent question type (~28% of section)
+- `choose_main_purpose` — Text Structure and Purpose: author's main purpose
+- `choose_structure_description` — Text Structure and Purpose: how passage is structured
+- `choose_sentence_function` — Text Structure and Purpose: function of a specific sentence
+- `choose_likely_response` — Text Structure and Purpose: how one writer would likely respond to another
+- `choose_cross_text_connection` — Cross-Text Connections: relationship between paired texts (Text 1 / Text 2); only valid with `stimulus_mode_key: "prose_paired"`
+
+**Expression of Ideas:**
+- `choose_best_transition` — Transitions: most logical transition between sentences
+- `choose_best_notes_synthesis` — Rhetorical Synthesis: best sentence synthesizing student notes toward a stated goal
+- `choose_best_support` — legacy key; reclassify as `choose_command_of_evidence_textual` or `choose_best_notes_synthesis` as appropriate
 
 ### C.1.3 Approved values for undocumented fields
 
@@ -1500,9 +1537,9 @@ end-to-end in ≤3 reasoning steps. Never hallucinate an exam ID (use
 | `evidence_location_key` | `main_clause`, `subordinate_clause`, `surrounding_sentence`, `opening_sentence`, `closing_sentence`, `transition_zone`, `data_zone`, `entire_passage` |
 | `distractor_strength` | `low`, `medium`, `high` |
 | `difficulty_overall`, `difficulty_reading`, `difficulty_grammar`, `difficulty_inference`, `difficulty_vocab` | `low`, `medium`, `high` |
-| `skill_family` | `Sentence Boundaries`, `Form, Structure, and Sense`, `Agreement`, `Punctuation`, `Transitions`, `Rhetorical Synthesis`, `Craft and Structure` |
+| `skill_family` | **Standard English Conventions:** `Boundaries`, `Form, Structure, and Sense` — **Expression of Ideas:** `Transitions`, `Rhetorical Synthesis` — **Craft and Structure:** `Words in Context`, `Text Structure and Purpose`, `Cross-Text Connections` — **Information and Ideas:** `Central Ideas and Details`, `Inferences`, `Command of Evidence` |
 | `subskill` | Free-text describing the specific skill |
-| `topic_broad` | `science`, `history`, `literature`, `social_studies`, `arts`, `economics`, `technology`, `environment` |
+| `topic_broad` | `science`, `history`, `literature`, `social_studies`, `humanities`, `arts`, `economics`, `technology`, `environment` — Note: `humanities` is an official College Board content area. `arts`, `economics`, `technology`, `environment` are project-internal sub-tags within the four official CB areas (Literature, History/Social Studies, Humanities, Science). |
 | `topic_fine` | Free-text subtopic |
 
 ---
@@ -1772,7 +1809,9 @@ Use the most specific applicable `grammar_focus_key`.
 - `pronoun_antecedent_agreement`
 - `noun_countability`
 - `determiners_articles`
-- `affirmative_agreement`
+- `affirmative_agreement` ⚠️ `dsat_confidence: low` — so/neither inversion and
+  tag questions appear primarily in ACT conventions; exclude from DSAT
+  generation profiles
 
 ### D.2.3 Pronoun focus keys
 
@@ -1784,12 +1823,21 @@ Use the most specific applicable `grammar_focus_key`.
 - `verb_tense_consistency`
 - `verb_form`
 - `voice_active_passive`
-- `negation`
+- `negation` ⚠️ `dsat_confidence: low` — double negatives and hardly/scarcely
+  inversions are ACT patterns; retain only for scope-of-negation coverage
+  ("not all" vs "all not"); exclude double-negative and inversion patterns
+  from DSAT generation profiles
 
 ### D.2.5 Modifier focus keys
 
 - `modifier_placement`
-- `comparative_structures`
+- `comparative_structures` — comparisons where the compared elements are not
+  grammatically parallel; includes implied/incomplete comparisons
+- `illogical_comparison` — comparing a noun to an action or dissimilar category
+  (e.g., "the results of Study 1 were better than Study 2"); distinct from
+  `comparative_structures` because the error is logical, not formal
+- `adjective_adverb_distinction` — adjective vs. adverb selection, particularly
+  after linking verbs ("feel bad" not "feel badly"); promoted from pending D.2.9
 - `logical_predication`
 - `relative_pronouns`
 
@@ -1837,6 +1885,13 @@ mark. Wrong options typically swap the end mark or omit it.
 - `emphasis_meaning_shifts`
 - `data_interpretation_claims`
 - `transition_logic`
+- `commonly_confused_words` — non-homophone semantic confusion pairs (affect/effect,
+  allusion/illusion, elicit/illicit, principle/principal, etc.); homophone
+  possession confusion (its/it's, whose/who's) is covered by `possessive_contraction`;
+  frequency: low; promoted from pending D.2.9
+- `preposition_idiom` — verb-preposition and adjective-preposition collocations
+  where the correct preposition is idiomatic (responsible *for*, different *from*,
+  composed *of*, interested *in*); frequency: low
 
 ### D.2.9 Proposed keys (pending review — not yet in production)
 
@@ -1844,12 +1899,14 @@ These keys appeared in College Board practice test analysis but have not yet
 been formally adopted. Do not use in production records. Propose via C.5 if
 evidence warrants.
 
-| Proposed key | Proposed parent role | Evidence source |
-|---|---|---|
-| `adjective_adverb_distinction` | `modifier` | PT analysis; adverb/adjective confusion after linking verb |
-| `illogical_comparison` | `modifier` | PT analysis; incomplete or illogical comparative structure |
-| `commonly_confused_words` | `expression_of_ideas` | PT analysis; affect/effect, than/then, lay/lie type errors |
-| `subjunctive_mood` | `verb_form` | PT analysis; counterfactual and hypothetical conditional constructions |
+| Proposed key | Proposed parent role | Evidence source | Note |
+|---|---|---|---|
+| `subjunctive_mood` | `verb_form` | PT analysis; counterfactual and hypothetical conditional constructions | Extremely rare (~1 per official book); document as sub-pattern of `verb_form` rather than standalone key |
+
+Keys previously pending that were **promoted to production in v7:**
+`adjective_adverb_distinction` → D.2.5 (modifier),
+`illogical_comparison` → D.2.5 (modifier),
+`commonly_confused_words` → D.2.8 (expression_of_ideas)
 
 ---
 
@@ -2067,20 +2124,20 @@ or vice versa
 | `sentence_boundary` | `sentence_fragment`, `comma_splice`, `run_on_sentence`, `sentence_boundary` |
 | `agreement` | `subject_verb_agreement`, `pronoun_antecedent_agreement`, `noun_countability`, `determiners_articles`, `affirmative_agreement` |
 | `verb_form` | `verb_tense_consistency`, `verb_form`, `voice_active_passive`, `negation` |
-| `modifier` | `modifier_placement`, `comparative_structures`, `logical_predication`, `relative_pronouns` |
+| `modifier` | `modifier_placement`, `comparative_structures`, `illogical_comparison`, `adjective_adverb_distinction`, `logical_predication`, `relative_pronouns` |
 | `punctuation` | `punctuation_comma`, `colon_dash_use`, `semicolon_use`, `conjunctive_adverb_usage`, `apostrophe_use`, `possessive_contraction`, `appositive_punctuation`, `hyphen_usage`, `quotation_punctuation`, `unnecessary_internal_punctuation`, `end_punctuation_question_statement` |
 | `parallel_structure` | `parallel_structure`, `elliptical_constructions`, `conjunction_usage` |
 | `pronoun` | `pronoun_case`, `pronoun_clarity`, `pronoun_antecedent_agreement` |
-| `expression_of_ideas` | `redundancy_concision`, `precision_word_choice`, `register_style_consistency`, `logical_relationships`, `emphasis_meaning_shifts`, `data_interpretation_claims`, `transition_logic` |
+| `expression_of_ideas` | `redundancy_concision`, `precision_word_choice`, `register_style_consistency`, `logical_relationships`, `emphasis_meaning_shifts`, `data_interpretation_claims`, `transition_logic`, `commonly_confused_words`, `preposition_idiom` |
 
 ### D.8.2 Domain separation
 
-| Official SAT domain | `question_family_key` | `grammar_role_key` usage |
-|---|---|---|
-| Standard English Conventions | `conventions_grammar` | Required |
-| Expression of Ideas | `expression_of_ideas` | Optional; only if grammar-adjacent |
-| Craft and Structure | `craft_and_structure` | Forbidden |
-| Information and Ideas | `information_and_ideas` | Forbidden |
+| Official SAT domain | `question_family_key` | Official skill families | `grammar_role_key` usage |
+|---|---|---|---|
+| Standard English Conventions | `conventions_grammar` | `Boundaries`, `Form, Structure, and Sense` | Required |
+| Expression of Ideas | `expression_of_ideas` | `Transitions`, `Rhetorical Synthesis` | Optional; only if grammar-adjacent |
+| Craft and Structure | `craft_and_structure` | `Words in Context`, `Text Structure and Purpose`, `Cross-Text Connections` | Forbidden |
+| Information and Ideas | `information_and_ideas` | `Central Ideas and Details`, `Inferences`, `Command of Evidence` | Forbidden |
 
 ### D.8.3 Frequency table
 
@@ -2088,9 +2145,9 @@ or vice versa
 |---|---|
 | `very_high` | `punctuation_comma`, `subject_verb_agreement` |
 | `high` | `verb_tense_consistency`, `semicolon_use`, `apostrophe_use`, `sentence_boundary`, `appositive_punctuation` |
-| `medium` | `relative_pronouns`, `modifier_placement`, `colon_dash_use`, `pronoun_antecedent_agreement`, `parallel_structure`, `unnecessary_internal_punctuation`, `end_punctuation_question_statement`, `finite_verb_in_main_clause` (verb_form sub-pattern), `modal_plus_plain_form` (verb_form sub-pattern) |
-| `low` | `voice_active_passive`, `logical_predication`, `possessive_contraction`, `hyphen_usage`, `quotation_punctuation`, `finite_verb_in_relative_clause` (verb_form sub-pattern), `singular_event_reference` (pronoun sub-pattern), `literary_present` (tense register) |
-| `very_low` | `affirmative_agreement`, `negation`, `noun_countability`, `determiners_articles`, `elliptical_constructions` |
+| `medium` | `relative_pronouns`, `modifier_placement`, `colon_dash_use`, `pronoun_antecedent_agreement`, `parallel_structure`, `unnecessary_internal_punctuation`, `end_punctuation_question_statement`, `finite_verb_in_main_clause` (verb_form sub-pattern), `modal_plus_plain_form` (verb_form sub-pattern), `adjective_adverb_distinction`, `illogical_comparison` |
+| `low` | `voice_active_passive`, `logical_predication`, `possessive_contraction`, `hyphen_usage`, `quotation_punctuation`, `finite_verb_in_relative_clause` (verb_form sub-pattern), `singular_event_reference` (pronoun sub-pattern), `literary_present` (tense register), `commonly_confused_words`, `preposition_idiom` |
+| `very_low` | `affirmative_agreement` ⚠️, `negation` ⚠️, `noun_countability`, `determiners_articles`, `elliptical_constructions` — ⚠️ = dsat_confidence: low; do not use in generation |
 
 The generation profile must include `target_frequency_band`. Do not generate
 a `very_low` frequency item unless explicitly instructed.
@@ -2312,7 +2369,8 @@ If any fail: regenerate.
 | Error response format | B.14 |
 | Real-time constraints | B.15 |
 | Question fields | C.1 |
-| stem_type_key / stimulus_mode_key values | C.1.1, C.1.2 |
+| stem_type_key values (all 17 types incl. Words in Context, Cross-Text, Inference) | C.1.2 |
+| stimulus_mode_key values (incl. prose_plus_graph subtypes) | C.1.1 |
 | Option-level analysis | C.2 |
 | option_error_focus_key table | C.2.1 |
 | precision_score scale | C.2.4 |
@@ -2346,9 +2404,9 @@ If any fail: regenerate.
 
 ---
 
-*Document version: v6.0 — 2026-04-29*
-*Reorganized from v5.0 for generation-first LLM navigation*
-*Merges: `rules_agent_dsat_grammar_ingestion_generation_v3.md` + `rules_agent_dsat_grammar_ingestion_generation_v3_1.md`*
+*Document version: v7.0 — 2026-04-29*
+*Taxonomy audit and corrections vs official College Board documentation*
+*Extends v6.0 (which merged v3.md + v3_1.md)*
 *Agent: Claude Sonnet 4.6 (`claude-sonnet-4-6`)*
 *Domain coverage: Standard English Conventions, Expression of Ideas*
 *Companion file: `rules_agent_dsat_reading_v1.md` / `rules_agent_dsat_reading_v1_1.md`*
