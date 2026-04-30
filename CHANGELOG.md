@@ -5,6 +5,132 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-04-29
+
+### Rules — Grammar v6 reorganization and gap fixes
+**LLM:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+
+Created `rules_agent_dsat_grammar_ingestion_generetion_v6.md` — a structural
+reorganization of v5 for generation-first LLM navigation.
+
+**Structural changes:**
+
+- Reorganized into five explicit parts: A (Mode Routing) → B (Generation) →
+  C (Annotation) → D (Taxonomy Reference) → E (Quality Protocols)
+- Generation workflow (Part B) now precedes annotation workflow (Part C)
+- §20 megasection decomposed into 15 focused B.x subsections
+- §30 (Transition Subtypes) and §31 (Notes Synthesis) integrated inline into
+  Part B rather than appended as addenda
+
+**Gaps fixed:**
+
+- Broken `§20.5` reference replaced with two complete inline JSON generation
+  examples (B.12): `subject_verb_agreement` medium-difficulty and
+  `transition_logic` medium-difficulty
+- Missing `classification` schema added to formal schemas (A.3)
+- `synthesis_distractor_failure` field name standardized: per-option
+  annotation uses `synthesis_distractor_failure` (singular string);
+  generation input uses `distractor_synthesis_failures` (plural array)
+- Mode-routing section added (A.2) with explicit generation vs annotation
+  trigger conditions
+- Four proposed focus keys documented with pending status in D.2.9:
+  `adjective_adverb_distinction`, `illogical_comparison`,
+  `commonly_confused_words`, `subjunctive_mood`
+- `transition_subtype_key` vs `target_transition_subtype_key` naming
+  clarified in B.5.1: stored annotation field vs generation request field
+
+---
+
+### Rules — CB PT4–PT11 gap analysis and v3.1 / v1.1 rule addenda
+**LLM:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+
+Cross-referenced official College Board answer explanations for Practice Tests 4–11
+(sourced from `CB_ANSWERS_QUESTIONS_ANALYSIS.md`) against both production rule files.
+Created two new addendum files covering every identified gap.
+
+**Files created:**
+
+- `rules_agent_dsat_grammar_ingestion_generation_v3_1.md`
+- `rules_agent_dsat_reading_v1_1.md`
+
+---
+
+**`rules_agent_dsat_grammar_ingestion_generation_v3_1.md`**
+
+*Addendum to `rules_agent_dsat_grammar_ingestion_generation_v3.md`*
+
+- Added punctuation focus key `unnecessary_internal_punctuation` — covers
+  absence-of-punctuation cases inside subject–verb, verb–object,
+  preposition–complement, and integrated relative clause units (PT4, PT5,
+  PT6, PT7, PT9, PT11)
+- Added punctuation focus key `end_punctuation_question_statement` — period
+  on indirect questions vs question mark on direct questions (PT6, PT11)
+- Extended `appositive_punctuation` with three sub-patterns: restrictive
+  appositive (no punctuation), title/role before proper name (no punctuation),
+  coordinated restrictive appositive (no punctuation) (PT5, PT8, PT9)
+- Added three named verb form generation patterns with passage templates and
+  distractor constraints: `finite_verb_in_relative_clause`,
+  `finite_verb_in_main_clause`, `modal_plus_plain_form` (PT5, PT8, PT9)
+- Added `singular_event_reference` pronoun generation pattern — singular
+  pronoun referring to a whole preceding clause or event, not a noun (PT5)
+- Added `literary_present` to `passage_tense_register_key` — simple present
+  when discussing events inside literary works (PT10)
+- Added `transition_subtype_key` field with 23 named subtypes covering every
+  transition word pattern observed in PT4–PT11; required on generation profiles
+  and wrong-option annotations
+- Added three metadata fields for notes synthesis generation:
+  `synthesis_goal_key` (41 values), `audience_knowledge_key` (3 values),
+  `required_content_key` (30 values); added `synthesis_distractor_failure`
+  for wrong-option annotation
+- Added `test_format_key` field distinguishing `digital_app_adaptive` (27 Qs)
+  from `nondigital_linear_accommodation` (33 Qs) with validated
+  domain-boundary position bands
+- Added 11 grammar-specific `student_failure_mode_key` values
+- Added 8 new validator checklist items (checks 18–25)
+
+---
+
+**`rules_agent_dsat_reading_v1_1.md`**
+
+*Addendum to `rules_agent_dsat_reading_v1.md`*
+
+- Added `polarity_fit` Words in Context focus key — for items where a negator
+  or concessive ("by no means," "not atypical") reverses required word polarity
+  (PT4, PT5, PT6); includes generation rule requiring all four options to
+  remain viable after applying the negator
+- Added `polarity_mismatch` reasoning trap key
+- Added phrase-level WIC generation note — when the correct answer is a
+  multi-word phrase, all options must match in length and structure
+- Added 12 named functional roles for `sentence_function` items (concession,
+  elaboration, contrast_motivation, parenthetical_definition, example,
+  consequence, hypothesis, counter_evidence, scope_qualification,
+  conventional_approach, obstacle, background_setup); `target_sentence_function_role`
+  now required in generation profiles
+- Added parenthetical-definition generation constraint — correct answer must
+  identify term clarification, not broader passage purpose (PT7, PT11)
+- Added 8 named quantitative sub-patterns with primary distractor traps:
+  `exact_value_lookup`, `timing_constrained`, `all_measures`, `repeated_highest`,
+  `two_variable_opposite`, `composition_change`, `binned_distribution`, `standard`
+- Added 5 new quantitative reasoning trap keys: `wrong_row_or_column`,
+  `wrong_time_window`, `all_measures_not_checked`, `individual_from_aggregate`,
+  `direction_reversal`
+- Added all 5 experimental passage architectures:
+  `experiment_hypothesis_control_result`, `indirect_effect_mediation`,
+  `alternative_explanation_ruled_out`, `mechanism_manipulation_test`,
+  `studied_subgroup_generalization_limit`
+- Added `study_design_isolation_limit` inference pattern — when passage design
+  prevents isolating a causal variable (PT6, PT10)
+- Added `subgroup_overgeneralization` inference pattern with generation
+  template (PT11)
+- Added two-part claim annotation rule for quote-illustration items — at least
+  one distractor must satisfy exactly one of two required elements
+- Added control-group distractor pattern for experimental architecture items
+- Added `confirmation_with_qualification` generation note for cross-text items
+- Added 10 new student failure mode keys
+- Added 9 new validator checklist items
+
+---
+
 ## 2026-04-27
 
 ### 14:35 — Added missing indexes to SQLAlchemy models
