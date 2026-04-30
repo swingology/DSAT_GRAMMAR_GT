@@ -1927,8 +1927,9 @@ Apply these priority rules whenever multiple labels seem possible.
 11. `relative_pronouns` > `modifier_placement`
 12. `possessive_contraction` > `apostrophe_use`
 13. `hyphen_usage` > general `punctuation`, `modifier_placement`
-14. `unnecessary_internal_punctuation` > general `punctuation_comma` when the test is whether punctuation should be absent inside a syntactic unit
-15. `end_punctuation_question_statement` > general `punctuation` when the test is period vs question mark based on sentence type
+14. `preposition_idiom` > `conjunction_usage` — specific verb-preposition pairings take precedence over general conjunction mechanics
+15. `unnecessary_internal_punctuation` > general `punctuation_comma` when the test is whether punctuation should be absent inside a syntactic unit
+16. `end_punctuation_question_statement` > general `punctuation` when the test is period vs question mark based on sentence type
 
 Always write the selected rule in `disambiguation_rule_applied`.
 
@@ -2409,4 +2410,4 @@ If any fail: regenerate.
 *Extends v6.0 (which merged v3.md + v3_1.md)*
 *Agent: Claude Sonnet 4.6 (`claude-sonnet-4-6`)*
 *Domain coverage: Standard English Conventions, Expression of Ideas*
-*Companion file: `rules_agent_dsat_reading_v1.md` / `rules_agent_dsat_reading_v1_1.md`*
+*Companion file: `rules_agent_dsat_reading_v2.md`*
