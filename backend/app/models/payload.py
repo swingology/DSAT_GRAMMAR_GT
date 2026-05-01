@@ -68,6 +68,8 @@ class UserStats(BaseModel):
 class AdminEditRequest(BaseModel):
     question_text: Optional[str] = None
     passage_text: Optional[str] = None
+    paired_passage_text: Optional[str] = None
+    underlined_text: Optional[str] = None
     correct_option_label: Optional[str] = Field(default=None, pattern=r"^[A-D]$")
     explanation_text: Optional[str] = None
     change_notes: Optional[str] = None

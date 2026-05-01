@@ -136,9 +136,14 @@ async def edit_question(
 
     now = datetime.now(timezone.utc)
 
-    latest_version = None
-    if q.versions:
-        latest_version = max(q.versions, key=lambda v: v.version_number)
+    # Use explicit query — lazy-loading q.versions fails in async context
+    latest_ver_result = await db.execute(
+        select(QuestionVersion)
+        .where(QuestionVersion.question_id == qid)
+        .order_by(QuestionVersion.version_number.desc())
+        .limit(1)
+    )
+    latest_version = latest_ver_result.scalars().first()
 
     # Serialize current options into choices_jsonb
     opts_result = await db.execute(
@@ -159,6 +164,8 @@ async def edit_question(
         change_source="admin_edit",
         question_text=changes.get("question_text", q.current_question_text),
         passage_text=changes.get("passage_text", q.current_passage_text),
+        paired_passage_text=changes.get("paired_passage_text", q.current_paired_passage_text),
+        underlined_text=changes.get("underlined_text", q.current_underlined_text),
         choices_jsonb=choices,
         correct_option_label=changes.get("correct_option_label", q.current_correct_option_label),
         explanation_text=changes.get("explanation_text", q.current_explanation_text),
@@ -171,6 +178,10 @@ async def edit_question(
         q.current_question_text = changes["question_text"]
     if "passage_text" in changes:
         q.current_passage_text = changes["passage_text"]
+    if "paired_passage_text" in changes:
+        q.current_paired_passage_text = changes["paired_passage_text"]
+    if "underlined_text" in changes:
+        q.current_underlined_text = changes["underlined_text"]
     if "correct_option_label" in changes:
         q.current_correct_option_label = changes["correct_option_label"]
     if "explanation_text" in changes:

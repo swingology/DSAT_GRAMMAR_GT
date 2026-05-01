@@ -133,6 +133,7 @@ async def review_items_fragment(
         SELECT
             q.id, q.source_exam_code, q.source_question_number, q.stem_type_key,
             q.content_origin, q.current_question_text, q.current_passage_text,
+            q.current_paired_passage_text, q.current_underlined_text,
             q.current_correct_option_label, q.practice_status,
             lj.validation_errors_jsonb, lj.job_id
         FROM questions q
@@ -162,7 +163,7 @@ async def review_items_fragment(
 
     cards = []
     for row in items:
-        qid, exam, qnum, stem, origin, qtext, ptext, correct, pstatus, errors, job_id = row
+        qid, exam, qnum, stem, origin, qtext, ptext, paired_ptext, underlined_text, correct, pstatus, errors, job_id = row
         qid_str = str(qid)
         job_id_str = str(job_id)
 
@@ -205,7 +206,19 @@ async def review_items_fragment(
             "generated": "bg-violet-100 text-violet-700",
         }.get(origin or "", "bg-slate-100 text-slate-600")
 
-        passage_display = _esc(ptext[:500] + "…" if ptext and len(ptext) > 500 else (ptext or "")) or '<span class="italic text-slate-400">None</span>'
+        def _truncate(t):
+            if not t:
+                return '<span class="italic text-slate-400">None</span>'
+            escaped = _esc(t[:500] + "…" if len(t) > 500 else t)
+            return f'<p class="text-sm text-slate-800 leading-snug whitespace-pre-wrap">{escaped}</p>'
+
+        passage_block = _truncate(ptext)
+        paired_block = _truncate(paired_ptext) if paired_ptext else ""
+        underlined_block = (
+            f'<div class="mt-2 rounded border border-amber-200 bg-amber-50 px-3 py-2">'
+            f'<p class="text-xs font-semibold text-amber-700 mb-1">Underlined portion</p>'
+            f'<p class="text-sm text-slate-800">{_esc(underlined_text)}</p></div>'
+        ) if underlined_text else ""
 
         cards.append(f"""
 <div class="card p-5 space-y-4" id="rq-{qid_str[:8]}">
@@ -234,8 +247,10 @@ async def review_items_fragment(
       <p class="text-sm text-slate-800 leading-snug">{_esc(qtext or "")}</p>
     </div>
     <div class="space-y-1">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Passage</p>
-      <p class="text-sm text-slate-800 leading-snug">{passage_display}</p>
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">{'Text 1 / Passage' if paired_ptext else 'Passage'}</p>
+      {passage_block}
+      {underlined_block}
+      {'<p class="text-xs font-medium text-slate-500 uppercase tracking-wide mt-2">Text 2 (paired)</p>' + _truncate(paired_ptext) if paired_ptext else ""}
     </div>
   </div>
 
@@ -257,8 +272,16 @@ async def review_items_fragment(
         <textarea name="question_text" rows="3" class="inp text-sm">{_esc(qtext or "")}</textarea>
       </div>
       <div class="field">
-        <label class="text-xs text-slate-500">Passage text (Text 1 if dual-passage; include Text 2 below)</label>
+        <label class="text-xs text-slate-500">Passage text (Text 1)</label>
         <textarea name="passage_text" rows="4" class="inp text-sm">{_esc(ptext or "")}</textarea>
+      </div>
+      <div class="field">
+        <label class="text-xs text-slate-500">Text 2 / Paired passage (compare questions — leave blank if single passage)</label>
+        <textarea name="paired_passage_text" rows="4" class="inp text-sm">{_esc(paired_ptext or "")}</textarea>
+      </div>
+      <div class="field">
+        <label class="text-xs text-slate-500">Underlined portion (exact text that is underlined in the passage — leave blank if none)</label>
+        <textarea name="underlined_text" rows="2" class="inp text-sm">{_esc(underlined_text or "")}</textarea>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div class="field">
