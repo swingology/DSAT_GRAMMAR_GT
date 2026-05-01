@@ -2,11 +2,11 @@ import uuid
 from datetime import datetime, timezone
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 
 from app.database import get_db
@@ -44,6 +44,65 @@ class RelationCreateRequest(BaseModel):
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+
+
+@router.get("/questions")
+async def list_questions(
+    practice_status: Optional[str] = Query(None, description="Filter by practice_status (draft/active/retired)"),
+    content_origin: Optional[str] = Query(None, description="Filter by content_origin (official/generated)"),
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """List questions for admin review. Defaults to draft (pending review) queue."""
+    from app.models.db import QuestionAnnotation, QuestionOption
+
+    stmt = select(Question)
+    if practice_status:
+        stmt = stmt.where(Question.practice_status == practice_status)
+    if content_origin:
+        stmt = stmt.where(Question.content_origin == content_origin)
+    stmt = stmt.order_by(Question.created_at.desc()).offset(offset).limit(limit)
+
+    result = await db.execute(stmt)
+    questions = result.unique().scalars().all()
+
+    items = []
+    for q in questions:
+        annotation = None
+        if q.latest_annotation_id:
+            ann = await db.get(QuestionAnnotation, q.latest_annotation_id)
+            if ann:
+                annotation = {**ann.annotation_jsonb, **ann.explanation_jsonb}
+
+        opts_result = await db.execute(
+            select(QuestionOption).where(QuestionOption.question_id == q.id)
+        )
+        options = [
+            {"label": o.option_label, "text": o.option_text, "is_correct": o.is_correct}
+            for o in opts_result.scalars().all()
+        ]
+
+        items.append({
+            "id": str(q.id),
+            "content_origin": q.content_origin,
+            "practice_status": q.practice_status,
+            "official_overlap_status": q.official_overlap_status,
+            "source_exam_code": q.source_exam_code,
+            "source_module_code": q.source_module_code,
+            "source_question_number": q.source_question_number,
+            "current_passage_text": q.current_passage_text,
+            "current_question_text": q.current_question_text,
+            "current_correct_option_label": q.current_correct_option_label,
+            "current_explanation_text": q.current_explanation_text,
+            "is_admin_edited": q.is_admin_edited,
+            "annotation": annotation,
+            "options": options,
+            "created_at": q.created_at.isoformat() if q.created_at else None,
+        })
+
+    return items
 
 
 def _parse_uuid(item_id: str) -> UUID:
