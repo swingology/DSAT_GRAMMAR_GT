@@ -5,6 +5,105 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-04-30
+
+### Backend — metadata persistence, guide-file runtime wiring, and validator alignment
+**LLM:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+
+Aligned the backend more closely with the newer grammar and reading rule
+documents while keeping the existing DB schema and migration chain intact.
+
+**Persistence and API changes**
+
+- Preserved structured annotation sections during normalization instead of
+  flattening them away, so `annotation_jsonb` can retain richer model output
+  while still exposing flat keys needed by the app
+- Started persisting `generation_profile_jsonb` on `question_annotations`
+  instead of writing `NULL` in generate/ingest flows
+- Merged generation request metadata into stored generation profile payloads
+  for generated questions
+- Exposed stored `generation_profile` through:
+  - admin recall API (`/questions/recall`)
+  - student recall API (`/api/questions`)
+  - admin detail API (`/questions/{question_id}`)
+- Added backend documentation file:
+  - `docs/backend/INGESTION_AND_STORAGE_FLOW.md`
+  - explains ingest/generate flow, persisted data, prompt usage, required
+    runtime process, and includes a Mermaid diagram
+
+**Prompt-layer changes**
+
+- Updated annotation prompt loading to use the newer guide markdown files at
+  runtime instead of only the old v3 grammar file:
+  - `rules_agent_dsat_grammar_ingestion_generetion_v7.md`
+  - `rules_agent_dsat_reading_v2.md`
+- Updated generation prompts to also inline trimmed excerpts of the newer
+  grammar and reading rule files into the system prompt
+
+**Ontology and validation changes**
+
+- Expanded `STEM_TYPE_KEYS` to include newer reading/cross-text stems such as:
+  - `choose_words_in_context`
+  - `choose_cross_text_connection`
+  - `choose_best_inference`
+  - `choose_command_of_evidence_textual`
+  - `choose_command_of_evidence_quantitative`
+- Expanded grammar focus coverage for v7 additions:
+  - `adjective_adverb_distinction`
+  - `illogical_comparison`
+  - `commonly_confused_words`
+  - `preposition_idiom`
+  - `unnecessary_internal_punctuation`
+  - `end_punctuation_question_statement`
+- Added reading taxonomy constants:
+  - `READING_SKILL_FAMILY_KEYS`
+  - `READING_FOCUS_BY_SKILL_FAMILY`
+  - `READING_FOCUS_KEYS`
+- Added `partial_match` to supported distractor types
+- Relaxed the annotation schema so reading-domain items do not require
+  `grammar_focus_key`
+- Added reading-domain annotation fields including:
+  - `skill_family_key`
+  - `reading_focus_key`
+  - `secondary_reading_focus_keys`
+  - `reasoning_trap_key`
+  - `transition_subtype_key`
+- Validator now enforces:
+  - reading-domain questions must not set grammar keys
+  - reading-domain questions require `skill_family_key`
+  - reading-domain questions require `reading_focus_key`
+  - `reading_focus_key` must match the chosen reading skill family
+  - Cross-Text items require `stimulus_mode_key="prose_paired"`
+  - Cross-Text items require `paired_passage_text`
+  - Quantitative CoE items require `prose_plus_table` or `prose_plus_graph`
+  - Quantitative CoE items require `table_data` or `graph_data`
+  - grammar role/focus pairing is checked against the updated v7 role map
+
+**Test coverage**
+
+- Added and updated tests for:
+  - prompt runtime rule loading
+  - generation-profile persistence
+  - response model exposure of generation metadata
+  - v7 grammar key acceptance
+  - reading taxonomy key acceptance
+  - reading-domain validator enforcement
+- Verification runs completed:
+  - `uv run pytest tests/test_parsers.py tests/test_backend_regressions.py -q`
+  - `uv run pytest tests/test_schemas.py tests/test_questions_router.py tests/test_student_router.py tests/test_backend_regressions.py -q`
+  - `uv run pytest tests/test_prompts.py tests/test_parsers.py tests/test_backend_regressions.py tests/test_generate_router.py tests/test_ingest_router.py -q`
+  - `uv run pytest tests/test_ontology.py tests/test_schemas.py tests/test_pipeline.py tests/test_prompts.py -q`
+  - `uv run pytest tests -q`
+- Final suite result: `165 passed, 2 skipped`
+
+**Known warning**
+
+- Confirmed that the remaining SWIG-related deprecation warnings during tests
+  come from `PyMuPDF` / `fitz` import initialization, not from project code.
+  Reproduced with:
+  - `uv run python -Wdefault -c "import warnings; warnings.simplefilter('default'); import fitz"`
+  - warnings observed: `SwigPyPacked`, `SwigPyObject`, `swigvarlink`
+
 ## 2026-04-29
 
 ### Rules — Grammar v7 taxonomy audit and corrections

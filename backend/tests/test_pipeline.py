@@ -119,6 +119,58 @@ def test_validate_generated_missing_lineage():
     assert any("lineage" in e["field"] or "generation" in e["message"].lower() for e in errors)
 
 
+def test_validate_reading_question_rejects_grammar_keys():
+    q = {
+        "question_text": "Which choice best supports the claim?",
+        "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"},
+                    {"label": "C", "text": "c"}, {"label": "D", "text": "d"}],
+        "correct_option_label": "A",
+        "question_family_key": "information_and_ideas",
+        "skill_family_key": "command_of_evidence_textual",
+        "reading_focus_key": "evidence_supports_claim",
+        "grammar_role_key": "agreement",
+        "difficulty_overall": "medium",
+        "explanation_short": "Because A.",
+    }
+    errors = validate_question(q, content_origin="official")
+    assert any(e["field"] == "grammar_keys" and e["severity"] == "blocking" for e in errors)
+
+
+def test_validate_cross_text_requires_paired_passage():
+    q = {
+        "question_text": "Based on the texts, how would Text 2 respond to Text 1?",
+        "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"},
+                    {"label": "C", "text": "c"}, {"label": "D", "text": "d"}],
+        "correct_option_label": "A",
+        "question_family_key": "craft_and_structure",
+        "skill_family_key": "cross_text_connections",
+        "reading_focus_key": "text2_response_to_text1",
+        "stimulus_mode_key": "prose_single",
+        "difficulty_overall": "medium",
+        "explanation_short": "Because A.",
+    }
+    errors = validate_question(q, content_origin="official")
+    assert any(e["field"] == "stimulus_mode_key" and e["severity"] == "blocking" for e in errors)
+    assert any(e["field"] == "paired_passage_text" and e["severity"] == "blocking" for e in errors)
+
+
+def test_validate_quantitative_requires_graphic_data():
+    q = {
+        "question_text": "Which choice most effectively uses data from the graph?",
+        "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"},
+                    {"label": "C", "text": "c"}, {"label": "D", "text": "d"}],
+        "correct_option_label": "A",
+        "question_family_key": "information_and_ideas",
+        "skill_family_key": "command_of_evidence_quantitative",
+        "reading_focus_key": "data_supports_claim",
+        "stimulus_mode_key": "prose_plus_graph",
+        "difficulty_overall": "medium",
+        "explanation_short": "Because A.",
+    }
+    errors = validate_question(q, content_origin="official")
+    assert any(e["field"] == "graphic_data" and e["severity"] == "blocking" for e in errors)
+
+
 def test_validate_bad_correct_label():
     q = {
         "question_text": "test",

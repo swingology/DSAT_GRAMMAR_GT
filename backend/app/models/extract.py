@@ -16,6 +16,8 @@ class QuestionExtract(BaseModel):
     options: List[ExtractedOption] = Field(min_length=4, max_length=4)
     correct_option_label: str = Field(pattern=r"^[A-D]$")
     source_exam_code: Optional[str] = None
+    source_subject_code: Optional[str] = None
+    source_section_code: Optional[str] = None
     source_module_code: Optional[str] = None
     source_question_number: Optional[int] = None
     stimulus_mode_key: Optional[str] = None

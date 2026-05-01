@@ -18,6 +18,28 @@ from app.models.payload import GenerationRequest, GenerationCompareRequest, JobR
 router = APIRouter(prefix="/generate", tags=["generate"])
 
 
+def _generation_profile_payload(*sources: dict | None) -> dict | None:
+    """Build the stored generation profile from model output and request metadata."""
+    merged: dict = {}
+    for source in sources:
+        if not isinstance(source, dict):
+            continue
+        profile = source.get("generation_profile")
+        if isinstance(profile, dict):
+            merged.update(profile)
+    if isinstance(sources[-1], dict):
+        merged.update(sources[-1])
+    return merged or None
+
+
+def _provider_api_key(settings, provider_name: str) -> str:
+    if provider_name == "anthropic":
+        return settings.anthropic_api_key
+    if provider_name == "openai":
+        return settings.openai_api_key
+    return ""
+
+
 async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_data: dict):
     from app.llm.factory import get_provider
     from app.prompts.generate_prompt import build_generate_prompt
@@ -26,7 +48,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     settings = get_settings()
     provider = get_provider(
         job.provider_name,
-        api_key=settings.anthropic_api_key or settings.openai_api_key,
+        api_key=_provider_api_key(settings, job.provider_name),
         base_url=settings.ollama_base_url,
         default_model=job.model_name,
     )
@@ -35,7 +57,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     system, user = build_generate_prompt(generation_request=request_data)
     try:
         result = await provider.complete(system=system, user=user, max_tokens=8192, temperature=0.7)
-        generated = extract_json_from_text(result.raw_text)
+        generated = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
         job.pass1_json = {**generated, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
         job.status = "annotating"
         await db.commit()
@@ -49,7 +71,9 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     system, user = build_annotate_prompt(generated)
     try:
         result = await provider.complete(system=system, user=user, max_tokens=8192)
-        annotate_json = normalize_annotation(extract_json_from_text(result.raw_text))
+        annotate_json = normalize_annotation(
+            extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
+        )
         job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
     except Exception as e:
         job.status = "failed"
@@ -108,6 +132,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     ))
 
     # Create QuestionAnnotation
+    generation_profile = _generation_profile_payload(generated, annotate_json, request_data)
     db.add(QuestionAnnotation(
         id=annotation_id,
         question_id=question_id,
@@ -118,7 +143,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
         rules_version=job.rules_version,
         annotation_jsonb=annotate_json,
         explanation_jsonb={"explanation_full": annotate_json.get("explanation_full", "")},
-        generation_profile_jsonb=None,
+        generation_profile_jsonb=generation_profile,
         confidence_jsonb={"annotation_confidence": annotate_json.get("annotation_confidence", 0.0), "needs_human_review": annotate_json.get("needs_human_review", False)},
         created_at=now,
     ))

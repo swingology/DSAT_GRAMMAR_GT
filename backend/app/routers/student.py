@@ -52,11 +52,13 @@ async def student_recall(
     for q in questions:
         grammar_focus_key = None
         difficulty_overall = None
+        generation_profile = None
         if q.latest_annotation_id:
             ann = await db.get(QuestionAnnotation, q.latest_annotation_id)
             if ann:
                 grammar_focus_key = ann.annotation_jsonb.get("grammar_focus_key")
                 difficulty_overall = ann.annotation_jsonb.get("difficulty_overall")
+                generation_profile = ann.generation_profile_jsonb
 
         responses.append(QuestionRecallResponse(
             id=str(q.id),
@@ -69,6 +71,10 @@ async def student_recall(
             difficulty_overall=difficulty_overall,
             stimulus_mode_key=q.stimulus_mode_key,
             source_exam_code=q.source_exam_code,
+            source_subject_code=q.source_subject_code,
+            source_section_code=q.source_section_code,
+            source_module_code=q.source_module_code,
+            generation_profile=generation_profile,
         ))
     return responses
 

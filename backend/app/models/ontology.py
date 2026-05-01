@@ -1,6 +1,4 @@
-"""V3 allowed keys, enums, and constants.
-Source: rules_agent_dsat_grammar_ingestion_generation_v3.md
-"""
+"""Allowed keys, enums, and constants for the current DSAT ruleset."""
 
 # --- Content origin ---
 CONTENT_ORIGINS = ("official", "unofficial", "generated")
@@ -46,6 +44,12 @@ STEM_TYPE_KEYS = (
     "choose_likely_response", "choose_best_support", "choose_best_quote",
     "choose_best_completion_from_data", "choose_best_grammar_revision",
     "choose_best_transition", "choose_best_notes_synthesis",
+    "choose_words_in_context", "choose_word_in_context", "choose_cross_text_connection",
+    "choose_text_relationship", "choose_agreement_across_texts",
+    "choose_difference_across_texts", "choose_best_inference",
+    "choose_command_of_evidence_textual", "choose_command_of_evidence_quantitative",
+    "choose_central_detail", "choose_detail", "choose_best_illustration",
+    "choose_best_weakener",
 )
 
 # --- V3 §5 grammar_role_key ---
@@ -67,13 +71,15 @@ GRAMMAR_FOCUS_BY_ROLE = {
         "verb_tense_consistency", "verb_form", "voice_active_passive", "negation",
     ),
     "modifier": (
-        "modifier_placement", "comparative_structures",
+        "modifier_placement", "comparative_structures", "illogical_comparison",
+        "adjective_adverb_distinction",
         "logical_predication", "relative_pronouns",
     ),
     "punctuation": (
         "punctuation_comma", "colon_dash_use", "semicolon_use",
         "conjunctive_adverb_usage", "apostrophe_use", "possessive_contraction",
         "appositive_punctuation", "hyphen_usage", "quotation_punctuation",
+        "unnecessary_internal_punctuation", "end_punctuation_question_statement",
     ),
     "parallel_structure": (
         "parallel_structure", "elliptical_constructions", "conjunction_usage",
@@ -85,7 +91,7 @@ GRAMMAR_FOCUS_BY_ROLE = {
         "redundancy_concision", "precision_word_choice",
         "register_style_consistency", "logical_relationships",
         "emphasis_meaning_shifts", "data_interpretation_claims",
-        "transition_logic",
+        "transition_logic", "commonly_confused_words", "preposition_idiom",
     ),
 }
 
@@ -110,7 +116,7 @@ DISTRACTOR_TYPE_KEYS = (
     "tone_mismatch", "grammar_error", "punctuation_error",
     "transition_mismatch", "data_misread", "goal_mismatch",
     "partially_supported", "overstatement", "understatement",
-    "rhetorical_irrelevance", "correct",
+    "rhetorical_irrelevance", "partial_match", "correct",
 )
 
 # --- V3 §10.3 plausibility_source_key ---
@@ -178,4 +184,53 @@ PASSAGE_ARCHITECTURE_KEYS = (
 QUESTION_FAMILY_KEYS = (
     "conventions_grammar", "expression_of_ideas",
     "craft_and_structure", "information_and_ideas",
+)
+
+READING_QUESTION_FAMILY_KEYS = ("craft_and_structure", "information_and_ideas")
+
+READING_SKILL_FAMILY_KEYS = (
+    "command_of_evidence_textual",
+    "command_of_evidence_quantitative",
+    "central_ideas_and_details",
+    "inferences",
+    "words_in_context",
+    "text_structure_and_purpose",
+    "cross_text_connections",
+)
+
+READING_FOCUS_BY_SKILL_FAMILY = {
+    "command_of_evidence_textual": (
+        "evidence_supports_claim", "evidence_weakens_claim",
+        "evidence_illustrates_claim", "evidence_explains_claim",
+        "evidence_qualifies_claim",
+    ),
+    "command_of_evidence_quantitative": (
+        "data_supports_claim", "data_weakens_claim",
+        "data_completes_example", "data_comparison", "data_trend",
+    ),
+    "central_ideas_and_details": (
+        "central_idea", "main_purpose", "passage_summary",
+        "supporting_detail", "character_or_author_detail",
+    ),
+    "inferences": (
+        "causal_inference", "motivational_inference",
+        "implication_inference", "predictive_inference",
+        "cross_text_inference",
+    ),
+    "words_in_context": (
+        "contextual_meaning", "connotation_fit", "precision_fit",
+        "register_fit", "underlined_word_meaning", "polarity_fit",
+    ),
+    "text_structure_and_purpose": (
+        "overall_purpose", "text_structure", "sentence_function",
+        "rhetorical_shift", "author_stance",
+    ),
+    "cross_text_connections": (
+        "text2_response_to_text1", "agreement_across_texts",
+        "difference_across_texts", "shared_topic_different_conclusion",
+    ),
+}
+
+READING_FOCUS_KEYS = tuple(
+    k for keys in READING_FOCUS_BY_SKILL_FAMILY.values() for k in keys
 )

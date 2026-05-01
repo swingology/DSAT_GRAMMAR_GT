@@ -21,7 +21,9 @@ class Settings(BaseSettings):
     # LLM defaults
     default_annotation_provider: str = "anthropic"
     default_annotation_model: str = "claude-sonnet-4-6"
+    default_ollama_model: str = "kimi-k2.6:cloud"
     rules_version: str = "rules_agent_dsat_grammar_ingestion_generation_v3"
+    official_auto_activate_for_testing: bool = False
 
     # Retry
     llm_retry_max_attempts: int = 3

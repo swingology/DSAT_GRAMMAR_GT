@@ -9,11 +9,12 @@ def test_extract_prompt_contains_instructions():
     assert "colony" in user
 
 
-def test_annotate_prompt_loads_v3_rules():
+def test_annotate_prompt_loads_current_rules():
     system, user = build_annotate_prompt(
         extract_json={"question_text": "test", "options": [], "correct_option_label": "A"},
     )
-    assert "Standard English Conventions" in system or "grammar_role_key" in system
+    assert "rules_agent_dsat_grammar_ingestion_generetion_v7.md" in system or "Grammar v7 RULES REFERENCE" in system
+    assert "Reading v2 RULES REFERENCE" in system
     assert "JSON" in system
 
 
@@ -26,3 +27,4 @@ def test_generate_prompt_includes_target():
     }
     system, user = build_generate_prompt(generation_request=request)
     assert "subject_verb_agreement" in user
+    assert "Grammar v7 RULES REFERENCE" in system

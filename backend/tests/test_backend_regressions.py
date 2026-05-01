@@ -134,6 +134,80 @@ async def test_run_pipeline_keeps_official_questions_in_draft(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_run_pipeline_auto_activates_official_questions_when_testing_flag_enabled(monkeypatch):
+    db = _FakeDB()
+    job = SimpleNamespace(
+        id=uuid.uuid4(),
+        content_origin="official",
+        job_type="ingest",
+        provider_name="anthropic",
+        model_name="model",
+        prompt_version="v3.0",
+        rules_version="rules",
+        pass1_json={"raw_text": "raw official text"},
+        validation_errors_jsonb=None,
+        raw_asset_id=None,
+        status="parsing",
+        question_id=None,
+    )
+
+    extract_json = {
+        "question_text": "What is the answer?",
+        "passage_text": "A passage",
+        "correct_option_label": "A",
+        "options": [
+            {"label": "A", "text": "Correct"},
+            {"label": "B", "text": "Wrong"},
+        ],
+        "source_exam_code": "PT01",
+        "source_module_code": "M1",
+        "source_question_number": 1,
+        "stimulus_mode_key": "sentence_only",
+        "stem_type_key": "complete_the_text",
+    }
+    annotate_json = {
+        "explanation_short": "Because A is correct.",
+        "explanation_full": "Long explanation",
+        "annotation_confidence": 0.9,
+        "needs_human_review": False,
+    }
+    responses = iter([extract_json, annotate_json])
+
+    provider = SimpleNamespace(
+        complete=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+                SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        )
+    )
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+    monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(
+        ingest_router,
+        "get_settings",
+        lambda: SimpleNamespace(
+            anthropic_api_key="k",
+            openai_api_key=None,
+            ollama_base_url="http://localhost:11434",
+            local_archive_mirror="/tmp/test_archive",
+            official_auto_activate_for_testing=True,
+        ),
+    )
+
+    await ingest_router._run_pipeline(job, db)
+
+    question = next(obj for obj in db.added if isinstance(obj, Question))
+    assert question.practice_status == "active"
+    assert job.status == "approved"
+    assert job.question_id == question.id
+
+
+@pytest.mark.asyncio
 async def test_run_pipeline_persists_overlap_after_question_creation(monkeypatch):
     db = _FakeDB()
     job = SimpleNamespace(
@@ -235,6 +309,7 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
         "explanation_full": "Long generated explanation",
         "annotation_confidence": 0.88,
         "needs_human_review": False,
+        "generation_profile": {"model_version": "rules_agent_v7.0"},
     }
     responses = iter([generated, annotated])
     provider = SimpleNamespace(
@@ -256,9 +331,111 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
     await generate_router._run_generate_pipeline(job, db, {"seed": "value"})
 
     question = next(obj for obj in db.added if isinstance(obj, Question))
+    annotation = next(obj for obj in db.added if isinstance(obj, QuestionAnnotation))
     assert db.flush_count == 1
     assert question.latest_version_id is not None
     assert question.latest_annotation_id is not None
+    assert job.question_id == question.id
+    assert annotation.generation_profile_jsonb == {
+        "model_version": "rules_agent_v7.0",
+        "seed": "value",
+    }
+
+
+def test_provider_api_key_selection():
+    settings = SimpleNamespace(
+        anthropic_api_key="anthropic-key",
+        openai_api_key="openai-key",
+    )
+
+    assert ingest_router._provider_api_key(settings, "anthropic") == "anthropic-key"
+    assert ingest_router._provider_api_key(settings, "openai") == "openai-key"
+    assert ingest_router._provider_api_key(settings, "ollama") == ""
+    assert generate_router._provider_api_key(settings, "anthropic") == "anthropic-key"
+    assert generate_router._provider_api_key(settings, "openai") == "openai-key"
+    assert generate_router._provider_api_key(settings, "ollama") == ""
+
+
+@pytest.mark.asyncio
+async def test_run_pipeline_persists_reading_domain_question(monkeypatch):
+    db = _FakeDB()
+    job = SimpleNamespace(
+        id=uuid.uuid4(),
+        content_origin="official",
+        job_type="ingest",
+        provider_name="anthropic",
+        model_name="model",
+        prompt_version="v3.0",
+        rules_version="rules",
+        pass1_json={"raw_text": "raw reading text"},
+        validation_errors_jsonb=None,
+        raw_asset_id=None,
+        status="parsing",
+        question_id=None,
+    )
+
+    extract_json = {
+        "question_text": "Which choice best supports the claim?",
+        "passage_text": "A short passage about ecology.",
+        "correct_option_label": "A",
+        "options": [
+            {"label": "A", "text": "Correct"},
+            {"label": "B", "text": "Wrong 1"},
+            {"label": "C", "text": "Wrong 2"},
+            {"label": "D", "text": "Wrong 3"},
+        ],
+        "source_exam_code": "PT11",
+        "source_module_code": "M1",
+        "source_question_number": 14,
+        "stimulus_mode_key": "prose_single",
+        "stem_type_key": "choose_best_support",
+    }
+    annotate_json = {
+        "question_family_key": "information_and_ideas",
+        "skill_family_key": "command_of_evidence_textual",
+        "reading_focus_key": "evidence_supports_claim",
+        "difficulty_overall": "medium",
+        "difficulty_reading": "medium",
+        "difficulty_grammar": "low",
+        "difficulty_inference": "medium",
+        "difficulty_vocab": "low",
+        "distractor_strength": "high",
+        "evidence_scope_key": "passage",
+        "evidence_location_key": "main_clause",
+        "answer_mechanism_key": "evidence_location",
+        "solver_pattern_key": "locate_claim_then_match_evidence",
+        "register": "academic informational",
+        "tone": "neutral",
+        "explanation_short": "Only A directly supports the stated claim.",
+        "explanation_full": "A is the only option that provides direct support for the passage's claim.",
+        "annotation_confidence": 0.9,
+        "needs_human_review": False,
+    }
+    responses = iter([extract_json, annotate_json])
+
+    provider = SimpleNamespace(
+        complete=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+                SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        )
+    )
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive"))
+
+    await ingest_router._run_pipeline(job, db)
+
+    question = next(obj for obj in db.added if isinstance(obj, Question))
+    annotation = next(obj for obj in db.added if isinstance(obj, QuestionAnnotation))
+    assert question.current_question_text == "Which choice best supports the claim?"
+    assert annotation.annotation_jsonb["question_family_key"] == "information_and_ideas"
+    assert annotation.annotation_jsonb["skill_family_key"] == "command_of_evidence_textual"
+    assert annotation.annotation_jsonb["reading_focus_key"] == "evidence_supports_claim"
     assert job.question_id == question.id
 
 

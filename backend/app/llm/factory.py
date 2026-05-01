@@ -17,7 +17,10 @@ def get_provider(
         provider = OpenAIProvider(api_key=api_key, default_model=default_model or "gpt-4o")
     elif provider_name == "ollama":
         from app.llm.ollama_provider import OllamaProvider
-        provider = OllamaProvider(base_url=base_url or "http://localhost:11434", default_model=default_model or "kimi-k2")
+        provider = OllamaProvider(
+            base_url=base_url or "http://localhost:11434",
+            default_model=default_model or "kimi-k2.6:cloud",
+        )
     else:
         raise ValueError(f"Unknown provider: {provider_name}")
     _provider_registry.append(provider)

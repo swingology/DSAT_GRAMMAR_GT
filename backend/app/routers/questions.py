@@ -51,12 +51,14 @@ async def recall_questions(
         grammar_role_key = None
         grammar_focus_key = None
         difficulty_overall = None
+        generation_profile = None
         if q.latest_annotation_id:
             ann = await db.get(QuestionAnnotation, q.latest_annotation_id)
             if ann:
                 grammar_role_key = ann.annotation_jsonb.get("grammar_role_key")
                 grammar_focus_key = ann.annotation_jsonb.get("grammar_focus_key")
                 difficulty_overall = ann.annotation_jsonb.get("difficulty_overall")
+                generation_profile = ann.generation_profile_jsonb
 
         responses.append(QuestionRecallResponse(
             id=str(q.id),
@@ -70,6 +72,10 @@ async def recall_questions(
             difficulty_overall=difficulty_overall,
             stimulus_mode_key=q.stimulus_mode_key,
             source_exam_code=q.source_exam_code,
+            source_subject_code=q.source_subject_code,
+            source_section_code=q.source_section_code,
+            source_module_code=q.source_module_code,
+            generation_profile=generation_profile,
         ))
     return responses
 
@@ -90,10 +96,12 @@ async def get_question_detail(
         raise HTTPException(status_code=404, detail="Question not found")
 
     latest_annotation = None
+    generation_profile = None
     if q.latest_annotation_id:
         ann = await db.get(QuestionAnnotation, q.latest_annotation_id)
         if ann:
             latest_annotation = {**ann.annotation_jsonb, **ann.explanation_jsonb}
+            generation_profile = ann.generation_profile_jsonb
 
     opts_result = await db.execute(
         select(QuestionOption).where(QuestionOption.question_id == qid)
@@ -128,8 +136,11 @@ async def get_question_detail(
         official_overlap_status=q.official_overlap_status,
         is_admin_edited=q.is_admin_edited,
         source_exam_code=q.source_exam_code,
+        source_subject_code=q.source_subject_code,
+        source_section_code=q.source_section_code,
         source_module_code=q.source_module_code,
         latest_annotation=latest_annotation,
+        generation_profile=generation_profile,
         options=options,
         lineage=lineage,
         created_at=q.created_at,

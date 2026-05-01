@@ -44,6 +44,7 @@ def test_factory_returns_ollama():
     p = get_provider("ollama", base_url="http://localhost:11434")
     from app.llm.ollama_provider import OllamaProvider
     assert isinstance(p, OllamaProvider)
+    assert p.default_model == "kimi-k2.6:cloud"
 
 
 def test_factory_rejects_unknown():

@@ -1,8 +1,33 @@
 """Generation prompt — produces new DSAT-style questions from a specification."""
 import json
+import os
 
 
-GENERATE_SYSTEM_PROMPT = """You are a DSAT question generation specialist following the rules_agent_dsat_grammar_ingestion_generation_v3.md specification.
+_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+_RULE_SNIPPET_LIMIT = 6000
+_GENERATION_RULE_FILES = [
+    ("Grammar v7", "rules_agent_dsat_grammar_ingestion_generetion_v7.md"),
+    ("Reading v2", "rules_agent_dsat_reading_v2.md"),
+]
+
+
+def _load_generation_rule_context() -> str:
+    sections: list[str] = []
+    for label, filename in _GENERATION_RULE_FILES:
+        path = os.path.join(_ROOT_DIR, filename)
+        if not os.path.exists(path):
+            continue
+        with open(path, "r", encoding="utf-8") as f:
+            rules_text = f.read()
+        if len(rules_text) > _RULE_SNIPPET_LIMIT:
+            body = f"{rules_text[:_RULE_SNIPPET_LIMIT]}\n[...truncated for length...]"
+        else:
+            body = rules_text
+        sections.append(f"{label} RULES REFERENCE:\n{body}")
+    return "\n\n".join(sections)
+
+
+GENERATE_SYSTEM_PROMPT = """You are a DSAT question generation specialist following the current DSAT grammar and reading guide specifications.
 
 Generate a complete SAT-style question matching the given specification. Your output must include:
 1. question: passage_text, question_text, options (4 labeled A-D), correct_option_label
@@ -24,8 +49,12 @@ Rules:
 
 def build_generate_prompt(generation_request: dict, source_examples: list = None) -> tuple[str, str]:
     """Build system and user prompts for question generation."""
+    rules_context = _load_generation_rule_context()
     user_parts = [f"Generation request:\n{json.dumps(generation_request, indent=2)}"]
     if source_examples:
         user_parts.append(f"\nSource examples for reference:\n{json.dumps(source_examples, indent=2)}")
     user = "\n".join(user_parts)
-    return GENERATE_SYSTEM_PROMPT, user
+    system = GENERATE_SYSTEM_PROMPT
+    if rules_context:
+        system = f"{system}\n\n{rules_context}"
+    return system, user

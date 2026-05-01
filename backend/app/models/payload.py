@@ -16,6 +16,10 @@ class QuestionRecallResponse(BaseModel):
     difficulty_overall: Optional[str] = None
     stimulus_mode_key: Optional[str] = None
     source_exam_code: Optional[str] = None
+    source_subject_code: Optional[str] = None
+    source_section_code: Optional[str] = None
+    source_module_code: Optional[str] = None
+    generation_profile: Optional[dict] = None
 
     model_config = {"from_attributes": True}
 
@@ -31,8 +35,11 @@ class QuestionDetailResponse(BaseModel):
     official_overlap_status: str
     is_admin_edited: bool
     source_exam_code: Optional[str] = None
+    source_subject_code: Optional[str] = None
+    source_section_code: Optional[str] = None
     source_module_code: Optional[str] = None
     latest_annotation: Optional[dict] = None
+    generation_profile: Optional[dict] = None
     options: List[dict] = Field(default_factory=list)
     lineage: Optional[dict] = None
     created_at: Optional[datetime] = None

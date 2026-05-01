@@ -38,6 +38,47 @@ def test_extract_json_from_bracket_search():
     assert result["nested"]["key"] == 1
 
 
+def test_extract_json_from_kimi_single_quotes_and_bare_keys():
+    text = """
+    Here is the extracted JSON:
+    {
+      question_text: 'Which choice completes the text?',
+      options: [
+        {"label": "A", "text": "one"},
+        {"label": "B", "text": "two"},
+        {"label": "C", "text": "three"},
+        {"label": "D", "text": "four"},
+      ],
+      correct_option_label: 'C',
+    }
+    """
+    result = extract_json_from_text(text, provider_name="ollama", model_name="kimi-k2.6:cloud")
+    assert result["question_text"] == "Which choice completes the text?"
+    assert result["correct_option_label"] == "C"
+    assert len(result["options"]) == 4
+
+
+def test_extract_json_from_kimi_think_block_and_js_fence():
+    text = """
+    <think>Need to structure this carefully.</think>
+    ```javascript
+    {
+      question_text: "Sample question",
+      options: [
+        {label: "A", text: "alpha"},
+        {label: "B", text: "beta"},
+        {label: "C", text: "gamma"},
+        {label: "D", text: "delta"}
+      ],
+      correct_option_label: "A"
+    }
+    ```
+    """
+    result = extract_json_from_text(text, provider_name="ollama", model_name="kimi-k2.6:cloud")
+    assert result["question_text"] == "Sample question"
+    assert result["options"][0]["label"] == "A"
+
+
 # --- Annotation Normalizer ---
 
 def test_normalize_annotation_flat_passthrough():
@@ -65,8 +106,8 @@ def test_normalize_annotation_flattens_nested_keys():
     assert result["explanation_full"] == "Long explanation."
     assert result["annotation_confidence"] == 0.9
     assert result["needs_human_review"] is False
-    assert "classification" not in result
-    assert "question" not in result
+    assert result["classification"]["grammar_focus_key"] == "subject_verb_agreement"
+    assert result["question"]["explanation_short"] == "Because A."
 
 
 def test_normalize_annotation_top_level_wins_over_nested():
@@ -82,7 +123,7 @@ def test_normalize_annotation_ignores_unknown_nested_keys():
     data = {"wrapper": {"unknown_key": "value", "explanation_short": "Kept."}}
     result = normalize_annotation(data)
     assert result["explanation_short"] == "Kept."
-    assert "unknown_key" not in result
+    assert result["wrapper"]["unknown_key"] == "value"
 
 
 # --- PDF Parser ---

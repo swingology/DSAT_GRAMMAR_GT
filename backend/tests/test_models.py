@@ -27,7 +27,7 @@ def test_questions_columns():
     from app.models.db import Question
     mapper = inspect(Question).mapper
     col_names = {c.key for c in mapper.columns}
-    required = {"id", "content_origin", "source_exam_code", "source_module_code",
+    required = {"id", "content_origin", "source_exam_code", "source_subject_code", "source_section_code", "source_module_code",
                 "stimulus_mode_key", "stem_type_key",
                 "current_question_text", "current_passage_text",
                 "current_correct_option_label", "current_explanation_text",

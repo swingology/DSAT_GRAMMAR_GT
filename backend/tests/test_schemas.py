@@ -49,6 +49,24 @@ def test_question_annotation_valid():
     assert a.grammar_focus_key == "subject_verb_agreement"
 
 
+def test_question_annotation_valid_reading_domain():
+    from app.models.annotation import QuestionAnnotation
+    data = {
+        "question_family_key": "information_and_ideas",
+        "skill_family_key": "command_of_evidence_textual",
+        "reading_focus_key": "evidence_supports_claim",
+        "register": "academic informational",
+        "difficulty_overall": "medium",
+        "explanation_short": "The evidence directly supports the claim.",
+        "explanation_full": "The cited detail is the only option that directly supports the stated claim.",
+        "annotation_confidence": 0.9,
+        "needs_human_review": False,
+    }
+    a = QuestionAnnotation(**data)
+    assert a.reading_focus_key == "evidence_supports_claim"
+    assert a.register_label == "academic informational"
+
+
 def test_question_annotation_rejects_bad_focus():
     from app.models.annotation import QuestionAnnotation
     with pytest.raises(ValidationError):
@@ -94,9 +112,32 @@ def test_question_recall_response():
         "grammar_role_key": "agreement",
         "grammar_focus_key": "subject_verb_agreement",
         "difficulty_overall": "medium",
+        "source_subject_code": "verbal",
+        "source_section_code": "01",
+        "source_module_code": "02",
+        "generation_profile": {"model_version": "rules_agent_v7.0"},
     }
     r = QuestionRecallResponse(**data)
     assert r.practice_status == "active"
+    assert r.generation_profile == {"model_version": "rules_agent_v7.0"}
+    assert r.source_subject_code == "verbal"
+
+
+def test_question_detail_response():
+    from app.models.payload import QuestionDetailResponse
+    data = {
+        "id": "00000000-0000-0000-0000-000000000001",
+        "content_origin": "generated",
+        "current_question_text": "Which choice completes the text?",
+        "current_passage_text": "A passage here.",
+        "current_correct_option_label": "C",
+        "practice_status": "draft",
+        "official_overlap_status": "none",
+        "is_admin_edited": False,
+        "generation_profile": {"model_version": "rules_agent_v7.0"},
+    }
+    r = QuestionDetailResponse(**data)
+    assert r.generation_profile == {"model_version": "rules_agent_v7.0"}
 
 
 def test_generation_request_valid():
@@ -124,5 +165,3 @@ def test_job_response_model():
     from app.models.payload import JobResponse
     j = JobResponse(id="abc-123", job_type="ingest", status="parsing", question_id=None)
     assert j.status == "parsing"
-
-

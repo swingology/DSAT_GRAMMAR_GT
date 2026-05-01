@@ -1,6 +1,59 @@
 AUTH = {"X-API-Key": "admin-test-key"}
 
 
+def test_resolve_provider_and_model_uses_default_ollama_model():
+    from types import SimpleNamespace
+    from app.routers.ingest import _resolve_provider_and_model
+
+    settings = SimpleNamespace(
+        default_annotation_provider="ollama",
+        default_annotation_model="claude-sonnet-4-6",
+        default_ollama_model="kimi-k2.6:cloud",
+    )
+
+    provider_name, model_name = _resolve_provider_and_model(settings, None, None)
+
+    assert provider_name == "ollama"
+    assert model_name == "kimi-k2.6:cloud"
+
+
+def test_resolve_provider_and_model_respects_explicit_provider_and_fallback_model():
+    from types import SimpleNamespace
+    from app.routers.ingest import _resolve_provider_and_model
+
+    settings = SimpleNamespace(
+        default_annotation_provider="anthropic",
+        default_annotation_model="claude-sonnet-4-6",
+        default_ollama_model="kimi-k2.6:cloud",
+    )
+
+    provider_name, model_name = _resolve_provider_and_model(settings, "ollama", None)
+
+    assert provider_name == "ollama"
+    assert model_name == "kimi-k2.6:cloud"
+
+
+def test_normalize_source_metadata_accepts_legacy_codes():
+    from app.routers.ingest import _normalize_source_metadata
+
+    subject_code, section_code, module_code = _normalize_source_metadata("RW", "S1", "M2")
+
+    assert subject_code == "verbal"
+    assert section_code == "01"
+    assert module_code == "02"
+
+
+def test_normalize_source_metadata_rejects_bad_section():
+    import pytest
+    from fastapi import HTTPException
+    from app.routers.ingest import _normalize_source_metadata
+
+    with pytest.raises(HTTPException) as exc_info:
+        _normalize_source_metadata("math", "03", "01")
+
+    assert exc_info.value.status_code == 422
+
+
 def test_ingest_pdf_no_file(client):
     resp = client.post("/ingest/official/pdf", headers=AUTH)
     assert resp.status_code == 422

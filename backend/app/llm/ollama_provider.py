@@ -6,7 +6,7 @@ from app.llm.retry import with_retry
 
 
 class OllamaProvider:
-    def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "kimi-k2"):
+    def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "kimi-k2.6:cloud"):
         self.base_url = base_url.rstrip("/")
         self.default_model = default_model
         self.client = httpx.AsyncClient(base_url=self.base_url, timeout=120.0)
