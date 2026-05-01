@@ -33,6 +33,96 @@ IMAGE_MIME_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
 
+def _resolve_provider_and_model(
+    settings,
+    provider_name: str | None,
+    model_name: str | None,
+) -> tuple[str, str]:
+    provider = (provider_name or settings.default_annotation_provider or "anthropic").strip()
+    model = (model_name or "").strip()
+    if model:
+        return provider, model
+    if provider == "ollama":
+        return provider, settings.default_ollama_model
+    return provider, settings.default_annotation_model
+
+
+def _provider_api_key(settings, provider_name: str) -> str:
+    if provider_name == "anthropic":
+        return settings.anthropic_api_key
+    if provider_name == "openai":
+        return settings.openai_api_key
+    return ""
+
+
+def _should_auto_activate_official(settings) -> bool:
+    return bool(getattr(settings, "official_auto_activate_for_testing", False))
+
+
+def _normalize_source_subject_code(value: str | None) -> str | None:
+    normalized = (value or "").strip().lower()
+    if not normalized:
+        return None
+    aliases = {
+        "verbal": "verbal",
+        "reading_writing": "verbal",
+        "reading-writing": "verbal",
+        "rw": "verbal",
+        "english": "verbal",
+        "math": "math",
+        "mathematics": "math",
+        "m": "math",
+    }
+    normalized = aliases.get(normalized, normalized)
+    if normalized not in {"verbal", "math"}:
+        raise HTTPException(status_code=422, detail="source_subject_code must be 'verbal' or 'math'")
+    return normalized
+
+
+def _normalize_source_slot(value: str | None, field_name: str) -> str | None:
+    normalized = (value or "").strip().upper()
+    if not normalized:
+        return None
+    aliases = {
+        "S1": "01",
+        "S2": "02",
+        "M1": "01",
+        "M2": "02",
+        "1": "01",
+        "2": "02",
+        "01": "01",
+        "02": "02",
+    }
+    normalized = aliases.get(normalized, normalized)
+    if normalized not in {"01", "02"}:
+        raise HTTPException(status_code=422, detail=f"{field_name} must be '01' or '02'")
+    return normalized
+
+
+def _normalize_source_metadata(
+    source_subject_code: str | None,
+    source_section_code: str | None,
+    source_module_code: str | None,
+) -> tuple[str | None, str | None, str | None]:
+    return (
+        _normalize_source_subject_code(source_subject_code),
+        _normalize_source_slot(source_section_code, "source_section_code"),
+        _normalize_source_slot(source_module_code, "source_module_code"),
+    )
+
+
+def _generation_profile_payload(*sources: dict | None) -> dict | None:
+    """Extract a stored generation profile when annotation output includes one."""
+    merged: dict = {}
+    for source in sources:
+        if not isinstance(source, dict):
+            continue
+        profile = source.get("generation_profile")
+        if isinstance(profile, dict):
+            merged.update(profile)
+    return merged or None
+
+
 def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str | None, dict]:
     """Normalize LLM extract output to a list of per-question dicts.
 
@@ -47,6 +137,7 @@ def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str 
     shared_passage = extract_root.get("passage_text")
     shared_source = {
         "source_exam_code": extract_root.get("source_exam_code"),
+        "source_subject_code": extract_root.get("source_subject_code"),
         "source_section_code": extract_root.get("source_section_code"),
         "source_module_code": extract_root.get("source_module_code"),
     }
@@ -88,13 +179,19 @@ async def _persist_single_question(
     version_id = uuid.uuid4()
     annotation_id = uuid.uuid4()
 
-    practice_status = "draft" if job.content_origin == "official" else "active"
+    official_auto_activate = _should_auto_activate_official(get_settings())
+    practice_status = (
+        "active"
+        if job.content_origin == "official" and official_auto_activate
+        else "draft" if job.content_origin == "official" else "active"
+    )
     overlap_status = "possible" if overlaps else "none"
 
     question = Question(
         id=question_id,
         content_origin=job.content_origin,
         source_exam_code=q_data.get("source_exam_code"),
+        source_subject_code=q_data.get("source_subject_code"),
         source_section_code=q_data.get("source_section_code"),
         source_module_code=q_data.get("source_module_code"),
         source_question_number=q_data.get("source_question_number"),
@@ -139,7 +236,7 @@ async def _persist_single_question(
         rules_version=job.rules_version,
         annotation_jsonb=annotate_json,
         explanation_jsonb={"explanation_full": annotate_json.get("explanation_full", "")},
-        generation_profile_jsonb=None,
+        generation_profile_jsonb=_generation_profile_payload(q_data, annotate_json),
         confidence_jsonb={"annotation_confidence": annotate_json.get("annotation_confidence", 0.0), "needs_human_review": annotate_json.get("needs_human_review", False)},
         created_at=now,
     ))
@@ -214,12 +311,12 @@ def _export_question(job: QuestionJob, q_data: dict, annotate_json: dict, questi
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     from app.llm.factory import get_provider
     from app.prompts.extract_prompt import build_extract_prompt
-    from app.prompts.annotate_prompt import build_annotate_prompt
+    from app.prompts.annotate_prompt import build_annotate_prompt, enforce_nullability, _detect_domain
 
     settings = get_settings()
     provider = get_provider(
         job.provider_name,
-        api_key=settings.anthropic_api_key or settings.openai_api_key,
+        api_key=_provider_api_key(settings, job.provider_name),
         base_url=settings.ollama_base_url,
         default_model=job.model_name,
     )
@@ -237,10 +334,12 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     job.status = "extracting"
     await db.commit()
 
-    system, user = build_extract_prompt(raw_text[:30000])
+    # Save form-submitted metadata before pass1_json is overwritten by LLM extraction
+    form_meta = (job.pass1_json or {}).get("source_metadata", {})
+    system, user = build_extract_prompt(raw_text[:100000], source_metadata=form_meta)
     try:
-        result = await provider.complete(system=system, user=user)
-        extract_root = extract_json_from_text(result.raw_text)
+        result = await provider.complete(system=system, user=user, max_tokens=16000)
+        extract_root = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
         job.pass1_json = {**extract_root, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
     except Exception as e:
         orch.fail("extracting", "llm_error", str(e))
@@ -255,15 +354,23 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     # Determine passage_group_id: set only for multi-question batches
     passage_group_id = uuid.uuid4() if len(questions_data) > 1 else None
 
-    # Extract section_code for asset backfill
-    source_meta = (job.pass1_json or {}).get("source_metadata", {})
-    section_code = shared_source.get("source_section_code") or source_meta.get("source_section_code")
+    # Form-submitted metadata takes precedence; fall back to LLM-extracted values
+    exam_code = form_meta.get("source_exam_code") or shared_source.get("source_exam_code")
+    subject_code = form_meta.get("source_subject_code") or shared_source.get("source_subject_code")
+    section_code = form_meta.get("source_section_code") or shared_source.get("source_section_code")
+    module_code = form_meta.get("source_module_code") or shared_source.get("source_module_code")
 
     # ---- Per-question loop ----
     created_question_ids: list[uuid.UUID] = []
     all_errors: list[dict] = []
 
     for i, q_data in enumerate(questions_data):
+        # Form-submitted metadata takes precedence over LLM-extracted values
+        if exam_code:
+            q_data["source_exam_code"] = exam_code
+        q_data.setdefault("source_subject_code", subject_code)
+        q_data.setdefault("source_section_code", section_code)
+        q_data.setdefault("source_module_code", module_code)
         # ---- Pass 2: Annotate ----
         job.status = "annotating"
         await db.commit()
@@ -271,7 +378,11 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         system, user = build_annotate_prompt(q_data)
         try:
             result = await provider.complete(system=system, user=user, max_tokens=8192)
-            annotate_json = normalize_annotation(extract_json_from_text(result.raw_text))
+            annotate_json = normalize_annotation(
+                extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
+            )
+            # Hard-enforce domain nullability rules after LLM output
+            annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
         except Exception as e:
             all_errors.append({"question_index": i, "step": "annotating", "error": str(e), "source_question_number": q_data.get("source_question_number")})
             continue
@@ -326,7 +437,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     if created_question_ids:
         # At least one question succeeded
         job.question_id = created_question_ids[0]  # primary question for the job
-        if job.content_origin == "official":
+        if job.content_origin == "official" and not _should_auto_activate_official(settings):
             job.status = "needs_review"
         else:
             job.status = "approved"
@@ -400,15 +511,21 @@ def _asset_type_from_mime(mime: str) -> str:
 async def ingest_official_pdf(
     file: UploadFile = File(...),
     source_exam_code: str = Form(""),
+    source_subject_code: str = Form(""),
     source_section_code: str = Form(""),
     source_module_code: str = Form(""),
-    provider_name: str = Form("anthropic"),
-    model_name: str = Form("claude-sonnet-4-6"),
+    provider_name: str | None = Form(None),
+    model_name: str | None = Form(None),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
     mime_type = _validate_upload_mime(file.content_type, {"application/pdf"})
     content = await _safe_read(file, MAX_FILE_SIZE)
+    source_subject_code, source_section_code, source_module_code = _normalize_source_metadata(
+        source_subject_code,
+        source_section_code,
+        source_module_code,
+    )
 
     storage_path = await save_asset(file.filename or "upload.pdf", content, subfolder="official")
     checksum = compute_checksum(content)
@@ -430,6 +547,7 @@ async def ingest_official_pdf(
         page_end=len(pdf_result["pages"]) - 1,
         source_name=file.filename,
         source_exam_code=source_exam_code or None,
+        source_subject_code=source_subject_code,
         source_section_code=source_section_code or None,
         source_module_code=source_module_code or None,
         checksum=checksum,
@@ -438,6 +556,7 @@ async def ingest_official_pdf(
     db.add(asset)
 
     settings = get_settings()
+    provider_name, model_name = _resolve_provider_and_model(settings, provider_name, model_name)
     job = QuestionJob(
         id=job_id,
         job_type="ingest",
@@ -451,6 +570,7 @@ async def ingest_official_pdf(
         raw_asset_id=asset_id,
         pass1_json={"raw_text": raw_text[:50000], "pages": len(pdf_result["pages"]), "source_metadata": {
             "source_exam_code": source_exam_code,
+            "source_subject_code": source_subject_code,
             "source_section_code": source_section_code,
             "source_module_code": source_module_code,
         }},
@@ -468,8 +588,8 @@ async def ingest_official_pdf(
 @router.post("/unofficial/file", response_model=JobResponse)
 async def ingest_unofficial_file(
     file: UploadFile = File(...),
-    provider_name: str = Form("anthropic"),
-    model_name: str = Form("claude-sonnet-4-6"),
+    provider_name: str | None = Form(None),
+    model_name: str | None = Form(None),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
@@ -518,6 +638,7 @@ async def ingest_unofficial_file(
             raw_text = content.decode("utf-8", errors="replace")
 
     settings = get_settings()
+    provider_name, model_name = _resolve_provider_and_model(settings, provider_name, model_name)
     job = QuestionJob(
         id=job_id,
         job_type="ingest",
@@ -546,15 +667,21 @@ async def ingest_text(
     text: str = Form(...),
     content_origin: str = Form("unofficial"),
     source_exam_code: str = Form(""),
+    source_subject_code: str = Form(""),
     source_section_code: str = Form(""),
     source_module_code: str = Form(""),
-    provider_name: str = Form("anthropic"),
-    model_name: str = Form("claude-sonnet-4-6"),
+    provider_name: str | None = Form(None),
+    model_name: str | None = Form(None),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
     if content_origin not in ("official", "unofficial"):
         raise HTTPException(status_code=422, detail="content_origin must be 'official' or 'unofficial'")
+    source_subject_code, source_section_code, source_module_code = _normalize_source_metadata(
+        source_subject_code,
+        source_section_code,
+        source_module_code,
+    )
 
     settings = get_settings()
     now = datetime.now(timezone.utc)
@@ -563,11 +690,13 @@ async def ingest_text(
     source_metadata = {
         k: v for k, v in {
             "source_exam_code": source_exam_code or None,
+            "source_subject_code": source_subject_code,
             "source_section_code": source_section_code or None,
             "source_module_code": source_module_code or None,
         }.items() if v
     }
 
+    provider_name, model_name = _resolve_provider_and_model(settings, provider_name, model_name)
     job = QuestionJob(
         id=job_id,
         job_type="ingest",
@@ -599,7 +728,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     settings = get_settings()
     provider = get_provider(
         job.provider_name,
-        api_key=settings.anthropic_api_key or settings.openai_api_key,
+        api_key=_provider_api_key(settings, job.provider_name),
         base_url=settings.ollama_base_url,
         default_model=job.model_name,
     )
@@ -611,10 +740,16 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     job.status = "annotating"
     await db.commit()
 
+    from app.prompts.annotate_prompt import enforce_nullability, _detect_domain
     system, user = build_annotate_prompt(extract_json)
     try:
         result = await provider.complete(system=system, user=user, max_tokens=8192)
-        annotate_json = normalize_annotation(extract_json_from_text(result.raw_text))
+        annotate_json = normalize_annotation(
+            extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
+        )
+        # Hard-enforce domain nullability rules after LLM output
+        domain = _detect_domain(extract_json)
+        annotate_json = enforce_nullability(annotate_json, domain)
         job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
     except Exception as e:
         job.status = "failed"
@@ -643,7 +778,13 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
         await db.commit()
         return
 
-    latest_version = max(question.versions, key=lambda v: v.version_number) if question.versions else None
+    latest_version_result = await db.execute(
+        select(QuestionVersion)
+        .where(QuestionVersion.question_id == question.id)
+        .order_by(QuestionVersion.version_number.desc())
+        .limit(1)
+    )
+    latest_version = latest_version_result.scalars().first()
     version_id = uuid.uuid4()
     annotation_id = uuid.uuid4()
 
@@ -659,6 +800,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
         explanation_text=annotate_json.get("explanation_short", question.current_explanation_text),
         created_at=now,
     ))
+    await db.flush()  # persist version before annotation FK references it
 
     db.add(QuestionAnnotation(
         id=annotation_id,
@@ -670,10 +812,11 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
         rules_version=job.rules_version,
         annotation_jsonb=annotate_json,
         explanation_jsonb={"explanation_full": annotate_json.get("explanation_full", "")},
+        generation_profile_jsonb=_generation_profile_payload(extract_json, annotate_json),
         confidence_jsonb={"annotation_confidence": annotate_json.get("annotation_confidence", 0.0), "needs_human_review": annotate_json.get("needs_human_review", False)},
         created_at=now,
     ))
-    await db.flush()  # ensure new version/annotation IDs are visible before setting circular FKs
+    await db.flush()  # ensure annotation ID is visible before setting circular FKs
 
     question.current_explanation_text = annotate_json.get(
         "explanation_short", question.current_explanation_text
@@ -706,8 +849,8 @@ async def _run_reannotate_pipeline_with_session(job_id: uuid.UUID):
 @router.post("/unofficial/batch", response_model=list[JobResponse])
 async def ingest_unofficial_batch(
     files: list[UploadFile] = File(...),
-    provider_name: str = Form("anthropic"),
-    model_name: str = Form("claude-sonnet-4-6"),
+    provider_name: str | None = Form(None),
+    model_name: str | None = Form(None),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
@@ -743,8 +886,28 @@ async def reannotate_question(
         .limit(1)
     )
     existing_job = result.scalars().first()
-    if not existing_job or not existing_job.pass1_json:
-        raise HTTPException(status_code=400, detail="No existing extract data for this question")
+
+    # Always synthesize pass1_json from current DB state so the single-question
+    # format (question_text, options, etc. at top level) is guaranteed.
+    # The old job's pass1_json may be a full-batch extraction (questions list),
+    # which the reannotate pipeline cannot validate as a single question.
+    ver_result = await db.execute(
+        select(QuestionVersion).where(QuestionVersion.id == q.latest_version_id)
+    )
+    ver = ver_result.scalars().first()
+    choices = ver.choices_jsonb if ver else []
+    synthesized_pass1 = {
+        "question_text": q.current_question_text,
+        "passage_text": q.current_passage_text,
+        "options": choices,
+        "correct_option_label": q.current_correct_option_label,
+        "stem_type_key": q.stem_type_key,
+        "stimulus_mode_key": q.stimulus_mode_key,
+        "source_exam_code": q.source_exam_code,
+        "source_section_code": q.source_section_code,
+        "source_module_code": q.source_module_code,
+        "source_question_number": q.source_question_number,
+    }
 
     settings = get_settings()
     job_id = uuid.uuid4()
@@ -760,7 +923,7 @@ async def reannotate_question(
         model_name=body.model_name,
         prompt_version="v3.0",
         rules_version=settings.rules_version,
-        pass1_json=existing_job.pass1_json,
+        pass1_json=synthesized_pass1,
         question_id=qid,
         created_at=now,
         updated_at=now,

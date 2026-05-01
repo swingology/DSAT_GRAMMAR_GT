@@ -1,17 +1,20 @@
 """Pass 1 prompt — extracts structured question data from raw text."""
 
 
-EXTRACT_SYSTEM_PROMPT = """You are a DSAT question extraction specialist. Your job is to extract structured question data from raw text extracted from SAT practice material.
+EXTRACT_SYSTEM_PROMPT = """You are a DSAT question extraction specialist. Your job is to extract ALL questions from raw text extracted from SAT practice material.
 
-When a passage is shared across multiple questions, output ALL questions under the same passage_text.
+CRITICAL: Extract EVERY numbered question in the text. A single SAT module contains 27–33 questions. Do not stop after the first question — scan the entire text and include all of them in the "questions" array.
+
+When a passage is shared across multiple questions, use the same passage_text for each of those questions.
 
 You must output valid JSON matching this schema:
 {
   "passage_text": "The shared passage text, or null if no passage",
   "paired_passage_text": null,
-  "source_exam_code": "PT4 or null",
-  "source_section_code": "S1 or null",
-  "source_module_code": "M1 or null",
+  "source_exam_code": "e.g. PT1, PT4, PT11, or null — use the value from the source metadata if provided",
+  "source_subject_code": "verbal or math or null",
+  "source_section_code": "01 or 02 or null",
+  "source_module_code": "01 or 02 or null",
   "questions": [
     {
       "question_text": "The prompt/stem text",
@@ -47,7 +50,7 @@ def build_extract_prompt(raw_text: str, source_metadata: dict = None) -> tuple[s
         hints = [f"{k}: {v}" for k, v in source_metadata.items() if v]
         source_hints = "\nSource metadata:\n" + "\n".join(hints) if hints else ""
 
-    user = f"""Extract the question data from the following raw text:{source_hints}
+    user = f"""Extract ALL questions from the following raw text. Include every numbered question you find — do not stop early.{source_hints}
 
 ---
 {raw_text}
