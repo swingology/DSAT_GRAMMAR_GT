@@ -5,7 +5,7 @@ FastAPI-based ingestion, annotation, generation, and practice API for the DSAT G
 ## Overview
 
 The backend handles:
-- **Ingestion** — Upload official PDFs or unofficial assets (PDF, image, markdown, JSON, text), extract structured question data via LLM Pass 1, annotate with V3 taxonomy via LLM Pass 2, validate, and store.
+- **Ingestion** — Upload official PDFs or unofficial PDFs, markdown, JSON, or text. The backend extracts structured question data via LLM Pass 1, annotates with the current grammar/reading taxonomy via LLM Pass 2, validates, and stores. Direct image OCR ingestion is not implemented yet.
 - **Generation** — Generate new DSAT-style questions from specifications, with optional multi-provider comparison.
 - **Practice (Segment B)** — Student question recall, answer submission, and accuracy stats.
 - **Admin** — Question editing, approval/rejection, overlap management, and evaluation scoring.
@@ -43,6 +43,8 @@ app/
     admin.py
     ingest.py
     generate.py
+    users.py
+    dashboard.py
   models/              # SQLAlchemy ORM + Pydantic schemas
     db.py              # 10 ORM tables
     ontology.py        # V3 controlled vocabularies
@@ -64,6 +66,8 @@ app/
   pipeline/            # Business logic orchestration
     orchestrator.py    # Job state machine + JobOrchestrator
     validator.py       # PRD §15 validation rules
+    overlap.py         # Automated official-overlap detection
+    option_hydration.py # Per-option annotation persistence helpers
   prompts/             # LLM prompt builders
     extract_prompt.py
     annotate_prompt.py

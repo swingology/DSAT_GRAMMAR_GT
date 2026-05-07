@@ -29,6 +29,8 @@ Upload an official PDF. Creates a `QuestionJob` and spawns a background pipeline
 |---|---|---|---|
 | `file` | UploadFile | Yes | — |
 | `source_exam_code` | str | No | `""` |
+| `source_subject_code` | str | No | `""` |
+| `source_section_code` | str | No | `""` |
 | `source_module_code` | str | No | `""` |
 | `provider_name` | str | No | `anthropic` |
 | `model_name` | str | No | `claude-sonnet-4-6` |
@@ -40,12 +42,14 @@ Upload an official PDF. Creates a `QuestionJob` and spawns a background pipeline
 
 **Notes:**
 - Max file size: 50MB
-- MIME types validated against allowed set
+- MIME type must be `application/pdf`
 
 ---
 
 ### `POST /ingest/unofficial/file`
-Upload a single unofficial asset (PDF, image, markdown, JSON, text).
+Upload a single unofficial asset (PDF, markdown, JSON, or text).
+Image MIME types are accepted by the media-type guard but rejected with 422
+because OCR ingestion is not implemented yet.
 
 **Form data:**
 | Field | Type | Required | Default |

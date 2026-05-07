@@ -467,6 +467,7 @@ async def test_admin_edit_updates_latest_version_pointer():
     )
     question.versions = [original_version]
     db.get_map[(Question, question_id)] = question
+    db.execute_results.append(_ScalarResult(first_item=original_version))
     db.execute_results.append(_ScalarResult(items=[
         QuestionOption(
             id=uuid.uuid4(),
@@ -520,6 +521,7 @@ async def test_admin_edit_rewrites_choice_correctness_when_answer_changes():
     )
     question.versions = [original_version]
     db.get_map[(Question, question_id)] = question
+    db.execute_results.append(_ScalarResult(first_item=original_version))
     db.execute_results.append(_ScalarResult(items=[
         QuestionOption(
             id=uuid.uuid4(),

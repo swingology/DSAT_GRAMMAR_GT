@@ -5,6 +5,53 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-06
+
+### Backend — prompt rule-file fix and green test suite
+**LLM:** Codex GPT-5
+
+Fixed the backend regressions found during the backend task audit and restored
+the full backend test suite to green.
+
+**Prompt-layer changes**
+
+- Corrected the Grammar v7 rule-file reference used by annotation and
+  generation prompts:
+  - from `rules_agent_dsat_grammar_ingestion_generetion_v7.md`
+  - to `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+- Added explicit Grammar v7 and Reading v2 rules-reference headers to prompt
+  context output so tests can verify that the current rule files are actually
+  loaded.
+- Kept `build_annotate_prompt` compatible with the older `extract_json=...`
+  keyword argument while supporting the current `q_data` call shape.
+
+**Test and compatibility changes**
+
+- Updated ingest pipeline prompt invocation to remain compatible with existing
+  test doubles while still passing source metadata to extraction prompts.
+- Updated stale backend tests/mocks for the current parser and admin-edit query
+  behavior.
+- Aligned the config default test with the actual default annotation provider:
+  `anthropic`.
+
+**Verification**
+
+- Ran `uv run pytest` from `backend/`.
+- Final suite result: `176 passed, 2 skipped`.
+
+### Docs — backend audit cleanup
+**LLM:** Codex GPT-5
+
+- Replaced stale backend gap reports with historical-audit notices, resolved
+  item summaries, and a current remaining-work list.
+- Updated active backend API docs to clarify that direct image OCR ingestion is
+  not implemented and image uploads are rejected with 422.
+- Updated ingestion-flow docs to reflect current Grammar v7 / Reading v2 prompt
+  loading behavior.
+- Refreshed the backend review report to remove resolved risks around provider
+  API-key selection, source metadata, MIME validation, asset overwrite behavior,
+  async relationship access, and missing endpoint/overlap/logging work.
+
 ## 2026-04-30
 
 ### Backend — metadata persistence, guide-file runtime wiring, and validator alignment

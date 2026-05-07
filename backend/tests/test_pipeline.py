@@ -595,7 +595,7 @@ class TestMultiQuestionPipeline:
 
         call_log = {"count": 0}
 
-        def mock_extract_json(text):
+        def mock_extract_json(*_args):
             idx = call_log["count"]
             call_log["count"] += 1
             # idx 0 = extraction pass, idx 1 = q1 annotate, idx 2 = q2 annotate (fail), idx 3 = q3 annotate

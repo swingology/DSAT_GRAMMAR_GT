@@ -379,33 +379,38 @@ Persisted examples:
 
 ## How the LLM Uses the Guide Markdown Files
 
-## Current implementation
+## Current Implementation
 
-The backend uses the rules markdown files in two different ways.
+The backend uses the rules markdown files in three different ways.
 
 ### 1. Annotation prompt loads rule text directly
 
-`backend/app/prompts/annotate_prompt.py` reads the rules markdown file from disk and injects its contents into the system prompt.
+`backend/app/prompts/annotate_prompt.py` reads grammar and/or reading rule
+markdown from disk and injects the relevant context into the system prompt.
 
 Current behavior:
 
-- it loads `rules_agent_dsat_grammar_ingestion_generation_v3.md`
-- if the file is long, it truncates to the first 8000 characters
-- that rules text becomes part of the annotation system prompt
+- grammar context comes from `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+- reading context comes from `rules_agent_dsat_reading_v2.md`
+- domain routing decides whether grammar, reading, or mixed context is included
 
-So the annotation LLM explicitly sees part of the guide markdown at runtime.
+So the annotation LLM explicitly sees current guide markdown at runtime.
 
-### 2. Generation prompt references the rules file by name, but does not load the file text
+### 2. Generation prompt inlines trimmed rule references
 
-`backend/app/prompts/generate_prompt.py` tells the model it is operating under the grammar rules specification, but it does not read the markdown file from disk and inject it.
+`backend/app/prompts/generate_prompt.py` loads trimmed excerpts from the same
+grammar v7 and reading v2 rule files and appends them to the generation system
+prompt.
 
-So the current generation stage relies on:
+The current generation stage relies on:
 
 - the prompt instructions
 - the generation request JSON
+- trimmed grammar/reading rule references
 - the model's response format discipline
 
-It does not currently inline the full rules markdown the way annotation does.
+It does not inline the full rule documents; each loaded rules file is capped to
+keep prompt size bounded.
 
 ### 3. Extraction prompt does not use the rules file
 
@@ -416,8 +421,8 @@ It does not currently inline the full rules markdown the way annotation does.
 Today:
 
 - extraction uses a fixed schema prompt
-- annotation uses the markdown rules file directly
-- generation references the rules spec conceptually, but does not inject the full rules file text
+- annotation uses current grammar/reading markdown context directly
+- generation includes trimmed current grammar/reading markdown references
 
 ## What Process Must Run For Questions To Be Generated and Stored
 
@@ -494,20 +499,15 @@ Required process:
 
 ## Current Caveats
 
-### 1. Annotation rule loading still points at the older v3 guide
+### 1. Direct image OCR ingest is not implemented
 
-The runtime annotation prompt currently loads `rules_agent_dsat_grammar_ingestion_generation_v3.md`.
+Image MIME types are recognized, but image uploads are rejected with 422 until
+OCR/vision extraction is wired into the ingestion pipeline.
 
-It does not yet load:
+### 2. Official answer verification is not implemented
 
-- `rules_agent_dsat_grammar_ingestion_generetion_v7.md`
-- `rules_agent_dsat_reading_v2.md`
-
-So the backend persistence model can store metadata, but the current annotation prompt is not yet using those newer guide files at runtime.
-
-### 2. Generation prompt does not inline the guide markdown text
-
-Generation names the rules spec, but does not inject the file contents into the prompt.
+Official questions are ingested into review state. Admin approval remains
+blocked until answer-key verification exists.
 
 ### 3. Background tasks are in-process
 

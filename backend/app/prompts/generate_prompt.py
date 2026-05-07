@@ -6,7 +6,7 @@ import os
 _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 _RULE_SNIPPET_LIMIT = 6000
 _GENERATION_RULE_FILES = [
-    ("Grammar v7", "rules_agent_dsat_grammar_ingestion_generetion_v7.md"),
+    ("Grammar v7", "rules_agent_dsat_grammar_ingestion_generation_v7.md"),
     ("Reading v2", "rules_agent_dsat_reading_v2.md"),
 ]
 

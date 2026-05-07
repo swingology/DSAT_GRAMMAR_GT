@@ -336,7 +336,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
     # Save form-submitted metadata before pass1_json is overwritten by LLM extraction
     form_meta = (job.pass1_json or {}).get("source_metadata", {})
-    system, user = build_extract_prompt(raw_text[:100000], source_metadata=form_meta)
+    system, user = build_extract_prompt(raw_text[:100000], form_meta)
     try:
         result = await provider.complete(system=system, user=user, max_tokens=16000)
         extract_root = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)

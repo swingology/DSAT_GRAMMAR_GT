@@ -44,14 +44,15 @@ Admin scope required.
 | Method | Path | Auth Required | Description |
 |---|---|---|---|
 | POST | `/ingest/official/pdf` | Admin | Upload an official PDF and create per-question ingestion jobs |
-| POST | `/ingest/unofficial/file` | Admin | Upload a single unofficial asset (PDF, image, MD, JSON, text) |
+| POST | `/ingest/unofficial/file` | Admin | Upload a single unofficial asset (PDF, MD, JSON, text); direct image OCR is not implemented |
 | POST | `/ingest/unofficial/batch` | Admin | Batch upload mixed unofficial assets |
 | POST | `/ingest/reannotate/{question_id}` | Admin | Re-run Pass 2 annotation on an existing question with the same or a different provider |
 
 **Notes:**
 - Uploads use multipart form data.
 - Max upload size: 50MB.
-- MIME types are validated against the `asset_type` enum.
+- MIME types are validated against the allowed upload set. Image uploads are
+  rejected with 422 until OCR ingestion is implemented.
 
 ---
 

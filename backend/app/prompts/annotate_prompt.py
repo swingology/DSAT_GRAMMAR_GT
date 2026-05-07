@@ -9,7 +9,7 @@ import os
 import json
 
 _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-_GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generetion_v7.md"
+_GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generation_v7.md"
 _READING_FILE = "rules_agent_dsat_reading_v2.md"
 
 # stem_type_key values that unambiguously belong to grammar / SEC domain
@@ -82,7 +82,7 @@ def _grammar_context() -> str:
         return ""
     routing = _extract_between(text, "# PART A", "# PART B")
     annotation = _extract_between(text, "# PART C", "# PART E")
-    return f"=== GRAMMAR v7: MODE ROUTING ===\n{routing}\n\n=== GRAMMAR v7: ANNOTATION + TAXONOMY (Parts C & D) ===\n{annotation}"
+    return f"Grammar v7 RULES REFERENCE:\n=== GRAMMAR v7: MODE ROUTING ===\n{routing}\n\n=== GRAMMAR v7: ANNOTATION + TAXONOMY (Parts C & D) ===\n{annotation}"
 
 
 def _reading_context(extended: bool = False) -> str:
@@ -97,7 +97,7 @@ def _reading_context(extended: bool = False) -> str:
         chunk = _extract_between(text, section, "##" if section != "## 19. Student Failure Mode Keys" else "## 20.")
         if chunk:
             extra += f"\n{chunk}"
-    return f"=== READING v2: ANNOTATION REFERENCE (§3–14 + disambiguation) ===\n{core}{extra}"
+    return f"Reading v2 RULES REFERENCE:\n=== READING v2: ANNOTATION REFERENCE (§3-14 + disambiguation) ===\n{core}{extra}"
 
 
 def _detect_domain(q_data: dict) -> str:
@@ -229,13 +229,18 @@ def enforce_nullability(annotation: dict, domain: str) -> dict:
     return result
 
 
-def build_annotate_prompt(q_data: dict, rules_file_path: str = "") -> tuple[str, str]:
+def build_annotate_prompt(q_data: dict | None = None, rules_file_path: str = "", **kwargs) -> tuple[str, str]:
     """Build system and user prompts for Pass 2 annotation.
 
     Args:
         q_data: extracted question dict from Pass 1
         rules_file_path: optional override path to a custom rules file
     """
+    if q_data is None:
+        q_data = kwargs.pop("extract_json", None)
+    if q_data is None:
+        q_data = {}
+
     if rules_file_path and os.path.exists(rules_file_path):
         with open(rules_file_path, "r", encoding="utf-8") as f:
             rules_context = f"CUSTOM RULES REFERENCE:\n{f.read()}"
@@ -249,7 +254,7 @@ def build_annotate_prompt(q_data: dict, rules_file_path: str = "") -> tuple[str,
             # Unknown: include both — grammar taxonomy + reading core
             g = _extract_between(_read_file(_GRAMMAR_FILE), "# PART D", "# PART E")
             r = _reading_context()
-            rules_context = f"=== GRAMMAR v7: TAXONOMY (Part D) ===\n{g}\n\n{r}"
+            rules_context = f"Grammar v7 RULES REFERENCE:\n=== GRAMMAR v7: TAXONOMY (Part D) ===\n{g}\n\n{r}"
 
     system = _SYSTEM_BASE.format(rules_context=rules_context)
     user = f"Annotate the following extracted question:\n\n{json.dumps(q_data, indent=2)}"

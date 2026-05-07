@@ -11,7 +11,7 @@ The backend is a FastAPI service for DSAT grammar question ingestion, LLM-based 
 
 The core data flow is job-oriented. Upload, text ingest, generation, and reannotation endpoints create `QuestionJob` rows, then spawn in-process async background tasks that call LLM providers, parse JSON, validate the output, persist question records, and optionally export YAML archive files. The database layer is a lightweight async SQLAlchemy setup with one shared engine, an `async_sessionmaker`, and ORM models under `backend/app/models/db.py`.
 
-The implementation is functional and reasonably modular, but there are a few important production-readiness concerns: background work is not durable, provider API-key selection can choose the wrong key, official metadata is not passed into the extraction prompt or validation merge, upload MIME validation is only partially implemented, local asset writes can overwrite same-named files, and some async ORM relationship access may be risky without eager loading.
+The implementation is functional and reasonably modular. As of the 2026-05-06 cleanup, the backend unit suite is green (`176 passed, 2 skipped`) and several earlier audit findings have been resolved: provider API keys are selected by provider, official source metadata is passed into extraction and merged into persistence, upload MIME validation is enforced, local asset paths are UUID-prefixed, and previously fragile admin/reannotation version lookups use explicit selects. The main remaining production-readiness concerns are non-durable in-process background jobs, official answer verification, direct image/OCR ingestion, shared API-key auth without per-user identity, and limited real-DB integration coverage.
 
 ## Repository Organization
 
@@ -487,9 +487,8 @@ This design is simple and conventional for a FastAPI async app. Every request re
 
 Potential database/session concerns:
 
-- Relationship lazy-loading is used in a few async routes, such as `q.versions` in admin edit and reannotation. Async SQLAlchemy lazy loading can raise `MissingGreenlet` unless configured or already loaded by tests/session behavior. Safer patterns are explicit `select()` queries or eager loading.
 - There are no explicit transaction scopes around multi-row writes beyond manual `commit()` calls. For current usage this is acceptable, but larger pipelines would be clearer with `async with db.begin()` blocks.
-- No indexes are declared for common corpus filters such as `questions.practice_status`, `questions.content_origin`, `questions.latest_annotation_id`, `question_jobs.created_at`, or `user_progress.user_id`. The schema may need these as data volume grows.
+- The unit suite uses mocked DB sessions heavily. Release verification should include fresh Postgres migrations and at least one happy-path ingest/generate smoke test against a real database.
 
 ## Database Schema and Connections
 
@@ -586,7 +585,7 @@ The recall filters join `QuestionAnnotation` only when annotation-backed filters
 
 `GET /dashboard`
 
-- Returns a single HTMX/Tailwind admin dashboard page for ingesting official PDFs, image uploads, and pasted text.
+- Returns a single HTMX/Tailwind admin dashboard page for ingesting official PDFs, unofficial files, and pasted text. Image upload controls are present, but the backend currently rejects image ingestion with 422 until OCR is implemented.
 
 `GET /dashboard/jobs`
 
@@ -769,7 +768,7 @@ Generated questions are not automatically active. Admin approval is required, an
 - `compute_checksum(content)` returns SHA-256.
 - `read_asset(storage_path)` reads bytes from disk.
 
-The current implementation writes to `target / filename` without unique path generation. Uploading the same filename twice will overwrite the existing file while both database rows can point to the same path.
+Saved asset paths are UUID-prefixed and sanitized before writing under the archive root, so duplicate upload filenames do not overwrite each other.
 
 ### YAML Archive Export
 
@@ -1022,59 +1021,44 @@ Admin API key
 
 ## Notable Review Findings and Risks
 
-1. **LLM provider API-key selection can pass the wrong key.**
-   In ingestion and generation, provider construction passes `settings.anthropic_api_key or settings.openai_api_key` for all providers. If both keys are set and provider is `openai`, the OpenAI provider receives the Anthropic key. This should be provider-specific.
-
-2. **Official source metadata is not injected into extraction or validation.**
-   Official ingest stores form metadata in `job.pass1_json["source_metadata"]`, but `_run_pipeline` calls `build_extract_prompt(raw_text[:30000])` without passing that metadata. Validation requires official `source_exam_code`, `source_module_code`, and `source_question_number` from the merged extracted/annotated payload. If the LLM does not infer them from text, official ingest will go to review or fail persistence expectations.
-
-3. **Background jobs are in-process and not durable.**
+1. **Background jobs are in-process and not durable.**
    `asyncio.create_task` work can be lost if the process restarts, a worker exits, or deployment uses multiple workers without shared task coordination. The `QuestionJob` table provides persistence, but there is no recovery worker, queue, lease, or retry daemon.
 
-4. **Upload MIME validation is incomplete.**
-   `ALLOWED_MIME` exists, and docs say MIME is validated, but ingestion routes do not consistently enforce it. Official PDF ingest attempts PDF parsing directly; unofficial upload rejects images but otherwise infers type from MIME.
+2. **Official answer verification is not implemented.**
+   Official questions are ingested into review state, but admin approval is blocked until answer-key verification exists.
 
-5. **Local asset writes can overwrite existing uploads.**
-   `save_asset` writes to `archive/{subfolder}/{filename}`. Duplicate filenames overwrite prior files while previous `QuestionAsset` rows still point to the same path.
+3. **Direct image/OCR ingestion is not implemented.**
+   OCR/vision settings exist and image MIME types are recognized, but image uploads are rejected with 422 instead of being converted to text.
 
-6. **Admin edit does not update normalized option rows.**
+4. **Admin edit does not update normalized option rows.**
    `PATCH /admin/questions/{question_id}` creates a version snapshot and updates current question fields, but existing `QuestionOption` rows remain unchanged if choices or correct answer need to change. The current request model does not support editing option text.
 
-7. **Detailed distractor metadata is not normalized into `question_options`.**
-   The schema has rich option-analysis columns, and the annotation prompt requests per-option analysis, but persistence mostly fills only label/text/correct/role. This limits SQL-level analytics unless consumers read nested annotation JSON.
-
-8. **Duplicate user APIs have inconsistent auth and delete behavior.**
+5. **Duplicate user APIs have inconsistent auth and delete behavior.**
    `/users` is admin-only but delete may fail with progress rows. `/api/users` includes unauthenticated user creation and a delete path that explicitly deletes progress. The two surfaces should be reconciled.
 
-9. **Student API key is not user identity.**
+6. **Student API key is not user identity.**
    Student endpoints allow a caller with the shared student key to submit or read stats for any `user_id`. Fine for controlled/internal use, not safe for public multi-user deployment.
 
-10. **Async ORM lazy relationship access may be fragile.**
-    Code paths such as `q.versions` can trigger lazy loads under async SQLAlchemy. Explicit selects or eager loading would be safer and easier to reason about.
-
-11. **Status semantics are inconsistent around generation.**
+7. **Status semantics are inconsistent around generation.**
     The state machine includes `generating`, but generation jobs start at `extracting` and skip `generating`. This can confuse dashboard/status consumers.
 
-12. **Configured retry settings are not used.**
+8. **Configured retry settings are not used.**
     `Settings` exposes retry knobs, but provider methods use decorator constants. Runtime retry tuning requires code changes today.
 
-13. **CORS and default API keys are development-oriented.**
+9. **CORS and default API keys are development-oriented.**
     Allow-all CORS and default keys like `admin-key-change-me` should be treated as local/dev defaults only.
 
 ## Suggested Follow-Up Work
 
 Priority fixes:
 
-1. Select LLM API keys by provider name.
-2. Pass source metadata into extraction prompts and merge source metadata into validation/persistence for official ingest.
-3. Make uploaded asset paths unique, for example by prefixing checksum or asset ID.
-4. Reconcile `/users` and `/api/users` routes into one intended user-management contract.
-5. Replace async relationship lazy access with explicit queries or eager loading.
+1. Implement official answer-key verification so official questions can be approved.
+2. Implement direct image/OCR ingestion, or remove image MIME types from the accepted upload list until OCR exists.
+3. Reconcile `/users` and `/api/users` routes into one intended user-management contract.
+4. Add real-DB migration and API smoke tests to release verification.
 
 Production hardening:
 
 1. Move background jobs to a durable queue/worker, or add a startup job recovery loop for non-terminal `QuestionJob` rows.
-2. Enforce MIME/content validation and extension checks.
-3. Add DB indexes for common filters and job dashboard sorting.
-4. Store normalized distractor analysis in `question_options`.
-5. Add per-user authentication/authorization if this becomes externally exposed.
+2. Add per-user authentication/authorization if this becomes externally exposed.
+3. Wire `llm_retry_*` settings into provider retry behavior.
