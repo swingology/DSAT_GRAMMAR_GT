@@ -788,6 +788,13 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     version_id = uuid.uuid4()
     annotation_id = uuid.uuid4()
 
+    # Load current-version option rows before advancing latest_version_id
+    old_opts_stmt = select(QuestionOption).where(QuestionOption.question_id == question.id)
+    if question.latest_version_id:
+        old_opts_stmt = old_opts_stmt.where(QuestionOption.question_version_id == question.latest_version_id)
+    old_opts_result = await db.execute(old_opts_stmt.order_by(QuestionOption.option_label))
+    old_options = old_opts_result.scalars().all()
+
     db.add(QuestionVersion(
         id=version_id,
         question_id=question.id,
@@ -826,15 +833,21 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     question.annotation_stale = False
     question.updated_at = now
 
-    # Refresh per-option annotation fields from the new annotation
-    opts_result = await db.execute(
-        select(QuestionOption).where(QuestionOption.question_id == question.id)
-    )
+    # Clone option rows for the new version, applying fresh annotation fields
+    correct_label = extract_json.get("correct_option_label", question.current_correct_option_label)
     opt_analyses = option_analyses_by_label(annotate_json)
-    for option_row in opts_result.scalars().all():
-        analysis = opt_analyses.get(option_row.option_label, {})
-        if analysis:
-            apply_option_annotations(option_row, analysis)
+    for opt in old_options:
+        db.add(QuestionOption(
+            id=uuid.uuid4(),
+            question_id=question.id,
+            question_version_id=version_id,
+            option_label=opt.option_label,
+            option_text=opt.option_text,
+            is_correct=opt.option_label == correct_label,
+            option_role="correct" if opt.option_label == correct_label else "distractor",
+            created_at=now,
+            **option_annotation_fields(opt_analyses.get(opt.option_label, {})),
+        ))
 
     await db.commit()
 
@@ -899,6 +912,8 @@ async def reannotate_question(
     synthesized_pass1 = {
         "question_text": q.current_question_text,
         "passage_text": q.current_passage_text,
+        "paired_passage_text": q.current_paired_passage_text,
+        "underlined_text": q.current_underlined_text,
         "options": choices,
         "correct_option_label": q.current_correct_option_label,
         "stem_type_key": q.stem_type_key,

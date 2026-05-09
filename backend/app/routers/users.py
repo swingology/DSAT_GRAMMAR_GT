@@ -1,12 +1,12 @@
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.auth import admin_required
-from app.models.db import User
+from app.models.db import User, UserProgress
 from app.models.payload import UserCreate, UserResponse
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -62,5 +62,6 @@ async def delete_user(
     user = await db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    await db.execute(delete(UserProgress).where(UserProgress.user_id == user_id))
     await db.delete(user)
     await db.commit()

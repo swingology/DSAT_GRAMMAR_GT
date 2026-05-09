@@ -135,7 +135,7 @@ async def review_items_fragment(
             q.content_origin, q.current_question_text, q.current_passage_text,
             q.current_paired_passage_text, q.current_underlined_text,
             q.current_correct_option_label, q.practice_status,
-            lj.validation_errors_jsonb, lj.job_id
+            lj.validation_errors_jsonb, lj.job_id, q.latest_version_id
         FROM questions q
         JOIN latest_job lj ON lj.question_id = q.id
         WHERE lj.status = 'needs_review'
@@ -150,10 +150,10 @@ async def review_items_fragment(
             'No items in review queue. Everything is approved or pending.</p>'
         )
 
-    qids = [str(row[0]) for row in items]
+    version_ids = [row[13] for row in items if row[13]]
     opts_result = await db.execute(
         select(QuestionOption)
-        .where(QuestionOption.question_id.in_([row[0] for row in items]))
+        .where(QuestionOption.question_version_id.in_(version_ids))
         .order_by(QuestionOption.question_id, QuestionOption.option_label)
     )
     opts_by_qid: dict[str, list] = {}
@@ -163,7 +163,7 @@ async def review_items_fragment(
 
     cards = []
     for row in items:
-        qid, exam, qnum, stem, origin, qtext, ptext, paired_ptext, underlined_text, correct, pstatus, errors, job_id = row
+        qid, exam, qnum, stem, origin, qtext, ptext, paired_ptext, underlined_text, correct, pstatus, errors, job_id, _ver = row
         qid_str = str(qid)
         job_id_str = str(job_id)
 

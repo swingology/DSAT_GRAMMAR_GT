@@ -10,12 +10,12 @@ from uuid import UUID
 from app.database import get_db
 from app.auth import student_required, admin_required
 from app.models.db import Question, User, UserProgress, QuestionAnnotation
-from app.models.payload import QuestionRecallResponse, UserProgressCreate, UserStats
+from app.models.payload import StudentQuestionResponse, UserProgressCreate, UserStats
 
 router = APIRouter(prefix="/api", tags=["student"])
 
 
-@router.get("/questions", response_model=list[QuestionRecallResponse])
+@router.get("/questions", response_model=list[StudentQuestionResponse])
 async def student_recall(
     grammar_focus: Optional[str] = Query(None),
     difficulty: Optional[str] = Query(None),
@@ -60,12 +60,11 @@ async def student_recall(
                 difficulty_overall = ann.annotation_jsonb.get("difficulty_overall")
                 generation_profile = ann.generation_profile_jsonb
 
-        responses.append(QuestionRecallResponse(
+        responses.append(StudentQuestionResponse(
             id=str(q.id),
             content_origin=q.content_origin,
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
-            current_correct_option_label=q.current_correct_option_label,
             practice_status=q.practice_status,
             grammar_focus_key=grammar_focus_key,
             difficulty_overall=difficulty_overall,
@@ -74,7 +73,6 @@ async def student_recall(
             source_subject_code=q.source_subject_code,
             source_section_code=q.source_section_code,
             source_module_code=q.source_module_code,
-            generation_profile=generation_profile,
         ))
     return responses
 
@@ -98,10 +96,12 @@ async def submit_answer(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    is_correct = q.current_correct_option_label == body.selected_option_label
+
     progress = UserProgress(
         user_id=body.user_id,
         question_id=qid,
-        is_correct=body.is_correct,
+        is_correct=is_correct,
         selected_option_label=body.selected_option_label,
         missed_grammar_focus_key=body.missed_grammar_focus_key,
         missed_syntactic_trap_key=body.missed_syntactic_trap_key,
@@ -158,6 +158,7 @@ class UserResponse(BaseModel):
 async def create_user(
     body: UserCreate,
     db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
 ):
     """Register a new user."""
     existing = await db.execute(select(User).where(User.username == body.username))

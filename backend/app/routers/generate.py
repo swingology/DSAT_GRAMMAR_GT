@@ -13,6 +13,7 @@ from app.models.db import QuestionJob, Question, QuestionVersion, QuestionAnnota
 from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.pipeline.validator import validate_question
 from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields
+from app.pipeline.overlap import detect_overlaps, persist_overlap_relations
 from app.models.payload import GenerationRequest, GenerationCompareRequest, JobResponse
 
 router = APIRouter(prefix="/generate", tags=["generate"])
@@ -169,6 +170,21 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
 
     job.question_id = question_id
     await db.commit()
+
+    # Run overlap detection against official questions and update status if found
+    overlaps = await detect_overlaps(
+        question_id=question_id,
+        annotation_jsonb=annotate_json,
+        passage_text=generated.get("passage_text"),
+        question_text=generated.get("question_text", ""),
+        db=db,
+    )
+    if overlaps:
+        await persist_overlap_relations(question_id=question_id, overlaps=overlaps, db=db)
+        q_created = await db.get(Question, question_id)
+        if q_created:
+            q_created.official_overlap_status = "possible"
+        await db.commit()
 
     # Export to YAML after successful commit
     from app.storage.yaml_export import export_generated_question

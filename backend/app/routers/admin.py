@@ -76,9 +76,10 @@ async def list_questions(
             if ann:
                 annotation = {**ann.annotation_jsonb, **ann.explanation_jsonb}
 
-        opts_result = await db.execute(
-            select(QuestionOption).where(QuestionOption.question_id == q.id)
-        )
+        opts_stmt = select(QuestionOption).where(QuestionOption.question_id == q.id)
+        if q.latest_version_id:
+            opts_stmt = opts_stmt.where(QuestionOption.question_version_id == q.latest_version_id)
+        opts_result = await db.execute(opts_stmt)
         options = [
             {"label": o.option_label, "text": o.option_text, "is_correct": o.is_correct}
             for o in opts_result.scalars().all()
@@ -145,17 +146,20 @@ async def edit_question(
     )
     latest_version = latest_ver_result.scalars().first()
 
-    # Serialize current options into choices_jsonb
-    opts_result = await db.execute(
-        select(QuestionOption).where(QuestionOption.question_id == qid)
-    )
+    # Load option rows scoped to the current version so we can clone them
+    current_version_id = q.latest_version_id
+    opts_q = select(QuestionOption).where(QuestionOption.question_id == qid)
+    if current_version_id:
+        opts_q = opts_q.where(QuestionOption.question_version_id == current_version_id)
+    opts_result = await db.execute(opts_q.order_by(QuestionOption.option_label))
+    existing_options = opts_result.scalars().all()
+
+    # Build choices_jsonb for the new version snapshot
+    new_correct_label = changes.get("correct_option_label", q.current_correct_option_label)
     choices = [
-        {"label": o.option_label, "text": o.option_text, "is_correct": o.is_correct}
-        for o in opts_result.scalars().all()
+        {"label": o.option_label, "text": o.option_text, "is_correct": o.option_label == new_correct_label}
+        for o in existing_options
     ]
-    if "correct_option_label" in changes:
-        for choice in choices:
-            choice["is_correct"] = choice["label"] == changes["correct_option_label"]
 
     new_version = QuestionVersion(
         id=uuid.uuid4(),
@@ -167,12 +171,38 @@ async def edit_question(
         paired_passage_text=changes.get("paired_passage_text", q.current_paired_passage_text),
         underlined_text=changes.get("underlined_text", q.current_underlined_text),
         choices_jsonb=choices,
-        correct_option_label=changes.get("correct_option_label", q.current_correct_option_label),
+        correct_option_label=new_correct_label,
         explanation_text=changes.get("explanation_text", q.current_explanation_text),
         change_notes=changes.get("change_notes"),
         created_at=now,
     )
     db.add(new_version)
+
+    # Clone QuestionOption rows for the new version with updated correctness flags
+    await db.flush()  # ensure new_version.id is available
+    for opt in existing_options:
+        db.add(QuestionOption(
+            id=uuid.uuid4(),
+            question_id=qid,
+            question_version_id=new_version.id,
+            option_label=opt.option_label,
+            option_text=opt.option_text,
+            is_correct=opt.option_label == new_correct_label,
+            option_role="correct" if opt.option_label == new_correct_label else "distractor",
+            distractor_type_key=opt.distractor_type_key,
+            semantic_relation_key=opt.semantic_relation_key,
+            plausibility_source_key=opt.plausibility_source_key,
+            option_error_focus_key=opt.option_error_focus_key,
+            why_plausible=opt.why_plausible,
+            why_wrong=opt.why_wrong,
+            grammar_fit=opt.grammar_fit,
+            tone_match=opt.tone_match,
+            precision_score=opt.precision_score,
+            student_failure_mode_key=opt.student_failure_mode_key,
+            distractor_distance=opt.distractor_distance,
+            distractor_competition_score=opt.distractor_competition_score,
+            created_at=now,
+        ))
 
     if "question_text" in changes:
         q.current_question_text = changes["question_text"]

@@ -103,9 +103,10 @@ async def get_question_detail(
             latest_annotation = {**ann.annotation_jsonb, **ann.explanation_jsonb}
             generation_profile = ann.generation_profile_jsonb
 
-    opts_result = await db.execute(
-        select(QuestionOption).where(QuestionOption.question_id == qid)
-    )
+    opts_stmt = select(QuestionOption).where(QuestionOption.question_id == qid)
+    if q.latest_version_id:
+        opts_stmt = opts_stmt.where(QuestionOption.question_version_id == q.latest_version_id)
+    opts_result = await db.execute(opts_stmt)
     options = [
         {
             "label": o.option_label,
