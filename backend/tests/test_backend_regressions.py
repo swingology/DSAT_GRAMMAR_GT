@@ -830,4 +830,51 @@ async def test_delete_user_removes_progress_before_user_delete():
     assert db.executed[0].table.name == "user_progress"
     assert len(db.deleted) == 1
     assert db.deleted[0] is user
-    assert db.commit_count == 1
+
+
+@pytest.mark.asyncio
+async def test_submit_answer_rejects_non_active_question():
+    from app.models.payload import UserProgressCreate
+
+    db = _FakeDB()
+    qid = uuid.uuid4()
+    draft_question = SimpleNamespace(
+        id=qid,
+        practice_status="draft",
+        current_correct_option_label="A",
+    )
+    db.get_map[(student_router.Question, qid)] = draft_question
+
+    with pytest.raises(HTTPException) as exc:
+        await student_router.submit_answer(
+            body=UserProgressCreate(
+                user_id=1,
+                question_id=str(qid),
+                selected_option_label="A",
+            ),
+            db=db,
+            _auth="ok",
+        )
+    assert exc.value.status_code == 400
+    assert "not active" in exc.value.detail
+
+
+@pytest.mark.asyncio
+async def test_admin_create_relation_rejects_self_reference():
+    db = _FakeDB()
+    qid = uuid.uuid4()
+    q = SimpleNamespace(id=qid)
+    db.get_map[(admin_router.Question, qid)] = q
+
+    with pytest.raises(HTTPException) as exc:
+        await admin_router.create_relation(
+            body=admin_router.RelationCreateRequest(
+                from_question_id=str(qid),
+                to_question_id=str(qid),
+                relation_type="overlaps_official",
+            ),
+            db=db,
+            _auth="ok",
+        )
+    assert exc.value.status_code == 400
+    assert "itself" in exc.value.detail

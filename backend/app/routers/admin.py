@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import Optional, List
@@ -305,7 +305,19 @@ async def delete_question(
     if not q:
         raise HTTPException(status_code=404, detail="Question not found")
 
-    # Clear all circular / self-referential FKs before cascading
+    # Null out incoming self-references from other questions first
+    await db.execute(
+        update(Question)
+        .where(Question.canonical_official_question_id == qid)
+        .values(canonical_official_question_id=None)
+    )
+    await db.execute(
+        update(Question)
+        .where(Question.derived_from_question_id == qid)
+        .values(derived_from_question_id=None)
+    )
+
+    # Clear circular / self-referential FKs on the target question
     q.latest_annotation_id = None
     q.latest_version_id = None
     q.canonical_official_question_id = None
@@ -479,6 +491,8 @@ async def create_evaluation(
 async def list_relations(
     from_question_id: Optional[str] = None,
     relation_type: Optional[str] = None,
+    limit: int = Query(100, ge=1, le=500),
+    offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
@@ -495,7 +509,7 @@ async def list_relations(
     if relation_type:
         stmt = stmt.where(QuestionRelation.relation_type == relation_type)
 
-    result = await db.execute(stmt.order_by(QuestionRelation.created_at.desc()))
+    result = await db.execute(stmt.order_by(QuestionRelation.created_at.desc()).offset(offset).limit(limit))
     relations = result.scalars().all()
 
     return [
@@ -526,6 +540,8 @@ async def create_relation(
         to_id = uuid.UUID(body.to_question_id)
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid UUID in from_question_id or to_question_id")
+    if from_id == to_id:
+        raise HTTPException(status_code=400, detail="A question cannot relate to itself")
     relation_type = _validated_relation_type(body.relation_type)
 
     # Verify both questions exist

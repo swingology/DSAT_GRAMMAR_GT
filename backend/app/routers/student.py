@@ -1,5 +1,4 @@
 from collections import Counter
-from datetime import datetime
 
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy import delete, select
@@ -10,7 +9,7 @@ from uuid import UUID
 from app.database import get_db
 from app.auth import student_required, admin_required
 from app.models.db import Question, User, UserProgress, QuestionAnnotation
-from app.models.payload import StudentQuestionResponse, UserProgressCreate, UserStats
+from app.models.payload import StudentQuestionResponse, UserProgressCreate, UserStats, UserCreate, UserResponse
 
 router = APIRouter(prefix="/api", tags=["student"])
 
@@ -91,6 +90,8 @@ async def submit_answer(
     q = await db.get(Question, qid)
     if not q:
         raise HTTPException(status_code=404, detail="Question not found")
+    if q.practice_status != "active":
+        raise HTTPException(status_code=400, detail="Question is not active")
 
     user = await db.get(User, body.user_id)
     if not user:
@@ -137,21 +138,6 @@ async def get_user_stats(
         top_missed_focus_keys=[k for k, _ in focus_counts.most_common(5)],
         top_missed_trap_keys=[k for k, _ in trap_counts.most_common(5)],
     )
-
-
-from pydantic import BaseModel
-
-
-class UserCreate(BaseModel):
-    username: str
-
-
-class UserResponse(BaseModel):
-    id: int
-    username: str
-    created_at: Optional[datetime] = None
-
-    model_config = {"from_attributes": True}
 
 
 @router.post("/users", response_model=UserResponse)

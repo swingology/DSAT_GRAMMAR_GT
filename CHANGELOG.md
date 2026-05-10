@@ -5,6 +5,44 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-09
+
+### Backend — bug fixes and gap closures
+**LLM:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+
+Found and fixed four confirmed bugs via code audit and new regression tests.
+Suite went from 178 to 184 collected tests; all pass.
+
+**Fixes**
+
+- `POST /api/submit` — added `practice_status == "active"` guard before
+  recording a student answer; previously draft/retired questions were accepted.
+- `POST /api/users` (student router) — removed inline `UserCreate` model that
+  had no field constraints; now imports `UserCreate`/`UserResponse` from
+  `app.models.payload`, which enforces `min_length=1, max_length=100`. Empty
+  and oversized usernames were previously accepted at this endpoint while
+  the canonical `/users` router rejected them.
+- `POST /admin/relations` — added self-reference guard; a question can no
+  longer be related to itself (returns 400).
+- `GET /admin/relations` — added `limit` (default 100, max 500) and `offset`
+  query params; the endpoint previously returned all rows without a cap.
+
+**Tests added**
+
+- `test_submit_answer_rejects_non_active_question`
+- `test_admin_create_relation_rejects_self_reference`
+- `test_api_users_empty_username_rejected`
+- `test_api_users_username_too_long_rejected`
+- `test_admin_relations_list_accepts_pagination`
+- `test_admin_relations_list_rejects_zero_limit`
+
+**Verification**
+
+- Ran `pytest` from `backend/`.
+- Final suite result: `182 passed, 2 skipped`.
+
+---
+
 ## 2026-05-06
 
 ### Backend — prompt rule-file fix and green test suite

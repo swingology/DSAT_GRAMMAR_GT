@@ -34,3 +34,21 @@ def test_student_stats_empty(client):
     assert resp.status_code == 200
     data = resp.json()
     assert data["total_answered"] == 0
+
+
+def test_api_users_empty_username_rejected(client):
+    resp = client.post(
+        "/api/users",
+        json={"username": ""},
+        headers={"X-API-Key": "admin-test-key"},
+    )
+    assert resp.status_code == 422
+
+
+def test_api_users_username_too_long_rejected(client):
+    resp = client.post(
+        "/api/users",
+        json={"username": "x" * 101},
+        headers={"X-API-Key": "admin-test-key"},
+    )
+    assert resp.status_code == 422

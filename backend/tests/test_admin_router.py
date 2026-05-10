@@ -58,3 +58,14 @@ def test_admin_eval_score_not_found(client):
         headers=AUTH,
     )
     assert resp.status_code == 404
+
+
+def test_admin_relations_list_accepts_pagination(client):
+    resp = client.get("/admin/relations?limit=10&offset=0", headers=AUTH)
+    assert resp.status_code == 200
+    assert isinstance(resp.json(), list)
+
+
+def test_admin_relations_list_rejects_zero_limit(client):
+    resp = client.get("/admin/relations?limit=0", headers=AUTH)
+    assert resp.status_code == 422
