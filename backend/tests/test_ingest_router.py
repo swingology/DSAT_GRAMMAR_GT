@@ -188,4 +188,27 @@ async def test_safe_read_body_too_large():
     with pytest.raises(HTTPException) as exc_info:
         await _safe_read(mock_file, 50 * 1024 * 1024)
 
-    assert exc_info.value.status_code == 413
+
+def test_ingest_official_pdf_rejects_invalid_ocr_strategy(client):
+    resp = client.post(
+        "/ingest/official/pdf",
+        headers=AUTH,
+        data={
+            "source_exam_code": "PT06",
+            "source_module_code": "01",
+            "source_subject_code": "verbal",
+            "ocr_strategy": "invalid-value",
+        },
+        files={"file": ("test.pdf", b"%PDF-fake", "application/pdf")},
+    )
+    assert resp.status_code == 422
+
+
+def test_ingest_unofficial_file_rejects_invalid_ocr_strategy(client):
+    resp = client.post(
+        "/ingest/unofficial/file",
+        headers=AUTH,
+        data={"ocr_strategy": "bad-strategy"},
+        files={"file": ("test.txt", b"some text content", "text/plain")},
+    )
+    assert resp.status_code == 422

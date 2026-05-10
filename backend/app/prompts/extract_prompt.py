@@ -43,6 +43,24 @@ Rules:
 - Output ONLY valid JSON, no markdown fences"""
 
 
+def build_vision_extract_prompt(source_metadata: dict = None) -> tuple[str, str]:
+    """Build prompts for vision-fused extraction (Ollama VLM path, Option B).
+
+    The model reads directly from image content — no raw_text in the user message.
+    Same JSON schema is expected in the response.
+    """
+    source_hints = ""
+    if source_metadata:
+        hints = [f"{k}: {v}" for k, v in source_metadata.items() if v]
+        source_hints = "\nSource metadata:\n" + "\n".join(hints) if hints else ""
+
+    user = (
+        f"Extract ALL questions from the image(s) above. "
+        f"Follow the JSON schema exactly. Include every numbered question.{source_hints}"
+    )
+    return EXTRACT_SYSTEM_PROMPT, user
+
+
 def build_extract_prompt(raw_text: str, source_metadata: dict = None) -> tuple[str, str]:
     """Build system and user prompts for Pass 1 extraction."""
     source_hints = ""

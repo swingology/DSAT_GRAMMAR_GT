@@ -27,6 +27,14 @@ def get_provider(
     return provider
 
 
+def get_ocr_client(base_url: str, model: str):
+    """Return a DeepSeekOCRClient for the given local endpoint."""
+    from app.parsers.ocr import DeepSeekOCRClient
+    client = DeepSeekOCRClient(base_url=base_url, model=model)
+    _provider_registry.append(client)
+    return client
+
+
 async def close_all_providers() -> None:
     """Close any providers that expose a close() method (e.g. OllamaProvider httpx client)."""
     for p in _provider_registry:

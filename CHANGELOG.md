@@ -5,6 +5,70 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-10
+
+### Backend — OCR integration (Phases 1–8)
+**LLM:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+
+Implemented the OCR pipeline described in `docs/PRD/INGESTION_PRD.md` §8.
+Scanned PDFs and image uploads now route through an OCR gate before Pass 1
+extraction. Admin selects strategy per-job; both providers are configured
+simultaneously. Text-layer PDFs are completely unaffected.
+
+**New files**
+
+- `backend/app/parsers/ocr.py` — `DeepSeekOCRClient`: thin HTTP client for
+  DeepSeek-OCR-2 running locally via vLLM Docker or LMDeploy.
+- `backend/tests/test_ocr.py` — 15 unit tests covering both OCR providers,
+  helper functions, and the vision extraction prompt.
+
+**Backend changes**
+
+- `config.py` — Added `deepseek_ocr_base_url` and `deepseek_ocr_model`
+  settings (Option A config alongside the existing Ollama VLM settings).
+- `llm/base.py` — Added `ImageContent` dataclass and optional
+  `complete_vision()` method to `LLMProvider` protocol.
+- `llm/ollama_provider.py` — Implemented `complete_vision()` using Ollama's
+  existing `/v1/chat/completions` endpoint with `image_url` content blocks.
+- `llm/factory.py` — Added `get_ocr_client()` factory; `DeepSeekOCRClient`
+  is registered in the provider registry so `close_all_providers()` cleans up.
+- `prompts/extract_prompt.py` — Added `build_vision_extract_prompt()` for the
+  Ollama VLM fused path (no raw text in user message; model reads from images).
+- `parsers/pdf_parser.py` — Added `page.get_pixmap()` fallback: scanned pages
+  with no extractable text and no embedded images are now rasterized at 144 DPI
+  and returned as page images for the OCR gate.
+- `routers/ingest.py` — Core pipeline changes:
+  - `_collect_page_images()` helper reads `pass1_json._page_images`.
+  - `_resolve_ocr_strategy()` helper resolves `deepseek | ollama | auto`.
+  - OCR gate inserted in `_run_pipeline()` at the `no_raw_text` branch:
+    - **DeepSeek path (Option A):** calls `DeepSeekOCRClient.extract()` →
+      populates `raw_text` → existing Pass 1 runs unchanged.
+    - **Ollama VLM path (Option B):** calls `provider.complete_vision()` →
+      fused OCR+extraction → `pass1_json` populated → Pass 1 skipped via
+      `"_vision_fused_"` sentinel.
+  - Both `ingest_official_pdf()` and `ingest_unofficial_file()` now accept
+    optional `ocr_strategy` form param (`deepseek | ollama | auto`).
+  - `_page_images` pre-stored in `pass1_json` at route time for scanned PDFs.
+  - Image uploads (`.png`, `.jpg`, `.webp`, `.gif`) accepted via
+    `ingest_unofficial_file()`; the previous 422 "not yet implemented" block
+    is removed.
+
+**Tests added / modified**
+
+- `tests/test_ocr.py` (new) — `test_deepseek_ocr_returns_text`,
+  `test_deepseek_ocr_sends_image_url_block`, `test_ollama_complete_vision_*`,
+  `test_collect_page_images_*`, `test_resolve_ocr_strategy_*`,
+  `test_build_vision_extract_prompt_*`
+- `tests/test_ingest_router.py` — `test_ingest_official_pdf_rejects_invalid_ocr_strategy`,
+  `test_ingest_unofficial_file_rejects_invalid_ocr_strategy`
+
+**Verification**
+
+- Ran `pytest` from `backend/`.
+- Final suite result: `197 passed, 2 skipped`.
+
+---
+
 ## 2026-05-09
 
 ### Backend — bug fixes and gap closures

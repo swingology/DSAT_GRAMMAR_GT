@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-05-10T00:21:21.064Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 4→5 lines (4 removed) | Also: 2. **High:** Hard-delete can still fail on incomin; - `delete_question` clears `canonical_official_que | Also: 3. **High:** Default API keys are live credentials; - `admin-key-change-me` and `student-key-change-me",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-10T00:25:39.554Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-05-10T01:40:27.515Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/PRD/INGESTION_PRD.md",
+      "root_cause": "17 lines replaced/restructured",
+      "fix": "Rewrote 36→58 lines (17 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-10T01:40:27.515Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-05-10T02:16:52.642Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/PRD/INGESTION_PRD.md",
+      "root_cause": "23 lines replaced/restructured",
+      "fix": "Rewrote 52→67 lines (23 removed) | Also: # OCR Option A — DeepSeek OCR (cloud API); DEEPSEEK_API_KEY=your-deepseek-key         # leave",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-10T02:17:13.551Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-05-10T03:12:40.498Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/config.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6→10 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-10T03:12:40.498Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-05-10T03:15:52.279Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 42→157 lines (2 removed) | Also: pass1_json={\"raw_text\": raw_text[:50000], \"pages\":; }}, | Also: if mime_type in IMAGE_MIME_TYPES:; raise HTTPException(",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-10T03:16:38.108Z"
+    }
+  ]
+}

@@ -51,5 +51,55 @@ class OllamaProvider:
             token_usage=token_usage,
         )
 
+    async def complete_vision(
+        self,
+        system: str,
+        user: str,
+        images: list,
+        model: Optional[str] = None,
+        max_tokens: int = 4096,
+        temperature: float = 0.2,
+    ) -> LLMResponse:
+        from app.llm.base import ImageContent  # noqa: F401 — local import avoids circular dep
+        model = model or self.default_model
+        start = time.time()
+
+        content = [
+            {
+                "type": "image_url",
+                "image_url": {"url": f"data:{img.mime_type};base64,{img.b64}"},
+            }
+            for img in images
+        ]
+        content.append({"type": "text", "text": user})
+
+        response = await self.client.post(
+            "/v1/chat/completions",
+            json={
+                "model": model,
+                "max_tokens": max_tokens,
+                "temperature": temperature,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": content},
+                ],
+            },
+        )
+        latency_ms = int((time.time() - start) * 1000)
+        response.raise_for_status()
+        data = response.json()
+        raw_text = data["choices"][0]["message"]["content"]
+        usage = data.get("usage", {})
+        return LLMResponse(
+            raw_text=raw_text,
+            model=model,
+            provider="ollama",
+            latency_ms=latency_ms,
+            token_usage={
+                "input": usage.get("prompt_tokens", 0),
+                "output": usage.get("completion_tokens", 0),
+            },
+        )
+
     async def close(self):
         await self.client.aclose()

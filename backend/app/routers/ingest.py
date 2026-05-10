@@ -312,6 +312,35 @@ def _export_question(job: QuestionJob, q_data: dict, annotate_json: dict, questi
         )
 
 
+def _collect_page_images(pass1_json: dict) -> list:
+    """Extract pre-stored page images from pass1_json._page_images."""
+    from app.llm.base import ImageContent
+    raw_images = (pass1_json or {}).get("_page_images", [])
+    return [
+        ImageContent(b64=img["b64"], mime_type=img.get("mime_type", "image/png"))
+        for img in raw_images
+        if img.get("b64")
+    ]
+
+
+def _resolve_ocr_strategy(requested: str | None, settings) -> str:
+    """Resolve the effective OCR strategy.
+
+    Returns "deepseek" or "ollama". Raises ValueError if no provider is available.
+    """
+    strategy = (requested or settings.ocr_strategy or "auto").strip().lower()
+    if strategy == "deepseek":
+        return "deepseek"
+    if strategy in ("ollama", "vision"):
+        return "ollama"
+    if strategy == "auto":
+        if settings.ocr_vision_provider == "ollama":
+            return "ollama"
+        if settings.deepseek_ocr_base_url:
+            return "deepseek"
+    raise ValueError(f"No OCR provider available for strategy '{strategy}'")
+
+
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     from app.llm.factory import get_provider
     from app.prompts.extract_prompt import build_extract_prompt
@@ -327,30 +356,116 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     orch = JobOrchestrator(str(job.id), job.content_origin, job.job_type)
 
     raw_text = (job.pass1_json or {}).get("raw_text", "")
-    if not raw_text:
+    page_images = _collect_page_images(job.pass1_json)
+    ocr_strategy_req = (job.pass1_json or {}).get("_ocr_strategy")
+    # Capture form metadata before pass1_json may be overwritten by LLM output
+    form_meta = (job.pass1_json or {}).get("source_metadata", {})
+    extract_root = None
+
+    if not raw_text and page_images:
+        # ── OCR gate ─────────────────────────────────────────────────────
+        try:
+            resolved_strategy = _resolve_ocr_strategy(ocr_strategy_req, settings)
+        except ValueError as e:
+            orch.fail("extracting", "no_ocr_provider", str(e))
+            job.status = "failed"
+            await db.commit()
+            return
+
+        if resolved_strategy == "deepseek":
+            # Option A: DeepSeek OCR → raw_text → existing Pass 1 unchanged
+            from app.llm.factory import get_ocr_client
+            ocr_client = get_ocr_client(
+                base_url=settings.deepseek_ocr_base_url,
+                model=settings.deepseek_ocr_model,
+            )
+            try:
+                ocr_result = await ocr_client.extract(page_images)
+                raw_text = ocr_result.raw_text
+                job.pass1_json["raw_text"] = raw_text
+                job.pass1_json["_ocr_meta"] = {
+                    "strategy": "deepseek",
+                    "model": settings.deepseek_ocr_model,
+                    "page_count": len(page_images),
+                    "latency_ms": ocr_result.latency_ms,
+                }
+                await db.commit()
+            except Exception as e:
+                orch.fail("extracting", "ocr_error", f"DeepSeek OCR failed: {e}")
+                job.status = "failed"
+                job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                await db.commit()
+                return
+
+        else:
+            # Option B: Ollama VLM — fused OCR + extraction, skip Pass 1
+            from app.prompts.extract_prompt import build_vision_extract_prompt
+            orch.advance()
+            job.status = "extracting"
+            await db.commit()
+            system, user = build_vision_extract_prompt(form_meta)
+            try:
+                vision_result = await provider.complete_vision(
+                    system=system,
+                    user=user,
+                    images=page_images,
+                    model=settings.ocr_vision_model,
+                    max_tokens=16000,
+                )
+                extract_root = extract_json_from_text(
+                    vision_result.raw_text, job.provider_name, job.model_name
+                )
+                job.pass1_json = {
+                    **extract_root,
+                    "_llm_meta": {
+                        "provider": "ollama",
+                        "model": settings.ocr_vision_model,
+                        "latency_ms": vision_result.latency_ms,
+                    },
+                    "_ocr_meta": {
+                        "strategy": "ollama",
+                        "model": settings.ocr_vision_model,
+                        "page_count": len(page_images),
+                        "latency_ms": vision_result.latency_ms,
+                    },
+                    "source_metadata": form_meta,
+                }
+                await db.commit()
+                raw_text = "_vision_fused_"  # sentinel: Pass 1 is skipped below
+            except Exception as e:
+                orch.fail("extracting", "vision_error", f"Ollama VLM OCR failed: {e}")
+                job.status = "failed"
+                job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                await db.commit()
+                return
+        # ── end OCR gate ──────────────────────────────────────────────────
+
+    elif not raw_text:
         orch.fail("extracting", "no_raw_text", "No raw text available")
         job.status = "failed"
         await db.commit()
         return
 
     # ---- Pass 1: Extract (single call, may return multiple questions) ----
-    orch.advance()
-    job.status = "extracting"
-    await db.commit()
-
-    # Save form-submitted metadata before pass1_json is overwritten by LLM extraction
-    form_meta = (job.pass1_json or {}).get("source_metadata", {})
-    system, user = build_extract_prompt(raw_text[:100000], form_meta)
-    try:
-        result = await provider.complete(system=system, user=user, max_tokens=16000)
-        extract_root = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
-        job.pass1_json = {**extract_root, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
-    except Exception as e:
-        orch.fail("extracting", "llm_error", str(e))
-        job.status = "failed"
-        job.validation_errors_jsonb = [{"step": "extracting", "error": str(e)}]
+    if raw_text == "_vision_fused_":
+        # Ollama VLM fused path: extract_root already populated in OCR gate
+        pass
+    else:
+        orch.advance()
+        job.status = "extracting"
         await db.commit()
-        return
+
+        system, user = build_extract_prompt(raw_text[:100000], form_meta)
+        try:
+            result = await provider.complete(system=system, user=user, max_tokens=16000)
+            extract_root = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
+            job.pass1_json = {**extract_root, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
+        except Exception as e:
+            orch.fail("extracting", "llm_error", str(e))
+            job.status = "failed"
+            job.validation_errors_jsonb = [{"step": "extracting", "error": str(e)}]
+            await db.commit()
+            return
 
     # Normalize to a list of per-question dicts (handles both new and legacy formats)
     questions_data, shared_passage, shared_source = _normalize_extracted_questions(extract_root)
@@ -520,9 +635,12 @@ async def ingest_official_pdf(
     source_module_code: str = Form(""),
     provider_name: str | None = Form(None),
     model_name: str | None = Form(None),
+    ocr_strategy: str | None = Form(None),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
+    if ocr_strategy and ocr_strategy not in {"deepseek", "ollama", "auto"}:
+        raise HTTPException(status_code=422, detail="ocr_strategy must be 'deepseek', 'ollama', or 'auto'")
     mime_type = _validate_upload_mime(file.content_type, {"application/pdf"})
     content = await _safe_read(file, MAX_FILE_SIZE)
     source_subject_code, source_section_code, source_module_code = _normalize_source_metadata(
@@ -540,6 +658,19 @@ async def ingest_official_pdf(
 
     pdf_result = _parse_pdf_content(content)
     raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
+
+    # For scanned PDFs (no extractable text), pre-store page images for the OCR gate
+    page_images = []
+    if not raw_text.strip():
+        settings_tmp = get_settings()
+        max_images = settings_tmp.vision_max_images
+        for page in pdf_result["pages"][:max_images]:
+            for img in page.get("images", []):
+                page_images.append({
+                    "b64": img["b64"],
+                    "mime_type": f"image/{img.get('ext', 'png')}",
+                    "page_number": page["page_number"],
+                })
 
     asset = QuestionAsset(
         id=asset_id,
@@ -572,12 +703,18 @@ async def ingest_official_pdf(
         prompt_version="v3.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
-        pass1_json={"raw_text": raw_text[:50000], "pages": len(pdf_result["pages"]), "source_metadata": {
-            "source_exam_code": source_exam_code,
-            "source_subject_code": source_subject_code,
-            "source_section_code": source_section_code,
-            "source_module_code": source_module_code,
-        }},
+        pass1_json={
+            "raw_text": raw_text[:50000],
+            "pages": len(pdf_result["pages"]),
+            "_page_images": page_images,
+            "_ocr_strategy": ocr_strategy,
+            "source_metadata": {
+                "source_exam_code": source_exam_code,
+                "source_subject_code": source_subject_code,
+                "source_section_code": source_section_code,
+                "source_module_code": source_module_code,
+            },
+        },
         created_at=now,
         updated_at=now,
     )
@@ -594,18 +731,14 @@ async def ingest_unofficial_file(
     file: UploadFile = File(...),
     provider_name: str | None = Form(None),
     model_name: str | None = Form(None),
+    ocr_strategy: str | None = Form(None),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
+    if ocr_strategy and ocr_strategy not in {"deepseek", "ollama", "auto"}:
+        raise HTTPException(status_code=422, detail="ocr_strategy must be 'deepseek', 'ollama', or 'auto'")
     mime_type = _validate_upload_mime(file.content_type)
     content = await _safe_read(file, MAX_FILE_SIZE)
-
-    if mime_type in IMAGE_MIME_TYPES:
-        raise HTTPException(
-            status_code=422,
-            detail="Image ingestion requires OCR which is not yet implemented. "
-                   "Convert the image to PDF or extract the question text manually.",
-        )
 
     storage_path = await save_asset(file.filename or "upload", content, subfolder="unofficial")
     checksum = compute_checksum(content)
@@ -628,9 +761,20 @@ async def ingest_unofficial_file(
     db.add(asset)
 
     raw_text = ""
+    page_images: list = []
     if asset_type == "pdf":
         pdf_result = _parse_pdf_content(content)
         raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
+        if not raw_text.strip():
+            settings_tmp = get_settings()
+            max_images = settings_tmp.vision_max_images
+            for page in pdf_result["pages"][:max_images]:
+                for img in page.get("images", []):
+                    page_images.append({
+                        "b64": img["b64"],
+                        "mime_type": f"image/{img.get('ext', 'png')}",
+                        "page_number": page["page_number"],
+                    })
     elif asset_type in ("text", "markdown"):
         raw_text = content.decode("utf-8", errors="replace")
     elif asset_type == "json":
@@ -640,6 +784,18 @@ async def ingest_unofficial_file(
             raw_text = json.dumps(data, indent=2)
         except json.JSONDecodeError:
             raw_text = content.decode("utf-8", errors="replace")
+    elif asset_type == "image":
+        from app.parsers.image_parser import parse_image
+        import tempfile, pathlib
+        suffix = pathlib.Path(file.filename or "img").suffix or ".png"
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            tmp.write(content)
+            tmp_path = tmp.name
+        try:
+            img_data = parse_image(tmp_path)
+        finally:
+            pathlib.Path(tmp_path).unlink(missing_ok=True)
+        page_images = [{"b64": img_data["b64"], "mime_type": img_data["mime_type"], "page_number": 0}]
 
     settings = get_settings()
     provider_name, model_name = _resolve_provider_and_model(settings, provider_name, model_name)
@@ -654,7 +810,7 @@ async def ingest_unofficial_file(
         prompt_version="v3.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
-        pass1_json={"raw_text": raw_text[:50000]},
+        pass1_json={"raw_text": raw_text[:50000], "_page_images": page_images, "_ocr_strategy": ocr_strategy},
         created_at=now,
         updated_at=now,
     )

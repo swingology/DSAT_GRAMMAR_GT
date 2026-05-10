@@ -1,5 +1,94 @@
 # Debug Log
 
+## 2026-05-10 - Current OCR Gap Review
+Report created by: GPT-5 Codex
+Git branch: `main`
+
+### Findings
+
+1. **High:** DeepSeek OCR provenance is lost after Pass 1.
+   - The DeepSeek branch writes `job.pass1_json["_ocr_meta"]`, then the normal text Pass 1 replaces `job.pass1_json` with the extracted JSON and `_llm_meta`.
+   - Result: `pass1_json._ocr_meta.strategy == "deepseek"` is not preserved for audit or smoke-test verification.
+   - Relevant file: `backend/app/routers/ingest.py`.
+
+2. **High:** `/ingest/unofficial/batch` does not accept or forward `ocr_strategy`.
+   - Single official/unofficial ingest routes accept `ocr_strategy`.
+   - The batch route has no `ocr_strategy` form param and calls `ingest_unofficial_file()` without forwarding any OCR selection.
+   - Relevant file: `backend/app/routers/ingest.py`.
+
+3. **High:** `auto` strategy does not perform real fallback.
+   - `_resolve_ocr_strategy()` chooses Ollama whenever `ocr_vision_provider == "ollama"` without checking model reachability.
+   - If the Ollama VLM call fails, the job fails immediately instead of trying DeepSeek.
+   - `ocr_fallback` exists in settings but is not used by the OCR gate.
+   - Relevant files: `backend/app/routers/ingest.py`, `backend/app/config.py`.
+
+4. **High:** OCR routing is job-level, not per-question or visual-stimulus aware.
+   - Current behavior applies one OCR strategy to the whole ingest job.
+   - There is no routing that uses DeepSeek OCR for text recovery while reserving VLMs for chart/table/graph/image questions.
+   - Needed for the desired workflow: text-only scanned page → DeepSeek OCR; visual-reasoning item → VLM.
+   - Relevant files: `backend/app/routers/ingest.py`, `backend/app/pipeline/validator.py`.
+
+5. **Medium:** Mixed text-layer and scanned PDFs are not handled well.
+   - Route-time image collection only runs when the joined `raw_text` for the whole PDF is empty.
+   - A PDF with some text pages and some scanned/image pages skips OCR for the scanned pages.
+   - Relevant file: `backend/app/routers/ingest.py`.
+
+6. **Medium:** Base64 page images are stored directly in `question_jobs.pass1_json`.
+   - This can bloat JSONB rows for scanned PDFs and image uploads, especially failed jobs.
+   - Prefer storing asset/page references and loading or rendering images inside the background worker, keeping only OCR/vision metadata and extracted text/JSON in `pass1_json`.
+   - Relevant files: `backend/app/routers/ingest.py`, `backend/app/models/db.py`.
+
+7. **Medium:** OCR metadata and validation details are not observable via job polling.
+   - `GET /ingest/jobs/{job_id}` returns only `JobResponse`.
+   - The endpoint computes `validation_errors` but does not return them, and does not expose `pass1_json._ocr_meta`.
+   - Relevant files: `backend/app/routers/ingest.py`, `backend/app/models/payload.py`.
+
+8. **Medium:** OCR/VLM provider calls are not retried.
+   - `OllamaProvider.complete_vision()` is not wrapped by the retry decorator used by text completion.
+   - `DeepSeekOCRClient.extract()` is also single-attempt.
+   - This does not match the PRD fallback/retry expectations.
+   - Relevant files: `backend/app/llm/ollama_provider.py`, `backend/app/parsers/ocr.py`.
+
+9. **Medium:** Full OCR pipeline tests are missing.
+   - Current OCR tests cover provider request shape, helpers, and prompt construction.
+   - There are no integration-style tests proving `_run_pipeline()` preserves DeepSeek `_ocr_meta`, skips Pass 1 for Ollama VLM, handles OCR failures/fallback, or forwards batch `ocr_strategy`.
+   - Relevant files: `backend/tests/test_ocr.py`, `backend/tests/test_ingest_router.py`, `backend/tests/test_backend_regressions.py`.
+
+### Verification
+
+- Ran `uv run pytest -q` in `backend/`.
+- Result: 197 passed, 2 skipped.
+
+### Coverage Gap
+
+- Add pipeline-level OCR tests for DeepSeek and Ollama paths.
+- Add batch route tests for `ocr_strategy`.
+- Add failure/fallback tests for `auto`, unreachable Ollama, DeepSeek failure, malformed vision JSON, and mixed text/scanned PDFs.
+
+---
+
+## 2026-05-10 - OCR Integration Implementation (Phases 1–8)
+Report created by: Claude Sonnet 4.6
+Git branch: `main`
+Git checkpoint: `ba101fd` — Fix seven backend bugs across routers, config, and persistence layer
+
+### Findings
+
+1. **Implemented:** OCR gate wired into `_run_pipeline()` at the `no_raw_text` failure point.
+   - `_collect_page_images()` reads `pass1_json._page_images` (pre-stored at route time).
+   - `_resolve_ocr_strategy()` resolves `deepseek` | `ollama` | `auto` per-job or from config.
+   - DeepSeek path: `DeepSeekOCRClient.extract()` → `raw_text` → existing Pass 1 unchanged.
+   - Ollama VLM path: `provider.complete_vision()` → fused extraction → sentinel skips Pass 1.
+   - **Files:** `backend/app/routers/ingest.py`, `backend/app/parsers/ocr.py`, `backend/app/llm/base.py`, `backend/app/llm/ollama_provider.py`, `backend/app/llm/factory.py`, `backend/app/parsers/pdf_parser.py`, `backend/app/prompts/extract_prompt.py`, `backend/app/config.py`
+
+2. **Implemented:** Image uploads now accepted (previously raised 422).
+   - `ingest_unofficial_file()` now parses image content via `parse_image()` and stores as `_page_images` for the OCR gate.
+   - Both ingest routes accept optional `ocr_strategy` form param with 422 validation on invalid values.
+
+3. **Implemented:** `parse_pdf()` now renders scanned pages via `page.get_pixmap()` when no text or embedded images are found.
+
+4. **Test result:** 197 passed, 2 skipped — all prior tests green; 15 new OCR tests added.
+
 ## 2026-05-09 - Current Backend Gap Review
 Report created by: GPT-5 Codex
 Git branch: `main`
