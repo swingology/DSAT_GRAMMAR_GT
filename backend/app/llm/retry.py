@@ -18,11 +18,35 @@ _RETRYABLE_EXCEPTIONS: tuple[Type[Exception], ...] = (
 )
 
 
+def _sdk_connection_types() -> tuple[type, ...]:
+    """Collect SDK-specific connection/timeout exception types that are available."""
+    types: list[type] = []
+    try:
+        import anthropic
+        types.append(anthropic.APIConnectionError)
+    except Exception:
+        pass
+    try:
+        import openai
+        types.append(openai.APIConnectionError)
+    except Exception:
+        pass
+    return tuple(types)
+
+
 def _is_retryable(exc: Exception) -> bool:
     if isinstance(exc, _RETRYABLE_EXCEPTIONS):
         return True
     if isinstance(exc, HTTPStatusError):
         return exc.response.status_code in RETRYABLE_HTTP_CODES
+    # Anthropic/OpenAI SDK exceptions carry status_code on the instance.
+    status_code = getattr(exc, "status_code", None)
+    if isinstance(status_code, int) and status_code in RETRYABLE_HTTP_CODES:
+        return True
+    # SDK connection/timeout errors (no status_code but always transient).
+    sdk_conn = _sdk_connection_types()
+    if sdk_conn and isinstance(exc, sdk_conn):
+        return True
     return False
 
 

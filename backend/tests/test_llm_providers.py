@@ -124,3 +124,54 @@ async def test_close_all_providers_calls_close():
     assert mock_provider not in factory._provider_registry
     # Restore any pre-existing entries that were cleared
     factory._provider_registry.extend(original)
+
+
+# --- Retry tests ---
+# Use plain Exception subclasses with status_code set directly — the SDK constructors
+# require real httpx.Response objects which are unnecessary for testing _is_retryable.
+
+def test_retry_fires_on_429_status_code():
+    """_is_retryable returns True for any exception with status_code=429."""
+    from app.llm.retry import _is_retryable
+
+    class FakeRateLimit(Exception):
+        status_code = 429
+
+    assert _is_retryable(FakeRateLimit())
+
+
+def test_retry_fires_on_500_status_code():
+    """_is_retryable returns True for any exception with status_code=500."""
+    from app.llm.retry import _is_retryable
+
+    class FakeServerError(Exception):
+        status_code = 500
+
+    assert _is_retryable(FakeServerError())
+
+
+def test_retry_not_retryable_on_401_status_code():
+    """_is_retryable returns False for auth errors (status_code=401)."""
+    from app.llm.retry import _is_retryable
+
+    class FakeAuthError(Exception):
+        status_code = 401
+
+    assert not _is_retryable(FakeAuthError())
+
+
+def test_retry_fires_on_anthropic_connection_error():
+    """_is_retryable returns True for anthropic.APIConnectionError."""
+    import anthropic
+    from app.llm.retry import _is_retryable
+    from unittest.mock import MagicMock
+
+    request = MagicMock()
+    exc = anthropic.APIConnectionError(request=request)
+    assert _is_retryable(exc)
+
+
+def test_retry_not_retryable_on_unknown_exception():
+    """_is_retryable returns False for arbitrary unrelated exceptions."""
+    from app.llm.retry import _is_retryable
+    assert not _is_retryable(ValueError("some parse error"))
