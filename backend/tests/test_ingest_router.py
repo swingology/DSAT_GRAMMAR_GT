@@ -212,3 +212,89 @@ def test_ingest_unofficial_file_rejects_invalid_ocr_strategy(client):
         files={"file": ("test.txt", b"some text content", "text/plain")},
     )
     assert resp.status_code == 422
+
+
+# ── Benchmark endpoint tests ──────────────────────────────────────────────────
+
+def test_available_ocr_strategies_all_configured():
+    from types import SimpleNamespace
+    from app.routers.ingest import _available_ocr_strategies
+
+    settings = SimpleNamespace(
+        deepseek_ocr_base_url="http://localhost:8001",
+        ocr_vision_provider="ollama",
+        ollama_base_url="http://localhost:11434",
+        anthropic_api_key="sk-ant-key",
+        openai_api_key="sk-openai-key",
+    )
+    strategies = _available_ocr_strategies(settings)
+    assert "deepseek" in strategies
+    assert "ollama" in strategies
+    assert "anthropic" in strategies
+    assert "openai" in strategies
+
+
+def test_available_ocr_strategies_only_anthropic():
+    from types import SimpleNamespace
+    from app.routers.ingest import _available_ocr_strategies
+
+    settings = SimpleNamespace(
+        deepseek_ocr_base_url="",
+        ocr_vision_provider="none",
+        ollama_base_url="",
+        anthropic_api_key="sk-ant-key",
+        openai_api_key="",
+    )
+    strategies = _available_ocr_strategies(settings)
+    assert strategies == ["anthropic"]
+
+
+def test_available_ocr_strategies_empty_when_nothing_configured():
+    from types import SimpleNamespace
+    from app.routers.ingest import _available_ocr_strategies
+
+    settings = SimpleNamespace(
+        deepseek_ocr_base_url="",
+        ocr_vision_provider="none",
+        ollama_base_url="",
+        anthropic_api_key="",
+        openai_api_key="",
+    )
+    assert _available_ocr_strategies(settings) == []
+
+
+def test_benchmark_ocr_rejects_no_strategies(client, monkeypatch):
+    import app.routers.ingest as ingest_router
+    from types import SimpleNamespace
+
+    monkeypatch.setattr(
+        ingest_router,
+        "get_settings",
+        lambda: SimpleNamespace(
+            deepseek_ocr_base_url="",
+            ocr_vision_provider="none",
+            ollama_base_url="",
+            anthropic_api_key="",
+            openai_api_key="",
+        ),
+    )
+
+    resp = client.post(
+        "/ingest/benchmark/ocr",
+        headers=AUTH,
+        files={"file": ("scan.pdf", b"%PDF-fake", "application/pdf")},
+    )
+    assert resp.status_code == 422
+    assert "No OCR strategies" in resp.json()["detail"]
+
+
+def test_benchmark_get_rejects_invalid_uuid(client):
+    resp = client.get("/ingest/benchmark/ocr/not-a-valid-uuid", headers=AUTH)
+    assert resp.status_code == 422
+
+
+def test_benchmark_get_returns_404_for_unknown_group(client):
+    import uuid
+    group_id = uuid.uuid4()
+    resp = client.get(f"/ingest/benchmark/ocr/{group_id}", headers=AUTH)
+    assert resp.status_code == 404

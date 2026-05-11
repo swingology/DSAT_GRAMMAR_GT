@@ -1261,6 +1261,16 @@ async def ingest_benchmark_ocr(
             pathlib.Path(tmp_path).unlink(missing_ok=True)
         page_images = [{"b64": img_data["b64"], "mime_type": img_data["mime_type"], "page_number": 0}]
 
+    # DeepSeek is an image-only OCR provider — skip it for text-based content.
+    has_images = bool(page_images)
+    if not has_images:
+        to_run = [s for s in to_run if s != "deepseek"]
+    if not to_run:
+        raise HTTPException(
+            status_code=422,
+            detail="No OCR strategies available for this content type. Upload a scanned PDF or image to test DeepSeek.",
+        )
+
     now = datetime.now(timezone.utc)
     checksum = compute_checksum(content)
     storage_path = await save_asset(file.filename or "upload", content, subfolder="unofficial")
@@ -1313,7 +1323,7 @@ async def ingest_benchmark_ocr(
             _run_pipeline_with_session(uuid.UUID(info["id"]))
         ).add_done_callback(_log_task_exception)
 
-    return {"comparison_group_id": str(comparison_group_id), "jobs": job_infos}
+    return {"comparison_group_id": str(comparison_group_id), "jobs": job_infos, "has_images": has_images}
 
 
 @router.get("/benchmark/ocr/{comparison_group_id}", response_model=OCRBenchmarkResponse)
@@ -1339,10 +1349,13 @@ async def get_benchmark_ocr(
     ready = all(j.status in terminal_statuses for j in jobs)
 
     results = []
+    has_images = False
     for j in jobs:
         p1 = j.pass1_json or {}
         p2 = j.pass2_json or {}
         ocr_meta = p1.get("_ocr_meta")
+        if p1.get("_page_images") or ocr_meta:
+            has_images = True
         strategy = (ocr_meta or {}).get("strategy") or p1.get("_ocr_strategy") or "unknown"
         results.append(OCRJobResult(
             job_id=str(j.id),
@@ -1359,6 +1372,7 @@ async def get_benchmark_ocr(
         comparison_group_id=comparison_group_id,
         results=results,
         ready=ready,
+        has_images=has_images,
     )
 
 

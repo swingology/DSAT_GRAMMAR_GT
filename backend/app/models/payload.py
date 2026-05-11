@@ -152,6 +152,7 @@ class OCRBenchmarkResponse(BaseModel):
     comparison_group_id: str
     results: List[OCRJobResult]
     ready: bool
+    has_images: bool = True
 
 
 class UserCreate(BaseModel):
