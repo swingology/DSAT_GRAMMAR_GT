@@ -878,3 +878,89 @@ async def test_admin_create_relation_rejects_self_reference():
         )
     assert exc.value.status_code == 400
     assert "itself" in exc.value.detail
+
+
+# --- JSON parser routing tests ---
+
+def test_extract_json_routes_all_ollama_through_repair_path():
+    """Ollama provider with non-Kimi model uses repair path for fenced JSON output."""
+    from app.parsers.json_parser import extract_json_from_text
+
+    text = "Here is the extracted data:\n```json\n{\"question_text\": \"What is X?\", \"options\": []}\n```"
+    result = extract_json_from_text(text, provider_name="ollama", model_name="llava:13b")
+    assert result["question_text"] == "What is X?"
+
+
+def test_extract_json_repair_path_handles_bare_keys_for_ollama():
+    """Ollama repair path normalizes bare (unquoted) JSON keys from VLM output."""
+    from app.parsers.json_parser import extract_json_from_text
+
+    text = "{question_text: 'What is X?', correct_option_label: 'A'}"
+    result = extract_json_from_text(text, provider_name="ollama", model_name="moondream:latest")
+    assert result["question_text"] == "What is X?"
+
+
+# --- Pipeline JSONB assignment tests ---
+
+@pytest.mark.asyncio
+async def test_run_pipeline_reassigns_pass1_json_with_created_ids(monkeypatch):
+    """_created_question_ids must be stored via full dict reassignment so SQLAlchemy tracks the change."""
+    db = _FakeDB()
+    job = SimpleNamespace(
+        id=uuid.uuid4(),
+        content_origin="unofficial",
+        job_type="ingest",
+        provider_name="anthropic",
+        model_name="model",
+        prompt_version="v3.0",
+        rules_version="rules",
+        pass1_json={"raw_text": "some unofficial text"},
+        validation_errors_jsonb=None,
+        raw_asset_id=None,
+        status="parsing",
+        question_id=None,
+    )
+
+    extract_json_data = {
+        "question_text": "What is X?",
+        "correct_option_label": "B",
+        "options": [
+            {"label": "A", "text": "Wrong"},
+            {"label": "B", "text": "Right"},
+            {"label": "C", "text": "Wrong"},
+            {"label": "D", "text": "Wrong"},
+        ],
+    }
+    annotate_json_data = {
+        "explanation_short": "B is correct.",
+        "explanation_full": "Long explanation",
+        "annotation_confidence": 0.85,
+        "needs_human_review": False,
+    }
+    responses = iter([extract_json_data, annotate_json_data])
+
+    provider = SimpleNamespace(
+        complete=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+                SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        )
+    )
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("sys", "usr"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("sys", "usr"))
+    monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+    monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
+        anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
+        local_archive_mirror="/tmp/test_archive",
+    ))
+
+    await ingest_router._run_pipeline(job, db)
+
+    # Verify dict was reassigned (not mutated) and _created_question_ids is present
+    assert "_created_question_ids" in job.pass1_json
+    assert len(job.pass1_json["_created_question_ids"]) == 1
+    assert job.status == "approved"

@@ -428,13 +428,16 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             try:
                 ocr_result = await ocr_client.extract(page_images)
                 raw_text = ocr_result.raw_text
-                job.pass1_json["raw_text"] = raw_text
-                job.pass1_json["_ocr_meta"] = {
-                    "strategy": "deepseek",
-                    "model": settings.deepseek_ocr_model,
-                    "page_count": len(page_images),
-                    "latency_ms": ocr_result.latency_ms,
-                    "token_usage": getattr(ocr_result, "token_usage", None) or {},
+                job.pass1_json = {
+                    **(job.pass1_json or {}),
+                    "raw_text": raw_text,
+                    "_ocr_meta": {
+                        "strategy": "deepseek",
+                        "model": settings.deepseek_ocr_model,
+                        "page_count": len(page_images),
+                        "latency_ms": ocr_result.latency_ms,
+                        "token_usage": getattr(ocr_result, "token_usage", None) or {},
+                    },
                 }
                 await db.commit()
             except Exception as e:
@@ -644,7 +647,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             job.status = "needs_review"
         else:
             job.status = "approved"
-        job.pass1_json["_created_question_ids"] = [str(qid) for qid in created_question_ids]
+        job.pass1_json = {
+            **(job.pass1_json or {}),
+            "_created_question_ids": [str(qid) for qid in created_question_ids],
+        }
     else:
         # All questions failed
         job.status = "failed"

@@ -5,6 +5,36 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-11 — Ingestion pipeline gap fixes (round 3)
+
+**Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+**Branch:** `main`
+
+Third audit pass, focused on benchmark quality-measurement correctness. 211 tests passing.
+
+### Fix 1 — DeepSeek OCR metadata never persisted (SQLAlchemy in-place JSONB mutation)
+**Change:** Replace `job.pass1_json["raw_text"] = …` + `job.pass1_json["_ocr_meta"] = …` with a single `job.pass1_json = {**(job.pass1_json or {}), "raw_text": …, "_ocr_meta": …}` assignment.
+**File:** `backend/app/routers/ingest.py` (DeepSeek OCR gate block)
+**Why:** SQLAlchemy only tracks attribute-level assignments, not in-place dict mutations. After the job's `pass1_json` was initially committed, the DeepSeek OCR gate mutated the dict in-place and then called `await db.commit()`. SQLAlchemy saw no attribute change and silently skipped the UPDATE — leaving `_ocr_meta.strategy` missing in benchmark poll results (returned as "unknown").
+
+### Fix 2 — `_created_question_ids` never persisted (same root cause)
+**Change:** Replace `job.pass1_json["_created_question_ids"] = [...]` with `job.pass1_json = {**(job.pass1_json or {}), "_created_question_ids": [...]}`.
+**File:** `backend/app/routers/ingest.py:647`
+**Why:** Same SQLAlchemy JSONB mutation tracking issue. `questions_created` in `GET /ingest/benchmark/ocr/{id}` was always 0 because the list was never written to the database.
+
+### Fix 3 — Ollama VLM models outside Kimi skip JSON repair path
+**Change:** `if "kimi" in model_key or ("ollama" == provider_key and "kimi" in model_key)` → `if provider_key == "ollama" or "kimi" in model_key`.
+**File:** `backend/app/parsers/json_parser.py:150`
+**Why:** Non-Kimi Ollama VLM models (llava, moondream, llama3.2-vision) can emit reasoning preambles or JSON-adjacent text with bare keys / curly quotes. Only Kimi-named models were routed through the `_extract_with_kimi_strategy` repair path; all other Ollama VLM models failed with "No valid JSON found" when their output needed repair.
+
+### Tests added (3)
+- `test_extract_json_routes_all_ollama_through_repair_path` — fenced JSON from `llava:13b` parsed correctly
+- `test_extract_json_repair_path_handles_bare_keys_for_ollama` — bare-key JSON from `moondream:latest` normalized
+- `test_run_pipeline_reassigns_pass1_json_with_created_ids` — `_created_question_ids` present in `pass1_json` after pipeline for unofficial ingest
+**File:** `backend/tests/test_backend_regressions.py`
+
+---
+
 ## 2026-05-10 — Ingestion pipeline gap fixes (round 2)
 
 **Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)

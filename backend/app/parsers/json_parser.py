@@ -147,7 +147,7 @@ def extract_json_from_text(
     model_key = (model_name or "").lower()
     provider_key = (provider_name or "").lower()
 
-    if "kimi" in model_key or ("ollama" == provider_key and "kimi" in model_key):
+    if provider_key == "ollama" or "kimi" in model_key:
         parsed = _extract_with_kimi_strategy(text)
         if parsed is not None:
             return parsed
