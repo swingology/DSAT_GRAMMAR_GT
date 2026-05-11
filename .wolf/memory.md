@@ -105,3 +105,91 @@
 |------|--------|---------|---------|--------|
 | 13:39 | Created plan_benchmarking_backend.md | — | ~886 |
 | 13:40 | Session end: 1 writes across 1 files (plan_benchmarking_backend.md) | 0 reads | ~949 tok |
+| 13:49 | Session end: 1 writes across 1 files (plan_benchmarking_backend.md) | 0 reads | ~949 tok |
+
+## Session: 2026-05-11 17:50
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:10 | Edited DEBUG_LOG.md | modified feat() | ~1543 |
+| 18:11 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 16 reads | ~31247 tok |
+| 18:13 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 16 reads | ~31247 tok |
+| 18:15 | Edited backend/app/pipeline/overlap.py | modified detect_overlaps() | ~62 |
+| 18:15 | Edited backend/app/pipeline/overlap.py | 3→3 lines | ~30 |
+| 18:15 | Edited backend/app/routers/ingest.py | 7→7 lines | ~72 |
+| 18:15 | Edited backend/app/routers/ingest.py | 5→8 lines | ~46 |
+| 18:15 | Edited backend/app/routers/ingest.py | modified _log_task_exception() | ~78 |
+| 18:16 | Edited backend/app/routers/ingest.py | 3→3 lines | ~55 |
+| 18:16 | Edited backend/app/routers/ingest.py | 3→3 lines | ~67 |
+| 18:16 | Edited backend/app/routers/generate.py | modified _log_task_exception() | ~98 |
+| 18:16 | Edited backend/app/routers/generate.py | modified _run() | ~78 |
+| 18:16 | Edited backend/app/routers/generate.py | modified _run() | ~86 |
+| 18:16 | Edited backend/app/routers/ingest.py | modified first() | ~136 |
+| 18:16 | Edited backend/app/routers/ingest.py | modified first() | ~136 |
+| 18:17 | Edited backend/app/routers/ingest.py | modified in() | ~121 |
+| 18:17 | Edited backend/app/routers/ingest.py | inline fix | ~22 |
+| 18:17 | Edited CHANGELOG.md | modified signature() | ~644 |
+| 18:17 | Edited DEBUG_LOG.md | 3→4 lines | ~124 |
+| 18:17 | Edited DEBUG_LOG.md | 3→4 lines | ~138 |
+| 18:17 | Edited DEBUG_LOG.md | 3→4 lines | ~146 |
+| 18:18 | Edited DEBUG_LOG.md | 2→3 lines | ~85 |
+| 18:18 | Session end: 20 writes across 5 files (DEBUG_LOG.md, overlap.py, ingest.py, generate.py, CHANGELOG.md) | 17 reads | ~44472 tok |
+| 18:18 | Session end: 20 writes across 5 files (DEBUG_LOG.md, overlap.py, ingest.py, generate.py, CHANGELOG.md) | 17 reads | ~44472 tok |
+| 18:28 | Session end: 20 writes across 5 files (DEBUG_LOG.md, overlap.py, ingest.py, generate.py, CHANGELOG.md) | 19 reads | ~45072 tok |
+
+## Session: 2026-05-11 18:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:34 | Edited backend/app/llm/ollama_provider.py | modified complete_vision() | ~85 |
+| 18:34 | Edited backend/app/parsers/ocr.py | added 1 import(s) | ~58 |
+| 18:34 | Edited backend/app/parsers/ocr.py | modified extract() | ~46 |
+| 18:35 | Edited DEBUG_LOG.md | added error handling | ~769 |
+| 18:35 | Edited CHANGELOG.md | expanded (+22 lines) | ~316 |
+| 18:35 | Edited backend/app/llm/factory.py | append() → values() | ~550 |
+| 18:36 | Edited backend/app/pipeline/validator.py | modified get() | ~110 |
+| 18:36 | Edited DEBUG_LOG.md | 7→9 lines | ~380 |
+| 18:36 | Edited CHANGELOG.md | expanded (+20 lines) | ~504 |
+
+## Session: 2026-05-11 18:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:46 | Edited CHANGELOG.md | modified feat() | ~1478 |
+| 18:46 | Session end: 1 writes across 1 files (CHANGELOG.md) | 11 reads | ~34594 tok |
+| 18:51 | Edited backend/app/llm/anthropic_provider.py | modified __init__() | ~819 |
+| 18:51 | Edited backend/app/llm/openai_provider.py | modified __init__() | ~837 |
+| 18:52 | Edited backend/app/models/payload.py | modified ReannotateRequest() | ~147 |
+| 18:52 | Edited backend/app/routers/ingest.py | inline fix | ~28 |
+| 18:52 | Edited backend/app/routers/ingest.py | modified _resolve_ocr_strategy() | ~587 |
+| 18:52 | Edited backend/app/routers/ingest.py | modified in() | ~1245 |
+| 18:52 | Edited backend/app/routers/ingest.py | expanded (+13 lines) | ~389 |
+| 18:53 | Edited backend/app/routers/ingest.py | 3→4 lines | ~43 |
+| 18:53 | Edited backend/app/routers/ingest.py | expanded (+7 lines) | ~272 |
+| 18:53 | Edited backend/app/routers/ingest.py | 2→4 lines | ~53 |
+| 18:53 | Edited backend/app/routers/ingest.py | 3→3 lines | ~94 |
+| 18:53 | Edited backend/app/routers/ingest.py | 6→7 lines | ~79 |
+| 18:53 | Edited backend/app/routers/ingest.py | 3→3 lines | ~88 |
+| 18:53 | Edited backend/app/routers/ingest.py | inline fix | ~42 |
+| 18:54 | Edited backend/app/routers/ingest.py | modified ingest_benchmark_ocr() | ~1714 |
+| 18:54 | Edited backend/app/routers/ingest.py | inline fix | ~24 |
+| 18:54 | Edited backend/app/routers/ingest.py | inline fix | ~25 |
+| 18:54 | Edited backend/app/routers/ingest.py | inline fix | ~23 |
+
+## Session: 2026-05-11 19:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:06 | Edited backend/app/routers/ingest.py | inline fix | ~22 |
+| 19:09 | Edited backend/app/routers/ingest.py | modified getattr() | ~122 |
+| 19:12 | Edited backend/app/llm/factory.py | values() → append() | ~609 |
+| 19:14 | Edited backend/app/routers/ingest.py | inline fix | ~58 |
+| 19:14 | Edited backend/app/routers/ingest.py | 2→2 lines | ~15 |
+| 19:15 | Edited backend/app/models/payload.py | modified JobResponse() | ~72 |
+| 19:15 | Edited backend/app/routers/ingest.py | reduced (-6 lines) | ~80 |
+| 19:16 | Created backend/migrations/versions/014_add_comparison_group_index.py | — | ~126 |
+| 19:16 | Edited backend/app/models/db.py | 4→5 lines | ~63 |
+| 19:20 | Edited CHANGELOG.md | expanded (+54 lines) | ~943 |
+| 19:21 | Fixed 9 ingest pipeline gaps: token_usage getattr, OCR strategy priority, factory _provider_registry, validator severity, reannotate meta, dead code, job status response, comparison_group_id index | ingest.py factory.py validator.py payload.py db.py migration-014 | 197/197 tests pass | ~4000 |
+| 19:21 | Session end: 10 writes across 6 files (ingest.py, factory.py, payload.py, 014_add_comparison_group_index.py, db.py) | 11 reads | ~44813 tok |
+| 19:37 | Session end: 10 writes across 6 files (ingest.py, factory.py, payload.py, 014_add_comparison_group_index.py, db.py) | 11 reads | ~46179 tok |

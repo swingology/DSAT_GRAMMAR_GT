@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-10T20:39:36.757Z
-> Files: 654 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-11T02:20:09.229Z
+> Files: 662 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
 
@@ -16,21 +16,21 @@
 
 ## ./
 
-- `plan_benchmarking_backend.md` — Plan: backend/benchmark dir for OCR/LLM benchmark runners + HTMX dashboard (~600 tok)
 - `.codex` (~0 tok)
 - `.gitattributes` — Git attributes (~12 tok)
 - `.gitignore` — Git ignore rules (~9 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~8140 tok)
+- `CHANGELOG.md` — CHANGELOG (~12048 tok)
 - `CLAUDE.md` — OpenWolf (~225 tok)
-- `DEBUG_LOG.md` — Debug Log (~4331 tok)
+- `DEBUG_LOG.md` — Debug Log (~7714 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~7592 tok)
 - `kimi_4q_comparison_report.md` — DSAT Question Generation Comparison Report (~2222 tok)
 - `MATH_ADAPTATION_PLAN.md` — MATH_ADAPTATION_PLAN.md (~2352 tok)
 - `OCR_INGESTION_PLAN.md` — OCR Ingestion System Plan — DSAT Grammar Backend (~3762 tok)
+- `plan_benchmarking_backend.md` — Plan: backend/benchmark dir for OCR/LLM benchmark runners + HTMX dashboard (~600 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark Directory (~830 tok)
 - `Reading_v1_rules_report.md` — Reading_v1 Rules Impact Report (~4265 tok)
 - `rules_agent_dsat_grammar_ingestion_generation_v7.md` — rules_agent_dsat_grammar_ingestion_generetion_v7.md (~23730 tok)
@@ -877,14 +877,26 @@
 
 ## backend/app/llm/
 
+- `anthropic_provider.py` — AnthropicProvider: complete, complete_vision (~819 tok)
 - `base.py` — class: complete, complete_vision (~282 tok)
-- `factory.py` — get_provider, get_ocr_client, close_all_providers (~441 tok)
-- `ollama_provider.py` — OllamaProvider: complete, complete_vision, close (~971 tok)
+- `factory.py` — Keyed by (provider_name, api_key, base_url, default_model) so identical configs share one instance. (~609 tok)
+- `ollama_provider.py` — OllamaProvider: complete, complete_vision, close (~990 tok)
+- `openai_provider.py` — OpenAIProvider: complete, complete_vision (~837 tok)
+
+## backend/app/models/
+
+- `db.py` — Declares QuestionJob (~3950 tok)
+- `payload.py` — HTTP request/response models. (~1491 tok)
 
 ## backend/app/parsers/
 
-- `ocr.py` — DeepSeek OCR-2 client — sends images to local vLLM/LMDeploy server, returns text. (~668 tok)
+- `ocr.py` — DeepSeek OCR-2 client — sends images to local vLLM/LMDeploy server, returns text. (~697 tok)
 - `pdf_parser.py` — PDF text extraction using pymupdf (fitz). (~429 tok)
+
+## backend/app/pipeline/
+
+- `overlap.py` — Overlap detection between unofficial/generated questions and official questions. (~1577 tok)
+- `validator.py` — Validation rules from PRD §15. (~2218 tok)
 
 ## backend/app/prompts/
 
@@ -893,9 +905,13 @@
 ## backend/app/routers/
 
 - `admin.py` — API: 5 endpoints (~6294 tok)
-- `generate.py` — API: 3 endpoints (~3405 tok)
-- `ingest.py` (~12568 tok)
+- `generate.py` — API: 3 endpoints (~3505 tok)
+- `ingest.py` (~15512 tok)
 - `student.py` — API: 7 endpoints (~1956 tok)
+
+## backend/migrations/versions/
+
+- `014_add_comparison_group_index.py` — Add index on question_jobs.comparison_group_id for benchmark poll queries. (~126 tok)
 
 ## backend/tests/
 

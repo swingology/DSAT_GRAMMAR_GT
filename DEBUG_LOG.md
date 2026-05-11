@@ -1,5 +1,117 @@
 # Debug Log
 
+## 2026-05-10 - Backend Gap Audit (Codex-Generated Code)
+Report created by: Claude Sonnet 4.6
+Git branch: `main`
+Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Ollama VLM support
+
+### Findings
+
+1. **Critical:** Student API returns questions without answer options.
+   - `StudentQuestionResponse` has no `options` field. `GET /api/questions` returns question text and passage but no A/B/C/D choices. Students cannot display a answerable question.
+   - Relevant files: `backend/app/models/payload.py`, `backend/app/routers/student.py`.
+
+2. ~~**Critical:** No duplicate-detection on ingest — same PDF uploaded twice creates duplicate questions.~~
+   - ~~`checksum` is computed and stored on `QuestionAsset` but never checked before creating a new asset/job. Re-uploading the same file runs the full pipeline again.~~
+   - ~~Relevant file: `backend/app/routers/ingest.py`.~~
+   - **Fixed:** Checksum uniqueness check added before asset creation in both upload endpoints. Returns HTTP 409 on duplicate.
+
+3. **Critical:** CORS is wide open (`allow_origins=["*"]`, `allow_methods=["*"]`, `allow_headers=["*"]`).
+   - Any website can make requests to the API from a user's browser.
+   - Relevant file: `backend/app/main.py`.
+
+4. **Critical:** Students can read any user's profile — no ownership check on `GET /api/users/{user_id}`.
+   - Route uses `student_required` but accepts any integer `user_id`. User IDs are sequential integers, trivially enumerable.
+   - Relevant file: `backend/app/routers/student.py`.
+
+5. **Critical:** Students can submit answers attributed to any `user_id` — no auth/user binding.
+   - `POST /api/submit` accepts `user_id: int` in body. No check that the student key corresponds to the given user.
+   - Relevant file: `backend/app/routers/student.py`.
+
+6. **Critical:** Insecure default keys only log a warning; server does not refuse to start.
+   - `_warn_if_insecure_keys` logs when `admin-key-change-me` / `student-key-change-me` are active but does not block startup.
+   - Relevant file: `backend/app/main.py`.
+
+7. **High:** N+1 query pattern in all list endpoints.
+   - `admin.py`, `questions.py`, `student.py` each fetch a question list then issue one DB call per question for annotations and another for options. 50 questions = 101 queries instead of 3.
+   - Relevant files: `backend/app/routers/admin.py`, `backend/app/routers/questions.py`, `backend/app/routers/student.py`.
+
+8. **High:** Full-table scan for every overlap check — O(N×M) as official questions grow.
+   - `detect_overlaps` loads all official questions and annotations into memory and compares in Python via Jaccard similarity. No text index, no candidate pre-filtering.
+   - Relevant file: `backend/app/pipeline/overlap.py`.
+
+9. **High:** Scanned-PDF page images stored as base64 in JSONB — can be megabytes per DB row.
+   - `max_images` limits pages but not images-per-page. A 10-page PDF with 5 images per page stores 50 base64 blobs in one `pass1_json` JSONB column.
+   - Relevant file: `backend/app/routers/ingest.py`.
+
+10. ~~**High:** Background pipeline tasks swallow exceptions silently.~~
+    - ~~`asyncio.create_task(_run_pipeline_with_session(...))` has no `add_done_callback`. An uncaught exception leaves the job stuck in its last committed status with no error recorded.~~
+    - ~~Relevant files: `backend/app/routers/ingest.py`, `backend/app/routers/generate.py`.~~
+    - **Fixed:** `_log_task_exception` done-callback added to all `create_task` calls in both routers; exceptions now logged at ERROR level with full traceback.
+
+11. **High:** No recovery for stuck jobs after server restart.
+    - Jobs interrupted mid-pipeline stay in `"extracting"` / `"annotating"` forever. No startup sweep, no timeout, no admin endpoint to force-fail or retry.
+    - Relevant files: `backend/app/routers/ingest.py`, `backend/app/routers/generate.py`.
+
+12. **High:** Job status committed before work completes — crash window leaves permanent stuck state.
+    - Pattern throughout `_run_pipeline`: `job.status = "extracting"; await db.commit()` then LLM call. A crash between commit and LLM call leaves the job stuck.
+    - Relevant file: `backend/app/routers/ingest.py`.
+
+13. **Medium:** Duplicate user management routes — `student.py` (`/api/users`) and `users.py` (`/users`) already diverged.
+    - `/api/users` list has no pagination; `/users` list has `limit`/`offset`. `/api/users/{id}` GET uses `student_required`; `/users/{id}` GET uses `admin_required`. DELETE returns different status codes.
+    - Relevant files: `backend/app/routers/student.py`, `backend/app/routers/users.py`.
+
+14. **Medium:** `_generation_profile_payload` in `generate.py` overwrites merged profile with all of `request_data`.
+    - Final `merged.update(sources[-1])` dumps provider, model, source_question_ids, etc. into the stored generation profile. The `ingest.py` version of the same helper does not have this line.
+    - Relevant file: `backend/app/routers/generate.py`.
+
+15. ~~**Medium:** `detect_overlaps` receives `job.id` (a job UUID) as `question_id`, not the new question's UUID.~~
+    - ~~The self-skip guard `if oq.id == question_id: continue` is always false because job IDs and question IDs never collide. Intent is not achieved.~~
+    - ~~Relevant file: `backend/app/routers/ingest.py` (call site at overlap check).~~
+    - **Fixed:** Call site passes `None`; `detect_overlaps` signature updated to `Optional[uuid.UUID]`; guard is now a no-op when `None` (correct — question not yet persisted at check time).
+
+16. ~~**Medium:** Text ingest silently truncates input at 50,000 chars with no warning in the response.~~
+    - ~~Relevant file: `backend/app/routers/ingest.py`.~~
+    - **Fixed:** Returns HTTP 413 with the actual char count when input exceeds 50,000. The `text[:50000]` slice in `pass1_json` construction was removed.
+
+17. **Medium:** `LlmEvaluation.job_id` is `nullable=False` in the model but `create_evaluation` can pass `None` if `body.job_id` is an empty string, causing an unhandled 500.
+    - Relevant files: `backend/app/models/db.py`, `backend/app/routers/admin.py`.
+
+18. **Low:** No rate limiting or concurrent-job cap — unlimited LLM pipeline calls per key.
+
+19. **Low:** Dashboard HTML served at `GET /dashboard` without authentication — exposes route structure and feature set to unauthenticated callers.
+    - Relevant file: `backend/app/routers/dashboard.py`.
+
+20. ~~**High:** `OllamaProvider.complete_vision()` has no `@with_retry` decorator.~~
+    - ~~`complete()` is wrapped with retry/backoff but `complete_vision()` is a single bare `await self.client.post(...)` call. Any transient Ollama timeout or 503 during VLM-based scanned-PDF ingest permanently fails the job.~~
+    - ~~Relevant file: `backend/app/llm/ollama_provider.py`.~~
+    - **Fixed:** Added `@with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)` to `complete_vision()`.
+
+21. ~~**High:** `DeepSeekOCRClient.extract()` has no `@with_retry` decorator.~~
+    - ~~Single-attempt HTTP call to a local vLLM/LMDeploy process. Any flaky network or overloaded inference server fails the OCR pass with no retry.~~
+    - ~~Relevant file: `backend/app/parsers/ocr.py`.~~
+    - **Fixed:** Imported `with_retry` and added `@with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)` to `extract()`.
+
+22. **Medium:** `AnthropicProvider` has no `complete_vision()` implementation.
+    - Anthropic Claude 3+ supports image inputs, but the provider only exposes `complete()`. Selecting `anthropic` as an OCR strategy will raise an `AttributeError` at runtime because the `complete_vision` call site expects the method to exist.
+    - Relevant file: `backend/app/llm/anthropic_provider.py`.
+
+23. ~~**Medium:** `_provider_registry` in `factory.py` grows unbounded — new `httpx.AsyncClient` per pipeline call.~~
+    - ~~`get_provider()` creates a new provider instance on every invocation and appends it to a module-level list with no eviction. Each instance owns its own `httpx.AsyncClient` connection pool. Under sustained load or a multi-job burst, these accumulate in memory indefinitely.~~
+    - ~~Relevant file: `backend/app/llm/factory.py`.~~
+    - **Fixed:** Replaced `_provider_registry: list` with `_provider_cache: dict` keyed by `(provider_name, api_key, base_url, default_model)`. Identical configs return the same provider instance. `close_all_providers()` iterates `.values()` and clears the dict.
+
+24. ~~**Medium:** `validator.py` blocks `command_of_evidence_quantitative` questions for missing `table_data` / `graph_data` — fields that are never extracted or stored.~~
+    - ~~The blocking rules reference `table_data` and `graph_data` keys, but no extraction prompt emits these fields, no `normalize_annotation()` path sets them, and no DB column stores them. Every quantitative evidence question is permanently blocked at validation.~~
+    - ~~Relevant files: `backend/app/pipeline/validator.py`, `backend/app/prompts/`.~~
+    - **Fixed:** Downgraded from `"blocking"` to `"review"` severity with an explanatory message. Questions now route to human review queue instead of being permanently failed.
+
+25. **Low:** Test suite uses a stub DB session (`_MockSession`) that returns `None` for all `.get()` and empty result sets for all `.execute()`.
+    - Router tests cover auth and HTTP routing but cannot catch any DB query regression. A wrong JOIN, a missing `.where()` clause, or a bad column reference passes all tests silently.
+    - Relevant file: `backend/tests/conftest.py`.
+
+---
+
 ## 2026-05-10 - Current OCR Gap Review
 Report created by: GPT-5 Codex
 Git branch: `main`

@@ -1,6 +1,14 @@
 import uuid
 import asyncio
+import logging
 from datetime import datetime, timezone
+
+logger = logging.getLogger(__name__)
+
+
+def _log_task_exception(task: asyncio.Task) -> None:
+    if not task.cancelled() and task.exception():
+        logger.error("Background generate task failed", exc_info=task.exception(), extra={"task": task.get_name()})
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
@@ -235,7 +243,7 @@ async def generate_questions(
             j = await db2.get(QuestionJob, job_id)
             if j:
                 await _run_generate_pipeline(j, db2, request_data)
-    asyncio.create_task(_run())
+    asyncio.create_task(_run()).add_done_callback(_log_task_exception)
 
     return JobResponse(id=str(job_id), job_type="generate", status="extracting", created_at=now)
 
@@ -281,7 +289,7 @@ async def generate_compare(
                 j = await db2.get(QuestionJob, jid)
                 if j:
                     await _run_generate_pipeline(j, db2, request_data)
-        asyncio.create_task(_run())
+        asyncio.create_task(_run()).add_done_callback(_log_task_exception)
 
     return results
 

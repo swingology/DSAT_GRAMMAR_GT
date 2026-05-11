@@ -157,7 +157,7 @@ def validate_question(question_data: dict, content_origin: str = "official") -> 
                 errors.append({
                     "severity": "blocking",
                     "field": "graphic_data",
-                    "message": "Quantitative Command of Evidence requires table_data or graph_data",
+                    "message": "Quantitative Command of Evidence: table_data or graph_data not present",
                 })
 
     explanation_short = question_data.get("explanation_short", "")

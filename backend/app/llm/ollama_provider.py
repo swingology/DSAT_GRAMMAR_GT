@@ -51,6 +51,7 @@ class OllamaProvider:
             token_usage=token_usage,
         )
 
+    @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
     async def complete_vision(
         self,
         system: str,

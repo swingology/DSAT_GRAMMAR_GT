@@ -1,8 +1,11 @@
 import uuid
 import asyncio
+import logging
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form, Body
 from sqlalchemy import select
@@ -21,9 +24,14 @@ from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.pipeline.orchestrator import JobOrchestrator
 from app.pipeline.validator import validate_question
 from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields, apply_option_annotations
-from app.models.payload import JobResponse, ReannotateRequest
+from app.models.payload import JobResponse, ReannotateRequest, OCRJobResult, OCRBenchmarkResponse
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
+
+
+def _log_task_exception(task: asyncio.Task) -> None:
+    if not task.cancelled() and task.exception():
+        logger.error("Background ingest task failed", exc_info=task.exception(), extra={"task": task.get_name()})
 
 ALLOWED_MIME = {
     "application/pdf", "image/png", "image/jpeg", "image/webp",
@@ -326,19 +334,57 @@ def _collect_page_images(pass1_json: dict) -> list:
 def _resolve_ocr_strategy(requested: str | None, settings) -> str:
     """Resolve the effective OCR strategy.
 
-    Returns "deepseek" or "ollama". Raises ValueError if no provider is available.
+    Returns "deepseek", "ollama", "anthropic", or "openai".
+    Raises ValueError if the requested provider is unavailable.
     """
     strategy = (requested or settings.ocr_strategy or "auto").strip().lower()
     if strategy == "deepseek":
         return "deepseek"
     if strategy in ("ollama", "vision"):
         return "ollama"
+    if strategy == "anthropic":
+        if not settings.anthropic_api_key:
+            raise ValueError("anthropic_api_key not configured")
+        return "anthropic"
+    if strategy == "openai":
+        if not settings.openai_api_key:
+            raise ValueError("openai_api_key not configured")
+        return "openai"
     if strategy == "auto":
         if settings.ocr_vision_provider == "ollama":
             return "ollama"
         if settings.deepseek_ocr_base_url:
             return "deepseek"
+        if getattr(settings, "anthropic_api_key", None):
+            return "anthropic"
+        if getattr(settings, "openai_api_key", None):
+            return "openai"
     raise ValueError(f"No OCR provider available for strategy '{strategy}'")
+
+
+def _vlm_model_for_strategy(strategy: str, settings) -> str:
+    """Return the model name to use for a VLM-fused OCR strategy."""
+    if strategy == "ollama":
+        return settings.ocr_vision_model
+    if strategy == "anthropic":
+        return settings.default_annotation_model
+    if strategy == "openai":
+        return "gpt-4o"
+    return ""
+
+
+def _available_ocr_strategies(settings) -> list[str]:
+    """Return all strategies that can run given the current configuration."""
+    available = []
+    if settings.deepseek_ocr_base_url:
+        available.append("deepseek")
+    if settings.ocr_vision_provider == "ollama" or settings.ollama_base_url:
+        available.append("ollama")
+    if settings.anthropic_api_key:
+        available.append("anthropic")
+    if settings.openai_api_key:
+        available.append("openai")
+    return available
 
 
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
@@ -373,7 +419,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             return
 
         if resolved_strategy == "deepseek":
-            # Option A: DeepSeek OCR → raw_text → existing Pass 1 unchanged
+            # Option A: DeepSeek OCR-2 → raw_text → Pass 1 LLM extraction
             from app.llm.factory import get_ocr_client
             ocr_client = get_ocr_client(
                 base_url=settings.deepseek_ocr_base_url,
@@ -388,52 +434,67 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     "model": settings.deepseek_ocr_model,
                     "page_count": len(page_images),
                     "latency_ms": ocr_result.latency_ms,
+                    "token_usage": getattr(ocr_result, "token_usage", None) or {},
                 }
                 await db.commit()
             except Exception as e:
-                orch.fail("extracting", "ocr_error", f"DeepSeek OCR failed: {e}")
-                job.status = "failed"
-                job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
-                await db.commit()
-                return
+                if settings.ocr_fallback:
+                    logger.warning("DeepSeek OCR failed (%s), falling back to Ollama VLM", e)
+                    resolved_strategy = "ollama"
+                else:
+                    orch.fail("extracting", "ocr_error", f"DeepSeek OCR failed: {e}")
+                    job.status = "failed"
+                    job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                    await db.commit()
+                    return
 
-        else:
-            # Option B: Ollama VLM — fused OCR + extraction, skip Pass 1
+        if resolved_strategy in ("ollama", "anthropic", "openai"):
+            # Option B/C/D: VLM fused — one provider call for both OCR and extraction
             from app.prompts.extract_prompt import build_vision_extract_prompt
+            from app.llm.factory import get_provider as _get_provider
+            vlm_model = _vlm_model_for_strategy(resolved_strategy, settings)
+            vlm_provider = _get_provider(
+                resolved_strategy,
+                api_key=_provider_api_key(settings, resolved_strategy),
+                base_url=settings.ollama_base_url if resolved_strategy == "ollama" else "",
+                default_model=vlm_model,
+            )
             orch.advance()
             job.status = "extracting"
             await db.commit()
             system, user = build_vision_extract_prompt(form_meta)
             try:
-                vision_result = await provider.complete_vision(
+                vision_result = await vlm_provider.complete_vision(
                     system=system,
                     user=user,
                     images=page_images,
-                    model=settings.ocr_vision_model,
+                    model=vlm_model,
                     max_tokens=16000,
                 )
                 extract_root = extract_json_from_text(
-                    vision_result.raw_text, job.provider_name, job.model_name
+                    vision_result.raw_text, resolved_strategy, vlm_model
                 )
                 job.pass1_json = {
                     **extract_root,
                     "_llm_meta": {
-                        "provider": "ollama",
-                        "model": settings.ocr_vision_model,
+                        "provider": resolved_strategy,
+                        "model": vlm_model,
                         "latency_ms": vision_result.latency_ms,
+                        "token_usage": getattr(vision_result, "token_usage", None) or {},
                     },
                     "_ocr_meta": {
-                        "strategy": "ollama",
-                        "model": settings.ocr_vision_model,
+                        "strategy": resolved_strategy,
+                        "model": vlm_model,
                         "page_count": len(page_images),
                         "latency_ms": vision_result.latency_ms,
+                        "token_usage": getattr(vision_result, "token_usage", None) or {},
                     },
                     "source_metadata": form_meta,
                 }
                 await db.commit()
                 raw_text = "_vision_fused_"  # sentinel: Pass 1 is skipped below
             except Exception as e:
-                orch.fail("extracting", "vision_error", f"Ollama VLM OCR failed: {e}")
+                orch.fail("extracting", "vision_error", f"VLM OCR failed ({resolved_strategy}): {e}")
                 job.status = "failed"
                 job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
                 await db.commit()
@@ -446,9 +507,12 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         await db.commit()
         return
 
+    # Capture OCR provenance before Pass 1 may overwrite pass1_json
+    ocr_meta = (job.pass1_json or {}).get("_ocr_meta")
+
     # ---- Pass 1: Extract (single call, may return multiple questions) ----
     if raw_text == "_vision_fused_":
-        # Ollama VLM fused path: extract_root already populated in OCR gate
+        # VLM fused path: extract_root already populated in OCR gate
         pass
     else:
         orch.advance()
@@ -459,7 +523,17 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         try:
             result = await provider.complete(system=system, user=user, max_tokens=16000)
             extract_root = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
-            job.pass1_json = {**extract_root, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
+            job.pass1_json = {
+                **extract_root,
+                "_llm_meta": {
+                    "provider": result.provider,
+                    "model": result.model,
+                    "latency_ms": result.latency_ms,
+                    "token_usage": getattr(result, "token_usage", None) or {},
+                },
+            }
+            if ocr_meta:
+                job.pass1_json["_ocr_meta"] = ocr_meta
         except Exception as e:
             orch.fail("extracting", "llm_error", str(e))
             job.status = "failed"
@@ -482,6 +556,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     # ---- Per-question loop ----
     created_question_ids: list[uuid.UUID] = []
     all_errors: list[dict] = []
+    pass2_meta_list: list[dict] = []
 
     for i, q_data in enumerate(questions_data):
         # Form-submitted metadata takes precedence over LLM-extracted values
@@ -502,6 +577,13 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             )
             # Hard-enforce domain nullability rules after LLM output
             annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
+            pass2_meta_list.append({
+                "question_index": i,
+                "provider": result.provider,
+                "model": result.model,
+                "latency_ms": result.latency_ms,
+                "token_usage": getattr(result, "token_usage", None) or {},
+            })
         except Exception as e:
             all_errors.append({"question_index": i, "step": "annotating", "error": str(e), "source_question_number": q_data.get("source_question_number")})
             continue
@@ -518,7 +600,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             passage_text = shared_passage or q_data.get("passage_text")
 
             overlaps = await detect_overlaps(
-                question_id=job.id,
+                question_id=None,
                 annotation_jsonb=annotate_json,
                 passage_text=passage_text,
                 question_text=question_text,
@@ -551,6 +633,8 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         _export_question(job, q_data, annotate_json, question_id)
 
     # ---- Final job status ----
+    if pass2_meta_list:
+        job.pass2_json = {"_pass2_meta": pass2_meta_list}
     job.validation_errors_jsonb = all_errors if all_errors else None
 
     if created_question_ids:
@@ -639,8 +723,8 @@ async def ingest_official_pdf(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    if ocr_strategy and ocr_strategy not in {"deepseek", "ollama", "auto"}:
-        raise HTTPException(status_code=422, detail="ocr_strategy must be 'deepseek', 'ollama', or 'auto'")
+    if ocr_strategy and ocr_strategy not in {"deepseek", "ollama", "vision", "anthropic", "openai", "auto"}:
+        raise HTTPException(status_code=422, detail="ocr_strategy must be 'deepseek', 'ollama', 'vision', 'anthropic', 'openai', or 'auto'")
     mime_type = _validate_upload_mime(file.content_type, {"application/pdf"})
     content = await _safe_read(file, MAX_FILE_SIZE)
     source_subject_code, source_section_code, source_module_code = _normalize_source_metadata(
@@ -649,9 +733,12 @@ async def ingest_official_pdf(
         source_module_code,
     )
 
-    storage_path = await save_asset(file.filename or "upload.pdf", content, subfolder="official")
     checksum = compute_checksum(content)
+    existing = await db.execute(select(QuestionAsset).where(QuestionAsset.checksum == checksum))
+    if existing.scalars().first():
+        raise HTTPException(status_code=409, detail="This file has already been ingested (duplicate checksum).")
 
+    storage_path = await save_asset(file.filename or "upload.pdf", content, subfolder="official")
     now = datetime.now(timezone.utc)
     asset_id = uuid.uuid4()
     job_id = uuid.uuid4()
@@ -705,6 +792,7 @@ async def ingest_official_pdf(
         raw_asset_id=asset_id,
         pass1_json={
             "raw_text": raw_text[:50000],
+            "_truncated": len(raw_text) > 50000,
             "pages": len(pdf_result["pages"]),
             "_page_images": page_images,
             "_ocr_strategy": ocr_strategy,
@@ -721,7 +809,7 @@ async def ingest_official_pdf(
     db.add(job)
     await db.commit()
 
-    asyncio.create_task(_run_pipeline_with_session(job_id))
+    asyncio.create_task(_run_pipeline_with_session(job_id)).add_done_callback(_log_task_exception)
 
     return JobResponse(id=str(job_id), job_type="ingest", status="parsing", created_at=now)
 
@@ -735,13 +823,17 @@ async def ingest_unofficial_file(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    if ocr_strategy and ocr_strategy not in {"deepseek", "ollama", "auto"}:
-        raise HTTPException(status_code=422, detail="ocr_strategy must be 'deepseek', 'ollama', or 'auto'")
+    if ocr_strategy and ocr_strategy not in {"deepseek", "ollama", "vision", "anthropic", "openai", "auto"}:
+        raise HTTPException(status_code=422, detail="ocr_strategy must be 'deepseek', 'ollama', 'vision', 'anthropic', 'openai', or 'auto'")
     mime_type = _validate_upload_mime(file.content_type)
     content = await _safe_read(file, MAX_FILE_SIZE)
 
-    storage_path = await save_asset(file.filename or "upload", content, subfolder="unofficial")
     checksum = compute_checksum(content)
+    existing = await db.execute(select(QuestionAsset).where(QuestionAsset.checksum == checksum))
+    if existing.scalars().first():
+        raise HTTPException(status_code=409, detail="This file has already been ingested (duplicate checksum).")
+
+    storage_path = await save_asset(file.filename or "upload", content, subfolder="unofficial")
     now = datetime.now(timezone.utc)
     asset_id = uuid.uuid4()
     job_id = uuid.uuid4()
@@ -810,14 +902,14 @@ async def ingest_unofficial_file(
         prompt_version="v3.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
-        pass1_json={"raw_text": raw_text[:50000], "_page_images": page_images, "_ocr_strategy": ocr_strategy},
+        pass1_json={"raw_text": raw_text[:50000], "_truncated": len(raw_text) > 50000, "_page_images": page_images, "_ocr_strategy": ocr_strategy},
         created_at=now,
         updated_at=now,
     )
     db.add(job)
     await db.commit()
 
-    asyncio.create_task(_run_pipeline_with_session(job_id))
+    asyncio.create_task(_run_pipeline_with_session(job_id)).add_done_callback(_log_task_exception)
 
     return JobResponse(id=str(job_id), job_type="ingest", status="parsing", created_at=now)
 
@@ -837,6 +929,8 @@ async def ingest_text(
 ):
     if content_origin not in ("official", "unofficial"):
         raise HTTPException(status_code=422, detail="content_origin must be 'official' or 'unofficial'")
+    if len(text) > 50000:
+        raise HTTPException(status_code=413, detail=f"Text too long ({len(text):,} chars). Maximum is 50,000. Split into smaller segments.")
     source_subject_code, source_section_code, source_module_code = _normalize_source_metadata(
         source_subject_code,
         source_section_code,
@@ -867,14 +961,14 @@ async def ingest_text(
         model_name=model_name,
         prompt_version="v3.0",
         rules_version=settings.rules_version,
-        pass1_json={"raw_text": text[:50000], "source_metadata": source_metadata},
+        pass1_json={"raw_text": text, "source_metadata": source_metadata},
         created_at=now,
         updated_at=now,
     )
     db.add(job)
     await db.commit()
 
-    asyncio.create_task(_run_pipeline_with_session(job_id))
+    asyncio.create_task(_run_pipeline_with_session(job_id)).add_done_callback(_log_task_exception)
 
     return JobResponse(id=str(job_id), job_type="ingest", status="parsing", created_at=now)
 
@@ -910,7 +1004,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
         # Hard-enforce domain nullability rules after LLM output
         domain = _detect_domain(extract_json)
         annotate_json = enforce_nullability(annotate_json, domain)
-        job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
+        job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms, "token_usage": getattr(result, "token_usage", None) or {}}}
     except Exception as e:
         job.status = "failed"
         job.validation_errors_jsonb = [{"step": "annotating", "error": str(e)}]
@@ -1106,9 +1200,166 @@ async def reannotate_question(
     db.add(job)
     await db.commit()
 
-    asyncio.create_task(_run_reannotate_pipeline_with_session(job_id))
+    asyncio.create_task(_run_reannotate_pipeline_with_session(job_id)).add_done_callback(_log_task_exception)
 
     return JobResponse(id=str(job_id), job_type="reannotate", status="annotating", question_id=question_id, created_at=now)
+
+
+@router.post("/benchmark/ocr")
+async def ingest_benchmark_ocr(
+    file: UploadFile = File(...),
+    strategies: str | None = Form(None),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Submit a file to run all available OCR strategies in parallel.
+
+    strategies: comma-separated list of strategies to run (deepseek, ollama, anthropic, openai).
+    Defaults to all strategies that are configured and available.
+    Returns comparison_group_id for polling via GET /benchmark/ocr/{comparison_group_id}.
+    """
+    mime_type = _validate_upload_mime(file.content_type)
+    content = await _safe_read(file, MAX_FILE_SIZE)
+    settings = get_settings()
+
+    requested = [s.strip().lower() for s in (strategies or "").split(",") if s.strip()]
+    available = _available_ocr_strategies(settings)
+    to_run = [s for s in requested if s in available] if requested else available
+    if not to_run:
+        raise HTTPException(
+            status_code=422,
+            detail="No OCR strategies available. Configure deepseek_ocr_base_url, ollama, or API keys.",
+        )
+
+    asset_type = _asset_type_from_mime(mime_type)
+    raw_text = ""
+    page_images: list = []
+    if asset_type == "pdf":
+        pdf_result = _parse_pdf_content(content)
+        raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
+        if not raw_text.strip():
+            max_images = settings.vision_max_images
+            for page in pdf_result["pages"][:max_images]:
+                for img in page.get("images", []):
+                    page_images.append({
+                        "b64": img["b64"],
+                        "mime_type": f"image/{img.get('ext', 'png')}",
+                        "page_number": page["page_number"],
+                    })
+    elif asset_type in ("text", "markdown"):
+        raw_text = content.decode("utf-8", errors="replace")
+    elif asset_type == "image":
+        from app.parsers.image_parser import parse_image
+        import pathlib
+        suffix = pathlib.Path(file.filename or "img").suffix or ".png"
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            tmp.write(content)
+            tmp_path = tmp.name
+        try:
+            img_data = parse_image(tmp_path)
+        finally:
+            pathlib.Path(tmp_path).unlink(missing_ok=True)
+        page_images = [{"b64": img_data["b64"], "mime_type": img_data["mime_type"], "page_number": 0}]
+
+    now = datetime.now(timezone.utc)
+    checksum = compute_checksum(content)
+    storage_path = await save_asset(file.filename or "upload", content, subfolder="unofficial")
+    comparison_group_id = uuid.uuid4()
+
+    asset_id = uuid.uuid4()
+    db.add(QuestionAsset(
+        id=asset_id,
+        content_origin="unofficial",
+        asset_type=asset_type,
+        storage_path=storage_path,
+        mime_type=mime_type,
+        source_name=file.filename,
+        checksum=checksum,
+        created_at=now,
+    ))
+
+    job_infos = []
+    for strategy in to_run:
+        prov = strategy if strategy in ("anthropic", "openai", "ollama") else settings.default_annotation_provider
+        _, model = _resolve_provider_and_model(settings, prov, None)
+        job_id = uuid.uuid4()
+        db.add(QuestionJob(
+            id=job_id,
+            job_type="ingest",
+            content_origin="unofficial",
+            input_format=asset_type,
+            status="parsing",
+            provider_name=prov,
+            model_name=model,
+            prompt_version="v3.0",
+            rules_version=settings.rules_version,
+            raw_asset_id=asset_id,
+            comparison_group_id=comparison_group_id,
+            pass1_json={
+                "raw_text": raw_text[:50000],
+                "_truncated": len(raw_text) > 50000,
+                "_page_images": page_images,
+                "_ocr_strategy": strategy,
+            },
+            created_at=now,
+            updated_at=now,
+        ))
+        job_infos.append({"id": str(job_id), "strategy": strategy})
+
+    await db.commit()
+
+    for info in job_infos:
+        asyncio.create_task(
+            _run_pipeline_with_session(uuid.UUID(info["id"]))
+        ).add_done_callback(_log_task_exception)
+
+    return {"comparison_group_id": str(comparison_group_id), "jobs": job_infos}
+
+
+@router.get("/benchmark/ocr/{comparison_group_id}", response_model=OCRBenchmarkResponse)
+async def get_benchmark_ocr(
+    comparison_group_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Poll results for a benchmark group created via POST /benchmark/ocr."""
+    try:
+        group_uuid = uuid.UUID(comparison_group_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Invalid comparison_group_id")
+
+    result = await db.execute(
+        select(QuestionJob).where(QuestionJob.comparison_group_id == group_uuid)
+    )
+    jobs = result.scalars().all()
+    if not jobs:
+        raise HTTPException(status_code=404, detail="No jobs found for this comparison group")
+
+    terminal_statuses = {"approved", "failed", "needs_review"}
+    ready = all(j.status in terminal_statuses for j in jobs)
+
+    results = []
+    for j in jobs:
+        p1 = j.pass1_json or {}
+        p2 = j.pass2_json or {}
+        ocr_meta = p1.get("_ocr_meta")
+        strategy = (ocr_meta or {}).get("strategy") or p1.get("_ocr_strategy") or "unknown"
+        results.append(OCRJobResult(
+            job_id=str(j.id),
+            strategy=strategy,
+            status=j.status,
+            ocr_meta=ocr_meta,
+            llm_meta=p1.get("_llm_meta"),
+            pass2_meta=p2.get("_pass2_meta"),
+            questions_created=len(p1.get("_created_question_ids") or []),
+            validation_errors=j.validation_errors_jsonb,
+        ))
+
+    return OCRBenchmarkResponse(
+        comparison_group_id=comparison_group_id,
+        results=results,
+        ready=ready,
+    )
 
 
 @router.get("/jobs/{job_id}", response_model=JobResponse)
@@ -1127,17 +1378,11 @@ async def get_job_status(
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
-    validation_errors = []
-    if job.validation_errors_jsonb:
-        validation_errors = [
-            {"step": e.get("step"), "severity": e.get("severity"), "message": e.get("message")}
-            for e in job.validation_errors_jsonb
-        ]
-
     return JobResponse(
         id=str(job.id),
         job_type=job.job_type,
         status=job.status,
         question_id=str(job.question_id) if job.question_id else None,
         created_at=job.created_at,
+        validation_errors=job.validation_errors_jsonb or None,
     )

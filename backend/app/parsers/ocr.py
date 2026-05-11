@@ -2,6 +2,7 @@
 import time
 import httpx
 from app.llm.base import ImageContent, LLMResponse
+from app.llm.retry import with_retry
 
 
 class DeepSeekOCRClient:
@@ -18,6 +19,7 @@ class DeepSeekOCRClient:
         self.model = model
         self.client = httpx.AsyncClient(base_url=self.base_url, timeout=120.0)
 
+    @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
     async def extract(self, images: list[ImageContent], max_tokens: int = 4096) -> LLMResponse:
         """Send images to DeepSeek-OCR-2 and return extracted Markdown text."""
         content = [

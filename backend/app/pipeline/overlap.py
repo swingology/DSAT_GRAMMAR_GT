@@ -30,7 +30,7 @@ def _jaccard_similarity(a: set, b: set) -> float:
 
 
 async def detect_overlaps(
-    question_id: uuid.UUID,
+    question_id: Optional[uuid.UUID],
     annotation_jsonb: dict,
     passage_text: Optional[str],
     question_text: str,
@@ -61,7 +61,7 @@ async def detect_overlaps(
     new_focus = annotation_jsonb.get("grammar_focus_key")
 
     for oq, official_ann in rows:
-        if oq.id == question_id:
+        if question_id and oq.id == question_id:
             continue
 
         official_annotation = official_ann.annotation_jsonb if official_ann else None

@@ -127,6 +127,7 @@ class JobResponse(BaseModel):
     status: str
     question_id: Optional[str] = None
     created_at: Optional[datetime] = None
+    validation_errors: Optional[List[Any]] = None
 
     model_config = {"from_attributes": True}
 
@@ -134,6 +135,23 @@ class JobResponse(BaseModel):
 class ReannotateRequest(BaseModel):
     provider_name: str = "anthropic"
     model_name: str = "claude-sonnet-4-6"
+
+
+class OCRJobResult(BaseModel):
+    job_id: str
+    strategy: str
+    status: str
+    ocr_meta: Optional[dict] = None
+    llm_meta: Optional[dict] = None
+    pass2_meta: Optional[List[dict]] = None
+    questions_created: int = 0
+    validation_errors: Optional[List[Any]] = None
+
+
+class OCRBenchmarkResponse(BaseModel):
+    comparison_group_id: str
+    results: List[OCRJobResult]
+    ready: bool
 
 
 class UserCreate(BaseModel):

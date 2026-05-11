@@ -23,6 +23,7 @@ class QuestionJob(Base):
     __table_args__ = (
         Index("ix_question_jobs_status", "status"),
         Index("ix_question_jobs_created_at", "created_at"),
+        Index("ix_question_jobs_comparison_group_id", "comparison_group_id"),
     )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
