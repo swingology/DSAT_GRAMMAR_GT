@@ -16,6 +16,7 @@
 | 4 | deepseek-ocr | `qwen3-vl:235b-instruct-cloud` | 4/4 ✓ | ~53,064 | 24,134 | **~77,198** | 839 | ✓ |
 | 5 | glm-ocr | `kimi-k2.6:cloud` | 4/4 ✓ | 55,126 | 107,917 | **163,043** | 6,781 | ✓ |
 | 6 | glm-ocr | `deepseek-v4-pro:cloud` | 4/4 ✓ | 55,126 | 37,613 | **92,739** | 1,173 | ✓ |
+| 7 | glm-ocr | `qwen3-vl:235b-instruct-cloud` | 4/4 ✓ | 57,530 | 16,976 | **74,506** | **780** | ✓ |
 
 > Strategies 3–4 reused OCR text from Strategy 1; OCR latency is estimated. Strategies 5–6 ran full end-to-end pipelines from PDF.
 
@@ -49,13 +50,14 @@ All three score 4/4. `deepseek-v4-pro` and `qwen3-vl:235b` are dramatically more
 Both OCR engines take ~53–55s. Even the fastest extraction LLM (qwen3-vl:235b at 24s) brings total to ~77s. The OCR step accounts for ~68% of total pipeline time.
 
 ### 5. Best overall combination
-`glm-ocr:latest` + `deepseek-v4-pro:cloud` offers the best quality/speed balance:
-- Cleaner OCR text (blanks preserved, no HTML)
-- Fast extraction (38s Pass 1)
-- Total ~93s end-to-end from PDF
-- 1,173 output tokens (cost-efficient at cloud rates)
+`glm-ocr:latest` + `qwen3-vl:235b-instruct-cloud` is the current winner:
+- **74.5s total** — fastest end-to-end pipeline
+- **780 output tokens** — most token-efficient of all strategies
+- Cleaner OCR text (blanks preserved, no HTML artifacts)
+- Fully Ollama-based — no external services needed
+- 4/4 accuracy
 
-`deepseek-ocr` + `qwen3-vl:235b-instruct-cloud` is faster (~77s) but relies on the dedicated deepseek-ocr service (port 8001) which is not always running.
+`glm-ocr` + `deepseek-v4-pro:cloud` is a strong alternative at 93s with similar output quality.
 
 ---
 
