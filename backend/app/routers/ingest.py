@@ -153,6 +153,110 @@ def _generation_profile_payload(*sources: dict | None) -> dict | None:
     return merged or None
 
 
+# Expected question count per subject per module — Digital SAT structure.
+_DSAT_QUESTION_RANGES: dict[tuple[str, str], tuple[int, int]] = {
+    ("verbal", "01"): (1, 27),
+    ("verbal", "02"): (1, 27),
+    ("math",   "01"): (1, 22),
+    ("math",   "02"): (1, 22),
+}
+
+
+def _validate_question_numbers(
+    questions: list[dict],
+    subject_code: str | None,
+    module_code: str | None,
+) -> list[dict]:
+    """Validate LLM-inferred source_question_number values for a batch.
+
+    Checks performed (in order):
+      1. Each question has a non-null integer question number.
+      2. Numbers fall within the expected range for this subject/module.
+      3. Numbers within the batch are unique (no duplicates).
+      4. Numbers form a contiguous sequence (no gaps).
+
+    Returns a list of warning dicts (empty = clean). Does NOT raise — callers
+    attach warnings to validation_errors_jsonb and continue ingestion.
+    """
+    warnings: list[dict] = []
+    key = (subject_code or "", module_code or "")
+    valid_range = _DSAT_QUESTION_RANGES.get(key)
+
+    nums: list[int | None] = []
+    for i, q in enumerate(questions):
+        raw = q.get("source_question_number")
+        if raw is None:
+            n = None
+            warnings.append({
+                "step": "question_number_validation",
+                "question_index": i,
+                "issue": "non_integer",
+                "value": None,
+                "detail": f"question_index {i}: source_question_number is null — UUID5 cannot be assigned",
+            })
+        else:
+            try:
+                n = int(raw)
+            except (TypeError, ValueError):
+                n = None
+                warnings.append({
+                    "step": "question_number_validation",
+                    "question_index": i,
+                    "issue": "non_integer",
+                    "value": raw,
+                    "detail": f"question_index {i}: source_question_number '{raw}' is not an integer",
+                })
+        nums.append(n)
+
+    # Range check
+    if valid_range:
+        lo, hi = valid_range
+        for i, n in enumerate(nums):
+            if n is not None and not (lo <= n <= hi):
+                warnings.append({
+                    "step": "question_number_validation",
+                    "question_index": i,
+                    "issue": "out_of_range",
+                    "value": n,
+                    "detail": f"question_index {i}: number {n} outside expected range {lo}–{hi} for {subject_code}/mod{module_code}",
+                })
+    elif subject_code and module_code:
+        warnings.append({
+            "step": "question_number_validation",
+            "issue": "unknown_module",
+            "detail": f"No expected range defined for subject='{subject_code}' module='{module_code}' — range check skipped",
+        })
+
+    # Duplicate check
+    valid_nums = [n for n in nums if n is not None]
+    seen: set[int] = set()
+    for i, n in enumerate(valid_nums):
+        if n in seen:
+            warnings.append({
+                "step": "question_number_validation",
+                "issue": "duplicate",
+                "value": n,
+                "detail": f"question number {n} appears more than once in this batch",
+            })
+        seen.add(n)
+
+    # Contiguous sequence check
+    sorted_nums = sorted(seen)
+    if len(sorted_nums) >= 2:
+        expected = list(range(sorted_nums[0], sorted_nums[0] + len(sorted_nums)))
+        if sorted_nums != expected:
+            gaps = [n for n in expected if n not in seen]
+            warnings.append({
+                "step": "question_number_validation",
+                "issue": "non_contiguous",
+                "found": sorted_nums,
+                "gaps": gaps,
+                "detail": f"question numbers are not contiguous — found {sorted_nums}, gaps at {gaps}",
+            })
+
+    return warnings
+
+
 def _clean_option_label(label: str | None) -> str:
     """Normalize VLM-emitted option labels like 'A)', 'A.', 'a' → 'A'."""
     if not label:
@@ -665,9 +769,19 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     section_code = form_meta.get("source_section_code") or shared_source.get("source_section_code")
     module_code = form_meta.get("source_module_code") or shared_source.get("source_module_code")
 
+    # Validate LLM-inferred question numbers for official batches
+    all_errors: list[dict] = []
+    if job.content_origin == "official":
+        qnum_warnings = _validate_question_numbers(questions_data, subject_code, module_code)
+        if qnum_warnings:
+            logger.warning(
+                "Question number validation issues for job %s: %s",
+                job.id, qnum_warnings,
+            )
+            all_errors.extend(qnum_warnings)
+
     # ---- Per-question loop ----
     created_question_ids: list[uuid.UUID] = []
-    all_errors: list[dict] = []
     pass2_meta_list: list[dict] = []
 
     for i, q_data in enumerate(questions_data):

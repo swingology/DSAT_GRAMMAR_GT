@@ -1039,3 +1039,74 @@ def test_normalize_questions_dedup_is_case_insensitive():
         ]
     })
     assert len(result) == 1
+
+
+# ── _validate_question_numbers ────────────────────────────────────────────────
+
+def _make_qs(numbers):
+    return [{"source_question_number": n, "question_text": f"Q{n}"} for n in numbers]
+
+
+def test_validate_qnums_clean_verbal():
+    qs = _make_qs([3, 4, 5, 6])
+    warns = ingest_router._validate_question_numbers(qs, "verbal", "01")
+    assert warns == []
+
+
+def test_validate_qnums_clean_math():
+    qs = _make_qs([1, 2, 3])
+    warns = ingest_router._validate_question_numbers(qs, "math", "02")
+    assert warns == []
+
+
+def test_validate_qnums_null_number():
+    qs = _make_qs([3, None, 5])
+    warns = ingest_router._validate_question_numbers(qs, "verbal", "01")
+    issues = [w["issue"] for w in warns]
+    assert "non_integer" in issues
+
+
+def test_validate_qnums_out_of_range():
+    qs = _make_qs([25, 26, 28])  # 28 > 27 for verbal
+    warns = ingest_router._validate_question_numbers(qs, "verbal", "01")
+    issues = [w["issue"] for w in warns]
+    assert "out_of_range" in issues
+    assert "non_contiguous" in issues
+
+
+def test_validate_qnums_duplicate():
+    qs = _make_qs([3, 4, 4, 5])
+    warns = ingest_router._validate_question_numbers(qs, "verbal", "01")
+    issues = [w["issue"] for w in warns]
+    assert "duplicate" in issues
+
+
+def test_validate_qnums_gap():
+    qs = _make_qs([3, 4, 6])  # missing 5
+    warns = ingest_router._validate_question_numbers(qs, "verbal", "01")
+    issues = [w["issue"] for w in warns]
+    assert "non_contiguous" in issues
+    gap_warn = next(w for w in warns if w["issue"] == "non_contiguous")
+    assert 5 in gap_warn["gaps"]
+
+
+def test_validate_qnums_unknown_module_warns():
+    qs = _make_qs([1, 2, 3])
+    warns = ingest_router._validate_question_numbers(qs, "verbal", "03")
+    issues = [w["issue"] for w in warns]
+    assert "unknown_module" in issues
+
+
+def test_official_question_uuid_deterministic():
+    uid1 = ingest_router._official_question_uuid("PT1", "verbal", "01", "01", 3)
+    uid2 = ingest_router._official_question_uuid("PT1", "verbal", "01", "01", 3)
+    assert uid1 == uid2
+
+
+def test_official_question_uuid_differs_by_field():
+    base = ingest_router._official_question_uuid("PT1", "verbal", "01", "01", 3)
+    diff_exam    = ingest_router._official_question_uuid("PT6", "verbal", "01", "01", 3)
+    diff_section = ingest_router._official_question_uuid("PT1", "verbal", "02", "01", 3)
+    diff_module  = ingest_router._official_question_uuid("PT1", "verbal", "01", "02", 3)
+    diff_qnum    = ingest_router._official_question_uuid("PT1", "verbal", "01", "01", 4)
+    assert len({base, diff_exam, diff_section, diff_module, diff_qnum}) == 5
