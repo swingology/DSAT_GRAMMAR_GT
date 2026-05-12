@@ -1,92 +1,99 @@
 # OCR Ingestion Benchmark — Summary
 
-All tests run against page 3 of `Test_1_digital_sec01_mod01.pdf` (PT1 Verbal Mod01).
-4 SAT vocabulary-in-context questions. Ground truth: Q1=D, Q2=A, Q3=B, Q4=A.
+**Test corpus:** Page 3 of `Test_1_digital_sec01_mod01.pdf` (PT1 Verbal Mod01)
+**Questions:** 4 SAT vocabulary-in-context items. Ground truth: Q1=D, Q2=A, Q3=B, Q4=A.
+**Last updated:** 2026-05-12
 
 ---
 
 ## Results at a Glance
 
-| # | Pipeline | Pass 1 Model | Score | Total Latency | Pass 1 Tokens out | Usable |
-|---|----------|-------------|:-----:|:-------------:|:-----------------:|:------:|
-| 1 | deepseek-ocr + LLM | `kimi-k2.6:cloud` | 4/4 ✓ | 135s | 7,490 | ✓ |
-| 2 | Fused VLM | `granite3.2-vision:latest` | 0/4 ✗ | 210s | 563 | ✗ |
-| 3 | deepseek-ocr + LLM | `deepseek-v4-pro:cloud` | 4/4 ✓ | ~84s | 1,469 | ✓ |
-| 4 | deepseek-ocr + LLM | `qwen3-vl:235b-instruct-cloud` | 4/4 ✓ | **~77s** | **839** | ✓ |
+| # | OCR Engine | Extraction LLM | Score | OCR ms | Pass1 ms | Total ms | Pass1 tok-out | Usable |
+|---|-----------|----------------|:-----:|-------:|---------:|---------:|:-------------:|:------:|
+| 1 | deepseek-ocr | `kimi-k2.6:cloud` | 4/4 ✓ | 53,064 | 82,039 | **135,103** | 7,490 | ✓ |
+| 2 | granite3.2-vision *(fused)* | — | 0/4 ✗ | — | — | 209,805 | 563 | ✗ |
+| 3 | deepseek-ocr | `deepseek-v4-pro:cloud` | 4/4 ✓ | ~53,064 | 30,697 | **~83,761** | 1,469 | ✓ |
+| 4 | deepseek-ocr | `qwen3-vl:235b-instruct-cloud` | 4/4 ✓ | ~53,064 | 24,134 | **~77,198** | 839 | ✓ |
+| 5 | glm-ocr | `kimi-k2.6:cloud` | 4/4 ✓ | 55,126 | 107,917 | **163,043** | 6,781 | ✓ |
+| 6 | glm-ocr | `deepseek-v4-pro:cloud` | 4/4 ✓ | 55,126 | 37,613 | **92,739** | 1,173 | ✓ |
+
+> Strategies 3–4 reused OCR text from Strategy 1; OCR latency is estimated. Strategies 5–6 ran full end-to-end pipelines from PDF.
 
 ---
 
 ## Key Findings
 
-### Two-step pipeline wins over fused VLM
-Every two-step strategy (DeepSeek OCR → extraction LLM) achieved 4/4. The fused VLM (`granite3.2-vision`) produced 0 usable questions — it hallucinated 4 identical rows differing only in answer label, and failed to separate question stems or structure options.
+### 1. Two-step pipeline is necessary — fused VLM fails
+Every two-step strategy (OCR engine → extraction LLM) achieved 4/4. The only fused VLM tested (`granite3.2-vision`) produced 0 usable questions — hallucinated 4 identical rows, failed to separate stems, and mixed options across questions.
 
-### Extraction LLM efficiency varies 9×
-All three extraction LLMs scored 4/4 but differ sharply in output verbosity:
+### 2. OCR engine quality: glm-ocr preserves blank markers, deepseek-ocr does not
 
-| Model | Tokens out | vs. kimi baseline |
-|-------|-----------|------------------|
-| `kimi-k2.6:cloud` | 7,490 | baseline |
-| `deepseek-v4-pro:cloud` | 1,469 | 5.1× leaner |
-| `qwen3-vl:235b-instruct-cloud` | 839 | **8.9× leaner** |
+| OCR Engine | Latency | Blank `______` | HTML noise | Chars |
+|-----------|---------|:--------------:|:---------:|-------|
+| `deepseek-ocr:latest` | 53s | ✗ stripped | ✓ some table wrapping | 1,978 |
+| `glm-ocr:latest` | 55s | ✓ preserved as `_____` | ✗ none | 1,924 |
 
-Token output directly affects cost at cloud inference rates. `qwen3-vl:235b` and `deepseek-v4-pro` are dramatically more efficient for the same accuracy.
+GLM-OCR produces cleaner, more structured text at similar speed. Preserving the blank marker matters for the extraction LLM to correctly identify the fill-in-the-blank position.
 
-### Speed ranking (Pass 1 only)
-1. `qwen3-vl:235b-instruct-cloud` — 24s
-2. `deepseek-v4-pro:cloud` — 31s
-3. `kimi-k2.6:cloud` — 82s
+### 3. Extraction LLM efficiency varies 9× — accuracy is identical
 
-### OCR step is the dominant latency
-DeepSeek OCR takes ~53s fixed regardless of which extraction LLM follows. Optimizing the extraction model from kimi to qwen3-vl:235b saves 58s on Pass 1 but total pipeline only drops from 135s to ~77s. Speeding up or parallelizing the OCR step would have larger impact.
+| Extraction LLM | Score | Pass 1 ms | tok-out | vs. kimi |
+|---------------|:-----:|----------:|--------:|---------|
+| `kimi-k2.6:cloud` | 4/4 | 82–108s | ~7,000+ | baseline |
+| `deepseek-v4-pro:cloud` | 4/4 | 31–38s | ~1,200–1,470 | **~5× leaner, ~2.5× faster** |
+| `qwen3-vl:235b-instruct-cloud` | 4/4 | 24s | 839 | **~9× leaner, ~3.5× faster** |
+
+All three score 4/4. `deepseek-v4-pro` and `qwen3-vl:235b` are dramatically more efficient.
+
+### 4. OCR step is the dominant latency floor
+Both OCR engines take ~53–55s. Even the fastest extraction LLM (qwen3-vl:235b at 24s) brings total to ~77s. The OCR step accounts for ~68% of total pipeline time.
+
+### 5. Best overall combination
+`glm-ocr:latest` + `deepseek-v4-pro:cloud` offers the best quality/speed balance:
+- Cleaner OCR text (blanks preserved, no HTML)
+- Fast extraction (38s Pass 1)
+- Total ~93s end-to-end from PDF
+- 1,173 output tokens (cost-efficient at cloud rates)
+
+`deepseek-ocr` + `qwen3-vl:235b-instruct-cloud` is faster (~77s) but relies on the dedicated deepseek-ocr service (port 8001) which is not always running.
+
+---
+
+## Model Status
+
+| Model | Role | Status |
+|-------|------|--------|
+| `deepseek-ocr:latest` (port 8001) | OCR engine | ✓ Working when service is up |
+| `glm-ocr:latest` (Ollama) | OCR engine | ✓ Working — better quality |
+| `kimi-k2.6:cloud` | Extraction LLM | ✓ Working — verbose output |
+| `deepseek-v4-pro:cloud` | Extraction LLM | ✓ Working — fast, efficient |
+| `qwen3-vl:235b-instruct-cloud` | Extraction LLM | ✓ Working — fastest, most efficient |
+| `granite3.2-vision:latest` | Fused VLM | ✗ Unusable — hallucinated duplicates |
+| `glm-5.1:cloud` | — | ✗ No vision — cannot OCR |
+| `qwen2.5vl:7b` | Extraction LLM | ✗ OOM — needs 12.5 GB |
+| `qwen3.6:27b` | Extraction LLM | ✗ OOM — needs 20.7 GB |
+| `qwen3-vl:8b` | Fused VLM | ✗ Thinking-mode bug — empty content via OpenAI-compat API |
+| `claude-sonnet-4-6` | Fused VLM | ⏳ Needs `ANTHROPIC_API_KEY` |
+| `gpt-4o` | Fused VLM | ⏳ Needs `OPENAI_API_KEY` |
 
 ---
 
 ## Pipeline Architecture
 
 ```
-Fused VLM (one call):
-  image ──────────────────────────► VLM ──► JSON
+Two-step (recommended):
+  PDF ──► rasterize ──► OCR engine ──► text ──► Extraction LLM ──► JSON
+                        (53–55s)              (24–108s)
 
-Two-step (two calls):
-  image ──► deepseek-ocr ──► text ──► LLM ──► JSON
-             (~53s fixed)        (24–82s varies)
+Fused VLM (tested, failed):
+  PDF ──► rasterize ──► VLM ──────────────────────────────────► JSON
+                        (210s, 0/4 usable)
 ```
 
-The two-step approach gives a recovery point between steps, allows OCR output inspection, and lets the extraction LLM be swapped independently.
-
 ---
 
-## Models Tested
-
-| Model | Type | Result |
-|-------|------|--------|
-| `deepseek-ocr:latest` | OCR (local, Ollama) | ✓ Working — 53s, minor HTML table noise |
-| `kimi-k2.6:cloud` | Extraction LLM (cloud, Ollama) | ✓ 4/4, verbose output |
-| `deepseek-v4-pro:cloud` | Extraction LLM (cloud, Ollama) | ✓ 4/4, efficient |
-| `qwen3-vl:235b-instruct-cloud` | Extraction LLM (cloud, Ollama) | ✓ 4/4, fastest + most efficient |
-| `granite3.2-vision:latest` | Fused VLM (local, Ollama) | ✗ Unusable — hallucinated duplicates |
-| `qwen3-vl:8b` | Fused VLM (local, Ollama) | ✗ Thinking-mode bug — empty content via OpenAI-compat API |
-| `qwen3.6:27b` | Extraction LLM (local) | ✗ Insufficient RAM (needs 20.7 GB) |
-| `claude-sonnet-4-6` | Fused VLM (Anthropic API) | ⏳ Not tested — needs API key |
-| `gpt-4o` | Fused VLM (OpenAI API) | ⏳ Not tested — needs API key |
-
----
-
-## Recommendation
-
-For production ingestion use `deepseek-ocr:latest` + `qwen3-vl:235b-instruct-cloud`:
-- Best latency (~77s total)
-- Most token-efficient (839 tokens out per page)
-- 4/4 accuracy on this test page
-- Clean JSON output, no preamble
-
-`deepseek-v4-pro:cloud` is a strong alternative with near-identical performance.
-
----
-
-## Detail Pages
+## Detail Reports
 
 | Test | File |
 |------|------|
-| PT1 Mod01 Page 3 (4 questions) | [`2026-05-11_pt1_mod01_page3.md`](2026-05-11_pt1_mod01_page3.md) |
+| PT1 Mod01 Page 3 — full strategy breakdown | [`2026-05-11_pt1_mod01_page3.md`](2026-05-11_pt1_mod01_page3.md) |
