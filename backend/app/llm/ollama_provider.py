@@ -6,10 +6,14 @@ from app.llm.retry import with_retry
 
 
 class OllamaProvider:
+    # Vision inference is significantly slower than text (model loads + OCR decode)
+    VISION_TIMEOUT = 600.0
+
     def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "kimi-k2.6:cloud"):
         self.base_url = base_url.rstrip("/")
         self.default_model = default_model
         self.client = httpx.AsyncClient(base_url=self.base_url, timeout=120.0)
+        self.vision_client = httpx.AsyncClient(base_url=self.base_url, timeout=self.VISION_TIMEOUT)
 
     @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
     async def complete(
@@ -74,12 +78,15 @@ class OllamaProvider:
         ]
         content.append({"type": "text", "text": user})
 
-        response = await self.client.post(
+        response = await self.vision_client.post(
             "/v1/chat/completions",
             json={
                 "model": model,
                 "max_tokens": max_tokens,
                 "temperature": temperature,
+                # Disable thinking mode for structured extraction — thinking models (qwen3-vl)
+                # suppress their answer into reasoning tokens, returning empty content.
+                "options": {"thinking": False},
                 "messages": [
                     {"role": "system", "content": system},
                     {"role": "user", "content": content},
@@ -104,3 +111,4 @@ class OllamaProvider:
 
     async def close(self):
         await self.client.aclose()
+        await self.vision_client.aclose()

@@ -193,3 +193,70 @@
 | 19:21 | Fixed 9 ingest pipeline gaps: token_usage getattr, OCR strategy priority, factory _provider_registry, validator severity, reannotate meta, dead code, job status response, comparison_group_id index | ingest.py factory.py validator.py payload.py db.py migration-014 | 197/197 tests pass | ~4000 |
 | 19:21 | Session end: 10 writes across 6 files (ingest.py, factory.py, payload.py, 014_add_comparison_group_index.py, db.py) | 11 reads | ~44813 tok |
 | 19:37 | Session end: 10 writes across 6 files (ingest.py, factory.py, payload.py, 014_add_comparison_group_index.py, db.py) | 11 reads | ~46179 tok |
+| 19:39 | Session end: 10 writes across 6 files (ingest.py, factory.py, payload.py, 014_add_comparison_group_index.py, db.py) | 11 reads | ~46179 tok |
+| 19:40 | Session end: 10 writes across 6 files (ingest.py, factory.py, payload.py, 014_add_comparison_group_index.py, db.py) | 11 reads | ~46179 tok |
+| 19:45 | Edited backend/tests/test_ingest_router.py | modified test_ingest_unofficial_file_rejects_invalid_ocr_strategy() | ~844 |
+| 20:48 | Edited backend/app/models/payload.py | modified OCRBenchmarkResponse() | ~41 |
+| 20:48 | Edited backend/app/routers/ingest.py | expanded (+10 lines) | ~276 |
+| 20:48 | Edited backend/app/routers/ingest.py | inline fix | ~30 |
+| 20:48 | Edited backend/app/routers/ingest.py | 22→26 lines | ~253 |
+| 20:57 | Session end: 15 writes across 7 files (ingest.py, factory.py, payload.py, 014_add_comparison_group_index.py, db.py) | 12 reads | ~49707 tok |
+| 23:07 | Edited backend/app/llm/retry.py | modified _sdk_connection_types() | ~429 |
+| 23:08 | Edited backend/tests/test_llm_providers.py | modified test_retry_fires_on_429_status_code() | ~458 |
+| 23:09 | Session end: 17 writes across 9 files (ingest.py, factory.py, payload.py, 014_add_comparison_group_index.py, db.py) | 14 reads | ~51494 tok |
+| 23:21 | Session end: 17 writes across 9 files (ingest.py, factory.py, payload.py, 014_add_comparison_group_index.py, db.py) | 14 reads | ~51494 tok |
+
+## Session: 2026-05-11 01:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 01:34 | Edited backend/app/routers/ingest.py | added 1 import(s) | ~37 |
+| 01:34 | Edited backend/app/routers/ingest.py | 9→10 lines | ~142 |
+| 01:34 | Edited backend/app/routers/ingest.py | 2→3 lines | ~41 |
+| 01:34 | Edited backend/app/parsers/json_parser.py | 4→4 lines | ~47 |
+| 01:36 | Edited backend/app/routers/ingest.py | 3→2 lines | ~22 |
+| 01:36 | Edited backend/app/routers/ingest.py | 10→12 lines | ~156 |
+| 01:36 | Edited backend/app/routers/ingest.py | 3→5 lines | ~48 |
+| 01:39 | Edited CHANGELOG.md | expanded (+30 lines) | ~710 |
+| 01:41 | Session end: 8 writes across 3 files (ingest.py, json_parser.py, CHANGELOG.md) | 11 reads | ~47648 tok |
+| 01:44 | Session end: 8 writes across 3 files (ingest.py, json_parser.py, CHANGELOG.md) | 11 reads | ~47648 tok |
+| 01:51 | Session end: 8 writes across 3 files (ingest.py, json_parser.py, CHANGELOG.md) | 11 reads | ~47648 tok |
+| 11:36 | Created backend/test_ocr_live.py | — | ~2654 |
+
+## Session: 2026-05-11 12:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:06 | Edited backend/app/routers/ingest.py | modified _clean_option_label() | ~710 |
+| 12:09 | Edited backend/tests/test_backend_regressions.py | modified test_normalize_questions_strips_trailing_paren_from_correct_label() | ~873 |
+| 12:13 | Edited CHANGELOG.md | expanded (+25 lines) | ~652 |
+| 12:15 | Fix: VLM label normalization (bug-025) + dedup (bug-026) in _normalize_extracted_questions | ingest.py | 29 tests pass | ~500 |
+| 12:15 | Live-test: deepseek-ocr:latest on small image → 763 tokens, all 4Q extracted (prior failure was oversized image) | — | verified | ~200 |
+| 12:15 | Logged bug-025, bug-026 to buglog.json; updated CHANGELOG round 4 | .wolf/buglog.json, CHANGELOG.md | done | ~300 |
+| 12:24 | Edited backend/app/routers/ingest.py | expanded (+6 lines) | ~154 |
+| 12:24 | Edited backend/app/models/payload.py | modified OCRJobResult() | ~89 |
+| 12:24 | Edited backend/app/llm/ollama_provider.py | modified __init__() | ~145 |
+| 12:24 | Edited backend/app/llm/ollama_provider.py | modified close() | ~302 |
+| 12:24 | Edited backend/app/routers/ingest.py | 10→11 lines | ~129 |
+| 12:42 | Edited backend/tests/test_ocr.py | modified test_ollama_complete_vision_sends_image_url_blocks() | ~245 |
+| 12:58 | Edited CHANGELOG.md | expanded (+10 lines) | ~347 |
+| 13:10 | Edited backend/tests/test_config.py | 4→4 lines | ~71 |
+| 13:28 | Edited backend/app/llm/ollama_provider.py | 12→15 lines | ~184 |
+| 13:33 | Session end: 12 writes across 7 files (ingest.py, test_backend_regressions.py, CHANGELOG.md, payload.py, ollama_provider.py) | 11 reads | ~52738 tok |
+| 13:34 | Edited DEBUG_LOG.md | modified feat() | ~927 |
+| 13:34 | Session end: 13 writes across 8 files (ingest.py, test_backend_regressions.py, CHANGELOG.md, payload.py, ollama_provider.py) | 12 reads | ~61446 tok |
+| 13:35 | Session end: 13 writes across 8 files (ingest.py, test_backend_regressions.py, CHANGELOG.md, payload.py, ollama_provider.py) | 12 reads | ~61446 tok |
+| 13:43 | Created backend/benchmark_results/2026-05-11_pt1_mod01_page3.md | — | ~2200 |
+| 13:44 | Session end: 14 writes across 9 files (ingest.py, test_backend_regressions.py, CHANGELOG.md, payload.py, ollama_provider.py) | 12 reads | ~63803 tok |
+| 13:47 | Session end: 14 writes across 9 files (ingest.py, test_backend_regressions.py, CHANGELOG.md, payload.py, ollama_provider.py) | 12 reads | ~63803 tok |
+| 13:57 | Session end: 14 writes across 9 files (ingest.py, test_backend_regressions.py, CHANGELOG.md, payload.py, ollama_provider.py) | 12 reads | ~63803 tok |
+
+## Session: 2026-05-11 14:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:02 | Edited backend/app/routers/ingest.py | modified _save_page_image() | ~584 |
+| 14:02 | Edited backend/app/routers/ingest.py | modified strip() | ~234 |
+| 14:02 | Edited backend/app/routers/ingest.py | modified strip() | ~616 |
+| 14:02 | Edited backend/app/routers/ingest.py | modified strip() | ~522 |
+| 14:02 | Edited backend/app/routers/ingest.py | modified gc_page_images() | ~145 |

@@ -144,6 +144,7 @@ class OCRJobResult(BaseModel):
     ocr_meta: Optional[dict] = None
     llm_meta: Optional[dict] = None
     pass2_meta: Optional[List[dict]] = None
+    questions_extracted: int = 0
     questions_created: int = 0
     validation_errors: Optional[List[Any]] = None
 

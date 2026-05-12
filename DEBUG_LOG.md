@@ -1,5 +1,43 @@
 # Debug Log
 
+## 2026-05-11 - VLM Provider Quality Audit (OCR Loop)
+Report created by: Claude Sonnet 4.6
+Git branch: `main`
+Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Ollama VLM support
+
+### Findings
+
+1. **High:** `qwen3-vl:8b` returns empty `content` via OpenAI-compatible API — all output goes to `reasoning` field.
+   - Ollama's OpenAI-compatible endpoint (`/v1/chat/completions`) for thinking-capable models (qwen3-vl, qwen3) routes all model output to `message.reasoning` instead of `message.content`. `OllamaProvider.complete_vision()` reads only `message.content`, so the extracted text is always empty string.
+   - Root cause: Ollama's OpenAI-compat layer does not honour `options.thinking=false` or `think=false` at request level. The native `/api/chat` endpoint with `"think": false` works correctly.
+   - Affected models: any Ollama model with `thinking` in its capabilities list.
+   - **Not yet fixed:** Requires either (a) switching `complete_vision` to native Ollama `/api/chat` endpoint with `think: false`, or (b) adding a fallback that reads `message.reasoning` when `message.content` is empty and strips `<think>…</think>` wrappers.
+
+2. **High:** `qwen3-vl:8b` inference exceeds 600s vision timeout on local hardware — all 3 retry attempts timed out (total ~1803s).
+   - Model is 6.1 GB and significantly slower than `granite3.2-vision:latest` (2.4 GB, ~105s).
+   - **Not yet fixed:** Increase `VISION_TIMEOUT` or add per-model timeout config; or document that only models ≤3 GB are practical for local VLM OCR.
+
+3. **Medium:** `granite3.2-vision:latest` still misses Q4 from a 4-question page — 3 of 4 extracted.
+   - Model quality issue; not a code bug. Smaller VLMs (2.4 GB) have lower recall on dense test pages.
+   - **Not a code fix:** Accept limitation; note in provider selection docs that this model is best-effort for multi-question pages.
+
+4. ~~**High:** VLM answer labels `"A)"` / `"a"` fail validator — blocking all extracted questions.~~
+   - ~~`correct_option_label` emitted by VLMs (granite3.2-vision, qwen-vl) with trailing `)` or `.` was rejected by `validate_question` which requires exact `"A"–"D"` match.~~
+   - **Fixed:** Added `_clean_option_label()` in `_normalize_extracted_questions`; strips trailing `).` and uppercases. Applied to both `correct_option_label` and each option's `label`. 6 regression tests added.
+
+5. ~~**High:** VLM duplicate question rows persisted (granite3.2-vision hallucinated Q2–Q4 as copies of Q2).~~
+   - ~~No deduplication in `_normalize_extracted_questions` — all rows passed to persistence loop.~~
+   - **Fixed:** `seen_texts` set added; case-insensitive `question_text` deduplication skips repeat rows. 2 regression tests added.
+
+6. ~~**High:** `OllamaProvider.complete_vision()` shared 120s timeout with text calls — timed out on any model >3 GB.~~
+   - **Fixed:** `vision_client = httpx.AsyncClient(timeout=600s)` added; `complete_vision` uses `vision_client`. `close()` updated to close both clients. Unit tests updated to patch `vision_client`.
+
+7. ~~**Medium:** `deepseek-ocr:latest` appeared to return only 107 tokens on first test.~~
+   - ~~Suspected model quality issue.~~
+   - **Confirmed not a bug:** Root cause was oversized test image (1224×1584, 6 MB → model timeout/truncation). Re-test with 1× zoom image (612×792, 64 KB) produced 763 tokens and correct full-page extraction of all 4 questions.
+
+---
+
 ## 2026-05-10 - Backend Gap Audit (Codex-Generated Code)
 Report created by: Claude Sonnet 4.6
 Git branch: `main`

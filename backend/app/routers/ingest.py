@@ -131,6 +131,13 @@ def _generation_profile_payload(*sources: dict | None) -> dict | None:
     return merged or None
 
 
+def _clean_option_label(label: str | None) -> str:
+    """Normalize VLM-emitted option labels like 'A)', 'A.', 'a' → 'A'."""
+    if not label:
+        return label or ""
+    return label.strip().rstrip(").").upper()
+
+
 def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str | None, dict]:
     """Normalize LLM extract output to a list of per-question dicts.
 
@@ -155,6 +162,7 @@ def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str 
     else:
         raw_questions = [extract_root]
 
+    seen_texts: set[str] = set()
     questions = []
     for q in raw_questions:
         enriched = dict(q)
@@ -163,6 +171,23 @@ def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str 
                 enriched[k] = v
         if shared_passage and not enriched.get("passage_text"):
             enriched["passage_text"] = shared_passage
+
+        # Normalize correct_option_label: "A)" / "A." / "a" → "A"
+        if "correct_option_label" in enriched:
+            enriched["correct_option_label"] = _clean_option_label(enriched["correct_option_label"])
+
+        # Normalize each option label
+        for opt in enriched.get("options", []):
+            if isinstance(opt, dict) and "label" in opt:
+                opt["label"] = _clean_option_label(opt["label"])
+
+        # Deduplicate by question_text (VLMs sometimes hallucinate duplicate rows)
+        q_text_key = (enriched.get("question_text") or "").strip().lower()
+        if q_text_key and q_text_key in seen_texts:
+            continue
+        if q_text_key:
+            seen_texts.add(q_text_key)
+
         questions.append(enriched)
 
     return questions, shared_passage, shared_source
@@ -320,15 +345,58 @@ def _export_question(job: QuestionJob, q_data: dict, annotate_json: dict, questi
         )
 
 
+def _save_page_image(source_stem: str, page_number: int, b64: str, ext: str, archive_mirror: str) -> str:
+    """Persist a page image to {archive_mirror}/images/ with a deterministic filename.
+
+    Returns the absolute path to the saved file.
+    """
+    import re, base64
+    safe_stem = re.sub(r"[^A-Za-z0-9_\-]", "_", source_stem)[:80]
+    images_dir = Path(archive_mirror) / "images"
+    images_dir.mkdir(parents=True, exist_ok=True)
+    filename = f"{safe_stem}_p{page_number:02d}.{ext}"
+    dest = images_dir / filename
+    dest.write_bytes(base64.b64decode(b64))
+    return str(dest)
+
+
+def _gc_page_images(archive_mirror: str, max_age_days: int = 30) -> int:
+    """Delete image files older than max_age_days. Returns the count of deleted files."""
+    import time
+    images_dir = Path(archive_mirror) / "images"
+    if not images_dir.exists():
+        return 0
+    cutoff = time.time() - max_age_days * 86400
+    deleted = 0
+    for f in images_dir.iterdir():
+        if f.is_file() and f.stat().st_mtime < cutoff:
+            f.unlink(missing_ok=True)
+            deleted += 1
+    return deleted
+
+
 def _collect_page_images(pass1_json: dict) -> list:
-    """Extract pre-stored page images from pass1_json._page_images."""
+    """Extract pre-stored page images from pass1_json._page_images.
+
+    Entries may carry a ``path`` key (named file on disk) or an inline ``b64``.
+    Path-based entries are preferred; b64 is the fallback for legacy records.
+    """
+    import base64
     from app.llm.base import ImageContent
     raw_images = (pass1_json or {}).get("_page_images", [])
-    return [
-        ImageContent(b64=img["b64"], mime_type=img.get("mime_type", "image/png"))
-        for img in raw_images
-        if img.get("b64")
-    ]
+    result = []
+    for img in raw_images:
+        mime = img.get("mime_type", "image/png")
+        if img.get("path"):
+            try:
+                b64 = base64.b64encode(Path(img["path"]).read_bytes()).decode()
+                result.append(ImageContent(b64=b64, mime_type=mime))
+                continue
+            except (OSError, FileNotFoundError):
+                pass  # fall through to b64 fallback
+        if img.get("b64"):
+            result.append(ImageContent(b64=img["b64"], mime_type=mime))
+    return result
 
 
 def _resolve_ocr_strategy(requested: str | None, settings) -> str:
@@ -547,6 +615,12 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     # Normalize to a list of per-question dicts (handles both new and legacy formats)
     questions_data, shared_passage, shared_source = _normalize_extracted_questions(extract_root)
 
+    # Record extraction count for benchmark comparison (questions after dedup, before validation)
+    job.pass1_json = {
+        **(job.pass1_json or {}),
+        "_extracted_count": len(questions_data),
+    }
+
     # Determine passage_group_id: set only for multi-question batches
     passage_group_id = uuid.uuid4() if len(questions_data) > 1 else None
 
@@ -757,11 +831,17 @@ async def ingest_official_pdf(
     if not raw_text.strip():
         settings_tmp = get_settings()
         max_images = settings_tmp.vision_max_images
+        source_stem = Path(file.filename or "upload").stem
         for page in pdf_result["pages"][:max_images]:
             for img in page.get("images", []):
+                ext = img.get("ext", "png")
+                img_path = _save_page_image(
+                    source_stem, page["page_number"], img["b64"], ext,
+                    settings_tmp.local_archive_mirror,
+                )
                 page_images.append({
-                    "b64": img["b64"],
-                    "mime_type": f"image/{img.get('ext', 'png')}",
+                    "path": img_path,
+                    "mime_type": f"image/{ext}",
                     "page_number": page["page_number"],
                 })
 
@@ -866,11 +946,17 @@ async def ingest_unofficial_file(
         if not raw_text.strip():
             settings_tmp = get_settings()
             max_images = settings_tmp.vision_max_images
+            source_stem = Path(file.filename or "upload").stem
             for page in pdf_result["pages"][:max_images]:
                 for img in page.get("images", []):
+                    ext = img.get("ext", "png")
+                    img_path = _save_page_image(
+                        source_stem, page["page_number"], img["b64"], ext,
+                        settings_tmp.local_archive_mirror,
+                    )
                     page_images.append({
-                        "b64": img["b64"],
-                        "mime_type": f"image/{img.get('ext', 'png')}",
+                        "path": img_path,
+                        "mime_type": f"image/{ext}",
                         "page_number": page["page_number"],
                     })
     elif asset_type in ("text", "markdown"):
@@ -884,7 +970,7 @@ async def ingest_unofficial_file(
             raw_text = content.decode("utf-8", errors="replace")
     elif asset_type == "image":
         from app.parsers.image_parser import parse_image
-        import tempfile, pathlib
+        import pathlib
         suffix = pathlib.Path(file.filename or "img").suffix or ".png"
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
             tmp.write(content)
@@ -893,7 +979,11 @@ async def ingest_unofficial_file(
             img_data = parse_image(tmp_path)
         finally:
             pathlib.Path(tmp_path).unlink(missing_ok=True)
-        page_images = [{"b64": img_data["b64"], "mime_type": img_data["mime_type"], "page_number": 0}]
+        settings_tmp = get_settings()
+        source_stem = Path(file.filename or "upload").stem
+        ext = suffix.lstrip(".")
+        img_path = _save_page_image(source_stem, 0, img_data["b64"], ext, settings_tmp.local_archive_mirror)
+        page_images = [{"path": img_path, "mime_type": img_data["mime_type"], "page_number": 0}]
 
     settings = get_settings()
     provider_name, model_name = _resolve_provider_and_model(settings, provider_name, model_name)
@@ -1245,11 +1335,17 @@ async def ingest_benchmark_ocr(
         raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
         if not raw_text.strip():
             max_images = settings.vision_max_images
+            source_stem = Path(file.filename or "upload").stem
             for page in pdf_result["pages"][:max_images]:
                 for img in page.get("images", []):
+                    ext = img.get("ext", "png")
+                    img_path = _save_page_image(
+                        source_stem, page["page_number"], img["b64"], ext,
+                        settings.local_archive_mirror,
+                    )
                     page_images.append({
-                        "b64": img["b64"],
-                        "mime_type": f"image/{img.get('ext', 'png')}",
+                        "path": img_path,
+                        "mime_type": f"image/{ext}",
                         "page_number": page["page_number"],
                     })
     elif asset_type in ("text", "markdown"):
@@ -1265,7 +1361,10 @@ async def ingest_benchmark_ocr(
             img_data = parse_image(tmp_path)
         finally:
             pathlib.Path(tmp_path).unlink(missing_ok=True)
-        page_images = [{"b64": img_data["b64"], "mime_type": img_data["mime_type"], "page_number": 0}]
+        source_stem = Path(file.filename or "upload").stem
+        ext = suffix.lstrip(".")
+        img_path = _save_page_image(source_stem, 0, img_data["b64"], ext, settings.local_archive_mirror)
+        page_images = [{"path": img_path, "mime_type": img_data["mime_type"], "page_number": 0}]
 
     # DeepSeek is an image-only OCR provider — skip it for text-based content.
     has_images = bool(page_images)
@@ -1370,6 +1469,7 @@ async def get_benchmark_ocr(
             ocr_meta=ocr_meta,
             llm_meta=p1.get("_llm_meta"),
             pass2_meta=p2.get("_pass2_meta"),
+            questions_extracted=p1.get("_extracted_count", 0),
             questions_created=len(p1.get("_created_question_ids") or []),
             validation_errors=j.validation_errors_jsonb,
         ))
@@ -1380,6 +1480,20 @@ async def get_benchmark_ocr(
         ready=ready,
         has_images=has_images,
     )
+
+
+@router.post("/gc/images")
+async def gc_page_images(
+    max_age_days: int = 30,
+    _auth: str = Depends(admin_required),
+):
+    """Delete page image files older than max_age_days (default 30) from archive/images/.
+
+    Returns the number of files deleted.
+    """
+    settings = get_settings()
+    deleted = _gc_page_images(settings.local_archive_mirror, max_age_days=max_age_days)
+    return {"deleted": deleted, "max_age_days": max_age_days}
 
 
 @router.get("/jobs/{job_id}", response_model=JobResponse)

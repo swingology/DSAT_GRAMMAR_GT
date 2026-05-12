@@ -964,3 +964,78 @@ async def test_run_pipeline_reassigns_pass1_json_with_created_ids(monkeypatch):
     assert "_created_question_ids" in job.pass1_json
     assert len(job.pass1_json["_created_question_ids"]) == 1
     assert job.status == "approved"
+
+
+# ── Label normalization & deduplication ──────────────────────────────────────
+
+def test_normalize_questions_strips_trailing_paren_from_correct_label():
+    """VLMs sometimes emit 'A)' instead of 'A' for correct_option_label."""
+    result, _, _ = ingest_router._normalize_extracted_questions({
+        "questions": [
+            {"question_text": "Q1", "correct_option_label": "A)", "options": []},
+        ]
+    })
+    assert result[0]["correct_option_label"] == "A"
+
+
+def test_normalize_questions_strips_trailing_period_from_correct_label():
+    result, _, _ = ingest_router._normalize_extracted_questions({
+        "questions": [
+            {"question_text": "Q1", "correct_option_label": "B.", "options": []},
+        ]
+    })
+    assert result[0]["correct_option_label"] == "B"
+
+
+def test_normalize_questions_lowercased_correct_label_upcased():
+    result, _, _ = ingest_router._normalize_extracted_questions({
+        "questions": [
+            {"question_text": "Q1", "correct_option_label": "c)", "options": []},
+        ]
+    })
+    assert result[0]["correct_option_label"] == "C"
+
+
+def test_normalize_questions_strips_option_label_parens():
+    """Option labels like 'A)' should also be normalized."""
+    result, _, _ = ingest_router._normalize_extracted_questions({
+        "questions": [
+            {
+                "question_text": "Q1",
+                "correct_option_label": "A",
+                "options": [
+                    {"label": "A)", "text": "Choice A"},
+                    {"label": "B.", "text": "Choice B"},
+                    {"label": "c", "text": "Choice C"},
+                    {"label": "D", "text": "Choice D"},
+                ],
+            }
+        ]
+    })
+    labels = [o["label"] for o in result[0]["options"]]
+    assert labels == ["A", "B", "C", "D"]
+
+
+def test_normalize_questions_deduplicates_identical_question_text():
+    """VLMs sometimes hallucinate duplicate question rows; only the first should survive."""
+    result, _, _ = ingest_router._normalize_extracted_questions({
+        "questions": [
+            {"question_text": "What is X?", "correct_option_label": "A", "options": []},
+            {"question_text": "What is X?", "correct_option_label": "B", "options": []},
+            {"question_text": "What is Y?", "correct_option_label": "C", "options": []},
+        ]
+    })
+    assert len(result) == 2
+    assert result[0]["question_text"] == "What is X?"
+    assert result[0]["correct_option_label"] == "A"
+    assert result[1]["question_text"] == "What is Y?"
+
+
+def test_normalize_questions_dedup_is_case_insensitive():
+    result, _, _ = ingest_router._normalize_extracted_questions({
+        "questions": [
+            {"question_text": "What is X?", "correct_option_label": "A", "options": []},
+            {"question_text": "WHAT IS X?", "correct_option_label": "B", "options": []},
+        ]
+    })
+    assert len(result) == 1

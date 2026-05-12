@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-11T02:20:09.229Z
-> Files: 662 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-11T21:02:55.873Z
+> Files: 668 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
 
@@ -21,9 +21,9 @@
 - `.gitignore` — Git ignore rules (~9 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~12048 tok)
+- `CHANGELOG.md` — CHANGELOG (~13528 tok)
 - `CLAUDE.md` — OpenWolf (~225 tok)
-- `DEBUG_LOG.md` — Debug Log (~7714 tok)
+- `DEBUG_LOG.md` — Debug Log (~8566 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~7592 tok)
@@ -84,6 +84,7 @@
 - `.python-version` (~2 tok)
 - `alembic.ini` — A generic, single database configuration. (~1327 tok)
 - `pyproject.toml` — Python project configuration (~217 tok)
+- `test_ocr_live.py` — load_image_as_b64, test_ollama, test_anthropic, test_openai (~2654 tok)
 
 ## backend/.claude/
 
@@ -880,16 +881,18 @@
 - `anthropic_provider.py` — AnthropicProvider: complete, complete_vision (~819 tok)
 - `base.py` — class: complete, complete_vision (~282 tok)
 - `factory.py` — Keyed by (provider_name, api_key, base_url, default_model) so identical configs share one instance. (~609 tok)
-- `ollama_provider.py` — OllamaProvider: complete, complete_vision, close (~990 tok)
+- `ollama_provider.py` — OllamaProvider: complete, complete_vision, close (~1130 tok)
 - `openai_provider.py` — OpenAIProvider: complete, complete_vision (~837 tok)
+- `retry.py` — Retry wrapper for LLM provider calls with exponential backoff. (~843 tok)
 
 ## backend/app/models/
 
 - `db.py` — Declares QuestionJob (~3950 tok)
-- `payload.py` — HTTP request/response models. (~1491 tok)
+- `payload.py` — HTTP request/response models. (~1508 tok)
 
 ## backend/app/parsers/
 
+- `json_parser.py` — Robust JSON extraction from LLM output text. (~2178 tok)
 - `ocr.py` — DeepSeek OCR-2 client — sends images to local vLLM/LMDeploy server, returns text. (~697 tok)
 - `pdf_parser.py` — PDF text extraction using pymupdf (fitz). (~429 tok)
 
@@ -906,8 +909,12 @@
 
 - `admin.py` — API: 5 endpoints (~6294 tok)
 - `generate.py` — API: 3 endpoints (~3505 tok)
-- `ingest.py` (~15512 tok)
+- `ingest.py` (~17041 tok)
 - `student.py` — API: 7 endpoints (~1956 tok)
+
+## backend/benchmark_results/
+
+- `2026-05-11_pt1_mod01_page3.md` — OCR Benchmark — PT1 Mod01 Page 3 (~2063 tok)
 
 ## backend/migrations/versions/
 
@@ -917,9 +924,11 @@
 
 - `conftest.py` — Force test env before any app imports — use assignment, not setdefault (~385 tok)
 - `test_admin_router.py` — test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, test_admin_re (~556 tok)
-- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 11 more (~8883 tok)
-- `test_ingest_router.py` — test_resolve_provider_and_model_uses_default_ollama_model, test_resolve_provider_and_model_respects_ (~1963 tok)
-- `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~1990 tok)
+- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 11 more (~10722 tok)
+- `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~524 tok)
+- `test_ingest_router.py` — test_resolve_provider_and_model_uses_default_ollama_model, test_resolve_provider_and_model_respects_ (~2717 tok)
+- `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
+- `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~1994 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~466 tok)
 
 ## docs/PRD/

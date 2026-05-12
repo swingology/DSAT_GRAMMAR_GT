@@ -7,7 +7,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 4\u21925 lines (4 removed) | Also: 2. **High:** Hard-delete can still fail on incomin; - `delete_question` clears `canonical_official_que | Also: 3. **High:** Default API keys are live credentials; - `admin-key-change-me` and `student-key-change-me",
+      "fix": "Rewrote 4→5 lines (4 removed) | Also: 2. **High:** Hard-delete can still fail on incomin; - `delete_question` clears `canonical_official_que | Also: 3. **High:** Default API keys are live credentials; - `admin-key-change-me` and `student-key-change-me",
       "tags": [
         "auto-detected",
         "refactor",
@@ -23,7 +23,7 @@
       "error_message": "Significant refactor of ",
       "file": "docs/PRD/INGESTION_PRD.md",
       "root_cause": "17 lines replaced/restructured",
-      "fix": "Rewrote 36\u219258 lines (17 removed)",
+      "fix": "Rewrote 36→58 lines (17 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -39,7 +39,7 @@
       "error_message": "Significant refactor of ",
       "file": "docs/PRD/INGESTION_PRD.md",
       "root_cause": "23 lines replaced/restructured",
-      "fix": "Rewrote 52\u219267 lines (23 removed) | Also: # OCR Option A \u2014 DeepSeek OCR (cloud API); DEEPSEEK_API_KEY=your-deepseek-key         # leave",
+      "fix": "Rewrote 52→67 lines (23 removed) | Also: # OCR Option A — DeepSeek OCR (cloud API); DEEPSEEK_API_KEY=your-deepseek-key         # leave",
       "tags": [
         "auto-detected",
         "refactor",
@@ -55,7 +55,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/config.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 6\u219210 lines (2 removed)",
+      "fix": "Rewrote 6→10 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -71,7 +71,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 42\u2192157 lines (2 removed) | Also: pass1_json={\"raw_text\": raw_text[:50000], \"pages\":; }}, | Also: if mime_type in IMAGE_MIME_TYPES:; raise HTTPException(",
+      "fix": "Rewrote 42→157 lines (2 removed) | Also: pass1_json={\"raw_text\": raw_text[:50000], \"pages\":; }}, | Also: if mime_type in IMAGE_MIME_TYPES:; raise HTTPException(",
       "tags": [
         "auto-detected",
         "refactor",
@@ -86,7 +86,7 @@
       "timestamp": "2026-05-11T01:10:57.610Z",
       "error_message": "Missing await",
       "file": "DEBUG_LOG.md",
-      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "root_cause": "Async call without await — returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -103,7 +103,7 @@
       "error_message": "Wrong reference: 50000 should be source_metadata",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Used \"50000\" instead of \"source_metadata\"",
-      "fix": "Changed 50000 \u2192 source_metadata",
+      "fix": "Changed 50000 → source_metadata",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -119,7 +119,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 3\u21924 lines (3 removed) | Also: 10. **High:** Background pipeline tasks swallow ex; - `asyncio.create_task(_run_pipeline_with_session( | Also: 15. **Medium:** `detect_overlaps` receives `job.id; - The self-skip guard `if oq.id == question_id: co",
+      "fix": "Rewrote 3→4 lines (3 removed) | Also: 10. **High:** Background pipeline tasks swallow ex; - `asyncio.create_task(_run_pipeline_with_session( | Also: 15. **Medium:** `detect_overlaps` receives `job.id; - The self-skip guard `if oq.id == question_id: co",
       "tags": [
         "auto-detected",
         "refactor",
@@ -134,7 +134,7 @@
       "timestamp": "2026-05-11T01:35:01.751Z",
       "error_message": "Missing error handling in unknown",
       "file": "DEBUG_LOG.md",
-      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -151,7 +151,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 7\u21929 lines (6 removed)",
+      "fix": "Rewrote 7→9 lines (6 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -167,7 +167,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/llm/anthropic_provider.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 43\u219288 lines (2 removed)",
+      "fix": "Rewrote 43→88 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -183,7 +183,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/llm/openai_provider.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 45\u219288 lines (2 removed)",
+      "fix": "Rewrote 45→88 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -199,7 +199,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 20\u219233 lines (2 removed)",
+      "fix": "Rewrote 20→33 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -230,7 +230,7 @@
       "timestamp": "2026-05-11T01:54:05.430Z",
       "error_message": "Missing await",
       "file": "backend/app/routers/ingest.py",
-      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "root_cause": "Async call without await — returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -263,7 +263,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 14\u21928 lines (6 removed)",
+      "fix": "Rewrote 14→8 lines (6 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -340,6 +340,140 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-10"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-05-11T03:48:43.597Z",
+      "error_message": "Wrong return value",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Was returning: {\"comparison_group_id\": str(comparison_group_id), ",
+      "fix": "Now returns: {\"comparison_group_id\": str(comparison_group_id), ",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-11T03:48:43.597Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-05-11T08:34:49.014Z",
+      "error_message": "Wrong reference: else should be flag_modified",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Used \"else\" instead of \"flag_modified\"",
+      "fix": "Changed else → flag_modified",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-11T08:34:49.014Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-05-11T08:39:17.898Z",
+      "error_message": "Missing await",
+      "file": "CHANGELOG.md",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-11T08:39:17.898Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-05-11T00:00:00Z",
+      "error_message": "Validator blocks questions where VLM emits 'A)' as correct_option_label — 'A)' not in ('A','B','C','D')",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "VLMs (granite3.2-vision, qwen-vl family) frequently output answer labels with trailing parentheses ('A)', 'B.') or lowercase ('a'). _normalize_extracted_questions passed labels through verbatim, causing every such question to fail the blocking validator check.",
+      "fix": "Added _clean_option_label() helper and applied it in _normalize_extracted_questions to both correct_option_label and each option's label field. Strips trailing ')' and '.', uppercases.",
+      "tags": [
+        "normalization",
+        "validator",
+        "vlm",
+        "option-label",
+        "ingest"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-11"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-05-11T00:00:00Z",
+      "error_message": "VLM (granite3.2-vision) outputs duplicate question rows — Q2-Q4 all identical to Q2",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Small VLMs hallucinate repeated question objects in their JSON output. _normalize_extracted_questions had no deduplication, so all duplicates were persisted as separate Question rows.",
+      "fix": "Added seen_texts set in _normalize_extracted_questions; questions with identical question_text (case-insensitive, stripped) are skipped after the first occurrence.",
+      "tags": [
+        "deduplication",
+        "vlm",
+        "hallucination",
+        "ingest",
+        "normalize"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-11"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-05-11T00:00:00Z",
+      "error_message": "OllamaProvider.complete_vision() times out on large/slow VLMs (qwen3-vl:8b, qwen2.5vl:7b) — httpx.ReadTimeout after 120s",
+      "file": "backend/app/llm/ollama_provider.py",
+      "root_cause": "complete_vision used the same httpx.AsyncClient as complete (timeout=120s). VLM inference for OCR tasks can take 200-600s on local hardware, hitting the limit on every attempt.",
+      "fix": "Added vision_client = httpx.AsyncClient(timeout=600s) on OllamaProvider. complete_vision now uses vision_client; complete still uses client (120s for fast text calls). Also updated close() to close both clients.",
+      "tags": [
+        "timeout",
+        "vision",
+        "ollama",
+        "vlm",
+        "httpx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-11"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-05-11T21:02:15.280Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 9→52 lines (6 removed) | Also: \"b64\": img[\"b64\"],; \"mime_type\": f\"image/{img.get('ext', 'png')}\",",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-11T21:02:41.666Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-05-11T21:02:55.885Z",
+      "error_message": "Function not marked async",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Function uses await but wasn't declared async",
+      "fix": "Added async modifier",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-11T21:02:55.885Z"
     }
   ]
 }

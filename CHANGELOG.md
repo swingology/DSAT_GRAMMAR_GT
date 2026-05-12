@@ -5,6 +5,41 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-11 — Ingestion pipeline gap fixes (round 4)
+
+**Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+**Branch:** `main`
+
+Fourth audit pass, focused on VLM extraction quality: label normalization and duplicate suppression. 29 tests passing.
+
+### Fix 1 — VLM answer-label format breaks validator ("A)" rejected as invalid)
+**Change:** Added `_clean_option_label()` helper; applied in `_normalize_extracted_questions` to both `correct_option_label` and each option's `label` field. Strips trailing `)` and `.`, uppercases.
+**File:** `backend/app/routers/ingest.py`
+**Why:** VLMs (granite3.2-vision, qwen-vl family) frequently emit answer labels with trailing parens (`"A)"`, `"B."`) or lowercase (`"a"`). The validator requires `correct_option_label in ("A","B","C","D")` — these labels caused every such question to fail with a blocking error, silently discarding the entire ingestion batch.
+
+### Fix 2 — VLM duplicate question rows persisted
+**Change:** Added `seen_texts` deduplication set in `_normalize_extracted_questions`; questions whose `question_text` matches a prior entry (case-insensitive, stripped) are skipped.
+**File:** `backend/app/routers/ingest.py`
+**Why:** Small VLMs (confirmed with `granite3.2-vision:latest`) hallucinate repeated question objects in the `questions` array — e.g., Q2-Q4 all identical to Q2. Without deduplication these were persisted as separate `Question` rows, polluting the database.
+
+### Fix 3 — OllamaProvider vision timeout too short for large VLMs (120s → 600s)
+**Change:** Added `vision_client = httpx.AsyncClient(timeout=600.0)` on `OllamaProvider`; `complete_vision` now uses `vision_client`; `complete` still uses the original 120s client. `close()` closes both.
+**File:** `backend/app/llm/ollama_provider.py`
+**Why:** VLM OCR inference for models like `qwen3-vl:8b` takes 200-600s on local hardware. The shared 120s timeout caused all 3 retry attempts to time out (363s total). Text-only LLM calls are fast enough for 120s; only vision calls need the longer budget.
+
+### Fix 4 — Benchmark GET missing `questions_extracted` (pre-validation count)
+**Change:** `_run_pipeline` stores `_extracted_count` in `pass1_json` after `_normalize_extracted_questions`; benchmark GET maps it to `OCRJobResult.questions_extracted`.
+**Files:** `backend/app/routers/ingest.py`, `backend/app/models/payload.py`
+**Why:** The benchmark `OCRJobResult` only had `questions_created` (count of persisted questions after validation). When a VLM extracts 4 questions but 2 fail validation, you couldn't distinguish "model failed" from "validator blocked". `questions_extracted` gives the count after dedup but before validation.
+
+### Live-test finding: deepseek-ocr:latest works on properly-sized images
+**Context:** Earlier test showed only 107 output tokens from `deepseek-ocr:latest`. Re-test with small image (612×792 PNG) produced 763 tokens and extracted all 4 questions correctly including passage text, answer choices, and answer keys. Root cause of prior failure was image too large (1224×1584, 6MB) → model timeout/truncation.
+
+### Tests added (6)
+`test_normalize_questions_strips_trailing_paren_from_correct_label`, `test_normalize_questions_strips_trailing_period_from_correct_label`, `test_normalize_questions_lowercased_correct_label_upcased`, `test_normalize_questions_strips_option_label_parens`, `test_normalize_questions_deduplicates_identical_question_text`, `test_normalize_questions_dedup_is_case_insensitive`
+
+---
+
 ## 2026-05-11 — Ingestion pipeline gap fixes (round 3)
 
 **Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)

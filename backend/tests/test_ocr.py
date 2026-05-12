@@ -61,7 +61,7 @@ async def test_ollama_complete_vision_returns_response():
         "choices": [{"message": {"content": '{"questions": []}'}}],
         "usage": {"prompt_tokens": 200, "completion_tokens": 10},
     }
-    with patch.object(provider.client, "post", new_callable=AsyncMock, return_value=mock_response):
+    with patch.object(provider.vision_client, "post", new_callable=AsyncMock, return_value=mock_response):
         images = [ImageContent(b64="abc", mime_type="image/jpeg")]
         result = await provider.complete_vision("system prompt", "user prompt", images)
 
@@ -78,7 +78,7 @@ async def test_ollama_complete_vision_sends_image_url_blocks():
         "choices": [{"message": {"content": "{}"}}],
         "usage": {},
     }
-    with patch.object(provider.client, "post", new_callable=AsyncMock, return_value=mock_response) as mock_post:
+    with patch.object(provider.vision_client, "post", new_callable=AsyncMock, return_value=mock_response) as mock_post:
         images = [
             ImageContent(b64="aaa", mime_type="image/png"),
             ImageContent(b64="bbb", mime_type="image/jpeg"),
