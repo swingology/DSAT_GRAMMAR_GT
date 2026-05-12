@@ -67,6 +67,28 @@ def _should_auto_activate_official(settings) -> bool:
     return bool(getattr(settings, "official_auto_activate_for_testing", False))
 
 
+# Fixed namespace for all official College Board question UUIDs.
+# Never change this — altering it would invalidate every existing official question ID.
+_OFFICIAL_Q_NAMESPACE = uuid.UUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")  # RFC 4122 URL namespace
+
+
+def _official_question_uuid(
+    exam_code: str,
+    subject_code: str,
+    section_code: str,
+    module_code: str,
+    question_number: int,
+) -> uuid.UUID:
+    """Return a deterministic UUID5 for an official College Board question.
+
+    The canonical key is exam:subject:section:module:question_number, e.g.
+    "PT1:verbal:01:01:3".  Same inputs always produce the same UUID, making
+    re-ingestion of the same question idempotent.
+    """
+    canonical = f"{exam_code.upper()}:{subject_code.lower()}:{section_code}:{module_code}:{question_number}"
+    return uuid.uuid5(_OFFICIAL_Q_NAMESPACE, canonical)
+
+
 def _normalize_source_subject_code(value: str | None) -> str | None:
     normalized = (value or "").strip().lower()
     if not normalized:
@@ -206,9 +228,22 @@ async def _persist_single_question(
     """Create Question + QuestionVersion + QuestionAnnotation + QuestionOption rows.
 
     Returns the newly created ``question_id`` UUID.
+    Official questions with complete metadata use a deterministic UUID5 so that
+    re-ingesting the same question produces the same ID (idempotent).
     """
     now = datetime.now(timezone.utc)
-    question_id = uuid.uuid4()
+
+    exam = q_data.get("source_exam_code")
+    subject = q_data.get("source_subject_code")
+    section = q_data.get("source_section_code") or section_code
+    module = q_data.get("source_module_code")
+    q_num = q_data.get("source_question_number")
+
+    if job.content_origin == "official" and all([exam, subject, section, module, q_num]):
+        question_id = _official_question_uuid(exam, subject, section, module, int(q_num))
+    else:
+        question_id = uuid.uuid4()
+
     version_id = uuid.uuid4()
     annotation_id = uuid.uuid4()
 
@@ -805,6 +840,21 @@ async def ingest_official_pdf(
 ):
     if ocr_strategy and ocr_strategy not in {"deepseek", "ollama", "vision", "anthropic", "openai", "auto"}:
         raise HTTPException(status_code=422, detail="ocr_strategy must be 'deepseek', 'ollama', 'vision', 'anthropic', 'openai', or 'auto'")
+
+    # Official questions require complete metadata for deterministic UUID generation.
+    missing = [f for f, v in [
+        ("source_exam_code", source_exam_code),
+        ("source_subject_code", source_subject_code),
+        ("source_section_code", source_section_code),
+        ("source_module_code", source_module_code),
+    ] if not (v or "").strip()]
+    if missing:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Official PDF ingestion requires: {', '.join(missing)}. "
+                   "These fields are used to generate stable question IDs and prevent duplicates.",
+        )
+
     mime_type = _validate_upload_mime(file.content_type, {"application/pdf"})
     content = await _safe_read(file, MAX_FILE_SIZE)
     source_subject_code, source_section_code, source_module_code = _normalize_source_metadata(
