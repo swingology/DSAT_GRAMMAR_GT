@@ -139,27 +139,50 @@ def test_resolve_ocr_strategy_explicit():
     assert _resolve_ocr_strategy("vision", s) == "ollama"
 
 
-def test_resolve_ocr_strategy_auto_prefers_ollama():
+def test_resolve_ocr_strategy_auto_prefers_glm():
     class FakeSettings:
         ocr_strategy = "auto"
+        glm_ocr_model = "glm-ocr:latest"
         ocr_vision_provider = "ollama"
         deepseek_ocr_base_url = "http://localhost:8001"
 
-    assert _resolve_ocr_strategy(None, FakeSettings()) == "ollama"
+    assert _resolve_ocr_strategy(None, FakeSettings()) == "glm"
+
+
+def test_resolve_ocr_strategy_explicit_glm():
+    class FakeSettings:
+        ocr_strategy = "auto"
+        glm_ocr_model = "glm-ocr:latest"
+        ocr_vision_provider = "none"
+        deepseek_ocr_base_url = ""
+
+    assert _resolve_ocr_strategy("glm", FakeSettings()) == "glm"
 
 
 def test_resolve_ocr_strategy_auto_falls_back_to_deepseek():
     class FakeSettings:
         ocr_strategy = "auto"
+        glm_ocr_model = ""
         ocr_vision_provider = "none"
         deepseek_ocr_base_url = "http://localhost:8001"
 
     assert _resolve_ocr_strategy(None, FakeSettings()) == "deepseek"
 
 
+def test_resolve_ocr_strategy_auto_falls_back_to_ollama():
+    class FakeSettings:
+        ocr_strategy = "auto"
+        glm_ocr_model = ""
+        ocr_vision_provider = "ollama"
+        deepseek_ocr_base_url = ""
+
+    assert _resolve_ocr_strategy(None, FakeSettings()) == "ollama"
+
+
 def test_resolve_ocr_strategy_raises_when_no_provider():
     class FakeSettings:
         ocr_strategy = "auto"
+        glm_ocr_model = ""
         ocr_vision_provider = "none"
         deepseek_ocr_base_url = ""
 

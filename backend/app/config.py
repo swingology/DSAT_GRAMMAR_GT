@@ -31,16 +31,19 @@ class Settings(BaseSettings):
     llm_retry_base_delay_s: float = 1.0
     llm_retry_max_delay_s: float = 30.0
 
-    # OCR / Vision — Option B: Ollama VLM
+    # OCR / Vision — Option B: Ollama VLM (fused)
     ocr_vision_provider: str = "ollama"
     ocr_vision_model: str = "qwen2.5-vl:7b"
-    ocr_strategy: str = "auto"  # auto | deepseek | ollama
+    ocr_strategy: str = "glm"  # glm | deepseek | ollama | anthropic | openai | auto
     ocr_fallback: bool = True
     vision_max_images: int = 10
 
     # OCR — Option A: DeepSeek OCR-2 (local via vLLM Docker or LMDeploy)
     deepseek_ocr_base_url: str = "http://localhost:8001"
     deepseek_ocr_model: str = "deepseek-ai/DeepSeek-OCR-2"
+
+    # OCR — Option G: GLM-OCR via Ollama (two-step: OCR then extraction LLM)
+    glm_ocr_model: str = "glm-ocr:latest"
 
     # Logging
     log_level: str = "INFO"

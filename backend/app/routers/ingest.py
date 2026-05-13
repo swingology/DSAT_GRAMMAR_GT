@@ -257,6 +257,74 @@ def _validate_question_numbers(
     return warnings
 
 
+def _scan_qnums_from_ocr(ocr_text: str) -> list[int]:
+    """Extract question numbers from raw OCR text using regex heuristics.
+
+    GLM-OCR emits each question number on its own line before the passage text.
+    This scan looks for standalone integers (1–50) that appear on a line by
+    themselves, returning them in document order as a cross-check source.
+    """
+    import re
+    found: list[int] = []
+    seen: set[int] = set()
+    for line in ocr_text.splitlines():
+        stripped = line.strip()
+        # Match a bare number, optionally followed by . or ) — e.g. "3", "3.", "3)"
+        m = re.fullmatch(r"(\d{1,2})[.)]?", stripped)
+        if m:
+            n = int(m.group(1))
+            if 1 <= n <= 50 and n not in seen:
+                found.append(n)
+                seen.add(n)
+    return found
+
+
+def _verify_qnums_against_ocr(
+    questions: list[dict],
+    ocr_text: str,
+) -> list[dict]:
+    """Cross-check LLM-extracted question numbers against OCR-scanned numbers.
+
+    Returns mismatch warning dicts. Empty list means the two sources agree.
+    Only fires when the OCR scan finds at least as many numbers as there are
+    questions — if OCR picked up fewer numbers we can't do a reliable comparison.
+    """
+    warnings: list[dict] = []
+    ocr_nums = _scan_qnums_from_ocr(ocr_text)
+
+    if not ocr_nums or len(ocr_nums) < len(questions):
+        return []  # OCR scan too sparse to cross-check
+
+    for i, q in enumerate(questions):
+        llm_num = q.get("source_question_number")
+        try:
+            llm_int = int(llm_num) if llm_num is not None else None
+        except (TypeError, ValueError):
+            llm_int = None
+
+        ocr_int = ocr_nums[i] if i < len(ocr_nums) else None
+
+        if llm_int is None and ocr_int is not None:
+            warnings.append({
+                "step": "qnum_ocr_crosscheck",
+                "question_index": i,
+                "issue": "llm_missing_ocr_found",
+                "ocr_value": ocr_int,
+                "detail": f"question_index {i}: LLM returned no number but OCR text shows {ocr_int}",
+            })
+        elif llm_int is not None and ocr_int is not None and llm_int != ocr_int:
+            warnings.append({
+                "step": "qnum_ocr_crosscheck",
+                "question_index": i,
+                "issue": "mismatch",
+                "llm_value": llm_int,
+                "ocr_value": ocr_int,
+                "detail": f"question_index {i}: LLM extracted {llm_int} but OCR text shows {ocr_int}",
+            })
+
+    return warnings
+
+
 def _clean_option_label(label: str | None) -> str:
     """Normalize VLM-emitted option labels like 'A)', 'A.', 'a' → 'A'."""
     if not label:
@@ -541,10 +609,12 @@ def _collect_page_images(pass1_json: dict) -> list:
 def _resolve_ocr_strategy(requested: str | None, settings) -> str:
     """Resolve the effective OCR strategy.
 
-    Returns "deepseek", "ollama", "anthropic", or "openai".
+    Returns "glm", "deepseek", "ollama", "anthropic", or "openai".
     Raises ValueError if the requested provider is unavailable.
     """
     strategy = (requested or settings.ocr_strategy or "auto").strip().lower()
+    if strategy == "glm":
+        return "glm"
     if strategy == "deepseek":
         return "deepseek"
     if strategy in ("ollama", "vision"):
@@ -558,10 +628,12 @@ def _resolve_ocr_strategy(requested: str | None, settings) -> str:
             raise ValueError("openai_api_key not configured")
         return "openai"
     if strategy == "auto":
-        if settings.ocr_vision_provider == "ollama":
-            return "ollama"
+        if getattr(settings, "glm_ocr_model", None):
+            return "glm"
         if settings.deepseek_ocr_base_url:
             return "deepseek"
+        if settings.ocr_vision_provider == "ollama":
+            return "ollama"
         if getattr(settings, "anthropic_api_key", None):
             return "anthropic"
         if getattr(settings, "openai_api_key", None):
@@ -583,6 +655,8 @@ def _vlm_model_for_strategy(strategy: str, settings) -> str:
 def _available_ocr_strategies(settings) -> list[str]:
     """Return all strategies that can run given the current configuration."""
     available = []
+    if getattr(settings, "glm_ocr_model", None):
+        available.append("glm")
     if settings.deepseek_ocr_base_url:
         available.append("deepseek")
     if settings.ocr_vision_provider == "ollama" or settings.ollama_base_url:
@@ -624,6 +698,54 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             job.status = "failed"
             await db.commit()
             return
+
+        if resolved_strategy == "glm":
+            # GLM-OCR: two-step — glm-ocr:latest via Ollama vision → raw_text → Pass 1 LLM
+            from app.llm.ollama_provider import OllamaProvider as _OllamaProvider
+            glm_model = settings.glm_ocr_model
+            glm_provider = _OllamaProvider(
+                base_url=settings.ollama_base_url,
+                default_model=glm_model,
+            )
+            _GLM_OCR_SYSTEM = (
+                "You are a precise OCR engine. Extract all text from the image exactly as it "
+                "appears. Preserve question numbers on their own lines, option labels (A/B/C/D), "
+                "and blank markers (______). Return only the extracted text."
+            )
+            try:
+                ocr_result = await glm_provider.complete_vision(
+                    system=_GLM_OCR_SYSTEM,
+                    user="Extract all text from this image.",
+                    images=page_images,
+                    model=glm_model,
+                    max_tokens=4096,
+                    temperature=0.0,
+                )
+                raw_text = ocr_result.raw_text
+                job.pass1_json = {
+                    **(job.pass1_json or {}),
+                    "raw_text": raw_text,
+                    "_ocr_meta": {
+                        "strategy": "glm",
+                        "model": glm_model,
+                        "page_count": len(page_images),
+                        "latency_ms": ocr_result.latency_ms,
+                        "token_usage": getattr(ocr_result, "token_usage", None) or {},
+                    },
+                }
+                await db.commit()
+            except Exception as e:
+                if settings.ocr_fallback:
+                    logger.warning("GLM-OCR failed (%s), falling back to Ollama VLM", e)
+                    resolved_strategy = "ollama"
+                else:
+                    orch.fail("extracting", "ocr_error", f"GLM-OCR failed: {e}")
+                    job.status = "failed"
+                    job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                    await db.commit()
+                    return
+            finally:
+                await glm_provider.close()
 
         if resolved_strategy == "deepseek":
             # Option A: DeepSeek OCR-2 → raw_text → Pass 1 LLM extraction
@@ -779,6 +901,17 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 job.id, qnum_warnings,
             )
             all_errors.extend(qnum_warnings)
+
+        # Cross-check LLM numbers against OCR text (when OCR text is available)
+        ocr_raw = (job.pass1_json or {}).get("raw_text", "")
+        if ocr_raw:
+            crosscheck_warnings = _verify_qnums_against_ocr(questions_data, ocr_raw)
+            if crosscheck_warnings:
+                logger.warning(
+                    "Question number OCR cross-check mismatches for job %s: %s",
+                    job.id, crosscheck_warnings,
+                )
+                all_errors.extend(crosscheck_warnings)
 
     # ---- Per-question loop ----
     created_question_ids: list[uuid.UUID] = []
@@ -952,8 +1085,8 @@ async def ingest_official_pdf(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    if ocr_strategy and ocr_strategy not in {"deepseek", "ollama", "vision", "anthropic", "openai", "auto"}:
-        raise HTTPException(status_code=422, detail="ocr_strategy must be 'deepseek', 'ollama', 'vision', 'anthropic', 'openai', or 'auto'")
+    if ocr_strategy and ocr_strategy not in {"glm", "deepseek", "ollama", "vision", "anthropic", "openai", "auto"}:
+        raise HTTPException(status_code=422, detail="ocr_strategy must be 'glm', 'deepseek', 'ollama', 'vision', 'anthropic', 'openai', or 'auto'")
 
     # Official questions require complete metadata for deterministic UUID generation.
     missing = [f for f, v in [
@@ -1073,8 +1206,8 @@ async def ingest_unofficial_file(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    if ocr_strategy and ocr_strategy not in {"deepseek", "ollama", "vision", "anthropic", "openai", "auto"}:
-        raise HTTPException(status_code=422, detail="ocr_strategy must be 'deepseek', 'ollama', 'vision', 'anthropic', 'openai', or 'auto'")
+    if ocr_strategy and ocr_strategy not in {"glm", "deepseek", "ollama", "vision", "anthropic", "openai", "auto"}:
+        raise HTTPException(status_code=422, detail="ocr_strategy must be 'glm', 'deepseek', 'ollama', 'vision', 'anthropic', 'openai', or 'auto'")
     mime_type = _validate_upload_mime(file.content_type)
     content = await _safe_read(file, MAX_FILE_SIZE)
 

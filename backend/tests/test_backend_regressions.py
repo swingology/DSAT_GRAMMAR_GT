@@ -1110,3 +1110,61 @@ def test_official_question_uuid_differs_by_field():
     diff_module  = ingest_router._official_question_uuid("PT1", "verbal", "01", "02", 3)
     diff_qnum    = ingest_router._official_question_uuid("PT1", "verbal", "01", "01", 4)
     assert len({base, diff_exam, diff_section, diff_module, diff_qnum}) == 5
+
+
+# ── _scan_qnums_from_ocr ──────────────────────────────────────────────────────
+
+def test_scan_qnums_glm_format():
+    ocr = "3\nFollowing the principles...\n\n4\nThe parasitic dodder...\n\n5\nGiven that conditions..."
+    assert ingest_router._scan_qnums_from_ocr(ocr) == [3, 4, 5]
+
+
+def test_scan_qnums_ignores_non_standalone():
+    # Numbers embedded in text should not be picked up
+    ocr = "There are 3 types of things.\n\n4\nQuestion four text here."
+    result = ingest_router._scan_qnums_from_ocr(ocr)
+    assert result == [4]
+
+
+def test_scan_qnums_accepts_trailing_punctuation():
+    ocr = "3.\nQuestion text\n\n4)\nAnother question"
+    assert ingest_router._scan_qnums_from_ocr(ocr) == [3, 4]
+
+
+def test_scan_qnums_deduplicates():
+    ocr = "3\nText\n\n3\nDuplicate"
+    assert ingest_router._scan_qnums_from_ocr(ocr) == [3]
+
+
+# ── _verify_qnums_against_ocr ─────────────────────────────────────────────────
+
+def test_verify_qnums_clean_match():
+    qs = [{"source_question_number": 3}, {"source_question_number": 4}]
+    ocr = "3\nText one\n\n4\nText two"
+    assert ingest_router._verify_qnums_against_ocr(qs, ocr) == []
+
+
+def test_verify_qnums_mismatch():
+    qs = [{"source_question_number": 5}, {"source_question_number": 4}]
+    ocr = "3\nText one\n\n4\nText two"
+    warns = ingest_router._verify_qnums_against_ocr(qs, ocr)
+    issues = [w["issue"] for w in warns]
+    assert "mismatch" in issues
+    mw = next(w for w in warns if w["issue"] == "mismatch")
+    assert mw["llm_value"] == 5
+    assert mw["ocr_value"] == 3
+
+
+def test_verify_qnums_llm_missing_ocr_found():
+    qs = [{"source_question_number": None}, {"source_question_number": 4}]
+    ocr = "3\nText one\n\n4\nText two"
+    warns = ingest_router._verify_qnums_against_ocr(qs, ocr)
+    issues = [w["issue"] for w in warns]
+    assert "llm_missing_ocr_found" in issues
+
+
+def test_verify_qnums_sparse_ocr_skips_check():
+    # OCR found fewer numbers than questions — cross-check should be skipped
+    qs = [{"source_question_number": 3}, {"source_question_number": 4}, {"source_question_number": 5}]
+    ocr = "3\nOnly one number in OCR"
+    assert ingest_router._verify_qnums_against_ocr(qs, ocr) == []
