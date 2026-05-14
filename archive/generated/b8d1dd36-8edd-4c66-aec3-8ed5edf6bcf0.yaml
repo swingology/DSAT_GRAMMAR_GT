@@ -1,0 +1,14 @@
+question_id: b8d1dd36-8edd-4c66-aec3-8ed5edf6bcf0
+question_text: Overlap question
+passage_text: Shared passage
+correct_option_label: B
+options:
+- label: A
+  text: Wrong
+- label: B
+  text: Correct
+annotation:
+  explanation_short: Because B is correct.
+  explanation_full: Long explanation
+  annotation_confidence: 0.8
+  needs_human_review: false

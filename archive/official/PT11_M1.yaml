@@ -1,0 +1,25 @@
+exam_code: PT11
+module_code: M1
+questions:
+- question_number: 14
+  question_id: f26783af-f7aa-4bd2-9618-ec1628bc0f96
+  question_text: Which choice best supports the claim?
+  passage_text: A short passage about ecology.
+  correct_option_label: A
+  options:
+  - label: A
+    text: Correct
+  - label: B
+    text: Wrong 1
+  - label: C
+    text: Wrong 2
+  - label: D
+    text: Wrong 3
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    explanation_short: Only A directly supports the stated claim.
+    explanation_full: A is the only option that provides direct support for the passage's
+      claim.
+    annotation_confidence: 0.9
+    needs_human_review: false

@@ -1,0 +1,20 @@
+exam_code: PT01
+module_code: M1
+questions:
+- question_number: 1
+  question_id: d8cff13b-cdb7-410e-88cf-e64e2d7e38f0
+  question_text: What is the answer?
+  passage_text: A passage
+  correct_option_label: A
+  options:
+  - label: A
+    text: Correct
+  - label: B
+    text: Wrong
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    explanation_short: Because A is correct.
+    explanation_full: Long explanation
+    annotation_confidence: 0.9
+    needs_human_review: false

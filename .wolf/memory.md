@@ -260,3 +260,55 @@
 | 14:02 | Edited backend/app/routers/ingest.py | modified strip() | ~616 |
 | 14:02 | Edited backend/app/routers/ingest.py | modified strip() | ~522 |
 | 14:02 | Edited backend/app/routers/ingest.py | modified gc_page_images() | ~145 |
+| 22:48 | Session end: 5 writes across 1 files (ingest.py) | 1 reads | ~19014 tok |
+| 01:41 | Session end: 5 writes across 1 files (ingest.py) | 1 reads | ~19014 tok |
+| 01:42 | Session end: 5 writes across 1 files (ingest.py) | 1 reads | ~19014 tok |
+| 01:43 | Session end: 5 writes across 1 files (ingest.py) | 2 reads | ~19623 tok |
+| 01:46 | Session end: 5 writes across 1 files (ingest.py) | 3 reads | ~22277 tok |
+| 01:48 | Session end: 5 writes across 1 files (ingest.py) | 3 reads | ~22277 tok |
+| 01:49 | Session end: 5 writes across 1 files (ingest.py) | 3 reads | ~22277 tok |
+| 01:50 | Session end: 5 writes across 1 files (ingest.py) | 3 reads | ~22277 tok |
+| 01:52 | Created backend/benchmark_results/2026-05-11_pt1_mod01_page3.md | — | ~2398 |
+| 01:52 | Created backend/benchmark_results/SUMMARY.md | — | ~994 |
+| 01:54 | Session end: 7 writes across 3 files (ingest.py, 2026-05-11_pt1_mod01_page3.md, SUMMARY.md) | 4 reads | ~27974 tok |
+| 02:14 | Created backend/benchmark_results/2026-05-11_pt1_mod01_page3.md | — | ~1406 |
+| 02:14 | Created backend/benchmark_results/SUMMARY.md | — | ~1223 |
+| 02:14 | Session end: 9 writes across 3 files (ingest.py, 2026-05-11_pt1_mod01_page3.md, SUMMARY.md) | 5 reads | ~31220 tok |
+| 02:18 | Edited backend/benchmark_results/2026-05-11_pt1_mod01_page3.md | expanded (+14 lines) | ~222 |
+| 02:18 | Edited backend/benchmark_results/2026-05-11_pt1_mod01_page3.md | 8→9 lines | ~178 |
+| 02:18 | Edited backend/benchmark_results/SUMMARY.md | 8→9 lines | ~229 |
+| 02:18 | Edited backend/benchmark_results/SUMMARY.md | 8→9 lines | ~117 |
+| 02:19 | Session end: 13 writes across 3 files (ingest.py, 2026-05-11_pt1_mod01_page3.md, SUMMARY.md) | 5 reads | ~31274 tok |
+| 02:19 | Session end: 13 writes across 3 files (ingest.py, 2026-05-11_pt1_mod01_page3.md, SUMMARY.md) | 5 reads | ~31274 tok |
+| 02:34 | Session end: 13 writes across 3 files (ingest.py, 2026-05-11_pt1_mod01_page3.md, SUMMARY.md) | 6 reads | ~35352 tok |
+| 02:48 | Edited backend/app/routers/ingest.py | modified _should_auto_activate_official() | ~286 |
+| 02:48 | Edited backend/app/routers/ingest.py | modified all() | ~250 |
+| 02:48 | Edited backend/app/routers/ingest.py | expanded (+15 lines) | ~340 |
+| 02:48 | Created backend/migrations/versions/015_official_question_unique_constraint.py | — | ~272 |
+| 03:14 | Session end: 17 writes across 4 files (ingest.py, 2026-05-11_pt1_mod01_page3.md, SUMMARY.md, 015_official_question_unique_constraint.py) | 7 reads | ~37044 tok |
+| 03:21 | Session end: 17 writes across 4 files (ingest.py, 2026-05-11_pt1_mod01_page3.md, SUMMARY.md, 015_official_question_unique_constraint.py) | 7 reads | ~37044 tok |
+| 10:07 | Edited backend/app/routers/ingest.py | modified _validate_question_numbers() | ~1008 |
+| 10:07 | Edited backend/app/routers/ingest.py | expanded (+10 lines) | ~329 |
+| 10:07 | Edited backend/tests/test_backend_regressions.py | modified test_normalize_questions_dedup_is_case_insensitive() | ~854 |
+| 10:09 | Edited backend/app/routers/ingest.py | modified enumerate() | ~275 |
+| 10:10 | Session end: 21 writes across 5 files (ingest.py, 2026-05-11_pt1_mod01_page3.md, SUMMARY.md, 015_official_question_unique_constraint.py, test_backend_regressions.py) | 8 reads | ~51523 tok |
+| 13:04 | Edited backend/app/config.py | 10→13 lines | ~169 |
+| 13:04 | Edited backend/app/routers/ingest.py | modified _resolve_ocr_strategy() | ~379 |
+| 13:04 | Edited backend/app/routers/ingest.py | modified _available_ocr_strategies() | ~166 |
+| 13:05 | Edited backend/app/routers/ingest.py | expanded (+48 lines) | ~1076 |
+| 13:05 | Edited backend/app/routers/ingest.py | modified _scan_qnums_from_ocr() | ~740 |
+| 13:05 | Edited backend/app/routers/ingest.py | expanded (+11 lines) | ~278 |
+| 13:05 | Edited backend/app/routers/ingest.py | "deepseek" → "glm" | ~26 |
+| 13:05 | Edited backend/app/routers/ingest.py | inline fix | ~27 |
+| 13:06 | Edited backend/tests/test_backend_regressions.py | modified test_official_question_uuid_differs_by_field() | ~787 |
+| 13:07 | Edited backend/tests/test_ocr.py | modified test_resolve_ocr_strategy_auto_prefers_glm() | ~430 |
+
+## Session: 2026-05-12 13:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-14 21:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
