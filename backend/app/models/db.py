@@ -89,6 +89,8 @@ class Question(Base):
     annotations = relationship("QuestionAnnotation", back_populates="question", foreign_keys="[QuestionAnnotation.question_id]")
     options = relationship("QuestionOption", back_populates="question", order_by="QuestionOption.option_label", foreign_keys="[QuestionOption.question_id]")
     assets = relationship("QuestionAsset", back_populates="question", foreign_keys="[QuestionAsset.question_id]")
+    source_spans = relationship("QuestionSourceSpan", back_populates="question", foreign_keys="[QuestionSourceSpan.question_id]")
+    stimulus_assets = relationship("QuestionStimulusAsset", back_populates="question", foreign_keys="[QuestionStimulusAsset.question_id]")
     outgoing_relations = relationship("QuestionRelation", back_populates="from_question", foreign_keys="[QuestionRelation.from_question_id]")
     incoming_relations = relationship("QuestionRelation", back_populates="to_question", foreign_keys="[QuestionRelation.to_question_id]")
     progress_records = relationship("UserProgress", back_populates="question", foreign_keys="[UserProgress.question_id]")
@@ -189,6 +191,62 @@ class QuestionAsset(Base):
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
     question = relationship("Question", back_populates="assets", foreign_keys=[question_id])
+
+
+class QuestionSourceSpan(Base):
+    __tablename__ = "question_source_spans"
+    __table_args__ = (
+        Index("ix_question_source_spans_question_id", "question_id"),
+        Index("ix_question_source_spans_job_id", "question_job_id"),
+        Index("ix_question_source_spans_raw_asset_id", "raw_asset_id"),
+        Index("ix_question_source_spans_region_role", "source_region_role"),
+        Index("ix_question_source_spans_extraction_method", "extraction_method"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
+    question_job_id = Column(UUID(as_uuid=True), ForeignKey("question_jobs.id"), nullable=True)
+    raw_asset_id = Column(UUID(as_uuid=True), ForeignKey("question_assets.id"), nullable=True)
+    source_page_number = Column(Integer, nullable=False)
+    source_region_role = Column(String(40), nullable=False)
+    extraction_method = Column(String(50), nullable=False)
+    rendered_page_path = Column(Text, nullable=True)
+    crop_path = Column(Text, nullable=True)
+    ocr_text_path = Column(Text, nullable=True)
+    layout_json_path = Column(Text, nullable=True)
+    pymupdf_text = Column(Text, nullable=True)
+    ocr_text = Column(Text, nullable=True)
+    diagnostics_jsonb = Column(JSONB, nullable=True)
+    confidence_jsonb = Column(JSONB, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+    question = relationship("Question", back_populates="source_spans", foreign_keys=[question_id])
+
+
+class QuestionStimulusAsset(Base):
+    __tablename__ = "question_stimulus_assets"
+    __table_args__ = (
+        Index("ix_question_stimulus_assets_question_id", "question_id"),
+        Index("ix_question_stimulus_assets_job_id", "question_job_id"),
+        Index("ix_question_stimulus_assets_raw_asset_id", "raw_asset_id"),
+        Index("ix_question_stimulus_assets_source_span_id", "source_span_id"),
+        Index("ix_question_stimulus_assets_type", "stimulus_type"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
+    question_job_id = Column(UUID(as_uuid=True), ForeignKey("question_jobs.id"), nullable=True)
+    raw_asset_id = Column(UUID(as_uuid=True), ForeignKey("question_assets.id"), nullable=True)
+    stimulus_type = Column(String(40), nullable=False)
+    storage_path = Column(Text, nullable=False)
+    source_page_number = Column(Integer, nullable=True)
+    source_span_id = Column(UUID(as_uuid=True), ForeignKey("question_source_spans.id"), nullable=True)
+    title = Column(Text, nullable=True)
+    structured_data_jsonb = Column(JSONB, nullable=True)
+    render_hints_jsonb = Column(JSONB, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+    question = relationship("Question", back_populates="stimulus_assets", foreign_keys=[question_id])
 
 
 class QuestionRelation(Base):

@@ -618,6 +618,54 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-15T23:06:00-07:00"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-05-15T01:20:00-07:00",
+      "error_message": "rg shell glob for .env* failed under zsh",
+      "file": "shell command",
+      "root_cause": "zsh expanded .env* in the repo root before rg ran, and no root .env files matched.",
+      "fix": "Switched to explicit file discovery with find and direct backend/.env checks.",
+      "tags": [
+        "command-error",
+        "shell",
+        "env-discovery"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T01:20:00-07:00"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-05-15T01:20:00-07:00",
+      "error_message": "Alembic current could not connect to configured database",
+      "file": "backend/.env",
+      "root_cause": "Configured DATABASE_URL points to localhost:5434/dsat_dev, but no Postgres service was listening there.",
+      "fix": "Not fixed; reported that Supabase cannot be verified from the current local configuration and that a Supabase DATABASE_URL is needed.",
+      "tags": [
+        "database",
+        "migrations",
+        "connection-refused"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T01:20:00-07:00"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-05-15T15:47:54.922Z",
+      "error_message": "Significant refactor of ",
+      "file": "docker-compose.yml",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 10→12 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T15:47:54.922Z"
     }
   ]
 }

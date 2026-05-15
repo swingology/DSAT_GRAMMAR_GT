@@ -1,6 +1,7 @@
 from app.models.db import (
     QuestionJob, Question, QuestionVersion, QuestionAnnotation,
-    QuestionOption, QuestionAsset, QuestionRelation, LlmEvaluation,
+    QuestionOption, QuestionAsset, QuestionSourceSpan, QuestionStimulusAsset,
+    QuestionRelation, LlmEvaluation,
     User, UserProgress, Base,
 )
 from app.models.ontology import (
@@ -22,7 +23,8 @@ from app.models.options import OptionAnalysis
 
 __all__ = [
     "QuestionJob", "Question", "QuestionVersion", "QuestionAnnotation",
-    "QuestionOption", "QuestionAsset", "QuestionRelation", "LlmEvaluation",
+    "QuestionOption", "QuestionAsset", "QuestionSourceSpan", "QuestionStimulusAsset",
+    "QuestionRelation", "LlmEvaluation",
     "User", "UserProgress", "Base",
     "CONTENT_ORIGINS", "JOB_TYPES", "JOB_STATUSES", "PRACTICE_STATUSES",
     "OVERLAP_STATUSES", "RELATION_TYPES", "ASSET_TYPES", "CHANGE_SOURCES",

@@ -2,6 +2,8 @@ import uuid
 import asyncio
 import logging
 import tempfile
+import base64
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -16,9 +18,10 @@ from app.auth import admin_required
 from app.config import get_settings
 from app.models.db import (
     QuestionJob, QuestionAsset, Question, QuestionVersion,
-    QuestionAnnotation, QuestionOption,
+    QuestionAnnotation, QuestionOption, QuestionSourceSpan, QuestionStimulusAsset,
 )
-from app.storage.local_store import save_asset, compute_checksum
+from app.storage.local_store import compute_checksum
+from app.storage.object_store import put_object, read_object
 from app.parsers.pdf_parser import parse_pdf
 from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.pipeline.orchestrator import JobOrchestrator
@@ -46,12 +49,20 @@ def _resolve_provider_and_model(
     provider_name: str | None,
     model_name: str | None,
 ) -> tuple[str, str]:
-    provider = (provider_name or settings.default_annotation_provider or "anthropic").strip()
+    provider = (provider_name or settings.default_annotation_provider or "ollama").strip()
     model = (model_name or "").strip()
     if model:
         return provider, model
     if provider == "ollama":
         return provider, settings.default_ollama_model
+    if provider == "anthropic":
+        if settings.default_annotation_provider == "anthropic":
+            return provider, settings.default_annotation_model
+        return provider, "claude-sonnet-4-6"
+    if provider == "openai":
+        if settings.default_annotation_provider == "openai":
+            return provider, settings.default_annotation_model
+        return provider, "gpt-4o"
     return provider, settings.default_annotation_model
 
 
@@ -61,6 +72,13 @@ def _provider_api_key(settings, provider_name: str) -> str:
     if provider_name == "openai":
         return settings.openai_api_key
     return ""
+
+
+def _should_disable_ollama_thinking_for_extraction(job: QuestionJob) -> bool:
+    return (
+        job.provider_name == "ollama"
+        and job.model_name == "deepseek-v4-pro:cloud"
+    )
 
 
 def _should_auto_activate_official(settings) -> bool:
@@ -396,6 +414,7 @@ async def _persist_single_question(
     passage_group_id: uuid.UUID | None,
     overlaps: list,
     section_code: str | None,
+    question_index: int = 0,
 ) -> uuid.UUID:
     """Create Question + QuestionVersion + QuestionAnnotation + QuestionOption rows.
 
@@ -518,7 +537,177 @@ async def _persist_single_question(
         from app.pipeline.overlap import persist_overlap_relations
         await persist_overlap_relations(question_id=question_id, overlaps=overlaps, db=db)
 
+    source_span = _build_question_source_span(
+        job=job,
+        question_id=question_id,
+        q_data=q_data,
+        question_index=question_index,
+    )
+    db.add(source_span)
+    await db.flush()
+
+    for stimulus in _build_stimulus_asset_rows(
+        job=job,
+        question_id=question_id,
+        q_data=q_data,
+        source_span_id=source_span.id,
+    ):
+        db.add(stimulus)
+
     return question_id
+
+
+def _source_page_number(q_data: dict, fallback: int = 0) -> int:
+    for key in ("source_page_number", "page_number", "page"):
+        value = q_data.get(key)
+        if value is not None:
+            try:
+                return int(value)
+            except (TypeError, ValueError):
+                break
+    return fallback
+
+
+def _extraction_method(job: QuestionJob) -> str:
+    ocr_meta = (job.pass1_json or {}).get("_ocr_meta") or {}
+    strategy = (ocr_meta.get("strategy") or "").lower()
+    if strategy == "glm":
+        return "glm_ocr"
+    if strategy == "deepseek":
+        return "deepseek_ocr"
+    if strategy in {"ollama", "anthropic", "openai"}:
+        return "vlm_layout"
+    return "pymupdf"
+
+
+def _rendered_page_path(job: QuestionJob, page_number: int) -> str | None:
+    for image in (job.pass1_json or {}).get("_page_images", []):
+        try:
+            image_page = int(image.get("page_number", 0))
+        except (TypeError, ValueError):
+            image_page = 0
+        if image_page == page_number and image.get("storage_path"):
+            return image["storage_path"]
+    images = (job.pass1_json or {}).get("_page_images", [])
+    if images and images[0].get("storage_path"):
+        return images[0]["storage_path"]
+    return None
+
+
+def _first_ocr_text_path(job: QuestionJob) -> str | None:
+    for artifact in (job.pass1_json or {}).get("_ocr_artifacts", []):
+        if artifact.get("kind") == "ocr_text" and artifact.get("storage_path"):
+            return artifact["storage_path"]
+    return None
+
+
+def _build_question_source_span(
+    job: QuestionJob,
+    question_id: uuid.UUID,
+    q_data: dict,
+    question_index: int,
+) -> QuestionSourceSpan:
+    page_number = _source_page_number(q_data, question_index)
+    extraction_method = _extraction_method(job)
+    raw_text = (job.pass1_json or {}).get("raw_text")
+    ocr_meta = (job.pass1_json or {}).get("_ocr_meta")
+
+    return QuestionSourceSpan(
+        id=uuid.uuid4(),
+        question_id=question_id,
+        question_job_id=job.id,
+        raw_asset_id=job.raw_asset_id,
+        source_page_number=page_number,
+        source_region_role="question_block",
+        extraction_method=extraction_method,
+        rendered_page_path=_rendered_page_path(job, page_number),
+        crop_path=q_data.get("crop_path"),
+        ocr_text_path=_first_ocr_text_path(job),
+        layout_json_path=q_data.get("layout_json_path"),
+        pymupdf_text=raw_text if extraction_method == "pymupdf" else None,
+        ocr_text=raw_text if extraction_method != "pymupdf" else None,
+        diagnostics_jsonb={
+            "ocr_meta": ocr_meta,
+            "llm_meta": (job.pass1_json or {}).get("_llm_meta"),
+            "source_question_number": q_data.get("source_question_number"),
+            "page_images": (job.pass1_json or {}).get("_page_images", []),
+        },
+        confidence_jsonb=q_data.get("source_confidence_jsonb") or q_data.get("confidence_jsonb"),
+        created_at=datetime.now(timezone.utc),
+    )
+
+
+def _stimulus_candidates(q_data: dict) -> list[dict]:
+    candidates: list[dict] = []
+    for key in ("stimulus_assets", "visual_assets"):
+        values = q_data.get(key)
+        if isinstance(values, list):
+            candidates.extend(v for v in values if isinstance(v, dict))
+    for key, stimulus_type in (("tables", "table"), ("charts", "chart"), ("graphs", "graph"), ("figures", "figure")):
+        values = q_data.get(key)
+        if isinstance(values, list):
+            for value in values:
+                if isinstance(value, dict):
+                    candidates.append({"stimulus_type": stimulus_type, **value})
+    return candidates
+
+
+def _stimulus_kind(stimulus_type: str) -> str:
+    normalized = (stimulus_type or "").lower()
+    if normalized == "table":
+        return "table_asset"
+    if normalized in {"chart", "graph"}:
+        return "chart_asset"
+    return "figure_asset"
+
+
+def _build_stimulus_asset_rows(
+    job: QuestionJob,
+    question_id: uuid.UUID,
+    q_data: dict,
+    source_span_id: uuid.UUID,
+) -> list[QuestionStimulusAsset]:
+    rows: list[QuestionStimulusAsset] = []
+    for candidate in _stimulus_candidates(q_data):
+        stimulus_type = (candidate.get("stimulus_type") or candidate.get("type") or "figure").lower()
+        asset_id = uuid.uuid4()
+        page_number = _source_page_number(candidate, _source_page_number(q_data, 0))
+        payload = {
+            "question_id": str(question_id),
+            "question_job_id": str(job.id),
+            "raw_asset_id": str(job.raw_asset_id) if job.raw_asset_id else None,
+            "stimulus_type": stimulus_type,
+            "source_page_number": page_number,
+            "title": candidate.get("title"),
+            "structured_data": candidate.get("structured_data") or candidate.get("data") or candidate,
+            "render_hints": candidate.get("render_hints"),
+        }
+        stored = put_object(
+            _stimulus_kind(stimulus_type),
+            {
+                "question_id": question_id,
+                "asset_id": asset_id,
+                "page_number": page_number,
+            },
+            json.dumps(payload, indent=2, sort_keys=True),
+            filename=f"{asset_id}.json",
+            mime_type="application/json",
+        )
+        rows.append(QuestionStimulusAsset(
+            id=asset_id,
+            question_id=question_id,
+            question_job_id=job.id,
+            raw_asset_id=job.raw_asset_id,
+            stimulus_type=stimulus_type,
+            storage_path=stored.storage_path,
+            source_page_number=page_number,
+            source_span_id=source_span_id,
+            title=candidate.get("title"),
+            structured_data_jsonb=payload["structured_data"],
+            render_hints_jsonb=payload["render_hints"],
+            created_at=datetime.now(timezone.utc),
+        ))
+    return rows
 
 
 def _export_question(job: QuestionJob, q_data: dict, annotate_json: dict, question_id: uuid.UUID) -> None:
@@ -552,19 +741,94 @@ def _export_question(job: QuestionJob, q_data: dict, annotate_json: dict, questi
         )
 
 
-def _save_page_image(source_stem: str, page_number: int, b64: str, ext: str, archive_mirror: str) -> str:
-    """Persist a page image to {archive_mirror}/images/ with a deterministic filename.
+def _store_page_render(
+    *,
+    asset_id: uuid.UUID,
+    job_id: uuid.UUID,
+    content_origin: str,
+    source_metadata: dict,
+    source_stem: str,
+    page_number: int,
+    b64: str,
+    ext: str,
+) -> dict:
+    stored = put_object(
+        "rendered_page",
+        {
+            "asset_id": asset_id,
+            "job_id": job_id,
+            "content_origin": content_origin,
+            "source_exam_code": source_metadata.get("source_exam_code"),
+            "source_subject_code": source_metadata.get("source_subject_code"),
+            "source_section_code": source_metadata.get("source_section_code"),
+            "source_module_code": source_metadata.get("source_module_code"),
+            "page_number": page_number,
+            "ext": ext,
+        },
+        base64.b64decode(b64),
+        filename=f"{source_stem}_p{page_number:03d}.{ext}",
+        mime_type=f"image/{ext}",
+    )
+    return {
+        "path": str(stored.local_path) if stored.local_path else None,
+        "storage_path": stored.storage_path,
+        "mime_type": f"image/{ext}",
+        "page_number": page_number,
+    }
 
-    Returns the absolute path to the saved file.
-    """
-    import re, base64
-    safe_stem = re.sub(r"[^A-Za-z0-9_\-]", "_", source_stem)[:80]
-    images_dir = Path(archive_mirror) / "images"
-    images_dir.mkdir(parents=True, exist_ok=True)
-    filename = f"{safe_stem}_p{page_number:02d}.{ext}"
-    dest = images_dir / filename
-    dest.write_bytes(base64.b64decode(b64))
-    return str(dest)
+
+def _store_raw_upload(
+    *,
+    asset_id: uuid.UUID,
+    job_id: uuid.UUID,
+    content_origin: str,
+    source_metadata: dict,
+    filename: str,
+    content: bytes,
+    mime_type: str,
+) -> str:
+    kind = "raw_source_pdf" if mime_type == "application/pdf" else "raw_source_file"
+    stored = put_object(
+        kind,
+        {
+            "asset_id": asset_id,
+            "job_id": job_id,
+            "content_origin": content_origin,
+            "source_exam_code": source_metadata.get("source_exam_code"),
+            "source_subject_code": source_metadata.get("source_subject_code"),
+            "source_section_code": source_metadata.get("source_section_code"),
+            "source_module_code": source_metadata.get("source_module_code"),
+        },
+        content,
+        filename=filename,
+        mime_type=mime_type,
+    )
+    return stored.storage_path
+
+
+def _store_ocr_text(job: QuestionJob, raw_text: str, method: str) -> str:
+    stored = put_object(
+        "ocr_text",
+        {
+            "job_id": job.id,
+            "page_number": 0,
+            "method": method,
+        },
+        raw_text,
+        filename=f"{method}.txt",
+        mime_type="text/plain",
+    )
+    artifacts = list((job.pass1_json or {}).get("_ocr_artifacts", []))
+    artifacts.append({
+        "kind": "ocr_text",
+        "method": method,
+        "storage_path": stored.storage_path,
+    })
+    job.pass1_json = {
+        **(job.pass1_json or {}),
+        "_ocr_artifacts": artifacts,
+    }
+    return stored.storage_path
 
 
 def _gc_page_images(archive_mirror: str, max_age_days: int = 30) -> int:
@@ -588,7 +852,6 @@ def _collect_page_images(pass1_json: dict) -> list:
     Entries may carry a ``path`` key (named file on disk) or an inline ``b64``.
     Path-based entries are preferred; b64 is the fallback for legacy records.
     """
-    import base64
     from app.llm.base import ImageContent
     raw_images = (pass1_json or {}).get("_page_images", [])
     result = []
@@ -601,6 +864,13 @@ def _collect_page_images(pass1_json: dict) -> list:
                 continue
             except (OSError, FileNotFoundError):
                 pass  # fall through to b64 fallback
+        if img.get("storage_path"):
+            try:
+                b64 = base64.b64encode(read_object(img["storage_path"])).decode()
+                result.append(ImageContent(b64=b64, mime_type=mime))
+                continue
+            except (OSError, FileNotFoundError, NotImplementedError):
+                pass
         if img.get("b64"):
             result.append(ImageContent(b64=img["b64"], mime_type=mime))
     return result
@@ -616,6 +886,8 @@ def _resolve_ocr_strategy(requested: str | None, settings) -> str:
     if strategy == "glm":
         return "glm"
     if strategy == "deepseek":
+        if not settings.deepseek_ocr_base_url:
+            raise ValueError("deepseek_ocr_base_url not configured")
         return "deepseek"
     if strategy in ("ollama", "vision"):
         return "ollama"
@@ -646,7 +918,9 @@ def _vlm_model_for_strategy(strategy: str, settings) -> str:
     if strategy == "ollama":
         return settings.ocr_vision_model
     if strategy == "anthropic":
-        return settings.default_annotation_model
+        if settings.default_annotation_provider == "anthropic":
+            return settings.default_annotation_model
+        return "claude-sonnet-4-6"
     if strategy == "openai":
         return "gpt-4o"
     return ""
@@ -722,6 +996,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     temperature=0.0,
                 )
                 raw_text = ocr_result.raw_text
+                ocr_text_path = _store_ocr_text(job, raw_text, "glm")
                 job.pass1_json = {
                     **(job.pass1_json or {}),
                     "raw_text": raw_text,
@@ -731,6 +1006,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         "page_count": len(page_images),
                         "latency_ms": ocr_result.latency_ms,
                         "token_usage": getattr(ocr_result, "token_usage", None) or {},
+                        "ocr_text_path": ocr_text_path,
                     },
                 }
                 await db.commit()
@@ -757,6 +1033,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             try:
                 ocr_result = await ocr_client.extract(page_images)
                 raw_text = ocr_result.raw_text
+                ocr_text_path = _store_ocr_text(job, raw_text, "deepseek")
                 job.pass1_json = {
                     **(job.pass1_json or {}),
                     "raw_text": raw_text,
@@ -766,6 +1043,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         "page_count": len(page_images),
                         "latency_ms": ocr_result.latency_ms,
                         "token_usage": getattr(ocr_result, "token_usage", None) or {},
+                        "ocr_text_path": ocr_text_path,
                     },
                 }
                 await db.commit()
@@ -803,6 +1081,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     model=vlm_model,
                     max_tokens=16000,
                 )
+                ocr_text_path = _store_ocr_text(job, vision_result.raw_text, resolved_strategy)
                 extract_root = extract_json_from_text(
                     vision_result.raw_text, resolved_strategy, vlm_model
                 )
@@ -820,6 +1099,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         "page_count": len(page_images),
                         "latency_ms": vision_result.latency_ms,
                         "token_usage": getattr(vision_result, "token_usage", None) or {},
+                        "ocr_text_path": ocr_text_path,
                     },
                     "source_metadata": form_meta,
                 }
@@ -853,7 +1133,15 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
         system, user = build_extract_prompt(raw_text[:100000], form_meta)
         try:
-            result = await provider.complete(system=system, user=user, max_tokens=16000)
+            if _should_disable_ollama_thinking_for_extraction(job):
+                result = await provider.complete(
+                    system=system,
+                    user=user,
+                    max_tokens=16000,
+                    disable_thinking=True,
+                )
+            else:
+                result = await provider.complete(system=system, user=user, max_tokens=16000)
             extract_root = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
             job.pass1_json = {
                 **extract_root,
@@ -985,6 +1273,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             passage_group_id=passage_group_id,
             overlaps=overlaps,
             section_code=section_code,
+            question_index=i,
         )
         created_question_ids.append(question_id)
 
@@ -1115,10 +1404,24 @@ async def ingest_official_pdf(
     if existing.scalars().first():
         raise HTTPException(status_code=409, detail="This file has already been ingested (duplicate checksum).")
 
-    storage_path = await save_asset(file.filename or "upload.pdf", content, subfolder="official")
     now = datetime.now(timezone.utc)
     asset_id = uuid.uuid4()
     job_id = uuid.uuid4()
+    source_metadata = {
+        "source_exam_code": source_exam_code,
+        "source_subject_code": source_subject_code,
+        "source_section_code": source_section_code,
+        "source_module_code": source_module_code,
+    }
+    storage_path = _store_raw_upload(
+        asset_id=asset_id,
+        job_id=job_id,
+        content_origin="official",
+        source_metadata=source_metadata,
+        filename=file.filename or "upload.pdf",
+        content=content,
+        mime_type=mime_type,
+    )
 
     pdf_result = _parse_pdf_content(content)
     raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
@@ -1132,15 +1435,18 @@ async def ingest_official_pdf(
         for page in pdf_result["pages"][:max_images]:
             for img in page.get("images", []):
                 ext = img.get("ext", "png")
-                img_path = _save_page_image(
-                    source_stem, page["page_number"], img["b64"], ext,
-                    settings_tmp.local_archive_mirror,
+                page_images.append(
+                    _store_page_render(
+                        asset_id=asset_id,
+                        job_id=job_id,
+                        content_origin="official",
+                        source_metadata=source_metadata,
+                        source_stem=source_stem,
+                        page_number=page["page_number"],
+                        b64=img["b64"],
+                        ext=ext,
+                    )
                 )
-                page_images.append({
-                    "path": img_path,
-                    "mime_type": f"image/{ext}",
-                    "page_number": page["page_number"],
-                })
 
     asset = QuestionAsset(
         id=asset_id,
@@ -1180,10 +1486,7 @@ async def ingest_official_pdf(
             "_page_images": page_images,
             "_ocr_strategy": ocr_strategy,
             "source_metadata": {
-                "source_exam_code": source_exam_code,
-                "source_subject_code": source_subject_code,
-                "source_section_code": source_section_code,
-                "source_module_code": source_module_code,
+                **source_metadata,
             },
         },
         created_at=now,
@@ -1216,10 +1519,19 @@ async def ingest_unofficial_file(
     if existing.scalars().first():
         raise HTTPException(status_code=409, detail="This file has already been ingested (duplicate checksum).")
 
-    storage_path = await save_asset(file.filename or "upload", content, subfolder="unofficial")
     now = datetime.now(timezone.utc)
     asset_id = uuid.uuid4()
     job_id = uuid.uuid4()
+    source_metadata: dict = {}
+    storage_path = _store_raw_upload(
+        asset_id=asset_id,
+        job_id=job_id,
+        content_origin="unofficial",
+        source_metadata=source_metadata,
+        filename=file.filename or "upload",
+        content=content,
+        mime_type=mime_type,
+    )
 
     asset_type = _asset_type_from_mime(mime_type)
 
@@ -1247,15 +1559,18 @@ async def ingest_unofficial_file(
             for page in pdf_result["pages"][:max_images]:
                 for img in page.get("images", []):
                     ext = img.get("ext", "png")
-                    img_path = _save_page_image(
-                        source_stem, page["page_number"], img["b64"], ext,
-                        settings_tmp.local_archive_mirror,
+                    page_images.append(
+                        _store_page_render(
+                            asset_id=asset_id,
+                            job_id=job_id,
+                            content_origin="unofficial",
+                            source_metadata=source_metadata,
+                            source_stem=source_stem,
+                            page_number=page["page_number"],
+                            b64=img["b64"],
+                            ext=ext,
+                        )
                     )
-                    page_images.append({
-                        "path": img_path,
-                        "mime_type": f"image/{ext}",
-                        "page_number": page["page_number"],
-                    })
     elif asset_type in ("text", "markdown"):
         raw_text = content.decode("utf-8", errors="replace")
     elif asset_type == "json":
@@ -1276,11 +1591,20 @@ async def ingest_unofficial_file(
             img_data = parse_image(tmp_path)
         finally:
             pathlib.Path(tmp_path).unlink(missing_ok=True)
-        settings_tmp = get_settings()
         source_stem = Path(file.filename or "upload").stem
         ext = suffix.lstrip(".")
-        img_path = _save_page_image(source_stem, 0, img_data["b64"], ext, settings_tmp.local_archive_mirror)
-        page_images = [{"path": img_path, "mime_type": img_data["mime_type"], "page_number": 0}]
+        page_images = [
+            _store_page_render(
+                asset_id=asset_id,
+                job_id=job_id,
+                content_origin="unofficial",
+                source_metadata=source_metadata,
+                source_stem=source_stem,
+                page_number=0,
+                b64=img_data["b64"],
+                ext=ext,
+            )
+        ]
 
     settings = get_settings()
     provider_name, model_name = _resolve_provider_and_model(settings, provider_name, model_name)
@@ -1614,6 +1938,11 @@ async def ingest_benchmark_ocr(
     mime_type = _validate_upload_mime(file.content_type)
     content = await _safe_read(file, MAX_FILE_SIZE)
     settings = get_settings()
+    now = datetime.now(timezone.utc)
+    checksum = compute_checksum(content)
+    comparison_group_id = uuid.uuid4()
+    asset_id = uuid.uuid4()
+    source_metadata: dict = {}
 
     requested = [s.strip().lower() for s in (strategies or "").split(",") if s.strip()]
     available = _available_ocr_strategies(settings)
@@ -1636,15 +1965,18 @@ async def ingest_benchmark_ocr(
             for page in pdf_result["pages"][:max_images]:
                 for img in page.get("images", []):
                     ext = img.get("ext", "png")
-                    img_path = _save_page_image(
-                        source_stem, page["page_number"], img["b64"], ext,
-                        settings.local_archive_mirror,
+                    page_images.append(
+                        _store_page_render(
+                            asset_id=asset_id,
+                            job_id=comparison_group_id,
+                            content_origin="unofficial",
+                            source_metadata=source_metadata,
+                            source_stem=source_stem,
+                            page_number=page["page_number"],
+                            b64=img["b64"],
+                            ext=ext,
+                        )
                     )
-                    page_images.append({
-                        "path": img_path,
-                        "mime_type": f"image/{ext}",
-                        "page_number": page["page_number"],
-                    })
     elif asset_type in ("text", "markdown"):
         raw_text = content.decode("utf-8", errors="replace")
     elif asset_type == "image":
@@ -1660,8 +1992,18 @@ async def ingest_benchmark_ocr(
             pathlib.Path(tmp_path).unlink(missing_ok=True)
         source_stem = Path(file.filename or "upload").stem
         ext = suffix.lstrip(".")
-        img_path = _save_page_image(source_stem, 0, img_data["b64"], ext, settings.local_archive_mirror)
-        page_images = [{"path": img_path, "mime_type": img_data["mime_type"], "page_number": 0}]
+        page_images = [
+            _store_page_render(
+                asset_id=asset_id,
+                job_id=comparison_group_id,
+                content_origin="unofficial",
+                source_metadata=source_metadata,
+                source_stem=source_stem,
+                page_number=0,
+                b64=img_data["b64"],
+                ext=ext,
+            )
+        ]
 
     # DeepSeek is an image-only OCR provider — skip it for text-based content.
     has_images = bool(page_images)
@@ -1673,12 +2015,15 @@ async def ingest_benchmark_ocr(
             detail="No OCR strategies available for this content type. Upload a scanned PDF or image to test DeepSeek.",
         )
 
-    now = datetime.now(timezone.utc)
-    checksum = compute_checksum(content)
-    storage_path = await save_asset(file.filename or "upload", content, subfolder="unofficial")
-    comparison_group_id = uuid.uuid4()
-
-    asset_id = uuid.uuid4()
+    storage_path = _store_raw_upload(
+        asset_id=asset_id,
+        job_id=comparison_group_id,
+        content_origin="unofficial",
+        source_metadata={},
+        filename=file.filename or "upload",
+        content=content,
+        mime_type=mime_type,
+    )
     db.add(QuestionAsset(
         id=asset_id,
         content_origin="unofficial",

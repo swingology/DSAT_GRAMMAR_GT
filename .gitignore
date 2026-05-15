@@ -1,3 +1,6 @@
 .DS_Store
 **/.DS_Store
 *_pages/
+local_object_store/**
+!local_object_store/**/
+!local_object_store/**/.gitkeep

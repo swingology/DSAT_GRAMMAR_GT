@@ -52,7 +52,7 @@ def test_extract_json_from_kimi_single_quotes_and_bare_keys():
       correct_option_label: 'C',
     }
     """
-    result = extract_json_from_text(text, provider_name="ollama", model_name="kimi-k2.6:cloud")
+    result = extract_json_from_text(text, provider_name="ollama", model_name="deepseek-v4-pro:cloud")
     assert result["question_text"] == "Which choice completes the text?"
     assert result["correct_option_label"] == "C"
     assert len(result["options"]) == 4
@@ -74,7 +74,7 @@ def test_extract_json_from_kimi_think_block_and_js_fence():
     }
     ```
     """
-    result = extract_json_from_text(text, provider_name="ollama", model_name="kimi-k2.6:cloud")
+    result = extract_json_from_text(text, provider_name="ollama", model_name="deepseek-v4-pro:cloud")
     assert result["question_text"] == "Sample question"
     assert result["options"][0]["label"] == "A"
 

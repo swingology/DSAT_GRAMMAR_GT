@@ -32,8 +32,8 @@ Upload an official PDF. Creates a `QuestionJob` and spawns a background pipeline
 | `source_subject_code` | str | No | `""` |
 | `source_section_code` | str | No | `""` |
 | `source_module_code` | str | No | `""` |
-| `provider_name` | str | No | `anthropic` |
-| `model_name` | str | No | `claude-sonnet-4-6` |
+| `provider_name` | str | No | `ollama` |
+| `model_name` | str | No | `deepseek-v4-pro:cloud` |
 
 **Response:** `JobResponse`
 ```json
@@ -48,15 +48,15 @@ Upload an official PDF. Creates a `QuestionJob` and spawns a background pipeline
 
 ### `POST /ingest/unofficial/file`
 Upload a single unofficial asset (PDF, markdown, JSON, or text).
-Image MIME types are accepted by the media-type guard but rejected with 422
-because OCR ingestion is not implemented yet.
+Image MIME types and scanned PDFs are routed through the configured OCR strategy
+before extraction.
 
 **Form data:**
 | Field | Type | Required | Default |
 |---|---|---|---|
 | `file` | UploadFile | Yes | — |
-| `provider_name` | str | No | `anthropic` |
-| `model_name` | str | No | `claude-sonnet-4-6` |
+| `provider_name` | str | No | `ollama` |
+| `model_name` | str | No | `deepseek-v4-pro:cloud` |
 
 **Response:** `JobResponse`
 
@@ -87,8 +87,8 @@ Re-run Pass 2 annotation on an existing question.
 **Query params:**
 | Field | Type | Default |
 |---|---|---|
-| `provider_name` | str | `anthropic` |
-| `model_name` | str | `claude-sonnet-4-6` |
+| `provider_name` | str | `ollama` |
+| `model_name` | str | `deepseek-v4-pro:cloud` |
 
 **Response:** `JobResponse`
 

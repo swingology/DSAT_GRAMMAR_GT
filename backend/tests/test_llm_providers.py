@@ -44,7 +44,7 @@ def test_factory_returns_ollama():
     p = get_provider("ollama", base_url="http://localhost:11434")
     from app.llm.ollama_provider import OllamaProvider
     assert isinstance(p, OllamaProvider)
-    assert p.default_model == "kimi-k2.6:cloud"
+    assert p.default_model == "deepseek-v4-pro:cloud"
 
 
 def test_factory_rejects_unknown():
@@ -105,6 +105,30 @@ async def test_ollama_complete():
         result = await provider.complete(system="You are a test", user="Extract this")
         assert result.provider == "ollama"
         assert result.raw_text == '{"question_text": "test"}'
+
+
+@pytest.mark.asyncio
+async def test_ollama_complete_can_disable_thinking():
+    from app.llm.ollama_provider import OllamaProvider
+    provider = OllamaProvider(base_url="http://localhost:11434")
+
+    mock_response = AsyncMock()
+    mock_response.raise_for_status = lambda: None
+    mock_response.json = lambda: {
+        "choices": [{"message": {"content": '{"questions": []}'}}],
+        "usage": {},
+    }
+
+    with patch.object(provider, "client") as mock_client:
+        mock_client.post = AsyncMock(return_value=mock_response)
+        await provider.complete(
+            system="You are a test",
+            user="Extract this",
+            disable_thinking=True,
+        )
+
+    payload = mock_client.post.call_args.kwargs["json"]
+    assert payload["options"] == {"thinking": False}
 
 
 @pytest.mark.asyncio

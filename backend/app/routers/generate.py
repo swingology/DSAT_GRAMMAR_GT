@@ -260,6 +260,14 @@ async def generate_compare(
     now = datetime.now(timezone.utc)
 
     for provider_name in body.providers:
+        if provider_name == "ollama":
+            model_name = settings.default_ollama_model
+        elif provider_name == "openai" and settings.default_annotation_provider != "openai":
+            model_name = "gpt-4o"
+        elif provider_name == "anthropic" and settings.default_annotation_provider != "anthropic":
+            model_name = "claude-sonnet-4-6"
+        else:
+            model_name = settings.default_annotation_model
         job_id = uuid.uuid4()
         job = QuestionJob(
             id=job_id,
@@ -268,7 +276,7 @@ async def generate_compare(
             input_format="spec",
             status="extracting",
             provider_name=provider_name,
-            model_name=settings.default_annotation_model,
+            model_name=model_name,
             prompt_version="v3.0",
             rules_version=settings.rules_version,
             comparison_group_id=comparison_group,

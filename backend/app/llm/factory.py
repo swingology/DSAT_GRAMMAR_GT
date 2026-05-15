@@ -26,7 +26,7 @@ def get_provider(
         from app.llm.ollama_provider import OllamaProvider
         provider = OllamaProvider(
             base_url=base_url or "http://localhost:11434",
-            default_model=default_model or "kimi-k2.6:cloud",
+            default_model=default_model or "deepseek-v4-pro:cloud",
         )
     else:
         raise ValueError(f"Unknown provider: {provider_name}")

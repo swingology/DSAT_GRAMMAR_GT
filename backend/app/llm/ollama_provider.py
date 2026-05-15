@@ -9,7 +9,7 @@ class OllamaProvider:
     # Vision inference is significantly slower than text (model loads + OCR decode)
     VISION_TIMEOUT = 600.0
 
-    def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "kimi-k2.6:cloud"):
+    def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "deepseek-v4-pro:cloud"):
         self.base_url = base_url.rstrip("/")
         self.default_model = default_model
         self.client = httpx.AsyncClient(base_url=self.base_url, timeout=120.0)
@@ -23,20 +23,24 @@ class OllamaProvider:
         model: Optional[str] = None,
         max_tokens: int = 4096,
         temperature: float = 0.2,
+        disable_thinking: bool = False,
     ) -> LLMResponse:
         model = model or self.default_model
         start = time.time()
+        payload = {
+            "model": model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+        }
+        if disable_thinking:
+            payload["options"] = {"thinking": False}
         response = await self.client.post(
             "/v1/chat/completions",
-            json={
-                "model": model,
-                "max_tokens": max_tokens,
-                "temperature": temperature,
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-            },
+            json=payload,
         )
         latency_ms = int((time.time() - start) * 1000)
         response.raise_for_status()

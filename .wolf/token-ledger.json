@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-09T23:06:22.868Z",
   "lifetime": {
-    "total_tokens_estimated": 2677687,
-    "total_reads": 640,
-    "total_writes": 792,
-    "total_sessions": 19,
-    "anatomy_hits": 387,
-    "anatomy_misses": 253,
-    "repeated_reads_blocked": 694,
-    "estimated_savings_vs_bare_cli": 9183075
+    "total_tokens_estimated": 2918975,
+    "total_reads": 683,
+    "total_writes": 844,
+    "total_sessions": 20,
+    "anatomy_hits": 416,
+    "anatomy_misses": 267,
+    "repeated_reads_blocked": 727,
+    "estimated_savings_vs_bare_cli": 10069318
   },
   "sessions": [
     {
@@ -9012,6 +9012,626 @@
         "writes_count": 7,
         "repeated_reads_blocked": 5,
         "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-15-2201",
+      "started": "2026-05-15T05:01:20.376Z",
+      "ended": "2026-05-15T09:28:29.271Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27304,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/alembic.ini",
+          "tokens_estimated": 1327,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/config.py",
+          "tokens_estimated": 597,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/.env",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/migrations/env.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 222,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 241,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 230,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 184,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 380,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 206,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docker-compose.yml",
+          "tokens_estimated": 112,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 29228,
+        "output_tokens_estimated": 1581,
+        "reads_count": 6,
+        "writes_count": 8,
+        "repeated_reads_blocked": 5,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-05-15-2201",
+      "started": "2026-05-15T05:01:20.376Z",
+      "ended": "2026-05-15T15:41:59.003Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27304,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/alembic.ini",
+          "tokens_estimated": 1327,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/config.py",
+          "tokens_estimated": 597,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/.env",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/migrations/env.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 222,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 241,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 230,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 184,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 380,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 206,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docker-compose.yml",
+          "tokens_estimated": 112,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 29228,
+        "output_tokens_estimated": 1581,
+        "reads_count": 6,
+        "writes_count": 8,
+        "repeated_reads_blocked": 5,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-05-15-2201",
+      "started": "2026-05-15T05:01:20.376Z",
+      "ended": "2026-05-15T15:42:18.450Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27304,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/alembic.ini",
+          "tokens_estimated": 1327,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/config.py",
+          "tokens_estimated": 597,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/.env",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/migrations/env.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 222,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 241,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 230,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 184,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 380,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 206,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docker-compose.yml",
+          "tokens_estimated": 112,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 29228,
+        "output_tokens_estimated": 1581,
+        "reads_count": 6,
+        "writes_count": 8,
+        "repeated_reads_blocked": 5,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-05-15-2201",
+      "started": "2026-05-15T05:01:20.376Z",
+      "ended": "2026-05-15T15:48:06.943Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27304,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/alembic.ini",
+          "tokens_estimated": 1327,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/config.py",
+          "tokens_estimated": 597,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/.env",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/migrations/env.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 222,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 241,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 230,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 184,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 380,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 206,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docker-compose.yml",
+          "tokens_estimated": 112,
+          "action": "create"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docker-compose.yml",
+          "tokens_estimated": 82,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 29228,
+        "output_tokens_estimated": 1663,
+        "reads_count": 6,
+        "writes_count": 9,
+        "repeated_reads_blocked": 5,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-05-15-2201",
+      "started": "2026-05-15T05:01:20.376Z",
+      "ended": "2026-05-15T16:14:15.473Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27304,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/alembic.ini",
+          "tokens_estimated": 1327,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/config.py",
+          "tokens_estimated": 597,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/.env",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/migrations/env.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/OCR_STRATEGY_PLAN.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/routers/ingest.py",
+          "tokens_estimated": 20441,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 222,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 241,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 230,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 184,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 380,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 206,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docker-compose.yml",
+          "tokens_estimated": 112,
+          "action": "create"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docker-compose.yml",
+          "tokens_estimated": 82,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 49669,
+        "output_tokens_estimated": 1663,
+        "reads_count": 8,
+        "writes_count": 9,
+        "repeated_reads_blocked": 5,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-05-15-2201",
+      "started": "2026-05-15T05:01:20.376Z",
+      "ended": "2026-05-15T16:20:57.638Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27304,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/alembic.ini",
+          "tokens_estimated": 1327,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/config.py",
+          "tokens_estimated": 597,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/.env",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/migrations/env.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/OCR_STRATEGY_PLAN.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/routers/ingest.py",
+          "tokens_estimated": 20441,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/models/db.py",
+          "tokens_estimated": 3950,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/pipeline/validator.py",
+          "tokens_estimated": 2218,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/pipeline/overlap.py",
+          "tokens_estimated": 1577,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 222,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 241,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 230,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 184,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 380,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 6,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 206,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docker-compose.yml",
+          "tokens_estimated": 112,
+          "action": "create"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docker-compose.yml",
+          "tokens_estimated": 82,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/INGESTION_README.md",
+          "tokens_estimated": 7561,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 57414,
+        "output_tokens_estimated": 9224,
+        "reads_count": 11,
+        "writes_count": 10,
+        "repeated_reads_blocked": 8,
+        "anatomy_lookups": 8
       }
     }
   ],

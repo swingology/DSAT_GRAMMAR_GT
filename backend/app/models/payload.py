@@ -117,7 +117,7 @@ class GenerationCompareRequest(BaseModel):
     target_grammar_focus_key: str
     target_syntactic_trap_key: str = "none"
     difficulty_overall: str = "medium"
-    providers: List[str] = Field(default_factory=lambda: ["anthropic"])
+    providers: List[str] = Field(default_factory=lambda: ["ollama"])
     source_question_ids: Optional[List[str]] = None
 
 
@@ -133,8 +133,8 @@ class JobResponse(BaseModel):
 
 
 class ReannotateRequest(BaseModel):
-    provider_name: str = "anthropic"
-    model_name: str = "claude-sonnet-4-6"
+    provider_name: str = "ollama"
+    model_name: str = "deepseek-v4-pro:cloud"
 
 
 class OCRJobResult(BaseModel):

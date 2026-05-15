@@ -1,0 +1,145 @@
+# Local object-store layout used to mimic Supabase Storage/S3 during local
+# Postgres ingestion testing. The ingestion code should read object paths from
+# this file rather than hard-coding bucket or prefix names.
+
+version: 1
+
+active_backend: local_fs
+
+backends:
+  local_fs:
+    root: ./local_object_store
+    uri_scheme: local-s3
+    public_base_url: ""
+  supabase:
+    project_url_env: SUPABASE_URL
+    service_role_key_env: SUPABASE_SERVICE_ROLE_KEY
+    signed_url_ttl_seconds: 3600
+    bucket_name_prefix: dsat
+
+path_tokens:
+  exam_code: "{source_exam_code}"
+  subject_code: "{source_subject_code}"
+  section_code: "{source_section_code}"
+  module_code: "{source_module_code}"
+  question_number: "{source_question_number}"
+  question_id: "{question_id}"
+  job_id: "{job_id}"
+  asset_id: "{asset_id}"
+  page_number: "page_{page_number:03d}"
+  crop_id: "{crop_id}"
+  checksum: "{checksum}"
+
+buckets:
+  raw_sources:
+    local_prefix: raw-sources
+    supabase_bucket: dsat-raw-sources
+    description: Original uploaded source files.
+    object_keys:
+      official_pdf: "official/{source_exam_code}/{source_subject_code}/section_{source_section_code}/module_{source_module_code}/{asset_id}/{filename}"
+      unofficial_file: "unofficial/{asset_id}/{filename}"
+
+  page_renders:
+    local_prefix: page-renders
+    supabase_bucket: dsat-page-renders
+    description: Full rendered page images used for OCR, diagnostics, and review.
+    object_keys:
+      official_page: "official/{source_exam_code}/{source_subject_code}/section_{source_section_code}/module_{source_module_code}/{asset_id}/page_{page_number:03d}.{ext}"
+      unofficial_page: "unofficial/{asset_id}/page_{page_number:03d}.{ext}"
+
+  page_crops:
+    local_prefix: page-crops
+    supabase_bucket: dsat-page-crops
+    description: Region crops used for question, table, chart, figure, or retry OCR.
+    object_keys:
+      question_crop: "questions/{question_id}/page_{page_number:03d}/{crop_id}.{ext}"
+      table_crop: "tables/{question_id}/page_{page_number:03d}/{crop_id}.{ext}"
+      chart_crop: "charts/{question_id}/page_{page_number:03d}/{crop_id}.{ext}"
+      figure_crop: "figures/{question_id}/page_{page_number:03d}/{crop_id}.{ext}"
+
+  stimulus_assets:
+    local_prefix: stimulus-assets
+    supabase_bucket: dsat-stimulus-assets
+    description: UI-renderable structured visual assets linked to questions.
+    object_keys:
+      table_json: "tables/{question_id}/{asset_id}.json"
+      chart_json: "charts/{question_id}/{asset_id}.json"
+      figure_manifest: "figures/{question_id}/{asset_id}.json"
+
+  ocr_artifacts:
+    local_prefix: ocr-artifacts
+    supabase_bucket: dsat-ocr-artifacts
+    description: OCR text, layout JSON, diagnostics, and model provenance.
+    object_keys:
+      page_text: "text/{job_id}/page_{page_number:03d}/{method}.txt"
+      page_layout: "layout/{job_id}/page_{page_number:03d}/{method}.json"
+      diagnostics: "diagnostics/{job_id}/page_{page_number:03d}.json"
+
+  benchmark_artifacts:
+    local_prefix: benchmark-artifacts
+    supabase_bucket: dsat-benchmark-artifacts
+    description: Benchmark reports and machine-readable comparison outputs.
+    object_keys:
+      markdown_report: "reports/{run_id}.md"
+      json_result: "json/{run_id}.json"
+
+object_kinds:
+  raw_source_pdf:
+    bucket: raw_sources
+    db_table: question_assets
+    db_path_column: storage_path
+    mime_types: ["application/pdf"]
+  raw_source_file:
+    bucket: raw_sources
+    db_table: question_assets
+    db_path_column: storage_path
+    mime_types: ["application/pdf", "image/png", "image/jpeg", "image/webp", "image/gif", "text/markdown", "text/plain", "application/json"]
+  rendered_page:
+    bucket: page_renders
+    db_table: question_source_spans
+    db_path_column: rendered_page_path
+    mime_types: ["image/png", "image/jpeg"]
+  question_crop:
+    bucket: page_crops
+    db_table: question_source_spans
+    db_path_column: crop_path
+    mime_types: ["image/png", "image/jpeg"]
+  table_asset:
+    bucket: stimulus_assets
+    db_table: question_stimulus_assets
+    db_path_column: storage_path
+    mime_types: ["application/json"]
+  chart_asset:
+    bucket: stimulus_assets
+    db_table: question_stimulus_assets
+    db_path_column: storage_path
+    mime_types: ["application/json"]
+  ocr_text:
+    bucket: ocr_artifacts
+    db_table: question_source_spans
+    db_path_column: ocr_text_path
+    mime_types: ["text/plain"]
+  ocr_layout:
+    bucket: ocr_artifacts
+    db_table: question_source_spans
+    db_path_column: layout_json_path
+    mime_types: ["application/json"]
+
+postgres_links:
+  question_assets:
+    role: Stores the uploaded raw source file record.
+    object_storage_fields: ["storage_path"]
+  question_jobs:
+    role: Stores job-level extraction JSON and created question IDs.
+    object_storage_fields: ["pass1_json._page_images", "pass1_json._ocr_meta"]
+  question_source_spans:
+    role: Proposed table for page/crop/layout provenance per question.
+    object_storage_fields:
+      - rendered_page_path
+      - crop_path
+      - ocr_text_path
+      - layout_json_path
+  question_stimulus_assets:
+    role: Proposed table for structured table/chart/figure assets renderable by UI.
+    object_storage_fields:
+      - storage_path

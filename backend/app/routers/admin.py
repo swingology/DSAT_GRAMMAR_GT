@@ -23,8 +23,8 @@ from app.pipeline.option_hydration import clear_option_annotations
 class EvaluationCreateRequest(BaseModel):
     job_id: str
     question_id: Optional[str] = None
-    provider_name: str = "anthropic"
-    model_name: str = "claude-sonnet-4-6"
+    provider_name: str = "ollama"
+    model_name: str = "deepseek-v4-pro:cloud"
     task_type: str = "annotation"
     score_overall: Optional[float] = None
     score_metadata: Optional[float] = None

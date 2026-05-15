@@ -684,7 +684,7 @@ _PAGE = """<!DOCTYPE html>
                 </div>
                 <div class="field">
                   <label>Model</label>
-                  <input name="model_name" class="inp" value="kimi-k2.6:cloud">
+                  <input name="model_name" class="inp" value="deepseek-v4-pro:cloud">
                 </div>
               </div>
               <div class="field">
@@ -717,7 +717,7 @@ _PAGE = """<!DOCTYPE html>
                 </div>
                 <div class="field">
                   <label>Model</label>
-                  <input name="model_name" class="inp" value="kimi-k2.6:cloud">
+                  <input name="model_name" class="inp" value="deepseek-v4-pro:cloud">
                 </div>
               </div>
               <div class="field">
@@ -726,7 +726,7 @@ _PAGE = """<!DOCTYPE html>
                        class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-amber-50 file:px-3 file:py-2 file:font-medium file:text-amber-700 hover:file:bg-amber-100">
               </div>
               <div class="note">
-                Image OCR is still not implemented. Use PDF here, or use the text path below if you already have raw content.
+                Scanned PDFs use GLM OCR through Ollama, then DeepSeek V4 Pro through Ollama for text extraction.
               </div>
               <button type="submit" class="btn btn-amber">Upload and ingest unofficial PDF</button>
             </form>
@@ -761,7 +761,7 @@ _PAGE = """<!DOCTYPE html>
               <div class="grid grid-cols-2 gap-3">
                 <div class="field">
                   <label>Model</label>
-                  <input name="model_name" class="inp" value="kimi-k2.6:cloud">
+                  <input name="model_name" class="inp" value="deepseek-v4-pro:cloud">
                 </div>
                 <div class="field">
                   <label>Exam Code</label>
@@ -843,7 +843,7 @@ _PAGE = """<!DOCTYPE html>
                 </div>
                 <div class="field">
                   <label>Model</label>
-                  <input name="model_name" class="inp" value="kimi-k2.6:cloud">
+                  <input name="model_name" class="inp" value="deepseek-v4-pro:cloud">
                 </div>
               </div>
               <div class="field">
@@ -982,7 +982,7 @@ _PAGE = """<!DOCTYPE html>
     const MODEL_DEFAULTS = {
       anthropic: 'claude-sonnet-4-6',
       openai: 'gpt-4o',
-      ollama: 'kimi-k2.6:cloud',
+      ollama: 'deepseek-v4-pro:cloud',
     };
 
     const storedKey = localStorage.getItem('dsatKey');

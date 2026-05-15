@@ -397,3 +397,18 @@
 | 23:05 | Fixed prompt loading and per-key generation gaps | backend/app/prompts/generate_prompt.py, backend/app/prompts/annotate_prompt.py, backend/tests/test_prompts.py, rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md | Replaced truncating loader with targeted section extraction, fixed reading section extraction, added grammar B.3/B.4 coverage for all production focus keys, added reading 16.9 per-focus recipes, normalized trap keys, and verified with prompt tests/scans | ~14000 |
 | 23:06 | Ran backend verification | backend/tests, backend/test_ocr_live.py | `uv run pytest tests` passed 237/237 with 2 skipped; full `uv run pytest` still collects preexisting live OCR helpers that lack an `image` fixture | ~3000 |
 | 23:12 | Updated changelog for all post-commit changes | CHANGELOG.md | Added top-level 2026-05-15 entry covering prompt loader fixes, rule-file completeness updates, reading refinements, tests, known OCR caveat, and Wolf metadata | ~2500 |
+| 01:20 | Checked migration status configuration | backend/migrations, backend/.env, backend/alembic.ini | Local Alembic head is `015`; configured DATABASE_URL points to localhost:5434, not Supabase, and local DB refused connection, so Supabase sync could not be verified | ~4000 |
+| 02:25 | Created docker-compose.yml | — | ~112 |
+| 02:28 | Session end: 8 writes across 2 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, docker-compose.yml) | 6 reads | ~30809 tok |
+| 08:41 | Session end: 8 writes across 2 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, docker-compose.yml) | 6 reads | ~30809 tok |
+| 08:42 | Session end: 8 writes across 2 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, docker-compose.yml) | 6 reads | ~30809 tok |
+| 08:47 | Edited docker-compose.yml | 10→12 lines | ~82 |
+| 08:48 | Session end: 9 writes across 2 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, docker-compose.yml) | 6 reads | ~30891 tok |
+| 09:14 | Session end: 9 writes across 2 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, docker-compose.yml) | 8 reads | ~51332 tok |
+| 09:20 | Created INGESTION_README.md | — | ~7057 |
+| 09:20 | Session end: 10 writes across 3 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, docker-compose.yml, INGESTION_README.md) | 11 reads | ~66638 tok |
+
+## Session: 2026-05-15 11:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

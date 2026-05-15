@@ -7,14 +7,14 @@ def test_resolve_provider_and_model_uses_default_ollama_model():
 
     settings = SimpleNamespace(
         default_annotation_provider="ollama",
-        default_annotation_model="claude-sonnet-4-6",
-        default_ollama_model="kimi-k2.6:cloud",
+        default_annotation_model="deepseek-v4-pro:cloud",
+        default_ollama_model="deepseek-v4-pro:cloud",
     )
 
     provider_name, model_name = _resolve_provider_and_model(settings, None, None)
 
     assert provider_name == "ollama"
-    assert model_name == "kimi-k2.6:cloud"
+    assert model_name == "deepseek-v4-pro:cloud"
 
 
 def test_resolve_provider_and_model_respects_explicit_provider_and_fallback_model():
@@ -24,13 +24,86 @@ def test_resolve_provider_and_model_respects_explicit_provider_and_fallback_mode
     settings = SimpleNamespace(
         default_annotation_provider="anthropic",
         default_annotation_model="claude-sonnet-4-6",
-        default_ollama_model="kimi-k2.6:cloud",
+        default_ollama_model="deepseek-v4-pro:cloud",
     )
 
     provider_name, model_name = _resolve_provider_and_model(settings, "ollama", None)
 
     assert provider_name == "ollama"
-    assert model_name == "kimi-k2.6:cloud"
+    assert model_name == "deepseek-v4-pro:cloud"
+
+
+def test_resolve_provider_and_model_does_not_apply_ollama_model_to_anthropic():
+    from types import SimpleNamespace
+    from app.routers.ingest import _resolve_provider_and_model
+
+    settings = SimpleNamespace(
+        default_annotation_provider="ollama",
+        default_annotation_model="deepseek-v4-pro:cloud",
+        default_ollama_model="deepseek-v4-pro:cloud",
+    )
+
+    provider_name, model_name = _resolve_provider_and_model(settings, "anthropic", None)
+
+    assert provider_name == "anthropic"
+    assert model_name == "claude-sonnet-4-6"
+
+
+def test_deepseek_v4_pro_ollama_extraction_disables_thinking():
+    from types import SimpleNamespace
+    from app.routers.ingest import _should_disable_ollama_thinking_for_extraction
+
+    assert _should_disable_ollama_thinking_for_extraction(
+        SimpleNamespace(provider_name="ollama", model_name="deepseek-v4-pro:cloud")
+    )
+    assert not _should_disable_ollama_thinking_for_extraction(
+        SimpleNamespace(provider_name="ollama", model_name="qwen3.6:27b")
+    )
+    assert not _should_disable_ollama_thinking_for_extraction(
+        SimpleNamespace(provider_name="anthropic", model_name="deepseek-v4-pro:cloud")
+    )
+
+
+def test_build_question_source_span_links_ocr_artifacts():
+    import uuid
+    from types import SimpleNamespace
+    from app.routers.ingest import _build_question_source_span
+
+    question_id = uuid.uuid4()
+    job_id = uuid.uuid4()
+    asset_id = uuid.uuid4()
+    job = SimpleNamespace(
+        id=job_id,
+        raw_asset_id=asset_id,
+        pass1_json={
+            "raw_text": "OCR text",
+            "_ocr_meta": {"strategy": "glm"},
+            "_ocr_artifacts": [
+                {"kind": "ocr_text", "storage_path": "local-s3://ocr-artifacts/text/job/page_000/glm.txt"}
+            ],
+            "_page_images": [
+                {
+                    "page_number": 3,
+                    "storage_path": "local-s3://page-renders/unofficial/asset/page_003.png",
+                }
+            ],
+        },
+    )
+
+    span = _build_question_source_span(
+        job=job,
+        question_id=question_id,
+        q_data={"source_page_number": 3, "source_question_number": 14},
+        question_index=0,
+    )
+
+    assert span.question_id == question_id
+    assert span.raw_asset_id == asset_id
+    assert span.source_page_number == 3
+    assert span.extraction_method == "glm_ocr"
+    assert span.rendered_page_path == "local-s3://page-renders/unofficial/asset/page_003.png"
+    assert span.ocr_text_path == "local-s3://ocr-artifacts/text/job/page_000/glm.txt"
+    assert span.ocr_text == "OCR text"
 
 
 def test_normalize_source_metadata_accepts_legacy_codes():

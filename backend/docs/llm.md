@@ -41,7 +41,7 @@ result = await provider.complete(system=..., user=...)
 |---|---|---|
 | `anthropic` | `anthropic_provider.py` | `claude-sonnet-4-6` |
 | `openai` | `openai_provider.py` | `gpt-4o` |
-| `ollama` | `ollama_provider.py` | `kimi-k2` |
+| `ollama` | `ollama_provider.py` | `deepseek-v4-pro:cloud` |
 
 ## Configuration
 
@@ -52,8 +52,9 @@ ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 OLLAMA_BASE_URL=http://localhost:11434
 
-DEFAULT_ANNOTATION_PROVIDER=anthropic
-DEFAULT_ANNOTATION_MODEL=claude-sonnet-4-6
+DEFAULT_ANNOTATION_PROVIDER=ollama
+DEFAULT_ANNOTATION_MODEL=deepseek-v4-pro:cloud
+DEFAULT_OLLAMA_MODEL=deepseek-v4-pro:cloud
 RULES_VERSION=rules_agent_dsat_grammar_ingestion_generation_v3
 ```
 

@@ -1005,9 +1005,9 @@ ADMIN_API_KEYS=your-admin-key
 STUDENT_API_KEYS=your-student-key
 
 # LLM defaults
-DEFAULT_ANNOTATION_PROVIDER=anthropic        # anthropic | openai | ollama
-DEFAULT_ANNOTATION_MODEL=claude-sonnet-4-6
-DEFAULT_OLLAMA_MODEL=kimi-k2.6:cloud
+DEFAULT_ANNOTATION_PROVIDER=ollama           # anthropic | openai | ollama
+DEFAULT_ANNOTATION_MODEL=deepseek-v4-pro:cloud
+DEFAULT_OLLAMA_MODEL=deepseek-v4-pro:cloud
 RULES_VERSION=rules_agent_dsat_grammar_ingestion_generation_v7
 
 # Provider keys
@@ -1022,7 +1022,8 @@ LOCAL_ARCHIVE_MIRROR=./archive
 OFFICIAL_AUTO_ACTIVATE_FOR_TESTING=false
 
 # OCR — both options configured simultaneously; admin selects per-job at ingest time
-OCR_STRATEGY=auto                           # server default: auto | deepseek | ollama
+OCR_STRATEGY=glm                            # server default: glm | auto | deepseek | ollama
+GLM_OCR_MODEL=glm-ocr:latest
 OCR_FALLBACK=true
 VISION_MAX_IMAGES=10
 
@@ -1032,7 +1033,7 @@ OCR_VISION_MODEL=qwen2.5-vl:7b             # or llava-phi3, minicpm-v:8b, llava:
 OLLAMA_BASE_URL=http://localhost:11434
 
 # OCR Option A — DeepSeek OCR (local via Docker/vLLM or Ollama)
-DEEPSEEK_OCR_BASE_URL=http://localhost:8001  # vLLM/Docker endpoint; use 11434 for Ollama
+DEEPSEEK_OCR_BASE_URL=                       # optional vLLM/Docker endpoint, e.g. http://localhost:8001
 DEEPSEEK_OCR_MODEL=deepseek-ai/DeepSeek-OCR-2  # use VL2-Tiny for general vision tasks
 
 # LLM retry
@@ -1067,8 +1068,8 @@ Beta providers:
 
 | Provider | Default model |
 |---|---|
-| Anthropic (default) | `claude-sonnet-4-6` |
-| Ollama (local) | `kimi-k2.6:cloud` |
+| Anthropic | `claude-sonnet-4-6` |
+| Ollama (default) | `deepseek-v4-pro:cloud` |
 | OpenAI | configurable |
 
 Beta must answer:

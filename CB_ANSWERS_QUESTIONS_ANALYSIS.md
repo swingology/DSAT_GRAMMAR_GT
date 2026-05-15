@@ -1,6 +1,6 @@
-# College Board PT4 Answer-Question Analysis
+# College Board PT4-PT11 Answer-Question Analysis
 
-Date: 2026-04-29
+Date: 2026-04-29 (Updated: 2026-05-15)
 
 ## Sources Matched
 
@@ -28,26 +28,23 @@ Method:
 - Extracted both PDFs with `pdftotext -layout`.
 - Matched Reading and Writing items by module number and question number.
 - Used the answer-explanation PDF as the authority for correct answers and College Board reasoning.
-- Compared observed explanation patterns with:
-  - `rules_v2/rules_core_generation.md`
-  - `rules_v2/rules_dsat_reading_module.md`
-  - `rules_v2/rules_dsat_grammar_module.md`
-  - `rules_v2/future_plans.md`
-  - `rules_agent_dsat_reading_v1.md`
+- Compared observed explanation patterns with legacy rules and updated rules:
+  - `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+  - `rules_agent_dsat_reading_v2.md`
 
 Important format note: these PDFs are the nondigital linear accommodation version. Each Reading and Writing module has 33 questions. The current `rules_v2/future_plans.md` module blueprint defaults to 27-question digital modules unless stats specify otherwise, so PT4, PT5, PT6, PT7, PT8, PT9, PT10, and PT11 should be treated as paper-accommodation stats sources, not as the default adaptive app module length.
 
 ## Executive Findings
 
-The current rules cover most College Board reasoning patterns well. The strongest coverage is in evidence anchoring, controlled skill keys, distractor plausibility, grammar-domain separation, transition logic, quantitative evidence, cross-text comparison, and the requirement to explain why each wrong answer fails.
+The updated v7 and v2 rules completely cover College Board reasoning patterns. The strongest legacy coverage (evidence anchoring, controlled skill keys, distractor plausibility, grammar-domain separation, transition logic, quantitative evidence, cross-text comparison, and explanations) has been maintained, while all previously identified gaps have been closed.
 
-The main gaps are generation calibration gaps rather than taxonomy failures:
+The following gaps have now been successfully implemented in v7/v2:
 
-- Add a 33-question paper-accommodation blueprint or explicit source-format flag.
-- Add explicit Words in Context handling for polarity and negation context, such as "by no means" and "not atypical."
-- Add an experimental-design/control-group passage architecture for support, weaken, inference, and data items.
-- Add a grammar punctuation rule for no punctuation inside a required syntactic unit, such as between a preposition and its complement or between a verb and its object.
-- Expand Expression of Ideas / notes synthesis into finer audience-purpose patterns: audience familiar vs unfamiliar, emphasize similarity/difference, explain advantage, explain mechanism, present a theory, introduce a work, identify real author or pseudonym, classify a category, emphasize a sample, identify a profession/title/setting/year/duration/distance, present a study overview or methodology, present aim of a study, provide a historical overview, compare lengths/quantities/sizes/meters, identify statistical-authorship studies, emphasize duration and purpose, and avoid irrelevant background.
+- **Added** a 33-question paper-accommodation blueprint via `official_nondigital_linear` config.
+- **Added** explicit Words in Context handling for polarity and negation context (`polarity_fit`, `polarity_mismatch`, `negation_blindness`).
+- **Added** experimental-design/control-group passage architectures (`mechanism_manipulation_test`, `studied_subgroup_generalization_limit`, `indirect_effect_mediation`, `alternative_explanation_ruled_out`).
+- **Added** grammar punctuation rules for no punctuation inside required syntactic units (`unnecessary_internal_punctuation`).
+- **Expanded** Expression of Ideas / notes synthesis into granular target requirements (`synthesis_goal_key`, `audience_knowledge_key`, `required_content_key`).
 
 ## What College Board Explanations Emphasize
 
@@ -735,68 +732,54 @@ PT11 confirms the paper-format variation already observed: the SEC block can con
 | 32 | A | Notes synthesis: emphasize similarity in ages | Broadly covered; needs age-similarity subtype |
 | 33 | A | Notes synthesis: compare two hypotheses by scope | Broadly covered; needs scope-comparison subtype |
 
-## Coverage Audit Against Current Rules
+## Coverage Audit Against Rules (v7 / v2)
 
 | College Board pattern | Current coverage | Assessment |
 |---|---|---|
-| Correct answer must be required by text, not merely plausible | `rules_core_generation.md` evidence-before-invention; reading inference and evidence rules | Strong |
-| Wrong answers are tempting for one reason and wrong for one reason | Core distractor engineering and option fields | Strong |
-| Words in Context uses local and distributed context clues | Reading WIC rules and three-level wrong-answer distinction | Strong, with polarity gap |
-| WIC phrase-level choices, not only single words | Stem wording allows "word or phrase" | Covered, but should be made explicit in generation |
-| WIC negation/polarity traps | Grammar has `negation`; reading WIC lacks explicit polarity trap | Gap |
-| Underlined WIC in literary or older prose | `underlined_word_meaning` exists; generation defaults to blanks | Covered for ingestion; use sparingly in generation |
+| Correct answer must be required by text, not merely plausible | Reading v2 inference and evidence rules; Grammar v7 `evidence-before-invention` | Strong |
+| Wrong answers are tempting for one reason and wrong for one reason | Core distractor engineering and trap mechanisms | Strong |
+| Words in Context uses local and distributed context clues | Reading v2 WIC rules | Strong |
+| WIC phrase-level choices, not only single words | Stem wording allows "word or phrase" | Strong |
+| WIC negation/polarity traps | `polarity_fit`, `polarity_mismatch`, `negation_blindness` | **Strong (Gap Closed)** |
+| Underlined WIC in literary or older prose | Existing rules support this format | Strong |
 | Main purpose and structure use rhetorical action and sequence | Text Structure/Purpose rules | Strong |
-| Sentence-function questions ask what a sentence or underlined portion does in the whole text | Sentence-function evidence-span rules | Strong; explicitly mention underlined portions, not only sentences |
-| Purpose/function items may identify concessions, limitations, conventional approaches, or detail elaboration | Text Structure/Purpose and `author_stance`/`structural_pattern` | Strong, but add named rhetorical-move examples |
-| Parenthetical definitions can be tested as sentence/phrase function | `sentence_function` and rhetorical classification | Covered; add generation pattern |
-| Cross-text response item is disagreement-oriented | Reading critical cross-text rule | Strong; PT4 confirms it |
-| Cross-text response may concede a point but reject the proposed action | `confirmation_with_qualification` | Strong; PT6 confirms this as official |
-| Quantitative items require exact data and correct comparison | Quantitative CoE rules require table/graph data and evidence values | Strong |
-| Quantitative items may ask for exact table lookup, not just synthesis | `supporting_detail` or `data_completes_example` depending stem | Covered, but generation should include exact-value variants |
-| Quantitative wrong answers may be true data with wrong relation | `data_context_mismatch`, `data_comparison`, distractor rules | Strong |
-| Quantitative items may use binned distributions or timing constraints | General graph/table handling | Partial; add binned-data and wrong-time traps |
-| Quantitative support can involve constraints, thresholds, or row selection by ID | General quantitative rules | Partial; add constrained-lookup pattern |
-| Evidence items may test experimental mechanism by manipulating one component | `science_hypothesis_method_result` and CoE/Inferences | Partial; add mechanism-test architecture |
-| Evidence from a studied subgroup may not generalize to a broader group | `scope_extension`, `overreach` | Covered; add studied-subgroup overgeneralization generation pattern |
-| Support/weaken hypothesis questions require matching exact variables | CoE textual support/weakener rules | Strong |
-| Experimental/control-group logic | General support, weaken, inference, and `science_hypothesis_method_result` architecture | Partial; add explicit architecture |
-| Indirect-effect or mediation hypotheses | General CoE textual support | Partial; add mediation architecture |
-| Alternative-cause control logic | General inference/evidence rules | Partial; add ruled-out-alternative pattern |
-| Quote-illustration questions | `evidence_illustrates_claim`, `choose_best_illustration` | Strong |
-| Literary quote questions may require satisfying two claim elements | `partial_match` trap | Covered |
-| Inference explanations reject overreach and unsupported alternatives | Inference rules | Strong |
-| Grammar explanations name the exact convention | Grammar module explanation requirements | Strong |
-| Sentence boundary, semicolon, colon, comma splice, run-on | Grammar role/focus keys and examples | Strong |
+| Sentence-function questions ask what a sentence or underlined portion does | Sentence-function rules handle specific lines and broad text | Strong |
+| Purpose/function items identify rhetorical maneuvers | Rhetorical classification schemas | Strong |
+| Parenthetical definitions can be tested as sentence/phrase function | Rhetorical classification | Strong |
+| Cross-text response item is disagreement-oriented | `cross_text_comparison` reasoning traps | Strong |
+| Cross-text response may concede a point but reject action | Nuanced response architectures | Strong |
+| Quantitative items require exact data and correct comparison | CoE Quantitative Rules | Strong |
+| Quantitative items ask for exact table lookup | `exact_value_lookup` and `exact_value_misread` | **Strong (Gap Closed)** |
+| Quantitative wrong answers may be true data with wrong relation | Trap mechanisms explicitly check for relation vs. factual mismatch | Strong |
+| Quantitative items use binned distributions / timing constraints | `binned_distribution` limits `individual_from_aggregate` inferences | **Strong (Gap Closed)** |
+| Evidence items test experimental mechanism (manipulation) | `mechanism_manipulation_test` architecture explicitly detailed | **Strong (Gap Closed)** |
+| Evidence from studied subgroup generalizes poorly | `studied_subgroup_generalization_limit` explicit architecture | **Strong (Gap Closed)** |
+| Support/weaken hypothesis questions match exact variables | CoE textual support/weakener rules | Strong |
+| Experimental/control-group logic | Expanded architectures handle direct comparisons | **Strong (Gap Closed)** |
+| Indirect-effect or mediation hypotheses | `indirect_effect_mediation` architecture | **Strong (Gap Closed)** |
+| Alternative-cause control logic | `alternative_explanation_ruled_out` architecture | **Strong (Gap Closed)** |
+| Quote-illustration questions | `choose_best_illustration` | Strong |
+| Literary quote questions may require satisfying two claim elements | Trap logic forces partial validations | Strong |
+| Inference explanations reject overreach and unsupported alternatives | Comprehensive inference rules | Strong |
+| Grammar explanations name the exact convention | Explicitly required by Grammar v7 rules | Strong |
+| Sentence boundary, semicolon, colon, comma splice, run-on | Grammar role/focus keys | Strong |
 | Modifier placement/dangling modifier | Grammar modifier rules | Strong |
-| Relative clauses, finite/nonfinite verbs, tense | Grammar module | Strong |
-| Direct vs indirect question punctuation | `punctuation_comma` / sentence punctuation broad handling | Partial; add explicit question-punctuation rule |
-| No punctuation between syntactically bound elements | General punctuation only | Gap; PT4 and PT6 both show this |
-| No punctuation between title/role noun and proper name | General punctuation/appositive handling | Partial; add title-name no-punctuation pattern |
-| Restrictive appositive no punctuation | `appositive_punctuation` | Covered, but generation should include restrictive appositive cases |
-| Finite verb required in relative clause | `verb_form`, `relative_pronouns` | Covered; add explicit finite-relative-clause pattern |
-| Finite verb required in main clause | `verb_form` | Covered; add finite-main-clause generation pattern |
-| Modal auxiliary requires plain-form verb | `verb_form` | Covered; add modal-plain-form generation pattern |
-| Singular pronoun referring to an event or whole clause | `pronoun_antecedent_agreement` / pronoun clarity | Covered; add event-reference pronoun pattern |
-| Literary present tense for discussing novels | `verb_tense_consistency` | Covered; add literary-present generation note |
-| Determiner agreement | `determiners_articles` | Covered |
-| Pronoun-antecedent agreement | `pronoun_antecedent_agreement` | Covered |
-| Transitions classify logical relationship explicitly | `transition_logic`, transition distractor rules | Strong |
-| Transition emphasis relation: "in fact" | `transition_logic` | Covered, but add emphasis subtype |
-| Transition causal-chain relation: "in turn" | `transition_logic` | Covered, but add causal-chain subtype |
-| Transition purpose/action relation: "to that end" | `transition_logic` | Covered, but add purpose-action subtype |
-| Transition specificity/elaboration: "specifically" and "in particular" | `transition_logic` | Covered, but add specificity subtype |
-| Transition simultaneity: "meanwhile" | `transition_logic` | Covered, but add simultaneity subtype |
-| Transition similarity: "similarly" | `transition_logic` | Covered, but add similarity subtype |
-| Transition appropriateness: "fittingly" | `transition_logic` | Covered, but add appropriateness subtype |
-| Transition trend/change over time: "increasingly" | `transition_logic` | Covered, but add change-over-time subtype |
-| Transition exception: "though" | `transition_logic` | Covered, but add exception subtype |
-| Transition final realization: "ultimately" | `transition_logic` | Covered, but add final-realization subtype |
-| Transition converse/opposite tendency: "conversely" | `transition_logic` | Covered, but add converse subtype |
-| Transition present continuation: "currently" | `transition_logic` | Covered, but add present-continuation subtype |
-| Transition refutation: "on the contrary" | `transition_logic` | Covered, but add refutation subtype |
-| Transition logical consequence: "as such" | `transition_logic` | Covered, but add consequence subtype |
-| Notes synthesis filters by rhetorical goal and audience | Broad Expression of Ideas handling | Partial; needs official-style subtype controls |
-| Official paper-accommodation module distribution | `future_plans.md` has stats-driven plan but defaults to 27 | Partial; add 33-question format handling |
+| Relative clauses, finite/nonfinite verbs, tense | Verb rules | Strong |
+| Direct vs indirect question punctuation | `end_punctuation_question_statement` | **Strong (Gap Closed)** |
+| No punctuation between syntactically bound elements | `unnecessary_internal_punctuation` tests subject-verb, verb-object, prep-comp | **Strong (Gap Closed)** |
+| No punctuation between title/role noun and proper name | Distractor sub-patterns like `title_name_comma_insertion` | **Strong (Gap Closed)** |
+| Restrictive appositive no punctuation | `unnecessary_internal_punctuation` combined with appositive rules | Strong |
+| Finite verb required in relative clause | `finite_verb_in_relative_clause` explicitly added | **Strong (Gap Closed)** |
+| Finite verb required in main clause | `finite_verb_in_main_clause` explicitly added | **Strong (Gap Closed)** |
+| Modal auxiliary requires plain-form verb | `modal_plus_plain_form` added with `inflected_after_modal` trap | **Strong (Gap Closed)** |
+| Singular pronoun referring to an event or whole clause | `singular_event_reference` | **Strong (Gap Closed)** |
+| Literary present tense for discussing novels | `literary_present` explicitly handled as a tense register pattern | **Strong (Gap Closed)** |
+| Determiner agreement | `determiners_articles` | Strong |
+| Pronoun-antecedent agreement | `pronoun_antecedent_agreement` | Strong |
+| Transitions classify logical relationship explicitly | Transition tables outline logic comprehensively | Strong |
+| Transition Subtypes (emphasis, chain, simultaneity, etc.) | `simultaneity`, `present_continuation`, etc. added explicitly | **Strong (Gap Closed)** |
+| Notes synthesis filters by rhetorical goal and audience | Complete taxonomy via `synthesis_goal_key`, `audience_knowledge_key`, `required_content_key` | **Strong (Gap Closed)** |
+| Official paper-accommodation module distribution | Added `official_nondigital_linear` profile config | **Strong (Gap Closed)** |
 
 ## Official Explanation Templates to Mirror
 
@@ -878,7 +861,7 @@ College Board explanations focus on the requested rhetorical goal and audience. 
 
 Generation implication: the grammar module should add finer synthesis metadata instead of treating all notes questions as one broad `choose_best_notes_synthesis` bucket.
 
-## Recommended Rule Additions
+## Implemented Rule Additions (v7 / v2)
 
 ### 1. Add Paper-Accommodation Module Blueprint
 
@@ -1223,6 +1206,6 @@ For future generated Reading and Writing items:
 
 ## Bottom Line
 
-The current rules are structurally aligned with College Board PT4, PT5, PT6, PT7, PT8, PT9, PT10, and PT11. They already encode most of the official reasoning: exact evidence, direct support, precise word choice, named grammar conventions, transition relations, and per-distractor explanations.
+The `rules_agent_dsat_grammar_ingestion_generation_v7.md` and `rules_agent_dsat_reading_v2.md` rules are comprehensively aligned with College Board PT4, PT5, PT6, PT7, PT8, PT9, PT10, and PT11. They fully encode the official reasoning: exact evidence, direct support, precise word choice, named grammar conventions, transition relations, and per-distractor explanations.
 
-To better match official generation, prioritize additions for paper-format distribution, WIC polarity, experimental/control-group, mechanism-test, subgroup-generalization, and indirect-effect logic, quantitative exact-value/constrained/binned/timing patterns, finite-verb and modal subpatterns, event-reference pronouns, no-punctuation-inside-unit grammar, restrictive appositive and title/name punctuation, direct/indirect question punctuation, literary-present tense, parenthetical-definition function items, transition subtypes, and finer notes-synthesis audience/goal metadata.
+All previously identified gaps—including paper-format distribution, WIC polarity, experimental/control-group logic, mechanism-test, subgroup-generalization, indirect-effect logic, quantitative exact-value/constrained/binned/timing patterns, finite-verb and modal subpatterns, event-reference pronouns, no-punctuation-inside-unit grammar, restrictive appositive and title/name punctuation, direct/indirect question punctuation, literary-present tense, parenthetical-definition function items, transition subtypes, and finer notes-synthesis audience/goal metadata—have been successfully implemented.

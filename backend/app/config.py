@@ -18,11 +18,14 @@ class Settings(BaseSettings):
     # Storage
     raw_asset_storage_backend: str = "local"
     local_archive_mirror: str = "./archive"
+    object_storage_layout_config: str = "config/storage_layout.yaml"
+    object_storage_backend: str = "local_fs"
+    object_storage_local_root: str = "../local_object_store"
 
     # LLM defaults
-    default_annotation_provider: str = "anthropic"
-    default_annotation_model: str = "claude-sonnet-4-6"
-    default_ollama_model: str = "kimi-k2.6:cloud"
+    default_annotation_provider: str = "ollama"
+    default_annotation_model: str = "deepseek-v4-pro:cloud"
+    default_ollama_model: str = "deepseek-v4-pro:cloud"
     rules_version: str = "rules_agent_dsat_grammar_ingestion_generation_v3"
     official_auto_activate_for_testing: bool = False
 
@@ -38,8 +41,8 @@ class Settings(BaseSettings):
     ocr_fallback: bool = True
     vision_max_images: int = 10
 
-    # OCR — Option A: DeepSeek OCR-2 (local via vLLM Docker or LMDeploy)
-    deepseek_ocr_base_url: str = "http://localhost:8001"
+    # OCR — Option A: DeepSeek OCR-2 (optional local server via vLLM Docker or LMDeploy)
+    deepseek_ocr_base_url: str = ""
     deepseek_ocr_model: str = "deepseek-ai/DeepSeek-OCR-2"
 
     # OCR — Option G: GLM-OCR via Ollama (two-step: OCR then extraction LLM)

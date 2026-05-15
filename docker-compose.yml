@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: dsat
+      POSTGRES_PASSWORD: dsat_dev
+      POSTGRES_DB: dsat_dev
+    ports:
+      - "5434:5432"
+    volumes:
+      - dsat_pgdata_linux:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dsat -d dsat_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  dsat_pgdata_linux:
+    external: true
+    name: dsat_redux_md_dsat_pgdata_linux

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-15T05:51:34.599Z
-> Files: 670 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-15T16:20:42.519Z
+> Files: 672 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
 
@@ -25,8 +25,10 @@
 - `CLAUDE.md` — OpenWolf (~225 tok)
 - `DEBUG_LOG.md` — Debug Log (~8566 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
+- `docker-compose.yml` — Docker Compose services (~133 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~7592 tok)
+- `INGESTION_README.md` — DSAT Backend — Ingestion Pipeline (~6616 tok)
 - `kimi_4q_comparison_report.md` — DSAT Question Generation Comparison Report (~2222 tok)
 - `MATH_ADAPTATION_PLAN.md` — MATH_ADAPTATION_PLAN.md (~2352 tok)
 - `OCR_INGESTION_PLAN.md` — OCR Ingestion System Plan — DSAT Grammar Backend (~3762 tok)

@@ -22,9 +22,12 @@ All settings are loaded from `.env` via `pydantic-settings`.
 | `ANTHROPIC_API_KEY` | `""` | Anthropic API key |
 | `OPENAI_API_KEY` | `""` | OpenAI API key |
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
-| `DEFAULT_ANNOTATION_PROVIDER` | `anthropic` | Default LLM provider for annotation |
-| `DEFAULT_ANNOTATION_MODEL` | `claude-sonnet-4-6` | Default model name |
+| `DEFAULT_ANNOTATION_PROVIDER` | `ollama` | Default LLM provider for annotation and extraction |
+| `DEFAULT_ANNOTATION_MODEL` | `deepseek-v4-pro:cloud` | Default text extraction/annotation model |
+| `DEFAULT_OLLAMA_MODEL` | `deepseek-v4-pro:cloud` | Default Ollama text model |
 | `RULES_VERSION` | `rules_agent_dsat_grammar_ingestion_generation_v3` | V3 rules file identifier |
+| `OCR_STRATEGY` | `glm` | Default OCR strategy |
+| `GLM_OCR_MODEL` | `glm-ocr:latest` | Default OCR model served through Ollama |
 
 ## Storage
 

@@ -5,6 +5,80 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-15 — Local object storage provenance for ingestion
+
+**Model:** OpenAI Codex (`gpt-5`)
+**Branch:** `main`
+
+Added the first executable slice for local Postgres plus S3/Supabase-style
+storage testing.
+
+### Local storage adapter
+**Change:** Added a config-driven object-store adapter that reads
+`backend/config/storage_layout.yaml`, writes local `local-s3://...` objects under
+`local_object_store/`, and keeps bucket/key naming isolated for the later
+Supabase Storage swap.
+**Files:** `backend/app/storage/object_store.py`, `backend/app/config.py`,
+`backend/config/storage_layout.yaml`
+
+### Provenance schema
+**Change:** Added `question_source_spans` and `question_stimulus_assets` models
+and migration so questions can link back to rendered pages, OCR text, crops,
+layout JSON, and structured table/chart/figure assets.
+**Files:** `backend/app/models/db.py`, `backend/app/models/__init__.py`,
+`backend/migrations/versions/016_add_question_source_provenance.py`
+
+### Ingestion wiring
+**Change:** Official/unofficial ingestion now stores raw uploads, OCR page
+renders, and OCR text artifacts through the object-store adapter. Persisted
+questions now receive a source-span row, and structured stimulus asset rows are
+created when extractor output includes table/chart/figure asset data.
+**File:** `backend/app/routers/ingest.py`
+
+### Resume plan and tests
+**Change:** Added `tasks_s3.md` as the pause/resume checklist and focused tests
+for object storage plus source-span provenance helpers.
+**Files:** `tasks_s3.md`, `backend/tests/test_object_store.py`,
+`backend/tests/test_ingest_router.py`
+
+---
+
+## 2026-05-15 — Ollama OCR and extraction defaults
+
+**Model:** OpenAI Codex (`gpt-5`)
+**Branch:** `main`
+
+Updated ingestion defaults so scanned assets OCR with `glm-ocr:latest` through
+Ollama and text extraction defaults to `deepseek-v4-pro:cloud` through the
+Ollama endpoint.
+
+### Backend defaults
+**Change:** Switched default annotation/extraction provider to `ollama` and
+default Ollama/text model to `deepseek-v4-pro:cloud`. Kept GLM OCR as the
+default OCR strategy/model.
+**Files:** `backend/app/config.py`, `backend/.env`, `backend/.env.example`
+
+### Provider routing
+**Change:** Updated Ollama provider/factory defaults and guarded explicit
+Anthropic/OpenAI requests from inheriting the Ollama DeepSeek model.
+**Files:** `backend/app/llm/ollama_provider.py`, `backend/app/llm/factory.py`,
+`backend/app/routers/ingest.py`
+
+### Ingestion extraction reliability
+**Change:** Added an Ollama `thinking=false` request option and enabled it only
+for ingestion Pass 1 text extraction when `deepseek-v4-pro:cloud` is the Ollama
+extractor.
+**Files:** `backend/app/llm/ollama_provider.py`, `backend/app/routers/ingest.py`
+
+### UI, docs, and tests
+**Change:** Updated dashboard model presets, removed stale OCR-not-implemented
+copy, refreshed API/config docs, and adjusted unit expectations for the new
+defaults.
+**Files:** `backend/app/routers/dashboard.py`, `backend/docs/*`,
+`docs/PRD/INGESTION_PRD.md`, `backend/tests/*`
+
+---
+
 ## 2026-05-15 — Prompt loader and DSAT rules completeness pass
 
 **Model:** OpenAI Codex (`gpt-5`)
