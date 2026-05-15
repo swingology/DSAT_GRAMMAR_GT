@@ -1,0 +1,116 @@
+[
+  {
+    "strategy": "glm+deepseek-v4-pro:cloud",
+    "ocr_engine": "glm",
+    "extract_model": "deepseek-v4-pro:cloud",
+    "ocr_latency_ms": 54085,
+    "extract_latency_ms": 497641,
+    "total_latency_ms": 551726,
+    "ocr_chars": 23945,
+    "pages_processed": 14,
+    "questions_extracted": 26,
+    "questions_with_all_options": 22,
+    "found_question_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "missing_question_numbers": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "per_page_ocr": [
+      {
+        "page": 1,
+        "latency_ms": 2680,
+        "chars": 291
+      },
+      {
+        "page": 2,
+        "latency_ms": 2816,
+        "chars": 834
+      },
+      {
+        "page": 3,
+        "latency_ms": 3870,
+        "chars": 1934
+      },
+      {
+        "page": 4,
+        "latency_ms": 3921,
+        "chars": 1819
+      },
+      {
+        "page": 5,
+        "latency_ms": 3810,
+        "chars": 1723
+      },
+      {
+        "page": 6,
+        "latency_ms": 4028,
+        "chars": 1899
+      },
+      {
+        "page": 7,
+        "latency_ms": 3173,
+        "chars": 995
+      },
+      {
+        "page": 8,
+        "latency_ms": 4323,
+        "chars": 1820
+      },
+      {
+        "page": 9,
+        "latency_ms": 4811,
+        "chars": 2530
+      },
+      {
+        "page": 10,
+        "latency_ms": 4505,
+        "chars": 2370
+      },
+      {
+        "page": 11,
+        "latency_ms": 4220,
+        "chars": 1903
+      },
+      {
+        "page": 12,
+        "latency_ms": 4203,
+        "chars": 1988
+      },
+      {
+        "page": 13,
+        "latency_ms": 2794,
+        "chars": 1008
+      },
+      {
+        "page": 14,
+        "latency_ms": 4931,
+        "chars": 2590
+      }
+    ],
+    "token_usage": {
+      "prompt_tokens": 80185,
+      "completion_tokens": 30424,
+      "total_tokens": 110609
+    }
+  }
+]

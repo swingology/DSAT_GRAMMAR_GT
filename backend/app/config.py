@@ -24,8 +24,8 @@ class Settings(BaseSettings):
 
     # LLM defaults
     default_annotation_provider: str = "ollama"
-    default_annotation_model: str = "deepseek-v4-pro:cloud"
-    default_ollama_model: str = "deepseek-v4-pro:cloud"
+    default_annotation_model: str = "qwen3-vl:235b-instruct-cloud"
+    default_ollama_model: str = "qwen3-vl:235b-instruct-cloud"
     rules_version: str = "rules_agent_dsat_grammar_ingestion_generation_v3"
     official_auto_activate_for_testing: bool = False
 
@@ -47,6 +47,9 @@ class Settings(BaseSettings):
 
     # OCR — Option G: GLM-OCR via Ollama (two-step: OCR then extraction LLM)
     glm_ocr_model: str = "glm-ocr:latest"
+
+    # Layout detection — uses GLM-OCR to identify question/table/chart/figure regions
+    layout_detection_enabled: bool = True
 
     # Logging
     log_level: str = "INFO"

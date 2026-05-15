@@ -1,0 +1,93 @@
+[
+  {
+    "strategy": "glm+deepseek-v4-pro:cloud",
+    "ocr_engine": "glm",
+    "extract_model": "deepseek-v4-pro:cloud",
+    "ocr_latency_ms": 56876,
+    "extract_latency_ms": 260637,
+    "total_latency_ms": 317513,
+    "ocr_chars": 23575,
+    "pages_processed": 14,
+    "questions_extracted": 0,
+    "questions_with_all_options": 0,
+    "found_question_numbers": [],
+    "missing_question_numbers": [],
+    "per_page_ocr": [
+      {
+        "page": 1,
+        "latency_ms": 5813,
+        "chars": 291
+      },
+      {
+        "page": 2,
+        "latency_ms": 2853,
+        "chars": 834
+      },
+      {
+        "page": 3,
+        "latency_ms": 3892,
+        "chars": 1934
+      },
+      {
+        "page": 4,
+        "latency_ms": 3912,
+        "chars": 1819
+      },
+      {
+        "page": 5,
+        "latency_ms": 3773,
+        "chars": 1721
+      },
+      {
+        "page": 6,
+        "latency_ms": 4013,
+        "chars": 1899
+      },
+      {
+        "page": 7,
+        "latency_ms": 3084,
+        "chars": 995
+      },
+      {
+        "page": 8,
+        "latency_ms": 4344,
+        "chars": 1820
+      },
+      {
+        "page": 9,
+        "latency_ms": 4703,
+        "chars": 2530
+      },
+      {
+        "page": 10,
+        "latency_ms": 4457,
+        "chars": 2370
+      },
+      {
+        "page": 11,
+        "latency_ms": 4138,
+        "chars": 1903
+      },
+      {
+        "page": 12,
+        "latency_ms": 4172,
+        "chars": 1988
+      },
+      {
+        "page": 13,
+        "latency_ms": 2796,
+        "chars": 506
+      },
+      {
+        "page": 14,
+        "latency_ms": 4926,
+        "chars": 2724
+      }
+    ],
+    "token_usage": {
+      "prompt_tokens": 73999,
+      "completion_tokens": 21537,
+      "total_tokens": 95536
+    }
+  }
+]

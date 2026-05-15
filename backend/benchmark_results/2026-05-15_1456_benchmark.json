@@ -1,0 +1,128 @@
+[
+  {
+    "strategy": "glm+deepseek-v4-pro:cloud",
+    "ocr_engine": "glm",
+    "extract_model": "deepseek-v4-pro:cloud",
+    "ocr_latency_ms": 33734,
+    "extract_latency_ms": 340823,
+    "total_latency_ms": 374557,
+    "ocr_chars": 23943,
+    "pages_processed": 14,
+    "questions_extracted": 32,
+    "questions_with_all_options": 32,
+    "found_question_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      17,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33
+    ],
+    "missing_question_numbers": [
+      14,
+      15,
+      16,
+      18
+    ],
+    "per_page_ocr": [
+      {
+        "page": 1,
+        "latency_ms": 1692,
+        "chars": 291
+      },
+      {
+        "page": 2,
+        "latency_ms": 1930,
+        "chars": 834
+      },
+      {
+        "page": 3,
+        "latency_ms": 2518,
+        "chars": 1934
+      },
+      {
+        "page": 4,
+        "latency_ms": 2470,
+        "chars": 1823
+      },
+      {
+        "page": 5,
+        "latency_ms": 2366,
+        "chars": 1721
+      },
+      {
+        "page": 6,
+        "latency_ms": 2475,
+        "chars": 1899
+      },
+      {
+        "page": 7,
+        "latency_ms": 2039,
+        "chars": 995
+      },
+      {
+        "page": 8,
+        "latency_ms": 2659,
+        "chars": 1820
+      },
+      {
+        "page": 9,
+        "latency_ms": 2822,
+        "chars": 2530
+      },
+      {
+        "page": 10,
+        "latency_ms": 2708,
+        "chars": 2366
+      },
+      {
+        "page": 11,
+        "latency_ms": 2564,
+        "chars": 1903
+      },
+      {
+        "page": 12,
+        "latency_ms": 2543,
+        "chars": 1988
+      },
+      {
+        "page": 13,
+        "latency_ms": 2005,
+        "chars": 1008
+      },
+      {
+        "page": 14,
+        "latency_ms": 2943,
+        "chars": 2590
+      }
+    ],
+    "token_usage": {
+      "prompt_tokens": 74067,
+      "completion_tokens": 25391,
+      "total_tokens": 99458
+    }
+  }
+]

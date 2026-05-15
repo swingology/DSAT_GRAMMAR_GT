@@ -33,8 +33,8 @@ def test_settings_default_values():
         from app.config import Settings
         s = Settings()
         assert s.default_annotation_provider == "ollama"
-        assert s.default_annotation_model == "deepseek-v4-pro:cloud"
-        assert s.default_ollama_model == "deepseek-v4-pro:cloud"
+        assert s.default_annotation_model == "qwen3-vl:235b-instruct-cloud"
+        assert s.default_ollama_model == "qwen3-vl:235b-instruct-cloud"
         assert s.rules_version.startswith("rules_agent")
         assert s.ocr_vision_provider == "ollama"
         assert s.ocr_vision_model in ("qwen2.5-vl:7b", "qwen2.5vl:7b")

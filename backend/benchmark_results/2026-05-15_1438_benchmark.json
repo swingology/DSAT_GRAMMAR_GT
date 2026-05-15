@@ -1,0 +1,116 @@
+[
+  {
+    "strategy": "glm+qwen3-vl:235b-instruct-cloud",
+    "ocr_engine": "glm",
+    "extract_model": "qwen3-vl:235b-instruct-cloud",
+    "ocr_latency_ms": 55342,
+    "extract_latency_ms": 160999,
+    "total_latency_ms": 216341,
+    "ocr_chars": 23437,
+    "pages_processed": 14,
+    "questions_extracted": 14,
+    "questions_with_all_options": 14,
+    "found_question_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      12,
+      13,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "missing_question_numbers": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      14,
+      15,
+      16
+    ],
+    "per_page_ocr": [
+      {
+        "page": 1,
+        "latency_ms": 5318,
+        "chars": 291
+      },
+      {
+        "page": 2,
+        "latency_ms": 2454,
+        "chars": 834
+      },
+      {
+        "page": 3,
+        "latency_ms": 3322,
+        "chars": 1932
+      },
+      {
+        "page": 4,
+        "latency_ms": 3930,
+        "chars": 1817
+      },
+      {
+        "page": 5,
+        "latency_ms": 3871,
+        "chars": 1721
+      },
+      {
+        "page": 6,
+        "latency_ms": 3903,
+        "chars": 1899
+      },
+      {
+        "page": 7,
+        "latency_ms": 3613,
+        "chars": 995
+      },
+      {
+        "page": 8,
+        "latency_ms": 3753,
+        "chars": 1820
+      },
+      {
+        "page": 9,
+        "latency_ms": 4624,
+        "chars": 2530
+      },
+      {
+        "page": 10,
+        "latency_ms": 4611,
+        "chars": 2370
+      },
+      {
+        "page": 11,
+        "latency_ms": 4314,
+        "chars": 1903
+      },
+      {
+        "page": 12,
+        "latency_ms": 4258,
+        "chars": 1988
+      },
+      {
+        "page": 13,
+        "latency_ms": 3371,
+        "chars": 506
+      },
+      {
+        "page": 14,
+        "latency_ms": 4000,
+        "chars": 2590
+      }
+    ],
+    "token_usage": {
+      "prompt_tokens": 80271,
+      "completion_tokens": 12997,
+      "total_tokens": 93268
+    }
+  }
+]
