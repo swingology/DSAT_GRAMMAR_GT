@@ -877,9 +877,11 @@ are mandatory for generation; recommended for annotation.
 | `contrast_structural_types` | Compare two structural or formal categories |
 | `present_study_aim` | State what a study was trying to find out |
 | `identify_statistical_method` | Name or describe the statistical approach used |
+| `identify_statistical_authorship_method` | Name or describe a statistical method used to attribute authorship |
 | `explain_technique_advantage` | Describe why a specific technique is useful |
 | `explain_misconception_naming` | Explain why something is incorrectly named |
 | `challenge_with_quotation` | Use a quotation from notes to dispute an explanation |
+| `challenge_explanation_with_quote` | Use a quotation from the notes to challenge or weaken a proposed explanation |
 | `present_study_overview` | High-level summary of a study's design and result |
 | `present_methodology` | Describe the methods used in a study |
 | `present_study_conclusions` | State what a study found or concluded |
@@ -907,10 +909,13 @@ are mandatory for generation; recommended for annotation.
 | Key | What the correct sentence must include |
 |---|---|
 | `comparison_needed` | At least one explicit comparison |
+| `definition_needed` | A definition or explanation of a named term is required |
+| `background_omit` | Background should be omitted because the target audience already knows it |
 | `measurement_values_needed` | At least one specific number, unit, or measured value |
 | `result_needed` | The outcome or finding |
 | `title_and_content_needed` | Both the title of a work and a description |
 | `achievement_needed` | A statement of what a person accomplished |
+| `owner_of_achievement_needed` | The person or group responsible for the achievement must be named |
 | `category_label_needed` | The name of the classification group |
 | `sample_location_needed` | The specific example or location highlighted |
 | `profession_label_needed` | The person's job title or field |
@@ -947,6 +952,10 @@ For every notes synthesis distractor, annotate `synthesis_distractor_failure`
 | `omits_required_content` | On-topic but leaves out a required content element |
 | `adds_background_audience_does_not_need` | Provides context the audience already has, or provides irrelevant background |
 | `correct_topic_wrong_comparison` | Mentions the right subjects but states the wrong comparison, direction, or scope |
+| `omits_unfamiliar_context` | Fails to include identifying context required for an unfamiliar audience |
+| `wrong_audience_assumption` | Assumes the audience is familiar when it is not, or unfamiliar when it is familiar |
+| `misstates_required_relationship` | Uses the right note facts but states the wrong similarity, difference, causal, temporal, or scope relationship |
+| `irrelevant_background` | Adds accurate background information that does not serve the requested rhetorical goal |
 
 **Field name conventions:**
 
@@ -2255,6 +2264,24 @@ Each distractor must satisfy:
 5. Must survive first-pass elimination
 6. Must compete under time pressure
 7. Must be wrong for a specific named reason
+
+### E.2.1 Shared option-quality gate
+
+Before finalizing any generated item, verify:
+
+- **Incorrectness:** no distractor is defensibly co-correct with the key
+- **Plausibility:** each distractor maps to a named student mistake and has
+  a non-null `plausibility_source_key`
+- **Diversity:** no two distractors fail through the same reasoning path or
+  duplicate the same wrong idea
+- **Construct alignment:** each distractor fails the tested grammar/usage
+  construct, not an unrelated side issue
+- **Clue control:** the key is not consistently longer, more precise, more
+  academic, more idiomatic, or more polished than the distractors
+- **Option homogeneity:** all four options share comparable syntax, register,
+  abstraction level, and semantic category
+- **Separation margin:** the key remains the single best answer, while hard
+  items include at least two distractors that survive first-pass elimination
 
 Each question must include:
 

@@ -506,6 +506,54 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-05-12T20:05:44.012Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-05-14T20:56:46-07:00",
+      "error_message": "rg: INGESTION_PRD.md: IO error for operation on INGESTION_PRD.md: No such file or directory",
+      "file": ".wolf/anatomy.md",
+      "root_cause": "Wolf anatomy still listed the backend PRD at repo root, but the current file lives under docs/PRD/INGESTION_PRD.md.",
+      "fix": "Used rg/find to locate docs/PRD/INGESTION_PRD.md and recorded the stale path in cerebrum.",
+      "tags": [
+        "wolf",
+        "stale-anatomy",
+        "prd"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-14T20:56:46-07:00"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-05-14T21:02:56-07:00",
+      "error_message": "rg: README.md/package.json/pyproject.toml: No such file or directory",
+      "file": "repo root",
+      "root_cause": "Queried optional root metadata files while discovering Wolf commands, but this repo does not have README.md, package.json, or root pyproject.toml.",
+      "fix": "Ignored missing optional files and used openwolf --help plus subcommand help output directly.",
+      "tags": [
+        "command-error",
+        "discovery",
+        "wolf"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-14T21:02:56-07:00"
+    },
+    {
+      "id": "bug-034",
+      "timestamp": "2026-05-14T21:22:03-07:00",
+      "error_message": "Duplicate/out-of-order section number introduced while adding reading generation sections",
+      "file": "rules_agent_dsat_reading_v2.md",
+      "root_cause": "Inserted new 16.3-16.7 sections before an existing 16.6 section without immediately renumbering the existing heading.",
+      "fix": "Renumbered the existing generation profile extension heading to 16.8 and verified the 16.x headings with rg.",
+      "tags": [
+        "docs",
+        "numbering",
+        "rule-file"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-14T21:22:03-07:00"
     }
   ]
 }

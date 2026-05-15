@@ -12,6 +12,14 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 20:11 | Inspected OpenWolf protocol/config and confirmed Wolf is enabled for repo workflow | .wolf/OPENWOLF.md, .wolf/config.json, .wolf/hooks/package.json | Will follow anatomy/memory/cerebrum rules for future repo work | ~700 |
+| 20:56 | Audited backend PRD against backend routers/models for incomplete features and gaps | docs/PRD/INGESTION_PRD.md, backend/app/routers/*.py, backend/app/models/db.py | Identified PRD-known gaps plus stale OCR and auth/generation mismatches | ~9000 |
+| 21:02 | Queried OpenWolf CLI help and subcommand help | openwolf CLI | Confirmed installed version 1.0.4 and available commands/options | ~1500 |
+| 21:05 | Ran openwolf status | OpenWolf CLI | Core files/hooks present; anatomy tracks 670 files; daemon initialized | ~100 |
+| 21:10 | Researched answer-choice/distractor standards and added report gaps section | answer_obfuscation_report.md | Added research-backed ## GAPS covering College Board, item-writing, metrics, and code drift | ~4500 |
+| 21:16 | Located trap/failure-mode sections in reading and grammar rule files | rules_agent_dsat_reading_v2.md, rules_agent_dsat_grammar_ingestion_generation_v7.md | Identified exact sections/line ranges for reasoning traps, syntactic traps, and distractor engineering | ~2500 |
+| 21:22 | Ported answer-obfuscation gaps into rule files | rules_agent_dsat_reading_v2.md, rules_agent_dsat_grammar_ingestion_generation_v7.md | Added reading construct/trap/failure-mode taxonomy and shared option-quality gate; fixed heading numbering | ~4500 |
+| 21:28 | Compared CB answer analysis recommendations to current rules and added remaining gaps | CB_ANSWERS_QUESTIONS_ANALYSIS.md, rules_agent_dsat_reading_v2.md, rules_agent_dsat_grammar_ingestion_generation_v7.md | Added quantitative traps/failure modes and notes synthesis goal/content/failure keys | ~6500 |
 | 16:25 | Edited backend/tests/test_backend_regressions.py | modified test_delete_user_removes_progress_before_user_delete() | ~526 |
 | 16:26 | Edited backend/tests/test_student_router.py | modified test_student_stats_empty() | ~192 |
 | 16:26 | Edited backend/tests/test_admin_router.py | modified test_admin_eval_score_not_found() | ~175 |
@@ -312,3 +320,24 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-05-14 10:51
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-14 12:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-15 21:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-15 21:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:32 | Exhaustive trap/test-construct audit | CB_ANSWERS_QUESTIONS_ANALYSIS.md, rules_agent_dsat_reading_v2.md, rules_agent_dsat_grammar_ingestion_generation_v7.md | Added missing quantitative traps/failure modes, validator checks, and notes-synthesis metadata to the correct rule files; verified with rg and diff stat | ~9000 |

@@ -122,6 +122,8 @@ Every item annotation must produce these sections, mirroring the grammar file:
 {
   "target_skill_family_key": "command_of_evidence_textual",
   "target_reading_focus_key": "evidence_supports_claim",
+  "target_test_construct_key": "evidence_relation_precision",
+  "target_craft_subconstruct_key": null,
   "target_reasoning_trap_key": "topical_relevance_without_logical_connection",
   "target_stimulus_mode_key": "prose_single",
   "target_stem_type_key": "choose_best_support",
@@ -152,8 +154,59 @@ Additional generation profile fields (mandatory when the corresponding condition
 | `passage_architecture_key` | passage uses one of the five experimental architectures (§15.2) |
 | `inference_type_note` | passage architecture is `mechanism_manipulation_test` or `studied_subgroup_generalization_limit` |
 | `two_part_claim` | `target_reading_focus_key` is `evidence_illustrates_claim` |
+| `target_test_construct_key` | all generated reading-domain items |
+| `target_craft_subconstruct_key` | `question_family_key` is `craft_and_structure` |
 
-### 2.3 `review` section schema
+### 2.3 Test construct keys
+
+Use `target_test_construct_key` to name the cognitive construct being tested.
+This is separate from `reading_focus_key`: the focus key names the SAT skill
+bucket, while the construct key names the exact reasoning operation that makes
+the correct answer uniquely best.
+
+Approved values:
+
+- `contextual_semantic_precision` — the student must choose the word or phrase
+  whose meaning, connotation, and logical role fit the local context
+- `rhetorical_function_precision` — the student must identify what a sentence,
+  phrase, or passage is doing rhetorically, not merely what topic it mentions
+- `cross_text_relationship_precision` — the student must identify agreement,
+  disagreement, qualification, or response between two labeled texts
+- `evidence_relation_precision` — the student must match evidence to a claim
+  without using merely related or downstream information
+- `inference_boundary_control` — the student must infer only what the passage
+  supports and avoid overextension
+- `quantitative_constraint_tracking` — the student must apply the exact row,
+  column, time window, comparison, or aggregate constraint in a graph/table item
+
+### 2.4 Craft subconstruct keys
+
+Use `target_craft_subconstruct_key` for Craft and Structure generation and
+annotation. It prevents Craft items from being treated as a single generic
+"reading" task.
+
+Approved values:
+
+- `wic_local_semantic_role` — Words in Context; the answer must satisfy the
+  word's role in the sentence or passage logic
+- `wic_tone_register_fit` — Words in Context; the answer must match the author's
+  stance, register, or evaluative valence
+- `wic_polarity_logic` — Words in Context; the answer must preserve negation,
+  concession, or double-negative logic
+- `tsp_global_rhetorical_purpose` — Text Structure and Purpose; the answer names
+  the whole passage's dominant rhetorical purpose
+- `tsp_local_sentence_function` — Text Structure and Purpose; the answer names
+  what a sentence or phrase does locally within the passage
+- `tsp_author_action_precision` — Text Structure and Purpose; the answer uses
+  the correct action verb for the author's move
+- `ctc_agreement_degree` — Cross-Text; the answer identifies exact agreement,
+  qualified agreement, disagreement, or limitation
+- `ctc_attribution_tracking` — Cross-Text; the answer keeps Text 1 and Text 2
+  claims, evidence, and authors separate
+- `ctc_response_to_claim` — Cross-Text; the answer predicts how one author or
+  research team would respond to a specific claim in the other text
+
+### 2.5 `review` section schema
 
 ```json
 {
@@ -485,6 +538,14 @@ This applies at the question level (for the most dangerous trap) and at the opti
 - `all_measures_not_checked` — quantitative; option is true for one measure or one time point but the passage claim requires the comparison to hold across all measures or all periods
 - `individual_from_aggregate` — quantitative; option infers individual-level information from a binned or aggregated graphic that only supports group-level claims
 - `direction_reversal` — quantitative; option correctly identifies the variable being tracked but states the opposite direction of change
+- `wrong_table_row_or_column` — quantitative; option uses the correct table/graph but selects the wrong row, column, category, bar, or plotted point
+- `wrong_group_comparison` — quantitative; option compares the wrong treatment group, control group, population, or category
+- `single_measure_focus` — quantitative; option is true for one measure but the claim requires all listed measures or conditions
+- `local_maximum_trap` — quantitative; option cites a locally high value that is not highest across the full required interval or set
+- `same_direction_assumption` — quantitative; option assumes two variables move in the same direction when the data show opposite movement
+- `absolute_value_confusion` — quantitative; option accurately describes an absolute count or amount but misses a percentage, proportion, or composition shift
+- `constraint_ignored` — quantitative; option is accurate in isolation but ignores a stated timing, population, measurement, or comparison constraint
+- `individual_inference_from_aggregate_bins` — quantitative; option infers individual-level facts from binned or aggregate data
 
 ### 10.2 Craft and Structure reasoning trap keys
 
@@ -502,6 +563,13 @@ This applies at the question level (for the most dangerous trap) and at the opti
 - `textual_mimicry` — uses vocabulary directly from the passage but distorts the meaning or relationship
 - `confirmed_when_contradicted` — describes Text 2 as supporting Text 1 when it contradicts it, or vice versa
 - `polarity_mismatch` — the option is a plausible word in isolation but inverts the intended meaning when combined with the passage's negator or concessive construction; the student selected the option by reading the surrounding words without applying the negator to the target blank
+- `local_semantic_role_mismatch` — word or phrase is topically plausible but fails the target word's local function in the sentence logic
+- `tone_register_mismatch` — option has the right broad meaning but the wrong level of formality, stance, or evaluative force
+- `rhetorical_scope_shift` — option describes a true local detail as if it were the whole passage purpose, or describes the global purpose when the stem asks for a local function
+- `author_action_misclassification` — option names the right content but assigns the wrong rhetorical action, such as "refute" instead of "qualify"
+- `evidence_relationship_blend` — Cross-Text option merges agreement, disagreement, qualification, or methodological critique into a simpler relationship than the texts support
+- `attribution_blend` — Cross-Text option combines a claim from one text with evidence, method, or attitude from the other text
+- `agreement_degree_mismatch` — Cross-Text option overstates or understates the degree of agreement between the two texts
 
 ---
 
@@ -558,6 +626,21 @@ Each option must include:
 - `wrong_action_verb`
 - `reversed_attribution`
 - `confirmed_when_contradicted`
+- `wrong_table_row_or_column`
+- `wrong_group_comparison`
+- `single_measure_focus`
+- `local_maximum_trap`
+- `same_direction_assumption`
+- `absolute_value_confusion`
+- `constraint_ignored`
+- `individual_inference_from_aggregate_bins`
+- `local_semantic_role_mismatch`
+- `tone_register_mismatch`
+- `rhetorical_scope_shift`
+- `author_action_misclassification`
+- `evidence_relationship_blend`
+- `attribution_blend`
+- `agreement_degree_mismatch`
 - `cause_effect_misalignment`
 - `contradiction`
 
@@ -1137,6 +1220,8 @@ When generating a reading item, specify:
 {
   "target_skill_family_key": "command_of_evidence_textual",
   "target_reading_focus_key": "evidence_supports_claim",
+  "target_test_construct_key": "evidence_relation_precision",
+  "target_craft_subconstruct_key": null,
   "target_reasoning_trap_key": "topical_relevance_without_logical_connection",
   "target_distractor_pattern": [
     "one topically related but logically disconnected option",
@@ -1158,7 +1243,67 @@ Do not generate four random options. Each distractor must have a deliberate reas
 - A plausibility source (`plausibility_source_key`)
 - A clear, articulable error (`why_wrong`)
 
-### 16.3 Generation must match SAT style
+For every generated reading item, design the three distractors as:
+
+1. one primary trap distractor targeting `target_reasoning_trap_key`
+2. one surface-plausible distractor sharing topic, vocabulary, or form with the
+   correct answer but failing the construct
+3. one precision distractor that is almost right but fails by scope, polarity,
+   attribution, or relationship degree
+
+All three distractors must be incorrect, plausible, and mutually distinct. Do
+not create filler answers that are obviously unrelated, grammatically malformed,
+or implausible on first read.
+
+### 16.3 Craft construct-specific distractor requirements
+
+**Words in Context**
+
+- Generate at least one distractor that fits the topic but fails the local
+  semantic role (`local_semantic_role_mismatch`).
+- Generate at least one distractor that is a plausible synonym in isolation but
+  fails tone, register, connotation, polarity, or precision.
+- If the passage includes negation, concession, or double-negative logic, include
+  `polarity_context` and make `wic_polarity_logic` the construct.
+
+**Text Structure and Purpose**
+
+- Generate distractors that preserve passage topic overlap but misidentify
+  rhetorical function, scope, or author action.
+- At least one distractor should be a true detail from the passage that is not
+  the requested function or main purpose (`rhetorical_scope_shift`).
+- Avoid answers that can be eliminated only because they mention an unrelated
+  topic; those are not competitive SAT-style distractors.
+
+**Cross-Text Connections**
+
+- Generate distractors that mix attribution, agreement degree, disagreement,
+  qualification, method, or evidence relationships across Text 1 and Text 2.
+- At least one distractor should be `attribution_blend` or
+  `reversed_attribution`.
+- At least one distractor should fail by relationship degree
+  (`agreement_degree_mismatch` or `evidence_relationship_blend`), not by topic.
+
+### 16.4 Distractor quality gate
+
+Before finalizing options, verify:
+
+- **Incorrectness:** each distractor is clearly wrong for a named reason in
+  `why_wrong`; no distractor is defensibly co-correct
+- **Plausibility:** each distractor maps to a common partial-reading mistake and
+  has a non-null `plausibility_source_key`
+- **Diversity:** no two distractors express the same wrong idea or fail through
+  the same reasoning path
+- **Construct alignment:** every wrong answer fails the target construct rather
+  than failing because of random topic mismatch
+- **Clue control:** the key is not consistently longer, more precise, more
+  academic, or more grammatically polished than the distractors
+- **Option homogeneity:** all options share comparable syntax, abstraction
+  level, register, and semantic category
+- **Separation margin:** the key must remain the single best answer, but hard
+  items should have at least two distractors that survive first-pass elimination
+
+### 16.5 Generation must match SAT style
 
 Generated items must be:
 
@@ -1168,7 +1313,7 @@ Generated items must be:
 - Free of trivia — the question tests reasoning, not prior knowledge
 - One correct answer only — the three distractors must be unambiguously wrong on the tested reasoning
 
-### 16.4 Generation must respect stem wording conventions
+### 16.6 Generation must respect stem wording conventions
 
 Use only the approved `stem_type_key` wording conventions from §3.2. Do not paraphrase
 or invent new stem variants. SAT authenticity depends on recognizable stem patterns.
@@ -1177,7 +1322,7 @@ or invent new stem variants. SAT authenticity depends on recognizable stem patte
 phrase" (blank-fill format) as the default, not "most nearly mean" (underlined format),
 because the blank-fill format is the dominant contemporary variant.
 
-### 16.5 Cross-Text Connections generation constraints
+### 16.7 Cross-Text Connections generation constraints
 
 - Always generate two separate labeled passages (Text 1 and Text 2)
 - Each passage must have a clear, standalone main argument
@@ -1203,7 +1348,7 @@ For `confirmation_with_qualification` items:
   calibrated at `difficulty_overall: "high"` unless the concession
   and restriction are both stated in single sentences
 
-### 16.6 Generation profile extension fields (added in v2 from v1.1 §12)
+### 16.8 Generation profile extension fields (added in v2 from v1.1 §12)
 
 For reading generation profiles, add these optional fields that are
 mandatory when the corresponding condition applies:
@@ -1303,6 +1448,10 @@ Use in `why_plausible` and `review_notes` to diagnose distractor effectiveness.
 - `connotation_surface_match` — student selects a word whose common
   dictionary meaning matches the topic but whose connotation
   (evaluative, emotional, or tonal charge) mismatches the passage's stance
+- `local_role_misread` — student selects a word that belongs to the same
+  semantic field but does not perform the required logical role in the sentence
+- `register_tone_blindness` — student ignores whether the option's formality,
+  stance, or evaluative charge matches the passage
 
 ### 19.2 Quantitative failure modes
 
@@ -1317,6 +1466,22 @@ Use in `why_plausible` and `review_notes` to diagnose distractor effectiveness.
 - `wrong_comparison_direction` — student selects data that supports
   the opposite comparison (e.g., lowest when highest is required, or
   the smaller group when the larger is required)
+- `wrong_group_selected` — student uses data from the wrong control group,
+  treatment group, population, category, or comparison baseline
+- `wrong_row_column_lookup` — student reads from the right table or graph but
+  uses the wrong row, column, category, bar, or plotted point
+- `single_measure_overread` — student chooses a value that satisfies one
+  measure but does not check all measures required by the claim
+- `local_maximum_overread` — student chooses a locally high value rather than
+  the highest value across the full required interval or set
+- `same_direction_assumption` — student assumes two variables move together
+  when the data show opposite or divergent trends
+- `absolute_value_overweighting` — student focuses on absolute counts or
+  amounts when the correct answer depends on percentages, proportions, or
+  composition
+- `constraint_ignored` — student selects an answer that is accurate in
+  isolation but violates a stated timing, population, measurement, or
+  comparison constraint
 
 ### 19.3 Command of Evidence failure modes
 
@@ -1344,25 +1509,54 @@ Use in `why_plausible` and `review_notes` to diagnose distractor effectiveness.
 - `rhetorical_verb_partial` — student selects an option whose content
   description is accurate but whose action verb is wrong (e.g., "to
   introduce" when the function is "to challenge")
+- `scope_role_confusion` — student confuses local function with global purpose,
+  or treats a supporting example as the passage's main rhetorical goal
+- `author_action_overread` — student upgrades a neutral action such as
+  "describe" or "explain" into a stronger action such as "criticize" or
+  "advocate"
 
-### 19.6 Summary: all 14 approved failure mode keys
+### 19.6 Cross-Text failure modes
+
+- `attribution_swap` — student assigns a claim, method, evidence, or attitude
+  from Text 1 to Text 2 or vice versa
+- `agreement_degree_overread` — student treats qualified agreement, partial
+  support, or methodological critique as full agreement or full contradiction
+- `relationship_simplification` — student collapses a nuanced relationship
+  such as "supports with a limitation" into a simpler relation such as
+  "supports" or "contradicts"
+
+### 19.7 Summary: all 28 approved failure mode keys
 
 | # | Key | Domain |
 |---|-----|--------|
 | 1 | `negation_blindness` | Words in Context |
 | 2 | `polarity_blindness` (synonym of #1) | Words in Context |
 | 3 | `connotation_surface_match` | Words in Context |
-| 4 | `exact_value_misread` | Quantitative CoE |
-| 5 | `wrong_time_window` | Quantitative CoE |
-| 6 | `individual_from_aggregate` | Quantitative CoE |
-| 7 | `all_measures_not_checked` | Quantitative CoE |
-| 8 | `wrong_comparison_direction` | Quantitative CoE |
-| 9 | `two_part_claim_partial_match` | CoE-Textual |
-| 10 | `control_group_misidentification` | CoE-Textual |
-| 11 | `evidence_scope_mismatch` | CoE-Textual |
-| 12 | `subgroup_overgeneralization` | Inferences |
-| 13 | `parenthetical_function_confusion` | Text Structure and Purpose |
-| 14 | `rhetorical_verb_partial` | Text Structure and Purpose |
+| 4 | `local_role_misread` | Words in Context |
+| 5 | `register_tone_blindness` | Words in Context |
+| 6 | `exact_value_misread` | Quantitative CoE |
+| 7 | `wrong_time_window` | Quantitative CoE |
+| 8 | `individual_from_aggregate` | Quantitative CoE |
+| 9 | `all_measures_not_checked` | Quantitative CoE |
+| 10 | `wrong_comparison_direction` | Quantitative CoE |
+| 11 | `wrong_group_selected` | Quantitative CoE |
+| 12 | `wrong_row_column_lookup` | Quantitative CoE |
+| 13 | `single_measure_overread` | Quantitative CoE |
+| 14 | `local_maximum_overread` | Quantitative CoE |
+| 15 | `same_direction_assumption` | Quantitative CoE |
+| 16 | `absolute_value_overweighting` | Quantitative CoE |
+| 17 | `constraint_ignored` | Quantitative CoE |
+| 18 | `two_part_claim_partial_match` | CoE-Textual |
+| 19 | `control_group_misidentification` | CoE-Textual |
+| 20 | `evidence_scope_mismatch` | CoE-Textual |
+| 21 | `subgroup_overgeneralization` | Inferences |
+| 22 | `parenthetical_function_confusion` | Text Structure and Purpose |
+| 23 | `rhetorical_verb_partial` | Text Structure and Purpose |
+| 24 | `scope_role_confusion` | Text Structure and Purpose |
+| 25 | `author_action_overread` | Text Structure and Purpose |
+| 26 | `attribution_swap` | Cross-Text Connections |
+| 27 | `agreement_degree_overread` | Cross-Text Connections |
+| 28 | `relationship_simplification` | Cross-Text Connections |
 
 ---
 
@@ -1408,6 +1602,15 @@ question, confirm:
 - [ ] `precision_score: 3` is assigned only to the correct option
 - [ ] `evidence_span_text` identifies the passage span anchoring the correct answer
 - [ ] `annotation_confidence` is populated in `review`
+- [ ] `target_test_construct_key` is populated for generated reading-domain items
+- [ ] `target_craft_subconstruct_key` is populated for generated Craft and Structure items
+- [ ] No distractor is defensibly co-correct with the key
+- [ ] The three distractors fail through distinct `reasoning_trap_key` or
+      `distractor_type_key` values
+- [ ] The correct answer is not exposed by length, register, option shape,
+      grammatical polish, or repeated wording from the stem
+- [ ] All four options are homogeneous in syntax, abstraction level, register,
+      and semantic category
 
 ### 21.1 Additional validator checks (added in v2 from v1.1 §11)
 
@@ -1426,6 +1629,13 @@ question, confirm:
 - [ ] For quantitative items where `quantitative_sub_pattern` is
       `timing_constrained`, at least one distractor is annotated with
       `distractor_type_key` corresponding to `wrong_time_window`
+- [ ] For quantitative items where a claim names a group, baseline, treatment,
+      or condition, at least one distractor tests `wrong_group_comparison`
+- [ ] For quantitative items where all measures or the full interval must be
+      checked, no option is accepted based on a single local value, local
+      maximum, or single measure
+- [ ] For quantitative items involving percentages or composition, distractors
+      distinguish absolute-value changes from proportional changes
 - [ ] For quantitative items where `quantitative_sub_pattern` is
       `binned_distribution`, no distractor or correct option infers
       individual-level information from the aggregate graphic
@@ -1438,6 +1648,14 @@ question, confirm:
 - [ ] For items on `experiment_hypothesis_control_result` architecture,
       the correct option addresses the specific group (experimental or
       control) named in the claim, not the general topic
+- [ ] For Words in Context items, at least one distractor fails by local
+      semantic role, tone/register, connotation, or polarity rather than by
+      unrelated meaning
+- [ ] For Text Structure and Purpose items, at least one distractor preserves
+      topic overlap but fails by rhetorical scope, sentence function, or author
+      action
+- [ ] For Cross-Text items, at least one distractor fails by attribution,
+      agreement degree, evidence relationship, or response-to-claim precision
 
 ---
 
