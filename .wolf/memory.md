@@ -3,6 +3,7 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 | 16:14 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/feedback_debug-log-workflow.md | — | ~207 |
+| session | Exhaustive gap-fill: grammar v7 +B.3/B.4 rules for 5 promoted keys, 2 new syntactic traps, 5 failure modes, checks 26–29, D.3 rule 17; reading v2 +figurative WIC key, polarity_resolution mech, 5 TSP verbs, 3 passage archs, CoE-T vs CID disambiguation, false_concession_trap, causal_specification | rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md | success | ~110k |
 | 13:39 | Created plan_benchmarking_backend.md — benchmark dir plan with runners + HTMX dashboard | plan_benchmarking_backend.md | ~600 |
 | 16:14 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_backend-option-versioning.md | — | ~247 |
 | 16:14 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_dual-user-routers.md | — | ~210 |
@@ -20,6 +21,7 @@
 | 21:16 | Located trap/failure-mode sections in reading and grammar rule files | rules_agent_dsat_reading_v2.md, rules_agent_dsat_grammar_ingestion_generation_v7.md | Identified exact sections/line ranges for reasoning traps, syntactic traps, and distractor engineering | ~2500 |
 | 21:22 | Ported answer-obfuscation gaps into rule files | rules_agent_dsat_reading_v2.md, rules_agent_dsat_grammar_ingestion_generation_v7.md | Added reading construct/trap/failure-mode taxonomy and shared option-quality gate; fixed heading numbering | ~4500 |
 | 21:28 | Compared CB answer analysis recommendations to current rules and added remaining gaps | CB_ANSWERS_QUESTIONS_ANALYSIS.md, rules_agent_dsat_reading_v2.md, rules_agent_dsat_grammar_ingestion_generation_v7.md | Added quantitative traps/failure modes and notes synthesis goal/content/failure keys | ~6500 |
+| 21:45 | Exhaustive gap-fill audit — applied 21 targeted edits across grammar v7 and reading v2 | rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md | Added B.3/B.4/B.13/C.1.3/D.3/D.5/D.7/D.8.3 grammar additions; §2.3/§7.5/§8/§9/§10.2/§11/§12.1/§13.6/§15.2/§17/§19.1/§19.7/§21.1 reading additions | ~18000 |
 | 16:25 | Edited backend/tests/test_backend_regressions.py | modified test_delete_user_removes_progress_before_user_delete() | ~526 |
 | 16:26 | Edited backend/tests/test_student_router.py | modified test_student_stats_empty() | ~192 |
 | 16:26 | Edited backend/tests/test_admin_router.py | modified test_admin_eval_score_not_found() | ~175 |
@@ -341,3 +343,57 @@
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
 | 21:32 | Exhaustive trap/test-construct audit | CB_ANSWERS_QUESTIONS_ANALYSIS.md, rules_agent_dsat_reading_v2.md, rules_agent_dsat_grammar_ingestion_generation_v7.md | Added missing quantitative traps/failure modes, validator checks, and notes-synthesis metadata to the correct rule files; verified with rg and diff stat | ~9000 |
+| 21:42 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | expanded (+43 lines) | ~842 |
+| 21:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | expanded (+80 lines) | ~1143 |
+
+## Session: 2026-05-15 21:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | 5→9 lines | ~287 |
+| 21:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | inline fix | ~119 |
+| 21:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | 3→4 lines | ~135 |
+| 21:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | 4→6 lines | ~154 |
+| 21:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | expanded (+19 lines) | ~325 |
+| 21:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | inline fix | ~91 |
+| 21:43 | Edited rules_agent_dsat_reading_v2.md | 4→5 lines | ~129 |
+| 21:44 | Edited rules_agent_dsat_reading_v2.md | 10→12 lines | ~322 |
+| 21:44 | Edited rules_agent_dsat_reading_v2.md | 5→6 lines | ~97 |
+| 21:44 | Edited rules_agent_dsat_reading_v2.md | 5→7 lines | ~156 |
+| 21:44 | Edited rules_agent_dsat_reading_v2.md | modified established() | ~203 |
+| 21:44 | Edited rules_agent_dsat_reading_v2.md | 5→6 lines | ~100 |
+| 21:44 | Edited rules_agent_dsat_reading_v2.md | 6→8 lines | ~40 |
+| 21:44 | Edited rules_agent_dsat_reading_v2.md | 4→9 lines | ~264 |
+| 21:44 | Edited rules_agent_dsat_reading_v2.md | 3→6 lines | ~275 |
+| 21:45 | Edited rules_agent_dsat_reading_v2.md | 6→9 lines | ~262 |
+| 21:45 | Edited rules_agent_dsat_reading_v2.md | modified the() | ~115 |
+| 21:45 | Edited rules_agent_dsat_reading_v2.md | 9→10 lines | ~113 |
+| 21:45 | Edited rules_agent_dsat_reading_v2.md | 6→7 lines | ~138 |
+| 21:47 | Session end: 19 writes across 2 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md) | 1 reads | ~25534 tok |
+| 21:48 | Session end: 19 writes across 2 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md) | 3 reads | ~71617 tok |
+| 21:51 | Session end: 19 writes across 2 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md) | 3 reads | ~71617 tok |
+| 21:55 | Session end: 19 writes across 2 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md) | 3 reads | ~71617 tok |
+
+## Session: 2026-05-15 22:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:01 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | expanded (+10 lines) | ~208 |
+| 22:01 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | expanded (+9 lines) | ~225 |
+| 22:02 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | expanded (+11 lines) | ~215 |
+| 22:02 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | expanded (+9 lines) | ~171 |
+| 22:02 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | expanded (+21 lines) | ~355 |
+| 22:02 | Added B.3 secondary trap patterns (SVA, tense, comma, semicolon) + B.9 diversity gate | rules_agent_dsat_grammar_ingestion_generation_v7.md | complete | ~600 |
+| 22:02 | Session end: 5 writes across 1 files (rules_agent_dsat_grammar_ingestion_generation_v7.md) | 1 reads | ~27856 tok |
+| 22:35 | Session end: 5 writes across 1 files (rules_agent_dsat_grammar_ingestion_generation_v7.md) | 2 reads | ~28686 tok |
+| 22:41 | Session end: 5 writes across 1 files (rules_agent_dsat_grammar_ingestion_generation_v7.md) | 2 reads | ~28686 tok |
+| 22:42 | Session end: 5 writes across 1 files (rules_agent_dsat_grammar_ingestion_generation_v7.md) | 2 reads | ~28686 tok |
+| 22:48 | Session end: 5 writes across 1 files (rules_agent_dsat_grammar_ingestion_generation_v7.md) | 2 reads | ~28686 tok |
+| 22:48 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | removed 10 lines | ~6 |
+| 22:48 | Session end: 6 writes across 1 files (rules_agent_dsat_grammar_ingestion_generation_v7.md) | 2 reads | ~28692 tok |
+| 22:51 | Edited rules_agent_dsat_grammar_ingestion_generation_v7.md | expanded (+9 lines) | ~193 |
+| 22:51 | Session end: 7 writes across 1 files (rules_agent_dsat_grammar_ingestion_generation_v7.md) | 2 reads | ~28773 tok |
+| 22:55 | Audited active rule files for classification/generation completeness | rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md, backend/app/prompts/generate_prompt.py, backend/app/prompts/annotate_prompt.py | Found strong corpus coverage but remaining operational gaps: generation prompt truncation, missing per-key generation/distractor sections, internal syntactic-trap inconsistencies, and reading disambiguation extraction omission | ~12000 |
+| 23:05 | Fixed prompt loading and per-key generation gaps | backend/app/prompts/generate_prompt.py, backend/app/prompts/annotate_prompt.py, backend/tests/test_prompts.py, rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md | Replaced truncating loader with targeted section extraction, fixed reading section extraction, added grammar B.3/B.4 coverage for all production focus keys, added reading 16.9 per-focus recipes, normalized trap keys, and verified with prompt tests/scans | ~14000 |
+| 23:06 | Ran backend verification | backend/tests, backend/test_ocr_live.py | `uv run pytest tests` passed 237/237 with 2 skipped; full `uv run pytest` still collects preexisting live OCR helpers that lack an `image` fixture | ~3000 |
+| 23:12 | Updated changelog for all post-commit changes | CHANGELOG.md | Added top-level 2026-05-15 entry covering prompt loader fixes, rule-file completeness updates, reading refinements, tests, known OCR caveat, and Wolf metadata | ~2500 |

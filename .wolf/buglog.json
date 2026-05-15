@@ -554,6 +554,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-14T21:22:03-07:00"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-05-15T22:55:00-07:00",
+      "error_message": "Generation prompt truncates active rule files before generation and validation sections",
+      "file": "backend/app/prompts/generate_prompt.py",
+      "root_cause": "_RULE_SNIPPET_LIMIT is 6000 chars per file, which cuts grammar v7 near line 191 and reading v2 near line 165.",
+      "fix": "Replaced first-6000-char truncation with targeted section extraction for generation-critical grammar and reading sections; verified B.4, B.13, reading 16.9, and reading 21 load into the generation context.",
+      "tags": [
+        "runtime-gap",
+        "generation",
+        "rule-loading"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T23:05:00-07:00"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-05-15T22:55:00-07:00",
+      "error_message": "Reading annotation prompt does not include section 17 disambiguation rules",
+      "file": "backend/app/prompts/annotate_prompt.py",
+      "root_cause": "_extract_between(text, section, \"##\") finds the current heading as the end marker for section 17, returning an empty chunk.",
+      "fix": "Changed _extract_between to search for the end marker after the start marker, so section 17 no longer ends on its own heading; verified _reading_context includes disambiguation rules.",
+      "tags": [
+        "runtime-gap",
+        "annotation",
+        "rule-loading"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T23:05:00-07:00"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-05-15T23:05:00-07:00",
+      "error_message": "pytest path used repo-root prefix while workdir was backend",
+      "file": "test command",
+      "root_cause": "Ran uv run pytest backend/tests/test_prompts.py from /home/jb/DSAT_REDUX_MD/backend, so pytest looked for backend/backend/tests/test_prompts.py.",
+      "fix": "Reran as uv run pytest tests/test_prompts.py from backend; all prompt tests passed.",
+      "tags": [
+        "command-error",
+        "tests",
+        "path"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T23:05:00-07:00"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-05-15T23:06:00-07:00",
+      "error_message": "Full backend pytest collection includes live OCR tests with missing image fixture",
+      "file": "backend/test_ocr_live.py",
+      "root_cause": "Running uv run pytest from backend collects test_ocr_live.py, whose async live-provider helpers are named as tests and require fixtures not defined in the normal test environment.",
+      "fix": "Not fixed in this task; verified the normal backend tests with uv run pytest tests instead, which passed.",
+      "tags": [
+        "tests",
+        "live-ocr",
+        "preexisting"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-15T23:06:00-07:00"
     }
   ]
 }

@@ -71,7 +71,7 @@ def _extract_between(text: str, start_marker: str, end_marker: str | None = None
     if start == -1:
         return ""
     if end_marker:
-        end = text.find(end_marker, start)
+        end = text.find(end_marker, start + len(start_marker))
         return text[start:end] if end != -1 else text[start:]
     return text[start:]
 

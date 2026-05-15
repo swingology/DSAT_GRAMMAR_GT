@@ -5,6 +5,119 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-15 — Prompt loader and DSAT rules completeness pass
+
+**Model:** OpenAI Codex (`gpt-5`)
+**Branch:** `main`
+**Base commit:** `dd18673 Expand DSAT trap and construct rules`
+
+Post-commit audit and implementation pass to make the active DSAT rule files usable
+for both real-question classification and realistic generation from ground-truth
+patterns. Normal backend test suite passes: `237 passed, 2 skipped`.
+
+### Fix 1 — Generation prompt loader truncated active rule files
+**Change:** Replaced the first-6,000-character rule loader with targeted section
+extraction for generation-critical Grammar v7 and Reading v2 sections. Added
+domain inference so grammar generation loads grammar rules, reading generation
+loads reading rules, and ambiguous requests load both.
+**File:** `backend/app/prompts/generate_prompt.py`
+**Why:** The old loader cut Grammar v7 around the schema section and Reading v2
+around construct-key definitions, excluding the late generation, distractor, and
+validator sections needed for realistic item generation.
+
+### Fix 2 — Reading annotation prompt omitted §17 disambiguation rules
+**Change:** `_extract_between()` now searches for the end marker after the start
+marker instead of matching the current heading as its own end.
+**File:** `backend/app/prompts/annotate_prompt.py`
+**Why:** Reading §17 was present in the file but not reliably loaded into the
+annotation prompt, weakening classification for ambiguous reading/evidence cases.
+
+### Fix 3 — Prompt tests now guard late-section loading
+**Change:** Added tests that assert annotation includes Reading §17 and generation
+includes Grammar B.4, Reading §16.9, and Reading §21.
+**File:** `backend/tests/test_prompts.py`
+**Why:** Prevents regression to truncated or incomplete rule context.
+
+### Rules update 1 — Grammar v7 per-key generation/distractor completeness
+**Change:** Expanded Grammar v7 B.3 passage-construction rules and B.4 distractor
+heuristics so every production `grammar_focus_key` mapped in D.8 has a generation
+recipe and distractor table.
+**File:** `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+**Includes:**
+- Added B.3 generation guidance for umbrella or previously under-specified keys:
+  `verb_form`, `sentence_boundary`, `redundancy_concision`,
+  `precision_word_choice`, `register_style_consistency`, `logical_relationships`,
+  `emphasis_meaning_shifts`, `data_interpretation_claims`, `conjunction_usage`,
+  and `elliptical_constructions`.
+- Added B.4 distractor tables for missing production keys, including sentence
+  boundary subtypes, verb form, voice, negation, countability, determiners,
+  affirmative agreement, conjunctions, ellipsis, expression-of-ideas word choice,
+  data claims, and transitions.
+- Added secondary generation trap patterns for subject-verb agreement, tense,
+  comma, and semicolon items.
+- Normalized `syntactic_trap_key` examples to approved D.5/backend-compatible
+  keys and moved narrower labels into subpattern notes.
+- Kept B.4 plausibility sources inside the approved grammar plausibility source
+  vocabulary.
+
+### Rules update 2 — Reading v2 per-focus generation coverage
+**Change:** Added Reading §16.9, a per-focus generation and distractor recipe
+matrix for every approved `reading_focus_key`, plus construct-binding rules.
+**File:** `rules_agent_dsat_reading_v2.md`
+**Includes:**
+- Generation recipes for textual evidence, quantitative evidence, central ideas,
+  inferences, WIC, text structure/purpose, and cross-text focus keys.
+- Required distractor behavior for each focus key, including wrong-claim evidence,
+  wrong-group data, local maximum, absolute/proportional confusion, true-detail
+  traps, rhetorical-scope errors, attribution swaps, and relationship-degree errors.
+- Construct binding for `contextual_semantic_precision`,
+  `rhetorical_function_precision`, `cross_text_relationship_precision`,
+  `evidence_relation_precision`, `inference_boundary_control`,
+  `quantitative_constraint_tracking`, and `figurative_interpretation_precision`.
+
+### Rules update 3 — Additional Reading v2 realism refinements
+**Change:** Added missing reading refinements discovered during the completeness
+audit.
+**File:** `rules_agent_dsat_reading_v2.md`
+**Includes:**
+- Added `figurative_language_meaning`, `figurative_interpretation_precision`,
+  `figurative_literal_confusion`, and `figurative_meaning_blindness`.
+- Added `causal_specification` for cross-text cases where Text 2 explains the
+  mechanism behind Text 1's phenomenon.
+- Added `false_concession_trap` for cross-text distractors that invent
+  qualification or partial concession.
+- Added `polarity_resolution` and `apply_negation_logic` support for WIC polarity.
+- Expanded rhetorical verbs with `to examine`, `to question`, `to introduce`,
+  `to summarize`, and `to distinguish`.
+- Added passage architecture patterns: `analogy_driven_argument`,
+  `multi_perspective_presentation`, and `qualification_restatement`.
+- Added disambiguation for `command_of_evidence_textual` vs.
+  `central_ideas_and_details` / `supporting_detail`.
+
+### Verification
+- `uv run pytest tests/test_prompts.py` → `4 passed`
+- `uv run pytest tests` → `237 passed, 2 skipped`
+- Structural scans confirmed:
+  - no missing Grammar B.3 sections for D.8 production focus keys
+  - no missing Grammar B.4 sections for D.8 production focus keys
+  - no unapproved `syntactic_trap_key` examples in Grammar v7
+  - no missing Reading §16 generation coverage for §7 reading focus keys
+  - no missing Reading §16 construct coverage for §2.3 test construct keys
+- `git diff --check` passed.
+
+### Known test caveat
+Full `uv run pytest` still collects preexisting live OCR helpers in
+`backend/test_ocr_live.py`; those functions require an `image` fixture that is
+not part of the normal test environment. The normal backend suite under
+`backend/tests` passes.
+
+### Wolf metadata
+Updated OpenWolf audit files for this work:
+`.wolf/anatomy.md`, `.wolf/buglog.json`, `.wolf/cerebrum.md`,
+`.wolf/hooks/_session.json`, `.wolf/memory.md`, and `.wolf/token-ledger.json`.
+
+---
+
 ## 2026-05-11 — Ingestion pipeline gap fixes (round 4)
 
 **Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)

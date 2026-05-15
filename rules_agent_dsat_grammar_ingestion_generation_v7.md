@@ -392,6 +392,16 @@ Run all 25 checks from B.13 before emitting output.
 Use a singular collective, abstract, or inverted subject. Insert a plural
 prepositional object or appositive between subject and verb.
 
+**Secondary trap patterns:**
+- *Inversion* — place the verb before the subject ("Among the central findings
+  **is/are** the claim that…"). Distractors exploit the plural noun immediately
+  preceding the verb.
+- *Collective noun + atypical predicate* — subject is a collective ("the
+  committee," "the data set") paired with a predicate that takes a bare
+  infinitive or participle, so number marking is less salient.
+- *Neither/nor compound* — "Neither the director nor the producers **was/were**
+  informed." Distractors use the nearer-noun agreement heuristic incorrectly.
+
 ### `pronoun_antecedent_agreement`
 
 Use a singular antecedent that looks plural ("the team," "everyone"). Place a
@@ -407,6 +417,27 @@ Target verb describes a character's action or the text's pattern. Correct
 option: simple present. Wrong options: simple past, present perfect, past
 perfect. Classify with `passage_tense_register_key: "literary_present"`.
 
+**Secondary trap patterns:**
+- *Scientific-present interrupted by historical narrative* — passage mixes
+  present-tense scientific generalization with a past-tense anecdote; the blank
+  straddles the boundary. Distractors import the anecdote's past tense into the
+  general claim.
+- *Past-perfect time shift* — two sequenced past events require past perfect for
+  the earlier one ("By the time X occurred, Y **had established/established**
+  the pattern"). Distractors offer simple past, conflating temporal ordering.
+
+### `verb_form`
+
+Use the umbrella `verb_form` focus when the tested convention is finite vs.
+nonfinite form, modal-governed base form, auxiliary construction, or verb form
+after an opening phrase rather than tense alone. Prefer one of the documented
+subpatterns below: `finite_verb_in_relative_clause`,
+`finite_verb_in_main_clause`, or `modal_plus_plain_form`.
+
+Correct option: the only verb form that can serve the required syntactic role.
+Wrong options: participle, infinitive, inflected form after a modal, or a verb
+form that leaves the sentence without a finite main predicate.
+
 ### `modifier_placement` / `dangling_modifier`
 
 Start with a participial phrase whose logical subject is not the grammatical
@@ -417,10 +448,33 @@ subject.
 Create a compound sentence with or without a coordinating conjunction. Test
 FANBOYS comma, introductory phrase comma, or nonrestrictive element comma.
 
+**Secondary trap patterns:**
+- *Introductory-clause comma* — open with a subordinate clause ("Although the
+  study was small, **[blank]** the results were significant"). Distractors omit
+  the comma or place it mid-clause. Classify with
+  `syntactic_trap_key: "early_clause_anchor"` and note
+  `punctuation_subpattern: "introductory_clause_comma"`.
+- *Nonrestrictive-element comma* — embed an optional relative clause or
+  participial phrase ("The researcher, **who had studied the region for a
+  decade**, concluded…"). Distractors make the element restrictive by omitting
+  one or both commas. Classify with
+  `syntactic_trap_key: "modifier_attachment_ambiguity"` and note
+  `punctuation_subpattern: "nonrestrictive_element_comma"`.
+
 ### `semicolon_use`
 
 Use two closely related independent clauses. Place a transitional phrase
 after the semicolon zone.
+
+**Secondary trap patterns:**
+- *Conjunctive adverb pattern* — place a conjunctive adverb ("however,"
+  "therefore," "consequently") between the two independent clauses: "The data
+  were inconclusive**; however,** the team proceeded." The required form is
+  semicolon before + comma after the adverb. Distractors use a comma-only
+  splice before the adverb, or omit the post-adverb comma, or replace the
+  semicolon with a colon. Classify with
+  `syntactic_trap_key: "early_clause_anchor"` and note
+  `punctuation_subpattern: "conjunctive_adverb_semicolon"`.
 
 ### `apostrophe_use`
 
@@ -582,6 +636,17 @@ Annotation note: Use `grammar_role_key: "pronoun"`,
 `grammar_focus_key: "pronoun_antecedent_agreement"`, and add to
 `review_notes`: "antecedent is a full clause/event, not a noun."
 
+### `sentence_boundary`
+
+Use this umbrella focus only when the item tests whether clauses should be
+joined, separated, or completed, but the official source does not cleanly map to
+only `sentence_fragment`, `comma_splice`, or `run_on_sentence`. Build the item
+around two clause units whose independence must be diagnosed.
+
+Correct option: produces one or more complete, correctly bounded sentences.
+Wrong options: create a fragment, comma splice, fused sentence, or boundary that
+breaks an essential modifier from its clause.
+
 ### `sentence_fragment`
 
 Subordinate clause presented as a complete sentence.
@@ -637,6 +702,126 @@ or literary work. Write a stem specifying the rhetorical goal. See B.6 for
 metadata fields. Each distractor must fail via a distinct
 `synthesis_distractor_failure` value.
 
+### `redundancy_concision`
+
+Construct a sentence where several options express the same core idea with
+different amounts of repetition or unnecessary wording. The correct answer is
+the most concise option that preserves all required meaning and logical
+relationships.
+
+Wrong options repeat a noun or idea already present, add a redundant modifier,
+or delete a necessary qualifier while becoming shorter.
+
+### `precision_word_choice`
+
+Create a context where several real words share a broad semantic field but only
+one has the exact denotation, connotation, or selectional fit required by the
+sentence. Do not use commonly confused pair items here; those belong to
+`commonly_confused_words`.
+
+Wrong options are grammatically viable and topic-related but too broad, too
+strong, too weak, or mismatched to the noun/verb they modify.
+
+### `register_style_consistency`
+
+Use a formal academic sentence or passage with a blank where only one option
+matches the established register, stance, and idiomatic style. The correct
+option should be natural in College Board explanatory prose.
+
+Wrong options include conversational phrasing, inflated pseudo-academic diction,
+technical diction from the wrong field, or a tone shift that clashes with the
+surrounding passage.
+
+### `logical_relationships`
+
+Construct adjacent clauses or sentences where the blank must preserve a cause,
+contrast, concession, condition, example, or continuation relationship. Use this
+focus when the tested expression is not a standalone transition word covered by
+`transition_logic`.
+
+Wrong options signal the wrong relationship, reverse cause and effect, overstate
+certainty, or connect two ideas that the passage keeps separate.
+
+### `emphasis_meaning_shifts`
+
+Create a sentence where word order, modifier placement, or phrase choice changes
+what information is emphasized. The correct option foregrounds the fact named in
+the stem without changing the underlying claim.
+
+Wrong options are factually compatible but emphasize the wrong actor, quantity,
+contrast, time period, or implication.
+
+### `data_interpretation_claims`
+
+Use a short table, graph, or data description with a sentence that must
+accurately state a claim supported by the data. The correct option names the
+right variable, group, direction, and constraint.
+
+Wrong options cite real values while using the wrong comparison, wrong group,
+wrong time window, or wrong proportional/absolute interpretation.
+
+### `conjunction_usage`
+
+Build a sentence where a subordinating, coordinating, or correlative conjunction
+determines the logical relation between clauses. The correct option supplies the
+only conjunction or paired conjunction that preserves the intended relationship
+and syntax.
+
+Wrong options are grammatically possible but signal the wrong relation, leave a
+correlative pair incomplete, or create a clause-type mismatch.
+
+### `elliptical_constructions`
+
+Use a comparison or parallel structure where repeated words are omitted
+legitimately only if the remaining structure is still recoverable and parallel.
+The correct option preserves the omitted material's role without ambiguity.
+
+Wrong options omit too much, omit from only one side of a comparison, or create
+an elliptical phrase whose missing words would not match the prior structure.
+
+### `comparative_structures`
+
+Use two items in an explicit "more/less/better than" comparison where one element is a noun and the other is an action, process, or dissimilar form. The trap: students do not notice the compared terms are structurally mismatched.
+
+Correct option: uses "that of" or "those of" or a matched parallel noun form.
+Wrong options: preserve the bare unparalleled comparison in varied surface forms.
+
+### `illogical_comparison`
+
+Construct a sentence comparing a noun directly to an action, process, or dissimilar category (e.g., "the revenue of Company X exceeded Company Y"). The error is logical, not formal: both elements exist but they belong to different categories.
+
+Correct option: inserts "that of" or restructures so both compared items are the same grammatical and logical category.
+Wrong options: preserve the illogical pairing in different surface wordings.
+
+Classification: `grammar_role_key: "modifier"`, `grammar_focus_key: "illogical_comparison"`.
+
+### `adjective_adverb_distinction`
+
+**Variant A — linking verb:** Use a linking verb (appear, feel, seem, remain, become, look, sound, taste, smell) followed by the blank. Correct option: adjective (subject complement). Wrong options: adverb, comparative adverb, past participle.
+
+**Variant B — action verb:** Use an action verb followed by a manner blank. Correct option: adverb. Wrong options: adjective, comparative adjective, noun phrase.
+
+Classification: `grammar_role_key: "modifier"`, `grammar_focus_key: "adjective_adverb_distinction"`.
+
+### `commonly_confused_words`
+
+Select one pair of commonly confused non-homophone words:
+`affect/effect`, `principle/principal`, `allusion/illusion`, `elicit/illicit`, `imply/infer`, `complement/compliment`, `compose/comprise`, `disinterested/uninterested`, `emigrate/immigrate`.
+
+Write a passage where the meaning distinction is essential to the sentence. Wrong options present the other member(s) of the confused pair plus one additional plausible but incorrect option.
+
+Do NOT use homophone possession pairs (its/it's, whose/who's) — those belong to `possessive_contraction`.
+
+Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "commonly_confused_words"`.
+
+### `preposition_idiom`
+
+Construct a sentence with a verb-preposition or adjective-preposition collocation where the correct preposition is idiomatic: `composed of`, `differ from`, `responsible for`, `interested in`, `capable of`, `independent of`, `account for`, `result in`, `consistent with`, `conducive to`.
+
+Wrong options substitute near-correct prepositions that are grammatically viable but idiomatically non-standard ("composed in," "differ with," "responsible to," "account on").
+
+Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "preposition_idiom"`.
+
 ---
 
 ## B.4 Distractor Generation Heuristics by Grammar Focus
@@ -653,7 +838,7 @@ metadata fields. Each distractor must fail via a distinct
 
 | Distractor | Error | Plausibility source |
 |---|---|---|
-| 1 | Tense matching a nearby temporal noun | `temporal_sequence_ambiguity` |
+| 1 | Tense matching a nearby temporal noun | `auditory_similarity` |
 | 2 | Present perfect when simple past is required | `formal_register_match` |
 | 3 | Conditional/future that sounds sophisticated | `grammar_fit_only` |
 
@@ -685,7 +870,7 @@ metadata fields. Each distractor must fail via a distinct
 
 | Distractor | Error | Plausibility source |
 |---|---|---|
-| 1 | Modifier placed next to wrong noun | `modifier_attachment_ambiguity` |
+| 1 | Modifier placed next to wrong noun | `nearest_noun_attraction` |
 | 2 | Modifier split from its head noun | `grammar_fit_only` |
 | 3 | Dangling modifier preserved | `formal_register_match` |
 
@@ -749,9 +934,249 @@ metadata fields. Each distractor must fail via a distinct
 
 | Distractor | Error | Plausibility source |
 |---|---|---|
-| 1 | Question mark on an indirect question | `surface_similarity_bias` |
+| 1 | Question mark on an indirect question | `punctuation_style_bias` |
 | 2 | Comma after the main clause, no end mark | `punctuation_style_bias` |
 | 3 | Period on a coordinated direct question | `formal_register_match` |
+
+### `pronoun_antecedent_agreement`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Plural pronoun for singular collective antecedent ("team," "everyone") | `nearest_noun_attraction` |
+| 2 | Reflexive pronoun where simple personal pronoun is required | `formal_register_match` |
+| 3 | Singular masculine/feminine pronoun where gender-neutral is required | `grammar_fit_only` |
+
+### `pronoun_clarity`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Ambiguous pronoun with two plausible antecedents in adjacent clauses | `nearest_noun_attraction` |
+| 2 | Pronoun that refers to a noun three or more clauses back | `formal_register_match` |
+| 3 | Implied antecedent that does not appear as an explicit noun in the sentence | `grammar_fit_only` |
+
+### `hyphen_usage`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | No hyphen in compound modifier before noun ("well known scientist") | `punctuation_style_bias` |
+| 2 | Hyphen after adverb ending in -ly ("rapidly-changing") | `grammar_fit_only` |
+| 3 | Hyphen in predicative position where none is required ("the results were well-known") | `formal_register_match` |
+
+### `quotation_punctuation`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Comma placed outside the closing quotation mark | `punctuation_style_bias` |
+| 2 | No comma before attribution after a direct quotation | `grammar_fit_only` |
+| 3 | Colon before a short embedded quotation requiring only a comma | `formal_register_match` |
+
+### `logical_predication`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Nominalized subject produces a predicate that cannot logically apply to it | `formal_register_match` |
+| 2 | Passive construction masks the logical mismatch | `formal_register_match` |
+| 3 | Wordy prepositional phrase disguises the predication error | `grammar_fit_only` |
+
+### `comparative_structures`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | "Than" used without a parallel noun form for the second compared element | `nearest_noun_attraction` |
+| 2 | "As" begins a comparison but the construction is not completed with a second "as" | `grammar_fit_only` |
+| 3 | Implied second comparison term that is too ambiguous to identify | `formal_register_match` |
+
+### `illogical_comparison`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Compares noun to action or process directly (bare illogical comparison) | `nearest_noun_attraction` |
+| 2 | Inserts pronoun ("that") but applies it to the wrong antecedent | `grammar_fit_only` |
+| 3 | Restructures sentence but introduces a new mismatch between compared categories | `formal_register_match` |
+
+### `adjective_adverb_distinction`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Adverb form after linking verb (e.g., "feels badly") | `auditory_similarity` |
+| 2 | Adjective form after action verb (e.g., "worked careful") | `grammar_fit_only` |
+| 3 | Comparative form of the wrong class (e.g., "more carefully" after a linking verb where "more careful" is required) | `formal_register_match` |
+
+### `commonly_confused_words`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Primary confused partner (same or similar sound, categorically different meaning) | `auditory_similarity` |
+| 2 | Secondary word from the same semantic area but wrong specific meaning | `grammar_fit_only` |
+| 3 | Plausible synonym that is imprecise in context | `formal_register_match` |
+
+### `preposition_idiom`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Near-correct preposition that forms a real but wrong idiom with the governing word | `common_idiom_pull` |
+| 2 | Preposition from a closely related but distinct construction the student knows | `formal_register_match` |
+| 3 | Grammatically viable preposition that creates a non-standard collocation | `grammar_fit_only` |
+
+### `sentence_boundary`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Complete clause attached with only a comma | `punctuation_style_bias` |
+| 2 | Clause boundary omitted entirely | `grammar_fit_only` |
+| 3 | Period or semicolon inserted where the following material is not independent | `formal_register_match` |
+
+### `sentence_fragment`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Subordinate clause punctuated as a sentence | `punctuation_style_bias` |
+| 2 | Participial phrase presented as a complete clause | `grammar_fit_only` |
+| 3 | Appositive or relative clause detached from the noun it modifies | `formal_register_match` |
+
+### `comma_splice`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Two independent clauses joined by comma alone | `punctuation_style_bias` |
+| 2 | Comma plus conjunctive adverb without semicolon or period | `formal_register_match` |
+| 3 | Comma before a transition that cannot coordinate clauses | `grammar_fit_only` |
+
+### `run_on_sentence`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Two independent clauses fused with no punctuation | `grammar_fit_only` |
+| 2 | Coordinating conjunction omitted between two parallel clauses | `nearest_noun_attraction` |
+| 3 | Long sentence sounds polished but contains no legal boundary | `formal_register_match` |
+
+### `verb_form`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Nonfinite participle where a finite main or relative-clause verb is required | `grammar_fit_only` |
+| 2 | Inflected verb after a modal auxiliary | `auditory_similarity` |
+| 3 | Bare infinitive or past participle that leaves the clause without a predicate | `grammar_fit_only` |
+
+### `voice_active_passive`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Passive voice reverses or hides the agent required by context | `formal_register_match` |
+| 2 | Active voice assigns the action to the wrong noun | `nearest_noun_attraction` |
+| 3 | Passive auxiliary tense does not match the sentence's time frame | `grammar_fit_only` |
+
+### `negation`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Negator scopes over the wrong clause or phrase | `grammar_fit_only` |
+| 2 | Double negative reverses intended polarity | `grammar_fit_only` |
+| 3 | Concessive wording sounds logical but cancels the intended contrast | `formal_register_match` |
+
+### `possessive_contraction`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Contraction where possessive determiner is required | `auditory_similarity` |
+| 2 | Possessive determiner where contraction is required | `grammar_fit_only` |
+| 3 | Wrong possessive/contraction pair with the same sound pattern | `common_idiom_pull` |
+
+### `noun_countability`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Plural count form used for a mass noun | `auditory_similarity` |
+| 2 | Singular article used before an uncountable noun | `grammar_fit_only` |
+| 3 | Quantifier fits nearby noun but not the head noun | `nearest_noun_attraction` |
+
+### `determiners_articles`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Definite article where a generic or first-mentioned noun needs no article | `formal_register_match` |
+| 2 | Missing article before a singular count noun | `grammar_fit_only` |
+| 3 | Demonstrative or quantifier agrees with the nearest noun but not the head noun | `nearest_noun_attraction` |
+
+### `affirmative_agreement`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | "So/neither/nor" response uses the wrong auxiliary | `auditory_similarity` |
+| 2 | Response polarity does not match the preceding clause | `grammar_fit_only` |
+| 3 | Subject-auxiliary inversion omitted after agreement expression | `grammar_fit_only` |
+
+### `conjunction_usage`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Subordinating conjunction signals the wrong logical relation | `formal_register_match` |
+| 2 | Correlative conjunction pair is mismatched or incomplete | `grammar_fit_only` |
+| 3 | Coordinating conjunction joins unequal clause types | `nearest_noun_attraction` |
+
+### `elliptical_constructions`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Omitted words cannot be recovered from the parallel structure | `grammar_fit_only` |
+| 2 | Ellipsis makes the second comparison term ambiguous | `grammar_fit_only` |
+| 3 | Surface parallelism hides a missing required preposition or auxiliary | `formal_register_match` |
+
+### `redundancy_concision`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Repeats information already stated in the sentence | `grammar_fit_only` |
+| 2 | Sounds official but adds empty padding or circular phrasing | `formal_register_match` |
+| 3 | Shorter option deletes a required qualifier or contrast | `formal_register_match` |
+
+### `precision_word_choice`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Same semantic field but wrong degree, direction, or selectional fit | `grammar_fit_only` |
+| 2 | Stronger or weaker word than the context supports | `formal_register_match` |
+| 3 | Formal word sounds plausible but does not fit the sentence logic | `formal_register_match` |
+
+### `register_style_consistency`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Colloquial or conversational expression in academic prose | `grammar_fit_only` |
+| 2 | Overly inflated academic diction that changes meaning | `formal_register_match` |
+| 3 | Technical term from the wrong field or register | `grammar_fit_only` |
+
+### `logical_relationships`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Connector reverses cause, contrast, concession, or condition | `grammar_fit_only` |
+| 2 | Correct topic but wrong logical relation between clauses | `formal_register_match` |
+| 3 | Vague connector hides the fact that no supported relation is stated | `formal_register_match` |
+
+### `emphasis_meaning_shifts`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Emphasizes the wrong actor, object, or time period | `grammar_fit_only` |
+| 2 | Preserves facts but changes the intended contrast or focus | `formal_register_match` |
+| 3 | Adds an intensifier or limiting phrase unsupported by the passage | `formal_register_match` |
+
+### `data_interpretation_claims`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Uses the right data source but wrong row, column, group, or time window | `grammar_fit_only` |
+| 2 | States an absolute change when the claim requires proportion or percentage | `formal_register_match` |
+| 3 | Accurate value answers a different question than the stem asks | `grammar_fit_only` |
+
+### `transition_logic`
+
+| Distractor | Error | Plausibility source |
+|---|---|---|
+| 1 | Transition from the wrong relation family (contrast vs. cause vs. addition) | `grammar_fit_only` |
+| 2 | Correct broad family but wrong subtype or degree | `formal_register_match` |
+| 3 | Familiar transition phrase creates an unsupported logical bridge | `formal_register_match` |
 
 ---
 
@@ -1052,6 +1477,27 @@ On failure after 3 retries, return the error for that item index and halt.
 Correct answer may appear in any position. Over 10+ items: 20–30% per
 position. No module may have more than 40% correct answers in any single
 position.
+
+### Distractor strategy diversity (module-bank constraint)
+
+Over any window of 5 consecutive items sharing the same `grammar_focus_key`:
+
+1. **Trap diversity** — For focus keys with ≥3 available `syntactic_trap_key`
+   variants (see D.5), at least 2 distinct trap keys must appear across the 5
+   items. Focus keys with only 1–2 available trap variants are exempt from
+   this count.
+2. **Failure-mode cap** — No single `student_failure_mode_key` may account for
+   more than 40% of all distractor slots in the window (max 6 of 15 distractor
+   slots for a 5-item window; max 12 of 30 slots for a 10-item window).
+3. **Secondary pattern requirement** — At least 1 item per 5-item window must
+   use a secondary trap pattern documented in B.3 rather than the canonical
+   construction for that focus key.
+
+These constraints prevent item banks from converging on a small set of
+predictable distractor patterns at scale. The anti-clone check (E.4) handles
+passage-level surface similarity; this constraint handles distractor-strategy-
+level similarity across items that are surface-distinct but mechanically
+identical.
 
 ---
 
@@ -1436,6 +1882,10 @@ After 3 failures, abort and return error response (B.14).
 | 23 | For generated modules, `test_format_key` is present and module length matches (27 for digital, 33 for accommodation) | Add field or correct length |
 | 24 | For `verb_form` items targeting finite vs nonfinite, generation pattern is one of: `finite_verb_in_relative_clause`, `finite_verb_in_main_clause`, `modal_plus_plain_form` | Reclassify or add pattern note |
 | 25 | For `verb_tense_consistency` items in a literary passage, `passage_tense_register_key` is `literary_present` | Update tense register |
+| 26 | For `adjective_adverb_distinction` items, correct option uses adverb after an action verb and adjective after a linking verb; no distractor is grammatically correct | Regenerate correct option or distractors |
+| 27 | For `illogical_comparison` items, correct option uses "that of" / "those of" or an explicit parallel noun form; all distractors preserve the illogical bare comparison in some form | Regenerate correct option |
+| 28 | For `commonly_confused_words` items, all four options are real English words in common use; exactly one is correct for the passage context; no option is a spelling error or nonsense word | Regenerate options |
+| 29 | For `preposition_idiom` items, all four options are real English prepositions; the correct option forms the established idiomatic collocation; at least two wrong options form plausible but non-standard collocations | Regenerate options |
 
 ---
 
@@ -1541,7 +1991,7 @@ end-to-end in ≤3 reasoning steps. Never hallucinate an exam ID (use
 |---|---|
 | `answer_mechanism_key` | `rule_application`, `pattern_matching`, `evidence_location`, `inference`, `data_synthesis` |
 | `solver_pattern_key` | `apply_grammar_rule_directly`, `locate_error_zone`, `compare_register`, `evaluate_transition`, `synthesize_notes`, `eliminate_by_boundary` |
-| `semantic_relation_key` | `nearest_noun_agreement`, `comma_splice`, `boundary_not_closed`, `boundary_overly_strong`, `wrong_boundary_type`, `correct_agreement`, `correct_boundary`, `unnecessary_auxiliary`, `tense_mismatch`, `modifier_misplaced`, `pronoun_ambiguous`, `parallel_broken`, `idiom_violation` |
+| `semantic_relation_key` | `nearest_noun_agreement`, `comma_splice`, `boundary_not_closed`, `boundary_overly_strong`, `wrong_boundary_type`, `correct_agreement`, `correct_boundary`, `unnecessary_auxiliary`, `tense_mismatch`, `modifier_misplaced`, `pronoun_ambiguous`, `parallel_broken`, `idiom_violation`, `adjective_for_adverb`, `adverb_for_adjective`, `illogical_comparison_mismatch`, `confused_word_substitution`, `wrong_preposition_idiom` |
 | `evidence_scope_key` | `sentence`, `paragraph`, `passage`, `paired_passage`, `table`, `graph`, `notes` |
 | `evidence_location_key` | `main_clause`, `subordinate_clause`, `surrounding_sentence`, `opening_sentence`, `closing_sentence`, `transition_zone`, `data_zone`, `entire_passage` |
 | `distractor_strength` | `low`, `medium`, `high` |
@@ -1939,6 +2389,7 @@ Apply these priority rules whenever multiple labels seem possible.
 14. `preposition_idiom` > `conjunction_usage` — specific verb-preposition pairings take precedence over general conjunction mechanics
 15. `unnecessary_internal_punctuation` > general `punctuation_comma` when the test is whether punctuation should be absent inside a syntactic unit
 16. `end_punctuation_question_statement` > general `punctuation` when the test is period vs question mark based on sentence type
+17. `commonly_confused_words` > `precision_word_choice` when competing options are words that sound or look similar but differ categorically in meaning (`affect`/`effect`, `principle`/`principal`); use `precision_word_choice` only when options are synonyms of varying specificity within the same semantic field
 
 Always write the selected rule in `disambiguation_rule_applied`.
 
@@ -2017,6 +2468,11 @@ Approved keys:
 - `presupposition_trap`
 - `temporal_sequence_ambiguity`
 - `multiple`
+
+Use `review_notes` for narrower subpatterns such as inversion agreement,
+introductory-clause comma, nonrestrictive-element comma, or conjunctive-adverb
+semicolon patterns. Do not invent new `syntactic_trap_key` values for those
+subpatterns unless they are first added to the backend ontology.
 
 `syntactic_trap_intensity` values: `low`, `medium`, `high`. Required for all
 generation profiles.
@@ -2123,6 +2579,25 @@ right topic but performs a different rhetorical action than the stem requires
 for a familiar audience when the stem requires one for an unfamiliar audience,
 or vice versa
 
+`adverb_adjective_confusion` — student selects adjective form after an action
+verb, or adverb form after a linking verb, by failing to identify the verb class
+
+`illogical_comparison_blindness` — student does not notice that the compared
+elements belong to different grammatical or logical categories because the
+sentence reads fluently on first pass
+
+`confused_word_substitution` — student selects a word that sounds or looks like
+the correct one but belongs to a different semantic category (e.g., "effect"
+for "affect"), typically because the two words share phonological similarity
+
+`preposition_idiom_error` — student selects a preposition based on a related
+but incorrect idiomatic collocation, often drawn from a superficially similar
+verb-preposition pair
+
+`notes_synthesis_content_omission` — student selects a sentence that addresses
+the rhetorical goal but omits a specific required content element (a numerical
+value, title, year, quoted text, or other named content) required by the stem
+
 ---
 
 ## D.8 Schema Guardrails and Enforcement
@@ -2156,7 +2631,7 @@ or vice versa
 | `very_high` | `punctuation_comma`, `subject_verb_agreement` |
 | `high` | `verb_tense_consistency`, `semicolon_use`, `apostrophe_use`, `sentence_boundary`, `appositive_punctuation` |
 | `medium` | `relative_pronouns`, `modifier_placement`, `colon_dash_use`, `pronoun_antecedent_agreement`, `parallel_structure`, `unnecessary_internal_punctuation`, `end_punctuation_question_statement`, `finite_verb_in_main_clause` (verb_form sub-pattern), `modal_plus_plain_form` (verb_form sub-pattern), `adjective_adverb_distinction`, `illogical_comparison` |
-| `low` | `voice_active_passive`, `logical_predication`, `possessive_contraction`, `hyphen_usage`, `quotation_punctuation`, `finite_verb_in_relative_clause` (verb_form sub-pattern), `singular_event_reference` (pronoun sub-pattern), `literary_present` (tense register), `commonly_confused_words`, `preposition_idiom` |
+| `low` | `voice_active_passive`, `logical_predication`, `possessive_contraction`, `hyphen_usage`, `quotation_punctuation`, `finite_verb_in_relative_clause` (verb_form sub-pattern), `singular_event_reference` (pronoun sub-pattern), `literary_present` (tense register), `commonly_confused_words`, `preposition_idiom`, `conjunction_usage` |
 | `very_low` | `affirmative_agreement` ⚠️, `negation` ⚠️, `noun_countability`, `determiners_articles`, `elliptical_constructions` — ⚠️ = dsat_confidence: low; do not use in generation |
 
 The generation profile must include `target_frequency_band`. Do not generate

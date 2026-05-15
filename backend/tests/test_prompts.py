@@ -15,6 +15,7 @@ def test_annotate_prompt_loads_current_rules():
     )
     assert "rules_agent_dsat_grammar_ingestion_generetion_v7.md" in system or "Grammar v7 RULES REFERENCE" in system
     assert "Reading v2 RULES REFERENCE" in system
+    assert "## 17. Disambiguation Rules" in system
     assert "JSON" in system
 
 
@@ -28,3 +29,19 @@ def test_generate_prompt_includes_target():
     system, user = build_generate_prompt(generation_request=request)
     assert "subject_verb_agreement" in user
     assert "Grammar v7 RULES REFERENCE" in system
+    assert "## B.4 Distractor Generation Heuristics by Grammar Focus" in system
+
+
+def test_generate_prompt_loads_reading_generation_rules():
+    request = {
+        "target_skill_family_key": "words_in_context",
+        "target_reading_focus_key": "figurative_language_meaning",
+        "target_test_construct_key": "figurative_interpretation_precision",
+        "difficulty_overall": "medium",
+    }
+    system, user = build_generate_prompt(generation_request=request)
+    assert "figurative_language_meaning" in user
+    assert "Reading v2 RULES REFERENCE" in system
+    assert "## 16. Generation Rules" in system
+    assert "### 16.9 Per-focus generation and distractor recipes" in system
+    assert "## 21. Validator Checklist" in system

@@ -178,6 +178,7 @@ Approved values:
   supports and avoid overextension
 - `quantitative_constraint_tracking` — the student must apply the exact row,
   column, time window, comparison, or aggregate constraint in a graph/table item
+- `figurative_interpretation_precision` — the student must recognize that a word or phrase is used metaphorically, idiomatically, or figuratively and select the option that captures the non-literal meaning; the literal definition of the target word is always represented among the distractors
 
 ### 2.4 Craft subconstruct keys
 
@@ -406,6 +407,7 @@ Use the most specific applicable `reading_focus_key`.
 - `register_fit` — correct word matches the academic, formal, or technical register
 - `underlined_word_meaning` — "most nearly mean" stem; word is underlined rather than blank
 - `polarity_fit` — correct word must preserve logical polarity when a negator or concessive is present
+- `figurative_language_meaning` — target word or phrase is used metaphorically, idiomatically, or figuratively in the passage; correct answer captures the non-literal meaning; the literal dictionary definition of the word is always one of the wrong options
 
 **Reading focus disambiguation for Words in Context:**
 
@@ -414,6 +416,7 @@ Use the most specific applicable `reading_focus_key`.
 - If the blank or word is in a passage with a pronounced formal or technical register → `register_fit`
 - If stem uses "most nearly mean" with an underlined word → `underlined_word_meaning`
 - If the passage contains a negator, concessive phrase, or contrast marker and all options are near-synonyms differing in evaluative direction when the negator is applied → `polarity_fit`
+- If the target word or phrase is clearly used non-literally (metaphorically, idiomatically) and the literal dictionary definition would be incoherent in the passage logic → `figurative_language_meaning`
 - Otherwise → `contextual_meaning` (default)
 
 **`polarity_fit` rule definition:**
@@ -489,6 +492,7 @@ Use `answer_mechanism_key` to describe the cognitive process required to select 
 | `contextual_substitution` | The student must test words by substituting each into the passage to find the best fit |
 | `rhetorical_classification` | The student must identify the type of rhetorical move or structural pattern |
 | `cross_text_comparison` | The student must hold two passage summaries in mind and determine their relationship |
+| `polarity_resolution` | The student must identify the logical direction imposed by a negating or concessive construction, then select the word that preserves the intended meaning when combined with that negation |
 
 ---
 
@@ -506,6 +510,8 @@ Use `solver_pattern_key` to describe the step-by-step solving strategy.
 | `substitute_and_test` | Insert each word option into the blank → evaluate naturalness and tone |
 | `classify_rhetorical_move` | Identify the action verb of the rhetorical move → match to option's infinitive phrase |
 | `summarize_both_then_compare` | Summarize Text 1 → summarize Text 2 → identify relationship type |
+| `apply_negation_logic` | Identify the negator or concessive → determine the required logical direction under negation → substitute each option combined with the negator → select the option that produces the author's intended meaning |
+| `locate_figurative_function` | Identify what literal meaning would produce in the sentence → recognize the incoherence → infer the figurative or idiomatic function → match to the option that names that function |
 
 ---
 
@@ -570,6 +576,8 @@ This applies at the question level (for the most dangerous trap) and at the opti
 - `evidence_relationship_blend` — Cross-Text option merges agreement, disagreement, qualification, or methodological critique into a simpler relationship than the texts support
 - `attribution_blend` — Cross-Text option combines a claim from one text with evidence, method, or attitude from the other text
 - `agreement_degree_mismatch` — Cross-Text option overstates or understates the degree of agreement between the two texts
+- `figurative_literal_confusion` — option selects the literal or dictionary meaning of a word or phrase used figuratively or idiomatically; the literal reading produces a locally coherent sentence but misses the non-literal function established by the broader passage context
+- `false_concession_trap` — Cross-Text option characterizes Text 2 as partially conceding or qualifying Text 1 when the actual relationship is full agreement, flat contradiction, or a purely methodological critique; the trap exploits students' tendency to infer nuance where the texts are unambiguous
 
 ---
 
@@ -583,6 +591,7 @@ Use `text_relationship_key` for Cross-Text Connections questions only.
 - `methodological_critique` — Text 2 challenges Text 1's method or scope rather than its conclusion
 - `partial_agreement` — authors agree on one aspect while disagreeing on another
 - `broad_support` — Text 2 provides additional evidence that corroborates Text 1
+- `causal_specification` — Text 2 provides the specific causal mechanism or explanatory pathway for a phenomenon Text 1 describes; Text 2 deepens Text 1 by answering "how" or "why" rather than contradicting, qualifying, or corroborating its conclusion
 
 ---
 
@@ -643,6 +652,8 @@ Each option must include:
 - `agreement_degree_mismatch`
 - `cause_effect_misalignment`
 - `contradiction`
+- `figurative_literal_confusion`
+- `false_concession_trap`
 
 **For the correct option:**
 
@@ -995,6 +1006,11 @@ Common approved rhetorical verbs:
 - `to trace` — the author follows a sequence or development over time
 - `to challenge` — the author disputes a prior view
 - `to suggest` — the author proposes tentatively without full commitment
+- `to examine` — the author investigates components or evidence closely; implies careful scrutiny without a strong evaluative conclusion; more investigative than `to analyze`
+- `to question` — the author raises doubts about an assumption, claim, or methodology without fully rejecting it; weaker than `to challenge`, which implies direct opposition
+- `to introduce` — the author presents a concept, person, work, or field to the reader for the first time without taking a strong evaluative stance
+- `to summarize` — the author condenses a larger body of evidence, argument, or work for the reader; implies fidelity to source material without addition
+- `to distinguish` — the author separates two things that could be conflated or confused, making their differences explicit
 
 Any wrong option using a verb not matching the actual rhetorical move should be annotated
 with `distractor_type_key: "wrong_action_verb"`.
@@ -1192,6 +1208,9 @@ Annotate `review.review_notes` with the structural pattern when it affects diffi
 - `chronological_sequence` — events or developments ordered in time
 - `research_summary` — describes a study's design, findings, and implications
 - `claim_evidence_explanation` — asserts a claim, provides supporting evidence, then explains the mechanism
+- `analogy_driven_argument` — establishes a source domain (a known phenomenon), draws an explicit parallel to a target domain (the topic under discussion), then applies a conclusion to the target; questions test whether students track the analogical mapping and identify what the analogy implies about the target
+- `multi_perspective_presentation` — presents two or more scholarly, cultural, or interpretive viewpoints without explicitly advocating for one; common in humanities texts; questions test whether students can identify the central organizing question or the author's framing role rather than one viewpoint's position
+- `qualification_restatement` — presents a broad claim, qualifies it with a limiting condition or exception, then restates the refined claim; correct options capture both the claim and the qualification, not one alone
 
 ### 15.3 Experimental passage architectures (added in v2 from v1.1 §4.1)
 
@@ -1377,6 +1396,70 @@ mandatory when the corresponding condition applies:
 | `inference_type_note` | passage architecture is `mechanism_manipulation_test` or `studied_subgroup_generalization_limit` |
 | `two_part_claim` | `target_reading_focus_key` is `evidence_illustrates_claim` |
 
+### 16.9 Per-focus generation and distractor recipes
+
+Every generated reading item must bind the requested `target_reading_focus_key`
+to a concrete passage shape and a concrete distractor family. Do not rely on the
+broad skill family alone.
+
+| `target_reading_focus_key` | Generated passage/stem shape | Required distractor behavior |
+|---|---|---|
+| `evidence_supports_claim` | Passage states a claim, hypothesis, or finding; options are possible evidence statements | One option is topically related but does not support the exact claim; one supports a related but different claim |
+| `evidence_weakens_claim` | Passage states a claim; options are possible new findings | One option is neutral background; one strengthens instead of weakens |
+| `evidence_illustrates_claim` | Stem asks which example best illustrates a claim, often with two required elements | One option satisfies only one element; one is a true detail with the wrong relation |
+| `evidence_explains_claim` | Passage gives phenomenon; options provide possible mechanisms | One option is downstream effect rather than mechanism; one explains a different phenomenon |
+| `evidence_qualifies_claim` | Passage presents broad claim needing limitation or condition | One option contradicts too strongly; one merely repeats support without qualifying |
+| `data_completes_example` | Table/graph contains exact value or category needed to complete a statement | Include nearby row/column/category distractor and a real value from the wrong condition |
+| `data_supports_claim` | Claim must be supported by data pattern | Include accurate data that answers the wrong claim and a wrong-group comparison |
+| `data_weakens_claim` | Claim is undermined by a graph/table finding | Include data that is true but neutral and data that supports the claim |
+| `data_comparison` | Correct answer depends on comparing groups, rows, columns, or intervals | Include single-measure focus, wrong group, and local-maximum traps as applicable |
+| `data_trend` | Correct answer describes direction or proportional change over time/ordered values | Include direction reversal, same-direction assumption, and absolute-value confusion |
+| `central_idea` | Passage organized around a single main claim | Distractors are true details, too broad summaries, or claims that omit the passage's qualifying turn |
+| `supporting_detail` | Stem asks what the passage indicates or says about a specific topic | Distractors are nearby details, wrong referents, or unsupported extensions |
+| `character_or_author_detail` | Literary/humanities passage asks what is true about a figure, character, or author | Distractors blend actions, motives, or attributes from adjacent sentences |
+| `passage_summary` | Options summarize the passage as a whole | Distractors overemphasize one sentence, omit the central contrast, or add outside generalization |
+| `author_stance` | Passage reveals attitude through evaluative language or framing | Distractors overstate, understate, reverse, or misattribute the stance |
+| `expectation_violation` | Passage sets up an expected result and reports a surprising outcome | Distractors state the expected pattern, ignore the surprise, or identify the wrong variable |
+| `implication_inference` | Final or mid-passage inference follows from stated evidence but is not directly stated | Distractors are plausible but not required, too broad, or contradicted by a constraint |
+| `causal_inference` | Passage gives causes/effects or experimental result | Distractors reverse cause/effect, confuse mechanism with outcome, or ignore controls |
+| `predictive_inference` | Passage establishes trend, condition, or mechanism; stem asks what is likely | Distractors extrapolate beyond evidence, choose wrong condition, or predict opposite trend |
+| `motivational_inference` | Passage gives actions/choices that imply motive or purpose | Distractors use generic motives not anchored in text or infer too much psychology |
+| `contextual_meaning` | Blank/underlined word requires local and distributed context | Distractors fit topic but fail role, connotation, precision, or sentence logic |
+| `precision_fit` | Options are near-synonyms with different specificity or degree | Distractors are too broad, too narrow, too strong, or too weak |
+| `connotation_fit` | Correct word must preserve evaluative charge | Distractors share denotation but wrong positive/negative/neutral charge |
+| `register_fit` | Correct word/phrase must match formal or technical register | Distractors are colloquial, inflated, or from the wrong technical register |
+| `underlined_word_meaning` | Stem asks what an underlined word/phrase most nearly means | Distractors include common dictionary meaning and nearby-topic meanings |
+| `polarity_fit` | Passage contains negation, concession, contrast, or double-negative logic | Distractors reverse the intended polarity or ignore the negator/concessive |
+| `figurative_language_meaning` | Passage uses metaphor, idiom, personification, or figurative phrase | One distractor is literal dictionary meaning; others miss the figurative function |
+| `overall_purpose` | Stem asks purpose/function of the passage as a whole | Distractors describe a local paragraph, wrong rhetorical action, or too strong a claim |
+| `main_purpose` | Stem asks the primary reason the author wrote the passage | Distractors are true details or secondary aims, not the central aim |
+| `sentence_function` | Stem asks what a sentence/paragraph does in context | Distractors misclassify the local rhetorical move or describe content rather than function |
+| `structural_pattern` | Stem asks how the passage is organized | Distractors preserve topic but use wrong organization sequence |
+| `text2_response_to_text1` | Text 2 responds directly to Text 1 | Distractors miss whether Text 2 supports, challenges, qualifies, or explains Text 1 |
+| `text2_contradicts_text1` | Text 2 rejects a claim, assumption, or conclusion from Text 1 | Distractors soften contradiction into qualification or broad support |
+| `text2_qualifies_text1` | Text 2 partly accepts but limits Text 1 | Distractors state full agreement, full contradiction, or unrelated method difference |
+| `both_texts_agree` | Both texts share a conclusion, premise, or concern | Distractors attribute agreement to only one text or overstate the degree of agreement |
+| `texts_disagree` | Texts clearly differ in claim, explanation, method, or implication | Distractors choose a shared topic rather than the disagreement axis |
+| `methodological_critique` | Text 2 challenges method, evidence, scope, or sample rather than conclusion alone | Distractors turn method critique into claim disagreement or simple corroboration |
+| `cross_text_inference` | Correct answer follows from the relationship between both texts | Distractors use only one text, swap attribution, or simplify a nuanced relation |
+
+**Construct binding rules:**
+
+- `contextual_semantic_precision` → use with WIC keys where context determines
+  denotation, connotation, register, polarity, or figurative role.
+- `rhetorical_function_precision` → use with purpose, function, and structure
+  keys; distractors must preserve topic but miss rhetorical action.
+- `cross_text_relationship_precision` → use with all cross-text keys; at least
+  one distractor must fail by attribution, relationship degree, or response type.
+- `evidence_relation_precision` → use with textual evidence keys; each wrong
+  option must name one unsupported, contradicted, indirect, or wrong-claim link.
+- `inference_boundary_control` → use with inference keys; distractors must be
+  plausible but not required by the text.
+- `quantitative_constraint_tracking` → use with quantitative keys; distractors
+  must test row/column, group, timing, all-measures, or proportion constraints.
+- `figurative_interpretation_precision` → use with
+  `figurative_language_meaning`; include a literal-meaning distractor.
+
 ---
 
 ## 17. Disambiguation Rules
@@ -1410,6 +1493,9 @@ Apply these priority rules when classification seems ambiguous.
    the same domain bucket — classify using the grammar rules file's `expression_of_ideas`
    keys, not this file. Information and Ideas and Craft and Structure are the two domains
    covered here; Expression of Ideas and SEC are covered in the grammar companion file.
+
+7. `command_of_evidence_textual` vs. `central_ideas_and_details` / `supporting_detail`:
+   If the stem explicitly names a "claim," "hypothesis," "argument," or "finding" that the options must support, weaken, or illustrate → `command_of_evidence_textual`. If the stem asks what the passage "indicates," "suggests," or what is "true about" a topic without specifying a claim to match → `central_ideas_and_details` / `reading_focus_key: "supporting_detail"`. The key signal is whether the stem contains a named claim or just a topic.
 
 Always record the resolved disambiguation in `classification.disambiguation_rule_applied`.
 
@@ -1452,6 +1538,7 @@ Use in `why_plausible` and `review_notes` to diagnose distractor effectiveness.
   semantic field but does not perform the required logical role in the sentence
 - `register_tone_blindness` — student ignores whether the option's formality,
   stance, or evaluative charge matches the passage
+- `figurative_meaning_blindness` — student applies the literal or dictionary meaning to a word or phrase used figuratively or idiomatically; the literal reading produces a locally coherent sentence but misses the non-literal function the passage context establishes
 
 ### 19.2 Quantitative failure modes
 
@@ -1525,7 +1612,7 @@ Use in `why_plausible` and `review_notes` to diagnose distractor effectiveness.
   such as "supports with a limitation" into a simpler relation such as
   "supports" or "contradicts"
 
-### 19.7 Summary: all 28 approved failure mode keys
+### 19.7 Summary: all 29 approved failure mode keys
 
 | # | Key | Domain |
 |---|-----|--------|
@@ -1534,6 +1621,7 @@ Use in `why_plausible` and `review_notes` to diagnose distractor effectiveness.
 | 3 | `connotation_surface_match` | Words in Context |
 | 4 | `local_role_misread` | Words in Context |
 | 5 | `register_tone_blindness` | Words in Context |
+| 5a | `figurative_meaning_blindness` | Words in Context |
 | 6 | `exact_value_misread` | Quantitative CoE |
 | 7 | `wrong_time_window` | Quantitative CoE |
 | 8 | `individual_from_aggregate` | Quantitative CoE |
@@ -1656,6 +1744,7 @@ question, confirm:
       action
 - [ ] For Cross-Text items, at least one distractor fails by attribution,
       agreement degree, evidence relationship, or response-to-claim precision
+- [ ] For WIC items where `reading_focus_key` is `figurative_language_meaning`, `target_test_construct_key` is `figurative_interpretation_precision`, at least one distractor uses the literal dictionary meaning of the target word, and `review_notes` identifies the figurative function (metaphor, idiom, or personification)
 
 ---
 

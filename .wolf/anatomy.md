@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-12T20:07:04.267Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-15T05:51:34.599Z
 > Files: 670 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
@@ -33,8 +33,8 @@
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark dir for OCR/LLM benchmark runners + HTMX dashboard (~600 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark Directory (~830 tok)
 - `Reading_v1_rules_report.md` — Reading_v1 Rules Impact Report (~4265 tok)
-- `rules_agent_dsat_grammar_ingestion_generation_v7.md` — rules_agent_dsat_grammar_ingestion_generetion_v7.md (~23730 tok)
-- `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~17581 tok)
+- `rules_agent_dsat_grammar_ingestion_generation_v7.md` — rules_agent_dsat_grammar_ingestion_generetion_v7.md (~27429 tok)
+- `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~22055 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
 - `TASKS_OCR.md` — OCR Integration — Phased Task Plan (~7143 tok)
 - `vdb_comparison.md` — Vector DB Ground Truth Comparison (~1567 tok)
