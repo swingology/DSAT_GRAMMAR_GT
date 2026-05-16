@@ -6,6 +6,9 @@ from typing import List
 class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://dsat:dsat_dev@localhost:5434/dsat_dev"
 
+    # Environment — set to "production" to enforce security checks at startup
+    env: str = "development"
+
     # Auth
     admin_api_keys: str = "admin-key-change-me"
     student_api_keys: str = "student-key-change-me"
@@ -36,10 +39,14 @@ class Settings(BaseSettings):
     llm_retry_max_attempts: int = 3
     llm_retry_base_delay_s: float = 1.0
     llm_retry_max_delay_s: float = 30.0
+    max_concurrent_jobs: int = 4
+    # Hard ceiling for a single ingestion pipeline run; a slow/hung model is
+    # aborted so it cannot occupy a job-semaphore slot indefinitely.
+    pipeline_timeout_s: int = 1800
 
     # OCR / Vision — Option B: Ollama VLM (fused)
     ocr_vision_provider: str = "ollama"
-    ocr_vision_model: str = "qwen2.5-vl:7b"
+    ocr_vision_model: str = "qwen3.0-vl"
     ocr_strategy: str = "glm"  # glm | deepseek | ollama | anthropic | openai | auto
     ocr_fallback: bool = True
     vision_max_images: int = 10

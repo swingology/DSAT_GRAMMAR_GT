@@ -2,6 +2,7 @@ import time
 from typing import Optional, List
 import anthropic
 from app.llm.base import LLMResponse, ImageContent
+from app.llm.errors import LLMAPIError, token_usage_from_payload
 from app.llm.retry import with_retry
 
 
@@ -21,13 +22,22 @@ class AnthropicProvider:
     ) -> LLMResponse:
         model = model or self.default_model
         start = time.time()
-        response = await self.client.messages.create(
-            model=model,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            system=system,
-            messages=[{"role": "user", "content": user}],
-        )
+        try:
+            response = await self.client.messages.create(
+                model=model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                system=system,
+                messages=[{"role": "user", "content": user}],
+            )
+        except Exception as exc:
+            raise LLMAPIError(
+                f"anthropic API request failed: {exc}",
+                provider="anthropic",
+                model=model,
+                status_code=getattr(exc, "status_code", None),
+                token_usage=token_usage_from_payload(getattr(exc, "body", None)),
+            ) from exc
         latency_ms = int((time.time() - start) * 1000)
         raw_text = response.content[0].text
         token_usage = {
@@ -66,13 +76,22 @@ class AnthropicProvider:
             for img in images
         ]
         content.append({"type": "text", "text": user})
-        response = await self.client.messages.create(
-            model=model,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            system=system,
-            messages=[{"role": "user", "content": content}],
-        )
+        try:
+            response = await self.client.messages.create(
+                model=model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                system=system,
+                messages=[{"role": "user", "content": content}],
+            )
+        except Exception as exc:
+            raise LLMAPIError(
+                f"anthropic API request failed: {exc}",
+                provider="anthropic",
+                model=model,
+                status_code=getattr(exc, "status_code", None),
+                token_usage=token_usage_from_payload(getattr(exc, "body", None)),
+            ) from exc
         latency_ms = int((time.time() - start) * 1000)
         raw_text = response.content[0].text
         token_usage = {

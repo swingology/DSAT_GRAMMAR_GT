@@ -132,6 +132,33 @@ async def test_ollama_complete_can_disable_thinking():
 
 
 @pytest.mark.asyncio
+async def test_ollama_http_failure_reports_token_usage():
+    import httpx
+    from app.llm.errors import LLMAPIError, error_payload
+    from app.llm.ollama_provider import OllamaProvider
+
+    provider = OllamaProvider(base_url="http://localhost:11434")
+    request = httpx.Request("POST", "http://localhost:11434/v1/chat/completions")
+    response = httpx.Response(
+        400,
+        request=request,
+        json={
+            "error": {"message": "bad request"},
+            "usage": {"prompt_tokens": 123, "completion_tokens": 45},
+        },
+    )
+
+    with patch.object(provider, "client") as mock_client:
+        mock_client.post = AsyncMock(return_value=response)
+        with pytest.raises(LLMAPIError) as exc_info:
+            await provider.complete(system="sys", user="user")
+
+    payload = error_payload("extracting", exc_info.value)
+    assert payload["provider"] == "ollama"
+    assert payload["token_usage"] == {"input": 123, "output": 45}
+
+
+@pytest.mark.asyncio
 async def test_close_all_providers_calls_close():
     """close_all_providers() calls close() on providers that have it and clears registry."""
     from app.llm import factory

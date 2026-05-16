@@ -1,3 +1,5 @@
+import pytest
+
 AUTH = {"X-API-Key": "admin-test-key"}
 
 
@@ -106,6 +108,34 @@ def test_build_question_source_span_links_ocr_artifacts():
     assert span.ocr_text == "OCR text"
 
 
+def test_build_question_source_span_without_page_metadata_uses_first_page():
+    import uuid
+    from types import SimpleNamespace
+    from app.routers.ingest import _build_question_source_span
+
+    job = SimpleNamespace(
+        id=uuid.uuid4(),
+        raw_asset_id=uuid.uuid4(),
+        pass1_json={
+            "raw_text": "PDF text",
+            "_page_images": [
+                {"page_number": 0, "storage_path": "local-s3://page-renders/job/page_000.png"},
+                {"page_number": 1, "storage_path": "local-s3://page-renders/job/page_001.png"},
+            ],
+        },
+    )
+
+    span = _build_question_source_span(
+        job=job,
+        question_id=uuid.uuid4(),
+        q_data={"source_question_number": 5},
+        question_index=4,
+    )
+
+    assert span.source_page_number == 0
+    assert span.rendered_page_path == "local-s3://page-renders/job/page_000.png"
+
+
 def test_normalize_source_metadata_accepts_legacy_codes():
     from app.routers.ingest import _normalize_source_metadata
 
@@ -142,6 +172,48 @@ def test_ingest_batch_no_files(client):
     assert resp.status_code == 422
 
 
+def test_ingest_batch_rejects_invalid_ocr_strategy(client):
+    resp = client.post(
+        "/ingest/unofficial/batch",
+        headers=AUTH,
+        data={"ocr_strategy": "bad-strategy"},
+        files={"files": ("test.txt", b"some text content", "text/plain")},
+    )
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_ingest_batch_forwards_ocr_strategy(monkeypatch):
+    import uuid
+    from datetime import datetime, timezone
+    from app.models.payload import JobResponse
+    from app.routers import ingest
+
+    seen = []
+
+    async def fake_ingest_unofficial_file(**kwargs):
+        seen.append(kwargs)
+        return JobResponse(
+            id=str(uuid.uuid4()),
+            job_type="ingest",
+            status="parsing",
+            created_at=datetime.now(timezone.utc),
+        )
+
+    monkeypatch.setattr(ingest, "ingest_unofficial_file", fake_ingest_unofficial_file)
+
+    await ingest.ingest_unofficial_batch(
+        files=[object(), object()],
+        provider_name="anthropic",
+        model_name="claude-sonnet-4-6",
+        ocr_strategy="glm",
+        db=object(),
+        _auth="ok",
+    )
+
+    assert [call["ocr_strategy"] for call in seen] == ["glm", "glm"]
+
+
 def test_reannotate_invalid_uuid(client):
     resp = client.post("/ingest/reannotate/not-a-uuid", headers=AUTH)
     assert resp.status_code == 400
@@ -160,9 +232,6 @@ def test_reannotate_accepts_json_body(client):
         json={"provider_name": "openai", "model_name": "gpt-4o"},
     )
     assert resp.status_code == 404
-
-
-import pytest
 
 
 @pytest.mark.asyncio

@@ -1,5 +1,44 @@
 # Debug Log
 
+## 2026-05-16 - Live Ingestion Run Gaps
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `4c43353` — fix(pipeline): remediate four open audit findings — retry, empty filter, passage grouping, junction table
+
+### Findings
+
+1. ~~**Critical: `httpx.TimeoutException` produces empty error message in `validation_errors_jsonb`.**
+   Live run of `Test_1_digital_sec01_mod01.pdf` (30,257 chars raw text) against `qwen3-vl:235b-instruct-cloud` via Ollama timed out after 120s on the extraction call. The `@with_retry` decorator retried 3 times, all timed out. After the final retry, the `TimeoutException` propagates to the `except Exception as _exc` block at line 1477, which calls `error_payload("extracting", _last_p1_err)`. But `str(httpx.TimeoutException)` is empty or near-empty, resulting in `{"step": "extracting", "error": ""}` — no useful diagnostic info (no timeout duration, no model name, no input length).
+   - `backend/app/routers/ingest.py:1477-1483`, `backend/app/llm/errors.py:72`, `backend/app/llm/ollama_provider.py:28`~~
+   - **Fixed:** Added `_exception_message()` helper to `errors.py`. When `str(exc)` is empty it falls back to `"{ExceptionType} (no message)"`. `error_payload` now also always emits an `error_type` field for diagnostics.
+
+2. ~~**High: Ollama `complete()` timeout is 120s — insufficient for large extraction payloads.**
+   The `OllamaProvider.__init__` sets `self.client = httpx.AsyncClient(timeout=120.0)`. With 30K+ chars of raw text, the extraction prompt sends ~30K input tokens to the cloud model. The `qwen3-vl:235b-instruct-cloud` model took >120s for this payload, causing all 3 retry attempts to time out. Vision calls get 600s but text extraction only gets 120s. For large PDFs this is inadequate.
+   - `backend/app/llm/ollama_provider.py:28`~~
+   - **Fixed:** Added `TEXT_TIMEOUT = 300.0` class constant (parallel to `VISION_TIMEOUT`); the text `client` now uses it instead of the hardcoded 120s.
+
+3. ~~**High: Text ingest validation failure — LLM returns empty option labels.**
+   A short 2-question text ingest succeeded through extraction and annotation but failed at validation with `"Option labels must be exactly {A, B, C, D}, got ['']"`. The LLM parsed the questions but produced options with empty string labels. This reveals that the extraction prompt does not reliably force the LLM to output `"label": "A"` format for options, and the retry loop only retries on `ValueError` (JSON parse failure), not on structurally valid JSON that produces invalid question data.
+   - `backend/app/routers/ingest.py:1469-1476`, `backend/app/pipeline/validator.py`~~
+   - **Fixed:** `_normalize_extracted_questions` now backfills positional labels (A/B/C/D) when a question has exactly 4 options and all option labels are blank — the exact failure mode observed.
+
+4. ~~**Medium: `extract_json_from_text` retries don't cover the case where JSON parses but produces bad structure.**
+   The 3-attempt retry loop at lines 1430-1479 retries on `ValueError` (JSON parse failure) but breaks immediately on `Exception` (line 1477-1479). If the LLM returns valid JSON that parses successfully but produces an empty `questions` array or questions with empty option labels, the retry loop exits with `extract_root` set to a valid but useless dict. No structural validation occurs between JSON parsing and proceeding to annotation.
+   - `backend/app/routers/ingest.py:1430-1479`~~
+   - **Fixed:** Added a structural check inside the Pass 1 retry loop — if no extracted question has a non-empty `question_text`, a `ValueError` is raised, which the existing `except ValueError` branch retries.
+
+5. ~~**Medium: No pipeline-level timeout or heartbeat.**
+   Even with `@with_retry(max_attempts=3)`, a slow model can occupy the job semaphore for 3×120s = 6 minutes per extraction attempt. Four concurrent stuck jobs block all new ingestion for up to 24 minutes. There's no pipeline-level timeout that aborts a job after N total minutes.
+   - `backend/app/routers/ingest.py`, `backend/app/job_limits.py`~~
+   - **Fixed:** `_run_pipeline_with_session` now wraps `_run_pipeline` in `asyncio.wait_for(timeout=settings.pipeline_timeout_s)` (default 1800s). On timeout the job is marked `failed` on a fresh session with a `pipeline_timeout` error.
+
+6. ~~**Low: Source metadata `page_count` is `null` for PDF ingests.**
+   The `source_metadata` in `pass1_json` includes `source_exam_code` but not `page_count` — the field is missing from the stored JSON. The PDF parser computes page count but it's not preserved in the metadata dict passed through to `pass1_json`.
+   - `backend/app/routers/ingest.py`~~
+   - **Fixed:** The official PDF ingest route now includes `"page_count": len(pdf_result["pages"])` in the `source_metadata` dict stored in `pass1_json`.
+
+---
+
 ## 2026-05-16 - Pipeline Gap Remediation Session
 Report created by: Claude Sonnet 4.6
 Git branch: `main`
@@ -34,29 +73,34 @@ Git checkpoint: `606f1e3` — fix(audit): harden json_parser, CORS, filename san
 
 #### Crash Paths & Unhandled Exceptions
 
-1. **Critical: `_persist_single_question` — no rollback on flush failure leaves session dirty.**
-   Lines 524, 541, 610 perform `await db.flush()` with no savepoint. If the second or third flush fails (e.g., IntegrityError from a duplicate UUID), the SQLAlchemy session is in a failed state and every subsequent DB operation on that session will also fail — including the `job.status = "failed"` commit at line 1694. The per-question `try/except` at line 1660-1672 calls `await db.rollback()` which clears the session, but this also rolls back ALL previously-flushed question rows from the same loop iteration, not just the failed one. For official questions, the idempotency check at line 469-473 mitigates this partially, but only if the UUID5 matches an existing row.
-   - `backend/app/routers/ingest.py:524, 541, 610, 1660-1672`
+1. ~~**Critical: `_persist_single_question` — no rollback on flush failure leaves session dirty.**~~
+   ~~Lines 524, 541, 610 perform `await db.flush()` with no savepoint. If the second or third flush fails (e.g., IntegrityError from a duplicate UUID), the SQLAlchemy session is in a failed state and every subsequent DB operation on that session will also fail — including the `job.status = "failed"` commit at line 1694. The per-question `try/except` at line 1660-1672 calls `await db.rollback()` which clears the session, but this also rolls back ALL previously-flushed question rows from the same loop iteration, not just the failed one. For official questions, the idempotency check at line 469-473 mitigates this partially, but only if the UUID5 matches an existing row.~~
+   - ~~`backend/app/routers/ingest.py:524, 541, 610, 1660-1672`~~
+   - **Fixed:** The persist loop now wraps each question in `async with db.begin_nested()` (SQLAlchemy SAVEPOINT). A flush failure inside the savepoint rolls back only that question, leaving the session valid. The explicit `db.rollback()` was removed. The `QuestionJobQuestion` insert is inside the same savepoint so the junction row is only committed if the question persists successfully.
 
-2. **High: Generate pipeline — single `db.flush()` covers Question + Version + Annotation + Options with no savepoint.**
+2. ~~**High: Generate pipeline — single `db.flush()` covers Question + Version + Annotation + Options with no savepoint.**
    `_run_generate_pipeline` at lines 131-183 does one `await db.flush()` after adding Question, QuestionVersion, and QuestionAnnotation. If this flush fails, the exception propagates and the job is left stuck in "annotating" status (set at line 73). The `except` blocks at lines 75-79 and 89-93 only cover the LLM call phases; there is no `try/except` around the entire persistence block (lines 107-186). A DB error here leaves the job unrecoverable.
-   - `backend/app/routers/generate.py:131-186`
+   - `backend/app/routers/generate.py:131-186`~~
+   - **Fixed:** Wrapped entire Question/Version/Annotation/Option persist block in `async with db.begin_nested()`. Failure only rolls back that question; job status update proceeds on a clean session.
 
-3. **High: Generate pipeline — `extract_json_from_text` failures are fatal with no retry.**
+3. ~~**High: Generate pipeline — `extract_json_from_text` failures are fatal with no retry.**
    Lines 71 and 86 call `extract_json_from_text` with no retry loop. If the LLM returns malformed JSON, the entire generate job fails immediately. Compare with the ingest pipeline which retries annotation 3 times (lines 1577-1603). The generate pipeline has zero retries.
-   - `backend/app/routers/generate.py:71, 86`
+   - `backend/app/routers/generate.py:71, 86`~~
+   - **Fixed:** Both generate and annotate steps now use 3-attempt retry loops with exponential backoff (0.5s, 1s). `ValueError` (malformed JSON) retries; other exceptions fail immediately.
 
-4. **High: Generate pipeline — `_generation_profile_payload` merges entire `request_data` into stored profile.**
+4. ~~**High: Generate pipeline — `_generation_profile_payload` merges entire `request_data` into stored profile.**
    Line 41-42: `merged.update(sources[-1])` unconditionally dumps the full `request_data` dict into the stored `generation_profile_jsonb`. This includes `provider_name`, `model_name`, and any other request fields that aren't part of the generation profile. The ingest pipeline's version of this function (line 180-189) only merges the `generation_profile` sub-key.
-   - `backend/app/routers/generate.py:41-42`
+   - `backend/app/routers/generate.py:41-42`~~
+   - **Fixed:** Added `_operational_keys = {"provider_name", "model_name"}` exclusion filter when merging the last source (`request_data`) into the profile.
 
 5. **Low: `generate_compare` — all provider jobs share the same `request_data` reference.**
    Line 293: `request_data = body.model_dump()` is computed once. Each `_run_generate_pipeline` closure captures the same dict reference. If any pipeline mutates `request_data` (unlikely but possible via `merged.update`), it affects subsequent jobs. Should be a deep copy per provider.
    - `backend/app/routers/generate.py:293`
 
-6. **Medium: `_run_pipeline` — VLM fused path `extract_json_from_text` failure kills job with no fallback.**
+6. ~~**Medium: `_run_pipeline` — VLM fused path `extract_json_from_text` failure kills job with no fallback.**
    Lines 1371-1402: The VLM extraction try/except catches any exception and sets `job.status = "failed"`. Unlike the GLM and DeepSeek branches (which have `ocr_fallback` logic), the VLM path has no fallback — a single malformed JSON response from the vision model terminates the entire job.
-   - `backend/app/routers/ingest.py:1397-1402`
+   - `backend/app/routers/ingest.py:1397-1402`~~
+   - **Fixed:** The whole OCR gate is now a single ordered fallback loop driven by `_build_ocr_chain`, which preferentially orders **two-step strategies (glm, deepseek) before VLM-fused providers (anthropic, ollama, openai)**. The VLM body retains its 3-attempt JSON-parse retry (exponential backoff). Failure in any branch records the error and the loop advances to the next strategy; the job is only marked `failed` when the whole chain is exhausted. `_fallback_ocr_strategy` was replaced by `_build_ocr_chain`.
 
 7. **Low / Observability: `_run_pipeline` — GLM/DeepSeek OCR fallback switches extraction paradigm without explicit diagnostics.**
    When OCR fails and fallback succeeds (lines 1276-1292), the code changes `resolved_strategy` and continues. But the fallback strategy runs the VLM fused path (lines 1346-1402), which does BOTH OCR and extraction in one call. If the original strategy was `glm` or `deepseek` (two-step: OCR then separate LLM extraction), the fallback switches to a completely different extraction paradigm without logging the paradigm shift or adjusting the pipeline accordingly. The `text_extraction_provider` is already set (line 1268-1274) for the two-step path but is never used when fallback activates the VLM fused path.
@@ -64,17 +108,19 @@ Git checkpoint: `606f1e3` — fix(audit): harden json_parser, CORS, filename san
 
 #### Timeout & Resource Exhaustion
 
-8. **Medium: No application-level timeout around whole LLM pipeline calls.**
+8. ~~**Medium: No application-level timeout around whole LLM pipeline calls.**
    Provider clients do have HTTP timeouts (for example 600s for vision), but there is no shorter pipeline-level timeout/heartbeat around `provider.complete()` or `provider.complete_vision()`. Four long-hanging jobs can still occupy the global job semaphore.
-   - `backend/app/routers/ingest.py:1363, 1579`, `backend/app/job_limits.py:29`
+   - `backend/app/routers/ingest.py:1363, 1579`, `backend/app/job_limits.py:29`~~
+   - **Fixed:** `_run_pipeline_with_session` wraps `_run_pipeline` in `asyncio.wait_for(timeout=settings.pipeline_timeout_s)` (default 1800s). On timeout the job is marked `failed` on a fresh session. See also 2026-05-16 Live Ingestion Run Gaps #5. (Heartbeat-style progress monitoring remains unimplemented but the semaphore-starvation risk is closed.)
 
 9. **Medium: `_store_page_render` decodes base64 and stores raw bytes — no size limit per page.**
    Line 957: `base64.b64decode(b64)` decodes the entire page image. For a high-DPI scan, a single page can be 20+ MB decoded. `max_images` (default 10) caps page count but not per-page size. A 10-page PDF with 20 MB pages writes 200 MB to object storage in the request path.
    - `backend/app/routers/ingest.py:957`
 
-10. **Medium: `detect_overlaps` loads all official questions with no limit.**
+10. ~~**Medium: `detect_overlaps` loads all official questions with no limit.**
     Line 46-56: A single JOIN query loads every `Question` with `content_origin == "official"` and `practice_status in ("active", "draft")`, plus their annotations. At 10,000+ official questions, this becomes a multi-hundred-megabyte result set per overlap check. No pagination, no limit clause.
-    - `backend/app/pipeline/overlap.py:46-56`
+    - `backend/app/pipeline/overlap.py:46-56`~~
+    - **Fixed:** Added `.limit(2000)` safety cap to the overlap scan query. Full-text index pre-filtering remains a future optimization.
 
 #### Data Integrity & Edge Cases
 
@@ -151,11 +197,11 @@ Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Olla
 
 ### Findings
 
-1. **High:** `qwen3-vl:8b` returns empty `content` via OpenAI-compatible API — all output goes to `reasoning` field.
+1. ~~**High:** `qwen3-vl:8b` returns empty `content` via OpenAI-compatible API — all output goes to `reasoning` field.
    - Ollama's OpenAI-compatible endpoint (`/v1/chat/completions`) for thinking-capable models (qwen3-vl, qwen3) routes all model output to `message.reasoning` instead of `message.content`. `OllamaProvider.complete_vision()` reads only `message.content`, so the extracted text is always empty string.
    - Root cause: Ollama's OpenAI-compat layer does not honour `options.thinking=false` or `think=false` at request level. The native `/api/chat` endpoint with `"think": false` works correctly.
-   - Affected models: any Ollama model with `thinking` in its capabilities list.
-   - **Not yet fixed:** Requires either (a) switching `complete_vision` to native Ollama `/api/chat` endpoint with `think: false`, or (b) adding a fallback that reads `message.reasoning` when `message.content` is empty and strips `<think>…</think>` wrappers.
+   - Affected models: any Ollama model with `thinking` in its capabilities list.~~
+   - **Fixed:** Added `_extract_content(message)` helper to `ollama_provider.py` that falls back to `message.reasoning` when `message.content` is empty and strips `<think>…</think>` wrappers via regex. Applied to both `complete()` and `complete_vision()`.
 
 2. **High:** `qwen3-vl:8b` inference exceeds 600s vision timeout on local hardware — all 3 retry attempts timed out (total ~1803s).
    - Model is 6.1 GB and significantly slower than `granite3.2-vision:latest` (2.4 GB, ~105s).
@@ -189,9 +235,10 @@ Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Olla
 
 ### Findings
 
-1. **Critical:** Student API returns questions without answer options.
+1. ~~**Critical:** Student API returns questions without answer options.
    - `StudentQuestionResponse` has no `options` field. `GET /api/questions` returns question text and passage but no A/B/C/D choices. Students cannot display a answerable question.
-   - Relevant files: `backend/app/models/payload.py`, `backend/app/routers/student.py`.
+   - Relevant files: `backend/app/models/payload.py`, `backend/app/routers/student.py`.~~
+   - **Fixed:** Added `options: List[dict]` to `StudentQuestionResponse`. `student_recall` batch-loads options by `latest_version_id` and populates per-question lists.
 
 2. ~~**Critical:** No duplicate-detection on ingest — same PDF uploaded twice creates duplicate questions.~~
    - ~~`checksum` is computed and stored on `QuestionAsset` but never checked before creating a new asset/job. Re-uploading the same file runs the full pipeline again.~~
@@ -203,26 +250,31 @@ Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Olla
    - ~~Relevant file: `backend/app/main.py`.~~
    - **Fixed/overstated:** CORS is now config-driven, methods and headers are restricted. Deployment still defaults to `CORS_ALLOWED_ORIGINS="*"`, tracked separately as a Low deployment hardening item.
 
-4. **Critical:** Students can read any user's profile — no ownership check on `GET /api/users/{user_id}`.
-   - Route uses `student_required` but accepts any integer `user_id`. User IDs are sequential integers, trivially enumerable.
-   - Relevant file: `backend/app/routers/student.py`.
+4. ~~**Critical:** Students can read any user's profile — no ownership check on `GET /api/users/{user_id}`.~~
+   - ~~Route uses `student_required` but accepts any integer `user_id`. User IDs are sequential integers, trivially enumerable.~~
+   - ~~Relevant file: `backend/app/routers/student.py`.~~
+   - **Fixed:** `GET /api/users/{user_id}` changed to `admin_required`. Students no longer have access to the profile endpoint.
 
-5. **Critical:** Students can submit answers attributed to any `user_id` — no auth/user binding.
-   - `POST /api/submit` accepts `user_id: int` in body. No check that the student key corresponds to the given user.
-   - Relevant file: `backend/app/routers/student.py`.
+5. ~~**Critical:** Students can submit answers attributed to any `user_id` — no auth/user binding.~~
+   - ~~`POST /api/submit` accepts `user_id: int` in body. No check that the student key corresponds to the given user.~~
+   - ~~Relevant file: `backend/app/routers/student.py`.~~
+   - **Fixed:** Replaced `user_id: int` with `user_token: str` (UUID) in `UserProgressCreate`. Submit endpoint now looks up the user by token. Added `user_token` UUID column to `User` model with migration `018`. `UserResponse` exposes the token so admins can retrieve it when creating users.
 
-6. **High / Deployment:** Insecure default keys only log a warning; server does not refuse to start.
+6. ~~**High / Deployment:** Insecure default keys only log a warning; server does not refuse to start.
    - `_warn_if_insecure_keys` logs when `admin-key-change-me` / `student-key-change-me` are active but does not block startup. This is acceptable only for isolated local development.
-   - Relevant files: `backend/app/main.py`, `backend/app/config.py`.
+   - Relevant files: `backend/app/main.py`, `backend/app/config.py`.~~
+   - **Fixed:** Renamed to `_check_insecure_keys`. Now raises `RuntimeError` on startup when `settings.env == "production"` and default keys are active. Development mode still logs a warning. Added `env: str = "development"` to `Settings`.
 
-7. **High:** N+1 query pattern in all list endpoints.
+7. ~~**High:** N+1 query pattern in all list endpoints.
    - `admin.py`, `questions.py`, `student.py` each fetch a question list then issue one DB call per question for annotations and another for options. 50 questions = 101 queries instead of 3.
-   - Relevant files: `backend/app/routers/admin.py`, `backend/app/routers/questions.py`, `backend/app/routers/student.py`.
+   - Relevant files: `backend/app/routers/admin.py`, `backend/app/routers/questions.py`, `backend/app/routers/student.py`.~~
+   - **Fixed:** All three list endpoints now batch-load annotations (and options where applicable) via `SELECT ... WHERE id IN (...)` with in-memory dict lookup. `admin.py` and `student.py` also batch-load `QuestionOption` rows.
 
-8. **High:** Full-table scan for every overlap check — O(N×M) as official questions grow.
+8. ~~**High:** Full-table scan for every overlap check — O(N×M) as official questions grow.
    - `detect_overlaps` loads all official questions and annotations into memory and compares in Python via Jaccard similarity. No text index, no candidate pre-filtering.
    - **Cross-reference:** Canonical current tracking is `2026-05-15 - Ingest Pipeline DB-Backed Run Trace & Generation/Reporting Fragility` finding #10.
-   - Relevant file: `backend/app/pipeline/overlap.py`.
+   - Relevant file: `backend/app/pipeline/overlap.py`.~~
+   - **Partially fixed:** Added `.limit(2000)` cap. Full pre-filtering with a text index remains open.
 
 9. ~~**High:** Scanned-PDF page images stored as base64 in JSONB — can be megabytes per DB row.~~
    - ~~`max_images` limits pages but not images-per-page. A 10-page PDF with 5 images per page stores 50 base64 blobs in one `pass1_json` JSONB column.~~
@@ -319,8 +371,9 @@ Git branch: `main`
    - ~~Relevant file: `backend/app/routers/ingest.py`.~~
    - **Fixed:** Batch ingest accepts, validates, and forwards `ocr_strategy`.
 
-3. **Medium / Partially fixed:** `auto` strategy fallback exists for GLM and DeepSeek failures, and auto now prefers GLM before DeepSeek/Ollama/Claude/OpenAI. Remaining gap: if the resolved strategy is a fused VLM provider (`ollama`, `anthropic`, or `openai`) and that provider fails, the VLM branch still fails the job rather than trying the next fallback provider.
-   - Relevant files: `backend/app/routers/ingest.py`, `backend/app/config.py`.
+3. ~~**Medium / Partially fixed:** `auto` strategy fallback exists for GLM and DeepSeek failures, and auto now prefers GLM before DeepSeek/Ollama/Claude/OpenAI. Remaining gap: if the resolved strategy is a fused VLM provider (`ollama`, `anthropic`, or `openai`) and that provider fails, the VLM branch still fails the job rather than trying the next fallback provider.
+   - Relevant files: `backend/app/routers/ingest.py`, `backend/app/config.py`.~~
+   - **Fixed:** The OCR gate now uses a unified `_build_ocr_chain` fallback loop that runs the resolved strategy first, then **prefers two-step (glm, deepseek) before VLM-fused (anthropic, ollama, openai)**. A failed VLM-fused branch now correctly falls back to a two-step path (and vice versa). See 2026-05-15 finding #6.
 
 4. **Medium / Design gap:** OCR routing is job-level, not per-question or visual-stimulus aware.
    - Current behavior applies one OCR strategy to the whole ingest job.
@@ -516,9 +569,10 @@ Report created by: GPT-5 Codex
    - ~~Relevant files: `backend/app/routers/admin.py`, `backend/app/models/db.py`.~~
    - **Fixed:** `delete_question` now bulk-nulls incoming `canonical_official_question_id` and `derived_from_question_id` references before deleting.
 
-6. **High / Deployment:** default API keys are live credentials.
+6. ~~**High / Deployment:** default API keys are live credentials.
    - `admin-key-change-me` and `student-key-change-me` are accepted if environment variables are missing. Startup warning exists, but startup does not fail.
-   - Relevant files: `backend/app/config.py`, `backend/app/main.py`.
+   - Relevant files: `backend/app/config.py`, `backend/app/main.py`.~~
+   - **Fixed:** See 2026-05-10 Backend Gap Audit #6. Startup now raises `RuntimeError` when `env=production` and default keys are active.
 
 ### Verification
 

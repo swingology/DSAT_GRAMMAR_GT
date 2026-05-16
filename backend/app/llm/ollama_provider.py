@@ -1,18 +1,34 @@
+import re
 import time
 from typing import Optional
 import httpx
 from app.llm.base import LLMResponse
+from app.llm.errors import raise_for_status_with_usage
 from app.llm.retry import with_retry
+
+
+def _extract_content(message: dict) -> str:
+    """Return the text content from an OpenAI-compat chat message.
+
+    Some thinking models (qwen3-vl in reasoning mode) return an empty `content`
+    field and place their answer in a `reasoning` field. Fall back to that field,
+    then strip any residual <think>…</think> wrapper.
+    """
+    raw = message.get("content") or message.get("reasoning") or ""
+    return re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
 
 
 class OllamaProvider:
     # Vision inference is significantly slower than text (model loads + OCR decode)
     VISION_TIMEOUT = 600.0
+    # Large extraction payloads (30K+ chars against cloud models) regularly exceed
+    # the prior 120s ceiling; give text completion a wider, but still bounded, limit.
+    TEXT_TIMEOUT = 300.0
 
     def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "deepseek-v4-pro:cloud"):
         self.base_url = base_url.rstrip("/")
         self.default_model = default_model
-        self.client = httpx.AsyncClient(base_url=self.base_url, timeout=120.0)
+        self.client = httpx.AsyncClient(base_url=self.base_url, timeout=self.TEXT_TIMEOUT)
         self.vision_client = httpx.AsyncClient(base_url=self.base_url, timeout=self.VISION_TIMEOUT)
 
     @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
@@ -43,9 +59,9 @@ class OllamaProvider:
             json=payload,
         )
         latency_ms = int((time.time() - start) * 1000)
-        response.raise_for_status()
+        raise_for_status_with_usage(response, provider="ollama", model=model)
         data = response.json()
-        raw_text = data["choices"][0]["message"]["content"]
+        raw_text = _extract_content(data["choices"][0]["message"])
         usage = data.get("usage", {})
         token_usage = {
             "input": usage.get("prompt_tokens", 0),
@@ -98,9 +114,9 @@ class OllamaProvider:
             },
         )
         latency_ms = int((time.time() - start) * 1000)
-        response.raise_for_status()
+        raise_for_status_with_usage(response, provider="ollama", model=model)
         data = response.json()
-        raw_text = data["choices"][0]["message"]["content"]
+        raw_text = _extract_content(data["choices"][0]["message"])
         usage = data.get("usage", {})
         return LLMResponse(
             raw_text=raw_text,

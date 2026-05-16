@@ -381,6 +381,15 @@ class _FakeDB:
     async def refresh(self, obj):
         return None
 
+    def begin_nested(self):
+        return self
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *args):
+        return False
+
 
 def _make_mock_job(**overrides):
     defaults = dict(

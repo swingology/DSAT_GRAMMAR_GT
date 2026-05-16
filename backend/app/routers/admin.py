@@ -57,7 +57,6 @@ async def list_questions(
     _auth: str = Depends(admin_required),
 ):
     """List questions for admin review. Defaults to draft (pending review) queue."""
-    from app.models.db import QuestionAnnotation, QuestionOption
 
     stmt = select(Question)
     if practice_status:
@@ -69,22 +68,36 @@ async def list_questions(
     result = await db.execute(stmt)
     questions = result.unique().scalars().all()
 
+    # Batch-load annotations and options to avoid N+1 queries.
+    ann_ids = [q.latest_annotation_id for q in questions if q.latest_annotation_id]
+    if ann_ids:
+        ann_rows = await db.execute(select(QuestionAnnotation).where(QuestionAnnotation.id.in_(ann_ids)))
+        ann_map = {a.id: a for a in ann_rows.scalars().all()}
+    else:
+        ann_map = {}
+
+    version_to_qid = {q.latest_version_id: q.id for q in questions if q.latest_version_id}
+    if version_to_qid:
+        opts_rows = await db.execute(
+            select(QuestionOption).where(
+                QuestionOption.question_version_id.in_(list(version_to_qid.keys()))
+            )
+        )
+        opts_by_qid: dict = {}
+        for opt in opts_rows.scalars().all():
+            qid = version_to_qid.get(opt.question_version_id)
+            if qid:
+                opts_by_qid.setdefault(qid, []).append(
+                    {"label": opt.option_label, "text": opt.option_text, "is_correct": opt.is_correct}
+                )
+    else:
+        opts_by_qid = {}
+
     items = []
     for q in questions:
-        annotation = None
-        if q.latest_annotation_id:
-            ann = await db.get(QuestionAnnotation, q.latest_annotation_id)
-            if ann:
-                annotation = {**ann.annotation_jsonb, **ann.explanation_jsonb}
-
-        opts_stmt = select(QuestionOption).where(QuestionOption.question_id == q.id)
-        if q.latest_version_id:
-            opts_stmt = opts_stmt.where(QuestionOption.question_version_id == q.latest_version_id)
-        opts_result = await db.execute(opts_stmt)
-        options = [
-            {"label": o.option_label, "text": o.option_text, "is_correct": o.is_correct}
-            for o in opts_result.scalars().all()
-        ]
+        ann = ann_map.get(q.latest_annotation_id) if q.latest_annotation_id else None
+        annotation = {**ann.annotation_jsonb, **ann.explanation_jsonb} if ann else None
+        options = opts_by_qid.get(q.id, [])
 
         items.append({
             "id": str(q.id),

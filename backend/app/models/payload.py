@@ -18,6 +18,7 @@ class StudentQuestionResponse(BaseModel):
     source_subject_code: Optional[str] = None
     source_section_code: Optional[str] = None
     source_module_code: Optional[str] = None
+    options: List[dict] = Field(default_factory=list)
 
     model_config = {"from_attributes": True}
 
@@ -68,7 +69,7 @@ class QuestionDetailResponse(BaseModel):
 
 
 class UserProgressCreate(BaseModel):
-    user_id: int
+    user_token: str
     question_id: str
     selected_option_label: str = Field(pattern=r"^[A-D]$")
     missed_grammar_focus_key: Optional[str] = None
@@ -163,6 +164,7 @@ class UserCreate(BaseModel):
 class UserResponse(BaseModel):
     id: int
     username: str
+    user_token: str
     created_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}

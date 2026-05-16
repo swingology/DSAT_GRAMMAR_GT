@@ -12,9 +12,14 @@ logger = logging.getLogger(__name__)
 _INSECURE_DEFAULTS = {"admin-key-change-me", "student-key-change-me"}
 
 
-def _warn_if_insecure_keys(settings) -> None:
+def _check_insecure_keys(settings) -> None:
     active = set(settings.admin_api_key_list) | set(settings.student_api_key_list)
     if active & _INSECURE_DEFAULTS:
+        if settings.env == "production":
+            raise RuntimeError(
+                "SECURITY: Default API keys are active in production. "
+                "Set ADMIN_API_KEYS and STUDENT_API_KEYS environment variables."
+            )
         logger.warning(
             "SECURITY WARNING: Default API keys are active. "
             "Set ADMIN_API_KEYS and STUDENT_API_KEYS environment variables before deploying."
@@ -25,7 +30,7 @@ def _warn_if_insecure_keys(settings) -> None:
 async def lifespan(app: FastAPI):
     settings = get_settings()
     configure_logging(level=settings.log_level, json_output=settings.log_json)
-    _warn_if_insecure_keys(settings)
+    _check_insecure_keys(settings)
     try:
         from sqlalchemy import update
         from app.database import async_session

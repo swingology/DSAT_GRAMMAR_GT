@@ -2,6 +2,7 @@ import time
 from typing import Optional, List
 import openai
 from app.llm.base import LLMResponse, ImageContent
+from app.llm.errors import LLMAPIError, token_usage_from_payload
 from app.llm.retry import with_retry
 
 
@@ -21,15 +22,24 @@ class OpenAIProvider:
     ) -> LLMResponse:
         model = model or self.default_model
         start = time.time()
-        response = await self.client.chat.completions.create(
-            model=model,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-        )
+        try:
+            response = await self.client.chat.completions.create(
+                model=model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+            )
+        except Exception as exc:
+            raise LLMAPIError(
+                f"openai API request failed: {exc}",
+                provider="openai",
+                model=model,
+                status_code=getattr(exc, "status_code", None),
+                token_usage=token_usage_from_payload(getattr(exc, "body", None)),
+            ) from exc
         latency_ms = int((time.time() - start) * 1000)
         raw_text = response.choices[0].message.content
         token_usage = {
@@ -64,15 +74,24 @@ class OpenAIProvider:
             for img in images
         ]
         content.append({"type": "text", "text": user})
-        response = await self.client.chat.completions.create(
-            model=model,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": content},
-            ],
-        )
+        try:
+            response = await self.client.chat.completions.create(
+                model=model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": content},
+                ],
+            )
+        except Exception as exc:
+            raise LLMAPIError(
+                f"openai API request failed: {exc}",
+                provider="openai",
+                model=model,
+                status_code=getattr(exc, "status_code", None),
+                token_usage=token_usage_from_payload(getattr(exc, "body", None)),
+            ) from exc
         latency_ms = int((time.time() - start) * 1000)
         raw_text = response.choices[0].message.content
         token_usage = {

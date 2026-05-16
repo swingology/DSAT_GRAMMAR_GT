@@ -8,7 +8,7 @@ from uuid import UUID
 
 from app.database import get_db
 from app.auth import student_required, admin_required
-from app.models.db import Question, User, UserProgress, QuestionAnnotation
+from app.models.db import Question, User, UserProgress, QuestionAnnotation, QuestionOption
 from app.models.payload import StudentQuestionResponse, UserProgressCreate, UserStats, UserCreate, UserResponse
 
 router = APIRouter(prefix="/api", tags=["student"])
@@ -47,31 +47,48 @@ async def student_recall(
     result = await db.execute(stmt)
     questions = result.unique().scalars().all()
 
+    # Batch-load annotations and options to avoid N+1 queries.
+    ann_ids = [q.latest_annotation_id for q in questions if q.latest_annotation_id]
+    if ann_ids:
+        ann_rows = await db.execute(select(QuestionAnnotation).where(QuestionAnnotation.id.in_(ann_ids)))
+        ann_map = {a.id: a for a in ann_rows.scalars().all()}
+    else:
+        ann_map = {}
+
+    version_to_qid = {q.latest_version_id: q.id for q in questions if q.latest_version_id}
+    if version_to_qid:
+        opts_rows = await db.execute(
+            select(QuestionOption).where(
+                QuestionOption.question_version_id.in_(list(version_to_qid.keys()))
+            )
+        )
+        opts_by_qid: dict = {}
+        for opt in opts_rows.scalars().all():
+            qid = version_to_qid.get(opt.question_version_id)
+            if qid:
+                opts_by_qid.setdefault(qid, []).append(
+                    {"label": opt.option_label, "text": opt.option_text}
+                )
+    else:
+        opts_by_qid = {}
+
     responses = []
     for q in questions:
-        grammar_focus_key = None
-        difficulty_overall = None
-        generation_profile = None
-        if q.latest_annotation_id:
-            ann = await db.get(QuestionAnnotation, q.latest_annotation_id)
-            if ann:
-                grammar_focus_key = ann.annotation_jsonb.get("grammar_focus_key")
-                difficulty_overall = ann.annotation_jsonb.get("difficulty_overall")
-                generation_profile = ann.generation_profile_jsonb
-
+        ann = ann_map.get(q.latest_annotation_id) if q.latest_annotation_id else None
         responses.append(StudentQuestionResponse(
             id=str(q.id),
             content_origin=q.content_origin,
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
             practice_status=q.practice_status,
-            grammar_focus_key=grammar_focus_key,
-            difficulty_overall=difficulty_overall,
+            grammar_focus_key=ann.annotation_jsonb.get("grammar_focus_key") if ann else None,
+            difficulty_overall=ann.annotation_jsonb.get("difficulty_overall") if ann else None,
             stimulus_mode_key=q.stimulus_mode_key,
             source_exam_code=q.source_exam_code,
             source_subject_code=q.source_subject_code,
             source_section_code=q.source_section_code,
             source_module_code=q.source_module_code,
+            options=opts_by_qid.get(q.id, []),
         ))
     return responses
 
@@ -87,20 +104,26 @@ async def submit_answer(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid question_id")
 
+    try:
+        token_uuid = UUID(body.user_token)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid user_token")
+
     q = await db.get(Question, qid)
     if not q:
         raise HTTPException(status_code=404, detail="Question not found")
     if q.practice_status != "active":
         raise HTTPException(status_code=400, detail="Question is not active")
 
-    user = await db.get(User, body.user_id)
+    result = await db.execute(select(User).where(User.user_token == token_uuid))
+    user = result.scalars().first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
     is_correct = q.current_correct_option_label == body.selected_option_label
 
     progress = UserProgress(
-        user_id=body.user_id,
+        user_id=user.id,
         question_id=qid,
         is_correct=is_correct,
         selected_option_label=body.selected_option_label,
@@ -172,9 +195,9 @@ async def list_users(
 async def get_user(
     user_id: int,
     db: AsyncSession = Depends(get_db),
-    _auth: str = Depends(student_required),
+    _auth: str = Depends(admin_required),
 ):
-    """Get a user by ID."""
+    """Get a user by ID (admin only)."""
     user = await db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

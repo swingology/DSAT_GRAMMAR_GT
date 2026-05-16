@@ -55,7 +55,7 @@ ALLOWED_MIME = {
 IMAGE_MIME_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 OCR_TEXT_EXTRACT_PROVIDER = "ollama"
-OCR_TEXT_EXTRACT_MODEL = "deepseek-v4-pro:cloud"
+OCR_TEXT_EXTRACT_MODEL = "qwen3-vl:235b-instruct-cloud"
 
 
 def _resolve_provider_and_model(
@@ -410,6 +410,16 @@ def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str 
         for opt in enriched.get("options", []):
             if isinstance(opt, dict) and "label" in opt:
                 opt["label"] = _clean_option_label(opt["label"])
+
+        # Backfill positional labels when the LLM emitted 4 options with no
+        # labels at all (a recurring failure mode that otherwise fails the
+        # validator with "Option labels must be exactly {A, B, C, D}, got ['']").
+        opts = enriched.get("options", [])
+        if len(opts) == 4 and all(
+            isinstance(o, dict) and not o.get("label") for o in opts
+        ):
+            for idx, opt in enumerate(opts):
+                opt["label"] = "ABCD"[idx]
 
         # Drop blanks and deduplicate by question_text
         q_text_key = (enriched.get("question_text") or "").strip().lower()
@@ -1174,22 +1184,22 @@ def _available_ocr_strategies(settings) -> list[str]:
     return available
 
 
-def _fallback_ocr_strategy(settings, failed_strategy: str) -> str | None:
-    """Choose the next OCR strategy after a provider failure.
+def _build_ocr_chain(resolved: str, settings) -> list[str]:
+    """Ordered OCR strategy fallback chain.
 
-    Claude/Anthropic is preferred for fallback because it supports the fused
-    vision extraction path and tends to be more robust than small local VLMs.
+    The resolved strategy runs first; the remaining available strategies follow
+    with two-step OCR (``glm``, ``deepseek``) preferred over VLM-fused providers,
+    so a failed run falls back to a two-step path before a VLM path.
     """
-    failed = (failed_strategy or "").lower()
-    for candidate in ("anthropic", "deepseek", "ollama", "openai"):
-        if candidate == failed:
-            continue
-        try:
-            if candidate == _resolve_ocr_strategy(candidate, settings):
-                return candidate
-        except ValueError:
-            continue
-    return None
+    if not getattr(settings, "ocr_fallback", True):
+        return [resolved]
+    preference = ["glm", "deepseek", "anthropic", "openai", "ollama"]
+    available = set(_available_ocr_strategies(settings))
+    chain = [resolved]
+    for candidate in preference:
+        if candidate != resolved and candidate in available:
+            chain.append(candidate)
+    return chain
 
 
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
@@ -1232,178 +1242,180 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             await db.commit()
             return
 
-        if resolved_strategy == "glm":
-            # GLM-OCR: two-step — glm-ocr:latest via Ollama vision → raw_text → Pass 1 LLM
-            from app.llm.ollama_provider import OllamaProvider as _OllamaProvider
-            glm_model = settings.glm_ocr_model
-            glm_provider = _OllamaProvider(
-                base_url=settings.ollama_base_url,
-                default_model=glm_model,
-            )
-            _GLM_OCR_SYSTEM = (
-                "You are a precise OCR engine. Extract all text from the image exactly as it "
-                "appears. Preserve question numbers on their own lines, option labels (A/B/C/D), "
-                "and blank markers (______). Return only the extracted text."
-            )
-            try:
-                ocr_result = await glm_provider.complete_vision(
-                    system=_GLM_OCR_SYSTEM,
-                    user="Extract all text from this image.",
-                    images=page_images,
-                    model=glm_model,
-                    max_tokens=4096,
-                    temperature=0.0,
-                )
-                raw_text = ocr_result.raw_text
-                ocr_text_path = _store_ocr_text(job, raw_text, "glm")
-                job.pass1_json = {
-                    **(job.pass1_json or {}),
-                    "raw_text": raw_text,
-                    "_ocr_meta": {
-                        "strategy": "glm",
-                        "model": glm_model,
-                        "page_count": len(page_images),
-                        "latency_ms": ocr_result.latency_ms,
-                        "token_usage": getattr(ocr_result, "token_usage", None) or {},
-                        "ocr_text_path": ocr_text_path,
-                    },
-                }
-                await db.commit()
-                text_extraction_provider = get_provider(
-                    OCR_TEXT_EXTRACT_PROVIDER,
-                    base_url=settings.ollama_base_url,
-                    default_model=OCR_TEXT_EXTRACT_MODEL,
-                )
-                text_extraction_provider_name = OCR_TEXT_EXTRACT_PROVIDER
-                text_extraction_model_name = OCR_TEXT_EXTRACT_MODEL
-            except Exception as e:
-                if settings.ocr_fallback:
-                    fallback_strategy = _fallback_ocr_strategy(settings, "glm")
-                    if fallback_strategy:
-                        logger.warning("GLM-OCR failed (%s), falling back to %s", e, fallback_strategy)
-                        resolved_strategy = fallback_strategy
-                    else:
-                        orch.fail("extracting", "ocr_error", f"GLM-OCR failed and no fallback is configured: {e}")
-                        job.status = "failed"
-                        job.validation_errors_jsonb = [error_payload("ocr", e)]
-                        await db.commit()
-                        return
-                else:
-                    orch.fail("extracting", "ocr_error", f"GLM-OCR failed: {e}")
-                    job.status = "failed"
-                    job.validation_errors_jsonb = [error_payload("ocr", e)]
-                    await db.commit()
-                    return
-            finally:
-                await glm_provider.close()
+        # Ordered fallback chain — the resolved strategy runs first, then the
+        # remaining available strategies with two-step OCR (glm, deepseek)
+        # preferred over VLM-fused providers.
+        _ocr_chain = _build_ocr_chain(resolved_strategy, settings)
+        _ocr_done = False
+        _ocr_last_err: Exception | None = None
 
-        if resolved_strategy == "deepseek":
-            # Option A: DeepSeek OCR-2 → raw_text → Pass 1 LLM extraction
-            from app.llm.factory import get_ocr_client
-            ocr_client = get_ocr_client(
-                base_url=settings.deepseek_ocr_base_url,
-                model=settings.deepseek_ocr_model,
-            )
-            try:
-                ocr_result = await ocr_client.extract(page_images)
-                raw_text = ocr_result.raw_text
-                ocr_text_path = _store_ocr_text(job, raw_text, "deepseek")
-                job.pass1_json = {
-                    **(job.pass1_json or {}),
-                    "raw_text": raw_text,
-                    "_ocr_meta": {
-                        "strategy": "deepseek",
-                        "model": settings.deepseek_ocr_model,
-                        "page_count": len(page_images),
-                        "latency_ms": ocr_result.latency_ms,
-                        "token_usage": getattr(ocr_result, "token_usage", None) or {},
-                        "ocr_text_path": ocr_text_path,
-                    },
-                }
-                await db.commit()
-                text_extraction_provider = get_provider(
-                    OCR_TEXT_EXTRACT_PROVIDER,
-                    base_url=settings.ollama_base_url,
-                    default_model=OCR_TEXT_EXTRACT_MODEL,
-                )
-                text_extraction_provider_name = OCR_TEXT_EXTRACT_PROVIDER
-                text_extraction_model_name = OCR_TEXT_EXTRACT_MODEL
-            except Exception as e:
-                if settings.ocr_fallback:
-                    fallback_strategy = _fallback_ocr_strategy(settings, "deepseek")
-                    if fallback_strategy:
-                        logger.warning("DeepSeek OCR failed (%s), falling back to %s", e, fallback_strategy)
-                        resolved_strategy = fallback_strategy
-                    else:
-                        orch.fail("extracting", "ocr_error", f"DeepSeek OCR failed and no fallback is configured: {e}")
-                        job.status = "failed"
-                        job.validation_errors_jsonb = [error_payload("ocr", e)]
-                        await db.commit()
-                        return
-                else:
-                    orch.fail("extracting", "ocr_error", f"DeepSeek OCR failed: {e}")
-                    job.status = "failed"
-                    job.validation_errors_jsonb = [error_payload("ocr", e)]
-                    await db.commit()
-                    return
+        for _strategy in _ocr_chain:
+            if _ocr_done:
+                break
 
-        if resolved_strategy in ("ollama", "anthropic", "openai"):
-            # Option B/C/D: VLM fused — one provider call for both OCR and extraction
-            from app.prompts.extract_prompt import build_vision_extract_prompt
-            from app.llm.factory import get_provider as _get_provider
-            vlm_model = _vlm_model_for_strategy(resolved_strategy, settings)
-            vlm_provider = _get_provider(
-                resolved_strategy,
-                api_key=_provider_api_key(settings, resolved_strategy),
-                base_url=settings.ollama_base_url if resolved_strategy == "ollama" else "",
-                default_model=vlm_model,
-            )
-            stimulus_provider = vlm_provider
-            orch.advance()
-            job.status = "extracting"
+            if _strategy == "glm":
+                # GLM-OCR: two-step — glm-ocr:latest via Ollama vision → raw_text → Pass 1 LLM
+                from app.llm.ollama_provider import OllamaProvider as _OllamaProvider
+                glm_model = settings.glm_ocr_model
+                glm_provider = _OllamaProvider(
+                    base_url=settings.ollama_base_url,
+                    default_model=glm_model,
+                )
+                _GLM_OCR_SYSTEM = (
+                    "You are a precise OCR engine. Extract all text from the image exactly as it "
+                    "appears. Preserve question numbers on their own lines, option labels (A/B/C/D), "
+                    "and blank markers (______). Return only the extracted text."
+                )
+                try:
+                    ocr_result = await glm_provider.complete_vision(
+                        system=_GLM_OCR_SYSTEM,
+                        user="Extract all text from this image.",
+                        images=page_images,
+                        model=glm_model,
+                        max_tokens=4096,
+                        temperature=0.0,
+                    )
+                    raw_text = ocr_result.raw_text
+                    ocr_text_path = _store_ocr_text(job, raw_text, "glm")
+                    job.pass1_json = {
+                        **(job.pass1_json or {}),
+                        "raw_text": raw_text,
+                        "_ocr_meta": {
+                            "strategy": "glm",
+                            "model": glm_model,
+                            "page_count": len(page_images),
+                            "latency_ms": ocr_result.latency_ms,
+                            "token_usage": getattr(ocr_result, "token_usage", None) or {},
+                            "ocr_text_path": ocr_text_path,
+                        },
+                    }
+                    await db.commit()
+                    text_extraction_provider = get_provider(
+                        OCR_TEXT_EXTRACT_PROVIDER,
+                        base_url=settings.ollama_base_url,
+                        default_model=OCR_TEXT_EXTRACT_MODEL,
+                    )
+                    text_extraction_provider_name = OCR_TEXT_EXTRACT_PROVIDER
+                    text_extraction_model_name = OCR_TEXT_EXTRACT_MODEL
+                    _ocr_done = True
+                except Exception as e:
+                    _ocr_last_err = e
+                    logger.warning("GLM-OCR failed (%s)", e)
+                finally:
+                    await glm_provider.close()
+
+            elif _strategy == "deepseek":
+                # Option A: DeepSeek OCR-2 → raw_text → Pass 1 LLM extraction
+                from app.llm.factory import get_ocr_client
+                ocr_client = get_ocr_client(
+                    base_url=settings.deepseek_ocr_base_url,
+                    model=settings.deepseek_ocr_model,
+                )
+                try:
+                    ocr_result = await ocr_client.extract(page_images)
+                    raw_text = ocr_result.raw_text
+                    ocr_text_path = _store_ocr_text(job, raw_text, "deepseek")
+                    job.pass1_json = {
+                        **(job.pass1_json or {}),
+                        "raw_text": raw_text,
+                        "_ocr_meta": {
+                            "strategy": "deepseek",
+                            "model": settings.deepseek_ocr_model,
+                            "page_count": len(page_images),
+                            "latency_ms": ocr_result.latency_ms,
+                            "token_usage": getattr(ocr_result, "token_usage", None) or {},
+                            "ocr_text_path": ocr_text_path,
+                        },
+                    }
+                    await db.commit()
+                    text_extraction_provider = get_provider(
+                        OCR_TEXT_EXTRACT_PROVIDER,
+                        base_url=settings.ollama_base_url,
+                        default_model=OCR_TEXT_EXTRACT_MODEL,
+                    )
+                    text_extraction_provider_name = OCR_TEXT_EXTRACT_PROVIDER
+                    text_extraction_model_name = OCR_TEXT_EXTRACT_MODEL
+                    _ocr_done = True
+                except Exception as e:
+                    _ocr_last_err = e
+                    logger.warning("DeepSeek OCR failed (%s)", e)
+
+            elif _strategy in ("ollama", "anthropic", "openai"):
+                # Option B/C/D: VLM fused — one provider call for both OCR and
+                # extraction, with a 3-attempt JSON-parse retry.
+                from app.prompts.extract_prompt import build_vision_extract_prompt
+                from app.llm.factory import get_provider as _get_provider
+
+                orch.advance()
+                job.status = "extracting"
+                await db.commit()
+                system, user = build_vision_extract_prompt(form_meta)
+                vlm_model = _vlm_model_for_strategy(_strategy, settings)
+                vlm_provider = _get_provider(
+                    _strategy,
+                    api_key=_provider_api_key(settings, _strategy),
+                    base_url=settings.ollama_base_url if _strategy == "ollama" else "",
+                    default_model=vlm_model,
+                )
+                stimulus_provider = vlm_provider
+                for _v_attempt in range(3):
+                    try:
+                        vision_result = await vlm_provider.complete_vision(
+                            system=system,
+                            user=user,
+                            images=page_images,
+                            model=vlm_model,
+                            max_tokens=16000,
+                        )
+                        ocr_text_path = _store_ocr_text(job, vision_result.raw_text, _strategy)
+                        extract_root = extract_json_from_text(
+                            vision_result.raw_text, _strategy, vlm_model
+                        )
+                        prior_pass1 = job.pass1_json or {}
+                        job.pass1_json = {
+                            **extract_root,
+                            "_page_images": prior_pass1.get("_page_images", []),
+                            "_ocr_artifacts": prior_pass1.get("_ocr_artifacts", []),
+                            "_llm_meta": {
+                                "provider": _strategy,
+                                "model": vlm_model,
+                                "latency_ms": vision_result.latency_ms,
+                                "token_usage": getattr(vision_result, "token_usage", None) or {},
+                            },
+                            "_ocr_meta": {
+                                "strategy": _strategy,
+                                "model": vlm_model,
+                                "page_count": len(page_images),
+                                "latency_ms": vision_result.latency_ms,
+                                "token_usage": getattr(vision_result, "token_usage", None) or {},
+                                "ocr_text_path": ocr_text_path,
+                            },
+                            "source_metadata": form_meta,
+                        }
+                        await db.commit()
+                        raw_text = "_vision_fused_"  # sentinel: Pass 1 is skipped below
+                        _ocr_done = True
+                        break
+                    except ValueError as _vjson_err:
+                        _ocr_last_err = _vjson_err
+                        logger.warning(
+                            "VLM fused JSON parse failed (strategy %s, attempt %d/3, job %s): %s",
+                            _strategy, _v_attempt + 1, job.id, _vjson_err,
+                        )
+                        if _v_attempt < 2:
+                            await asyncio.sleep(0.5 * (2 ** _v_attempt))
+                    except Exception as _vexc:
+                        _ocr_last_err = _vexc
+                        logger.warning("VLM fused OCR failed (strategy %s): %s", _strategy, _vexc)
+                        break
+
+        if not _ocr_done:
+            _err = _ocr_last_err or Exception("OCR failed and no fallback succeeded")
+            orch.fail("extracting", "ocr_error", f"OCR failed: {_err}")
+            job.status = "failed"
+            job.validation_errors_jsonb = [error_payload("ocr", _err)]
             await db.commit()
-            system, user = build_vision_extract_prompt(form_meta)
-            try:
-                vision_result = await vlm_provider.complete_vision(
-                    system=system,
-                    user=user,
-                    images=page_images,
-                    model=vlm_model,
-                    max_tokens=16000,
-                )
-                ocr_text_path = _store_ocr_text(job, vision_result.raw_text, resolved_strategy)
-                extract_root = extract_json_from_text(
-                    vision_result.raw_text, resolved_strategy, vlm_model
-                )
-                prior_pass1 = job.pass1_json or {}
-                job.pass1_json = {
-                    **extract_root,
-                    "_page_images": prior_pass1.get("_page_images", []),
-                    "_ocr_artifacts": prior_pass1.get("_ocr_artifacts", []),
-                    "_llm_meta": {
-                        "provider": resolved_strategy,
-                        "model": vlm_model,
-                        "latency_ms": vision_result.latency_ms,
-                        "token_usage": getattr(vision_result, "token_usage", None) or {},
-                    },
-                    "_ocr_meta": {
-                        "strategy": resolved_strategy,
-                        "model": vlm_model,
-                        "page_count": len(page_images),
-                        "latency_ms": vision_result.latency_ms,
-                        "token_usage": getattr(vision_result, "token_usage", None) or {},
-                        "ocr_text_path": ocr_text_path,
-                    },
-                    "source_metadata": form_meta,
-                }
-                await db.commit()
-                raw_text = "_vision_fused_"  # sentinel: Pass 1 is skipped below
-            except Exception as e:
-                orch.fail("extracting", "vision_error", f"VLM OCR failed ({resolved_strategy}): {e}")
-                job.status = "failed"
-                job.validation_errors_jsonb = [error_payload("ocr", e)]
-                await db.commit()
-                return
+            return
         # ── end OCR gate ──────────────────────────────────────────────────
 
     elif not raw_text:
@@ -1449,6 +1461,21 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     text_extraction_provider_name,
                     text_extraction_model_name,
                 )
+                # Structural check: JSON can parse cleanly yet still carry no
+                # usable questions. Treat that as a retryable extraction failure
+                # rather than proceeding to annotation with an empty payload.
+                _extracted_qs = (
+                    extract_root.get("questions")
+                    if isinstance(extract_root.get("questions"), list)
+                    else [extract_root]
+                )
+                if not any(
+                    isinstance(eq, dict) and (eq.get("question_text") or "").strip()
+                    for eq in _extracted_qs
+                ):
+                    raise ValueError(
+                        "extraction returned no questions with non-empty question_text"
+                    )
                 prior_pass1 = job.pass1_json or {}
                 job.pass1_json = {
                     **extract_root,
@@ -1670,30 +1697,31 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
         # ---- Persist ----
         try:
-            question_id = await _persist_single_question(
-                db=db,
-                job=job,
-                q_data=q_data,
-                annotate_json=annotate_json,
-                passage_text=q_data.get("passage_text") or shared_passage,
-                passage_group_id=_get_passage_group_id(q_data),
-                overlaps=overlaps,
-                section_code=section_code,
-                question_index=i,
-                layout_data=layout_data,
-                layout_paths=layout_paths,
-                provider=stimulus_provider,
-                suspect_question_indices=suspect_qnum_indices,
-            )
+            async with db.begin_nested():  # SAVEPOINT: failure rolls back only this question
+                question_id = await _persist_single_question(
+                    db=db,
+                    job=job,
+                    q_data=q_data,
+                    annotate_json=annotate_json,
+                    passage_text=q_data.get("passage_text") or shared_passage,
+                    passage_group_id=_get_passage_group_id(q_data),
+                    overlaps=overlaps,
+                    section_code=section_code,
+                    question_index=i,
+                    layout_data=layout_data,
+                    layout_paths=layout_paths,
+                    provider=stimulus_provider,
+                    suspect_question_indices=suspect_qnum_indices,
+                )
+                db.add(QuestionJobQuestion(job_id=job.id, question_id=question_id))
             created_question_ids.append(question_id)
-            db.add(QuestionJobQuestion(job_id=job.id, question_id=question_id))
             _export_question(job, q_data, annotate_json, question_id)
         except Exception as _persist_err:
             logger.error(
                 "Persist failed for question_index %d (job %s): %s",
                 i, job.id, _persist_err,
             )
-            await db.rollback()
+            # Session is restored to savepoint — no rollback needed, loop continues cleanly
             all_errors.append({
                 "question_index": i,
                 "step": "persisting",
@@ -1726,10 +1754,27 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
 
 async def _run_pipeline_with_session(job_id: uuid.UUID):
+    timeout_s = getattr(get_settings(), "pipeline_timeout_s", 1800)
     async with async_session() as db:
         job = await db.get(QuestionJob, job_id)
-        if job:
-            await _run_pipeline(job, db)
+        if not job:
+            return
+        try:
+            await asyncio.wait_for(_run_pipeline(job, db), timeout=timeout_s)
+        except asyncio.TimeoutError:
+            logger.error("Pipeline exceeded %ss timeout (job %s)", timeout_s, job_id)
+            # The timed-out task's session may be mid-operation and unusable;
+            # mark the job failed on a fresh session.
+            async with async_session() as db2:
+                j2 = await db2.get(QuestionJob, job_id)
+                if j2 and j2.status not in ("approved", "needs_review", "failed"):
+                    j2.status = "failed"
+                    j2.validation_errors_jsonb = [{
+                        "step": "pipeline_timeout",
+                        "error": f"Pipeline exceeded {timeout_s}s timeout",
+                        "error_type": "TimeoutError",
+                    }]
+                    await db2.commit()
 
 
 async def _safe_read(file: UploadFile, max_bytes: int) -> bytes:
@@ -1900,6 +1945,7 @@ async def ingest_official_pdf(
             "_ocr_strategy": ocr_strategy,
             "source_metadata": {
                 **source_metadata,
+                "page_count": len(pdf_result["pages"]),
             },
         },
         created_at=now,

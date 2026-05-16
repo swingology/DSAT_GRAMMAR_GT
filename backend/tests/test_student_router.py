@@ -11,7 +11,7 @@ def test_student_recall_with_auth(client):
 
 def test_student_submit_invalid_uuid(client):
     resp = client.post("/api/submit", json={
-        "user_id": 1,
+        "user_token": "00000000-0000-0000-0000-000000000001",
         "question_id": "not-a-uuid",
         "is_correct": True,
         "selected_option_label": "A",
@@ -21,7 +21,7 @@ def test_student_submit_invalid_uuid(client):
 
 def test_student_submit_not_found(client):
     resp = client.post("/api/submit", json={
-        "user_id": 1,
+        "user_token": "00000000-0000-0000-0000-000000000001",
         "question_id": "00000000-0000-0000-0000-000000000000",
         "is_correct": True,
         "selected_option_label": "A",

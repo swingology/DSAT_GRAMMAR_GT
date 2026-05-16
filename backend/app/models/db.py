@@ -309,6 +309,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(100), unique=True, index=True, nullable=False)
+    user_token = Column(UUID(as_uuid=True), unique=True, nullable=False, default=uuid.uuid4)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
     progress_records = relationship("UserProgress", back_populates="user")

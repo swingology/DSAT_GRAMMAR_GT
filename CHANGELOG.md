@@ -47,6 +47,201 @@ successfully persisted question. Migration `017` creates the table.
 
 ---
 
+## 2026-05-16 — Unified OCR fallback gate (two-step preferred over VLM)
+
+**Model:** Claude Opus 4.7 (`claude-opus-4-7`)
+**Branch:** `main`
+
+Restructures the OCR gate into a single ordered fallback loop so any branch
+can fall back to any other available strategy, with two-step OCR preferred
+over VLM-fused providers.
+
+### Change
+- Replaced `_fallback_ocr_strategy` with `_build_ocr_chain(resolved, settings)`.
+  The chain runs the resolved strategy first, then walks `["glm", "deepseek",
+  "anthropic", "ollama", "openai"]` — **two-step (glm, deepseek) is preferred
+  over VLM-fused (anthropic, ollama, openai)**. `ocr_fallback=False` reduces
+  the chain to `[resolved]`.
+- Rewrote the OCR gate (the three sequential `if`-blocks) as a `for _strategy
+  in _ocr_chain` loop. Each branch sets `_ocr_done = True` on success or
+  records `_ocr_last_err` on failure; the loop advances to the next strategy.
+  This resolves the earlier limitation where VLM-fused failures could only
+  fall back to other VLM-fused providers — a VLM failure can now fall back
+  to glm/deepseek and vice versa.
+- VLM body retains its 3-attempt JSON-parse retry (exponential backoff).
+- Updated `tests/test_ocr.py` — replaced the two `_fallback_ocr_strategy`
+  tests with three `_build_ocr_chain` tests covering ordering preference,
+  two-step → two-step fallback, and `ocr_fallback=False` behavior.
+
+**Files:** `backend/app/routers/ingest.py`, `backend/tests/test_ocr.py`
+
+---
+
+## 2026-05-16 — VLM fused OCR path: retry + provider fallback
+
+**Model:** Claude Opus 4.7 (`claude-opus-4-7`)
+**Branch:** `main`
+
+Closes the last ingestion-path resilience gap. The VLM fused OCR branch (Ollama/Anthropic/OpenAI
+vision providers) previously had a single `try/except` — one malformed JSON response or transient
+provider error failed the whole job, while the GLM and DeepSeek branches already had `ocr_fallback`
+logic.
+
+### Change
+**VLM fused branch retry + fallback:** Each VLM strategy now runs through a 3-attempt JSON-parse
+retry loop with exponential backoff (0.5s, 1s). When a strategy is exhausted and `ocr_fallback` is
+enabled, the job falls back to another VLM-fused provider (`ollama`/`anthropic`/`openai`) chosen by
+`_fallback_ocr_strategy`, with a tried-strategy set preventing loops. Resolves DEBUG_LOG findings
+2026-05-15 #6 and 2026-05-10 OCR-review #3.
+
+**Note:** Fallback from a fused VLM path to a two-step GLM/DeepSeek path is still not wired —
+fallback stays within the VLM-fused family.
+
+**File:** `backend/app/routers/ingest.py`
+
+---
+
+## 2026-05-16 — Fix six live-ingestion-run gaps (timeouts, diagnostics, label backfill)
+
+**Model:** Claude Opus 4.7 (`claude-opus-4-7`)
+**Branch:** `main`
+
+Remediation of the six findings from a live ingestion run of `Test_1_digital_sec01_mod01.pdf`
+against `qwen3-vl:235b-instruct-cloud`.
+
+### Fix 1 — Non-empty error messages for timeout exceptions (Critical)
+**Change:** `httpx.TimeoutException` has an empty `str()`, so a timed-out extraction recorded
+`{"step": "extracting", "error": ""}`. Added `_exception_message()` to `errors.py` — falls back to
+`"{ExceptionType} (no message)"` when `str(exc)` is empty. `error_payload` now also always emits an
+`error_type` field.
+**File:** `backend/app/llm/errors.py`
+
+### Fix 2 — Wider text-completion timeout (High)
+**Change:** Ollama's text `client` used a hardcoded 120s timeout, insufficient for 30K+ char
+extraction payloads against cloud models. Added `TEXT_TIMEOUT = 300.0` class constant (parallel to
+`VISION_TIMEOUT`); the text client now uses it.
+**File:** `backend/app/llm/ollama_provider.py`
+
+### Fix 3 — Positional option-label backfill (High)
+**Change:** Extraction sometimes emitted 4 options with empty `label` fields, failing the validator
+with `Option labels must be exactly {A, B, C, D}, got ['']`. `_normalize_extracted_questions` now
+backfills A/B/C/D positionally when a question has exactly 4 options and all labels are blank.
+**File:** `backend/app/routers/ingest.py`
+
+### Fix 4 — Structural retry on empty extraction (Medium)
+**Change:** The Pass 1 retry loop only retried on JSON parse errors. Added a structural check — if
+no extracted question has non-empty `question_text`, a `ValueError` is raised so the existing retry
+branch re-attempts instead of proceeding to annotation with an empty payload.
+**File:** `backend/app/routers/ingest.py`
+
+### Fix 5 — Pipeline-level timeout (Medium)
+**Change:** A hung model could occupy a job-semaphore slot indefinitely. `_run_pipeline_with_session`
+now wraps `_run_pipeline` in `asyncio.wait_for(timeout=settings.pipeline_timeout_s)` (default 1800s);
+on timeout the job is marked `failed` on a fresh session with a `pipeline_timeout` error. Added
+`pipeline_timeout_s: int = 1800` to `Settings`.
+**Files:** `backend/app/routers/ingest.py`, `backend/app/config.py`
+
+### Fix 6 — `page_count` in PDF source metadata (Low)
+**Change:** The official PDF ingest route now stores `page_count` in the `source_metadata` dict
+within `pass1_json`.
+**File:** `backend/app/routers/ingest.py`
+
+---
+
+## 2026-05-16 — Fix seven high-severity audit findings (generate pipeline, N+1, security, VLM fallback)
+
+**Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+**Branch:** `main`
+
+Fourth remediation pass addressing all remaining Critical and High severity items from the May audits.
+
+### Fix 1 — Generate pipeline savepoint (High — data integrity)
+**Change:** `_run_generate_pipeline` persist block (Question + Version + Annotation + Options) had
+no savepoint. A DB error left the job stuck in `"annotating"` status. Wrapped the entire block in
+`async with db.begin_nested()`. Failure rolls back only that attempt; job is marked `failed` with
+the exception in `validation_errors_jsonb`.
+**File:** `backend/app/routers/generate.py`
+
+### Fix 2 — Generate pipeline JSON retry (High — reliability)
+**Change:** Both the generate and annotate LLM calls in `_run_generate_pipeline` had no retry.
+Added 3-attempt loops with exponential backoff (0.5s, 1s) matching the ingest pipeline.
+`ValueError` (malformed JSON) retries; other exceptions fail immediately.
+**File:** `backend/app/routers/generate.py`
+
+### Fix 3 — `_generation_profile_payload` operational key leak (High — data correctness)
+**Change:** The last `merged.update(sources[-1])` call unconditionally merged `provider_name`,
+`model_name`, and all request fields into `generation_profile_jsonb`. Added
+`_operational_keys = {"provider_name", "model_name"}` exclusion filter so only non-operational
+fields from `request_data` are stored in the profile.
+**File:** `backend/app/routers/generate.py`
+
+### Fix 4 — Insecure default keys block startup in production (High — security)
+**Change:** `_warn_if_insecure_keys` only logged a warning and allowed startup to proceed.
+Renamed to `_check_insecure_keys`; now raises `RuntimeError` when `settings.env == "production"`
+and default keys are active. Development mode retains the warning. Added `env: str = "development"`
+to `Settings`.
+**Files:** `backend/app/main.py`, `backend/app/config.py`
+
+### Fix 5 — N+1 queries in all list endpoints (High — performance)
+**Change:** `admin.py`, `student.py`, and `questions.py` list endpoints each issued one DB call
+per question for annotations and options. Replaced with batch queries using
+`SELECT ... WHERE id IN (...)` and in-memory dict lookup. All three endpoints now issue 2–3 queries
+regardless of result set size.
+**Files:** `backend/app/routers/admin.py`, `backend/app/routers/student.py`,
+`backend/app/routers/questions.py`
+
+### Fix 6 — Ollama reasoning fallback for thinking models (High — correctness)
+**Change:** Thinking-capable Ollama models (qwen3-vl, qwen3) route all output to
+`message.reasoning` instead of `message.content` via the OpenAI-compat API. Added
+`_extract_content(message)` helper that falls back to `message.reasoning` when `message.content`
+is empty and strips `<think>…</think>` wrappers via regex. Applied to both `complete()` and
+`complete_vision()`.
+**File:** `backend/app/llm/ollama_provider.py`
+
+### Fix 7 — `detect_overlaps` safety cap (Medium → fix)
+**Change:** Overlap scan loaded all official questions with no limit, risking OOM at scale.
+Added `.limit(2000)` to the JOIN query.
+**File:** `backend/app/pipeline/overlap.py`
+
+---
+
+## 2026-05-16 — Fix three critical security/reliability gaps (audit follow-up)
+
+**Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+**Branch:** `main`
+
+Third pass fixing the three Critical-severity items identified in the backend security review.
+
+### Fix 1 — Persist loop savepoint (Critical — data integrity)
+**Change:** The per-question persist loop previously called `await db.rollback()` on failure,
+which rolled back all already-committed questions in the same batch. Replaced the bare
+`try/except` block with `async with db.begin_nested()` (SQLAlchemy SAVEPOINT). A flush
+failure inside the savepoint now rolls back only the failed question; the session remains
+valid and the loop continues. Removed the explicit `db.rollback()` call. Added `begin_nested`
+context manager support to `_FakeDB` in both regression and pipeline test suites.
+**Files:** `backend/app/routers/ingest.py`, `backend/tests/test_backend_regressions.py`,
+`backend/tests/test_pipeline.py`
+
+### Fix 2 — Profile endpoint restricted to admin (Critical — auth)
+**Change:** `GET /api/users/{user_id}` was protected by `student_required`, allowing any student
+with the shared API key to enumerate sequential user IDs and read all profiles. Changed to
+`admin_required`.
+**File:** `backend/app/routers/student.py`
+
+### Fix 3 — Per-user token for answer submission (Critical — auth)
+**Change:** `POST /api/submit` previously accepted `user_id: int` in the request body, with no
+binding to the caller's identity. Any student could attribute answers to any user ID. Replaced
+`user_id` with `user_token: str` (UUID). The endpoint now resolves the user by token, ensuring
+a student can only submit on behalf of the user whose token they hold. Added `user_token` UUID
+column to the `User` model with server-default `gen_random_uuid()` and migration `018`.
+`UserResponse` now exposes `user_token` so admins can retrieve it after user creation.
+**Files:** `backend/app/models/db.py`, `backend/app/models/payload.py`,
+`backend/app/routers/student.py`,
+`backend/migrations/versions/018_add_user_token.py`,
+`backend/tests/test_student_router.py`, `backend/tests/test_backend_regressions.py`
+
+---
+
 ## 2026-05-15 — Wire stimulus asset pipeline end-to-end
 
 **Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)

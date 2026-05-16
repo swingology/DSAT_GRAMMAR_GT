@@ -66,6 +66,15 @@ class _FakeDB:
     async def refresh(self, obj):
         return None
 
+    def begin_nested(self):
+        return self
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *args):
+        return False
+
 
 @pytest.mark.asyncio
 async def test_run_pipeline_keeps_official_questions_in_draft(monkeypatch):
@@ -849,7 +858,7 @@ async def test_submit_answer_rejects_non_active_question():
     with pytest.raises(HTTPException) as exc:
         await student_router.submit_answer(
             body=UserProgressCreate(
-                user_id=1,
+                user_token=str(uuid.uuid4()),
                 question_id=str(qid),
                 selected_option_label="A",
             ),

@@ -2,6 +2,7 @@
 import time
 import httpx
 from app.llm.base import ImageContent, LLMResponse
+from app.llm.errors import raise_for_status_with_usage
 from app.llm.retry import with_retry
 
 
@@ -47,7 +48,7 @@ class DeepSeekOCRClient:
             },
         )
         latency_ms = int((time.time() - start) * 1000)
-        response.raise_for_status()
+        raise_for_status_with_usage(response, provider="deepseek_ocr", model=self.model)
         data = response.json()
         raw_text = data["choices"][0]["message"]["content"]
         usage = data.get("usage", {})

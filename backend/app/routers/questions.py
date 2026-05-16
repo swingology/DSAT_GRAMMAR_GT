@@ -46,20 +46,16 @@ async def recall_questions(
     result = await db.execute(stmt)
     questions = result.unique().scalars().all()
 
+    ann_ids = [q.latest_annotation_id for q in questions if q.latest_annotation_id]
+    if ann_ids:
+        ann_rows = await db.execute(select(QuestionAnnotation).where(QuestionAnnotation.id.in_(ann_ids)))
+        ann_map = {a.id: a for a in ann_rows.scalars().all()}
+    else:
+        ann_map = {}
+
     responses = []
     for q in questions:
-        grammar_role_key = None
-        grammar_focus_key = None
-        difficulty_overall = None
-        generation_profile = None
-        if q.latest_annotation_id:
-            ann = await db.get(QuestionAnnotation, q.latest_annotation_id)
-            if ann:
-                grammar_role_key = ann.annotation_jsonb.get("grammar_role_key")
-                grammar_focus_key = ann.annotation_jsonb.get("grammar_focus_key")
-                difficulty_overall = ann.annotation_jsonb.get("difficulty_overall")
-                generation_profile = ann.generation_profile_jsonb
-
+        ann = ann_map.get(q.latest_annotation_id) if q.latest_annotation_id else None
         responses.append(QuestionRecallResponse(
             id=str(q.id),
             content_origin=q.content_origin,
@@ -67,15 +63,15 @@ async def recall_questions(
             current_passage_text=q.current_passage_text,
             current_correct_option_label=q.current_correct_option_label,
             practice_status=q.practice_status,
-            grammar_role_key=grammar_role_key,
-            grammar_focus_key=grammar_focus_key,
-            difficulty_overall=difficulty_overall,
+            grammar_role_key=ann.annotation_jsonb.get("grammar_role_key") if ann else None,
+            grammar_focus_key=ann.annotation_jsonb.get("grammar_focus_key") if ann else None,
+            difficulty_overall=ann.annotation_jsonb.get("difficulty_overall") if ann else None,
             stimulus_mode_key=q.stimulus_mode_key,
             source_exam_code=q.source_exam_code,
             source_subject_code=q.source_subject_code,
             source_section_code=q.source_section_code,
             source_module_code=q.source_module_code,
-            generation_profile=generation_profile,
+            generation_profile=ann.generation_profile_jsonb if ann else None,
         ))
     return responses
 

@@ -52,6 +52,7 @@ async def detect_overlaps(
             Question.content_origin == "official",
             Question.practice_status.in_(("active", "draft")),
         )
+        .limit(2000)
     )
     rows = (await db.execute(stmt)).all()
 
