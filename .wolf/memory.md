@@ -615,3 +615,29 @@
 | 23:03 | Edited backend/tests/test_backend_regressions.py | inline fix | ~23 |
 | 23:04 | Edited DEBUG_LOG.md | modified fix() | ~854 |
 | 06:04 | Pipeline code trace: fixed source_name[:200], diagnostics_jsonb bloat, raw_text[:100K], ocr_strategy provenance, _collect_page_images warning | ingest.py, db.py, buglog.json, DEBUG_LOG.md | 338 tests pass | ~4K |
+| 23:05 | Session end: 9 writes across 3 files (ingest.py, test_backend_regressions.py, DEBUG_LOG.md) | 4 reads | ~57724 tok |
+| 23:09 | Session end: 9 writes across 3 files (ingest.py, test_backend_regressions.py, DEBUG_LOG.md) | 4 reads | ~57771 tok |
+| 23:10 | Edited DEBUG_LOG.md | added error handling | ~3245 |
+| 23:10 | Session end: 10 writes across 3 files (ingest.py, test_backend_regressions.py, DEBUG_LOG.md) | 9 reads | ~70633 tok |
+| 23:12 | Session end: 10 writes across 3 files (ingest.py, test_backend_regressions.py, DEBUG_LOG.md) | 9 reads | ~70633 tok |
+| 23:12 | Session end: 10 writes across 3 files (ingest.py, test_backend_regressions.py, DEBUG_LOG.md) | 9 reads | ~73687 tok |
+
+## Session: 2026-05-16 23:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:16 | Edited backend/app/routers/ingest.py | 8→12 lines | ~139 |
+| 23:16 | Edited backend/app/routers/ingest.py | modified range() | ~754 |
+| 23:45 | Consolidated 4 duplicate 2026-05-15 DEBUG_LOG entries into one | DEBUG_LOG.md | Deduplicated, 167 lines removed | ~50 |
+| 23:16 | Session end: 2 writes across 1 files (ingest.py) | 2 reads | ~44696 tok |
+| 23:16 | Edited backend/app/routers/ingest.py | modified _get_passage_group_id() | ~139 |
+| 23:16 | Edited backend/app/routers/ingest.py | 2→2 lines | ~40 |
+| 23:16 | Edited backend/app/models/db.py | modified QuestionJobQuestion() | ~197 |
+| 23:16 | Created backend/migrations/versions/017_add_question_job_questions.py | — | ~301 |
+| 23:17 | Edited backend/app/routers/ingest.py | 4→4 lines | ~55 |
+| 23:17 | Edited backend/app/routers/ingest.py | 2→3 lines | ~58 |
+| 23:17 | Edited backend/app/routers/ingest.py | modified _get_passage_group_id() | ~184 |
+| 23:22 | Edited DEBUG_LOG.md | 7→9 lines | ~416 |
+| 23:22 | Edited DEBUG_LOG.md | 4→5 lines | ~200 |
+| 23:22 | Edited DEBUG_LOG.md | modified fix() | ~613 |
+| 23:23 | Edited CHANGELOG.md | expanded (+42 lines) | ~652 |

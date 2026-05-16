@@ -994,7 +994,11 @@
       "file": "backend/app/routers/ingest.py",
       "root_cause": "_sanitize_source_name()[:255] exceeds QuestionAsset.source_name column width of 200",
       "fix": "Changed [:255] to [:200]; updated regression test assertion from 255 to 200",
-      "tags": ["data-integrity", "column-overflow", "sanitization"],
+      "tags": [
+        "data-integrity",
+        "column-overflow",
+        "sanitization"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-16T06:04:00.000Z"
@@ -1006,7 +1010,11 @@
       "file": "backend/app/routers/ingest.py",
       "root_cause": "_build_source_span() included '_page_images' from pass1_json in per-question diagnostics_jsonb; 33 questions × 14 pages = 462 copies",
       "fix": "Removed 'page_images' key from QuestionSourceSpan.diagnostics_jsonb construction",
-      "tags": ["db-bloat", "jsonb", "source-span"],
+      "tags": [
+        "db-bloat",
+        "jsonb",
+        "source-span"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-16T06:04:00.000Z"
@@ -1018,10 +1026,63 @@
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Three pass1_json construction sites used raw_text[:50000] / len > 50000 while build_extract_prompt uses [:100000]",
       "fix": "Raised stored slice and _truncated threshold from 50K to 100K at all three sites (lines 1857, 1989, 2417)",
-      "tags": ["provenance", "raw-text", "pass1-json", "truncation"],
+      "tags": [
+        "provenance",
+        "raw-text",
+        "pass1-json",
+        "truncation"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-16T06:04:00.000Z"
+    },
+    {
+      "id": "bug-065",
+      "timestamp": "2026-05-16T06:10:06.961Z",
+      "error_message": "Missing error handling in def",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T06:10:06.961Z"
+    },
+    {
+      "id": "bug-066",
+      "timestamp": "2026-05-16T06:16:00.618Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 8→12 lines (3 removed) | Also: except Exception as e:; orch.fail(\"extracting\", \"llm_error\", str(e)) | Also: # Assign passage_group_id per distinct passage_tex; # passage are grouped correctly while standalone q",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-16T06:17:33.176Z"
+    },
+    {
+      "id": "bug-067",
+      "timestamp": "2026-05-16T06:22:12.942Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 7→9 lines (4 removed) | Also: 6. **Medium:** Batch asset provenance links only t; - Relevant files: `backend/app/routers/ingest.py`,",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-16T06:22:21.847Z"
     }
   ]
 }

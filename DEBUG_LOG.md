@@ -1,172 +1,148 @@
 # Debug Log
 
-## 2026-05-15 - Full Pipeline Code Trace (Test_1_digital_sec01_mod01)
+## 2026-05-16 - Pipeline Gap Remediation Session
 Report created by: Claude Sonnet 4.6
+Git branch: `main`
+Git checkpoint: `a15ec07` — fix(pipeline): correct source_name truncation, diagnostics bloat, raw_text slice, and ocr provenance
+
+### Findings
+
+All items below were identified from the pipeline code trace and existing open audit findings.
+
+1. ~~**Critical / Partially open → now fixed for text path:** Pass 1 extraction had zero JSON parse retries.~~
+   `_run_pipeline` text-extraction path (line 1424): the single `try/except` terminated the job on the first malformed JSON response. Pass 2 annotation already had 3-attempt retry (line 1577). Parity gap.
+   - **Fixed:** Wrapped the Pass 1 `complete()` + `extract_json_from_text()` call in a 3-attempt retry loop with exponential backoff (`0.5s`, `1s`). On final failure the job is marked `failed` with the last exception. VLM fused path (finding #6 below) still has no retry — that remains open.
+   - `backend/app/routers/ingest.py` (Pass 1 block)
+
+2. ~~**Low:** `_normalize_extracted_questions` passed empty-text questions through to Pass 2, wasting an LLM call before failing validation.~~
+   - **Fixed:** Added `if not q_text_key: continue` guard with `logger.warning`. Cross-reference: finding #14 in the DB-Backed Run Trace section.
+
+3. ~~**Low/Feature:** `passage_group_id` was assigned as one UUID per batch regardless of actual passage content — all 33 questions in a module would share the same group even when spanning multiple distinct passages.~~
+   - **Fixed:** Replaced flat UUID with per-passage-text grouping using a `_passage_to_group` count map. Only passages appearing on 2+ questions get a group UUID; standalone-passage questions and passage-less questions get `None`. Cross-reference: finding #15.
+
+4. ~~**Medium:** `job.question_id` only linked the first question produced by a multi-question job. N-1 question links lived only in `pass1_json["_created_question_ids"]` with no FK.~~
+   - **Fixed:** Added `question_job_questions` junction table (migration `017`) and inserted a `QuestionJobQuestion` row per question in the pipeline loop. Cross-reference: finding #6 in the 2026-05-09 Current Backend Gap Review.
+
+---
+
+## 2026-05-15 - Ingest Pipeline DB-Backed Run Trace & Generation/Reporting Fragility
+Report created by: Claude Opus 4.7
 Git branch: `main`
 Git checkpoint: `606f1e3` — fix(audit): harden json_parser, CORS, filename sanitization, mark findings resolved
 
 ### Findings
 
-1. ~~**High:** `source_name` truncated to 255 but `QuestionAsset.source_name` column is `String(200)` — `_sanitize_source_name()[:255]` would raise `DataError` at DB level for filenames 201–255 chars. We introduced this in the previous commit.~~
-   - `backend/app/routers/ingest.py` (`_sanitize_source_name`), `backend/app/models/db.py:184`
-   - **Fixed:** Changed truncation limit from `[:255]` to `[:200]` to match column width. Updated regression test to assert 200.
+#### Crash Paths & Unhandled Exceptions
 
-2. ~~**Medium:** `diagnostics_jsonb` carries full page_images blob for every question — for a 33-question batch over 14 pages, this wrote ~462 base64 metadata objects into `question_source_spans`. The field was never queried per-question.~~
-   - `backend/app/routers/ingest.py:778`
-   - **Fixed:** Removed `"page_images"` key from `QuestionSourceSpan.diagnostics_jsonb`.
+1. **Critical: `_persist_single_question` — no rollback on flush failure leaves session dirty.**
+   Lines 524, 541, 610 perform `await db.flush()` with no savepoint. If the second or third flush fails (e.g., IntegrityError from a duplicate UUID), the SQLAlchemy session is in a failed state and every subsequent DB operation on that session will also fail — including the `job.status = "failed"` commit at line 1694. The per-question `try/except` at line 1660-1672 calls `await db.rollback()` which clears the session, but this also rolls back ALL previously-flushed question rows from the same loop iteration, not just the failed one. For official questions, the idempotency check at line 469-473 mitigates this partially, but only if the UUID5 matches an existing row.
+   - `backend/app/routers/ingest.py:524, 541, 610, 1660-1672`
 
-3. ~~**Medium:** `pass1_json.raw_text` stored as `[:50000]` but Pass 1 extracts from `[:100000]` — questions in chars 50K–100K are extracted and persisted but `QuestionSourceSpan.pymupdf_text` stores only the truncated version, breaking provenance reconstruction.~~
-   - `backend/app/routers/ingest.py:1415, 1857, 1989, 2417`
-   - **Fixed:** Raised stored slice and `_truncated` threshold from 50K to 100K at all three `pass1_json` construction sites.
+2. **High: Generate pipeline — single `db.flush()` covers Question + Version + Annotation + Options with no savepoint.**
+   `_run_generate_pipeline` at lines 131-183 does one `await db.flush()` after adding Question, QuestionVersion, and QuestionAnnotation. If this flush fails, the exception propagates and the job is left stuck in "annotating" status (set at line 73). The `except` blocks at lines 75-79 and 89-93 only cover the LLM call phases; there is no `try/except` around the entire persistence block (lines 107-186). A DB error here leaves the job unrecoverable.
+   - `backend/app/routers/generate.py:131-186`
 
-4. ~~**Low:** `pass1_json._ocr_strategy` records requested strategy even when OCR is bypassed — for embedded-text PDFs, OCR gate is skipped entirely but the JSONB still shows the requested strategy (e.g. `"glm"`), misleading provenance audit.~~
-   - `backend/app/routers/ingest.py:1200-1211`
-   - **Fixed:** When `raw_text` is non-empty (embedded text path), `_ocr_strategy` is overwritten to `"bypassed"` before the pipeline continues.
+3. **High: Generate pipeline — `extract_json_from_text` failures are fatal with no retry.**
+   Lines 71 and 86 call `extract_json_from_text` with no retry loop. If the LLM returns malformed JSON, the entire generate job fails immediately. Compare with the ingest pipeline which retries annotation 3 times (lines 1577-1603). The generate pipeline has zero retries.
+   - `backend/app/routers/generate.py:71, 86`
 
-5. ~~**Low:** `_collect_page_images` silently drops unreadable page images with no log entry.~~
-   - `backend/app/routers/ingest.py` (`_collect_page_images`)
-   - **Fixed:** Added `logger.warning(...)` when an image entry has no readable path or b64 data.
+4. **High: Generate pipeline — `_generation_profile_payload` merges entire `request_data` into stored profile.**
+   Line 41-42: `merged.update(sources[-1])` unconditionally dumps the full `request_data` dict into the stored `generation_profile_jsonb`. This includes `provider_name`, `model_name`, and any other request fields that aren't part of the generation profile. The ingest pipeline's version of this function (line 180-189) only merges the `generation_profile` sub-key.
+   - `backend/app/routers/generate.py:41-42`
 
-6. **Medium:** `job.question_id` tracks only the first created question in a multi-question batch — the other N-1 questions are reachable only via `pass1_json["_created_question_ids"]` JSON array with no FK. If `pass1_json` is cleared, those links are lost.
-   - `backend/app/routers/ingest.py:1673`
-   - Not fixed — requires schema change (junction table `question_job_questions`).
+5. **Low: `generate_compare` — all provider jobs share the same `request_data` reference.**
+   Line 293: `request_data = body.model_dump()` is computed once. Each `_run_generate_pipeline` closure captures the same dict reference. If any pipeline mutates `request_data` (unlikely but possible via `merged.update`), it affects subsequent jobs. Should be a deep copy per provider.
+   - `backend/app/routers/generate.py:293`
 
-7. **Low:** Empty-string questions pass `_normalize_extracted_questions` — each propagates through Pass 2 annotation, then fails the `question_text required` validator, creating orphan validation errors. Minor wasted LLM calls.
-   - `backend/app/routers/ingest.py` (`_normalize_extracted_questions`)
+6. **Medium: `_run_pipeline` — VLM fused path `extract_json_from_text` failure kills job with no fallback.**
+   Lines 1371-1402: The VLM extraction try/except catches any exception and sets `job.status = "failed"`. Unlike the GLM and DeepSeek branches (which have `ocr_fallback` logic), the VLM path has no fallback — a single malformed JSON response from the vision model terminates the entire job.
+   - `backend/app/routers/ingest.py:1397-1402`
 
-8. **Low (missing feature):** `passage_group_id` is never populated for multi-question batches from official PDFs. SAT reading passages spanning multiple questions cannot be retroactively grouped.
+7. **Low / Observability: `_run_pipeline` — GLM/DeepSeek OCR fallback switches extraction paradigm without explicit diagnostics.**
+   When OCR fails and fallback succeeds (lines 1276-1292), the code changes `resolved_strategy` and continues. But the fallback strategy runs the VLM fused path (lines 1346-1402), which does BOTH OCR and extraction in one call. If the original strategy was `glm` or `deepseek` (two-step: OCR then separate LLM extraction), the fallback switches to a completely different extraction paradigm without logging the paradigm shift or adjusting the pipeline accordingly. The `text_extraction_provider` is already set (line 1268-1274) for the two-step path but is never used when fallback activates the VLM fused path.
+   - `backend/app/routers/ingest.py:1276-1292, 1346-1402`
 
----
+#### Timeout & Resource Exhaustion
 
-## 2026-05-15 - extract_json_from_text Fragility Audit
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b and add OCR benchmarks
+8. **Medium: No application-level timeout around whole LLM pipeline calls.**
+   Provider clients do have HTTP timeouts (for example 600s for vision), but there is no shorter pipeline-level timeout/heartbeat around `provider.complete()` or `provider.complete_vision()`. Four long-hanging jobs can still occupy the global job semaphore.
+   - `backend/app/routers/ingest.py:1363, 1579`, `backend/app/job_limits.py:29`
 
-### Findings
+9. **Medium: `_store_page_render` decodes base64 and stores raw bytes — no size limit per page.**
+   Line 957: `base64.b64decode(b64)` decodes the entire page image. For a high-DPI scan, a single page can be 20+ MB decoded. `max_images` (default 10) caps page count but not per-page size. A 10-page PDF with 20 MB pages writes 200 MB to object storage in the request path.
+   - `backend/app/routers/ingest.py:957`
 
-1. **High:** No validation that parsed dict matches expected shape — function returns *any* `dict`. If the LLM outputs `{"error": "rate limited", "retry_after": 30}`, that passes as valid extraction output. Downstream code (`_normalize_extracted_questions`, etc.) checks for expected keys, but by then the pipeline has committed to a bad parse and produces zero questions with no clear error explaining why.
-   - `backend/app/parsers/json_parser.py:155-158`
+10. **Medium: `detect_overlaps` loads all official questions with no limit.**
+    Line 46-56: A single JOIN query loads every `Question` with `content_origin == "official"` and `practice_status in ("active", "draft")`, plus their annotations. At 10,000+ official questions, this becomes a multi-hundred-megabyte result set per overlap check. No pagination, no limit clause.
+    - `backend/app/pipeline/overlap.py:46-56`
 
-2. ~~**High:** Trailing comma repair only activates for Ollama/Kimi — `_repair_json_like_object` strips trailing commas (line 69), but this path only runs when `provider_name=="ollama"` or `"kimi" in model_key` (line 150). If Anthropic or OpenAI returns trailing commas (rare but possible), the default strategy fails with `ValueError` instead of attempting repair.~~
-   - ~~`backend/app/parsers/json_parser.py:69, 150`~~
-   - **Fixed:** Added universal fallback — after default strategies fail, `_extract_with_kimi_strategy` (which includes repair) now runs for any provider, not just Ollama/Kimi. (`dc8f034` → follow-up commit)
+#### Data Integrity & Edge Cases
 
-3. ~~**High:** `ValueError` on failure has no recovery path in any caller — line 159 raises `ValueError("No valid JSON found in text")` with no context about what strategies were tried or what the input looked like.~~
-   - **Partially fixed:** `ValueError` message now includes `provider`, `model`, `input_len`, and a 200-char `preview` to aid debugging. Still not retryable — full retry logic requires architectural changes to the extraction loop.
+11. ~~**High: Validator option labels check only fires when `len(options) == 4`.**~~
+    ~~Line 34: `if len(options) == 4:` gates the label validation. If the LLM returns 3 or 5 options, the label set check (`label_set != {"A", "B", "C", "D"}`) is skipped entirely, and duplicate or wrong labels pass silently. The blocking error at line 30 catches the count mismatch, but for `len(options) > 4` with correct labels A-D plus extras, neither check catches the extras.~~
+    - **Fixed/stale finding:** `len(options) != 4` is itself a blocking validation error, and the exact-label check runs for the only count that can pass. Extra/missing option rows do not pass validation.
+    - `backend/app/pipeline/validator.py:34-48`
 
-4. **Medium:** `_extract_first_braced_candidate` returns only the first JSON object — if the LLM outputs multiple separate JSON objects (e.g., two extraction results), only the first is extracted and the rest are silently lost. No check that the extracted object contains expected keys like `"questions"`.
-   - `backend/app/parsers/json_parser.py:21-49`
+12. ~~**High: `correct_option_label` validated against option labels only when 4 options exist.**~~
+    ~~Line 56-63: The check `if correct in ("A", "B", "C", "D")` then verifies `correct not in actual_labels`. But this is inside the `if len(options) == 4:` block. With 3 options (labels A, B, C), `correct="D"` passes the A-D check but `D` is never found in `actual_labels`. However, the earlier blocking error for `len(options) != 4` should catch this — unless `len(options) == 4` but with duplicate labels like `["A", "A", "B", "C"]` where `label_set` is `{"A", "B", "C"}` (3 elements, not 4), which IS caught by the `label_set != {"A", "B", "C", "D"}` check. So this is actually safe for 4 options but not for != 4.~~
+    - **Fixed/stale finding:** Current validator checks `correct_option_label` against `actual_labels` whenever the correct label is in A-D, independent of option count. Count mismatch remains blocking.
+    - `backend/app/pipeline/validator.py:56-63`
 
-5. ~~**Medium:** Reasoning wrapper stripper misses `<thinking>` tags — the pattern only matched `<think>...</think>`.~~
-   - **Fixed:** Added `<thinking>.*?</thinking>` pattern to `_strip_reasoning_wrappers`. Nested or multiple blocks still only strip the first match per tag pair — acceptable for current models.
+13. **Medium / Design review: Generate pipeline — `generation_source_set` stored as the full `request_data` dict.**
+    Line 125 in `db.py`: `generation_source_set` column stores the entire `GenerationRequest.model_dump()`. Line 96 in `generate.py`: `merged = {**generated, **annotate_json, "generation_source_set": request_data}`. The `request_data` dict includes `provider_name`, `model_name`, and all generation parameters. This is stored as-is into the `Question` row. Compare with the ingest pipeline which stores only metadata-relevant fields.
+    - `backend/app/routers/generate.py:96`, `backend/app/models/db.py:125`
 
-6. **Medium:** `_quote_bare_keys` regex can produce false positives — the pattern `([{,]\s*)([A-Za-z_][A-Za-z0-9_\-]*)(\s*:)` quotes any word before a colon after `{` or `,`. Already-quoted keys produce `""key"":` (harmless — `json.loads` accepts it), but edge cases like `{, key: val}` produce broken JSON.
-   - `backend/app/parsers/json_parser.py:74`
+14. ~~**Medium: `_normalize_extracted_questions` drops questions with empty/whitespace `question_text` silently.**
+    Lines 415-419: Questions with `question_text` that is empty or whitespace-only pass the dedup check (because `q_text_key` is falsy and won't be added to `seen_texts`), but they also don't get deduplicated. They proceed through Pass 2 annotation, which wastes an LLM call, and then fail the validator's `question_text is required` blocking check. The fix should filter out empty-text questions early, before the annotation loop.
+    - `backend/app/routers/ingest.py:415-419`~~
+    - **Fixed:** Added explicit `if not q_text_key: continue` guard with a warning log in `_normalize_extracted_questions`. Empty-text entries are now rejected before the per-question annotation loop.
 
-7. ~~**Low:** `extract_json_array_from_text` has zero test coverage — the function exists (lines 162-206) and is exported but has no direct tests. It reuses the same bracket-counting approach and has the same nested-brace fragility.~~
-   - ~~`backend/app/parsers/json_parser.py:162-206`, `backend/tests/test_parsers.py`~~
-   - **Fixed/stale finding:** `backend/tests/test_pipeline.py` now includes direct coverage for direct arrays, fenced arrays, and single-object fallback. Nested-bracket fragility still remains a parser design risk.
+15. ~~**Medium: `passage_group_id` is `None` for single-question batches.**
+    Line 1478: `passage_group_id = uuid.uuid4() if len(questions_data) > 1 else None`. A single question with a passage_text gets no passage group. If the same passage appears in a later batch, the two groups won't be linked. This is a known gap but worth noting as it affects reading comprehension question grouping.
+    - `backend/app/routers/ingest.py:1478`~~
+    - **Fixed:** Replaced flat batch UUID with per-passage-text grouping. A `_passage_to_group` map assigns a shared UUID to all questions that share the same passage. Passages appearing in only one question get `None`. The old `len > 1` heuristic incorrectly grouped all questions in a batch regardless of passage content.
 
-8. **Low / Partially stale:** Direct `extract_json_from_text` coverage is broader than originally reported — current tests include non-Ollama repair fallback, `<thinking>` tags, contextual `ValueError`, and Ollama/Kimi-style repair. Still missing: shape-validation false positives (`{"error": "rate limited"}`), multiple JSON objects in output, malformed partial JSON, very large outputs, and `_quote_bare_keys` false-positive edge cases.
-   - `backend/tests/test_parsers.py`
+16. **Medium: Overlap detection race condition — `persist_overlap_relations` checks existence then inserts non-atomically.**
+    Lines 116-123: The duplicate check `existing.scalars().first()` and the subsequent `db.add()` are not atomic. Two concurrent overlap checks for the same question pair could both pass the existence check and both insert, causing a unique constraint violation (if one exists) or duplicate rows (if no unique constraint on `(from_question_id, to_question_id, relation_type)`).
+    - `backend/app/pipeline/overlap.py:116-123`
 
----
+#### Generation & Analysis Reporting Gaps
 
-## 2026-05-15 - Ingestion Workflow Gap Audit (Error Handling, Data Integrity, Security)
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b and add OCR benchmarks
+17. **Medium: `generate_compare` — no error aggregation across providers.**
+    Each provider job runs independently in a background task. If one provider fails, the other succeeds, the comparison endpoint `GET /generate/runs/{run_id}` returns status per job but doesn't indicate which provider failed or why. There's no per-job `validation_errors_jsonb` exposure in the response (lines 332-349).
+    - `backend/app/routers/generate.py:307-349`
 
-### Findings
+18. **Medium: Generate pipeline — `overlap_checking` status never set.**
+    The ingest pipeline sets `job.status = "overlap_checking"` (line 1616). The generate pipeline at lines 189-201 runs overlap detection but never updates the job status from "approved". If overlap detection is slow, the job appears "approved" before overlap checks complete. If overlap is found, the status is changed to "possible" after commit, creating a brief window where the question appears approved but may be flagged.
+    - `backend/app/routers/generate.py:189-201`
 
-#### Error Handling & Recovery
+19. ~~**Medium: `_run_generate_pipeline` — `Question.practice_status` hardcoded to `"draft"`.**~~
+    ~~Line 123: `practice_status="draft"`. Unlike the ingest pipeline which sets `practice_status` based on `content_origin` and `official_auto_activate_for_testing`, generated questions are always "draft" with no path to "active" via the API. The admin approval endpoint at `/admin/questions/{id}/approve` could be used, but there's no specific documentation or test for this workflow.~~
+    - **Fixed/stale finding:** Generated questions intentionally start as `draft`, and `/admin/questions/{id}/approve` supports generated questions when overlap status is clear.
+    - `backend/app/routers/generate.py:123`
 
-1. **Critical:** Malformed LLM JSON is never retried — `ValueError` from `extract_json_from_text` kills the job or skips the question permanently. The `@with_retry` decorator only covers network errors (TimeoutException, ConnectionError, HTTP 429/5xx). A model that returns syntactically invalid JSON never gets a second chance.
-   - `backend/app/parsers/json_parser.py:159`, `backend/app/llm/retry.py:37-50`, `backend/app/routers/ingest.py:1206-1227`
+20. **Medium: `get_generation_run` endpoint doesn't expose errors or pass1/pass2 data.**
+    Lines 307-349: The response only includes `id`, `status`, `provider_name`, `question_id`, and `comparison_group_id`. There's no `validation_errors_jsonb`, no `pass1_json` or `pass2_json`, and no annotation details. Admins cannot diagnose failed generation jobs through the API.
+    - `backend/app/routers/generate.py:307-349`
 
-2. ~~**Critical:** No stuck-job recovery.~~
-   - **Fixed (pre-existing):** `lifespan` startup handler scans for jobs in non-terminal states and marks them `failed` with `startup_recovery` error. Implemented in `backend/app/main.py`.
+21. **Low: `_run_generate_pipeline` — `raw_asset_id` is `None` for generated questions.**
+    The `QuestionJob` at line 225 has no `raw_asset_id`. This means the `QuestionAsset` link is absent, and the `QuestionSourceSpan` and `QuestionStimulusAsset` foreign keys to `raw_asset_id` will be `None`. No provenance tracking for generated content.
+    - `backend/app/routers/generate.py:225`
 
-3. **High / Partially fixed:** No savepoints around `_persist_single_question` flushes. The "no rollback anywhere" part is stale — the per-question persist loop now catches persistence errors and calls `await db.rollback()`. Remaining gap: without per-question savepoints or more granular commits, a rollback after one failed question can discard earlier uncommitted successful inserts in the same job.
-   - `backend/app/routers/ingest.py`
+22. **Low: `generate_compare` uses `async_session()` inside a closure that captures `jid` via default arg.**
+    Line 297: `async def _run(jid=jid):` — this is the Python closure-default-arg pattern to avoid late binding. It works correctly but is fragile; if someone refactors to `async def _run():` the `jid` would be captured by reference and all tasks would use the last `jid` value. Worth a comment.
+    - `backend/app/routers/generate.py:297`
 
-4. **Medium:** Object storage I/O errors unhandled — `path.write_bytes(data)` has no try/except. Disk-full or permission errors crash the pipeline with the job stuck in a non-terminal state. `read_object` at line 203 similarly has no try/except for missing files.
-   - `backend/app/storage/object_store.py:183, 203`
+### Cross-References To Existing Entries
 
-5. ~~**Low:** DeepSeek OCR fallback always goes to Ollama — even if the user originally requested Anthropic as the OCR strategy. No configurable fallback chain.~~
-   - ~~`backend/app/routers/ingest.py:1115-1124`~~
-   - **Fixed:** `_fallback_ocr_strategy()` now uses a configurable fallback chain and prefers Anthropic/Claude when configured.
-
-6. ~~**Low:** VLM `extract_json_from_text` call at line 1266 is outside its own try/except — if it raises `ValueError`, the exception falls through to the broader per-question handler which marks the entire job as failed rather than retrying just the extraction parse.~~
-   - ~~`backend/app/routers/ingest.py:1266`~~
-   - **Fixed/stale finding:** The VLM fused extraction parse is now inside the VLM `try` block and records a controlled `vision_error`/failed job on parse failure. It still does not retry malformed vision JSON.
-
-7. ~~**Low:** Option hydration silently skips non-ABCD labels.~~
-   - **Fixed:** `option_hydration.py` now logs a `WARNING` for unexpected labels instead of silently dropping them.
-
-8. **Low:** Overlap detection loads all official questions into memory unbounded — no pagination or limit. As the question bank grows, this becomes a multi-hundred-megabyte result set per overlap check.
-   - `backend/app/pipeline/overlap.py:45-56`
-
-#### Data Integrity
-
-9. ~~**Critical:** UUID5 collision crashes on re-ingestion.~~
-   - **Fixed (`dc8f034`):** `_persist_single_question` now checks for an existing `Question` row by UUID5 before inserting. Duplicate official questions are skipped with an INFO log.
-
-10. ~~**Critical:** Bad question number passes validation but crashes persist.~~
-    - **Fixed (`dc8f034`):** `int(q_num)` conversion in `_persist_single_question` is now wrapped in `try/except (TypeError, ValueError)` — falls back to UUID4 with a WARNING log.
-
-11. ~~**High:** Option labels not validated as exactly {A,B,C,D}.~~
-    - **Fixed (`dc8f034`):** `validate_question()` now returns a `blocking` error if option label set ≠ `{A,B,C,D}` or has duplicates.
-
-12. ~~**High:** `correct_option_label` not validated against actual option labels.~~
-    - **Fixed (`dc8f034`):** `validate_question()` now returns a `blocking` error if `correct_option_label` is not present in the actual option label set.
-
-13. **High:** No cross-batch question deduplication — re-uploading the same PDF with a different filename (different checksum) creates duplicate Question rows. Overlap detection only runs for `content_origin in ("unofficial", "generated")`; official questions are excluded from overlap checking.
-    - `backend/app/routers/ingest.py:379-407, 1507-1510`
-
-14. **Medium:** Passage dedup is batch-only — same passage across separate ingestion jobs gets different `passage_group_id` values. No passage content hashing. Single-question passages get no group at all (`passage_group_id` is `None` when `len(questions_data) == 1`).
-    - `backend/app/routers/ingest.py:1239`, `backend/app/models/db.py:80`
-
-15. **Medium:** JSONB schema drift — `choices_jsonb`, `annotation_jsonb`, `pass1_json` store arbitrary JSON with no schema validation. Key renames in LLM output create inconsistent records over time. No migration strategy to reconcile old vs. new key names.
-    - `backend/app/models/db.py:39-41`, `backend/app/routers/ingest.py:488, 504-507`
-
-16. **Medium:** No application-level FK checks before `_persist_single_question` — if a Question insert fails silently (e.g., UUID5 PK collision), subsequent QuestionOption/QuestionAnnotation inserts fail with FK violations rather than being skipped. Partial flushes can create orphaned rows.
-    - `backend/app/routers/ingest.py:494-575`
-
-17. **Medium:** Wrong question number = wrong UUID5 = silent data corruption — if an LLM misidentifies question number 3 as question 5, `_official_question_uuid` produces the UUID for question 5, potentially overwriting the real question 5. The OCR cross-check logs warnings but does not gate persistence.
-    - `backend/app/routers/ingest.py:438, 1260`
-
-#### Security & API
-
-18. **Critical:** Zero rate limiting on any endpoint — no middleware anywhere. Each ingest endpoint triggers expensive LLM calls. An attacker with a valid admin API key can drain API budgets by flooding endpoints. The batch endpoint `/ingest/unofficial/batch` has no limit on the number of files.
-    - Entire app — no rate limiting middleware
-
-19. ~~**High:** No magic-number file validation.~~
-    - **Fixed (pre-existing):** Both ingest endpoints check `content[:4] == b"%PDF"` before writing to storage and raise HTTP 422 if the check fails.
-
-20. **High:** Prompt injection via raw user text — the extraction prompt interpolates raw text with only `---` delimiters. `source_exam_code` is also unsanitized. No XML-tag-based isolation of user content.
-    - `backend/app/prompts/extract_prompt.py:87-92, 70-71`
-
-21. ~~**High:** CORS wide open — hardcoded `allow_origins=["*"]` + `allow_headers=["*"]`.~~
-    - **Fixed:** `main.py` now reads `settings.cors_origins_list` (from `CORS_ALLOWED_ORIGINS` env var, default `"*"`). `allow_methods` restricted to `GET,POST,PUT,DELETE,OPTIONS`; `allow_headers` restricted to `Content-Type,Authorization,X-API-Key,X-Request-ID`.
-
-22. ~~**High:** Unsanitized filename stored in DB.~~
-    - **Fixed:** `_sanitize_source_name()` helper strips path separators and control characters, truncates to 255 chars. Applied at all three `source_name=file.filename` sites in `ingest.py`.
-
-23. ~~**Medium:** No PDF page count limit.~~
-    - **Fixed (pre-existing):** `parse_pdf()` has `max_pages=100` default and raises `ValueError` if the PDF exceeds it.
-
-24. **Low:** Default API keys in source code — `"admin-key-change-me"` / `"student-key-change-me"` are active if env vars aren't set. Startup warning exists but doesn't prevent access.
-    - `backend/app/config.py:10-11`
-
-25. **Low / Partially fixed:** Unauthenticated health endpoint remains — `/health` exposes DB connectivity and app version. The dashboard portion is stale: `/dashboard` now requires `admin_required`.
-    - `backend/app/routers/health.py:11`, `backend/app/routers/dashboard.py:31`
-
-26. **Low:** Local filesystem paths persisted in `pass1_json` — `_store_page_render` includes absolute local path in stored data. Not directly exposed via API but could leak infrastructure details if a future endpoint returns `pass1_json`.
-    - `backend/app/routers/ingest.py:894`
+- **Canonical for ingestion/generation DB transaction gaps:** findings #1 and #2 above. Older related notes about missing savepoints or failed flush handling should be read as duplicates of these two items unless they identify a distinct call site.
+- **Canonical for malformed LLM JSON retry gaps:** finding #3 above for generation and finding #6 above for VLM fused ingestion fallback behavior. Older malformed-JSON notes remain valid only where they name a separate parser path.
+- **Canonical for overlap scan scalability:** finding #10 above. This supersedes the older backend audit item "Full-table scan for every overlap check".
+- **Canonical for generated profile/request-data leakage:** findings #4 and #13 above. These cross-reference the older `_generation_profile_payload` and `generation_profile_jsonb` pollution entries.
+- **Still separate from this organized ingestion entry:** student-facing security findings in the 2026-05-10 backend audit (#1, #4, #5), insecure deployment defaults, and list-endpoint N+1 query behavior. They are not ingestion workflow defects and should stay tracked independently.
 
 ---
+
 
 ## 2026-05-11 - VLM Provider Quality Audit (OCR Loop)
 Report created by: Claude Sonnet 4.6
@@ -222,9 +198,10 @@ Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Olla
    - ~~Relevant file: `backend/app/routers/ingest.py`.~~
    - **Fixed:** Checksum uniqueness check added before asset creation in both upload endpoints. Returns HTTP 409 on duplicate.
 
-3. **Critical:** CORS is wide open (`allow_origins=["*"]`, `allow_methods=["*"]`, `allow_headers=["*"]`).
-   - Any website can make requests to the API from a user's browser.
-   - Relevant file: `backend/app/main.py`.
+3. ~~**Critical:** CORS is wide open (`allow_origins=["*"]`, `allow_methods=["*"]`, `allow_headers=["*"]`).~~
+   - ~~Any website can make requests to the API from a user's browser.~~
+   - ~~Relevant file: `backend/app/main.py`.~~
+   - **Fixed/overstated:** CORS is now config-driven, methods and headers are restricted. Deployment still defaults to `CORS_ALLOWED_ORIGINS="*"`, tracked separately as a Low deployment hardening item.
 
 4. **Critical:** Students can read any user's profile — no ownership check on `GET /api/users/{user_id}`.
    - Route uses `student_required` but accepts any integer `user_id`. User IDs are sequential integers, trivially enumerable.
@@ -234,9 +211,9 @@ Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Olla
    - `POST /api/submit` accepts `user_id: int` in body. No check that the student key corresponds to the given user.
    - Relevant file: `backend/app/routers/student.py`.
 
-6. **Critical:** Insecure default keys only log a warning; server does not refuse to start.
-   - `_warn_if_insecure_keys` logs when `admin-key-change-me` / `student-key-change-me` are active but does not block startup.
-   - Relevant file: `backend/app/main.py`.
+6. **High / Deployment:** Insecure default keys only log a warning; server does not refuse to start.
+   - `_warn_if_insecure_keys` logs when `admin-key-change-me` / `student-key-change-me` are active but does not block startup. This is acceptable only for isolated local development.
+   - Relevant files: `backend/app/main.py`, `backend/app/config.py`.
 
 7. **High:** N+1 query pattern in all list endpoints.
    - `admin.py`, `questions.py`, `student.py` each fetch a question list then issue one DB call per question for annotations and another for options. 50 questions = 101 queries instead of 3.
@@ -244,24 +221,26 @@ Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Olla
 
 8. **High:** Full-table scan for every overlap check — O(N×M) as official questions grow.
    - `detect_overlaps` loads all official questions and annotations into memory and compares in Python via Jaccard similarity. No text index, no candidate pre-filtering.
+   - **Cross-reference:** Canonical current tracking is `2026-05-15 - Ingest Pipeline DB-Backed Run Trace & Generation/Reporting Fragility` finding #10.
    - Relevant file: `backend/app/pipeline/overlap.py`.
 
-9. **High:** Scanned-PDF page images stored as base64 in JSONB — can be megabytes per DB row.
-   - `max_images` limits pages but not images-per-page. A 10-page PDF with 5 images per page stores 50 base64 blobs in one `pass1_json` JSONB column.
-   - Relevant file: `backend/app/routers/ingest.py`.
+9. ~~**High:** Scanned-PDF page images stored as base64 in JSONB — can be megabytes per DB row.~~
+   - ~~`max_images` limits pages but not images-per-page. A 10-page PDF with 5 images per page stores 50 base64 blobs in one `pass1_json` JSONB column.~~
+   - ~~Relevant file: `backend/app/routers/ingest.py`.~~
+   - **Fixed/stale finding:** PDF/image page renders are stored as object-store files and `pass1_json._page_images` stores references (`path`, `storage_path`, `mime_type`, `page_number`), not inline base64 for new ingests.
 
 10. ~~**High:** Background pipeline tasks swallow exceptions silently.~~
     - ~~`asyncio.create_task(_run_pipeline_with_session(...))` has no `add_done_callback`. An uncaught exception leaves the job stuck in its last committed status with no error recorded.~~
     - ~~Relevant files: `backend/app/routers/ingest.py`, `backend/app/routers/generate.py`.~~
     - **Fixed:** `_log_task_exception` done-callback added to all `create_task` calls in both routers; exceptions now logged at ERROR level with full traceback.
 
-11. **High:** No recovery for stuck jobs after server restart.
-    - Jobs interrupted mid-pipeline stay in `"extracting"` / `"annotating"` forever. No startup sweep, no timeout, no admin endpoint to force-fail or retry.
-    - Relevant files: `backend/app/routers/ingest.py`, `backend/app/routers/generate.py`.
+11. ~~**High:** No recovery for stuck jobs after server restart.~~
+    - ~~Jobs interrupted mid-pipeline stay in `"extracting"` / `"annotating"` forever. No startup sweep, no timeout, no admin endpoint to force-fail or retry.~~
+    - ~~Relevant files: `backend/app/routers/ingest.py`, `backend/app/routers/generate.py`.~~
+    - **Fixed:** Startup lifespan recovery marks non-terminal jobs as `failed` with a `startup_recovery` validation error.
 
-12. **High:** Job status committed before work completes — crash window leaves permanent stuck state.
-    - Pattern throughout `_run_pipeline`: `job.status = "extracting"; await db.commit()` then LLM call. A crash between commit and LLM call leaves the job stuck.
-    - Relevant file: `backend/app/routers/ingest.py`.
+12. **Medium / Partially fixed:** Job status is still committed before long LLM work, so a crash can leave a job in an in-progress state until recovery runs. Startup recovery prevents the stuck state from being permanent, but there is still no timeout/heartbeat retry while the server stays up.
+    - Relevant files: `backend/app/routers/ingest.py`, `backend/app/main.py`.
 
 13. **Medium:** Duplicate user management routes — `student.py` (`/api/users`) and `users.py` (`/users`) already diverged.
     - `/api/users` list has no pagination; `/users` list has `limit`/`offset`. `/api/users/{id}` GET uses `student_required`; `/users/{id}` GET uses `admin_required`. DELETE returns different status codes.
@@ -269,6 +248,7 @@ Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Olla
 
 14. **Medium:** `_generation_profile_payload` in `generate.py` overwrites merged profile with all of `request_data`.
     - Final `merged.update(sources[-1])` dumps provider, model, source_question_ids, etc. into the stored generation profile. The `ingest.py` version of the same helper does not have this line.
+    - **Cross-reference:** Canonical current tracking is `2026-05-15 - Ingest Pipeline DB-Backed Run Trace & Generation/Reporting Fragility` findings #4 and #13.
     - Relevant file: `backend/app/routers/generate.py`.
 
 15. ~~**Medium:** `detect_overlaps` receives `job.id` (a job UUID) as `question_id`, not the new question's UUID.~~
@@ -283,10 +263,12 @@ Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Olla
 17. **Medium:** `LlmEvaluation.job_id` is `nullable=False` in the model but `create_evaluation` can pass `None` if `body.job_id` is an empty string, causing an unhandled 500.
     - Relevant files: `backend/app/models/db.py`, `backend/app/routers/admin.py`.
 
-18. **Low:** No rate limiting or concurrent-job cap — unlimited LLM pipeline calls per key.
+18. ~~**Low:** No rate limiting or concurrent-job cap — unlimited LLM pipeline calls per key.~~
+    - **Partially fixed:** Active background jobs are capped at 4 via `backend/app/job_limits.py`. Per-user/API-key rate limiting for paid external providers remains open and is tracked in the 2026-05-15 ingestion audit.
 
-19. **Low:** Dashboard HTML served at `GET /dashboard` without authentication — exposes route structure and feature set to unauthenticated callers.
-    - Relevant file: `backend/app/routers/dashboard.py`.
+19. ~~**Low:** Dashboard HTML served at `GET /dashboard` without authentication — exposes route structure and feature set to unauthenticated callers.~~
+    - ~~Relevant file: `backend/app/routers/dashboard.py`.~~
+    - **Fixed:** Dashboard routes now require `admin_required`.
 
 20. ~~**High:** `OllamaProvider.complete_vision()` has no `@with_retry` decorator.~~
     - ~~`complete()` is wrapped with retry/backoff but `complete_vision()` is a single bare `await self.client.post(...)` call. Any transient Ollama timeout or 503 during VLM-based scanned-PDF ingest permanently fails the job.~~
@@ -298,9 +280,10 @@ Git checkpoint: `fe3f436` — feat(ocr): Add OCR pipeline with DeepSeek and Olla
     - ~~Relevant file: `backend/app/parsers/ocr.py`.~~
     - **Fixed:** Imported `with_retry` and added `@with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)` to `extract()`.
 
-22. **Medium:** `AnthropicProvider` has no `complete_vision()` implementation.
-    - Anthropic Claude 3+ supports image inputs, but the provider only exposes `complete()`. Selecting `anthropic` as an OCR strategy will raise an `AttributeError` at runtime because the `complete_vision` call site expects the method to exist.
-    - Relevant file: `backend/app/llm/anthropic_provider.py`.
+22. ~~**Medium:** `AnthropicProvider` has no `complete_vision()` implementation.~~
+    - ~~Anthropic Claude 3+ supports image inputs, but the provider only exposes `complete()`. Selecting `anthropic` as an OCR strategy will raise an `AttributeError` at runtime because the `complete_vision` call site expects the method to exist.~~
+    - ~~Relevant file: `backend/app/llm/anthropic_provider.py`.~~
+    - **Fixed:** `AnthropicProvider.complete_vision()` now exists and is covered by the vision fallback path.
 
 23. ~~**Medium:** `_provider_registry` in `factory.py` grows unbounded — new `httpx.AsyncClient` per pipeline call.~~
     - ~~`get_provider()` creates a new provider instance on every invocation and appends it to a module-level list with no eviction. Each instance owns its own `httpx.AsyncClient` connection pool. Under sustained load or a multi-job burst, these accumulate in memory indefinitely.~~
@@ -324,23 +307,22 @@ Git branch: `main`
 
 ### Findings
 
-1. **High:** DeepSeek OCR provenance is lost after Pass 1.
-   - The DeepSeek branch writes `job.pass1_json["_ocr_meta"]`, then the normal text Pass 1 replaces `job.pass1_json` with the extracted JSON and `_llm_meta`.
-   - Result: `pass1_json._ocr_meta.strategy == "deepseek"` is not preserved for audit or smoke-test verification.
-   - Relevant file: `backend/app/routers/ingest.py`.
+1. ~~**High:** DeepSeek OCR provenance is lost after Pass 1.~~
+   - ~~The DeepSeek branch writes `job.pass1_json["_ocr_meta"]`, then the normal text Pass 1 replaces `job.pass1_json` with the extracted JSON and `_llm_meta`.~~
+   - ~~Result: `pass1_json._ocr_meta.strategy == "deepseek"` is not preserved for audit or smoke-test verification.~~
+   - ~~Relevant file: `backend/app/routers/ingest.py`.~~
+   - **Fixed:** Pass 1 now preserves `_ocr_meta`, `_ocr_artifacts`, and `_page_images` when replacing `pass1_json`.
 
-2. **High:** `/ingest/unofficial/batch` does not accept or forward `ocr_strategy`.
-   - Single official/unofficial ingest routes accept `ocr_strategy`.
-   - The batch route has no `ocr_strategy` form param and calls `ingest_unofficial_file()` without forwarding any OCR selection.
-   - Relevant file: `backend/app/routers/ingest.py`.
+2. ~~**High:** `/ingest/unofficial/batch` does not accept or forward `ocr_strategy`.~~
+   - ~~Single official/unofficial ingest routes accept `ocr_strategy`.~~
+   - ~~The batch route has no `ocr_strategy` form param and calls `ingest_unofficial_file()` without forwarding any OCR selection.~~
+   - ~~Relevant file: `backend/app/routers/ingest.py`.~~
+   - **Fixed:** Batch ingest accepts, validates, and forwards `ocr_strategy`.
 
-3. **High:** `auto` strategy does not perform real fallback.
-   - `_resolve_ocr_strategy()` chooses Ollama whenever `ocr_vision_provider == "ollama"` without checking model reachability.
-   - If the Ollama VLM call fails, the job fails immediately instead of trying DeepSeek.
-   - `ocr_fallback` exists in settings but is not used by the OCR gate.
+3. **Medium / Partially fixed:** `auto` strategy fallback exists for GLM and DeepSeek failures, and auto now prefers GLM before DeepSeek/Ollama/Claude/OpenAI. Remaining gap: if the resolved strategy is a fused VLM provider (`ollama`, `anthropic`, or `openai`) and that provider fails, the VLM branch still fails the job rather than trying the next fallback provider.
    - Relevant files: `backend/app/routers/ingest.py`, `backend/app/config.py`.
 
-4. **High:** OCR routing is job-level, not per-question or visual-stimulus aware.
+4. **Medium / Design gap:** OCR routing is job-level, not per-question or visual-stimulus aware.
    - Current behavior applies one OCR strategy to the whole ingest job.
    - There is no routing that uses DeepSeek OCR for text recovery while reserving VLMs for chart/table/graph/image questions.
    - Needed for the desired workflow: text-only scanned page → DeepSeek OCR; visual-reasoning item → VLM.
@@ -351,25 +333,23 @@ Git branch: `main`
    - A PDF with some text pages and some scanned/image pages skips OCR for the scanned pages.
    - Relevant file: `backend/app/routers/ingest.py`.
 
-6. **Medium:** Base64 page images are stored directly in `question_jobs.pass1_json`.
-   - This can bloat JSONB rows for scanned PDFs and image uploads, especially failed jobs.
-   - Prefer storing asset/page references and loading or rendering images inside the background worker, keeping only OCR/vision metadata and extracted text/JSON in `pass1_json`.
-   - Relevant files: `backend/app/routers/ingest.py`, `backend/app/models/db.py`.
+6. ~~**Medium:** Base64 page images are stored directly in `question_jobs.pass1_json`.~~
+   - ~~This can bloat JSONB rows for scanned PDFs and image uploads, especially failed jobs.~~
+   - ~~Prefer storing asset/page references and loading or rendering images inside the background worker, keeping only OCR/vision metadata and extracted text/JSON in `pass1_json`.~~
+   - ~~Relevant files: `backend/app/routers/ingest.py`, `backend/app/models/db.py`.~~
+   - **Fixed/stale finding:** New PDF/image ingests store page images as object references, not inline base64. Legacy records may still contain inline `b64` and `_collect_page_images` still supports them.
 
-7. **Medium:** OCR metadata and validation details are not observable via job polling.
-   - `GET /ingest/jobs/{job_id}` returns only `JobResponse`.
-   - The endpoint computes `validation_errors` but does not return them, and does not expose `pass1_json._ocr_meta`.
+7. **Low / Partially fixed:** Job polling now returns `validation_errors`, and OCR benchmark polling exposes `ocr_meta`. Remaining gap: generic `GET /ingest/jobs/{job_id}` still returns `JobResponse` only and does not expose `_ocr_meta` or `_llm_meta`.
    - Relevant files: `backend/app/routers/ingest.py`, `backend/app/models/payload.py`.
 
-8. **Medium:** OCR/VLM provider calls are not retried.
-   - `OllamaProvider.complete_vision()` is not wrapped by the retry decorator used by text completion.
-   - `DeepSeekOCRClient.extract()` is also single-attempt.
-   - This does not match the PRD fallback/retry expectations.
-   - Relevant files: `backend/app/llm/ollama_provider.py`, `backend/app/parsers/ocr.py`.
+8. ~~**Medium:** OCR/VLM provider calls are not retried.~~
+   - ~~`OllamaProvider.complete_vision()` is not wrapped by the retry decorator used by text completion.~~
+   - ~~`DeepSeekOCRClient.extract()` is also single-attempt.~~
+   - ~~This does not match the PRD fallback/retry expectations.~~
+   - ~~Relevant files: `backend/app/llm/ollama_provider.py`, `backend/app/parsers/ocr.py`.~~
+   - **Fixed:** `OllamaProvider.complete_vision()` and `DeepSeekOCRClient.extract()` are now wrapped with retry.
 
-9. **Medium:** Full OCR pipeline tests are missing.
-   - Current OCR tests cover provider request shape, helpers, and prompt construction.
-   - There are no integration-style tests proving `_run_pipeline()` preserves DeepSeek `_ocr_meta`, skips Pass 1 for Ollama VLM, handles OCR failures/fallback, or forwards batch `ocr_strategy`.
+9. **Low / Partially fixed:** OCR pipeline tests are broader than this original audit reported, including fallback strategy and batch `ocr_strategy` coverage. Remaining test gaps: full DB-backed OCR pipeline cases for provider failure fallback, malformed vision JSON, and mixed text/scanned PDFs.
    - Relevant files: `backend/tests/test_ocr.py`, `backend/tests/test_ingest_router.py`, `backend/tests/test_backend_regressions.py`.
 
 ### Verification
@@ -436,25 +416,26 @@ Git branch: `main`
    - `POST /admin/questions/{id}/approve` rejects `content_origin == "official"`, so a reviewed official question cannot be activated through the admin API.
    - Relevant files: `backend/app/routers/ingest.py`, `backend/app/routers/admin.py`, `backend/app/config.py`.
 
-5. **Medium:** Raw ingest text is silently truncated at 50,000 characters.
-   - PDF, file, and text ingestion store only `raw_text[:50000]` in `pass1_json`.
-   - Long multi-question sources can lose later content without a blocking error or user-visible warning.
+5. **Low / Partially fixed:** Raw PDF/file ingest text is no longer truncated at 50,000 characters; stored/extracted raw text now uses a 100,000-character threshold. Remaining gap: PDF/file ingestion can still truncate beyond 100,000 chars with only `_truncated` metadata, while direct text ingest returns HTTP 413 over 50,000 chars.
    - Relevant file: `backend/app/routers/ingest.py`.
 
-6. **Medium:** Batch asset provenance links only the first created question.
+6. ~~**Medium:** Batch asset provenance links only the first created question.
    - Multi-question ingest can create several `Question` rows from one uploaded asset.
    - `question_assets.question_id` is a single FK, and `_persist_single_question` links the asset only when the job has no primary question yet.
-   - Relevant files: `backend/app/routers/ingest.py`, `backend/app/models/db.py`.
+   - Relevant files: `backend/app/routers/ingest.py`, `backend/app/models/db.py`.~~
+   - **Fixed:** Added `question_job_questions` junction table (migration 017) linking each job to every question it produced. `_run_pipeline` now inserts a `QuestionJobQuestion` row for each successfully persisted question. The `job.question_id` single FK is kept for backward compatibility but the junction table is the authoritative many-to-many record.
 
 7. **Medium / Design Review:** Generated `generation_profile_jsonb` stores the full request dict.
    - `_generation_profile_payload` in `generate.py` merges `request_data` into the stored profile, including fields such as `target_grammar_role_key`, `difficulty_overall`, `provider_name`, and `model_name`.
    - Existing tests currently expect this behavior, so this should be resolved as either intentional contract or data-shape cleanup.
+   - **Cross-reference:** Canonical current tracking is `2026-05-15 - Ingest Pipeline DB-Backed Run Trace & Generation/Reporting Fragility` findings #4 and #13.
    - Relevant files: `backend/app/routers/generate.py`, `backend/tests/test_backend_regressions.py`.
 
-8. **Low:** `get_settings()` is not cached.
-   - Each call creates a new `Settings` object and re-reads environment configuration.
-   - Called from auth checks and pipeline paths.
-   - Relevant file: `backend/app/config.py`.
+8. ~~**Low:** `get_settings()` is not cached.~~
+   - ~~Each call creates a new `Settings` object and re-reads environment configuration.~~
+   - ~~Called from auth checks and pipeline paths.~~
+   - ~~Relevant file: `backend/app/config.py`.~~
+   - **Fixed:** `get_settings()` is cached with `@lru_cache(maxsize=1)`.
 
 9. **Low / Deployment:** CORS wildcard remains enabled.
    - `allow_origins=["*"]` is still configured globally.
@@ -529,14 +510,15 @@ Report created by: GPT-5 Codex
    - ~~Relevant files: `backend/app/routers/generate.py`, `backend/app/routers/admin.py`.~~
    - **Fixed:** Generation pipeline now runs `detect_overlaps` + `persist_overlap_relations` post-commit. Questions with similarity to official passages/questions are flagged `possible`, blocking approval until admin reviews.
 
-5. Medium: hard-delete can fail on incoming self-references.
-   - Question delete clears only the deleted question's own self-reference fields.
-   - Other questions may still point to the deleted question through `canonical_official_question_id` or `derived_from_question_id`.
-   - Relevant files: `backend/app/routers/admin.py`, `backend/app/models/db.py`.
+5. ~~Medium: hard-delete can fail on incoming self-references.~~
+   - ~~Question delete clears only the deleted question's own self-reference fields.~~
+   - ~~Other questions may still point to the deleted question through `canonical_official_question_id` or `derived_from_question_id`.~~
+   - ~~Relevant files: `backend/app/routers/admin.py`, `backend/app/models/db.py`.~~
+   - **Fixed:** `delete_question` now bulk-nulls incoming `canonical_official_question_id` and `derived_from_question_id` references before deleting.
 
-6. Medium: default API keys are live credentials.
-   - `admin-key-change-me` and `student-key-change-me` are accepted if environment variables are missing.
-   - Relevant file: `backend/app/config.py`.
+6. **High / Deployment:** default API keys are live credentials.
+   - `admin-key-change-me` and `student-key-change-me` are accepted if environment variables are missing. Startup warning exists, but startup does not fail.
+   - Relevant files: `backend/app/config.py`, `backend/app/main.py`.
 
 ### Verification
 
@@ -593,21 +575,22 @@ Git checkpoint: `07454e1` — Fix backend prompt rule loading and refresh docs
    - ~~Relevant file: `backend/app/routers/ingest.py:830–837`.~~
    - **Fixed (combined with #3):** See #3 fix above.
 
-7. Medium: `get_settings()` is not cached.
-   - Every call constructs a new `Settings` object and re-reads environment variables.
-   - Called on every auth check and every pipeline step.
-   - Fix: `@functools.lru_cache()` on `get_settings`.
-   - Relevant file: `backend/app/config.py:55–56`.
+7. ~~Medium: `get_settings()` is not cached.~~
+   - ~~Every call constructs a new `Settings` object and re-reads environment variables.~~
+   - ~~Called on every auth check and every pipeline step.~~
+   - ~~Fix: `@functools.lru_cache()` on `get_settings`.~~
+   - ~~Relevant file: `backend/app/config.py:55–56`.~~
+   - **Fixed:** `get_settings()` is cached.
 
-8. Medium: Raw text is silently truncated at 50,000 characters.
-   - `raw_text[:50000]` in ingest routes drops content past the limit with no warning in job status or validation errors.
-   - Multi-question PDFs longer than 50K chars silently lose tail questions.
-   - Relevant files: `backend/app/routers/ingest.py:571, 653, 710`.
+8. Low / Partially fixed: Raw text is no longer silently truncated at 50,000 characters in PDF/file routes.
+   - Stored PDF/file raw text now uses 100,000 chars and `_truncated`; direct text ingest rejects over 50,000 chars with HTTP 413. Remaining issue is provenance completeness for PDF/file sources above 100,000 chars.
+   - Relevant file: `backend/app/routers/ingest.py`.
 
 9. Medium: `_generation_profile_payload` in `generate.py` pollutes stored profiles.
    - Final `merged.update(sources[-1])` unconditionally merges the full `request_data` dict (including `target_grammar_role_key`, `difficulty_overall`, `provider_name`, etc.) into the profile.
    - The `ingest.py` version of the same function does not do this.
    - Stored `generation_profile_jsonb` in annotations contains non-profile fields.
+   - **Cross-reference:** Canonical current tracking is `2026-05-15 - Ingest Pipeline DB-Backed Run Trace & Generation/Reporting Fragility` findings #4 and #13.
    - Relevant file: `backend/app/routers/generate.py:21–33`.
 
 10. Medium: No admin API path to activate official questions.

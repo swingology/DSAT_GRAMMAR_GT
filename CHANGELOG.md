@@ -5,6 +5,48 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-16 — Pipeline gap remediation (audit follow-up)
+
+**Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+**Branch:** `main`
+
+Second pass on open audit findings from the DB-backed ingestion pipeline trace.
+Fixes four bugs spanning error handling, data model correctness, and query efficiency.
+
+### Fix 1 — Pass 1 extraction retry (Critical)
+**Change:** The text-extraction step in `_run_pipeline` had no retry on malformed JSON,
+while Pass 2 annotation already retried 3×. Added a matching 3-attempt loop with
+exponential backoff (0.5s, 1s) around the `complete()` + `extract_json_from_text()`
+call. A final failure marks the job `failed` with the last exception in
+`validation_errors_jsonb`.
+**File:** `backend/app/routers/ingest.py`
+
+### Fix 2 — Empty question_text filter (Low)
+**Change:** `_normalize_extracted_questions` previously passed questions with
+empty/whitespace `question_text` through to Pass 2 annotation (wasting an LLM call)
+before they failed the `question_text required` validator. Added an explicit early
+filter with a `logger.warning` per dropped entry.
+**File:** `backend/app/routers/ingest.py`
+
+### Fix 3 — Per-passage `passage_group_id` grouping (Medium)
+**Change:** Replaced `uuid.uuid4() if len(questions_data) > 1 else None` with a
+content-aware mapping. A `_passage_to_group` counter assigns a shared UUID only to
+passage texts that appear on 2+ questions; standalone-passage questions and
+passage-less questions receive `None`. This correctly groups reading-comprehension
+questions sharing a passage without conflating unrelated questions in the same batch.
+**File:** `backend/app/routers/ingest.py`
+
+### Fix 4 — `question_job_questions` junction table (Medium)
+**Change:** `QuestionJob.question_id` previously linked only the first question
+produced by a multi-question ingest batch. Added a `question_job_questions` junction
+table (composite PK: `job_id + question_id`) so every question produced by a job has
+a durable FK link. `_run_pipeline` inserts a `QuestionJobQuestion` row for each
+successfully persisted question. Migration `017` creates the table.
+**Files:** `backend/app/models/db.py`, `backend/app/routers/ingest.py`,
+`backend/migrations/versions/017_add_question_job_questions.py`
+
+---
+
 ## 2026-05-15 — Wire stimulus asset pipeline end-to-end
 
 **Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)

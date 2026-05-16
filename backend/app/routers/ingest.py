@@ -18,8 +18,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db, async_session
 from app.auth import admin_required
 from app.config import get_settings
+from app.job_limits import run_with_job_limit
+from app.llm.errors import error_payload
 from app.models.db import (
-    QuestionJob, QuestionAsset, Question, QuestionVersion,
+    QuestionJob, QuestionJobQuestion, QuestionAsset, Question, QuestionVersion,
     QuestionAnnotation, QuestionOption, QuestionSourceSpan, QuestionStimulusAsset,
 )
 from app.storage.local_store import compute_checksum
@@ -409,13 +411,17 @@ def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str 
             if isinstance(opt, dict) and "label" in opt:
                 opt["label"] = _clean_option_label(opt["label"])
 
-        # Deduplicate by question_text (VLMs sometimes hallucinate duplicate rows)
+        # Drop blanks and deduplicate by question_text
         q_text_key = (enriched.get("question_text") or "").strip().lower()
-        if q_text_key and q_text_key in seen_texts:
+        if not q_text_key:
+            logger.warning(
+                "_normalize_extracted_questions: skipping entry with empty question_text (raw index %d)",
+                len(questions),
+            )
             continue
-        if q_text_key:
-            seen_texts.add(q_text_key)
-
+        if q_text_key in seen_texts:
+            continue
+        seen_texts.add(q_text_key)
         questions.append(enriched)
 
     return questions, shared_passage, shared_source
@@ -1279,13 +1285,13 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     else:
                         orch.fail("extracting", "ocr_error", f"GLM-OCR failed and no fallback is configured: {e}")
                         job.status = "failed"
-                        job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                        job.validation_errors_jsonb = [error_payload("ocr", e)]
                         await db.commit()
                         return
                 else:
                     orch.fail("extracting", "ocr_error", f"GLM-OCR failed: {e}")
                     job.status = "failed"
-                    job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                    job.validation_errors_jsonb = [error_payload("ocr", e)]
                     await db.commit()
                     return
             finally:
@@ -1331,13 +1337,13 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     else:
                         orch.fail("extracting", "ocr_error", f"DeepSeek OCR failed and no fallback is configured: {e}")
                         job.status = "failed"
-                        job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                        job.validation_errors_jsonb = [error_payload("ocr", e)]
                         await db.commit()
                         return
                 else:
                     orch.fail("extracting", "ocr_error", f"DeepSeek OCR failed: {e}")
                     job.status = "failed"
-                    job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                    job.validation_errors_jsonb = [error_payload("ocr", e)]
                     await db.commit()
                     return
 
@@ -1395,7 +1401,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             except Exception as e:
                 orch.fail("extracting", "vision_error", f"VLM OCR failed ({resolved_strategy}): {e}")
                 job.status = "failed"
-                job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                job.validation_errors_jsonb = [error_payload("ocr", e)]
                 await db.commit()
                 return
         # ── end OCR gate ──────────────────────────────────────────────────
@@ -1419,47 +1425,62 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         await db.commit()
 
         system, user = build_extract_prompt(raw_text[:100000], form_meta)
-        try:
-            if _should_disable_thinking(text_extraction_provider_name, text_extraction_model_name):
-                result = await text_extraction_provider.complete(
-                    system=system,
-                    user=user,
-                    model=text_extraction_model_name,
-                    max_tokens=16000,
-                    disable_thinking=True,
+        extract_root = None
+        _last_p1_err: Exception | None = None
+        for _p1_attempt in range(3):
+            try:
+                if _should_disable_thinking(text_extraction_provider_name, text_extraction_model_name):
+                    result = await text_extraction_provider.complete(
+                        system=system,
+                        user=user,
+                        model=text_extraction_model_name,
+                        max_tokens=16000,
+                        disable_thinking=True,
+                    )
+                else:
+                    result = await text_extraction_provider.complete(
+                        system=system,
+                        user=user,
+                        model=text_extraction_model_name,
+                        max_tokens=16000,
+                    )
+                extract_root = extract_json_from_text(
+                    result.raw_text,
+                    text_extraction_provider_name,
+                    text_extraction_model_name,
                 )
-            else:
-                result = await text_extraction_provider.complete(
-                    system=system,
-                    user=user,
-                    model=text_extraction_model_name,
-                    max_tokens=16000,
+                prior_pass1 = job.pass1_json or {}
+                job.pass1_json = {
+                    **extract_root,
+                    "raw_text": raw_text,
+                    "_page_images": prior_pass1.get("_page_images", []),
+                    "_ocr_artifacts": prior_pass1.get("_ocr_artifacts", []),
+                    "source_metadata": form_meta,
+                    "_llm_meta": {
+                        "provider": result.provider,
+                        "model": result.model,
+                        "latency_ms": result.latency_ms,
+                        "token_usage": getattr(result, "token_usage", None) or {},
+                    },
+                }
+                if ocr_meta:
+                    job.pass1_json["_ocr_meta"] = ocr_meta
+                break
+            except ValueError as _json_err:
+                _last_p1_err = _json_err
+                logger.warning(
+                    "Pass 1 JSON parse failed (attempt %d/3, job %s): %s",
+                    _p1_attempt + 1, job.id, _json_err,
                 )
-            extract_root = extract_json_from_text(
-                result.raw_text,
-                text_extraction_provider_name,
-                text_extraction_model_name,
-            )
-            prior_pass1 = job.pass1_json or {}
-            job.pass1_json = {
-                **extract_root,
-                "raw_text": raw_text,
-                "_page_images": prior_pass1.get("_page_images", []),
-                "_ocr_artifacts": prior_pass1.get("_ocr_artifacts", []),
-                "source_metadata": form_meta,
-                "_llm_meta": {
-                    "provider": result.provider,
-                    "model": result.model,
-                    "latency_ms": result.latency_ms,
-                    "token_usage": getattr(result, "token_usage", None) or {},
-                },
-            }
-            if ocr_meta:
-                job.pass1_json["_ocr_meta"] = ocr_meta
-        except Exception as e:
-            orch.fail("extracting", "llm_error", str(e))
+                if _p1_attempt < 2:
+                    await asyncio.sleep(0.5 * (2 ** _p1_attempt))
+            except Exception as _exc:
+                _last_p1_err = _exc
+                break
+        if extract_root is None:
+            orch.fail("extracting", "llm_error", str(_last_p1_err))
             job.status = "failed"
-            job.validation_errors_jsonb = [{"step": "extracting", "error": str(e)}]
+            job.validation_errors_jsonb = [error_payload("extracting", _last_p1_err)]
             await db.commit()
             return
 
@@ -1472,8 +1493,19 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         "_extracted_count": len(questions_data),
     }
 
-    # Determine passage_group_id: set only for multi-question batches
-    passage_group_id = uuid.uuid4() if len(questions_data) > 1 else None
+    # Assign passage_group_id per distinct passage_text shared by 2+ questions.
+    # Single-question passages and questions without passage_text get None.
+    _passage_counts: dict[str, int] = {}
+    for _q in questions_data:
+        _pt = (_q.get("passage_text") or "").strip()
+        if _pt:
+            _passage_counts[_pt] = _passage_counts.get(_pt, 0) + 1
+    _passage_to_group: dict[str, uuid.UUID] = {
+        pt: uuid.uuid4() for pt, cnt in _passage_counts.items() if cnt > 1
+    }
+    def _get_passage_group_id(q: dict) -> uuid.UUID | None:
+        pt = (q.get("passage_text") or "").strip()
+        return _passage_to_group.get(pt)
 
     # Form-submitted metadata takes precedence; fall back to LLM-extracted values
     exam_code = form_meta.get("source_exam_code") or shared_source.get("source_exam_code")
@@ -1643,8 +1675,8 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 job=job,
                 q_data=q_data,
                 annotate_json=annotate_json,
-                passage_text=shared_passage,
-                passage_group_id=passage_group_id,
+                passage_text=q_data.get("passage_text") or shared_passage,
+                passage_group_id=_get_passage_group_id(q_data),
                 overlaps=overlaps,
                 section_code=section_code,
                 question_index=i,
@@ -1654,6 +1686,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 suspect_question_indices=suspect_qnum_indices,
             )
             created_question_ids.append(question_id)
+            db.add(QuestionJobQuestion(job_id=job.id, question_id=question_id))
             _export_question(job, q_data, annotate_json, question_id)
         except Exception as _persist_err:
             logger.error(
@@ -1875,7 +1908,9 @@ async def ingest_official_pdf(
     db.add(job)
     await db.commit()
 
-    asyncio.create_task(_run_pipeline_with_session(job_id)).add_done_callback(_log_task_exception)
+    asyncio.create_task(
+        run_with_job_limit(lambda: _run_pipeline_with_session(job_id))
+    ).add_done_callback(_log_task_exception)
 
     return JobResponse(id=str(job_id), job_type="ingest", status="parsing", created_at=now)
 
@@ -1999,7 +2034,9 @@ async def ingest_unofficial_file(
     db.add(job)
     await db.commit()
 
-    asyncio.create_task(_run_pipeline_with_session(job_id)).add_done_callback(_log_task_exception)
+    asyncio.create_task(
+        run_with_job_limit(lambda: _run_pipeline_with_session(job_id))
+    ).add_done_callback(_log_task_exception)
 
     return JobResponse(id=str(job_id), job_type="ingest", status="parsing", created_at=now)
 
@@ -2058,7 +2095,9 @@ async def ingest_text(
     db.add(job)
     await db.commit()
 
-    asyncio.create_task(_run_pipeline_with_session(job_id)).add_done_callback(_log_task_exception)
+    asyncio.create_task(
+        run_with_job_limit(lambda: _run_pipeline_with_session(job_id))
+    ).add_done_callback(_log_task_exception)
 
     return JobResponse(id=str(job_id), job_type="ingest", status="parsing", created_at=now)
 
@@ -2097,7 +2136,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
         job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms, "token_usage": getattr(result, "token_usage", None) or {}}}
     except Exception as e:
         job.status = "failed"
-        job.validation_errors_jsonb = [{"step": "annotating", "error": str(e)}]
+        job.validation_errors_jsonb = [error_payload("annotating", e)]
         await db.commit()
         return
 
@@ -2293,7 +2332,9 @@ async def reannotate_question(
     db.add(job)
     await db.commit()
 
-    asyncio.create_task(_run_reannotate_pipeline_with_session(job_id)).add_done_callback(_log_task_exception)
+    asyncio.create_task(
+        run_with_job_limit(lambda: _run_reannotate_pipeline_with_session(job_id))
+    ).add_done_callback(_log_task_exception)
 
     return JobResponse(id=str(job_id), job_type="reannotate", status="annotating", question_id=question_id, created_at=now)
 
@@ -2434,7 +2475,7 @@ async def ingest_benchmark_ocr(
 
     for info in job_infos:
         asyncio.create_task(
-            _run_pipeline_with_session(uuid.UUID(info["id"]))
+            run_with_job_limit(lambda job_id=uuid.UUID(info["id"]): _run_pipeline_with_session(job_id))
         ).add_done_callback(_log_task_exception)
 
     return {"comparison_group_id": str(comparison_group_id), "jobs": job_infos, "has_images": has_images}

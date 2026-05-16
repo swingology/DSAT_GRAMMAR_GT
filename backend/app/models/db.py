@@ -47,6 +47,19 @@ class QuestionJob(Base):
     question = relationship("Question", back_populates="jobs", foreign_keys=[question_id])
 
 
+class QuestionJobQuestion(Base):
+    """Junction table linking a job to every question it produced (not just the first)."""
+    __tablename__ = "question_job_questions"
+    __table_args__ = (
+        Index("ix_qjq_job_id", "job_id"),
+        Index("ix_qjq_question_id", "question_id"),
+    )
+
+    job_id = Column(UUID(as_uuid=True), ForeignKey("question_jobs.id"), primary_key=True, nullable=False)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), primary_key=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+
 class Question(Base):
     __tablename__ = "questions"
     __table_args__ = (
