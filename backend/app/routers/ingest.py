@@ -1,4 +1,5 @@
 import uuid
+import re
 import asyncio
 import logging
 import tempfile
@@ -32,6 +33,13 @@ from app.pipeline.option_hydration import option_analyses_by_label, option_annot
 from app.models.payload import JobResponse, ReannotateRequest, OCRJobResult, OCRBenchmarkResponse
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
+
+
+def _sanitize_source_name(filename: str | None) -> str | None:
+    """Remove path separators and control chars from upload filenames before DB storage."""
+    if not filename:
+        return filename
+    return re.sub(r'[/\\<>:"|?*\x00-\x1f]', '_', filename)[:255]
 
 
 def _log_task_exception(task: asyncio.Task) -> None:
@@ -579,11 +587,13 @@ async def _persist_single_question(
     # Prefer the matched region's page_index; fall back to both keys.
     if matched_region is not None:
         layout_json_path = (layout_paths or {}).get(matched_region.page_index)
+        source_span_page_number = _page_number_for_region(job, matched_region.page_index)
     else:
         layout_json_path = (
             (layout_paths or {}).get(page_number)
             or (layout_paths or {}).get(page_number - 1)
         )
+        source_span_page_number = page_number
 
     source_span = _build_question_source_span(
         job=job,
@@ -592,6 +602,7 @@ async def _persist_single_question(
         question_index=question_index,
         crop_path=crop_path,
         layout_json_path=layout_json_path,
+        source_page_number=source_span_page_number,
     )
     db.add(source_span)
     await db.flush()
@@ -739,8 +750,9 @@ def _build_question_source_span(
     question_index: int,
     crop_path: str | None = None,
     layout_json_path: str | None = None,
+    source_page_number: int | None = None,
 ) -> QuestionSourceSpan:
-    page_number = _source_page_number(q_data, question_index)
+    page_number = source_page_number if source_page_number is not None else _source_page_number(q_data, question_index)
     extraction_method = _extraction_method(job)
     raw_text = (job.pass1_json or {}).get("raw_text")
     ocr_meta = (job.pass1_json or {}).get("_ocr_meta")
@@ -953,6 +965,42 @@ def _store_page_render(
     }
 
 
+def _store_pdf_page_renders(
+    *,
+    pdf_result: dict,
+    asset_id: uuid.UUID,
+    job_id: uuid.UUID,
+    content_origin: str,
+    source_metadata: dict,
+    source_stem: str,
+    max_images: int,
+) -> list[dict]:
+    """Store one full-page render per PDF page for OCR/layout enrichment."""
+    page_images = []
+    for page in pdf_result.get("pages", [])[:max_images]:
+        img = page.get("render")
+        if not img:
+            img = next((i for i in page.get("images", []) if i.get("rendered")), None)
+        if not img:
+            img = next(iter(page.get("images", [])), None)
+        if not img:
+            continue
+        ext = img.get("ext", "png")
+        page_images.append(
+            _store_page_render(
+                asset_id=asset_id,
+                job_id=job_id,
+                content_origin=content_origin,
+                source_metadata=source_metadata,
+                source_stem=source_stem,
+                page_number=page["page_number"],
+                b64=img["b64"],
+                ext=ext,
+            )
+        )
+    return page_images
+
+
 def _store_raw_upload(
     *,
     asset_id: uuid.UUID,
@@ -1162,6 +1210,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     text_extraction_model_name = job.model_name
 
     if not raw_text and page_images:
+        page_images = page_images[:settings.vision_max_images]
         # ── OCR gate ─────────────────────────────────────────────────────
         try:
             resolved_strategy = _resolve_ocr_strategy(ocr_strategy_req, settings)
@@ -1762,27 +1811,16 @@ async def ingest_official_pdf(
     pdf_result = _parse_pdf_content(content)
     raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
 
-    # For scanned PDFs (no extractable text), pre-store page images for the OCR gate
-    page_images = []
-    if not raw_text.strip():
-        settings_tmp = get_settings()
-        max_images = settings_tmp.vision_max_images
-        source_stem = Path(file.filename or "upload").stem
-        for page in pdf_result["pages"][:max_images]:
-            for img in page.get("images", []):
-                ext = img.get("ext", "png")
-                page_images.append(
-                    _store_page_render(
-                        asset_id=asset_id,
-                        job_id=job_id,
-                        content_origin="official",
-                        source_metadata=source_metadata,
-                        source_stem=source_stem,
-                        page_number=page["page_number"],
-                        b64=img["b64"],
-                        ext=ext,
-                    )
-                )
+    # Store full-page renders for OCR/layout enrichment, even for text-layer PDFs.
+    page_images = _store_pdf_page_renders(
+        pdf_result=pdf_result,
+        asset_id=asset_id,
+        job_id=job_id,
+        content_origin="official",
+        source_metadata=source_metadata,
+        source_stem=Path(file.filename or "upload").stem,
+        max_images=len(pdf_result["pages"]),
+    )
 
     asset = QuestionAsset(
         id=asset_id,
@@ -1792,7 +1830,7 @@ async def ingest_official_pdf(
         mime_type=mime_type,
         page_start=0,
         page_end=len(pdf_result["pages"]) - 1,
-        source_name=file.filename,
+        source_name=_sanitize_source_name(file.filename),
         source_exam_code=source_exam_code or None,
         source_subject_code=source_subject_code,
         source_section_code=source_section_code or None,
@@ -1880,7 +1918,7 @@ async def ingest_unofficial_file(
         asset_type=asset_type,
         storage_path=storage_path,
         mime_type=mime_type,
-        source_name=file.filename,
+        source_name=_sanitize_source_name(file.filename),
         checksum=checksum,
         created_at=now,
     )
@@ -1891,25 +1929,15 @@ async def ingest_unofficial_file(
     if asset_type == "pdf":
         pdf_result = _parse_pdf_content(content)
         raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
-        if not raw_text.strip():
-            settings_tmp = get_settings()
-            max_images = settings_tmp.vision_max_images
-            source_stem = Path(file.filename or "upload").stem
-            for page in pdf_result["pages"][:max_images]:
-                for img in page.get("images", []):
-                    ext = img.get("ext", "png")
-                    page_images.append(
-                        _store_page_render(
-                            asset_id=asset_id,
-                            job_id=job_id,
-                            content_origin="unofficial",
-                            source_metadata=source_metadata,
-                            source_stem=source_stem,
-                            page_number=page["page_number"],
-                            b64=img["b64"],
-                            ext=ext,
-                        )
-                    )
+        page_images = _store_pdf_page_renders(
+            pdf_result=pdf_result,
+            asset_id=asset_id,
+            job_id=job_id,
+            content_origin="unofficial",
+            source_metadata=source_metadata,
+            source_stem=Path(file.filename or "upload").stem,
+            max_images=len(pdf_result["pages"]),
+        )
     elif asset_type in ("text", "markdown"):
         raw_text = content.decode("utf-8", errors="replace")
     elif asset_type == "json":
@@ -2298,24 +2326,15 @@ async def ingest_benchmark_ocr(
     if asset_type == "pdf":
         pdf_result = _parse_pdf_content(content)
         raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
-        if not raw_text.strip():
-            max_images = settings.vision_max_images
-            source_stem = Path(file.filename or "upload").stem
-            for page in pdf_result["pages"][:max_images]:
-                for img in page.get("images", []):
-                    ext = img.get("ext", "png")
-                    page_images.append(
-                        _store_page_render(
-                            asset_id=asset_id,
-                            job_id=comparison_group_id,
-                            content_origin="unofficial",
-                            source_metadata=source_metadata,
-                            source_stem=source_stem,
-                            page_number=page["page_number"],
-                            b64=img["b64"],
-                            ext=ext,
-                        )
-                    )
+        page_images = _store_pdf_page_renders(
+            pdf_result=pdf_result,
+            asset_id=asset_id,
+            job_id=comparison_group_id,
+            content_origin="unofficial",
+            source_metadata=source_metadata,
+            source_stem=Path(file.filename or "upload").stem,
+            max_images=len(pdf_result["pages"]),
+        )
     elif asset_type in ("text", "markdown"):
         raw_text = content.decode("utf-8", errors="replace")
     elif asset_type == "image":
@@ -2369,7 +2388,7 @@ async def ingest_benchmark_ocr(
         asset_type=asset_type,
         storage_path=storage_path,
         mime_type=mime_type,
-        source_name=file.filename,
+        source_name=_sanitize_source_name(file.filename),
         checksum=checksum,
         created_at=now,
     ))

@@ -52,6 +52,7 @@ def _extract_first_braced_candidate(text: str) -> str | None:
 def _strip_reasoning_wrappers(text: str) -> str:
     stripped = text.strip()
     stripped = re.sub(r"<think>.*?</think>", "", stripped, flags=re.DOTALL | re.IGNORECASE)
+    stripped = re.sub(r"<thinking>.*?</thinking>", "", stripped, flags=re.DOTALL | re.IGNORECASE)
     stripped = re.sub(r"<analysis>.*?</analysis>", "", stripped, flags=re.DOTALL | re.IGNORECASE)
     stripped = re.sub(r"^\s*(analysis|reasoning)\s*:\s*", "", stripped, flags=re.IGNORECASE)
     return stripped.strip()
@@ -156,7 +157,18 @@ def extract_json_from_text(
     if parsed is not None:
         return parsed
 
-    raise ValueError("No valid JSON found in text")
+    # Universal fallback: repair path for any provider that the strict path couldn't handle
+    if not (provider_key == "ollama" or "kimi" in model_key):
+        parsed = _extract_with_kimi_strategy(text)
+        if parsed is not None:
+            return parsed
+
+    preview = text[:200].replace("\n", " ")
+    raise ValueError(
+        f"No valid JSON found in text "
+        f"(provider={provider_name!r}, model={model_name!r}, "
+        f"input_len={len(text)}, preview={preview!r})"
+    )
 
 
 def extract_json_array_from_text(text: str) -> list:

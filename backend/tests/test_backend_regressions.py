@@ -1169,3 +1169,21 @@ def test_verify_qnums_sparse_ocr_skips_check():
     qs = [{"source_question_number": 3}, {"source_question_number": 4}, {"source_question_number": 5}]
     ocr = "3\nOnly one number in OCR"
     assert ingest_router._verify_qnums_against_ocr(qs, ocr) == []
+
+
+def test_sanitize_source_name_strips_path_separators():
+    assert ingest_router._sanitize_source_name("../../etc/passwd") == ".._.._etc_passwd"
+
+
+def test_sanitize_source_name_strips_control_chars():
+    assert ingest_router._sanitize_source_name("file\x00name.pdf") == "file_name.pdf"
+
+
+def test_sanitize_source_name_truncates_long_names():
+    long = "a" * 300
+    result = ingest_router._sanitize_source_name(long)
+    assert len(result) == 255
+
+
+def test_sanitize_source_name_none_passthrough():
+    assert ingest_router._sanitize_source_name(None) is None

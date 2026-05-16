@@ -1,13 +1,22 @@
-"""PDF text extraction using pymupdf (fitz).
-Extracts text per page and embedded images as base64 bytes for multimodal LLM processing.
+"""PDF extraction using pymupdf (fitz).
+
+Extracts text, embedded images, and a full-page render for each page. The
+full-page render is used by OCR/layout enrichment for charts, tables, figures,
+and vector graphics that may not appear as embedded image objects.
 """
 import base64
 import fitz  # pymupdf
 
 
+def _render_page_b64(page) -> str:
+    mat = fitz.Matrix(2.0, 2.0)  # 2x scale, about 144 DPI
+    pix = page.get_pixmap(matrix=mat, colorspace=fitz.csRGB)
+    return base64.standard_b64encode(pix.tobytes("png")).decode("utf-8")
+
+
 def parse_pdf(path: str, max_pages: int = 100) -> dict:
     """Extract text and images from a PDF file.
-    Returns: {"pages": [{"page_number": int, "text": str, "images": [{"index": int, "b64": str}]}]}
+    Returns pages with text, embedded images, and one full-page render.
     """
     doc = fitz.open(str(path))
     if len(doc) > max_pages:
@@ -23,16 +32,16 @@ def parse_pdf(path: str, max_pages: int = 100) -> dict:
             if base_image:
                 img_b64 = base64.standard_b64encode(base_image["image"]).decode("utf-8")
                 images.append({"index": img_index, "b64": img_b64, "ext": base_image.get("ext", "png")})
-        # For scanned pages (no text, no embedded images), rasterize the page itself
+        page_render = {"index": 0, "b64": _render_page_b64(page), "ext": "png", "rendered": True}
+        # Backward compatibility for scanned pages: expose the render in images
+        # when there are no embedded images for the OCR gate.
         if not text.strip() and not images:
-            mat = fitz.Matrix(2.0, 2.0)  # 2x scale ≈ 144 DPI
-            pix = page.get_pixmap(matrix=mat, colorspace=fitz.csRGB)
-            img_b64 = base64.standard_b64encode(pix.tobytes("png")).decode("utf-8")
-            images.append({"index": 0, "b64": img_b64, "ext": "png", "rendered": True})
+            images.append(page_render)
         pages.append({
             "page_number": page_num,
             "text": text,
             "images": images,
+            "render": page_render,
         })
     doc.close()
     return {"pages": pages, "source": str(path)}

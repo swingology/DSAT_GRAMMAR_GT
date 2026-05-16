@@ -58,6 +58,28 @@ def test_extract_json_from_kimi_single_quotes_and_bare_keys():
     assert len(result["options"]) == 4
 
 
+def test_extract_json_strips_thinking_tags():
+    text = "<thinking>Step-by-step reasoning here.</thinking>\n{\"question_text\": \"Q?\"}"
+    result = extract_json_from_text(text, provider_name="anthropic", model_name="claude-sonnet")
+    assert result["question_text"] == "Q?"
+
+
+def test_extract_json_universal_repair_fallback_for_non_ollama():
+    """Non-Ollama providers get the repair path as a last-resort fallback."""
+    text = "{question_text: 'Which choice?', correct_option_label: 'A',}"
+    result = extract_json_from_text(text, provider_name="anthropic", model_name="claude-sonnet")
+    assert result["question_text"] == "Which choice?"
+
+
+def test_extract_json_raises_with_context_on_failure():
+    with pytest.raises(ValueError) as exc_info:
+        extract_json_from_text("no json here", provider_name="openai", model_name="gpt-4o")
+    msg = str(exc_info.value)
+    assert "provider=" in msg
+    assert "model=" in msg
+    assert "preview=" in msg
+
+
 def test_extract_json_from_kimi_think_block_and_js_fence():
     text = """
     <think>Need to structure this carefully.</think>
@@ -155,6 +177,26 @@ def test_parse_pdf_page_structure():
     assert "page_number" in page
     assert "text" in page
     assert isinstance(page["text"], str)
+
+
+def test_parse_pdf_includes_full_page_render_for_text_pdf(tmp_path):
+    import fitz
+
+    pdf_path = tmp_path / "text_with_vector.pdf"
+    doc = fitz.open()
+    page = doc.new_page()
+    page.insert_text((72, 72), "Question 1")
+    page.draw_rect(fitz.Rect(72, 100, 200, 160), color=(0, 0, 0))
+    doc.save(pdf_path)
+    doc.close()
+
+    result = parse_pdf(str(pdf_path))
+    page_data = result["pages"][0]
+
+    assert page_data["text"].strip()
+    assert page_data["render"]["rendered"] is True
+    assert page_data["render"]["ext"] == "png"
+    assert len(page_data["render"]["b64"]) > 0
 
 
 # --- Image Parser ---

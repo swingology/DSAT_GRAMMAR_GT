@@ -54,9 +54,18 @@ class Settings(BaseSettings):
     # Layout detection — uses GLM-OCR to identify question/table/chart/figure regions
     layout_detection_enabled: bool = True
 
+    # CORS — comma-separated list of allowed origins, or "*" to allow all
+    cors_allowed_origins: str = "*"
+
     # Logging
     log_level: str = "INFO"
     log_json: bool = True
+
+    @property
+    def cors_origins_list(self) -> List[str]:
+        if self.cors_allowed_origins.strip() == "*":
+            return ["*"]
+        return [o.strip() for o in self.cors_allowed_origins.split(",") if o.strip()]
 
     @property
     def admin_api_key_list(self) -> List[str]:

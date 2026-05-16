@@ -54,11 +54,12 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="DSAT Grammar API", version="0.1.0", lifespan=lifespan)
 
+_settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=_settings.cors_origins_list,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-API-Key", "X-Request-ID"],
 )
 app.add_middleware(RequestIDMiddleware)
 

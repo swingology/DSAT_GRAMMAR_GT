@@ -459,6 +459,44 @@ def test_page_number_and_render_path_for_region_use_page_image_entry():
     assert _page_number_for_region(job, 4) == 4
 
 
+def test_store_pdf_page_renders_uses_full_render_for_text_pdf(tmp_path, monkeypatch):
+    import uuid
+    import base64
+    from app.config import get_settings
+    from app.storage import object_store
+    from app.routers.ingest import _store_pdf_page_renders
+
+    monkeypatch.setenv("OBJECT_STORAGE_LOCAL_ROOT", str(tmp_path))
+    get_settings.cache_clear()
+    object_store.load_storage_layout.cache_clear()
+
+    render_b64 = base64.standard_b64encode(b"fake-png").decode("utf-8")
+    embedded_b64 = base64.standard_b64encode(b"embedded").decode("utf-8")
+    pdf_result = {
+        "pages": [
+            {
+                "page_number": 0,
+                "text": "Question with chart",
+                "images": [{"index": 0, "b64": embedded_b64, "ext": "png"}],
+                "render": {"index": 0, "b64": render_b64, "ext": "png", "rendered": True},
+            }
+        ]
+    }
+
+    stored = _store_pdf_page_renders(
+        pdf_result=pdf_result,
+        asset_id=uuid.uuid4(),
+        job_id=uuid.uuid4(),
+        content_origin="unofficial",
+        source_metadata={},
+        source_stem="sample",
+        max_images=10,
+    )
+
+    assert len(stored) == 1
+    assert object_store.read_object(stored[0]["storage_path"]) == b"fake-png"
+
+
 def test_match_region_for_question_returns_none_on_empty_layout():
     """When detect_layout fails or is disabled, match returns None gracefully."""
     from app.storage.crop_detector import match_region_for_question

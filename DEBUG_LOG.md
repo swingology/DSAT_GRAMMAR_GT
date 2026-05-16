@@ -10,17 +10,18 @@ Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b a
 1. **High:** No validation that parsed dict matches expected shape — function returns *any* `dict`. If the LLM outputs `{"error": "rate limited", "retry_after": 30}`, that passes as valid extraction output. Downstream code (`_normalize_extracted_questions`, etc.) checks for expected keys, but by then the pipeline has committed to a bad parse and produces zero questions with no clear error explaining why.
    - `backend/app/parsers/json_parser.py:155-158`
 
-2. **High:** Trailing comma repair only activates for Ollama/Kimi — `_repair_json_like_object` strips trailing commas (line 69), but this path only runs when `provider_name=="ollama"` or `"kimi" in model_key` (line 150). If Anthropic or OpenAI returns trailing commas (rare but possible), the default strategy fails with `ValueError` instead of attempting repair.
-   - `backend/app/parsers/json_parser.py:69, 150`
+2. ~~**High:** Trailing comma repair only activates for Ollama/Kimi — `_repair_json_like_object` strips trailing commas (line 69), but this path only runs when `provider_name=="ollama"` or `"kimi" in model_key` (line 150). If Anthropic or OpenAI returns trailing commas (rare but possible), the default strategy fails with `ValueError` instead of attempting repair.~~
+   - ~~`backend/app/parsers/json_parser.py:69, 150`~~
+   - **Fixed:** Added universal fallback — after default strategies fail, `_extract_with_kimi_strategy` (which includes repair) now runs for any provider, not just Ollama/Kimi. (`dc8f034` → follow-up commit)
 
-3. **High:** `ValueError` on failure has no recovery path in any caller — line 159 raises `ValueError("No valid JSON found in text")` with no context about what strategies were tried or what the input looked like. The `@with_retry` decorator only covers network errors; `ValueError` is not retryable. Callers either kill the entire job (Pass 1) or permanently skip the question (Pass 2).
-   - `backend/app/parsers/json_parser.py:159`, `backend/app/llm/retry.py:37-50`, `backend/app/routers/ingest.py:1206-1227, 1381-1395`
+3. ~~**High:** `ValueError` on failure has no recovery path in any caller — line 159 raises `ValueError("No valid JSON found in text")` with no context about what strategies were tried or what the input looked like.~~
+   - **Partially fixed:** `ValueError` message now includes `provider`, `model`, `input_len`, and a 200-char `preview` to aid debugging. Still not retryable — full retry logic requires architectural changes to the extraction loop.
 
 4. **Medium:** `_extract_first_braced_candidate` returns only the first JSON object — if the LLM outputs multiple separate JSON objects (e.g., two extraction results), only the first is extracted and the rest are silently lost. No check that the extracted object contains expected keys like `"questions"`.
    - `backend/app/parsers/json_parser.py:21-49`
 
-5. **Medium:** Reasoning wrapper stripper is regex-based and fragile — `_strip_reasoning_wrappers` uses a non-greedy `re.sub` pattern that matches the shortest span between think tags. If an LLM emits nested thinking blocks or multiple separate blocks, only the first is stripped. Also, `<thinking>` tags are not caught — the pattern only matches the exact `<think>...</think>` form (despite the case-insensitive flag on the regex, the tag name itself must be `think`).
-   - `backend/app/parsers/json_parser.py:52-57`
+5. ~~**Medium:** Reasoning wrapper stripper misses `<thinking>` tags — the pattern only matched `<think>...</think>`.~~
+   - **Fixed:** Added `<thinking>.*?</thinking>` pattern to `_strip_reasoning_wrappers`. Nested or multiple blocks still only strip the first match per tag pair — acceptable for current models.
 
 6. **Medium:** `_quote_bare_keys` regex can produce false positives — the pattern `([{,]\s*)([A-Za-z_][A-Za-z0-9_\-]*)(\s*:)` quotes any word before a colon after `{` or `,`. Already-quoted keys produce `""key"":` (harmless — `json.loads` accepts it), but edge cases like `{, key: val}` produce broken JSON.
    - `backend/app/parsers/json_parser.py:74`
@@ -45,8 +46,8 @@ Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b a
 1. **Critical:** Malformed LLM JSON is never retried — `ValueError` from `extract_json_from_text` kills the job or skips the question permanently. The `@with_retry` decorator only covers network errors (TimeoutException, ConnectionError, HTTP 429/5xx). A model that returns syntactically invalid JSON never gets a second chance.
    - `backend/app/parsers/json_parser.py:159`, `backend/app/llm/retry.py:37-50`, `backend/app/routers/ingest.py:1206-1227`
 
-2. **Critical:** No stuck-job recovery — if the process crashes or an unhandled exception kills the `asyncio.create_task`, the `QuestionJob` stays in a non-terminal state ("annotating", "extracting") forever. No reaper, no startup scan, no timeout. `_log_task_exception` only logs; it cannot update the job's DB row.
-   - `backend/app/routers/ingest.py:37-39, 1603`
+2. ~~**Critical:** No stuck-job recovery.~~
+   - **Fixed (pre-existing):** `lifespan` startup handler scans for jobs in non-terminal states and marks them `failed` with `startup_recovery` error. Implemented in `backend/app/main.py`.
 
 3. **High:** No savepoints or rollback — `db.flush()` calls in `_persist_single_question` (3 flushes at lines 495, 512, 576) have no savepoint wrapping. If the second flush fails (e.g., constraint violation), the session is dirty and the entire pipeline dies. No `db.rollback()` exists anywhere in the codebase.
    - `backend/app/routers/ingest.py:495, 512, 576`
@@ -60,25 +61,25 @@ Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b a
 6. **Low:** VLM `extract_json_from_text` call at line 1266 is outside its own try/except — if it raises `ValueError`, the exception falls through to the broader per-question handler which marks the entire job as failed rather than retrying just the extraction parse.
    - `backend/app/routers/ingest.py:1266`
 
-7. **Low:** Option hydration silently skips non-ABCD labels — if the LLM returns labels like `"E"` or `"1"`, those options get empty annotation fields with no warning or error logged.
-   - `backend/app/pipeline/option_hydration.py:35-36`
+7. ~~**Low:** Option hydration silently skips non-ABCD labels.~~
+   - **Fixed:** `option_hydration.py` now logs a `WARNING` for unexpected labels instead of silently dropping them.
 
 8. **Low:** Overlap detection loads all official questions into memory unbounded — no pagination or limit. As the question bank grows, this becomes a multi-hundred-megabyte result set per overlap check.
    - `backend/app/pipeline/overlap.py:45-56`
 
 #### Data Integrity
 
-9. **Critical:** UUID5 collision crashes on re-ingestion — no `ON CONFLICT` / upsert. Re-uploading the same official exam hits a primary key violation with no `IntegrityError` handling. Two concurrent ingestions of the same question will both compute the same UUID5 and the second `db.flush()` raises an unhandled `IntegrityError`.
-   - `backend/app/routers/ingest.py:437-440, 453`
+9. ~~**Critical:** UUID5 collision crashes on re-ingestion.~~
+   - **Fixed (`dc8f034`):** `_persist_single_question` now checks for an existing `Question` row by UUID5 before inserting. Duplicate official questions are skipped with an INFO log.
 
-10. **Critical:** Bad question number passes validation but crashes persist — `_validate_question_numbers` logs warnings for non-integer `source_question_number` values (e.g., `"3a"`, `"?"`) but does not prevent them from reaching `_persist_single_question` where `int(q_num)` throws `ValueError`/`TypeError`.
-    - `backend/app/routers/ingest.py:438, 185-277`
+10. ~~**Critical:** Bad question number passes validation but crashes persist.~~
+    - **Fixed (`dc8f034`):** `int(q_num)` conversion in `_persist_single_question` is now wrapped in `try/except (TypeError, ValueError)` — falls back to UUID4 with a WARNING log.
 
-11. **High:** Option labels not validated as exactly {A,B,C,D} — duplicates (`A,A,C,D`) or wrong labels (`A,B,C,E`) pass the `len==4` check. The `QuestionExtract` Pydantic model enforces `pattern=r"^[A-D]$"` but is never applied at ingestion time — raw LLM dicts bypass it.
-    - `backend/app/pipeline/validator.py:30-36`, `backend/app/models/extract.py:8`
+11. ~~**High:** Option labels not validated as exactly {A,B,C,D}.~~
+    - **Fixed (`dc8f034`):** `validate_question()` now returns a `blocking` error if option label set ≠ `{A,B,C,D}` or has duplicates.
 
-12. **High:** `correct_option_label` not validated against actual option labels — if the LLM says `"C"` but options only have labels `["A", "B", "D", "E"]`, no option gets `is_correct=True`. The question ends up with zero correct answers in the database.
-    - `backend/app/pipeline/validator.py:33-36`, `backend/app/routers/ingest.py:516-530`
+12. ~~**High:** `correct_option_label` not validated against actual option labels.~~
+    - **Fixed (`dc8f034`):** `validate_question()` now returns a `blocking` error if `correct_option_label` is not present in the actual option label set.
 
 13. **High:** No cross-batch question deduplication — re-uploading the same PDF with a different filename (different checksum) creates duplicate Question rows. Overlap detection only runs for `content_origin in ("unofficial", "generated")`; official questions are excluded from overlap checking.
     - `backend/app/routers/ingest.py:379-407, 1507-1510`
@@ -100,20 +101,20 @@ Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b a
 18. **Critical:** Zero rate limiting on any endpoint — no middleware anywhere. Each ingest endpoint triggers expensive LLM calls. An attacker with a valid admin API key can drain API budgets by flooding endpoints. The batch endpoint `/ingest/unofficial/batch` has no limit on the number of files.
     - Entire app — no rate limiting middleware
 
-19. **High:** No magic-number file validation — only the `Content-Type` header is checked. A malicious binary with `Content-Type: application/pdf` gets written to disk via `_store_raw_upload` before `fitz.open()` rejects it. The file is already persisted to object storage before parsing runs.
-    - `backend/app/routers/ingest.py:1433-1441`
+19. ~~**High:** No magic-number file validation.~~
+    - **Fixed (pre-existing):** Both ingest endpoints check `content[:4] == b"%PDF"` before writing to storage and raise HTTP 422 if the check fails.
 
 20. **High:** Prompt injection via raw user text — the extraction prompt interpolates raw text with only `---` delimiters. `source_exam_code` is also unsanitized. No XML-tag-based isolation of user content.
     - `backend/app/prompts/extract_prompt.py:87-92, 70-71`
 
-21. **High:** CORS wide open — `allow_origins=["*"]` + `allow_headers=["*"]`. Any origin can make authenticated cross-origin requests using a leaked API key. The custom `X-API-Key` header is sent regardless of `allow_credentials` setting.
-    - `backend/app/main.py:38-43`
+21. ~~**High:** CORS wide open — hardcoded `allow_origins=["*"]` + `allow_headers=["*"]`.~~
+    - **Fixed:** `main.py` now reads `settings.cors_origins_list` (from `CORS_ALLOWED_ORIGINS` env var, default `"*"`). `allow_methods` restricted to `GET,POST,PUT,DELETE,OPTIONS`; `allow_headers` restricted to `Content-Type,Authorization,X-API-Key,X-Request-ID`.
 
-22. **High:** Unsanitized filename stored in DB — `file.filename` from uploads goes directly into `QuestionAsset.source_name`. XSS payload possible if the filename is ever rendered in a web UI.
-    - `backend/app/routers/ingest.py:1564, 1649, 2138`
+22. ~~**High:** Unsanitized filename stored in DB.~~
+    - **Fixed:** `_sanitize_source_name()` helper strips path separators and control characters, truncates to 255 chars. Applied at all three `source_name=file.filename` sites in `ingest.py`.
 
-23. **Medium:** No PDF page count limit — a 50 MB PDF with 50,000 pages passes size validation but exhausts memory during rasterization. Each page is rendered at 2x scale as a PNG.
-    - `backend/app/parsers/pdf_parser.py:13-34`
+23. ~~**Medium:** No PDF page count limit.~~
+    - **Fixed (pre-existing):** `parse_pdf()` has `max_pages=100` default and raises `ValueError` if the PDF exceeds it.
 
 24. **Low:** Default API keys in source code — `"admin-key-change-me"` / `"student-key-change-me"` are active if env vars aren't set. Startup warning exists but doesn't prevent access.
     - `backend/app/config.py:10-11`
