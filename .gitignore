@@ -1,5 +1,6 @@
 .DS_Store
 **/.DS_Store
+**/settings.local.json
 *_pages/
 local_object_store/**
 !local_object_store/**/
