@@ -14,6 +14,7 @@ from app.auth import admin_required
 from app.models.db import (
     Question, QuestionAnnotation, QuestionVersion, QuestionOption,
     QuestionRelation, QuestionJob, QuestionAsset, LlmEvaluation, UserProgress,
+    QuestionStimulusAsset,
 )
 from app.models.ontology import RELATION_TYPES
 from app.models.payload import AdminEditRequest, EvaluationScoreRequest
@@ -407,6 +408,56 @@ async def clear_overlap(
     q.updated_at = datetime.now(timezone.utc)
     await db.commit()
     return {"id": str(q.id), "official_overlap_status": "none"}
+
+
+@router.get("/questions/{question_id}/stimulus-assets")
+async def get_stimulus_assets(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    qid = _parse_uuid(question_id)
+    result = await db.execute(
+        select(QuestionStimulusAsset)
+        .where(QuestionStimulusAsset.question_id == qid)
+        .order_by(QuestionStimulusAsset.source_page_number, QuestionStimulusAsset.stimulus_type)
+    )
+    assets = result.scalars().all()
+    return [
+        {
+            "id": str(a.id),
+            "stimulus_type": a.stimulus_type,
+            "storage_path": a.storage_path,
+            "source_page_number": a.source_page_number,
+            "title": a.title,
+            "structured_data": a.structured_data_jsonb,
+            "render_hints": a.render_hints_jsonb,
+            "created_at": a.created_at.isoformat() if a.created_at else None,
+        }
+        for a in assets
+    ]
+
+
+@router.post("/jobs/{job_id}/fail")
+async def force_fail_job(
+    job_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Mark a stuck in-progress job as failed."""
+    _TERMINAL = {"approved", "needs_review", "failed", "rejected"}
+    jid = _parse_uuid(job_id)
+    job = await db.get(QuestionJob, jid)
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    if job.status in _TERMINAL:
+        raise HTTPException(status_code=409, detail=f"Job is already in terminal state '{job.status}'")
+    job.status = "failed"
+    job.validation_errors_jsonb = list(job.validation_errors_jsonb or []) + [
+        {"step": "admin_force_fail", "error": "Manually marked as failed by admin"}
+    ]
+    await db.commit()
+    return {"id": str(job.id), "status": "failed"}
 
 
 @router.post("/evaluations/{evaluation_id}/score")

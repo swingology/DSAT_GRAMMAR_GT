@@ -6,7 +6,7 @@ from app.parsers.ocr import DeepSeekOCRClient
 from app.llm.base import ImageContent
 from app.llm.ollama_provider import OllamaProvider
 from app.prompts.extract_prompt import build_vision_extract_prompt
-from app.routers.ingest import _collect_page_images, _resolve_ocr_strategy
+from app.routers.ingest import _collect_page_images, _fallback_ocr_strategy, _resolve_ocr_strategy
 
 
 # ── DeepSeekOCRClient ────────────────────────────────────────────────────────
@@ -177,6 +177,26 @@ def test_resolve_ocr_strategy_auto_falls_back_to_ollama():
         deepseek_ocr_base_url = ""
 
     assert _resolve_ocr_strategy(None, FakeSettings()) == "ollama"
+
+
+def test_fallback_ocr_strategy_prefers_anthropic_after_glm_failure():
+    class FakeSettings:
+        anthropic_api_key = "test-key"
+        deepseek_ocr_base_url = "http://localhost:8001"
+        ocr_vision_provider = "ollama"
+        openai_api_key = ""
+
+    assert _fallback_ocr_strategy(FakeSettings(), "glm") == "anthropic"
+
+
+def test_fallback_ocr_strategy_uses_deepseek_when_anthropic_unavailable():
+    class FakeSettings:
+        anthropic_api_key = ""
+        deepseek_ocr_base_url = "http://localhost:8001"
+        ocr_vision_provider = "ollama"
+        openai_api_key = ""
+
+    assert _fallback_ocr_strategy(FakeSettings(), "glm") == "deepseek"
 
 
 def test_resolve_ocr_strategy_raises_when_no_provider():

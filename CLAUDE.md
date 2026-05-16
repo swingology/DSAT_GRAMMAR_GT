@@ -18,7 +18,9 @@ Always use `uv venv` to create and manage Python virtual environments when runni
 The canonical set of official DSAT verbal practice tests is:
 
 ```
-TESTS/DATA_SRC/2025-2026 Tests Answers/Practice Tests/DIVIDED/VERBAL/
+TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL/
 ```
 
-This directory contains the split module PDFs (mod01/mod02) for Tests 1, 6–11. Use this as the authoritative source when ingesting official verbal questions.
+This directory contains the split module PDFs (`Test_N_digital_sec01_mod01.pdf` / `mod02.pdf`) for Tests 1, 4–11. Use this as the authoritative source when ingesting official verbal questions.
+
+The config setting `official_test_verbal_dir` in `backend/app/config.py` points to this directory and should be used as the default path in all code that references official test PDFs.

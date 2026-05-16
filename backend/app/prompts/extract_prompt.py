@@ -27,7 +27,21 @@ You must output valid JSON matching this schema:
       ],
       "correct_option_label": "A or B or C or D",
       "stimulus_mode_key": "sentence_only or passage_excerpt etc.",
-      "stem_type_key": "complete_the_text or choose_main_idea etc."
+      "stem_type_key": "complete_the_text or choose_main_idea etc.",
+      "stimulus_assets": [
+        {
+          "type": "table, chart, graph, or figure",
+          "title": "optional title visible in the source",
+          "structured_data": {
+            "comment": "For tables: {headers: [...], rows: [[...], ...]}. For charts: {x_label: '...', y_label: '...', series: [{label: '...', data: [...]}]}. For figures: {description: '...'}."
+          },
+          "render_hints": {
+            "chart_type": "bar, line, pie, scatter, table, or figure",
+            "x_label": "axis label or null",
+            "y_label": "axis label or null"
+          }
+        }
+      ]
     }
   ],
   "table_data": null,
@@ -40,6 +54,8 @@ Rules:
 - Preserve the original wording as closely as possible
 - If no passage, set passage_text to null
 - For a single question, return a questions array with one element
+- If a question is accompanied by a table, chart, graph, or figure, populate stimulus_assets for that question with one entry per distinct visual element. If there are no visual elements, set stimulus_assets to []
+- For tables: extract headers and rows into structured_data. For charts/graphs: extract axis labels and data series into structured_data. For figures: provide a text description
 - Output ONLY valid JSON, no markdown fences"""
 
 

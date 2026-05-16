@@ -28,7 +28,7 @@ _IN_PROGRESS = {
 
 
 @router.get("", response_class=HTMLResponse)
-async def dashboard():
+async def dashboard(_auth: str = Depends(admin_required)):
     return HTMLResponse(_PAGE)
 
 
@@ -110,7 +110,7 @@ async def jobs_fragment(
 
 
 @router.get("/review", response_class=HTMLResponse)
-async def review_queue_page():
+async def review_queue_page(_auth: str = Depends(admin_required)):
     return HTMLResponse(_REVIEW_PAGE)
 
 

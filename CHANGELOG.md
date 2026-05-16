@@ -5,6 +5,144 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-15 — Wire stimulus asset pipeline end-to-end
+
+**Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+**Branch:** `main`
+
+Connects the seven gaps identified in a program review: the stimulus data model and
+storage were scaffolded but the runtime pipeline never activated any of those paths.
+Questions with charts, tables, graphs, or figures are now extracted, annotated,
+cropped, linked to source spans, served via API, and exported to YAML.
+
+### Gap 1 — Extraction prompt (`extract_prompt.py`)
+**Change:** Added `stimulus_assets` array to the per-question JSON schema. Each entry
+carries `type`, `title`, `structured_data`, and `render_hints`. Rules instruct the
+LLM to populate one entry per distinct visual element and to separate table/chart data
+into the appropriate structured shape.
+**File:** `backend/app/prompts/extract_prompt.py`
+
+### Gap 2 — Layout region matching (`crop_detector.py`)
+**Change:** Added `match_stimulus_regions_for_question()` — returns every `table`,
+`chart`, and `figure` region on the same page as the matched question block. Updated
+`crop_and_store()` to accept a `kind` parameter so stimulus crops use the correct
+storage kind (`table_crop`, `chart_crop`, `figure_crop`) instead of `question_crop`.
+**File:** `backend/app/storage/crop_detector.py`
+
+### Gap 3 — Stimulus annotation pass (`stimulus_prompt.py`, `ingest.py`)
+**Change:** New `stimulus_prompt.py` module with a vision prompt that instructs the
+LLM to extract structured data and render hints from a cropped stimulus image. New
+`_annotate_layout_stimulus()` helper in `ingest.py` loads the cropped bytes, calls
+`complete_vision`, and returns the parsed annotation. Called per stimulus region inside
+`_persist_single_question()` when a vision-capable provider is present; degrades
+gracefully to empty annotation on failure.
+**Files:** `backend/app/prompts/stimulus_prompt.py` (new),
+`backend/app/routers/ingest.py`
+
+### Gap 4 — Frontend API (`admin.py`)
+**Change:** Added `GET /admin/questions/{question_id}/stimulus-assets` endpoint.
+Returns all `QuestionStimulusAsset` rows for a question ordered by page then type,
+with `id`, `stimulus_type`, `storage_path`, `source_page_number`, `title`,
+`structured_data`, and `render_hints`.
+**File:** `backend/app/routers/admin.py`
+
+### Gap 5 — Storage kinds (`storage_layout.yaml`, `ingest.py`)
+**Change:** Added `table_crop`, `chart_crop`, `figure_crop`, and `figure_asset` as
+`object_kinds` in the storage layout YAML (all were referenced in code but not
+defined). Added `_crop_kind_for_stimulus()` helper that maps region type → crop kind.
+**Files:** `backend/config/storage_layout.yaml`, `backend/app/routers/ingest.py`
+
+### Gap 6 — Source span provenance (`ingest.py`)
+**Change:** `_persist_single_question()` now creates a `QuestionSourceSpan` row for
+each layout-detected stimulus region with `source_region_role` set to the region type
+(`table`, `chart`, or `figure`) rather than always `question_block`. The crop path
+and layout JSON path are recorded on these spans.
+**File:** `backend/app/routers/ingest.py`
+
+### Gap 7 — YAML export (`yaml_export.py`)
+**Change:** `_build_question_record()` now includes `stimulus_assets` (filtering out
+internal `_`-prefixed keys added by the pipeline), `table_data`, and `graph_data`
+when present in the extract JSON.
+**File:** `backend/app/storage/yaml_export.py`
+
+---
+
+## 2026-05-15 — Layout detection, region cropping, and OCR diagnostics
+
+**Model:** Claude Opus 4.7 (`claude-opus-4-7`)
+**Branch:** `main`
+
+Adds layout-detection enrichment after OCR extraction. Each page render is sent
+to GLM-OCR with a layout prompt that identifies question blocks, tables, charts,
+and figures with normalized bounding boxes. Detected regions are matched to
+extracted questions by number, cropped from the page render with Pillow, and stored
+via the object-store adapter. A per-job OCR diagnostics file is also persisted.
+All steps degrade gracefully — any failure leaves questions with NULL crop/layout
+paths rather than blocking the pipeline.
+
+### Layout prompt (`layout_prompt.py`)
+**Change:** New module with `LAYOUT_SYSTEM_PROMPT` and `build_layout_prompt()` that
+instructs GLM-OCR to return a JSON array of regions (question_block, table, chart,
+figure) with normalized bounding boxes per page.
+**File:** `backend/app/prompts/layout_prompt.py` (new)
+
+### Crop detector (`crop_detector.py`)
+**Change:** New module with three functions:
+- `detect_layout(page_images_data, settings)` — async, one GLM-OCR call per page,
+  returns `{page_index: [RegionDetection]}`. Never raises; returns `{}` on failure.
+- `match_region_for_question(layout_data, q_data, question_index)` — sync, matches
+  a question to its region by number then positional fallback.
+- `crop_and_store(region, page_images_data, question_id)` — sync, loads page bytes
+  (path → storage_path → b64 fallback), crops with Pillow, writes PNG via
+  `put_object('question_crop', ...)`.
+Also includes `_parse_question_number`, `_clamp_bbox`, `_is_valid_bbox`, and
+`_parse_region_list` helpers.
+**File:** `backend/app/storage/crop_detector.py` (new)
+
+### Config and storage layout
+**Change:** Added `layout_detection_enabled: bool = True` to `Settings` as an admin
+kill switch. Added `ocr_diagnostics` object kind to `storage_layout.yaml` (bucket
+`ocr_artifacts`, template `diagnostics/{job_id}/page_{page_number:03d}.json`).
+**Files:** `backend/app/config.py`, `backend/config/storage_layout.yaml`
+
+### Ingestion pipeline wiring
+**Change:**
+- `_run_pipeline()` now calls `detect_layout()` after OCR and before the per-question
+  loop, gated on `layout_detection_enabled` + `glm_ocr_model` + page renders. Layout
+  JSON is stored via `put_object('ocr_layout', ...)`. On failure, layout_data and
+  layout_paths reset to `{}` — pipeline continues with NULL crop/layout paths.
+- After the layout block, a per-job OCR diagnostics file is written via
+  `put_object('ocr_diagnostics', ...)` and the path is embedded in `_ocr_meta`.
+- `_persist_single_question()` gained `layout_data` and `layout_paths` params.
+  Inside, after `question_id` is determined, it calls `match_region_for_question()`
+  then `crop_and_store()` to produce the crop, and passes `crop_path` and
+  `layout_json_path` to `_build_question_source_span()`.
+- `_build_question_source_span()` signature expanded with explicit `crop_path` and
+  `layout_json_path` params (previously read from `q_data.get()` which was always NULL).
+- `_persist_single_question` now performs 3 `db.flush()` calls (question+version,
+  annotation+options, source_span), up from 2.
+**File:** `backend/app/routers/ingest.py`
+
+### Tests
+**Change:**
+- `test_crop_detector.py` (new): 27 unit tests covering `_parse_question_number`,
+  `_clamp_bbox`, `_is_valid_bbox`, `_parse_region_list`, `match_region_for_question`,
+  `crop_and_store` (temp file, b64 fallback, missing page, unloadable image,
+  degenerate bbox), and `detect_layout` (success, model unset, exception).
+- `test_ingest_router.py` (extended): 4 degradation tests —
+  `_build_question_source_span` without crop/layout, with crop/layout paths,
+  `match_region_for_question` on empty layout, `detect_layout` returning `{}`.
+- `test_pipeline.py` and `test_backend_regressions.py`: updated all `SimpleNamespace`
+  settings mocks with `layout_detection_enabled=False` and corrected `flush_count`
+  assertions from 2 to 3.
+**Files:** `backend/tests/test_crop_detector.py` (new),
+`backend/tests/test_ingest_router.py`, `backend/tests/test_pipeline.py`,
+`backend/tests/test_backend_regressions.py`
+
+### All 274 tests pass
+
+---
+
 ## 2026-05-15 — Local object storage provenance for ingestion
 
 **Model:** OpenAI Codex (`gpt-5`)

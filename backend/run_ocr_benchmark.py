@@ -462,8 +462,13 @@ def generate_markdown_report(result: dict, pdf_path: str, output_dir: Path) -> P
         lines.append("")
 
     # Write file
-    slug = re.sub(r"[^a-z0-9]+", "_", strategy_desc.lower()).strip("_")[:40]
-    filename = f"{ts}_benchmark_{slug}.md"
+    if result.get("ocr_engine") == "pymupdf":
+        # Deterministic extraction: use clean naming like the reference format
+        pdf_name_clean = pdf_name.replace("_digital_", "_").lower()
+        filename = f"{ts}_{pdf_name_clean}_questions.md"
+    else:
+        slug = re.sub(r"[^a-z0-9]+", "_", strategy_desc.lower()).strip("_")[:40]
+        filename = f"{ts}_benchmark_{slug}.md"
     out_path = output_dir / filename
     out_path.write_text("\n".join(lines))
     return out_path
@@ -514,6 +519,7 @@ def update_summary_md(summary_path: Path, report_rel_path: str, result: dict, pd
 def run_deterministic_extraction(pdf_path: str) -> dict:
     """Extract questions from PDF using PyMuPDF embedded text + regex parsing."""
     import re
+    import fitz
 
     doc = fitz.open(pdf_path)
     t0 = time.time()
@@ -565,65 +571,90 @@ def run_deterministic_extraction(pdf_path: str) -> dict:
 
 
 def _parse_questions_from_text(text: str) -> list[dict]:
-    """Parse numbered questions and A-D options from raw SAT text using regex."""
+    """Parse numbered questions and A-D options from raw SAT text.
+
+    SAT digital test format:
+      N           <-- question number alone on a line
+      <passage / question text spanning multiple lines>
+      A) <opt A>  <-- options at line start
+      B) <opt B>
+      C) <opt C>
+      D) <opt D>
+    """
     import re
 
-    # Split on question number boundaries: a newline followed by a number at line start
-    # SAT questions typically appear as "\n1\n" or "\n1 " at the start of a question
-    blocks = re.split(r"\n(?=\d+\n)", text)
+    # Find where actual questions start: skip preamble (cover page, module
+    # header, DIRECTIONS). Questions begin with '1' alone on a line after
+    # the DIRECTIONS paragraph.
+    directions_match = re.search(r"DIRECTIONS\b", text)
+    if directions_match:
+        after = text[directions_match.end():]
+        q1 = re.search(r"\n1\s*\n", after)
+        if q1:
+            text = after[q1.start():]
+
+    lines = text.split("\n")
+    # Find candidate question-number lines: 1--33, alone on a line
+    qnum_indices = []
+    for idx, line in enumerate(lines):
+        stripped = line.strip()
+        if re.match(r"^\d{1,2}$", stripped):
+            n = int(stripped)
+            if 1 <= n <= 33:
+                # Filter table-data false positives: real question numbers are
+                # followed by text starting with a letter; table row numbers
+                # are followed by more numbers on subsequent lines.
+                next_line = lines[idx + 1].strip() if idx + 1 < len(lines) else ""
+                if next_line and next_line[0].isdigit():
+                    continue
+                qnum_indices.append((idx, n))
 
     questions = []
     seen_nums = set()
 
-    for block in blocks:
-        # Extract question number
-        num_match = re.match(r"(\d+)\s*\n", block)
-        if not num_match:
-            continue
-        qnum = int(num_match.group(1))
+    for i, (start_idx, qnum) in enumerate(qnum_indices):
         if qnum in seen_nums:
             continue
         seen_nums.add(qnum)
 
-        body = block[num_match.end():]
+        # End index: start of next question number, or end of text
+        end_idx = qnum_indices[i + 1][0] if i + 1 < len(qnum_indices) else len(lines)
 
-        # Split off options — look for A) or A\n pattern
-        opt_split = re.split(r"\n(\s*A\s*[\.\)]\s*)", body, maxsplit=1)
-        if len(opt_split) < 2:
-            # Try alternate split: lines starting with A.
-            opt_split = re.split(r"\n(A\.[^\n]*)", body, maxsplit=1)
+        # Extract question body lines (skip the number line itself)
+        body_lines = lines[start_idx + 1:end_idx]
 
-        if len(opt_split) >= 2:
-            question_text = opt_split[0].strip()
-            options_block = opt_split[1] + (opt_split[2] if len(opt_split) > 2 else "")
-        else:
-            question_text = body.strip()
-            options_block = ""
+        # Find where options start: first line matching A) or A.
+        opt_line_idx = None
+        for j, bline in enumerate(body_lines):
+            if re.match(r"^\s*A\s*[\.\)]", bline):
+                opt_line_idx = j
+                break
 
-        # Clean question text: remove extra whitespace
-        question_text = re.sub(r"\s+", " ", question_text).strip()
+        if opt_line_idx is None:
+            continue
 
-        # Parse options A-D from options block
+        # Question text is everything before the first option
+        qtext = " ".join(body_lines[:opt_line_idx]).strip()
+        qtext = re.sub(r"\s+", " ", qtext)
+
+        # Options are lines starting with A-D
         options = []
-        opt_pattern = re.compile(r"\s*([A-D])\s*[\.\)]\s*(.*?)(?=\s*[A-D]\s*[\.\)]|\Z)", re.DOTALL)
-        for m in opt_pattern.finditer(options_block):
-            label = m.group(1)
-            text = re.sub(r"\s+", " ", m.group(2)).strip()
-            if label not in {"A", "B", "C", "D"}:
-                continue
-            # Avoid duplicates
-            if any(o.get("label") == label for o in options):
-                continue
-            options.append({"label": label, "text": text})
+        for bline in body_lines[opt_line_idx:]:
+            m = re.match(r"^\s*([A-D])\s*[\.\)]\s*(.+)$", bline)
+            if m:
+                label = m.group(1)
+                opt_text = re.sub(r"\s+", " ", m.group(2)).strip()
+                if not any(o["label"] == label for o in options):
+                    options.append({"label": label, "text": opt_text})
 
-        # Only include if we have both question text and at least some options
-        if question_text and len(options) >= 2:
+        if qtext and len(options) >= 2:
             questions.append({
-                "question_text": question_text,
+                "question_text": qtext,
                 "source_question_number": qnum,
                 "options": options,
             })
 
+    questions.sort(key=lambda q: q.get("source_question_number", 0))
     return questions
 
 
@@ -679,8 +710,12 @@ async def main():
     if args.pdf:
         pdf_path = args.pdf
     else:
-        pdf_path = str(Path(__file__).parent.parent / "TESTS" / "DATA_SRC" /
-                        "2025-2026 Tests Answers" / "VERBAL" / "Test_1_digital_sec01_mod01.pdf")
+        from app.config import get_settings
+        settings = get_settings()
+        verbal_dir = Path(settings.official_test_verbal_dir)
+        if not verbal_dir.is_absolute():
+            verbal_dir = Path(__file__).parent / verbal_dir
+        pdf_path = str(verbal_dir / "Test_1_digital_sec01_mod01.pdf")
 
     if not Path(pdf_path).exists():
         print(f"ERROR: PDF not found: {pdf_path}")

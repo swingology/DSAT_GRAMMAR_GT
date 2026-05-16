@@ -4,7 +4,10 @@ The LLM annotation pass returns per-option analysis under an "options" key.
 These helpers extract and map those fields so they can be written directly to
 QuestionOption rows rather than being buried in annotation_jsonb.
 """
+import logging
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 
 # All QuestionOption columns that come from annotation (not from extraction).
@@ -35,6 +38,8 @@ def option_analyses_by_label(annotate_json: dict) -> dict:
         label = opt.get("option_label") or opt.get("label")
         if label in ("A", "B", "C", "D"):
             result[label] = opt
+        elif label:
+            logger.warning("option_analyses_by_label: skipping unexpected label %r", label)
     return result
 
 

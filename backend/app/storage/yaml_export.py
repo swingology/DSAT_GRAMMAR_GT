@@ -44,6 +44,16 @@ def _build_question_record(
         record["passage_text"] = extract_json["passage_text"]
     record["correct_option_label"] = extract_json.get("correct_option_label", "")
     record["options"] = extract_json.get("options", [])
+    if extract_json.get("stimulus_assets"):
+        record["stimulus_assets"] = [
+            {k: v for k, v in a.items() if not k.startswith("_")}
+            for a in extract_json["stimulus_assets"]
+            if isinstance(a, dict)
+        ]
+    if extract_json.get("table_data") is not None:
+        record["table_data"] = extract_json["table_data"]
+    if extract_json.get("graph_data") is not None:
+        record["graph_data"] = extract_json["graph_data"]
     annotation = {k: annotate_json[k] for k in _ANNOTATION_KEYS if k in annotate_json}
     if annotation:
         record["annotation"] = annotation

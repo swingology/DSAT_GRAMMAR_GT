@@ -514,7 +514,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
-            local_archive_mirror="/tmp/test_archive",
+            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False,
         ))
 
         await ingest_router._run_pipeline(job, db)
@@ -561,7 +561,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
-            local_archive_mirror="/tmp/test_archive",
+            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False,
         ))
 
         await ingest_router._run_pipeline(job, db)
@@ -590,16 +590,17 @@ class TestMultiQuestionPipeline:
 
         annotate_json = {"explanation_short": "E", "explanation_full": "F", "annotation_confidence": 0.9, "needs_human_review": False}
 
-        # LLM returns annotate OK, then FAIL, then OK
-        provider = _make_mock_provider(["extract", "annotate", "annotate", "annotate"])
+        # LLM returns annotate OK, then FAIL (3 retries), then OK
+        # idx 0 = extract, idx 1 = q1 annotate, idx 2,3,4 = q2 annotate retries (all fail), idx 5 = q3 annotate
+        provider = _make_mock_provider(["extract", "annotate", "annotate", "annotate", "annotate", "annotate"])
 
         call_log = {"count": 0}
 
         def mock_extract_json(*_args):
             idx = call_log["count"]
             call_log["count"] += 1
-            # idx 0 = extraction pass, idx 1 = q1 annotate, idx 2 = q2 annotate (fail), idx 3 = q3 annotate
-            if idx == 2:
+            # idx 0 = extraction pass, idx 1 = q1 annotate, idx 2,3,4 = q2 retries (all fail), idx 5 = q3 annotate
+            if idx in (2, 3, 4):
                 raise ValueError("LLM error on question 2")
             if idx == 0:
                 return extract_json
@@ -612,7 +613,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
-            local_archive_mirror="/tmp/test_archive",
+            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False,
         ))
 
         await ingest_router._run_pipeline(job, db)
@@ -654,7 +655,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [{"severity": "blocking", "field": "question_text", "message": "Missing"}])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
-            local_archive_mirror="/tmp/test_archive",
+            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False,
         ))
 
         await ingest_router._run_pipeline(job, db)

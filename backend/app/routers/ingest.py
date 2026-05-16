@@ -4,6 +4,7 @@ import logging
 import tempfile
 import base64
 import json
+from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -22,6 +23,7 @@ from app.models.db import (
 )
 from app.storage.local_store import compute_checksum
 from app.storage.object_store import put_object, read_object
+from app.storage.crop_detector import detect_layout, match_region_for_question, match_stimulus_regions_for_question, crop_and_store
 from app.parsers.pdf_parser import parse_pdf
 from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.pipeline.orchestrator import JobOrchestrator
@@ -42,6 +44,8 @@ ALLOWED_MIME = {
 }
 IMAGE_MIME_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
+OCR_TEXT_EXTRACT_PROVIDER = "ollama"
+OCR_TEXT_EXTRACT_MODEL = "deepseek-v4-pro:cloud"
 
 
 def _resolve_provider_and_model(
@@ -79,6 +83,10 @@ def _should_disable_ollama_thinking_for_extraction(job: QuestionJob) -> bool:
         job.provider_name == "ollama"
         and job.model_name == "deepseek-v4-pro:cloud"
     )
+
+
+def _should_disable_thinking(provider_name: str, model_name: str) -> bool:
+    return provider_name == "ollama" and model_name == OCR_TEXT_EXTRACT_MODEL
 
 
 def _should_auto_activate_official(settings) -> bool:
@@ -415,6 +423,10 @@ async def _persist_single_question(
     overlaps: list,
     section_code: str | None,
     question_index: int = 0,
+    layout_data: dict | None = None,
+    layout_paths: dict | None = None,
+    provider=None,
+    suspect_question_indices: set[int] | None = None,
 ) -> uuid.UUID:
     """Create Question + QuestionVersion + QuestionAnnotation + QuestionOption rows.
 
@@ -430,13 +442,25 @@ async def _persist_single_question(
     module = q_data.get("source_module_code")
     q_num = q_data.get("source_question_number")
 
-    if job.content_origin == "official" and all([exam, subject, section, module, q_num]):
-        question_id = _official_question_uuid(exam, subject, section, module, int(q_num))
+    is_suspect = bool(suspect_question_indices and question_index in suspect_question_indices)
+    if not is_suspect and job.content_origin == "official" and all([exam, subject, section, module, q_num]):
+        try:
+            question_id = _official_question_uuid(exam, subject, section, module, int(q_num))
+        except (TypeError, ValueError):
+            logger.warning("source_question_number %r is not an integer — using UUID4", q_num)
+            question_id = uuid.uuid4()
     else:
         question_id = uuid.uuid4()
 
     version_id = uuid.uuid4()
     annotation_id = uuid.uuid4()
+
+    # Idempotency: skip if this official question already exists
+    if job.content_origin == "official":
+        existing_q = await db.get(Question, question_id)
+        if existing_q:
+            logger.info("Official question %s already exists — skipping re-insert", question_id)
+            return question_id
 
     official_auto_activate = _should_auto_activate_official(get_settings())
     practice_status = (
@@ -537,14 +561,104 @@ async def _persist_single_question(
         from app.pipeline.overlap import persist_overlap_relations
         await persist_overlap_relations(question_id=question_id, overlaps=overlaps, db=db)
 
+    # Layout enrichment: match detected regions, crop, and optionally annotate
+    crop_path = None
+    matched_region = None
+    page_number = _source_page_number(q_data, question_index)
+    page_images_data = (job.pass1_json or {}).get("_page_images", [])
+
+    if layout_data:
+        matched_region = match_region_for_question(layout_data, q_data, question_index)
+        if matched_region:
+            result = crop_and_store(matched_region, page_images_data, question_id)
+            if result:
+                crop_path = result.storage_path
+
+    # layout_paths is keyed by 0-based page_index (from enumerate), while
+    # page_number from _source_page_number may be 1-based (LLM output).
+    # Prefer the matched region's page_index; fall back to both keys.
+    if matched_region is not None:
+        layout_json_path = (layout_paths or {}).get(matched_region.page_index)
+    else:
+        layout_json_path = (
+            (layout_paths or {}).get(page_number)
+            or (layout_paths or {}).get(page_number - 1)
+        )
+
     source_span = _build_question_source_span(
         job=job,
         question_id=question_id,
         q_data=q_data,
         question_index=question_index,
+        crop_path=crop_path,
+        layout_json_path=layout_json_path,
     )
     db.add(source_span)
     await db.flush()
+
+    # Stimulus region enrichment: crop table/chart/figure regions detected by layout pass,
+    # optionally annotate each via vision LLM, and create provenance spans.
+    stimulus_source_spans: list[QuestionSourceSpan] = []
+    if layout_data and matched_region:
+        s_regions = match_stimulus_regions_for_question(layout_data, matched_region)
+        for s_region in s_regions:
+            s_kind = _crop_kind_for_stimulus(s_region.type)
+            s_crop_result = crop_and_store(s_region, page_images_data, question_id, kind=s_kind)
+            s_source_span_id = uuid.uuid4()
+            s_page_number = _page_number_for_region(job, s_region.page_index)
+            s_layout_json_path = (layout_paths or {}).get(s_region.page_index)
+
+            # Vision annotation of the crop — feeds structured_data and render_hints
+            s_annotation: dict = {}
+            if s_crop_result and provider:
+                s_annotation = await _annotate_layout_stimulus(
+                    provider=provider,
+                    crop_path=s_crop_result.storage_path,
+                    region_type=s_region.type,
+                )
+
+            # Merge into q_data["stimulus_assets"] so _build_stimulus_asset_rows picks it up
+            existing_assets = q_data.get("stimulus_assets")
+            if not isinstance(existing_assets, list):
+                existing_assets = []
+            existing_assets.append({
+                "stimulus_type": s_region.type,
+                "title": s_annotation.get("title"),
+                "structured_data": s_annotation.get("structured_data"),
+                "render_hints": s_annotation.get("render_hints"),
+                "_layout_label": s_region.label,
+                "_crop_path": s_crop_result.storage_path if s_crop_result else None,
+                "_layout_json_path": s_layout_json_path,
+                "_source_span_id": s_source_span_id,
+                "_source_page_number": s_page_number,
+            })
+            q_data["stimulus_assets"] = existing_assets
+
+            stimulus_source_spans.append(QuestionSourceSpan(
+                id=s_source_span_id,
+                question_id=question_id,
+                question_job_id=job.id,
+                raw_asset_id=job.raw_asset_id,
+                source_page_number=s_page_number,
+                source_region_role=s_region.type,
+                extraction_method=_extraction_method(job),
+                rendered_page_path=_rendered_page_path_for_region(job, s_region.page_index),
+                crop_path=s_crop_result.storage_path if s_crop_result else None,
+                ocr_text_path=None,
+                layout_json_path=s_layout_json_path,
+                pymupdf_text=None,
+                ocr_text=None,
+                diagnostics_jsonb={
+                    "layout_label": s_region.label,
+                    "layout_bbox": s_region.bbox,
+                    "stimulus_annotation": s_annotation,
+                },
+                confidence_jsonb=None,
+                created_at=datetime.now(timezone.utc),
+            ))
+
+    for s_span in stimulus_source_spans:
+        db.add(s_span)
 
     for stimulus in _build_stimulus_asset_rows(
         job=job,
@@ -594,6 +708,23 @@ def _rendered_page_path(job: QuestionJob, page_number: int) -> str | None:
     return None
 
 
+def _page_number_for_region(job: QuestionJob, page_index: int) -> int:
+    images = (job.pass1_json or {}).get("_page_images", [])
+    if 0 <= page_index < len(images):
+        try:
+            return int(images[page_index].get("page_number", page_index))
+        except (TypeError, ValueError):
+            return page_index
+    return page_index
+
+
+def _rendered_page_path_for_region(job: QuestionJob, page_index: int) -> str | None:
+    images = (job.pass1_json or {}).get("_page_images", [])
+    if 0 <= page_index < len(images) and images[page_index].get("storage_path"):
+        return images[page_index]["storage_path"]
+    return _rendered_page_path(job, _page_number_for_region(job, page_index))
+
+
 def _first_ocr_text_path(job: QuestionJob) -> str | None:
     for artifact in (job.pass1_json or {}).get("_ocr_artifacts", []):
         if artifact.get("kind") == "ocr_text" and artifact.get("storage_path"):
@@ -606,6 +737,8 @@ def _build_question_source_span(
     question_id: uuid.UUID,
     q_data: dict,
     question_index: int,
+    crop_path: str | None = None,
+    layout_json_path: str | None = None,
 ) -> QuestionSourceSpan:
     page_number = _source_page_number(q_data, question_index)
     extraction_method = _extraction_method(job)
@@ -621,9 +754,9 @@ def _build_question_source_span(
         source_region_role="question_block",
         extraction_method=extraction_method,
         rendered_page_path=_rendered_page_path(job, page_number),
-        crop_path=q_data.get("crop_path"),
+        crop_path=crop_path,
         ocr_text_path=_first_ocr_text_path(job),
-        layout_json_path=q_data.get("layout_json_path"),
+        layout_json_path=layout_json_path,
         pymupdf_text=raw_text if extraction_method == "pymupdf" else None,
         ocr_text=raw_text if extraction_method != "pymupdf" else None,
         diagnostics_jsonb={
@@ -661,6 +794,40 @@ def _stimulus_kind(stimulus_type: str) -> str:
     return "figure_asset"
 
 
+def _crop_kind_for_stimulus(stimulus_type: str) -> str:
+    normalized = (stimulus_type or "").lower()
+    if normalized == "table":
+        return "table_crop"
+    if normalized in {"chart", "graph"}:
+        return "chart_crop"
+    return "figure_crop"
+
+
+async def _annotate_layout_stimulus(provider, crop_path: str, region_type: str) -> dict:
+    """Vision-annotate a cropped stimulus region. Returns annotation dict or {} on failure."""
+    import base64
+    from app.storage.object_store import read_object
+    from app.llm.base import ImageContent
+    from app.prompts.stimulus_prompt import build_stimulus_annotation_prompt
+
+    try:
+        crop_bytes = read_object(crop_path)
+        b64 = base64.standard_b64encode(crop_bytes).decode("utf-8")
+        system, user = build_stimulus_annotation_prompt(region_type)
+        result = await provider.complete_vision(
+            system=system,
+            user=user,
+            images=[ImageContent(b64=b64, mime_type="image/png")],
+            max_tokens=2048,
+            temperature=0.0,
+        )
+        parsed = extract_json_from_text(result.raw_text, "vision", "stimulus")
+        return parsed if isinstance(parsed, dict) else {}
+    except Exception as exc:
+        logger.warning("Stimulus annotation failed for %s: %s", crop_path, exc)
+        return {}
+
+
 def _build_stimulus_asset_rows(
     job: QuestionJob,
     question_id: uuid.UUID,
@@ -671,15 +838,24 @@ def _build_stimulus_asset_rows(
     for candidate in _stimulus_candidates(q_data):
         stimulus_type = (candidate.get("stimulus_type") or candidate.get("type") or "figure").lower()
         asset_id = uuid.uuid4()
-        page_number = _source_page_number(candidate, _source_page_number(q_data, 0))
+        page_number = _source_page_number(
+            candidate,
+            candidate.get("_source_page_number", _source_page_number(q_data, 0)),
+        )
+        candidate_source_span_id = candidate.get("_source_span_id") or source_span_id
+        crop_path = candidate.get("_crop_path")
+        layout_json_path = candidate.get("_layout_json_path")
         payload = {
             "question_id": str(question_id),
             "question_job_id": str(job.id),
             "raw_asset_id": str(job.raw_asset_id) if job.raw_asset_id else None,
             "stimulus_type": stimulus_type,
             "source_page_number": page_number,
+            "source_span_id": str(candidate_source_span_id) if candidate_source_span_id else None,
+            "crop_path": crop_path,
+            "layout_json_path": layout_json_path,
             "title": candidate.get("title"),
-            "structured_data": candidate.get("structured_data") or candidate.get("data") or candidate,
+            "structured_data": candidate.get("structured_data") or candidate.get("data"),
             "render_hints": candidate.get("render_hints"),
         }
         stored = put_object(
@@ -701,7 +877,7 @@ def _build_stimulus_asset_rows(
             stimulus_type=stimulus_type,
             storage_path=stored.storage_path,
             source_page_number=page_number,
-            source_span_id=source_span_id,
+            source_span_id=candidate_source_span_id,
             title=candidate.get("title"),
             structured_data_jsonb=payload["structured_data"],
             render_hints_jsonb=payload["render_hints"],
@@ -942,6 +1118,24 @@ def _available_ocr_strategies(settings) -> list[str]:
     return available
 
 
+def _fallback_ocr_strategy(settings, failed_strategy: str) -> str | None:
+    """Choose the next OCR strategy after a provider failure.
+
+    Claude/Anthropic is preferred for fallback because it supports the fused
+    vision extraction path and tends to be more robust than small local VLMs.
+    """
+    failed = (failed_strategy or "").lower()
+    for candidate in ("anthropic", "deepseek", "ollama", "openai"):
+        if candidate == failed:
+            continue
+        try:
+            if candidate == _resolve_ocr_strategy(candidate, settings):
+                return candidate
+        except ValueError:
+            continue
+    return None
+
+
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     from app.llm.factory import get_provider
     from app.prompts.extract_prompt import build_extract_prompt
@@ -962,6 +1156,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     # Capture form metadata before pass1_json may be overwritten by LLM output
     form_meta = (job.pass1_json or {}).get("source_metadata", {})
     extract_root = None
+    stimulus_provider = provider
+    text_extraction_provider = provider
+    text_extraction_provider_name = job.provider_name
+    text_extraction_model_name = job.model_name
 
     if not raw_text and page_images:
         # ── OCR gate ─────────────────────────────────────────────────────
@@ -1010,10 +1208,25 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     },
                 }
                 await db.commit()
+                text_extraction_provider = get_provider(
+                    OCR_TEXT_EXTRACT_PROVIDER,
+                    base_url=settings.ollama_base_url,
+                    default_model=OCR_TEXT_EXTRACT_MODEL,
+                )
+                text_extraction_provider_name = OCR_TEXT_EXTRACT_PROVIDER
+                text_extraction_model_name = OCR_TEXT_EXTRACT_MODEL
             except Exception as e:
                 if settings.ocr_fallback:
-                    logger.warning("GLM-OCR failed (%s), falling back to Ollama VLM", e)
-                    resolved_strategy = "ollama"
+                    fallback_strategy = _fallback_ocr_strategy(settings, "glm")
+                    if fallback_strategy:
+                        logger.warning("GLM-OCR failed (%s), falling back to %s", e, fallback_strategy)
+                        resolved_strategy = fallback_strategy
+                    else:
+                        orch.fail("extracting", "ocr_error", f"GLM-OCR failed and no fallback is configured: {e}")
+                        job.status = "failed"
+                        job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                        await db.commit()
+                        return
                 else:
                     orch.fail("extracting", "ocr_error", f"GLM-OCR failed: {e}")
                     job.status = "failed"
@@ -1047,10 +1260,25 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     },
                 }
                 await db.commit()
+                text_extraction_provider = get_provider(
+                    OCR_TEXT_EXTRACT_PROVIDER,
+                    base_url=settings.ollama_base_url,
+                    default_model=OCR_TEXT_EXTRACT_MODEL,
+                )
+                text_extraction_provider_name = OCR_TEXT_EXTRACT_PROVIDER
+                text_extraction_model_name = OCR_TEXT_EXTRACT_MODEL
             except Exception as e:
                 if settings.ocr_fallback:
-                    logger.warning("DeepSeek OCR failed (%s), falling back to Ollama VLM", e)
-                    resolved_strategy = "ollama"
+                    fallback_strategy = _fallback_ocr_strategy(settings, "deepseek")
+                    if fallback_strategy:
+                        logger.warning("DeepSeek OCR failed (%s), falling back to %s", e, fallback_strategy)
+                        resolved_strategy = fallback_strategy
+                    else:
+                        orch.fail("extracting", "ocr_error", f"DeepSeek OCR failed and no fallback is configured: {e}")
+                        job.status = "failed"
+                        job.validation_errors_jsonb = [{"step": "ocr", "error": str(e)}]
+                        await db.commit()
+                        return
                 else:
                     orch.fail("extracting", "ocr_error", f"DeepSeek OCR failed: {e}")
                     job.status = "failed"
@@ -1069,6 +1297,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 base_url=settings.ollama_base_url if resolved_strategy == "ollama" else "",
                 default_model=vlm_model,
             )
+            stimulus_provider = vlm_provider
             orch.advance()
             job.status = "extracting"
             await db.commit()
@@ -1085,8 +1314,11 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 extract_root = extract_json_from_text(
                     vision_result.raw_text, resolved_strategy, vlm_model
                 )
+                prior_pass1 = job.pass1_json or {}
                 job.pass1_json = {
                     **extract_root,
+                    "_page_images": prior_pass1.get("_page_images", []),
+                    "_ocr_artifacts": prior_pass1.get("_ocr_artifacts", []),
                     "_llm_meta": {
                         "provider": resolved_strategy,
                         "model": vlm_model,
@@ -1133,18 +1365,33 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
         system, user = build_extract_prompt(raw_text[:100000], form_meta)
         try:
-            if _should_disable_ollama_thinking_for_extraction(job):
-                result = await provider.complete(
+            if _should_disable_thinking(text_extraction_provider_name, text_extraction_model_name):
+                result = await text_extraction_provider.complete(
                     system=system,
                     user=user,
+                    model=text_extraction_model_name,
                     max_tokens=16000,
                     disable_thinking=True,
                 )
             else:
-                result = await provider.complete(system=system, user=user, max_tokens=16000)
-            extract_root = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
+                result = await text_extraction_provider.complete(
+                    system=system,
+                    user=user,
+                    model=text_extraction_model_name,
+                    max_tokens=16000,
+                )
+            extract_root = extract_json_from_text(
+                result.raw_text,
+                text_extraction_provider_name,
+                text_extraction_model_name,
+            )
+            prior_pass1 = job.pass1_json or {}
             job.pass1_json = {
                 **extract_root,
+                "raw_text": raw_text,
+                "_page_images": prior_pass1.get("_page_images", []),
+                "_ocr_artifacts": prior_pass1.get("_ocr_artifacts", []),
+                "source_metadata": form_meta,
                 "_llm_meta": {
                     "provider": result.provider,
                     "model": result.model,
@@ -1181,6 +1428,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
     # Validate LLM-inferred question numbers for official batches
     all_errors: list[dict] = []
+    suspect_qnum_indices: set[int] = set()
     if job.content_origin == "official":
         qnum_warnings = _validate_question_numbers(questions_data, subject_code, module_code)
         if qnum_warnings:
@@ -1200,6 +1448,56 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     job.id, crosscheck_warnings,
                 )
                 all_errors.extend(crosscheck_warnings)
+                suspect_qnum_indices = {w["question_index"] for w in crosscheck_warnings if "question_index" in w}
+
+    # ---- Layout detection (enrichment, never a gate) ----
+    layout_data: dict[int, list] = {}
+    layout_paths: dict[int, str] = {}
+    page_images_data = (job.pass1_json or {}).get("_page_images", [])
+    layout_can_run = bool(
+        getattr(settings, "glm_ocr_model", None)
+        or getattr(settings, "anthropic_api_key", None)
+    )
+    if settings.layout_detection_enabled and page_images_data and layout_can_run:
+        try:
+            layout_data = await detect_layout(page_images_data, settings)
+            for page_index, regions in layout_data.items():
+                stored = put_object(
+                    "ocr_layout",
+                    {"job_id": job.id, "page_number": _page_number_for_region(job, page_index), "method": "vision_layout"},
+                    json.dumps(
+                        {
+                            "page_index": page_index,
+                            "page_number": _page_number_for_region(job, page_index),
+                            "regions": [asdict(r) for r in regions],
+                        },
+                        indent=2,
+                    ),
+                    filename="vision_layout.json",
+                    mime_type="application/json",
+                )
+                layout_paths[page_index] = stored.storage_path
+        except Exception as e:
+            logger.warning("Layout detection failed for job %s: %s", job.id, e)
+            layout_data, layout_paths = {}, {}
+
+    # ---- Per-job OCR diagnostics file ----
+    ocr_meta_for_diag = (job.pass1_json or {}).get("_ocr_meta")
+    if ocr_meta_for_diag:
+        try:
+            diag = put_object(
+                "ocr_diagnostics",
+                {"job_id": job.id, "page_number": 0},
+                json.dumps(ocr_meta_for_diag, indent=2),
+                filename="diagnostics.json",
+                mime_type="application/json",
+            )
+            job.pass1_json = {
+                **(job.pass1_json or {}),
+                "_ocr_meta": {**ocr_meta_for_diag, "diagnostics_path": diag.storage_path},
+            }
+        except Exception as e:
+            logger.warning("Diagnostics write failed for job %s: %s", job.id, e)
 
     # ---- Per-question loop ----
     created_question_ids: list[uuid.UUID] = []
@@ -1217,22 +1515,42 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         await db.commit()
 
         system, user = build_annotate_prompt(q_data)
-        try:
-            result = await provider.complete(system=system, user=user, max_tokens=8192)
-            annotate_json = normalize_annotation(
-                extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
-            )
-            # Hard-enforce domain nullability rules after LLM output
-            annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
-            pass2_meta_list.append({
+        annotate_json: dict | None = None
+        _last_err: Exception | None = None
+        for _attempt in range(3):
+            try:
+                result = await provider.complete(system=system, user=user, max_tokens=8192)
+                parsed = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
+                if not parsed:
+                    raise ValueError("LLM returned empty or un-parseable annotation JSON")
+                annotate_json = normalize_annotation(parsed)
+                annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
+                pass2_meta_list.append({
+                    "question_index": i,
+                    "provider": result.provider,
+                    "model": result.model,
+                    "latency_ms": result.latency_ms,
+                    "token_usage": getattr(result, "token_usage", None) or {},
+                })
+                break
+            except ValueError as _json_err:
+                _last_err = _json_err
+                logger.warning(
+                    "Annotation JSON parse failed (attempt %d/3) for question_index %d: %s",
+                    _attempt + 1, i, _json_err,
+                )
+                if _attempt < 2:
+                    await asyncio.sleep(0.3 * (2 ** _attempt))
+            except Exception as _exc:
+                _last_err = _exc
+                break
+        if annotate_json is None:
+            all_errors.append({
                 "question_index": i,
-                "provider": result.provider,
-                "model": result.model,
-                "latency_ms": result.latency_ms,
-                "token_usage": getattr(result, "token_usage", None) or {},
+                "step": "annotating",
+                "error": str(_last_err),
+                "source_question_number": q_data.get("source_question_number"),
             })
-        except Exception as e:
-            all_errors.append({"question_index": i, "step": "annotating", "error": str(e), "source_question_number": q_data.get("source_question_number")})
             continue
 
         # ---- Overlap check (unofficial/generated only) ----
@@ -1264,21 +1582,37 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             continue
 
         # ---- Persist ----
-        question_id = await _persist_single_question(
-            db=db,
-            job=job,
-            q_data=q_data,
-            annotate_json=annotate_json,
-            passage_text=shared_passage,
-            passage_group_id=passage_group_id,
-            overlaps=overlaps,
-            section_code=section_code,
-            question_index=i,
-        )
-        created_question_ids.append(question_id)
-
-        # ---- YAML export ----
-        _export_question(job, q_data, annotate_json, question_id)
+        try:
+            question_id = await _persist_single_question(
+                db=db,
+                job=job,
+                q_data=q_data,
+                annotate_json=annotate_json,
+                passage_text=shared_passage,
+                passage_group_id=passage_group_id,
+                overlaps=overlaps,
+                section_code=section_code,
+                question_index=i,
+                layout_data=layout_data,
+                layout_paths=layout_paths,
+                provider=stimulus_provider,
+                suspect_question_indices=suspect_qnum_indices,
+            )
+            created_question_ids.append(question_id)
+            _export_question(job, q_data, annotate_json, question_id)
+        except Exception as _persist_err:
+            logger.error(
+                "Persist failed for question_index %d (job %s): %s",
+                i, job.id, _persist_err,
+            )
+            await db.rollback()
+            all_errors.append({
+                "question_index": i,
+                "step": "persisting",
+                "error": str(_persist_err),
+                "source_question_number": q_data.get("source_question_number"),
+            })
+            continue
 
     # ---- Final job status ----
     if pass2_meta_list:
@@ -1393,6 +1727,8 @@ async def ingest_official_pdf(
 
     mime_type = _validate_upload_mime(file.content_type, {"application/pdf"})
     content = await _safe_read(file, MAX_FILE_SIZE)
+    if not content[:4] == b"%PDF":
+        raise HTTPException(status_code=422, detail="File does not appear to be a valid PDF (bad magic bytes)")
     source_subject_code, source_section_code, source_module_code = _normalize_source_metadata(
         source_subject_code,
         source_section_code,
@@ -1534,6 +1870,9 @@ async def ingest_unofficial_file(
     )
 
     asset_type = _asset_type_from_mime(mime_type)
+
+    if asset_type == "pdf" and not content[:4] == b"%PDF":
+        raise HTTPException(status_code=422, detail="File does not appear to be a valid PDF (bad magic bytes)")
 
     asset = QuestionAsset(
         id=asset_id,

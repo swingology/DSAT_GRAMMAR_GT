@@ -28,12 +28,13 @@ Upload an official PDF. Creates a `QuestionJob` and spawns a background pipeline
 | Field | Type | Required | Default |
 |---|---|---|---|
 | `file` | UploadFile | Yes | — |
-| `source_exam_code` | str | No | `""` |
-| `source_subject_code` | str | No | `""` |
-| `source_section_code` | str | No | `""` |
-| `source_module_code` | str | No | `""` |
+| `source_exam_code` | str | Yes | `""` |
+| `source_subject_code` | str | Yes | `""` |
+| `source_section_code` | str | Yes | `""` |
+| `source_module_code` | str | Yes | `""` |
 | `provider_name` | str | No | `ollama` |
 | `model_name` | str | No | `deepseek-v4-pro:cloud` |
+| `ocr_strategy` | str | No | `auto` |
 
 **Response:** `JobResponse`
 ```json
@@ -57,6 +58,7 @@ before extraction.
 | `file` | UploadFile | Yes | — |
 | `provider_name` | str | No | `ollama` |
 | `model_name` | str | No | `deepseek-v4-pro:cloud` |
+| `ocr_strategy` | str | No | `auto` |
 
 **Response:** `JobResponse`
 
@@ -71,8 +73,28 @@ Batch upload multiple unofficial assets.
 | `files` | list[UploadFile] | Yes |
 | `provider_name` | str | No |
 | `model_name` | str | No |
+| `ocr_strategy` | str | No |
 
 **Response:** `list[JobResponse]`
+
+---
+
+### `POST /ingest/text`
+Upload raw text content for processing.
+
+**Form data:**
+| Field | Type | Required | Default |
+|---|---|---|---|
+| `text` | str | Yes | — |
+| `content_origin` | str | No | `unofficial` |
+| `source_exam_code` | str | No | `""` |
+| `source_subject_code` | str | No | `""` |
+| `source_section_code` | str | No | `""` |
+| `source_module_code` | str | No | `""` |
+| `provider_name` | str | No | `ollama` |
+| `model_name` | str | No | `deepseek-v4-pro:cloud` |
+
+**Response:** `JobResponse`
 
 ---
 

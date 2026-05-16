@@ -30,10 +30,37 @@ def validate_question(question_data: dict, content_origin: str = "official") -> 
     if len(options) != 4:
         errors.append({"severity": "blocking", "field": "options", "message": f"Expected 4 options, got {len(options)}"})
 
+    # Each option must have a unique label from {A, B, C, D}
+    if len(options) == 4:
+        labels = [opt.get("label", "") for opt in options]
+        label_set = set(labels)
+        if label_set != {"A", "B", "C", "D"}:
+            errors.append({
+                "severity": "blocking",
+                "field": "options",
+                "message": f"Option labels must be exactly {{A, B, C, D}}, got {sorted(label_set or labels)}",
+            })
+        elif len(labels) != len(label_set):
+            errors.append({
+                "severity": "blocking",
+                "field": "options",
+                "message": f"Duplicate option labels: {sorted(labels)}",
+            })
+
     # Valid correct answer label
     correct = question_data.get("correct_option_label", "")
     if correct not in ("A", "B", "C", "D"):
         errors.append({"severity": "blocking", "field": "correct_option_label", "message": f"Invalid correct_option_label: {correct}"})
+
+    # correct_option_label must actually exist among the option rows
+    if correct in ("A", "B", "C", "D"):
+        actual_labels = {opt.get("label", "") for opt in options}
+        if correct not in actual_labels:
+            errors.append({
+                "severity": "blocking",
+                "field": "correct_option_label",
+                "message": f"correct_option_label '{correct}' is not present in the option labels {sorted(actual_labels)}",
+            })
 
     # Explanation presence
     if not question_data.get("explanation_short") and not question_data.get("explanation_full"):

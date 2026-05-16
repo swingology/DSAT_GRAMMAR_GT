@@ -26,6 +26,25 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     configure_logging(level=settings.log_level, json_output=settings.log_json)
     _warn_if_insecure_keys(settings)
+    try:
+        from sqlalchemy import update
+        from app.database import async_session
+        from app.models.db import QuestionJob
+        _STUCK_STATUSES = ["parsing", "extracting", "annotating", "validating", "overlap_checking", "generating"]
+        async with async_session() as _db:
+            _result = await _db.execute(
+                update(QuestionJob)
+                .where(QuestionJob.status.in_(_STUCK_STATUSES))
+                .values(
+                    status="failed",
+                    validation_errors_jsonb=[{"step": "startup_recovery", "error": "Server restarted while job was in-progress"}],
+                )
+            )
+            await _db.commit()
+            if _result.rowcount:
+                logger.warning("Startup: marked %d stuck job(s) as failed", _result.rowcount)
+    except Exception as _startup_err:
+        logger.warning("Startup recovery skipped (DB unavailable): %s", _startup_err)
     yield
     from app.database import engine
     from app.llm.factory import close_all_providers

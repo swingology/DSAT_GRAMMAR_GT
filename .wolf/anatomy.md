@@ -1,10 +1,12 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-15T16:20:42.519Z
-> Files: 672 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-16T05:35:23.289Z
+> Files: 690 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
 
+- `generic-rolling-parnas.md` — Crop / Layout Provenance Implementation Plan (~3582 tok)
+- `vivid-giggling-riddle.md` — Plan: Benchmark Markdown Reports + SUMMARY.md Auto-Update (~959 tok)
 - `wiggly-shimmying-leaf.md` — Plan: OCR Strategy Benchmark Endpoint (~1287 tok)
 
 ## ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/
@@ -21,9 +23,9 @@
 - `.gitignore` — Git ignore rules (~9 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~13528 tok)
-- `CLAUDE.md` — OpenWolf (~225 tok)
-- `DEBUG_LOG.md` — Debug Log (~8566 tok)
+- `CHANGELOG.md` — CHANGELOG (~17685 tok)
+- `CLAUDE.md` — OpenWolf (~274 tok)
+- `DEBUG_LOG.md` — Debug Log (~11588 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
@@ -86,6 +88,7 @@
 - `.python-version` (~2 tok)
 - `alembic.ini` — A generic, single database configuration. (~1327 tok)
 - `pyproject.toml` — Python project configuration (~217 tok)
+- `run_ocr_benchmark.py` — Standalone OCR benchmark runner. (~8522 tok)
 - `test_ocr_live.py` — load_image_as_b64, test_ollama, test_anthropic, test_openai (~2654 tok)
 
 ## backend/.claude/
@@ -875,8 +878,8 @@
 
 ## backend/app/
 
-- `config.py` — Settings: admin_api_key_list, student_api_key_list, get_settings (~597 tok)
-- `main.py` — lifespan (~487 tok)
+- `config.py` — Settings: admin_api_key_list, student_api_key_list, get_settings (~721 tok)
+- `main.py` — lifespan (~757 tok)
 
 ## backend/app/llm/
 
@@ -896,28 +899,46 @@
 
 - `json_parser.py` — Robust JSON extraction from LLM output text. (~2178 tok)
 - `ocr.py` — DeepSeek OCR-2 client — sends images to local vLLM/LMDeploy server, returns text. (~697 tok)
-- `pdf_parser.py` — PDF text extraction using pymupdf (fitz). (~429 tok)
+- `pdf_parser.py` — PDF text extraction using pymupdf (fitz). (~471 tok)
 
 ## backend/app/pipeline/
 
+- `option_hydration.py` — Utilities for populating QuestionOption annotation fields from annotate_json. (~636 tok)
 - `overlap.py` — Overlap detection between unofficial/generated questions and official questions. (~1577 tok)
-- `validator.py` — Validation rules from PRD §15. (~2218 tok)
+- `validator.py` — Validation rules from PRD §15. (~2538 tok)
 
 ## backend/app/prompts/
 
-- `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~900 tok)
+- `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~1186 tok)
+- `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
+- `stimulus_prompt.py` — Vision prompt for annotating cropped stimulus regions (tables, charts, figures). (~543 tok)
 
 ## backend/app/routers/
 
-- `admin.py` — API: 5 endpoints (~6294 tok)
+- `admin.py` — API: 5 endpoints (~6813 tok)
+- `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14684 tok)
 - `generate.py` — API: 3 endpoints (~3505 tok)
-- `ingest.py` (~20441 tok)
+- `ingest.py` (~27588 tok)
 - `student.py` — API: 7 endpoints (~1956 tok)
+
+## backend/app/storage/
+
+- `crop_detector.py` — Layout detection, region matching, and image cropping for page-level provenance. (~3185 tok)
+- `yaml_export.py` — YAML export for persisted questions. (~1354 tok)
 
 ## backend/benchmark_results/
 
 - `2026-05-11_pt1_mod01_page3.md` — OCR Benchmark — PT1 Mod01 Page 3 (~1445 tok)
-- `SUMMARY.md` — OCR Ingestion Benchmark — Summary (~1173 tok)
+- `2026-05-15_1438_benchmark_perpage_qwen3vl.md` — OCR Benchmark: glm-ocr + qwen3-vl:235b (per-page extraction) (~375 tok)
+- `2026-05-15_1444_benchmark_perpage_deepseekv4.md` — OCR Benchmark: glm-ocr + deepseek-v4-pro (per-page extraction) (~364 tok)
+- `2026-05-15_1448_benchmark_fulltext_qwen3vl.md` — OCR Benchmark: glm-ocr + qwen3-vl:235b (full-text extraction) (~396 tok)
+- `2026-05-15_1449_benchmark_fulltext_deepseekv4_truncated.md` — OCR Benchmark: glm-ocr + deepseek-v4-pro (full-text, 16K token limit — TRUNCATED) (~366 tok)
+- `2026-05-15_1456_benchmark_fulltext_deepseekv4.md` — OCR Benchmark: glm-ocr + deepseek-v4-pro (full-text extraction, 32K tokens) (~489 tok)
+- `SUMMARY.md` — OCR Ingestion Benchmark — Summary (~2052 tok)
+
+## backend/config/
+
+- `storage_layout.yaml` — Local object-store layout used to mimic Supabase Storage/S3 during local (~1710 tok)
 
 ## backend/migrations/versions/
 
@@ -928,11 +949,14 @@
 
 - `conftest.py` — Force test env before any app imports — use assignment, not setdefault (~385 tok)
 - `test_admin_router.py` — test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, test_admin_re (~556 tok)
-- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 11 more (~12094 tok)
-- `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~524 tok)
-- `test_ingest_router.py` — test_resolve_provider_and_model_uses_default_ollama_model, test_resolve_provider_and_model_respects_ (~2717 tok)
+- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 11 more (~12183 tok)
+- `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~601 tok)
+- `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
+- `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)
+- `test_ingest_router.py` — test_resolve_provider_and_model_uses_default_ollama_model, test_resolve_provider_and_model_respects_ (~8845 tok)
 - `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
 - `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~2181 tok)
+- `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~8426 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~466 tok)
 
 ## docs/PRD/

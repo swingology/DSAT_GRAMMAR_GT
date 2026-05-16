@@ -134,3 +134,4 @@ Fused VLM (tested, failed):
 | Full module — glm-ocr + qwen3-vl:235b (full-text) | [`2026-05-15_1448_benchmark_fulltext_qwen3vl.md`](2026-05-15_1448_benchmark_fulltext_qwen3vl.md) |
 | Full module — glm-ocr + deepseek-v4-pro (full-text, 16K — truncated) | [`2026-05-15_1449_benchmark_fulltext_deepseekv4_truncated.md`](2026-05-15_1449_benchmark_fulltext_deepseekv4_truncated.md) |
 | Full module — glm-ocr + deepseek-v4-pro (full-text, 32K) | [`2026-05-15_1456_benchmark_fulltext_deepseekv4.md`](2026-05-15_1456_benchmark_fulltext_deepseekv4.md) |
+| Test 1 Sec01 Mod01 — pymupdf | [`2026-05-15_1603_benchmark_pymupdf_embedded_text_extraction_determi.md`](2026-05-15_1603_benchmark_pymupdf_embedded_text_extraction_determi.md) |

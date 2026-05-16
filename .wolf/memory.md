@@ -3,6 +3,7 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 | 16:14 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/feedback_debug-log-workflow.md | — | ~207 |
+| 23:30 | Wired stimulus asset pipeline end-to-end (7 gaps) | extract_prompt.py, crop_detector.py, storage_layout.yaml, stimulus_prompt.py (new), ingest.py, admin.py, yaml_export.py, CHANGELOG.md | 186 tests pass |
 | session | Exhaustive gap-fill: grammar v7 +B.3/B.4 rules for 5 promoted keys, 2 new syntactic traps, 5 failure modes, checks 26–29, D.3 rule 17; reading v2 +figurative WIC key, polarity_resolution mech, 5 TSP verbs, 3 passage archs, CoE-T vs CID disambiguation, false_concession_trap, causal_specification | rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md | success | ~110k |
 | 13:39 | Created plan_benchmarking_backend.md — benchmark dir plan with runners + HTMX dashboard | plan_benchmarking_backend.md | ~600 |
 | 16:14 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_backend-option-versioning.md | — | ~247 |
@@ -409,6 +410,174 @@
 | 09:20 | Session end: 10 writes across 3 files (rules_agent_dsat_grammar_ingestion_generation_v7.md, docker-compose.yml, INGESTION_README.md) | 11 reads | ~66638 tok |
 
 ## Session: 2026-05-15 11:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:07 | Created ../.claude/plans/generic-rolling-parnas.md | — | ~2801 |
+| 12:08 | Session end: 1 writes across 1 files (generic-rolling-parnas.md) | 28 reads | ~37697 tok |
+| 12:09 | Session end: 1 writes across 1 files (generic-rolling-parnas.md) | 28 reads | ~37697 tok |
+| 12:19 | Created ../.claude/plans/generic-rolling-parnas.md | — | ~2985 |
+| 12:28 | Session end: 2 writes across 1 files (generic-rolling-parnas.md) | 29 reads | ~40895 tok |
+| 12:28 | Session end: 2 writes across 1 files (generic-rolling-parnas.md) | 29 reads | ~40895 tok |
+| 12:28 | Session end: 2 writes across 1 files (generic-rolling-parnas.md) | 29 reads | ~40895 tok |
+| 12:32 | Session end: 2 writes across 1 files (generic-rolling-parnas.md) | 29 reads | ~40895 tok |
+| 12:33 | Session end: 2 writes across 1 files (generic-rolling-parnas.md) | 29 reads | ~40895 tok |
+| 12:35 | Session end: 2 writes across 1 files (generic-rolling-parnas.md) | 29 reads | ~40895 tok |
+| 12:36 | Created ../.claude/plans/generic-rolling-parnas.md | — | ~3821 |
+| 12:40 | Edited backend/config/storage_layout.yaml | 7→12 lines | ~92 |
+| 12:40 | Edited backend/app/config.py | 2→5 lines | ~71 |
+| 12:40 | Created backend/app/prompts/layout_prompt.py | — | ~670 |
+| 12:41 | Created backend/app/storage/crop_detector.py | — | ~3035 |
+| 12:42 | Edited backend/app/routers/ingest.py | added 1 import(s) | ~73 |
+| 12:42 | Edited backend/app/routers/ingest.py | modified _build_question_source_span() | ~431 |
+| 12:42 | Edited backend/app/routers/ingest.py | modified _persist_single_question() | ~104 |
+| 12:42 | Edited backend/app/routers/ingest.py | expanded (+14 lines) | ~290 |
+| 12:43 | Edited backend/app/routers/ingest.py | modified items() | ~517 |
+| 12:43 | Edited backend/app/routers/ingest.py | added 1 import(s) | ~52 |
+| 12:43 | Edited backend/app/routers/ingest.py | 11→13 lines | ~130 |
+
+## Session: 2026-05-15 12:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:47 | Created backend/tests/test_crop_detector.py | — | ~3790 |
+| 12:48 | Edited backend/tests/test_crop_detector.py | modified test_parse_region_list_valid_types() | ~221 |
+| 12:48 | Edited backend/tests/test_crop_detector.py | 21→21 lines | ~259 |
+| 12:48 | Edited backend/tests/test_crop_detector.py | 11→11 lines | ~144 |
+| 12:48 | Edited backend/tests/test_ingest_router.py | modified test_benchmark_get_returns_404_for_unknown_group() | ~939 |
+| 12:49 | Edited backend/tests/test_pipeline.py | 10→10 lines | ~143 |
+| 12:49 | Edited backend/tests/test_pipeline.py | 6→6 lines | ~134 |
+| 12:50 | Edited backend/tests/test_pipeline.py | 4→4 lines | ~80 |
+| 12:50 | Edited backend/tests/test_backend_regressions.py | inline fix | ~68 |
+| 12:50 | Edited backend/tests/test_backend_regressions.py | 10→11 lines | ~111 |
+| 12:51 | Edited backend/tests/test_backend_regressions.py | 6→6 lines | ~89 |
+| 12:54 | Edited backend/tests/test_backend_regressions.py | 5→5 lines | ~79 |
+| 12:54 | Edited backend/tests/test_backend_regressions.py | 3→3 lines | ~53 |
+| 12:55 | Session end: 13 writes across 4 files (test_crop_detector.py, test_ingest_router.py, test_pipeline.py, test_backend_regressions.py) | 7 reads | ~57300 tok |
+| 12:56 | Edited CHANGELOG.md | expanded (+76 lines) | ~1177 |
+| 12:56 | Session end: 14 writes across 5 files (test_crop_detector.py, test_ingest_router.py, test_pipeline.py, test_backend_regressions.py, CHANGELOG.md) | 8 reads | ~72089 tok |
+| 13:38 | Edited backend/app/routers/ingest.py | expanded (+10 lines) | ~294 |
+| 13:38 | Edited backend/tests/test_ingest_router.py | modified test_detect_layout_returns_empty_on_failure() | ~582 |
+| 13:39 | Session end: 16 writes across 6 files (test_crop_detector.py, test_ingest_router.py, test_pipeline.py, test_backend_regressions.py, CHANGELOG.md) | 12 reads | ~77918 tok |
+| 13:42 | Session end: 16 writes across 6 files (test_crop_detector.py, test_ingest_router.py, test_pipeline.py, test_backend_regressions.py, CHANGELOG.md) | 12 reads | ~77918 tok |
+| 13:44 | Session end: 16 writes across 6 files (test_crop_detector.py, test_ingest_router.py, test_pipeline.py, test_backend_regressions.py, CHANGELOG.md) | 12 reads | ~78054 tok |
+
+## Session: 2026-05-15 13:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:14 | Created backend/benchmark_results/SUMMARY.md | — | ~1752 |
+| 14:14 | Session end: 1 writes across 1 files (SUMMARY.md) | 3 reads | ~3051 tok |
+| 14:25 | Created backend/run_ocr_benchmark.py | — | ~4395 |
+| 14:34 | Created backend/run_ocr_benchmark.py | — | ~5228 |
+| 14:44 | Edited backend/run_ocr_benchmark.py | modified get() | ~436 |
+| 14:50 | Edited backend/run_ocr_benchmark.py | 4→4 lines | ~51 |
+| 14:57 | Created backend/benchmark_results/SUMMARY.md | — | ~2036 |
+| 14:58 | Ran OCR benchmark: glm-ocr + qwen3-vl:235b full-module (full-text extraction) | benchmark_results/2026-05-15_1448_benchmark.json | 32/33 questions, 32 with A-D, Q33 missing, 219s total | ~8000 |
+| 14:58 | Ran OCR benchmark: glm-ocr + deepseek-v4-pro full-module (full-text, 32K tok) | benchmark_results/2026-05-15_1456_benchmark.json | 32/33 questions, missing Q14-16/Q18, 375s total | ~8000 |
+| 14:58 | Updated SUMMARY.md with strategies 10-11 and finding #4 (qwen3-vl outperforms deepseek-v4-pro on full-module) | benchmark_results/SUMMARY.md | complete | ~1500 |
+| 14:57 | Session end: 6 writes across 2 files (SUMMARY.md, run_ocr_benchmark.py) | 5 reads | ~41371 tok |
+| 15:02 | Created backend/benchmark_results/2026-05-15_1438_benchmark_perpage_qwen3vl.md | — | ~400 |
+| 15:02 | Created backend/benchmark_results/2026-05-15_1444_benchmark_perpage_deepseekv4.md | — | ~388 |
+| 15:02 | Created backend/benchmark_results/2026-05-15_1448_benchmark_fulltext_qwen3vl.md | — | ~423 |
+| 15:03 | Created backend/benchmark_results/2026-05-15_1449_benchmark_fulltext_deepseekv4_truncated.md | — | ~390 |
+| 15:03 | Created backend/benchmark_results/2026-05-15_1456_benchmark_fulltext_deepseekv4.md | — | ~521 |
+| 15:03 | Edited backend/benchmark_results/SUMMARY.md | 7→10 lines | ~352 |
+| 15:03 | Session end: 12 writes across 7 files (SUMMARY.md, run_ocr_benchmark.py, 2026-05-15_1438_benchmark_perpage_qwen3vl.md, 2026-05-15_1444_benchmark_perpage_deepseekv4.md, 2026-05-15_1448_benchmark_fulltext_qwen3vl.md) | 5 reads | ~44289 tok |
+| 15:04 | Session end: 12 writes across 7 files (SUMMARY.md, run_ocr_benchmark.py, 2026-05-15_1438_benchmark_perpage_qwen3vl.md, 2026-05-15_1444_benchmark_perpage_deepseekv4.md, 2026-05-15_1448_benchmark_fulltext_qwen3vl.md) | 5 reads | ~44289 tok |
+| 15:05 | Session end: 12 writes across 7 files (SUMMARY.md, run_ocr_benchmark.py, 2026-05-15_1438_benchmark_perpage_qwen3vl.md, 2026-05-15_1444_benchmark_perpage_deepseekv4.md, 2026-05-15_1448_benchmark_fulltext_qwen3vl.md) | 5 reads | ~44289 tok |
+| 15:06 | Edited backend/app/config.py | 2→2 lines | ~37 |
+| 15:06 | Edited backend/tests/test_config.py | 2→2 lines | ~42 |
+| 15:07 | Session end: 14 writes across 9 files (SUMMARY.md, run_ocr_benchmark.py, 2026-05-15_1438_benchmark_perpage_qwen3vl.md, 2026-05-15_1444_benchmark_perpage_deepseekv4.md, 2026-05-15_1448_benchmark_fulltext_qwen3vl.md) | 9 reads | ~50340 tok |
+| 15:07 | Session end: 14 writes across 9 files (SUMMARY.md, run_ocr_benchmark.py, 2026-05-15_1438_benchmark_perpage_qwen3vl.md, 2026-05-15_1444_benchmark_perpage_deepseekv4.md, 2026-05-15_1448_benchmark_fulltext_qwen3vl.md) | 9 reads | ~50340 tok |
+| 15:07 | Session end: 14 writes across 9 files (SUMMARY.md, run_ocr_benchmark.py, 2026-05-15_1438_benchmark_perpage_qwen3vl.md, 2026-05-15_1444_benchmark_perpage_deepseekv4.md, 2026-05-15_1448_benchmark_fulltext_qwen3vl.md) | 9 reads | ~50340 tok |
+| 15:10 | Session end: 14 writes across 9 files (SUMMARY.md, run_ocr_benchmark.py, 2026-05-15_1438_benchmark_perpage_qwen3vl.md, 2026-05-15_1444_benchmark_perpage_deepseekv4.md, 2026-05-15_1448_benchmark_fulltext_qwen3vl.md) | 9 reads | ~50340 tok |
+
+## Session: 2026-05-15 15:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:18 | Created ../.claude/plans/vivid-giggling-riddle.md | — | ~1023 |
+| 15:20 | Edited backend/run_ocr_benchmark.py | 16→17 lines | ~215 |
+| 15:20 | Edited backend/run_ocr_benchmark.py | modified generate_markdown_report() | ~2668 |
+| 15:21 | Edited backend/run_ocr_benchmark.py | expanded (+27 lines) | ~485 |
+| 15:21 | Edited backend/run_ocr_benchmark.py | removed 15 lines | ~18 |
+| 15:22 | Edited backend/run_ocr_benchmark.py | expanded (+6 lines) | ~283 |
+| 15:24 | Session end: 6 writes across 2 files (vivid-giggling-riddle.md, run_ocr_benchmark.py) | 11 reads | ~45894 tok |
+
+## Session: 2026-05-15 15:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:29 | Edited backend/tests/test_ingest_router.py | modified test_resolve_ocr_strategy_explicit_glm() | ~4155 |
+| 15:29 | Edited backend/run_ocr_benchmark.py | added 1 import(s) | ~41 |
+| 15:30 | Edited backend/tests/test_ingest_router.py | modified test_stimulus_candidates_from_shorthand_keys() | ~196 |
+
+## Session: 2026-05-15 15:31
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:31 | Edited backend/run_ocr_benchmark.py | modified _parse_questions_from_text() | ~1299 |
+| 15:32 | Edited backend/run_ocr_benchmark.py | modified _parse_questions_from_text() | ~795 |
+| 15:38 | Session end: 2 writes across 1 files (run_ocr_benchmark.py) | 0 reads | ~2094 tok |
+| 15:38 | Edited backend/run_ocr_benchmark.py | modified enumerate() | ~201 |
+| 15:50 | Edited backend/app/config.py | 3→6 lines | ~62 |
+| 15:50 | Edited backend/run_ocr_benchmark.py | modified is_absolute() | ~89 |
+| 15:50 | Edited CLAUDE.md | 9→11 lines | ~139 |
+| 16:03 | Edited backend/run_ocr_benchmark.py | modified start() | ~28 |
+| 16:04 | Edited backend/run_ocr_benchmark.py | 4→9 lines | ~126 |
+| 21:26 | Session end: 8 writes across 3 files (run_ocr_benchmark.py, config.py, CLAUDE.md) | 4 reads | ~12069 tok |
+| 21:35 | Session end: 8 writes across 3 files (run_ocr_benchmark.py, config.py, CLAUDE.md) | 26 reads | ~52966 tok |
+
+## Session: 2026-05-16 21:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:59 | Edited backend/app/prompts/extract_prompt.py | expanded (+14 lines) | ~452 |
+| 21:59 | Edited backend/app/prompts/extract_prompt.py | 7→9 lines | ~211 |
+| 21:59 | Edited backend/app/storage/crop_detector.py | modified match_stimulus_regions_for_question() | ~188 |
+| 21:59 | Edited backend/app/storage/crop_detector.py | modified crop_and_store() | ~48 |
+| 21:59 | Edited backend/app/storage/crop_detector.py | 4→4 lines | ~24 |
+| 22:00 | Edited backend/config/storage_layout.yaml | expanded (+15 lines) | ~174 |
+| 22:00 | Edited backend/config/storage_layout.yaml | 6→11 lines | ~91 |
+| 22:00 | Created backend/app/prompts/stimulus_prompt.py | — | ~543 |
+| 22:00 | Edited backend/app/routers/ingest.py | inline fix | ~38 |
+| 22:00 | Edited backend/app/routers/ingest.py | modified _stimulus_kind() | ~459 |
+| 22:00 | Edited backend/app/routers/ingest.py | modified _persist_single_question() | ~109 |
+| 22:01 | Edited backend/app/routers/ingest.py | modified isinstance() | ~1176 |
+| 22:01 | Edited backend/app/routers/ingest.py | 13→14 lines | ~134 |
+| 22:01 | Edited backend/app/routers/admin.py | 4→5 lines | ~58 |
+| 22:01 | Edited backend/app/routers/admin.py | modified get_stimulus_assets() | ~286 |
+| 22:01 | Edited backend/app/storage/yaml_export.py | modified get() | ~220 |
+| 22:02 | Session end: 16 writes across 7 files (extract_prompt.py, crop_detector.py, storage_layout.yaml, stimulus_prompt.py, ingest.py) | 39 reads | ~81976 tok |
+| 22:04 | Edited CHANGELOG.md | expanded (+62 lines) | ~936 |
+| 22:04 | Edited DEBUG_LOG.md | expanded (+93 lines) | ~2287 |
+| 22:04 | Session end: 18 writes across 9 files (extract_prompt.py, crop_detector.py, storage_layout.yaml, stimulus_prompt.py, ingest.py) | 40 reads | ~93996 tok |
+| 22:05 | Session end: 18 writes across 9 files (extract_prompt.py, crop_detector.py, storage_layout.yaml, stimulus_prompt.py, ingest.py) | 40 reads | ~93996 tok |
+| 22:08 | Session end: 18 writes across 9 files (extract_prompt.py, crop_detector.py, storage_layout.yaml, stimulus_prompt.py, ingest.py) | 40 reads | ~96124 tok |
+| 22:08 | Session end: 18 writes across 9 files (extract_prompt.py, crop_detector.py, storage_layout.yaml, stimulus_prompt.py, ingest.py) | 41 reads | ~96124 tok |
+| 22:15 | Edited backend/app/pipeline/validator.py | modified len() | ~474 |
+| 22:15 | Edited backend/app/pipeline/option_hydration.py | 7→10 lines | ~111 |
+| 22:16 | Edited backend/app/pipeline/option_hydration.py | modified option_analyses_by_label() | ~171 |
+| 22:16 | Edited backend/app/parsers/pdf_parser.py | modified parse_pdf() | ~105 |
+| 22:16 | Edited backend/app/routers/ingest.py | modified _persist_single_question() | ~125 |
+| 22:16 | Edited backend/app/routers/ingest.py | modified all() | ~260 |
+| 22:16 | Edited backend/app/routers/ingest.py | 21→23 lines | ~323 |
+| 22:16 | Edited backend/app/routers/ingest.py | modified range() | ~532 |
+| 22:16 | Edited backend/app/routers/ingest.py | modified error() | ~357 |
+| 22:17 | Edited backend/app/routers/ingest.py | 7→9 lines | ~133 |
+| 22:17 | Edited backend/app/routers/ingest.py | 18→21 lines | ~182 |
+| 22:17 | Edited backend/app/main.py | modified lifespan() | ~316 |
+| 22:17 | Edited backend/app/routers/admin.py | modified force_fail_job() | ~255 |
+| 22:17 | Edited backend/app/routers/dashboard.py | modified dashboard() | ~39 |
+| 22:17 | Edited backend/app/routers/dashboard.py | modified review_queue_page() | ~45 |
+| 22:21 | Edited DEBUG_LOG.md | modified returns() | ~981 |
+| 22:21 | Session end: 34 writes across 14 files (extract_prompt.py, crop_detector.py, storage_layout.yaml, stimulus_prompt.py, ingest.py) | 43 reads | ~123213 tok |
+| 22:25 | Edited backend/tests/test_dashboard_router.py | modified test_dashboard_page_loads() | ~185 |
+| 22:27 | Edited backend/app/main.py | modified warning() | ~270 |
+| 22:35 | Edited backend/tests/test_pipeline.py | modified mock_extract_json() | ~210 |
+
+## Session: 2026-05-16 22:36
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|

@@ -5,11 +5,14 @@ import base64
 import fitz  # pymupdf
 
 
-def parse_pdf(path: str) -> dict:
+def parse_pdf(path: str, max_pages: int = 100) -> dict:
     """Extract text and images from a PDF file.
     Returns: {"pages": [{"page_number": int, "text": str, "images": [{"index": int, "b64": str}]}]}
     """
     doc = fitz.open(str(path))
+    if len(doc) > max_pages:
+        doc.close()
+        raise ValueError(f"PDF has {len(doc)} pages; limit is {max_pages}")
     pages = []
     for page_num, page in enumerate(doc):
         text = page.get_text("text")

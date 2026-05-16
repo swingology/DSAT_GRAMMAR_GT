@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
 
+    # Official test data
+    official_test_verbal_dir: str = "../TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL"
+
     # Storage
     raw_asset_storage_backend: str = "local"
     local_archive_mirror: str = "./archive"

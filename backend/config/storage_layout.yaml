@@ -104,12 +104,32 @@ object_kinds:
     db_table: question_source_spans
     db_path_column: crop_path
     mime_types: ["image/png", "image/jpeg"]
+  table_crop:
+    bucket: page_crops
+    db_table: question_source_spans
+    db_path_column: crop_path
+    mime_types: ["image/png", "image/jpeg"]
+  chart_crop:
+    bucket: page_crops
+    db_table: question_source_spans
+    db_path_column: crop_path
+    mime_types: ["image/png", "image/jpeg"]
+  figure_crop:
+    bucket: page_crops
+    db_table: question_source_spans
+    db_path_column: crop_path
+    mime_types: ["image/png", "image/jpeg"]
   table_asset:
     bucket: stimulus_assets
     db_table: question_stimulus_assets
     db_path_column: storage_path
     mime_types: ["application/json"]
   chart_asset:
+    bucket: stimulus_assets
+    db_table: question_stimulus_assets
+    db_path_column: storage_path
+    mime_types: ["application/json"]
+  figure_asset:
     bucket: stimulus_assets
     db_table: question_stimulus_assets
     db_path_column: storage_path
@@ -123,6 +143,11 @@ object_kinds:
     bucket: ocr_artifacts
     db_table: question_source_spans
     db_path_column: layout_json_path
+    mime_types: ["application/json"]
+  ocr_diagnostics:
+    bucket: ocr_artifacts
+    db_table: question_source_spans
+    db_path_column: diagnostics_jsonb
     mime_types: ["application/json"]
 
 postgres_links:

@@ -1,5 +1,131 @@
 # Debug Log
 
+## 2026-05-15 - extract_json_from_text Fragility Audit
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b and add OCR benchmarks
+
+### Findings
+
+1. **High:** No validation that parsed dict matches expected shape — function returns *any* `dict`. If the LLM outputs `{"error": "rate limited", "retry_after": 30}`, that passes as valid extraction output. Downstream code (`_normalize_extracted_questions`, etc.) checks for expected keys, but by then the pipeline has committed to a bad parse and produces zero questions with no clear error explaining why.
+   - `backend/app/parsers/json_parser.py:155-158`
+
+2. **High:** Trailing comma repair only activates for Ollama/Kimi — `_repair_json_like_object` strips trailing commas (line 69), but this path only runs when `provider_name=="ollama"` or `"kimi" in model_key` (line 150). If Anthropic or OpenAI returns trailing commas (rare but possible), the default strategy fails with `ValueError` instead of attempting repair.
+   - `backend/app/parsers/json_parser.py:69, 150`
+
+3. **High:** `ValueError` on failure has no recovery path in any caller — line 159 raises `ValueError("No valid JSON found in text")` with no context about what strategies were tried or what the input looked like. The `@with_retry` decorator only covers network errors; `ValueError` is not retryable. Callers either kill the entire job (Pass 1) or permanently skip the question (Pass 2).
+   - `backend/app/parsers/json_parser.py:159`, `backend/app/llm/retry.py:37-50`, `backend/app/routers/ingest.py:1206-1227, 1381-1395`
+
+4. **Medium:** `_extract_first_braced_candidate` returns only the first JSON object — if the LLM outputs multiple separate JSON objects (e.g., two extraction results), only the first is extracted and the rest are silently lost. No check that the extracted object contains expected keys like `"questions"`.
+   - `backend/app/parsers/json_parser.py:21-49`
+
+5. **Medium:** Reasoning wrapper stripper is regex-based and fragile — `_strip_reasoning_wrappers` uses a non-greedy `re.sub` pattern that matches the shortest span between think tags. If an LLM emits nested thinking blocks or multiple separate blocks, only the first is stripped. Also, `<thinking>` tags are not caught — the pattern only matches the exact `<think>...</think>` form (despite the case-insensitive flag on the regex, the tag name itself must be `think`).
+   - `backend/app/parsers/json_parser.py:52-57`
+
+6. **Medium:** `_quote_bare_keys` regex can produce false positives — the pattern `([{,]\s*)([A-Za-z_][A-Za-z0-9_\-]*)(\s*:)` quotes any word before a colon after `{` or `,`. Already-quoted keys produce `""key"":` (harmless — `json.loads` accepts it), but edge cases like `{, key: val}` produce broken JSON.
+   - `backend/app/parsers/json_parser.py:74`
+
+7. **Low:** `extract_json_array_from_text` has zero test coverage — the function exists (lines 162-206) and is exported but has no direct tests. It reuses the same bracket-counting approach and has the same nested-brace fragility.
+   - `backend/app/parsers/json_parser.py:162-206`, `backend/tests/test_parsers.py`
+
+8. **Low:** Only 6 direct tests for `extract_json_from_text` — coverage misses: trailing commas with non-Ollama provider, `_quote_bare_keys` false positives, multiple JSON objects in output, nested think blocks or `<thinking>` tags, partially valid JSON (missing closing brace), very large outputs, and the false-positive dict case (`{"error": "rate limited"}`).
+   - `backend/tests/test_parsers.py:12-80`
+
+---
+
+## 2026-05-15 - Ingestion Workflow Gap Audit (Error Handling, Data Integrity, Security)
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b and add OCR benchmarks
+
+### Findings
+
+#### Error Handling & Recovery
+
+1. **Critical:** Malformed LLM JSON is never retried — `ValueError` from `extract_json_from_text` kills the job or skips the question permanently. The `@with_retry` decorator only covers network errors (TimeoutException, ConnectionError, HTTP 429/5xx). A model that returns syntactically invalid JSON never gets a second chance.
+   - `backend/app/parsers/json_parser.py:159`, `backend/app/llm/retry.py:37-50`, `backend/app/routers/ingest.py:1206-1227`
+
+2. **Critical:** No stuck-job recovery — if the process crashes or an unhandled exception kills the `asyncio.create_task`, the `QuestionJob` stays in a non-terminal state ("annotating", "extracting") forever. No reaper, no startup scan, no timeout. `_log_task_exception` only logs; it cannot update the job's DB row.
+   - `backend/app/routers/ingest.py:37-39, 1603`
+
+3. **High:** No savepoints or rollback — `db.flush()` calls in `_persist_single_question` (3 flushes at lines 495, 512, 576) have no savepoint wrapping. If the second flush fails (e.g., constraint violation), the session is dirty and the entire pipeline dies. No `db.rollback()` exists anywhere in the codebase.
+   - `backend/app/routers/ingest.py:495, 512, 576`
+
+4. **Medium:** Object storage I/O errors unhandled — `path.write_bytes(data)` has no try/except. Disk-full or permission errors crash the pipeline with the job stuck in a non-terminal state. `read_object` at line 203 similarly has no try/except for missing files.
+   - `backend/app/storage/object_store.py:183, 203`
+
+5. **Low:** DeepSeek OCR fallback always goes to Ollama — even if the user originally requested Anthropic as the OCR strategy. No configurable fallback chain.
+   - `backend/app/routers/ingest.py:1115-1124`
+
+6. **Low:** VLM `extract_json_from_text` call at line 1266 is outside its own try/except — if it raises `ValueError`, the exception falls through to the broader per-question handler which marks the entire job as failed rather than retrying just the extraction parse.
+   - `backend/app/routers/ingest.py:1266`
+
+7. **Low:** Option hydration silently skips non-ABCD labels — if the LLM returns labels like `"E"` or `"1"`, those options get empty annotation fields with no warning or error logged.
+   - `backend/app/pipeline/option_hydration.py:35-36`
+
+8. **Low:** Overlap detection loads all official questions into memory unbounded — no pagination or limit. As the question bank grows, this becomes a multi-hundred-megabyte result set per overlap check.
+   - `backend/app/pipeline/overlap.py:45-56`
+
+#### Data Integrity
+
+9. **Critical:** UUID5 collision crashes on re-ingestion — no `ON CONFLICT` / upsert. Re-uploading the same official exam hits a primary key violation with no `IntegrityError` handling. Two concurrent ingestions of the same question will both compute the same UUID5 and the second `db.flush()` raises an unhandled `IntegrityError`.
+   - `backend/app/routers/ingest.py:437-440, 453`
+
+10. **Critical:** Bad question number passes validation but crashes persist — `_validate_question_numbers` logs warnings for non-integer `source_question_number` values (e.g., `"3a"`, `"?"`) but does not prevent them from reaching `_persist_single_question` where `int(q_num)` throws `ValueError`/`TypeError`.
+    - `backend/app/routers/ingest.py:438, 185-277`
+
+11. **High:** Option labels not validated as exactly {A,B,C,D} — duplicates (`A,A,C,D`) or wrong labels (`A,B,C,E`) pass the `len==4` check. The `QuestionExtract` Pydantic model enforces `pattern=r"^[A-D]$"` but is never applied at ingestion time — raw LLM dicts bypass it.
+    - `backend/app/pipeline/validator.py:30-36`, `backend/app/models/extract.py:8`
+
+12. **High:** `correct_option_label` not validated against actual option labels — if the LLM says `"C"` but options only have labels `["A", "B", "D", "E"]`, no option gets `is_correct=True`. The question ends up with zero correct answers in the database.
+    - `backend/app/pipeline/validator.py:33-36`, `backend/app/routers/ingest.py:516-530`
+
+13. **High:** No cross-batch question deduplication — re-uploading the same PDF with a different filename (different checksum) creates duplicate Question rows. Overlap detection only runs for `content_origin in ("unofficial", "generated")`; official questions are excluded from overlap checking.
+    - `backend/app/routers/ingest.py:379-407, 1507-1510`
+
+14. **Medium:** Passage dedup is batch-only — same passage across separate ingestion jobs gets different `passage_group_id` values. No passage content hashing. Single-question passages get no group at all (`passage_group_id` is `None` when `len(questions_data) == 1`).
+    - `backend/app/routers/ingest.py:1239`, `backend/app/models/db.py:80`
+
+15. **Medium:** JSONB schema drift — `choices_jsonb`, `annotation_jsonb`, `pass1_json` store arbitrary JSON with no schema validation. Key renames in LLM output create inconsistent records over time. No migration strategy to reconcile old vs. new key names.
+    - `backend/app/models/db.py:39-41`, `backend/app/routers/ingest.py:488, 504-507`
+
+16. **Medium:** No application-level FK checks before `_persist_single_question` — if a Question insert fails silently (e.g., UUID5 PK collision), subsequent QuestionOption/QuestionAnnotation inserts fail with FK violations rather than being skipped. Partial flushes can create orphaned rows.
+    - `backend/app/routers/ingest.py:494-575`
+
+17. **Medium:** Wrong question number = wrong UUID5 = silent data corruption — if an LLM misidentifies question number 3 as question 5, `_official_question_uuid` produces the UUID for question 5, potentially overwriting the real question 5. The OCR cross-check logs warnings but does not gate persistence.
+    - `backend/app/routers/ingest.py:438, 1260`
+
+#### Security & API
+
+18. **Critical:** Zero rate limiting on any endpoint — no middleware anywhere. Each ingest endpoint triggers expensive LLM calls. An attacker with a valid admin API key can drain API budgets by flooding endpoints. The batch endpoint `/ingest/unofficial/batch` has no limit on the number of files.
+    - Entire app — no rate limiting middleware
+
+19. **High:** No magic-number file validation — only the `Content-Type` header is checked. A malicious binary with `Content-Type: application/pdf` gets written to disk via `_store_raw_upload` before `fitz.open()` rejects it. The file is already persisted to object storage before parsing runs.
+    - `backend/app/routers/ingest.py:1433-1441`
+
+20. **High:** Prompt injection via raw user text — the extraction prompt interpolates raw text with only `---` delimiters. `source_exam_code` is also unsanitized. No XML-tag-based isolation of user content.
+    - `backend/app/prompts/extract_prompt.py:87-92, 70-71`
+
+21. **High:** CORS wide open — `allow_origins=["*"]` + `allow_headers=["*"]`. Any origin can make authenticated cross-origin requests using a leaked API key. The custom `X-API-Key` header is sent regardless of `allow_credentials` setting.
+    - `backend/app/main.py:38-43`
+
+22. **High:** Unsanitized filename stored in DB — `file.filename` from uploads goes directly into `QuestionAsset.source_name`. XSS payload possible if the filename is ever rendered in a web UI.
+    - `backend/app/routers/ingest.py:1564, 1649, 2138`
+
+23. **Medium:** No PDF page count limit — a 50 MB PDF with 50,000 pages passes size validation but exhausts memory during rasterization. Each page is rendered at 2x scale as a PNG.
+    - `backend/app/parsers/pdf_parser.py:13-34`
+
+24. **Low:** Default API keys in source code — `"admin-key-change-me"` / `"student-key-change-me"` are active if env vars aren't set. Startup warning exists but doesn't prevent access.
+    - `backend/app/config.py:10-11`
+
+25. **Low:** Unauthenticated health and dashboard endpoints — `/health` exposes DB connectivity and app version; `/dashboard` HTML exposes API route structure and provider/model defaults.
+    - `backend/app/routers/health.py:11`, `backend/app/routers/dashboard.py:31`
+
+26. **Low:** Local filesystem paths persisted in `pass1_json` — `_store_page_render` includes absolute local path in stored data. Not directly exposed via API but could leak infrastructure details if a future endpoint returns `pass1_json`.
+    - `backend/app/routers/ingest.py:894`
+
+---
+
 ## 2026-05-11 - VLM Provider Quality Audit (OCR Loop)
 Report created by: Claude Sonnet 4.6
 Git branch: `main`
