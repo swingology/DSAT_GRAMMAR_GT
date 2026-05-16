@@ -906,6 +906,122 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-16T05:17:42.505Z"
+    },
+    {
+      "id": "bug-057",
+      "timestamp": "2026-05-16T05:45:10.422Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/main.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 8→9 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T05:45:10.422Z"
+    },
+    {
+      "id": "bug-058",
+      "timestamp": "2026-05-16T05:46:56.888Z",
+      "error_message": "Incorrect value in code",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "Had ` instead of attempting repair.\n   - `",
+      "fix": "Changed to ` instead of attempting repair.~~\n   - ~~`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 6,
+      "last_seen": "2026-05-16T05:48:25.961Z"
+    },
+    {
+      "id": "bug-059",
+      "timestamp": "2026-05-16T05:48:16.908Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 11→11 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T05:48:16.908Z"
+    },
+    {
+      "id": "bug-060",
+      "timestamp": "2026-05-16T06:02:07.030Z",
+      "error_message": "Wrong reference: 255 should be 200",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Used \"255\" instead of \"200\"",
+      "fix": "Changed 255 → 200",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T06:02:07.030Z"
+    },
+    {
+      "id": "bug-061",
+      "timestamp": "2026-05-16T06:03:16.347Z",
+      "error_message": "Wrong reference: 255 should be 200",
+      "file": "backend/tests/test_backend_regressions.py",
+      "root_cause": "Used \"255\" instead of \"200\"",
+      "fix": "Changed 255 → 200",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T06:03:16.347Z"
+    },
+    {
+      "id": "bug-062",
+      "timestamp": "2026-05-16T06:04:00.000Z",
+      "error_message": "source_name truncated to 255 but column is String(200) — DataError for 201-255 char filenames",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "_sanitize_source_name()[:255] exceeds QuestionAsset.source_name column width of 200",
+      "fix": "Changed [:255] to [:200]; updated regression test assertion from 255 to 200",
+      "tags": ["data-integrity", "column-overflow", "sanitization"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T06:04:00.000Z"
+    },
+    {
+      "id": "bug-063",
+      "timestamp": "2026-05-16T06:04:00.000Z",
+      "error_message": "diagnostics_jsonb carries full page_images b64 blob for every question — massive DB bloat",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "_build_source_span() included '_page_images' from pass1_json in per-question diagnostics_jsonb; 33 questions × 14 pages = 462 copies",
+      "fix": "Removed 'page_images' key from QuestionSourceSpan.diagnostics_jsonb construction",
+      "tags": ["db-bloat", "jsonb", "source-span"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T06:04:00.000Z"
+    },
+    {
+      "id": "bug-064",
+      "timestamp": "2026-05-16T06:04:00.000Z",
+      "error_message": "pass1_json.raw_text stored as [:50000] but Pass 1 LLM receives [:100000] — provenance gap for questions in chars 50K-100K",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Three pass1_json construction sites used raw_text[:50000] / len > 50000 while build_extract_prompt uses [:100000]",
+      "fix": "Raised stored slice and _truncated threshold from 50K to 100K at all three sites (lines 1857, 1989, 2417)",
+      "tags": ["provenance", "raw-text", "pass1-json", "truncation"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T06:04:00.000Z"
     }
   ]
 }

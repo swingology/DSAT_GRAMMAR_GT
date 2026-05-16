@@ -1182,7 +1182,7 @@ def test_sanitize_source_name_strips_control_chars():
 def test_sanitize_source_name_truncates_long_names():
     long = "a" * 300
     result = ingest_router._sanitize_source_name(long)
-    assert len(result) == 255
+    assert len(result) == 200  # matches QuestionAsset.source_name column width
 
 
 def test_sanitize_source_name_none_passthrough():

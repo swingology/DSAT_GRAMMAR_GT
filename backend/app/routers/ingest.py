@@ -39,7 +39,7 @@ def _sanitize_source_name(filename: str | None) -> str | None:
     """Remove path separators and control chars from upload filenames before DB storage."""
     if not filename:
         return filename
-    return re.sub(r'[/\\<>:"|?*\x00-\x1f]', '_', filename)[:255]
+    return re.sub(r'[/\\<>:"|?*\x00-\x1f]', '_', filename)[:200]
 
 
 def _log_task_exception(task: asyncio.Task) -> None:
@@ -572,7 +572,7 @@ async def _persist_single_question(
     # Layout enrichment: match detected regions, crop, and optionally annotate
     crop_path = None
     matched_region = None
-    page_number = _source_page_number(q_data, question_index)
+    page_number = _source_page_number(q_data, 0)
     page_images_data = (job.pass1_json or {}).get("_page_images", [])
 
     if layout_data:
@@ -752,7 +752,7 @@ def _build_question_source_span(
     layout_json_path: str | None = None,
     source_page_number: int | None = None,
 ) -> QuestionSourceSpan:
-    page_number = source_page_number if source_page_number is not None else _source_page_number(q_data, question_index)
+    page_number = source_page_number if source_page_number is not None else _source_page_number(q_data, 0)
     extraction_method = _extraction_method(job)
     raw_text = (job.pass1_json or {}).get("raw_text")
     ocr_meta = (job.pass1_json or {}).get("_ocr_meta")
@@ -775,7 +775,6 @@ def _build_question_source_span(
             "ocr_meta": ocr_meta,
             "llm_meta": (job.pass1_json or {}).get("_llm_meta"),
             "source_question_number": q_data.get("source_question_number"),
-            "page_images": (job.pass1_json or {}).get("_page_images", []),
         },
         confidence_jsonb=q_data.get("source_confidence_jsonb") or q_data.get("confidence_jsonb"),
         created_at=datetime.now(timezone.utc),
@@ -1081,6 +1080,7 @@ def _collect_page_images(pass1_json: dict) -> list:
     result = []
     for img in raw_images:
         mime = img.get("mime_type", "image/png")
+        page_idx = img.get("page_number", "?")
         if img.get("path"):
             try:
                 b64 = base64.b64encode(Path(img["path"]).read_bytes()).decode()
@@ -1097,6 +1097,8 @@ def _collect_page_images(pass1_json: dict) -> list:
                 pass
         if img.get("b64"):
             result.append(ImageContent(b64=img["b64"], mime_type=mime))
+        else:
+            logger.warning("_collect_page_images: dropping unreadable page image (page=%s)", page_idx)
     return result
 
 
@@ -1208,6 +1210,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     text_extraction_provider = provider
     text_extraction_provider_name = job.provider_name
     text_extraction_model_name = job.model_name
+
+    if raw_text:
+        # Embedded text present — record that OCR was not needed
+        job.pass1_json = {**(job.pass1_json or {}), "_ocr_strategy": "bypassed"}
 
     if not raw_text and page_images:
         page_images = page_images[:settings.vision_max_images]
@@ -1854,8 +1860,8 @@ async def ingest_official_pdf(
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
         pass1_json={
-            "raw_text": raw_text[:50000],
-            "_truncated": len(raw_text) > 50000,
+            "raw_text": raw_text[:100000],
+            "_truncated": len(raw_text) > 100000,
             "pages": len(pdf_result["pages"]),
             "_page_images": page_images,
             "_ocr_strategy": ocr_strategy,
@@ -1986,7 +1992,7 @@ async def ingest_unofficial_file(
         prompt_version="v3.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
-        pass1_json={"raw_text": raw_text[:50000], "_truncated": len(raw_text) > 50000, "_page_images": page_images, "_ocr_strategy": ocr_strategy},
+        pass1_json={"raw_text": raw_text[:100000], "_truncated": len(raw_text) > 100000, "_page_images": page_images, "_ocr_strategy": ocr_strategy},
         created_at=now,
         updated_at=now,
     )
@@ -2202,13 +2208,16 @@ async def ingest_unofficial_batch(
     files: list[UploadFile] = File(...),
     provider_name: str | None = Form(None),
     model_name: str | None = Form(None),
+    ocr_strategy: str | None = Form(None),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
+    if ocr_strategy and ocr_strategy not in {"glm", "deepseek", "ollama", "vision", "anthropic", "openai", "auto"}:
+        raise HTTPException(status_code=422, detail="ocr_strategy must be 'glm', 'deepseek', 'ollama', 'vision', 'anthropic', 'openai', or 'auto'")
     results = []
     for file in files:
         resp = await ingest_unofficial_file(
-            file=file, provider_name=provider_name, model_name=model_name, db=db, _auth=_auth
+            file=file, provider_name=provider_name, model_name=model_name, ocr_strategy=ocr_strategy, db=db, _auth=_auth
         )
         results.append(resp)
     return results
@@ -2411,8 +2420,8 @@ async def ingest_benchmark_ocr(
             raw_asset_id=asset_id,
             comparison_group_id=comparison_group_id,
             pass1_json={
-                "raw_text": raw_text[:50000],
-                "_truncated": len(raw_text) > 50000,
+                "raw_text": raw_text[:100000],
+                "_truncated": len(raw_text) > 100000,
                 "_page_images": page_images,
                 "_ocr_strategy": strategy,
             },

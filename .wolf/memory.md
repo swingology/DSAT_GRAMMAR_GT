@@ -581,3 +581,37 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 22:44 | Edited backend/app/parsers/json_parser.py | modified _strip_reasoning_wrappers() | ~139 |
+| 22:44 | Edited backend/app/parsers/json_parser.py | modified not() | ~217 |
+| 22:44 | Edited backend/app/routers/ingest.py | added 1 import(s) | ~54 |
+| 22:44 | Edited backend/app/routers/ingest.py | modified _sanitize_source_name() | ~92 |
+| 22:44 | Edited backend/app/routers/ingest.py | inline fix | ~17 |
+| 22:45 | Edited backend/app/config.py | 3→6 lines | ~51 |
+| 22:45 | Edited backend/app/config.py | modified cors_origins_list() | ~82 |
+| 22:45 | Edited backend/app/main.py | 8→9 lines | ~97 |
+| 22:46 | Edited backend/tests/test_parsers.py | modified test_extract_json_strips_thinking_tags() | ~293 |
+| 22:46 | Edited backend/tests/test_backend_regressions.py | modified test_verify_qnums_sparse_ocr_skips_check() | ~256 |
+| 22:46 | Edited DEBUG_LOG.md | 2→3 lines | ~168 |
+| 22:47 | Edited DEBUG_LOG.md | 2→2 lines | ~120 |
+| 22:47 | Edited DEBUG_LOG.md | 2→2 lines | ~84 |
+| 22:47 | Edited DEBUG_LOG.md | state() → Fixed() | ~62 |
+| 22:47 | Edited DEBUG_LOG.md | 2→2 lines | ~48 |
+| 22:48 | Edited DEBUG_LOG.md | modified Fixed() | ~254 |
+| 22:48 | Edited DEBUG_LOG.md | open() → Fixed() | ~54 |
+| 22:48 | Edited DEBUG_LOG.md | modified Fixed() | ~205 |
+| 22:49 | Session end: 18 writes across 7 files (json_parser.py, ingest.py, config.py, main.py, test_parsers.py) | 9 reads | ~60482 tok |
+
+## Session: 2026-05-16 23:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:02 | Edited backend/app/routers/ingest.py | 255 → 200 | ~19 |
+| 23:02 | Edited backend/app/routers/ingest.py | 6→5 lines | ~61 |
+| 23:02 | Edited backend/app/routers/ingest.py | 10→10 lines | ~97 |
+| 23:02 | Edited backend/app/routers/ingest.py | inline fix | ~43 |
+| 23:02 | Edited backend/app/routers/ingest.py | 6→6 lines | ~66 |
+| 23:02 | Edited backend/app/routers/ingest.py | 12→16 lines | ~208 |
+| 23:02 | Edited backend/app/routers/ingest.py | modified get() | ~264 |
+| 23:03 | Edited backend/tests/test_backend_regressions.py | inline fix | ~23 |
+| 23:04 | Edited DEBUG_LOG.md | modified fix() | ~854 |
+| 06:04 | Pipeline code trace: fixed source_name[:200], diagnostics_jsonb bloat, raw_text[:100K], ocr_strategy provenance, _collect_page_images warning | ingest.py, db.py, buglog.json, DEBUG_LOG.md | 338 tests pass | ~4K |

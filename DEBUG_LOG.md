@@ -1,5 +1,43 @@
 # Debug Log
 
+## 2026-05-15 - Full Pipeline Code Trace (Test_1_digital_sec01_mod01)
+Report created by: Claude Sonnet 4.6
+Git branch: `main`
+Git checkpoint: `606f1e3` — fix(audit): harden json_parser, CORS, filename sanitization, mark findings resolved
+
+### Findings
+
+1. ~~**High:** `source_name` truncated to 255 but `QuestionAsset.source_name` column is `String(200)` — `_sanitize_source_name()[:255]` would raise `DataError` at DB level for filenames 201–255 chars. We introduced this in the previous commit.~~
+   - `backend/app/routers/ingest.py` (`_sanitize_source_name`), `backend/app/models/db.py:184`
+   - **Fixed:** Changed truncation limit from `[:255]` to `[:200]` to match column width. Updated regression test to assert 200.
+
+2. ~~**Medium:** `diagnostics_jsonb` carries full page_images blob for every question — for a 33-question batch over 14 pages, this wrote ~462 base64 metadata objects into `question_source_spans`. The field was never queried per-question.~~
+   - `backend/app/routers/ingest.py:778`
+   - **Fixed:** Removed `"page_images"` key from `QuestionSourceSpan.diagnostics_jsonb`.
+
+3. ~~**Medium:** `pass1_json.raw_text` stored as `[:50000]` but Pass 1 extracts from `[:100000]` — questions in chars 50K–100K are extracted and persisted but `QuestionSourceSpan.pymupdf_text` stores only the truncated version, breaking provenance reconstruction.~~
+   - `backend/app/routers/ingest.py:1415, 1857, 1989, 2417`
+   - **Fixed:** Raised stored slice and `_truncated` threshold from 50K to 100K at all three `pass1_json` construction sites.
+
+4. ~~**Low:** `pass1_json._ocr_strategy` records requested strategy even when OCR is bypassed — for embedded-text PDFs, OCR gate is skipped entirely but the JSONB still shows the requested strategy (e.g. `"glm"`), misleading provenance audit.~~
+   - `backend/app/routers/ingest.py:1200-1211`
+   - **Fixed:** When `raw_text` is non-empty (embedded text path), `_ocr_strategy` is overwritten to `"bypassed"` before the pipeline continues.
+
+5. ~~**Low:** `_collect_page_images` silently drops unreadable page images with no log entry.~~
+   - `backend/app/routers/ingest.py` (`_collect_page_images`)
+   - **Fixed:** Added `logger.warning(...)` when an image entry has no readable path or b64 data.
+
+6. **Medium:** `job.question_id` tracks only the first created question in a multi-question batch — the other N-1 questions are reachable only via `pass1_json["_created_question_ids"]` JSON array with no FK. If `pass1_json` is cleared, those links are lost.
+   - `backend/app/routers/ingest.py:1673`
+   - Not fixed — requires schema change (junction table `question_job_questions`).
+
+7. **Low:** Empty-string questions pass `_normalize_extracted_questions` — each propagates through Pass 2 annotation, then fails the `question_text required` validator, creating orphan validation errors. Minor wasted LLM calls.
+   - `backend/app/routers/ingest.py` (`_normalize_extracted_questions`)
+
+8. **Low (missing feature):** `passage_group_id` is never populated for multi-question batches from official PDFs. SAT reading passages spanning multiple questions cannot be retroactively grouped.
+
+---
+
 ## 2026-05-15 - extract_json_from_text Fragility Audit
 Report created by: Claude Opus 4.7
 Git branch: `main`
@@ -26,11 +64,12 @@ Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b a
 6. **Medium:** `_quote_bare_keys` regex can produce false positives — the pattern `([{,]\s*)([A-Za-z_][A-Za-z0-9_\-]*)(\s*:)` quotes any word before a colon after `{` or `,`. Already-quoted keys produce `""key"":` (harmless — `json.loads` accepts it), but edge cases like `{, key: val}` produce broken JSON.
    - `backend/app/parsers/json_parser.py:74`
 
-7. **Low:** `extract_json_array_from_text` has zero test coverage — the function exists (lines 162-206) and is exported but has no direct tests. It reuses the same bracket-counting approach and has the same nested-brace fragility.
-   - `backend/app/parsers/json_parser.py:162-206`, `backend/tests/test_parsers.py`
+7. ~~**Low:** `extract_json_array_from_text` has zero test coverage — the function exists (lines 162-206) and is exported but has no direct tests. It reuses the same bracket-counting approach and has the same nested-brace fragility.~~
+   - ~~`backend/app/parsers/json_parser.py:162-206`, `backend/tests/test_parsers.py`~~
+   - **Fixed/stale finding:** `backend/tests/test_pipeline.py` now includes direct coverage for direct arrays, fenced arrays, and single-object fallback. Nested-bracket fragility still remains a parser design risk.
 
-8. **Low:** Only 6 direct tests for `extract_json_from_text` — coverage misses: trailing commas with non-Ollama provider, `_quote_bare_keys` false positives, multiple JSON objects in output, nested think blocks or `<thinking>` tags, partially valid JSON (missing closing brace), very large outputs, and the false-positive dict case (`{"error": "rate limited"}`).
-   - `backend/tests/test_parsers.py:12-80`
+8. **Low / Partially stale:** Direct `extract_json_from_text` coverage is broader than originally reported — current tests include non-Ollama repair fallback, `<thinking>` tags, contextual `ValueError`, and Ollama/Kimi-style repair. Still missing: shape-validation false positives (`{"error": "rate limited"}`), multiple JSON objects in output, malformed partial JSON, very large outputs, and `_quote_bare_keys` false-positive edge cases.
+   - `backend/tests/test_parsers.py`
 
 ---
 
@@ -49,17 +88,19 @@ Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b a
 2. ~~**Critical:** No stuck-job recovery.~~
    - **Fixed (pre-existing):** `lifespan` startup handler scans for jobs in non-terminal states and marks them `failed` with `startup_recovery` error. Implemented in `backend/app/main.py`.
 
-3. **High:** No savepoints or rollback — `db.flush()` calls in `_persist_single_question` (3 flushes at lines 495, 512, 576) have no savepoint wrapping. If the second flush fails (e.g., constraint violation), the session is dirty and the entire pipeline dies. No `db.rollback()` exists anywhere in the codebase.
-   - `backend/app/routers/ingest.py:495, 512, 576`
+3. **High / Partially fixed:** No savepoints around `_persist_single_question` flushes. The "no rollback anywhere" part is stale — the per-question persist loop now catches persistence errors and calls `await db.rollback()`. Remaining gap: without per-question savepoints or more granular commits, a rollback after one failed question can discard earlier uncommitted successful inserts in the same job.
+   - `backend/app/routers/ingest.py`
 
 4. **Medium:** Object storage I/O errors unhandled — `path.write_bytes(data)` has no try/except. Disk-full or permission errors crash the pipeline with the job stuck in a non-terminal state. `read_object` at line 203 similarly has no try/except for missing files.
    - `backend/app/storage/object_store.py:183, 203`
 
-5. **Low:** DeepSeek OCR fallback always goes to Ollama — even if the user originally requested Anthropic as the OCR strategy. No configurable fallback chain.
-   - `backend/app/routers/ingest.py:1115-1124`
+5. ~~**Low:** DeepSeek OCR fallback always goes to Ollama — even if the user originally requested Anthropic as the OCR strategy. No configurable fallback chain.~~
+   - ~~`backend/app/routers/ingest.py:1115-1124`~~
+   - **Fixed:** `_fallback_ocr_strategy()` now uses a configurable fallback chain and prefers Anthropic/Claude when configured.
 
-6. **Low:** VLM `extract_json_from_text` call at line 1266 is outside its own try/except — if it raises `ValueError`, the exception falls through to the broader per-question handler which marks the entire job as failed rather than retrying just the extraction parse.
-   - `backend/app/routers/ingest.py:1266`
+6. ~~**Low:** VLM `extract_json_from_text` call at line 1266 is outside its own try/except — if it raises `ValueError`, the exception falls through to the broader per-question handler which marks the entire job as failed rather than retrying just the extraction parse.~~
+   - ~~`backend/app/routers/ingest.py:1266`~~
+   - **Fixed/stale finding:** The VLM fused extraction parse is now inside the VLM `try` block and records a controlled `vision_error`/failed job on parse failure. It still does not retry malformed vision JSON.
 
 7. ~~**Low:** Option hydration silently skips non-ABCD labels.~~
    - **Fixed:** `option_hydration.py` now logs a `WARNING` for unexpected labels instead of silently dropping them.
@@ -119,7 +160,7 @@ Git checkpoint: `bd82cb4` — Switch default extraction model to qwen3-vl:235b a
 24. **Low:** Default API keys in source code — `"admin-key-change-me"` / `"student-key-change-me"` are active if env vars aren't set. Startup warning exists but doesn't prevent access.
     - `backend/app/config.py:10-11`
 
-25. **Low:** Unauthenticated health and dashboard endpoints — `/health` exposes DB connectivity and app version; `/dashboard` HTML exposes API route structure and provider/model defaults.
+25. **Low / Partially fixed:** Unauthenticated health endpoint remains — `/health` exposes DB connectivity and app version. The dashboard portion is stale: `/dashboard` now requires `admin_required`.
     - `backend/app/routers/health.py:11`, `backend/app/routers/dashboard.py:31`
 
 26. **Low:** Local filesystem paths persisted in `pass1_json` — `_store_page_render` includes absolute local path in stored data. Not directly exposed via API but could leak infrastructure details if a future endpoint returns `pass1_json`.
