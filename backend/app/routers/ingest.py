@@ -199,6 +199,50 @@ _DSAT_QUESTION_RANGES: dict[tuple[str, str], tuple[int, int]] = {
 }
 
 
+# Keys produced by Pass 1 extraction that are the structural source of truth.
+# Pass 2 annotation must never overwrite these — the annotation's "options"
+# block carries per-option *analysis* (distractor type, etc.) keyed by
+# "option_label" with no/blank "label", so merging it over the extraction
+# options blanks out the A/B/C/D labels and validation fails.
+_EXTRACTION_OWNED_KEYS = (
+    "options",
+    "question_text",
+    "passage_text",
+    "paired_passage_text",
+    "correct_option_label",
+    "source_question_number",
+    "stimulus_assets",
+)
+
+
+def _merge_for_validation(q_data: dict, annotate_json: dict) -> dict:
+    """Merge extraction + annotation for validation without losing structure.
+
+    Annotation contributes classification keys; extraction owns the structural
+    fields in _EXTRACTION_OWNED_KEYS. On any key collision, extraction wins.
+
+    After the merge, option dicts are normalized so that option_label/option_text
+    (annotation format from rules v7 examples) fall back to label/text (extraction
+    and internal format). This prevents validation failures when the annotation LLM
+    returns options with the wrong key names.
+    """
+    merged = {**q_data, **annotate_json}
+    for key in _EXTRACTION_OWNED_KEYS:
+        if key in q_data:
+            merged[key] = q_data[key]
+
+    # Normalize option key names: annotation uses option_label/option_text,
+    # extraction and internal code use label/text. Ensure both are present.
+    for opt in merged.get("options", []):
+        if isinstance(opt, dict):
+            if "label" not in opt or not opt["label"]:
+                opt["label"] = opt.get("option_label", "")
+            if "text" not in opt or not opt["text"]:
+                opt["text"] = opt.get("option_text", "")
+
+    return merged
+
+
 def _validate_question_numbers(
     questions: list[dict],
     subject_code: str | None,
@@ -1512,7 +1556,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         system=system,
                         user=user,
                         model=text_extraction_model_name,
-                        max_tokens=16000,
+                        max_tokens=getattr(settings, "extraction_max_tokens", 32000),
                         disable_thinking=True,
                     )
                 else:
@@ -1520,7 +1564,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         system=system,
                         user=user,
                         model=text_extraction_model_name,
-                        max_tokens=16000,
+                        max_tokens=getattr(settings, "extraction_max_tokens", 32000),
                     )
                 extract_root = extract_json_from_text(
                     result.raw_text,
@@ -1754,7 +1798,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
         # ---- Validate ----
         job.status = "validating"
-        merged = {**q_data, **annotate_json}
+        merged = _merge_for_validation(q_data, annotate_json)
         errors = validate_question(merged, content_origin=job.content_origin)
 
         if any(e["severity"] == "blocking" for e in errors):
@@ -2254,7 +2298,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
         return
 
     # Validate
-    merged = {**extract_json, **annotate_json}
+    merged = _merge_for_validation(extract_json, annotate_json)
     errors = validate_question(merged, content_origin=job.content_origin)
     job.validation_errors_jsonb = errors
 

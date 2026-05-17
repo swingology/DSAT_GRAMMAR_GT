@@ -34,7 +34,8 @@ CHANGE_SOURCES = ("ingest", "generate", "admin_edit", "reprocess")
 # --- V3 §3.1 stimulus_mode_key ---
 STIMULUS_MODE_KEYS = (
     "sentence_only", "passage_excerpt", "prose_single", "prose_paired",
-    "prose_plus_table", "prose_plus_graph", "notes_bullets", "poem",
+    "prose_plus_table", "prose_plus_graph", "notes_bullets", "notes_summary",
+    "poem",
 )
 
 # --- V3 §3.2 stem_type_key ---
@@ -50,6 +51,11 @@ STEM_TYPE_KEYS = (
     "choose_command_of_evidence_textual", "choose_command_of_evidence_quantitative",
     "choose_central_detail", "choose_detail", "choose_best_illustration",
     "choose_best_weakener",
+    # --- Additional stem types observed from LLM output (rules v7 / reading v2) ---
+    "conform_to_standard_english",    # grammar v7: SEC complete_the_text with standard English convention
+    "most_logically_completes",      # reading v2: "Which choice most logically completes the text?"
+    "synthesize_information",         # reading v2: synthesize from notes/data
+    "compare_contributions",          # reading v2: compare contributions across texts
 )
 
 # --- V3 §5 grammar_role_key ---

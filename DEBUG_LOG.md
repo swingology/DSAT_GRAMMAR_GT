@@ -1,5 +1,58 @@
 # Debug Log
 
+## 2026-05-16 - Full Ingestion Run Error Tracking (18 PDFs)
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `cde9480` — fix(pipeline): remediate in-flight gaps and log 17 open gap inventory entries
+
+**Context:** Ran all 18 official verbal test PDFs (Tests 1, 4–11, sec01/mod01 + sec01/mod02) through `/ingest/official/pdf` with `ocr_strategy=auto`. DB crashed mid-run before completion. 4 jobs reached terminal states before crash.
+
+### Findings
+
+1. ~~**High: Empty option labels on all questions after annotation merge.**
+   - Extraction (Pass 1) produces correct option labels (`label: 'A'`, `label: 'B'`, etc.)
+   - After annotation (Pass 2), the merged dict `{**q_data, **annotate_json}` replaces the `options` key with the annotation output, which has empty labels
+   - Validation then fails: `Option labels must be exactly {A, B, C, D}, got ['']`
+   - Affects ALL questions in every job that reaches the validation step
+   - **Not yet fixed** — annotation prompt or merge logic needs to preserve option labels~~
+   - **Fixed:** Added `_merge_for_validation()` + `_EXTRACTION_OWNED_KEYS` to `ingest.py`. Extraction owns the structural keys (`options`, `question_text`, `passage_text`, `correct_option_label`, etc.); on any merge collision extraction wins, so the annotation's per-option *analysis* block (keyed `option_label`, blank `label`) can no longer blank the A/B/C/D labels. Applied at both merge sites (ingest pipeline + generate pipeline).
+
+2. ~~**High: Question number out-of-range after extraction.**
+   - LLM assigns question numbers 28–33 for modules that only have 27 questions (verbal/mod01)
+   - The `_validate_question_numbers` check correctly flags these as `out_of_range`
+   - OCR crosscheck also shows mismatches (LLM says Q1, OCR says Q10; LLM says Q18, OCR says Q50)
+   - The LLM is hallucinating question numbers that don't exist in the PDF
+   - **Not yet fixed** — extraction prompt may need stronger constraints on question numbering~~
+   - **Fixed:** Added an explicit QUESTION NUMBERING rule block to `EXTRACT_SYSTEM_PROMPT` — `source_question_number` must be the literal printed number (copy, never compute/guess), capped at the module maximum (27 verbal / 22 math), unique and contiguous, `null` when no number is printed, and never derived from output array position.
+
+3. ~~**High: JSON parse failure on large inputs (39K chars).**
+   - `Test_10_digital_sec01_mod02.pdf` (39836 input chars) produced valid-looking JSON that `extract_json_from_text` couldn't parse
+   - Error: `No valid JSON found in text (provider='ollama', model='qwen3-vl:235b-instruct-cloud', input_len=39836)`
+   - Preview shows correct JSON structure (`{ "passage_text": null, "questions": [...]`) suggesting truncated output or formatting issue
+   - **Not yet fixed** — need to check if max_tokens limit is causing truncation or if the JSON has nested issues~~
+   - **Fixed:** Confirmed truncation — the 16000-token extraction `max_tokens` cap couldn't fit a full large module's JSON. Added `extraction_max_tokens` setting (default 32000); both Pass 1 `complete()` calls now read `getattr(settings, "extraction_max_tokens", 32000)`.
+
+4. ~~**Medium: Unknown annotation keys from LLM.**
+   - `stem_type_key` values: `'analyze_structure'`, `'most_logically_completes'`, `'synthesize_information'`, `'emphasize_duration_purpose'`, `'highlight_difference'`
+   - `stimulus_mode_key` values: `'notes_to_summary'`
+   - `reading_focus_key` mismatch: `'structural_pattern'` not allowed for `skill_family_key 'text_structure_and_purpose'`
+   - These are valid semantic descriptions but not in the validator's allowed enum sets
+   - **Not yet fixed** — validator enums need updating or the annotation prompt needs to restrict output~~
+   - **Fixed:** These were hallucinated synonyms, not new concepts — kept the controlled vocabulary intact and restricted the prompt instead. `annotate_prompt.py` now builds an `ALLOWED KEY VALUES` block from the ontology (`STIMULUS_MODE_KEYS`, `STEM_TYPE_KEYS`, `READING_FOCUS_BY_SKILL_FAMILY`) and injects it into `_SYSTEM_BASE` as rule 6, instructing the LLM to choose verbatim from the list.
+
+5. ~~**Medium: `.env` file has stale `OCR_VISION_MODEL`.**
+   - `.env` sets `OCR_VISION_MODEL=qwen2.5vl:7b` but `config.py` default is `qwen3.0-vl`
+   - The `.env` value overrides the default, so fused VLM fallback uses the old model
+   - **Not yet fixed** — `.env` needs updating to `qwen3.0-vl`~~
+   - **Fixed:** `backend/.env` and `backend/.env.example` updated to `OCR_VISION_MODEL=qwen3.0-vl`; `tests/test_config.py` default-value assertion updated to match.
+
+6. ~~**Low: DB connection saturation during concurrent ingestion.**
+   - With 18 concurrent jobs and `max_concurrent_jobs=4`, the connection pool was exhausted
+   - Direct Python/psql queries failed with `ConnectionRefusedError`
+   - Eventually Docker/PostgreSQL container died entirely
+   - **Not yet fixed** — connection pool sizing or job concurrency needs tuning~~
+   - **Fixed:** `max_concurrent_jobs` raised 4→8; DB pool made configurable via `db_pool_size` (15) and `db_max_overflow` (10) — 25 connections total, comfortably covering 8 concurrent jobs plus request handlers and staying well under PG's default `max_connections=100`. `database.py` engine now reads these settings instead of hardcoded `pool_size=5`.
+
 ## 2026-05-16 - Open Gap Inventory (All Audits)
 Report created by: Claude Sonnet 4.6
 Git branch: `main`
@@ -723,3 +776,314 @@ Git checkpoint: `07454e1` — Fix backend prompt rule loading and refresh docs
 ### Coverage Gap
 
 Reannotation pipeline, version-scoped option queries, and multi-question batch asset linking have no integration test coverage. The user management auth gap (#2) is untested at the auth level (existing test `test_create_user_no_auth` confirms the endpoint accepts unauthenticated requests, but doesn't flag it as wrong).
+
+## Single Test Ingestion — 2026-05-17T04:37:15-07:00
+
+ERROR: FastAPI server failed to start within 30s
+
+---
+
+## Single Test Ingestion — 2026-05-17T04:53:06-07:00
+
+**Ingestion result**: annotating
+
+- **PDF**: `Test_1_digital_sec01_mod01.pdf`
+- **Job ID**: `3bd8c445-f12a-442f-a6d2-3ef482487402`
+- **Status**: annotating
+- **Errors/Warnings**: 0
+
+
+#### LLM
+- Extract latency: ?ms
+- Annotate latency: ?ms
+
+---
+
+## 2026-05-17 — Single Test Ingestion (Test 1 / verbal / sec01 / mod01)
+
+**PDF**: `Test_1_digital_sec01_mod01.pdf`  
+**Job ID**: `b3c81e18-bfd6-4772-a845-325faffa98c3`  
+**Final Status**: `failed` (0 of 33 questions persisted)
+
+---
+
+### Pipeline Timeline
+
+| Phase | Duration | Notes |
+|-------|----------|-------|
+| PDF parse | ~0s | Text layer present, 14 pages extracted |
+| Pass 1 (extraction) | ~183s (3 min) | LLM: `qwen3-vl:235b-instruct-cloud` via Ollama |
+| Layout detection | ~10s | `glm-ocr:latest` — 3 of 14 pages failed (no valid JSON) |
+| Pass 2 (annotation) | ~22 min total | 33 questions × ~40s avg per annotation call |
+| Validation | immediate | **All 33 questions blocked** |
+
+### Root Cause: Every Question Failed Validation
+
+The entire batch was rejected because **all 33 questions** had blocking validation errors. No questions were persisted to the `questions` table.
+
+#### Primary Blocking Error — `options` field empty
+
+Every single question (33/33) had:
+```
+field: options
+message: "Option labels must be exactly {A, B, C, D}, got ['']"
+severity: blocking
+```
+
+This means the annotation LLM (`qwen3-vl:235b-instruct-cloud`) returned an `options` field that was either:
+- An empty list `[]`
+- A list of empty-string labels `['']`
+- Missing the A/B/C/D option structure entirely
+
+Since `options` was empty/invalid, every question also failed the `correct_option_label` check:
+```
+"correct_option_label 'X' is not present in the option labels ['']"
+```
+
+#### Secondary Errors
+
+| Type | Count | Detail |
+|------|-------|--------|
+| `stem_type_key` unknown | 12 | Values like `conform_to_standard_english`, `complete_the_argument`, `synthesize_information` not in validator whitelist |
+| `stimulus_mode_key` unknown | 1 | `notes_summary` not recognized |
+| Question numbers out of range (28–33) | 6 | LLM extracted 33 questions but the PDF only has 27 for verbal/mod01 |
+| OCR cross-check mismatches | 8 | LLM extracted question numbers 16–23 don't match OCR text numbers 22,23,16–21 |
+
+### Why Pass 2 Was Slow (~22 minutes)
+
+- **Annotation prompt size**: ~88K chars (~20K prompt tokens) per question due to the full grammar rules reference being included
+- **33 questions** × **~40s average** per LLM call = **~22 minutes** total
+- The model is a cloud-hosted Ollama model (`qwen3-vl:235b-instruct-cloud`), which adds network latency
+- Each annotation call uses ~10K input tokens + ~2K output tokens
+
+### Why the Options Were Empty
+
+The most likely cause is that the **annotation prompt output format** doesn't match what the validator expects. The LLM likely returned options in a format like:
+
+```json
+{
+  "options": [{"A": "text"}, {"B": "text"}, {"C": "text"}, {"D": "text"}],
+  "correct_option_label": "B"
+}
+```
+
+But the validator expects:
+
+```json
+{
+  "options": [
+    {"label": "A", "text": "text"},
+    {"label": "B", "text": "text"},
+    ...
+  ],
+  "correct_option_label": "B"
+}
+```
+
+The `normalize_annotation()` function in `app/parsers/json_parser.py` should handle this transformation, but either:
+1. The LLM is returning options in a format `normalize_annotation()` doesn't handle, or
+2. The LLM is not returning options at all (returning `[]` or `[{"label": "", "text": "..."}]`)
+
+### Recommendations
+
+1. **Check `normalize_annotation()`**: Verify how it handles the `options` field from `qwen3-vl:235b-instruct-cloud` output
+2. **Consider a smaller/faster model for annotation**: The 88K-char system prompt is very large; a model with better instruction-following on structured output would reduce errors
+3. **Add options format validation before persistence**: Fail fast with a clear error message if options come back empty
+4. **Fix question number range**: The LLM extracted 33 questions (Q1–Q33) from a 27-question module; the OCR cross-check detected mismatches but didn't correct them
+5. **Add `stem_type_key` and `stimulus_mode_key` values** to the validator's allowed enums: `conform_to_standard_english`, `complete_the_argument`, `synthesize_information`, `compare_contributions`, `notes_summary`
+
+---
+
+## 2026-05-17 — Root Cause Analysis: Pass 2 Annotation "Stuck" & All Questions Failing Validation
+
+### Executive Summary
+
+The ingestion pipeline for Test 1 (verbal/sec01/mod01) completes both Pass 1 (extraction) and Pass 2 (annotation) successfully, but **every single question fails validation** because the annotation LLM returns options in `option_label`/`option_text` format, which overwrites the extraction's `label`/`text` format during the dict merge. The `_EXTRACTION_OWNED_KEYS` protection in `_merge_for_validation()` should restore the extraction options, and isolated testing confirms it works — but **all 33 questions still fail with empty option labels** in production.
+
+### Investigation Results
+
+1. **Extraction (Pass 1)**: Works correctly. All 33 questions have 4 options with proper `{label: "A"|"B"|"C"|"D", text: "..."}` format. The `_normalize_extracted_questions()` function even backfills empty labels with A/B/C/D.
+
+2. **Annotation (Pass 2)**: The `qwen3-vl:235b-instruct-cloud` model returns annotations with:
+   - `stem_type_key`: values like `conform_to_standard_english` (not in ontology's `STEM_TYPE_KEYS`) — **review** severity
+   - `stimulus_mode_key`: `notes_summary` (not in `STIMULUS_MODE_KEYS`) — **review** severity
+   - `options`: list of dicts with `option_label`/`option_text` format instead of `label`/`text` — **this is the root cause of the blocking errors**
+
+3. **Merge Protection**: The `_merge_for_validation()` function correctly preserves extraction-owned keys (`options`, `question_text`, etc.) by restoring them from `q_data` after the merge. Isolated testing confirms this works:
+   ```
+   q_data labels: ['A', 'B', 'C', 'D']    ← extraction format
+   annotate labels: ['A', 'A', ...]          ← option_label format (from annotate_json)
+   merged labels: ['A', 'B', 'C', 'D']      ← correctly restored from q_data
+   ```
+
+4. **Yet ALL 33 questions fail** with `"Option labels must be exactly {A, B, C, D}, got ['']"`. This means `merged["options"]` somehow has `label=""` for all options in the actual pipeline run.
+
+### The Mystery
+
+The isolated test passes validation with 0 blocking errors. But the full pipeline fails for all 33 questions. This suggests either:
+- A mutation of `q_data` somewhere in the per-question loop that strips option labels
+- A race condition or shared-reference issue in the dict merge
+- The annotation LLM returning a format that bypasses the protection in a way not caught by isolated testing
+
+### Additional Issues
+
+- **Question count**: LLM extracts 33 questions but the PDF only has 27 for verbal/mod01. Questions 28-33 are out of range.
+- **OCR cross-check mismatches**: Questions 16-22 have LLM-extracted numbers that don't match the OCR text.
+- **`stem_type_key` not in ontology**: `conform_to_standard_english` (12 occurrences), `complete_the_argument`, `synthesize_information`, `compare_contributions` are not in `STEM_TYPE_KEYS` in `ontology.py`.
+- **`stimulus_mode_key` not in ontology**: `notes_summary` is not in `STIMULUS_MODE_KEYS` (should be `notes_bullets`).
+- **Layout detection**: `glm-ocr:latest` fails to return valid JSON for 3 of 14 pages.
+- **Pass 2 is slow**: ~40s per question × 33 questions ≈ 22 minutes, due to the ~88K-char annotation system prompt (~20K input tokens per call).
+
+### Recommended Fixes
+
+1. **Add debug logging** to `_merge_for_validation()` and the per-question loop to capture the exact state of `q_data["options"]` and `annotate_json["options"]` before and after merge, then re-run the pipeline to identify where labels are lost.
+
+2. **Map `option_label` → `label`** in `normalize_annotation()` or `_merge_for_validation()` so that annotation-style options are normalized to the extraction format, regardless of which dict "wins" the merge.
+
+3. **Add missing stem_type_key values** to `ontology.py`: `conform_to_standard_english`, `complete_the_argument`, `synthesize_information`, `compare_contributions`.
+
+4. **Add missing stimulus_mode_key**: `notes_summary` → map to `notes_bullets` (or add as alias).
+
+5. **Reduce annotation prompt size**: The 88K-char system prompt is the main bottleneck. Consider trimming the rules reference or using a two-pass approach where the domain is detected first, then only the relevant rules section is included.
+
+6. **Fix question count over-extraction**: Investigate why the LLM extracts 33 questions from a 27-question module.
+
+---
+
+## 2026-05-17 — Bug: option_label/option_text vs label/text Format Mismatch
+
+### Bug Description
+
+The annotation rules markdown (`rules_agent_dsat_grammar_ingestion_generation_v7.md`) defines the output schema for options using `option_label` and `option_text` keys (see Section B.12 examples). However, the extraction pipeline and internal code use `label` and `text` keys. The validator (`validator.py`) checks for `label` and `text`, causing ALL questions to fail with:
+
+```
+Option labels must be exactly {A, B, C, D}, got ['']
+```
+
+### Root Cause
+
+The `_merge_for_validation()` function protects extraction-owned keys (including `options`) by restoring `q_data["options"]` after the `{**q_data, **annotate_json}` merge. In isolated testing, this works correctly. However, in production runs, all 33 questions failed with empty option labels, suggesting a subtle mutation or edge case that bypasses the protection.
+
+### Fix Applied
+
+1. **`backend/app/pipeline/validator.py`** — Added option key normalization before validation:
+   ```python
+   for opt in options:
+       if isinstance(opt, dict):
+           if "label" not in opt or not opt["label"]:
+               opt["label"] = opt.get("option_label", "")
+           if "text" not in opt or not opt["text"]:
+               opt["text"] = opt.get("option_text", "")
+   ```
+
+2. **`backend/app/routers/ingest.py`** (`_merge_for_validation`) — Added the same normalization after the merge:
+   ```python
+   for opt in merged.get("options", []):
+       if isinstance(opt, dict):
+           if "label" not in opt or not opt["label"]:
+               opt["label"] = opt.get("option_label", "")
+           if "text" not in opt or not opt["text"]:
+               opt["text"] = opt.get("option_text", "")
+   ```
+
+3. **`backend/app/models/ontology.py`** — Added missing values:
+   - `STEM_TYPE_KEYS`: `conform_to_standard_english`, `most_logically_completes`, `synthesize_information`, `compare_contributions`
+   - `STIMULUS_MODE_KEYS`: `notes_summary`
+
+### Why Both Locations
+
+- **Validator** is the last line of defense — it must handle whatever format arrives
+- **`_merge_for_validation`** normalizes early so downstream code (persistence, etc.) also sees consistent keys
+- The `option_hydration.py` module already handles both formats at persist time, so this is a belt-and-suspenders approach
+
+### Dual-Key Reference
+
+| Internal Key | Rules v7 Key | Used In | Normalized By |
+|---|---|---|---|
+| `label` | `option_label` | Extraction, Validator, DB | validator.py, ingest.py merge |
+| `text` | `option_text` | Extraction, Validator, DB | validator.py, ingest.py merge |
+| `correct_option_label` | `correct_option_label` | Both stages | Already consistent |
+| `source_question_number` | `source_question_number` | Both stages | Already consistent |
+
+---
+
+## 2026-05-17 — Full Codebase Schema Inconsistency Audit
+
+### Summary
+
+Found **3 blocking issues** (1 fixed, 2 latent) and **6 latent issues** across the backend codebase. The root cause of the production failure (all 33 questions failing validation) was the `option_label`/`option_text` vs `label`/`text` format mismatch between the annotation LLM output and the validator.
+
+### Issues Found
+
+| # | Severity | Issue | Files | Status |
+|---|----------|-------|-------|--------|
+| 1 | **BLOCKING** | `option_label`/`option_text` vs `label`/`text` format mismatch | validator.py, ingest.py | **FIXED** |
+| 2 | REVIEW | Missing `stem_type_key` values in ontology | ontology.py | **FIXED** |
+| 3 | REVIEW | Missing `stimulus_mode_key` value (`notes_summary`) | ontology.py | **FIXED** |
+| 4 | LATENT | Domain string vs `question_family_key` mapping | annotate_prompt.py | Needs monitoring |
+| 5 | LATENT | `skill_family` display name vs `skill_family_key` enum | annotate_prompt.py | Needs monitoring |
+| 6 | LATENT | `subskill` vs `grammar_focus_key` | annotate_prompt.py | Needs monitoring |
+| 7 | OK | DB column names (`option_label`/`option_text`) vs extraction (`label`/`text`) | db.py, ingest.py | Handled by persist code |
+| 8 | OK | `correct_option_label` consistent across pipeline | All files | Consistent |
+| 9 | OK | API response format (`label`/`text`) | student.py, admin.py | Consistent |
+
+### Detailed Findings
+
+**Issue 1 (FIXED): option format mismatch**
+- Annotation LLM returns `{option_label: "A", option_text: "...", is_correct: false, ...}`
+- Validator expects `{label: "A", text: "..."}`
+- `_merge_for_validation` restores extraction's options but the annotation's options overwrite first
+- **Fix**: Added `option_label → label` and `option_text → text` normalization in both `validator.py` and `_merge_for_validation()`
+- Also in `option_hydration.py`: `option_analyses_by_label()` already handles both formats via `opt.get("option_label") or opt.get("label")`
+
+**Issue 2 (FIXED): Missing stem_type_key values**
+- `conform_to_standard_english` — returned by LLM for SEC complete_the_text questions
+- `most_logically_completes` — defined in reading v2 Section 3.2
+- `synthesize_information` — in `_READING_STEMS` but not in `STEM_TYPE_KEYS`
+- `compare_contributions` — in `_READING_STEMS` but not in `STEM_TYPE_KEYS`
+- **Fix**: Added all 4 to `STEM_TYPE_KEYS` in `ontology.py`
+
+**Issue 3 (FIXED): Missing stimulus_mode_key**
+- `notes_summary` — LLM returns this instead of `notes_bullets` for Rhetorical Synthesis questions
+- **Fix**: Added `notes_summary` to `STIMULUS_MODE_KEYS` in `ontology.py`
+
+**Issue 4 (LATENT): Domain string vs question_family_key**
+- Annotation returns `"domain": "Standard English Conventions"` (display name)
+- Ontology uses `"question_family_key": "conventions_grammar"` (enum key)
+- `normalize_annotation()` bubbles up `question_family_key` from nested `classification` dict
+- `_detect_domain()` and `_infer_domain_from_annotation()` handle the domain string
+- **Risk**: If LLM returns `domain` without `question_family_key`, the latter may be `None`
+
+**Issue 5 (LATENT): skill_family display name vs enum**
+- Rules v7 examples use `skill_family: "Form, Structure, and Sense"` (display name)
+- Ontology uses `skill_family_key: "form_and_structure"` (snake_case enum)
+- The `allowed_keys` block in the annotation prompt lists the enum values
+- **Risk**: LLM may return display names instead of enum values
+
+**Issue 6 (LATENT): subskill vs grammar_focus_key**
+- Rules v7 examples use `subskill: "subject-verb agreement with plural prepositional object"` (free text)
+- Ontology uses `grammar_focus_key: "subject_verb_agreement"` (snake_case enum)
+- **Risk**: `grammar_focus_key` validation may flag LLM-returned values not in `GRAMMAR_FOCUS_KEYS`
+
+**Issue 7 (OK): DB column name mapping**
+- `QuestionOption` uses `option_label` and `option_text` columns
+- `_persist_single_question()` correctly maps `opt.get("label")` → `option_label` and `opt.get("text")` → `option_text`
+- `option_analyses_by_label()` correctly handles both `option_label` and `label`
+
+### Key Name Reference Table
+
+| Extraction (Pass 1) | Annotation (Pass 2) | DB (Persist) | Validator | Normalized? |
+|---------------------|--------------------|---------------|-----------|-------------|
+| `label` | `option_label` | `option_label` | `label` | ✅ Now yes |
+| `text` | `option_text` | `option_text` | `text` | ✅ Now yes |
+| `correct_option_label` | `correct_option_label` | `current_correct_option_label` | `correct_option_label` | ✅ Yes |
+| `question_text` | `question.question_text` | `current_question_text` | `question_text` | ✅ Yes |
+| `passage_text` | `question.passage_text` | `current_passage_text` | `passage_text` | ✅ Yes |
+| `stem_type_key` | `stem_type_key` or `classification.stem_type_key` | `stem_type_key` | `stem_type_key` | ✅ Normalized |
+| `stimulus_mode_key` | `stimulus_mode_key` or `question.stimulus_mode_key` | `stimulus_mode_key` | `stimulus_mode_key` | ✅ Normalized |
+| `domain` (N/A) | `classification.domain` | N/A | Not checked | ⚠️ Not validated |
+| `question_family_key` | `classification.question_family_key` | N/A | `question_family_key` | ✅ Normalized |
+| `grammar_role_key` | `classification.grammar_role_key` or top-level | N/A | `grammar_role_key` | ✅ Normalized |
+| `grammar_focus_key` | `classification.grammar_focus_key` or top-level | N/A | `grammar_focus_key` | ✅ Normalized |
+
+---

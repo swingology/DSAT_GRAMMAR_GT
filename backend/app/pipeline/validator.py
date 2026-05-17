@@ -27,6 +27,19 @@ def validate_question(question_data: dict, content_origin: str = "official") -> 
 
     # Four answer choices
     options = question_data.get("options", [])
+
+    # Normalize option format: the annotation LLM returns option_label/option_text
+    # (rules v7 format) while the extraction LLM and internal code use label/text.
+    # Fall back to option_label/option_text when label/text are missing so that
+    # the validator sees consistent keys regardless of which pipeline stage
+    # produced the data.
+    for opt in options:
+        if isinstance(opt, dict):
+            if "label" not in opt or not opt["label"]:
+                opt["label"] = opt.get("option_label", "")
+            if "text" not in opt or not opt["text"]:
+                opt["text"] = opt.get("option_text", "")
+
     if len(options) != 4:
         errors.append({"severity": "blocking", "field": "options", "message": f"Expected 4 options, got {len(options)}"})
 
