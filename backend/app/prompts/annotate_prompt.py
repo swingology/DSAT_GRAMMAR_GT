@@ -8,6 +8,42 @@ Domain routing:
 import os
 import json
 
+from app.models.ontology import (
+    STIMULUS_MODE_KEYS,
+    STEM_TYPE_KEYS,
+    READING_FOCUS_BY_SKILL_FAMILY,
+)
+
+
+def _build_allowed_keys_block() -> str:
+    """Render the controlled-vocabulary enums the annotation MUST choose from.
+
+    The LLM otherwise invents descriptive synonyms (e.g. 'analyze_structure'
+    instead of 'choose_structure_description') that fail validation.
+    """
+    lines = [
+        "=== ALLOWED KEY VALUES (controlled vocabulary — choose EXACTLY one, verbatim) ===",
+        "",
+        "stimulus_mode_key MUST be one of:",
+        "  " + ", ".join(STIMULUS_MODE_KEYS),
+        "",
+        "stem_type_key MUST be one of:",
+        "  " + ", ".join(STEM_TYPE_KEYS),
+        "",
+        "reading_focus_key MUST be one of these, matching the chosen skill_family_key:",
+    ]
+    for family, focuses in READING_FOCUS_BY_SKILL_FAMILY.items():
+        lines.append(f"  {family}: {', '.join(focuses)}")
+    lines.append("")
+    lines.append(
+        "Never invent a synonym or descriptive variant. If none fits perfectly, "
+        "pick the closest listed value — do not output an unlisted key."
+    )
+    return "\n".join(lines)
+
+
+_ALLOWED_KEYS_BLOCK = _build_allowed_keys_block()
+
 _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 _GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generation_v7.md"
 _READING_FILE = "rules_agent_dsat_reading_v2.md"
@@ -158,6 +194,12 @@ _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the gi
 
 5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
 
+6. CONTROLLED VOCABULARY: stimulus_mode_key, stem_type_key, and reading_focus_key
+   must be drawn verbatim from the allowed-values list below. Output is rejected
+   if any of these keys is not an exact match.
+
+{allowed_keys}
+
 {rules_context}"""
 
 
@@ -256,6 +298,9 @@ def build_annotate_prompt(q_data: dict | None = None, rules_file_path: str = "",
             r = _reading_context()
             rules_context = f"Grammar v7 RULES REFERENCE:\n=== GRAMMAR v7: TAXONOMY (Part D) ===\n{g}\n\n{r}"
 
-    system = _SYSTEM_BASE.format(rules_context=rules_context)
+    system = _SYSTEM_BASE.format(
+        rules_context=rules_context,
+        allowed_keys=_ALLOWED_KEYS_BLOCK,
+    )
     user = f"Annotate the following extracted question:\n\n{json.dumps(q_data, indent=2)}"
     return system, user

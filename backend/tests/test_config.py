@@ -37,11 +37,11 @@ def test_settings_default_values():
         assert s.default_ollama_model == "qwen3-vl:235b-instruct-cloud"
         assert s.rules_version.startswith("rules_agent")
         assert s.ocr_vision_provider == "ollama"
-        assert s.ocr_vision_model in ("qwen2.5-vl:7b", "qwen2.5vl:7b")
+        assert s.ocr_vision_model == "qwen3.0-vl"
         assert s.ocr_strategy == "glm"
         assert s.glm_ocr_model == "glm-ocr:latest"
         assert s.deepseek_ocr_base_url == ""
-        assert s.max_concurrent_jobs == 4
+        assert s.max_concurrent_jobs == 8
     finally:
         if saved_admin is not None:
             os.environ["ADMIN_API_KEYS"] = saved_admin

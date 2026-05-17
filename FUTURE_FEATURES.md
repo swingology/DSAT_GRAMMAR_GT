@@ -43,6 +43,103 @@ This is not required for basic text-layer PDFs, but it is valuable for reliable 
 5. Store provenance in job JSON and, if needed, a dedicated database table.
 6. Surface provenance and source crops in the admin review workflow.
 
+## Pass 2 (Annotation) Efficiency Optimization
+
+The ingestion pipeline's Pass 2 annotation step is the dominant runtime cost of a
+job. A 27-question module took ~22 minutes in observed runs, almost entirely in
+this phase. The work below would cut wall-clock time substantially with low risk,
+and optionally reduce token cost with a larger refactor.
+
+### Measured Cost
+
+A 27–33 question module triggers **one sequential LLM call per question**. Each
+call carries a system prompt that is ~99% a static rules reference:
+
+- **~10,300 input tokens** for grammar-domain questions (`_grammar_context()`)
+- **~17,500 input tokens** for reading-domain questions (`_reading_context()`)
+
+That system prompt is **byte-identical for every question of the same domain** —
+only the small user message (the per-question JSON) varies. A single module
+therefore re-sends roughly 300–470K tokens of unchanging rules text, one
+question at a time, fully serialized.
+
+Relevant code: `backend/app/routers/ingest.py` per-question loop at the Pass 2
+section (`for i, q_data in enumerate(questions_data)`), and
+`backend/app/prompts/annotate_prompt.py` (`build_annotate_prompt`,
+`_grammar_context`, `_reading_context`).
+
+### Optimization Levers (ranked)
+
+**1. Parallelize the annotation calls — biggest wall-clock win.**
+The loop currently `await`s `provider.complete(...)` one question at a time.
+Gather the LLM calls with a bounded semaphore (4–6 concurrent), then run
+validate/persist sequentially afterward (persistence must stay serial because of
+the per-question DB savepoints). Expected: ~22 min → ~4–6 min. No token-cost
+change. Risk: concurrent load on the `qwen3-vl:235b-instruct-cloud` endpoint —
+confirm it tolerates parallel requests / rate limits first. Moderate refactor:
+split the loop into a parallel "annotate all" phase producing a list, then a
+serial "validate + persist" phase.
+
+**2. Sort questions by domain so identical prompts run consecutively — cheap.**
+Ollama reuses a cached KV prefix across requests when the model stays loaded and
+the prompt prefix is identical. Grammar and reading questions are currently
+interleaved, so the 10K/17.5K-token prefix is repeatedly evicted. Sorting
+`questions_data` by detected domain before the loop lets the prefix cache hit.
+~10-line change, low risk, a real latency win even without parallelizing.
+
+**3. Batch annotation — biggest token/cost win, highest risk.**
+Annotate K questions per LLM call so one rules prompt is amortized over K
+questions (K=5 → ~5× fewer rules-token resends). Risk: large output JSON, parse
+fragility, harder per-question retry, possible quality dilution. Should be a
+separate, carefully tested change.
+
+**4. `lru_cache` the rules-file reads — trivial cleanup.**
+`_grammar_context()` / `_reading_context()` re-read the ~20K-token rules
+markdown files from disk on every question. Cache them with `functools.lru_cache`.
+Tiny win (disk I/O, not LLM time), but free — worth doing alongside #1.
+
+### Recommended Bundle
+
+Implement **#1 + #2 + #4 together** as one commit: ~4–6 min wall-clock instead
+of ~22 min, with no quality risk and no change to output format. Capture a
+before/after timing baseline on the same module. Treat **#3 (batching)** as a
+separate follow-up where the token-cost savings live.
+
+### Provider Choice: Would Claude or OpenAI Help?
+
+Yes — meaningfully — primarily through one mechanism the current setup cannot
+fully exploit: **prompt caching**. Phase 2's core inefficiency is re-sending an
+identical 10–17.5K-token rules block on every call. Hosted providers cache it:
+
+| Provider | Caching behavior | Effect on Phase 2 |
+|---|---|---|
+| **Anthropic (Claude)** | Explicit `cache_control` breakpoints; ~90% cost cut on cache reads + faster time-to-first-token | First call per domain writes the cache; all remaining same-domain calls hit it. Biggest win. |
+| **OpenAI** | Automatic for >1024-token identical prefixes; ~50% discount + latency gain | Free, zero code, but smaller discount and less control. |
+| **Ollama `qwen3-vl:235b-instruct-cloud` (current)** | Only opportunistic KV-prefix reuse if the model stays loaded and prompts run back-to-back — fragile, not guaranteed | Why lever #2 (domain-sorting) is needed just to *maybe* get caching. |
+
+Claude turns the unreliable lever #2 into a guaranteed ~90% reduction on the
+repeated rules tokens — the single largest efficiency gain available.
+
+**Other advantages of a hosted provider:**
+
+- **Concurrency** — hosted Claude/OpenAI handle parallel requests well, so
+  lever #1 (parallelize) works cleanly. The qwen cloud endpoint's concurrency
+  limits are unknown and may throttle.
+- **Instruction-following** — Claude is strong at structured-JSON annotation;
+  it would likely also reduce the "unknown `stem_type_key`" enum-drift errors.
+- **Clean to adopt** — Pass 2 annotation is **text-only** (it operates on the
+  extracted question JSON, not images). Route *just Phase 2* to Claude while
+  keeping the VLM (`qwen3-vl`) for Pass 1 vision extraction and OCR. Config
+  already exposes `anthropic_api_key` / `openai_api_key`.
+
+**Caveat:** Ollama cloud may be flat-rate or cheaper per raw token; Claude /
+OpenAI bill per token. Prompt caching is what flips that math — the 300–470K
+repeated rules tokens become ~90% cheaper on Claude, with a latency win too.
+This does not replace levers #1/#3 — it stacks with them.
+
+**Recommendation:** route Pass 2 to **Claude with explicit prompt caching** on
+the rules block; keep the VLM for vision extraction and OCR.
+
 ## Supabase-Centered Ingestion Persistence
 
 The backend should treat FastAPI as a stateless API/worker layer. Anything that must be recalled later should be stored durably in Supabase/Postgres or object storage, not in FastAPI process memory.

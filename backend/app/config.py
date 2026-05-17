@@ -39,10 +39,18 @@ class Settings(BaseSettings):
     llm_retry_max_attempts: int = 3
     llm_retry_base_delay_s: float = 1.0
     llm_retry_max_delay_s: float = 30.0
-    max_concurrent_jobs: int = 4
+    max_concurrent_jobs: int = 8
+    # DB connection pool — sized so every concurrent job has a connection plus
+    # headroom for request handlers. Keep pool_size >= max_concurrent_jobs.
+    db_pool_size: int = 15
+    db_max_overflow: int = 10
     # Hard ceiling for a single ingestion pipeline run; a slow/hung model is
     # aborted so it cannot occupy a job-semaphore slot indefinitely.
     pipeline_timeout_s: int = 1800
+    # Output token budget for Pass 1 extraction. A full 27-question module of
+    # JSON exceeds 16K tokens for large modules; too low a cap truncates the
+    # JSON mid-array and the parse fails.
+    extraction_max_tokens: int = 32000
     # Background sweeper interval — marks jobs stuck in in-progress statuses
     # longer than pipeline_timeout_s as failed. 0 disables the sweeper.
     job_sweeper_interval_s: int = 300

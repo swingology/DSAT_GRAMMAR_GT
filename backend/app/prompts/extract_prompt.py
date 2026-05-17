@@ -50,6 +50,15 @@ You must output valid JSON matching this schema:
 
 Rules:
 - Always produce exactly 4 options labeled A, B, C, D per question
+- QUESTION NUMBERING — read carefully:
+  • source_question_number MUST be the literal printed number shown next to that
+    question in the source text. Copy it; do not compute or guess it.
+  • A verbal module has at most 33 questions (numbered 1–33); a math module has
+    at most 22 (numbered 1–22). NEVER emit a number above the module maximum.
+  • Numbers must be unique and form a contiguous run with no gaps.
+  • If a question has no visible printed number, set source_question_number to
+    null — do NOT invent a number to fill the sequence.
+  • Do not renumber questions based on their position in your output array.
 - Identify the correct answer from the answer key or context
 - Preserve the original wording as closely as possible
 - If no passage, set passage_text to null

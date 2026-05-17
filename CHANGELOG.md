@@ -5,6 +5,28 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-16 — Apply pending DB migrations (017, 018)
+
+**Model:** Claude Opus 4.7 (`claude-opus-4-7`)
+**Branch:** `main`
+
+The `dsat_dev` database was stranded at migration `016` while the codebase
+expected `018`. The pipeline's per-question persist (`ingest.py`) inserts a
+`QuestionJobQuestion` row into the `question_job_questions` table created by
+migration `017`; with that table absent, every persist raised inside its
+`begin_nested()` savepoint and rolled back — so no question could ever land in
+the DB. Ran `alembic upgrade head`.
+
+### Database
+
+- **Migration 017 applied:** `question_job_questions` junction table created
+  (job↔question link with `ix_qjq_job_id` / `ix_qjq_question_id` indexes).
+- **Migration 018 applied:** `user_token` UUID column added to `users` (unique,
+  indexed, backfilled).
+- DB revision advanced `016` → `018 (head)`.
+
+---
+
 ## 2026-05-16 — Full gap remediation (15 fixes across all audit findings)
 
 **Model:** Claude Opus 4.7 (`claude-opus-4-7`)

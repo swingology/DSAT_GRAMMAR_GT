@@ -190,10 +190,12 @@ def _generation_profile_payload(*sources: dict | None) -> dict | None:
     return merged or None
 
 
-# Expected question count per subject per module — Digital SAT structure.
+# Expected question count per subject per module — matches the official
+# DSAT practice-test PDFs in TESTS/DATA_SRC (verbal modules carry 33 questions,
+# not the 27 of the adaptive College Board spec).
 _DSAT_QUESTION_RANGES: dict[tuple[str, str], tuple[int, int]] = {
-    ("verbal", "01"): (1, 27),
-    ("verbal", "02"): (1, 27),
+    ("verbal", "01"): (1, 33),
+    ("verbal", "02"): (1, 33),
     ("math",   "01"): (1, 22),
     ("math",   "02"): (1, 22),
 }
