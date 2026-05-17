@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-16T05:35:23.289Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-16T18:22:19.291Z
 > Files: 690 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
@@ -20,12 +20,12 @@
 
 - `.codex` (~0 tok)
 - `.gitattributes` — Git attributes (~12 tok)
-- `.gitignore` — Git ignore rules (~9 tok)
+- `.gitignore` — Git ignore rules (~36 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~17685 tok)
+- `CHANGELOG.md` — CHANGELOG (~22163 tok)
 - `CLAUDE.md` — OpenWolf (~274 tok)
-- `DEBUG_LOG.md` — Debug Log (~11588 tok)
+- `DEBUG_LOG.md` — Debug Log (~16732 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
@@ -878,8 +878,8 @@
 
 ## backend/app/
 
-- `config.py` — Settings: admin_api_key_list, student_api_key_list, get_settings (~721 tok)
-- `main.py` — lifespan (~757 tok)
+- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~962 tok)
+- `main.py` — lifespan (~1371 tok)
 
 ## backend/app/llm/
 
@@ -893,18 +893,18 @@
 ## backend/app/models/
 
 - `db.py` — Declares QuestionJob (~3950 tok)
-- `payload.py` — HTTP request/response models. (~1508 tok)
+- `payload.py` — HTTP request/response models. (~1558 tok)
 
 ## backend/app/parsers/
 
 - `json_parser.py` — Robust JSON extraction from LLM output text. (~2178 tok)
 - `ocr.py` — DeepSeek OCR-2 client — sends images to local vLLM/LMDeploy server, returns text. (~697 tok)
-- `pdf_parser.py` — PDF text extraction using pymupdf (fitz). (~471 tok)
+- `pdf_parser.py` — PDF extraction using pymupdf (fitz). (~625 tok)
 
 ## backend/app/pipeline/
 
 - `option_hydration.py` — Utilities for populating QuestionOption annotation fields from annotate_json. (~636 tok)
-- `overlap.py` — Overlap detection between unofficial/generated questions and official questions. (~1577 tok)
+- `overlap.py` — Overlap detection between unofficial/generated questions and official questions. (~1690 tok)
 - `validator.py` — Validation rules from PRD §15. (~2538 tok)
 
 ## backend/app/prompts/
@@ -915,11 +915,11 @@
 
 ## backend/app/routers/
 
-- `admin.py` — API: 5 endpoints (~6813 tok)
+- `admin.py` — API: 5 endpoints (~6973 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14684 tok)
-- `generate.py` — API: 3 endpoints (~3505 tok)
-- `ingest.py` (~27588 tok)
-- `student.py` — API: 7 endpoints (~1956 tok)
+- `generate.py` — API: 2 endpoints (~4450 tok)
+- `ingest.py` (~30788 tok)
+- `student.py` — API: 3 endpoints (~1880 tok)
 
 ## backend/app/storage/
 
@@ -949,7 +949,7 @@
 
 - `conftest.py` — Force test env before any app imports — use assignment, not setdefault (~385 tok)
 - `test_admin_router.py` — test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, test_admin_re (~556 tok)
-- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 11 more (~12183 tok)
+- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~12642 tok)
 - `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~601 tok)
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
 - `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)
@@ -957,7 +957,7 @@
 - `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
 - `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~2181 tok)
 - `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~8426 tok)
-- `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~466 tok)
+- `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~486 tok)
 
 ## docs/PRD/
 

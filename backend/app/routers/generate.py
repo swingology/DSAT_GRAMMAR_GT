@@ -28,6 +28,8 @@ from app.models.payload import GenerationRequest, GenerationCompareRequest, JobR
 
 router = APIRouter(prefix="/generate", tags=["generate"])
 
+_SOURCE_SET_OPERATIONAL_KEYS = {"provider_name", "model_name"}
+
 
 def _generation_profile_payload(*sources: dict | None) -> dict | None:
     """Build the stored generation profile from model output and request metadata."""
@@ -152,7 +154,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
                 current_explanation_text=annotate_json.get("explanation_short", ""),
                 practice_status="draft",
                 official_overlap_status="none",
-                generation_source_set=request_data,
+                generation_source_set={k: v for k, v in request_data.items() if k not in _SOURCE_SET_OPERATIONAL_KEYS},
                 is_admin_edited=False,
                 metadata_managed_by_llm=True,
                 created_at=now,
@@ -219,6 +221,8 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
         return
 
     # Run overlap detection against official questions and update status if found
+    job.status = "overlap_checking"
+    await db.commit()
     overlaps = await detect_overlaps(
         question_id=question_id,
         annotation_jsonb=annotate_json,
@@ -325,13 +329,16 @@ async def generate_compare(
 
     request_data = body.model_dump()
     for resp in results:
+        # Each provider closure needs its own copy so mutations inside
+        # _run_generate_pipeline don't leak across jobs.
         jid = uuid.UUID(resp.id)
+        job_data = dict(request_data)
 
-        async def _run(jid=jid):
+        async def _run(jid=jid, job_data=job_data):
             async with async_session() as db2:
                 j = await db2.get(QuestionJob, jid)
                 if j:
-                    await _run_generate_pipeline(j, db2, request_data)
+                    await _run_generate_pipeline(j, db2, job_data)
         asyncio.create_task(run_with_job_limit(_run)).add_done_callback(_log_task_exception)
 
     return results
@@ -368,6 +375,7 @@ async def get_generation_run(
                     "status": j.status,
                     "provider_name": j.provider_name,
                     "question_id": str(j.question_id) if j.question_id else None,
+                    "validation_errors": j.validation_errors_jsonb,
                 }
                 for j in jobs
             ],
@@ -379,4 +387,7 @@ async def get_generation_run(
         "provider_name": job.provider_name,
         "question_id": str(job.question_id) if job.question_id else None,
         "comparison_group_id": str(job.comparison_group_id) if job.comparison_group_id else None,
+        "validation_errors": job.validation_errors_jsonb,
+        "pass1_json": job.pass1_json,
+        "pass2_json": job.pass2_json,
     }

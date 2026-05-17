@@ -2,6 +2,8 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| 10:55 | Logged 17 open gaps (4 ingestion, 6 generate, 7 admin/cross-cutting) to DEBUG_LOG.md as new 2026-05-16 Open Gap Inventory section | DEBUG_LOG.md | success | ~2k |
+| 11:08 | Fixed 4 open gaps: OCR fallback logging (#7), page render size limit (#9), generate_compare shared reference (#5), closure comment (#22) | ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md | success | ~500 |
 | 16:14 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/feedback_debug-log-workflow.md | — | ~207 |
 | session | Exhaustive gap-fill: grammar v7 +B.3/B.4 rules for 5 promoted keys, 2 new syntactic traps, 5 failure modes, checks 26–29, D.3 rule 17; reading v2 +figurative WIC key, polarity_resolution mech, 5 TSP verbs, 3 passage archs, CoE-T vs CID disambiguation, false_concession_trap, causal_specification | rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md | success | ~110k |
 | 13:39 | Created plan_benchmarking_backend.md — benchmark dir plan with runners + HTMX dashboard | plan_benchmarking_backend.md | ~600 |
@@ -398,3 +400,71 @@
 | 23:06 | Ran backend verification | backend/tests, backend/test_ocr_live.py | `uv run pytest tests` passed 237/237 with 2 skipped; full `uv run pytest` still collects preexisting live OCR helpers that lack an `image` fixture | ~3000 |
 | 23:12 | Updated changelog for all post-commit changes | CHANGELOG.md | Added top-level 2026-05-15 entry covering prompt loader fixes, rule-file completeness updates, reading refinements, tests, known OCR caveat, and Wolf metadata | ~2500 |
 | 00:29 | Session end: 7 writes across 1 files (rules_agent_dsat_grammar_ingestion_generation_v7.md) | 2 reads | ~28773 tok |
+
+## Session: 2026-05-16 02:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 02:39 | Edited .gitignore | 2→3 lines | ~12 |
+| 02:39 | Session end: 1 writes across 1 files (.gitignore) | 1 reads | ~22 tok |
+| 02:39 | Session end: 1 writes across 1 files (.gitignore) | 1 reads | ~22 tok |
+| 02:40 | Session end: 1 writes across 1 files (.gitignore) | 1 reads | ~22 tok |
+
+## Session: 2026-05-16 10:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-16 10:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:51 | Edited backend/app/routers/ingest.py | modified enumerate() | ~174 |
+| 10:51 | Edited backend/app/routers/ingest.py | 11→15 lines | ~235 |
+| 10:52 | Edited backend/app/routers/ingest.py | 11→15 lines | ~238 |
+| 10:52 | Edited backend/app/routers/ingest.py | 1→5 lines | ~91 |
+| 10:52 | Edited backend/app/routers/ingest.py | 1→2 lines | ~33 |
+| 10:52 | Edited backend/app/routers/ingest.py | modified _store_page_render() | ~142 |
+| 10:52 | Edited backend/app/routers/ingest.py | 9→10 lines | ~99 |
+| 10:52 | Edited backend/app/routers/ingest.py | inline fix | ~5 |
+| 10:52 | Edited backend/app/routers/ingest.py | 16→16 lines | ~141 |
+| 10:52 | Edited backend/app/parsers/pdf_parser.py | modified _render_page_b64() | ~233 |
+| 10:52 | Edited backend/app/routers/generate.py | 2→4 lines | ~54 |
+| 10:53 | Edited backend/app/routers/generate.py | modified _run() | ~144 |
+| 10:53 | Session end: 12 writes across 3 files (ingest.py, pdf_parser.py, generate.py) | 16 reads | ~83455 tok |
+| 10:55 | Edited DEBUG_LOG.md | expanded (+104 lines) | ~2000 |
+| 10:56 | Edited DEBUG_LOG.md | 10→10 lines | ~229 |
+| 10:56 | Session end: 14 writes across 4 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md) | 16 reads | ~91728 tok |
+| 11:08 | Edited DEBUG_LOG.md | modified _run() | ~150 |
+| 11:10 | Session end: 15 writes across 4 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md) | 16 reads | ~92196 tok |
+| 11:11 | Session end: 15 writes across 4 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md) | 16 reads | ~92194 tok |
+| 11:14 | Edited backend/app/routers/admin.py | modified EvaluationCreateRequest() | ~32 |
+| 11:14 | Edited backend/app/routers/admin.py | 5→5 lines | ~66 |
+| 11:14 | Edited backend/app/routers/student.py | modified first() | ~235 |
+| 11:14 | Edited backend/app/pipeline/overlap.py | added 1 import(s) | ~21 |
+| 11:15 | Edited backend/app/pipeline/overlap.py | modified begin_nested() | ~330 |
+| 11:15 | Edited backend/app/routers/generate.py | 2→4 lines | ~51 |
+| 11:15 | Edited backend/app/routers/generate.py | 32→36 lines | ~367 |
+| 11:15 | Edited backend/app/routers/generate.py | inline fix | ~34 |
+| 11:15 | Edited backend/app/routers/generate.py | 1→3 lines | ~35 |
+| 11:16 | Edited backend/app/models/payload.py | modified JobResponse() | ~98 |
+| 11:16 | Edited backend/app/routers/ingest.py | 8→11 lines | ~113 |
+| 11:16 | Edited backend/app/routers/ingest.py | expanded (+24 lines) | ~424 |
+| 11:16 | Edited backend/app/routers/ingest.py | expanded (+12 lines) | ~223 |
+| 11:17 | Edited backend/app/routers/ingest.py | 25→26 lines | ~259 |
+| 11:17 | Edited backend/app/routers/ingest.py | inline fix | ~80 |
+| 11:17 | Edited backend/app/main.py | 4→9 lines | ~131 |
+| 11:18 | Edited backend/app/routers/student.py | removed 64 lines | ~78 |
+| 11:18 | Edited backend/app/routers/student.py | 12→12 lines | ~134 |
+| 11:19 | Edited backend/app/config.py | 3→6 lines | ~105 |
+| 11:19 | Edited backend/app/main.py | modified _stuck_job_sweeper() | ~433 |
+| 11:19 | Edited backend/app/main.py | 4→6 lines | ~57 |
+| 11:19 | Edited backend/app/main.py | added 2 import(s) | ~123 |
+| 11:19 | Edited backend/app/models/payload.py | inline fix | ~13 |
+| 11:20 | Edited backend/tests/test_student_router.py | modified test_api_users_empty_username_rejected() | ~126 |
+| 11:20 | Edited backend/tests/test_backend_regressions.py | modified test_approve_question_allows_official_items() | ~437 |
+| 11:21 | Edited backend/tests/test_backend_regressions.py | added 1 import(s) | ~78 |
+| 11:21 | Edited CHANGELOG.md | added error handling | ~1467 |
+| 11:22 | Edited DEBUG_LOG.md | added error handling | ~965 |
+| 11:22 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 25 reads | ~142025 tok |
+| 11:24 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 25 reads | ~142025 tok |

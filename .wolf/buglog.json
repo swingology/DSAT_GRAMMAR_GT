@@ -1083,6 +1083,150 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-05-16T06:22:21.847Z"
+    },
+    {
+      "id": "bug-068",
+      "timestamp": "2026-05-16T17:52:37.253Z",
+      "error_message": "Wrong reference: base64 should be decoded",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Used \"base64\" instead of \"decoded\"",
+      "fix": "Changed base64 → decoded",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T17:52:37.253Z"
+    },
+    {
+      "id": "bug-069",
+      "timestamp": "2026-05-16T17:56:14.131Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 10→10 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T17:56:14.131Z"
+    },
+    {
+      "id": "bug-070",
+      "timestamp": "2026-05-16T18:15:05.174Z",
+      "error_message": "Function not marked async",
+      "file": "backend/app/pipeline/overlap.py",
+      "root_cause": "Function uses await but wasn't declared async",
+      "fix": "Added async modifier",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T18:15:05.174Z"
+    },
+    {
+      "id": "bug-071",
+      "timestamp": "2026-05-16T18:15:47.462Z",
+      "error_message": "Wrong reference: request_data should be k",
+      "file": "backend/app/routers/generate.py",
+      "root_cause": "Used \"request_data\" instead of \"k\"",
+      "fix": "Changed request_data → k",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T18:15:47.462Z"
+    },
+    {
+      "id": "bug-072",
+      "timestamp": "2026-05-16T18:17:34.492Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Had \"_ocr_strategy\"",
+      "fix": "Changed to \"_page_texts\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T18:17:34.492Z"
+    },
+    {
+      "id": "bug-073",
+      "timestamp": "2026-05-16T18:18:36.244Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/student.py",
+      "root_cause": "48 lines replaced/restructured",
+      "fix": "Rewrote 64→7 lines (48 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T18:18:36.244Z"
+    },
+    {
+      "id": "bug-074",
+      "timestamp": "2026-05-16T18:19:15.563Z",
+      "error_message": "Missing await",
+      "file": "backend/app/main.py",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T18:19:15.563Z"
+    },
+    {
+      "id": "bug-075",
+      "timestamp": "2026-05-16T18:21:48.377Z",
+      "error_message": "Missing error handling in with",
+      "file": "CHANGELOG.md",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T18:21:48.377Z"
+    },
+    {
+      "id": "bug-076",
+      "timestamp": "2026-05-16T18:22:19.305Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-16T18:22:19.305Z"
     }
   ]
 }

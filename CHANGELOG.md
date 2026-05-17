@@ -5,6 +5,111 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-16 — Full gap remediation (15 fixes across all audit findings)
+
+**Model:** Claude Opus 4.7 (`claude-opus-4-7`)
+**Branch:** `main`
+
+Resolves 15 open audit findings across ingestion, generation, admin, and cross-cutting
+areas. Two items (OCR integration tests and stub-DB migration) are deferred as they
+require significant new test infrastructure.
+
+### Ingestion Pipeline
+
+- **OCR fallback logging:** Added explicit `logger.info` calls at OCR chain entry,
+  each fallback transition, and paradigm-specific success messages (two-step vs
+  VLM-fused). Previously only failure warnings were logged.
+  **Files:** `backend/app/routers/ingest.py`
+
+- **Per-page render size limit:** Added `MAX_PAGE_RENDER_BYTES = 10 MB` in ingest.py;
+  `_store_page_render` now returns `None` for oversized pages (with warning log).
+  `_store_pdf_page_renders` filters out `None`. Added `MAX_RENDER_DIMENSION = 3000px`
+  in `pdf_parser.py` to cap rendered page dimensions.
+  **Files:** `backend/app/routers/ingest.py`, `backend/app/parsers/pdf_parser.py`
+
+- **Mixed PDF page-level OCR:** The OCR gate now checks per-page text availability.
+  When a PDF has some text-layer pages and some blank/scanned pages, only the blank
+  pages' images are sent through OCR. The OCR text is appended to the existing raw text.
+  `_page_texts` is stored in `pass1_json` for per-page text inspection.
+  **Files:** `backend/app/routers/ingest.py`
+
+- **Job endpoint exposes OCR/LLM metadata:** `GET /ingest/jobs/{job_id}` now returns
+  `ocr_meta` and `llm_meta` extracted from `pass1_json`.
+  **Files:** `backend/app/models/payload.py`, `backend/app/routers/ingest.py`
+
+### Generate Pipeline
+
+- **`generate_compare` shared reference fix:** Each provider closure in
+  `generate_compare` now receives `job_data = dict(request_data)` — a shallow copy — so
+  mutations inside `_run_generate_pipeline` don't leak across jobs. The default-arg
+  pattern is documented inline.
+  **Files:** `backend/app/routers/generate.py`
+
+- **Overlap race condition:** `persist_overlap_relations` now wraps each
+  check-then-insert in `async with db.begin_nested()` (SAVEPOINT) and catches
+  `IntegrityError` on concurrent duplicate inserts.
+  **Files:** `backend/app/pipeline/overlap.py`
+
+- **`overlap_checking` status in generate pipeline:** Added `job.status =
+  "overlap_checking"` before running overlap detection in
+  `_run_generate_pipeline`, matching the ingest pipeline behavior.
+  **Files:** `backend/app/routers/generate.py`
+
+- **Generation run diagnostics:** `GET /generate/runs/{run_id}` now returns
+  `validation_errors`, `pass1_json`, and `pass2_json` for single-job responses,
+  and `validation_errors` per job in comparison-group responses.
+  **Files:** `backend/app/routers/generate.py`
+
+- **`generation_source_set` pollution fix:** `generation_source_set` on the `Question`
+  model now filters out `_SOURCE_SET_OPERATIONAL_KEYS` (`provider_name`, `model_name`)
+  from the stored dict, matching the behavior of `_generation_profile_payload`.
+  **Files:** `backend/app/routers/generate.py`
+
+### Admin / Cross-Cutting
+
+- **`LlmEvaluation.job_id` nullable fix:** Changed `EvaluationCreateRequest.job_id`
+  from `str` to `Optional[str] = None` so an empty string no longer causes a 500
+  on the `nullable=False` column.
+  **Files:** `backend/app/routers/admin.py`
+
+- **Official question activation:** Removed the blanket block on approving
+  `content_origin == "official"` questions. Official questions can now be approved
+  unless they have unresolved overlap (`official_overlap_status != "none"`).
+  **Files:** `backend/app/routers/admin.py`
+
+- **Student submit option verification:** Added a check that the submitted
+  `selected_option_label` exists in `question_options` for the question's
+  `latest_version_id` before recording the answer.
+  **Files:** `backend/app/routers/student.py`
+
+- **Consolidated user routes:** Removed duplicate user-management endpoints from
+  `student.py` (`POST/GET/DELETE /api/users`). The canonical endpoints in `users.py`
+  (`/users`) now serve all user CRUD with proper pagination, status codes (201/204),
+  and explicit timestamps. Unused imports (`delete`, `admin_required`, `UserCreate`,
+  `UserResponse`) removed from `student.py`.
+  **Files:** `backend/app/routers/student.py`
+
+- **Stuck-job sweeper:** Added a background `asyncio.Task` in the app lifespan that
+  periodically marks jobs stuck in in-progress statuses (older than
+  `pipeline_timeout_s`) as `failed`. Configurable via `job_sweeper_interval_s`
+  (default 300s; set to 0 to disable). Complements the existing startup recovery.
+  **Files:** `backend/app/main.py`, `backend/app/config.py`
+
+- **CORS production guard:** In `env == "production"`, the app now raises `RuntimeError`
+  at startup if `CORS_ALLOWED_ORIGINS` is `*`. Development mode still allows the
+  wildcard with a warning.
+  **Files:** `backend/app/main.py`
+
+### Deferred
+
+- **OCR integration tests:** No DB-backed pipeline tests for provider fallback,
+  malformed vision JSON, mixed text/scanned PDFs, or batch `ocr_strategy`.
+  Requires test-infrastructure setup (async DB fixtures).
+- **Test suite stub-DB migration:** `_MockSession` returns `None` for `.get()` and
+  empty results for `.execute()`. Real async DB fixtures would catch more regressions.
+
+---
+
 ## 2026-05-16 — Pipeline gap remediation (audit follow-up)
 
 **Model:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)

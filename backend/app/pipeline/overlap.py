@@ -8,6 +8,7 @@ from typing import List, Dict, Optional
 from datetime import datetime, timezone
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.db import Question, QuestionAnnotation, QuestionRelation
@@ -114,26 +115,31 @@ async def persist_overlap_relations(
     now = datetime.now(timezone.utc)
 
     for overlap in overlaps:
-        existing = await db.execute(
-            select(QuestionRelation).where(
-                QuestionRelation.from_question_id == question_id,
-                QuestionRelation.to_question_id == overlap["official_question_id"],
-                QuestionRelation.relation_type == overlap["relation_type"],
-            )
-        )
-        if existing.scalars().first():
-            continue
+        try:
+            async with db.begin_nested():
+                existing = await db.execute(
+                    select(QuestionRelation).where(
+                        QuestionRelation.from_question_id == question_id,
+                        QuestionRelation.to_question_id == overlap["official_question_id"],
+                        QuestionRelation.relation_type == overlap["relation_type"],
+                    )
+                )
+                if existing.scalars().first():
+                    continue
 
-        db.add(QuestionRelation(
-            id=uuid.uuid4(),
-            from_question_id=question_id,
-            to_question_id=overlap["official_question_id"],
-            relation_type=overlap["relation_type"],
-            relation_strength=overlap["strength"],
-            detection_method=overlap["detection_method"],
-            is_human_confirmed=False,
-            created_at=now,
-        ))
+                db.add(QuestionRelation(
+                    id=uuid.uuid4(),
+                    from_question_id=question_id,
+                    to_question_id=overlap["official_question_id"],
+                    relation_type=overlap["relation_type"],
+                    relation_strength=overlap["strength"],
+                    detection_method=overlap["detection_method"],
+                    is_human_confirmed=False,
+                    created_at=now,
+                ))
+        except IntegrityError:
+            # Concurrent insert already created this relation — safe to skip
+            pass
 
 
 async def run_overlap_check(

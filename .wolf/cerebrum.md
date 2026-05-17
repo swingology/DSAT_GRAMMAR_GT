@@ -41,6 +41,7 @@
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
 - [2026-05-14] Do not assume root `INGESTION_PRD.md` exists from stale anatomy output; use `docs/PRD/INGESTION_PRD.md` for backend PRD audits.
 - [2026-05-14] When inserting new numbered sections into long rule docs, immediately rg the affected heading prefix (e.g. `^### 16\.`) to catch duplicate/out-of-order numbering.
+- [2026-05-16] When replacing text in DEBUG_LOG.md with python `content.replace()`, double-check that variable names (`old5` vs `new9`) match — a typo caused finding #5's text to be replaced with finding #9's text instead of finding #5's strikethrough version.
 
 ## Decision Log
 

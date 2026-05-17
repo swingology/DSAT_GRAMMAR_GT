@@ -1,5 +1,7 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
@@ -23,6 +25,11 @@ def _check_insecure_keys(settings) -> None:
         logger.warning(
             "SECURITY WARNING: Default API keys are active. "
             "Set ADMIN_API_KEYS and STUDENT_API_KEYS environment variables before deploying."
+        )
+    if settings.env == "production" and "*" in settings.cors_origins_list:
+        raise RuntimeError(
+            "CORS_ALLOW_ALL_ORIGINS is not permitted in production. "
+            "Set CORS_ALLOWED_ORIGINS to a comma-separated list of allowed domains."
         )
 
 
@@ -50,9 +57,41 @@ async def lifespan(app: FastAPI):
                 logger.warning("Startup: marked %d stuck job(s) as failed", _result.rowcount)
     except Exception as _startup_err:
         logger.warning("Startup recovery skipped (DB unavailable): %s", _startup_err)
+
+    # Background sweeper: periodically mark stuck jobs as failed
+    _sweeper_task = None
+    if settings.job_sweeper_interval_s > 0:
+
+        async def _stuck_job_sweeper():
+            while True:
+                await asyncio.sleep(settings.job_sweeper_interval_s)
+                try:
+                    _cutoff = datetime.now(timezone.utc) - timedelta(seconds=settings.pipeline_timeout_s)
+                    async with async_session() as _db:
+                        _result = await _db.execute(
+                            update(QuestionJob)
+                            .where(
+                                QuestionJob.status.in_(_STUCK_STATUSES),
+                                QuestionJob.updated_at < _cutoff,
+                            )
+                            .values(
+                                status="failed",
+                                validation_errors_jsonb=[{"step": "sweeper", "error": "Job timed out"}],
+                            )
+                        )
+                        await _db.commit()
+                        if _result.rowcount:
+                            logger.warning("Sweeper: marked %d stuck job(s) as failed", _result.rowcount)
+                except Exception as _sweep_err:
+                    logger.warning("Sweeper error: %s", _sweep_err)
+
+        _sweeper_task = asyncio.create_task(_stuck_job_sweeper())
+
     yield
     from app.database import engine
     from app.llm.factory import close_all_providers
+    if _sweeper_task:
+        _sweeper_task.cancel()
     await close_all_providers()
     await engine.dispose()
 

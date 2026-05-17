@@ -1,15 +1,15 @@
 from collections import Counter
 
 from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 from uuid import UUID
 
 from app.database import get_db
-from app.auth import student_required, admin_required
+from app.auth import student_required
 from app.models.db import Question, User, UserProgress, QuestionAnnotation, QuestionOption
-from app.models.payload import StudentQuestionResponse, UserProgressCreate, UserStats, UserCreate, UserResponse
+from app.models.payload import StudentQuestionResponse, UserProgressCreate, UserStats
 
 router = APIRouter(prefix="/api", tags=["student"])
 
@@ -115,6 +115,17 @@ async def submit_answer(
     if q.practice_status != "active":
         raise HTTPException(status_code=400, detail="Question is not active")
 
+    # Verify the selected option exists for this question's current version
+    option_result = await db.execute(
+        select(QuestionOption).where(
+            QuestionOption.question_id == qid,
+            QuestionOption.question_version_id == q.latest_version_id,
+            QuestionOption.option_label == body.selected_option_label,
+        )
+    )
+    if not option_result.scalars().first():
+        raise HTTPException(status_code=400, detail="Selected option not found for this question")
+
     result = await db.execute(select(User).where(User.user_token == token_uuid))
     user = result.scalars().first()
     if not user:
@@ -161,60 +172,3 @@ async def get_user_stats(
         top_missed_focus_keys=[k for k, _ in focus_counts.most_common(5)],
         top_missed_trap_keys=[k for k, _ in trap_counts.most_common(5)],
     )
-
-
-@router.post("/users", response_model=UserResponse)
-async def create_user(
-    body: UserCreate,
-    db: AsyncSession = Depends(get_db),
-    _auth: str = Depends(admin_required),
-):
-    """Register a new user."""
-    existing = await db.execute(select(User).where(User.username == body.username))
-    if existing.scalars().first():
-        raise HTTPException(status_code=409, detail="Username already exists")
-
-    user = User(username=body.username)
-    db.add(user)
-    await db.commit()
-    await db.refresh(user)
-    return user
-
-
-@router.get("/users", response_model=list[UserResponse])
-async def list_users(
-    db: AsyncSession = Depends(get_db),
-    _auth: str = Depends(admin_required),
-):
-    """List all users (admin only)."""
-    result = await db.execute(select(User).order_by(User.id))
-    return result.scalars().all()
-
-
-@router.get("/users/{user_id}", response_model=UserResponse)
-async def get_user(
-    user_id: int,
-    db: AsyncSession = Depends(get_db),
-    _auth: str = Depends(admin_required),
-):
-    """Get a user by ID (admin only)."""
-    user = await db.get(User, user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-
-
-@router.delete("/users/{user_id}")
-async def delete_user(
-    user_id: int,
-    db: AsyncSession = Depends(get_db),
-    _auth: str = Depends(admin_required),
-):
-    """Delete a user and their progress records (admin only)."""
-    user = await db.get(User, user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    await db.execute(delete(UserProgress).where(UserProgress.user_id == user_id))
-    await db.delete(user)
-    await db.commit()
-    return {"detail": "User deleted"}

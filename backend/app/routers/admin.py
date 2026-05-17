@@ -22,7 +22,7 @@ from app.pipeline.option_hydration import clear_option_annotations
 
 
 class EvaluationCreateRequest(BaseModel):
-    job_id: str
+    job_id: Optional[str] = None
     question_id: Optional[str] = None
     provider_name: str = "ollama"
     model_name: str = "deepseek-v4-pro:cloud"
@@ -250,10 +250,10 @@ async def approve_question(
     if not q:
         raise HTTPException(status_code=404, detail="Question not found")
 
-    if q.content_origin == "official":
+    if q.content_origin == "official" and q.official_overlap_status != "none":
         raise HTTPException(
             status_code=409,
-            detail="Official questions cannot be approved until answer verification is implemented",
+            detail="Official questions with unresolved overlap cannot be approved",
         )
     if q.content_origin == "generated" and q.official_overlap_status != "none":
         raise HTTPException(

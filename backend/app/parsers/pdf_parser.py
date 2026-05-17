@@ -7,9 +7,15 @@ and vector graphics that may not appear as embedded image objects.
 import base64
 import fitz  # pymupdf
 
+MAX_RENDER_DIMENSION = 3000  # cap rendered page images to ~3000px on each side
+
 
 def _render_page_b64(page) -> str:
-    mat = fitz.Matrix(2.0, 2.0)  # 2x scale, about 144 DPI
+    scale = 2.0
+    rect = page.rect
+    if rect.width * scale > MAX_RENDER_DIMENSION or rect.height * scale > MAX_RENDER_DIMENSION:
+        scale = min(MAX_RENDER_DIMENSION / rect.width, MAX_RENDER_DIMENSION / rect.height)
+    mat = fitz.Matrix(scale, scale)
     pix = page.get_pixmap(matrix=mat, colorspace=fitz.csRGB)
     return base64.standard_b64encode(pix.tobytes("png")).decode("utf-8")
 

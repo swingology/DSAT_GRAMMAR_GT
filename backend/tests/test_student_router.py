@@ -38,7 +38,7 @@ def test_student_stats_empty(client):
 
 def test_api_users_empty_username_rejected(client):
     resp = client.post(
-        "/api/users",
+        "/users",
         json={"username": ""},
         headers={"X-API-Key": "admin-test-key"},
     )
@@ -47,7 +47,7 @@ def test_api_users_empty_username_rejected(client):
 
 def test_api_users_username_too_long_rejected(client):
     resp = client.post(
-        "/api/users",
+        "/users",
         json={"username": "x" * 101},
         headers={"X-API-Key": "admin-test-key"},
     )

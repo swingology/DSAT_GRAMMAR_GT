@@ -1,5 +1,44 @@
 # Debug Log
 
+## 2026-05-16 - Open Gap Inventory (All Audits)
+Report created by: Claude Sonnet 4.6
+Git branch: `main`
+Git checkpoint: `f37850e` — chore: add settings.local.json to .gitignore
+
+Summary of all unresolved findings across prior audits. Four items previously in flight are now resolved:
+- ~~OCR fallback transition logging (2026-05-15 #7)~~ → **Fixed:** fallback loop now logs chain entry, transitions, and paradigm info.
+- ~~Per-page render size limit (2026-05-15 #9)~~ → **Fixed:** `MAX_PAGE_RENDER_BYTES` cap in `_store_page_render`; `MAX_RENDER_DIMENSION` cap in `_render_page_b64`.
+- ~~`generate_compare` shared `request_data` reference (2026-05-15 #5)~~ → **Fixed:** each closure gets `dict(request_data)` copy.
+- ~~`generate_compare` closure default-arg comment (2026-05-15 #22)~~ → **Fixed:** documented inline with the `job_data=job_data` default arg.
+
+Additional items resolved in this session (2026-05-16):
+- ~~Mixed text+scanned PDFs skip OCR on scanned pages (Inventory #2)~~ → **Fixed:** per-page text check detects mixed PDFs and sends only blank pages through OCR.
+- ~~`GET /ingest/jobs/{job_id}` doesn't expose OCR/LLM meta (Inventory #3)~~ → **Fixed:** `JobResponse` now includes `ocr_meta` and `llm_meta` from `pass1_json`.
+- ~~`persist_overlap_relations` race condition (Inventory #5)~~ → **Fixed:** wrapped in `begin_nested()` savepoint with `IntegrityError` catch.
+- ~~`generate_compare` no error aggregation (Inventory #6)~~ → **Fixed:** `get_generation_run` now returns `validation_errors` per job and `pass1_json`/`pass2_json` for single jobs.
+- ~~`overlap_checking` status never set in generate pipeline (Inventory #7)~~ → **Fixed:** added `job.status = "overlap_checking"` before overlap detection in `_run_generate_pipeline`.
+- ~~`generation_source_set` stores full `request_data` (Inventory #9)~~ → **Fixed:** filters out `_SOURCE_SET_OPERATIONAL_KEYS` (`provider_name`, `model_name`).
+- ~~`LlmEvaluation.job_id` nullable=False receiving None (Inventory #11)~~ → **Fixed:** `EvaluationCreateRequest.job_id` changed to `Optional[str] = None`.
+- ~~No admin API to activate official questions (Inventory #13)~~ → **Fixed:** `/admin/questions/{id}/approve` now allows official questions unless they have unresolved overlap.
+- ~~Duplicate user-management routes (Inventory #14)~~ → **Fixed:** removed CRUD endpoints from `student.py`; canonical `/users` endpoints in `users.py` now serve all user management.
+- ~~Student submit doesn't verify option label (Inventory #15)~~ → **Fixed:** added `QuestionOption` existence check in `submit_answer`.
+- ~~No live heartbeat for stuck jobs (Inventory #12)~~ → **Fixed:** background sweeper task marks stuck jobs as failed every `job_sweeper_interval_s` (default 300s).
+- ~~CORS wildcard default (Inventory #17)~~ → **Fixed:** production mode raises `RuntimeError` on `allow_origins=["*"]`.
+
+### Remaining (deferred)
+
+4. **Low: OCR pipeline test coverage gaps.**
+   No DB-backed pipeline tests for: provider failure fallback, malformed vision JSON, mixed text/scanned PDFs, and batch `ocr_strategy` forwarding edge cases.
+   - `backend/tests/test_ocr.py`, `backend/tests/test_ingest_router.py`, `backend/tests/test_backend_regressions.py`
+   - Cross-reference: 2026-05-10 OCR Gap Review #9
+
+16. **Low: Test suite uses stub DB session — real DB query regressions are invisible.**
+    `_MockSession` returns `None` for all `.get()` and empty results for all `.execute()`. Wrong JOINs, missing WHERE clauses, and bad column references all pass silently.
+    - `backend/tests/conftest.py`
+    - Cross-reference: 2026-05-10 Backend Gap Audit #25
+
+---
+
 ## 2026-05-16 - Live Ingestion Run Gaps
 Report created by: Claude Opus 4.7
 Git branch: `main`
@@ -93,18 +132,20 @@ Git checkpoint: `606f1e3` — fix(audit): harden json_parser, CORS, filename san
    - `backend/app/routers/generate.py:41-42`~~
    - **Fixed:** Added `_operational_keys = {"provider_name", "model_name"}` exclusion filter when merging the last source (`request_data`) into the profile.
 
-5. **Low: `generate_compare` — all provider jobs share the same `request_data` reference.**
+5. ~~**Low: `generate_compare` — all provider jobs share the same `request_data` reference.**
    Line 293: `request_data = body.model_dump()` is computed once. Each `_run_generate_pipeline` closure captures the same dict reference. If any pipeline mutates `request_data` (unlikely but possible via `merged.update`), it affects subsequent jobs. Should be a deep copy per provider.
-   - `backend/app/routers/generate.py:293`
+   - `backend/app/routers/generate.py:293`~~
+   - **Fixed:** Each closure now receives `job_data = dict(request_data)` — a shallow copy per provider. The closure default-arg pattern (`jid=jid, job_data=job_data`) also documents why the default arg is needed.
 
 6. ~~**Medium: `_run_pipeline` — VLM fused path `extract_json_from_text` failure kills job with no fallback.**
    Lines 1371-1402: The VLM extraction try/except catches any exception and sets `job.status = "failed"`. Unlike the GLM and DeepSeek branches (which have `ocr_fallback` logic), the VLM path has no fallback — a single malformed JSON response from the vision model terminates the entire job.
    - `backend/app/routers/ingest.py:1397-1402`~~
    - **Fixed:** The whole OCR gate is now a single ordered fallback loop driven by `_build_ocr_chain`, which preferentially orders **two-step strategies (glm, deepseek) before VLM-fused providers (anthropic, ollama, openai)**. The VLM body retains its 3-attempt JSON-parse retry (exponential backoff). Failure in any branch records the error and the loop advances to the next strategy; the job is only marked `failed` when the whole chain is exhausted. `_fallback_ocr_strategy` was replaced by `_build_ocr_chain`.
 
-7. **Low / Observability: `_run_pipeline` — GLM/DeepSeek OCR fallback switches extraction paradigm without explicit diagnostics.**
+7. ~~**Low / Observability: `_run_pipeline` — GLM/DeepSeek OCR fallback switches extraction paradigm without explicit diagnostics.**
    When OCR fails and fallback succeeds (lines 1276-1292), the code changes `resolved_strategy` and continues. But the fallback strategy runs the VLM fused path (lines 1346-1402), which does BOTH OCR and extraction in one call. If the original strategy was `glm` or `deepseek` (two-step: OCR then separate LLM extraction), the fallback switches to a completely different extraction paradigm without logging the paradigm shift or adjusting the pipeline accordingly. The `text_extraction_provider` is already set (line 1268-1274) for the two-step path but is never used when fallback activates the VLM fused path.
-   - `backend/app/routers/ingest.py:1276-1292, 1346-1402`
+   - `backend/app/routers/ingest.py:1276-1292, 1346-1402`~~
+   - **Fixed:** OCR fallback loop now logs the full chain at entry and logs each fallback transition. Two-step successes log paradigm info. VLM-fused successes log that Pass 1 is skipped.
 
 #### Timeout & Resource Exhaustion
 
@@ -113,9 +154,10 @@ Git checkpoint: `606f1e3` — fix(audit): harden json_parser, CORS, filename san
    - `backend/app/routers/ingest.py:1363, 1579`, `backend/app/job_limits.py:29`~~
    - **Fixed:** `_run_pipeline_with_session` wraps `_run_pipeline` in `asyncio.wait_for(timeout=settings.pipeline_timeout_s)` (default 1800s). On timeout the job is marked `failed` on a fresh session. See also 2026-05-16 Live Ingestion Run Gaps #5. (Heartbeat-style progress monitoring remains unimplemented but the semaphore-starvation risk is closed.)
 
-9. **Medium: `_store_page_render` decodes base64 and stores raw bytes — no size limit per page.**
+9. ~~**Medium: `_store_page_render` decodes base64 and stores raw bytes — no size limit per page.**
    Line 957: `base64.b64decode(b64)` decodes the entire page image. For a high-DPI scan, a single page can be 20+ MB decoded. `max_images` (default 10) caps page count but not per-page size. A 10-page PDF with 20 MB pages writes 200 MB to object storage in the request path.
-   - `backend/app/routers/ingest.py:957`
+   - `backend/app/routers/ingest.py:957`~~
+   - **Fixed:** Added `MAX_PAGE_RENDER_BYTES = 10 MB` constant. `_store_page_render` now decodes first, checks size, and returns `None` (skipping the page) if over the limit. `_store_pdf_page_renders` filters out `None` returns. `_render_page_b64` in `pdf_parser.py` now caps rendered dimensions to `MAX_RENDER_DIMENSION = 3000px` per side.
 
 10. ~~**Medium: `detect_overlaps` loads all official questions with no limit.**
     Line 46-56: A single JOIN query loads every `Question` with `content_origin == "official"` and `practice_status in ("active", "draft")`, plus their annotations. At 10,000+ official questions, this becomes a multi-hundred-megabyte result set per overlap check. No pagination, no limit clause.
@@ -175,9 +217,10 @@ Git checkpoint: `606f1e3` — fix(audit): harden json_parser, CORS, filename san
     The `QuestionJob` at line 225 has no `raw_asset_id`. This means the `QuestionAsset` link is absent, and the `QuestionSourceSpan` and `QuestionStimulusAsset` foreign keys to `raw_asset_id` will be `None`. No provenance tracking for generated content.
     - `backend/app/routers/generate.py:225`
 
-22. **Low: `generate_compare` uses `async_session()` inside a closure that captures `jid` via default arg.**
+22. ~~**Low: `generate_compare` uses `async_session()` inside a closure that captures `jid` via default arg.**
     Line 297: `async def _run(jid=jid):` — this is the Python closure-default-arg pattern to avoid late binding. It works correctly but is fragile; if someone refactors to `async def _run():` the `jid` would be captured by reference and all tasks would use the last `jid` value. Worth a comment.
-    - `backend/app/routers/generate.py:297`
+    - `backend/app/routers/generate.py:297`~~
+    - **Fixed:** Documented inline with the `job_data=job_data` default arg, matching the `jid=jid` pattern.
 
 ### Cross-References To Existing Entries
 

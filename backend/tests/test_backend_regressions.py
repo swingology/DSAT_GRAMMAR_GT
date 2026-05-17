@@ -569,7 +569,7 @@ async def test_admin_edit_rewrites_choice_correctness_when_answer_changes():
 
 
 @pytest.mark.asyncio
-async def test_approve_question_blocks_official_items():
+async def test_approve_question_allows_official_items():
     db = _FakeDB()
     question_id = uuid.uuid4()
     question = Question(
@@ -581,6 +581,29 @@ async def test_approve_question_blocks_official_items():
         current_explanation_text=None,
         practice_status="draft",
         official_overlap_status="none",
+        is_admin_edited=False,
+        metadata_managed_by_llm=True,
+    )
+    db.get_map[(Question, question_id)] = question
+
+    result = await admin_router.approve_question(str(question_id), db=db, _auth="ok")
+    assert question.practice_status == "active"
+    assert result["practice_status"] == "active"
+
+
+@pytest.mark.asyncio
+async def test_approve_question_blocks_official_with_overlap():
+    db = _FakeDB()
+    question_id = uuid.uuid4()
+    question = Question(
+        id=question_id,
+        content_origin="official",
+        current_question_text="Official",
+        current_passage_text=None,
+        current_correct_option_label="A",
+        current_explanation_text=None,
+        practice_status="draft",
+        official_overlap_status="possible",
         is_admin_edited=False,
         metadata_managed_by_llm=True,
     )
@@ -829,11 +852,12 @@ async def test_student_recall_combines_annotation_filters_with_one_join():
 
 @pytest.mark.asyncio
 async def test_delete_user_removes_progress_before_user_delete():
+    from app.routers import users as users_router
     db = _FakeDB()
     user = SimpleNamespace(id=7)
-    db.get_map[(student_router.User, 7)] = user
+    db.get_map[(users_router.User, 7)] = user
 
-    await student_router.delete_user(7, db=db, _auth="ok")
+    await users_router.delete_user(7, db=db, _auth="ok")
 
     assert len(db.executed) == 1
     assert db.executed[0].is_delete

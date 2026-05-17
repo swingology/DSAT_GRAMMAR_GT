@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-09T23:06:22.868Z",
   "lifetime": {
-    "total_tokens_estimated": 2706460,
-    "total_reads": 642,
-    "total_writes": 799,
-    "total_sessions": 19,
-    "anatomy_hits": 389,
-    "anatomy_misses": 253,
-    "repeated_reads_blocked": 699,
-    "estimated_savings_vs_bare_cli": 9319995
+    "total_tokens_estimated": 3361737,
+    "total_reads": 760,
+    "total_writes": 944,
+    "total_sessions": 22,
+    "anatomy_hits": 485,
+    "anatomy_misses": 275,
+    "repeated_reads_blocked": 1001,
+    "estimated_savings_vs_bare_cli": 15201629
   },
   "sessions": [
     {
@@ -9076,6 +9076,1608 @@
         "writes_count": 7,
         "repeated_reads_blocked": 5,
         "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-16-0238",
+      "started": "2026-05-16T09:38:33.869Z",
+      "ended": "2026-05-16T09:39:11.496Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.gitignore",
+          "tokens_estimated": 9,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.gitignore",
+          "tokens_estimated": 13,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9,
+        "output_tokens_estimated": 13,
+        "reads_count": 1,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-16-0238",
+      "started": "2026-05-16T09:38:33.869Z",
+      "ended": "2026-05-16T09:39:25.298Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.gitignore",
+          "tokens_estimated": 9,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.gitignore",
+          "tokens_estimated": 13,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9,
+        "output_tokens_estimated": 13,
+        "reads_count": 1,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-16-0238",
+      "started": "2026-05-16T09:38:33.869Z",
+      "ended": "2026-05-16T09:40:24.318Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.gitignore",
+          "tokens_estimated": 9,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.gitignore",
+          "tokens_estimated": 13,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9,
+        "output_tokens_estimated": 13,
+        "reads_count": 1,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-16-1046",
+      "started": "2026-05-16T17:46:33.559Z",
+      "ended": "2026-05-16T17:48:23.371Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 11588,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 11588,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-16-1046",
+      "started": "2026-05-16T17:46:33.559Z",
+      "ended": "2026-05-16T17:53:34.122Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 11588,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 4323,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 1508,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 30128,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/config.py",
+          "tokens_estimated": 721,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/orchestrator.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/dashboard.py",
+          "tokens_estimated": 14684,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/db.py",
+          "tokens_estimated": 3950,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ocr.py",
+          "tokens_estimated": 2181,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/questions.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/object_store.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/llm/base.py",
+          "tokens_estimated": 282,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRATMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 471,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/crop_detector.py",
+          "tokens_estimated": 3185,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ingest_router.py",
+          "tokens_estimated": 8845,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 174,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 235,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 238,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 99,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 233,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 144,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 81866,
+        "output_tokens_estimated": 1589,
+        "reads_count": 16,
+        "writes_count": 12,
+        "repeated_reads_blocked": 30,
+        "anatomy_lookups": 13
+      }
+    },
+    {
+      "id": "session-2026-05-16-1046",
+      "started": "2026-05-16T17:46:33.559Z",
+      "ended": "2026-05-16T17:56:17.192Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 17474,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 4323,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 1508,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 30128,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/config.py",
+          "tokens_estimated": 721,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/orchestrator.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/dashboard.py",
+          "tokens_estimated": 14684,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/db.py",
+          "tokens_estimated": 3950,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ocr.py",
+          "tokens_estimated": 2181,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/questions.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/object_store.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/llm/base.py",
+          "tokens_estimated": 282,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRATMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 471,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/crop_detector.py",
+          "tokens_estimated": 3185,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ingest_router.py",
+          "tokens_estimated": 8845,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 174,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 235,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 238,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 99,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 233,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 144,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 2142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 245,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 87752,
+        "output_tokens_estimated": 3976,
+        "reads_count": 16,
+        "writes_count": 14,
+        "repeated_reads_blocked": 34,
+        "anatomy_lookups": 13
+      }
+    },
+    {
+      "id": "session-2026-05-16-1046",
+      "started": "2026-05-16T17:46:33.559Z",
+      "ended": "2026-05-16T18:10:18.544Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 17781,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 4323,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 1508,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 30128,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/config.py",
+          "tokens_estimated": 721,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/orchestrator.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/dashboard.py",
+          "tokens_estimated": 14684,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/db.py",
+          "tokens_estimated": 3950,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ocr.py",
+          "tokens_estimated": 2181,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/questions.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/object_store.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/llm/base.py",
+          "tokens_estimated": 282,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRATMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 471,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/crop_detector.py",
+          "tokens_estimated": 3185,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ingest_router.py",
+          "tokens_estimated": 8845,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 174,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 235,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 238,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 99,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 233,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 144,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 2142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 245,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 161,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 88059,
+        "output_tokens_estimated": 4137,
+        "reads_count": 16,
+        "writes_count": 15,
+        "repeated_reads_blocked": 37,
+        "anatomy_lookups": 13
+      }
+    },
+    {
+      "id": "session-2026-05-16-1046",
+      "started": "2026-05-16T17:46:33.559Z",
+      "ended": "2026-05-16T18:11:52.170Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 17779,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 4323,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 1508,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 30128,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/config.py",
+          "tokens_estimated": 721,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/orchestrator.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/dashboard.py",
+          "tokens_estimated": 14684,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/db.py",
+          "tokens_estimated": 3950,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ocr.py",
+          "tokens_estimated": 2181,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/questions.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/object_store.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/llm/base.py",
+          "tokens_estimated": 282,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRATMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 471,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/crop_detector.py",
+          "tokens_estimated": 3185,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ingest_router.py",
+          "tokens_estimated": 8845,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 174,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 235,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 238,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 99,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 233,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 144,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 2142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 245,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 161,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 88057,
+        "output_tokens_estimated": 4137,
+        "reads_count": 16,
+        "writes_count": 15,
+        "repeated_reads_blocked": 39,
+        "anatomy_lookups": 13
+      }
+    },
+    {
+      "id": "session-2026-05-16-1046",
+      "started": "2026-05-16T17:46:33.559Z",
+      "ended": "2026-05-16T18:22:35.409Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 17779,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 4413,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 1556,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 30716,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/config.py",
+          "tokens_estimated": 721,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/orchestrator.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/dashboard.py",
+          "tokens_estimated": 14684,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/db.py",
+          "tokens_estimated": 3950,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ocr.py",
+          "tokens_estimated": 2181,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/questions.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/object_store.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/llm/base.py",
+          "tokens_estimated": 282,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRATMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 471,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/crop_detector.py",
+          "tokens_estimated": 3185,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ingest_router.py",
+          "tokens_estimated": 8845,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/admin.py",
+          "tokens_estimated": 6813,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/student.py",
+          "tokens_estimated": 1894,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/overlap.py",
+          "tokens_estimated": 1577,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 1352,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/users.py",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/auth.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_student_router.py",
+          "tokens_estimated": 466,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_backend_regressions.py",
+          "tokens_estimated": 12629,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CHANGELOG.md",
+          "tokens_estimated": 17685,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 174,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 235,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 238,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 99,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 233,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 144,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 2142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 245,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 161,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/admin.py",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/admin.py",
+          "tokens_estimated": 66,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/student.py",
+          "tokens_estimated": 235,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/overlap.py",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/overlap.py",
+          "tokens_estimated": 330,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 367,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 98,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 113,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 424,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 223,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 259,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 80,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 131,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/student.py",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/student.py",
+          "tokens_estimated": 134,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/config.py",
+          "tokens_estimated": 105,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 433,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 57,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 123,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_student_router.py",
+          "tokens_estimated": 126,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_backend_regressions.py",
+          "tokens_estimated": 437,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_backend_regressions.py",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CHANGELOG.md",
+          "tokens_estimated": 1572,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 1034,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 131199,
+        "output_tokens_estimated": 10826,
+        "reads_count": 25,
+        "writes_count": 43,
+        "repeated_reads_blocked": 81,
+        "anatomy_lookups": 20
+      }
+    },
+    {
+      "id": "session-2026-05-16-1046",
+      "started": "2026-05-16T17:46:33.559Z",
+      "ended": "2026-05-16T18:24:16.043Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 17779,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 4413,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 1556,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 30716,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/config.py",
+          "tokens_estimated": 721,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/orchestrator.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/dashboard.py",
+          "tokens_estimated": 14684,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/db.py",
+          "tokens_estimated": 3950,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ocr.py",
+          "tokens_estimated": 2181,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/questions.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/object_store.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/llm/base.py",
+          "tokens_estimated": 282,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRATMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 471,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/storage/crop_detector.py",
+          "tokens_estimated": 3185,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_ingest_router.py",
+          "tokens_estimated": 8845,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/admin.py",
+          "tokens_estimated": 6813,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/student.py",
+          "tokens_estimated": 1894,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/overlap.py",
+          "tokens_estimated": 1577,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 1352,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/users.py",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/auth.py",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_student_router.py",
+          "tokens_estimated": 466,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_backend_regressions.py",
+          "tokens_estimated": 12629,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CHANGELOG.md",
+          "tokens_estimated": 17685,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 174,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 235,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 238,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 91,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 33,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 99,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 5,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/parsers/pdf_parser.py",
+          "tokens_estimated": 233,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 144,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 2142,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 245,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 161,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/admin.py",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/admin.py",
+          "tokens_estimated": 66,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/student.py",
+          "tokens_estimated": 235,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/overlap.py",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/pipeline/overlap.py",
+          "tokens_estimated": 330,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 367,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/generate.py",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 98,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 113,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 424,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 223,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 259,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/ingest.py",
+          "tokens_estimated": 80,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 131,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/student.py",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/routers/student.py",
+          "tokens_estimated": 134,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/config.py",
+          "tokens_estimated": 105,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 433,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 57,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/main.py",
+          "tokens_estimated": 123,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/app/models/payload.py",
+          "tokens_estimated": 13,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_student_router.py",
+          "tokens_estimated": 126,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_backend_regressions.py",
+          "tokens_estimated": 437,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/backend/tests/test_backend_regressions.py",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CHANGELOG.md",
+          "tokens_estimated": 1572,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/DEBUG_LOG.md",
+          "tokens_estimated": 1034,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 131199,
+        "output_tokens_estimated": 10826,
+        "reads_count": 25,
+        "writes_count": 43,
+        "repeated_reads_blocked": 81,
+        "anatomy_lookups": 20
       }
     }
   ],

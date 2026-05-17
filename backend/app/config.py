@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     # Hard ceiling for a single ingestion pipeline run; a slow/hung model is
     # aborted so it cannot occupy a job-semaphore slot indefinitely.
     pipeline_timeout_s: int = 1800
+    # Background sweeper interval — marks jobs stuck in in-progress statuses
+    # longer than pipeline_timeout_s as failed. 0 disables the sweeper.
+    job_sweeper_interval_s: int = 300
 
     # OCR / Vision — Option B: Ollama VLM (fused)
     ocr_vision_provider: str = "ollama"

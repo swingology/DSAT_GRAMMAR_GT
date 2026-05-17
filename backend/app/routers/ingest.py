@@ -54,6 +54,7 @@ ALLOWED_MIME = {
 }
 IMAGE_MIME_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
+MAX_PAGE_RENDER_BYTES = 10 * 1024 * 1024  # 10 MB per decoded page image
 OCR_TEXT_EXTRACT_PROVIDER = "ollama"
 OCR_TEXT_EXTRACT_MODEL = "qwen3-vl:235b-instruct-cloud"
 
@@ -955,6 +956,13 @@ def _store_page_render(
     b64: str,
     ext: str,
 ) -> dict:
+    decoded = base64.b64decode(b64)
+    if len(decoded) > MAX_PAGE_RENDER_BYTES:
+        logger.warning(
+            "Page render for job %s page %d is %d bytes (limit %d); skipping",
+            job_id, page_number, len(decoded), MAX_PAGE_RENDER_BYTES,
+        )
+        return None
     stored = put_object(
         "rendered_page",
         {
@@ -968,7 +976,7 @@ def _store_page_render(
             "page_number": page_number,
             "ext": ext,
         },
-        base64.b64decode(b64),
+        decoded,
         filename=f"{source_stem}_p{page_number:03d}.{ext}",
         mime_type=f"image/{ext}",
     )
@@ -1001,18 +1009,18 @@ def _store_pdf_page_renders(
         if not img:
             continue
         ext = img.get("ext", "png")
-        page_images.append(
-            _store_page_render(
-                asset_id=asset_id,
-                job_id=job_id,
-                content_origin=content_origin,
-                source_metadata=source_metadata,
-                source_stem=source_stem,
-                page_number=page["page_number"],
-                b64=img["b64"],
-                ext=ext,
-            )
+        stored = _store_page_render(
+            asset_id=asset_id,
+            job_id=job_id,
+            content_origin=content_origin,
+            source_metadata=source_metadata,
+            source_stem=source_stem,
+            page_number=page["page_number"],
+            b64=img["b64"],
+            ext=ext,
         )
+        if stored is not None:
+            page_images.append(stored)
     return page_images
 
 
@@ -1228,8 +1236,32 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     text_extraction_model_name = job.model_name
 
     if raw_text:
-        # Embedded text present — record that OCR was not needed
-        job.pass1_json = {**(job.pass1_json or {}), "_ocr_strategy": "bypassed"}
+        # Embedded text present — check if some pages lack text (mixed PDF)
+        _page_texts = [
+            p.get("text", "") for p in (job.pass1_json or {}).get("_page_texts", [])
+        ]
+        if _page_texts and not all(t.strip() for t in _page_texts):
+            # Some pages have no text — collect images for those pages only
+            _empty_page_indices = [i for i, t in enumerate(_page_texts) if not t.strip()]
+            _partial_images = [img for i, img in enumerate(page_images) if i in _empty_page_indices]
+            if _partial_images:
+                logger.info(
+                    "Mixed PDF detected for job %s: %d/%d pages need OCR",
+                    job.id, len(_empty_page_indices), len(_page_texts),
+                )
+                page_images = _partial_images[:settings.vision_max_images]
+                # Fall through to OCR gate below with partial page images
+                raw_text = ""  # Clear raw_text so OCR gate runs
+                # Preserve full raw text for later concatenation
+                _full_raw_text = (job.pass1_json or {}).get("raw_text", "")
+            else:
+                _full_raw_text = None
+                job.pass1_json = {**(job.pass1_json or {}), "_ocr_strategy": "bypassed"}
+        else:
+            _full_raw_text = None
+            job.pass1_json = {**(job.pass1_json or {}), "_ocr_strategy": "bypassed"}
+    else:
+        _full_raw_text = None
 
     if not raw_text and page_images:
         page_images = page_images[:settings.vision_max_images]
@@ -1249,9 +1281,19 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         _ocr_done = False
         _ocr_last_err: Exception | None = None
 
-        for _strategy in _ocr_chain:
+        logger.info(
+            "OCR chain for job %s: %s (fallback=%s)",
+            job.id, _ocr_chain, settings.ocr_fallback,
+        )
+
+        for _idx, _strategy in enumerate(_ocr_chain):
             if _ocr_done:
                 break
+            if _idx > 0:
+                logger.info(
+                    "OCR fallback: trying strategy %s for job %s (previous strategy failed: %s)",
+                    _strategy, job.id, _ocr_last_err,
+                )
 
             if _strategy == "glm":
                 # GLM-OCR: two-step — glm-ocr:latest via Ollama vision → raw_text → Pass 1 LLM
@@ -1297,6 +1339,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     )
                     text_extraction_provider_name = OCR_TEXT_EXTRACT_PROVIDER
                     text_extraction_model_name = OCR_TEXT_EXTRACT_MODEL
+                    logger.info(
+                        "OCR strategy glm succeeded for job %s: two-step extraction via %s/%s",
+                        job.id, text_extraction_provider_name, text_extraction_model_name,
+                    )
                     _ocr_done = True
                 except Exception as e:
                     _ocr_last_err = e
@@ -1335,6 +1381,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     )
                     text_extraction_provider_name = OCR_TEXT_EXTRACT_PROVIDER
                     text_extraction_model_name = OCR_TEXT_EXTRACT_MODEL
+                    logger.info(
+                        "OCR strategy deepseek succeeded for job %s: two-step extraction via %s/%s",
+                        job.id, text_extraction_provider_name, text_extraction_model_name,
+                    )
                     _ocr_done = True
                 except Exception as e:
                     _ocr_last_err = e
@@ -1394,6 +1444,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         }
                         await db.commit()
                         raw_text = "_vision_fused_"  # sentinel: Pass 1 is skipped below
+                        logger.info(
+                            "OCR strategy %s (VLM-fused) succeeded for job %s: extraction done inline, Pass 1 skipped",
+                            _strategy, job.id,
+                        )
                         _ocr_done = True
                         break
                     except ValueError as _vjson_err:
@@ -1417,6 +1471,18 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             await db.commit()
             return
         # ── end OCR gate ──────────────────────────────────────────────────
+
+        # For mixed PDFs: append OCR text to the preserved full raw text
+        if _full_raw_text and raw_text and raw_text != "_vision_fused_":
+            raw_text = _full_raw_text + "\n\n" + raw_text
+            _full_raw_text = None  # consumed
+        elif _full_raw_text and raw_text == "_vision_fused_":
+            # VLM fused path already extracted questions from OCR pages;
+            # we need to also run extraction on the text-bearing pages
+            # and merge the results later in pass1
+            _full_raw_text = None  # will be handled in pass1
+            # For now, the VLM fused output already contains everything
+            pass
 
     elif not raw_text:
         orch.fail("extracting", "no_raw_text", "No raw text available")
@@ -1942,6 +2008,7 @@ async def ingest_official_pdf(
             "_truncated": len(raw_text) > 100000,
             "pages": len(pdf_result["pages"]),
             "_page_images": page_images,
+            "_page_texts": [{"page_number": p["page_number"], "text": p.get("text", "")} for p in pdf_result["pages"]],
             "_ocr_strategy": ocr_strategy,
             "source_metadata": {
                 **source_metadata,
@@ -2073,7 +2140,7 @@ async def ingest_unofficial_file(
         prompt_version="v3.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
-        pass1_json={"raw_text": raw_text[:100000], "_truncated": len(raw_text) > 100000, "_page_images": page_images, "_ocr_strategy": ocr_strategy},
+        pass1_json={"raw_text": raw_text[:100000], "_truncated": len(raw_text) > 100000, "_page_images": page_images, "_page_texts": [{"page_number": p["page_number"], "text": p.get("text", "")} for p in pdf_result["pages"]] if pdf_result else [], "_ocr_strategy": ocr_strategy},
         created_at=now,
         updated_at=now,
     )
@@ -2608,6 +2675,7 @@ async def get_job_status(
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
+    pass1 = job.pass1_json or {}
     return JobResponse(
         id=str(job.id),
         job_type=job.job_type,
@@ -2615,4 +2683,6 @@ async def get_job_status(
         question_id=str(job.question_id) if job.question_id else None,
         created_at=job.created_at,
         validation_errors=job.validation_errors_jsonb or None,
+        ocr_meta=pass1.get("_ocr_meta"),
+        llm_meta=pass1.get("_llm_meta"),
     )

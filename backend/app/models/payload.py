@@ -1,6 +1,6 @@
 """HTTP request/response models."""
 from pydantic import BaseModel, Field
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict
 from datetime import datetime
 
 
@@ -129,6 +129,8 @@ class JobResponse(BaseModel):
     question_id: Optional[str] = None
     created_at: Optional[datetime] = None
     validation_errors: Optional[List[Any]] = None
+    ocr_meta: Optional[Dict[str, Any]] = None
+    llm_meta: Optional[Dict[str, Any]] = None
 
     model_config = {"from_attributes": True}
 

@@ -1,12 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch",
-      "WebFetch(domain:supabase.com)",
-      "mcp__git__git_status",
-      "mcp__git__git_log",
-      "mcp__git__git_diff",
-      "mcp__git__git_show"
+      "mcp__plugin_mem0_mem0__search_memories",
+      "Bash(git -C /Users/jb/Downloads/DSAT_GRAMMAR_GT status)",
+      "Bash(git -C /Users/jb/Downloads/DSAT_GRAMMAR_GT diff --stat HEAD)",
+      "Bash(git *)",
+      "Bash(pkill -f \"uvicorn\")",
+      "Bash(uv run *)",
+      "Bash(curl -s http://127.0.0.1:8000/health)"
     ]
   }
 }
