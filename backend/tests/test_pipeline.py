@@ -523,7 +523,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
-            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False,
+            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8,
         ))
 
         await ingest_router._run_pipeline(job, db)
@@ -570,7 +570,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
-            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False,
+            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8,
         ))
 
         await ingest_router._run_pipeline(job, db)
@@ -622,7 +622,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
-            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False,
+            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8,
         ))
 
         await ingest_router._run_pipeline(job, db)
@@ -664,7 +664,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [{"severity": "blocking", "field": "question_text", "message": "Missing"}])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
-            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False,
+            local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8,
         ))
 
         await ingest_router._run_pipeline(job, db)

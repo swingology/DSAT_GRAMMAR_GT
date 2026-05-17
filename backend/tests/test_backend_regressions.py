@@ -130,7 +130,7 @@ async def test_run_pipeline_keeps_official_questions_in_draft(monkeypatch):
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
-    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False))
+    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
 
     await ingest_router._run_pipeline(job, db)
 
@@ -205,7 +205,7 @@ async def test_run_pipeline_auto_activates_official_questions_when_testing_flag_
             ollama_base_url="http://localhost:11434",
             local_archive_mirror="/tmp/test_archive",
             official_auto_activate_for_testing=True,
-            layout_detection_enabled=False,
+            layout_detection_enabled=False, ollama_max_concurrent=8,
         ),
     )
 
@@ -273,7 +273,7 @@ async def test_run_pipeline_persists_overlap_after_question_creation(monkeypatch
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
-    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False))
+    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
     monkeypatch.setattr("app.pipeline.overlap.detect_overlaps", AsyncMock(return_value=overlaps))
     monkeypatch.setattr("app.pipeline.overlap.persist_overlap_relations", persist_overlap_relations)
 
@@ -436,7 +436,7 @@ async def test_run_pipeline_persists_reading_domain_question(monkeypatch):
     monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_args, **_kwargs: ("system", "user"))
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_args, **_kwargs: ("system", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
-    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False))
+    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
 
     await ingest_router._run_pipeline(job, db)
 
@@ -786,7 +786,7 @@ async def test_reannotate_updates_current_explanation_text():
         "needs_human_review": False,
     })
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
-    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False))
+    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
 
     try:
         await ingest_router._run_reannotate_pipeline(job, db)
@@ -989,7 +989,7 @@ async def test_run_pipeline_reassigns_pass1_json_with_created_ids(monkeypatch):
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
         anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
-        local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False,
+        local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8,
     ))
 
     await ingest_router._run_pipeline(job, db)
