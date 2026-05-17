@@ -42,6 +42,7 @@ def test_settings_default_values():
         assert s.glm_ocr_model == "glm-ocr:latest"
         assert s.deepseek_ocr_base_url == ""
         assert s.max_concurrent_jobs == 8
+        assert s.ollama_max_concurrent == 8
     finally:
         if saved_admin is not None:
             os.environ["ADMIN_API_KEYS"] = saved_admin

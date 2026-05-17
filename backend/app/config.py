@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     openai_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
+    ollama_max_concurrent: int = 8  # max parallel requests to Ollama (429 at ~20)
 
     # Official test data
     official_test_verbal_dir: str = "../TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL"
