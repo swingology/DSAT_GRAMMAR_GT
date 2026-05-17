@@ -1729,52 +1729,84 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     created_question_ids: list[uuid.UUID] = []
     pass2_meta_list: list[dict] = []
 
+    # ---- Phase 1: Concurrent annotation ----
+    # Sort questions by domain so identical system prompts run consecutively,
+    # enabling Ollama KV-prefix caching across same-domain questions.
+    _domain_order = {"grammar": 0, "reading": 1, "writing": 2}
+    _annot_order = sorted(
+        range(len(questions_data)),
+        key=lambda idx: _domain_order.get(_detect_domain(questions_data[idx]), 99),
+    )
+
+    # Apply form metadata before annotation starts
     for i, q_data in enumerate(questions_data):
-        # Form-submitted metadata takes precedence over LLM-extracted values
         if exam_code:
             q_data["source_exam_code"] = exam_code
         q_data.setdefault("source_subject_code", subject_code)
         q_data.setdefault("source_section_code", section_code)
         q_data.setdefault("source_module_code", module_code)
-        # ---- Pass 2: Annotate ----
-        job.status = "annotating"
-        await db.commit()
 
+    _annot_semaphore = asyncio.Semaphore(settings.ollama_max_concurrent)
+
+    async def _annotate_one(idx: int) -> tuple[int, dict | None, Exception | None, dict | None]:
+        """Annotate a single question with retry. Returns (idx, annotate_json, last_err, meta)."""
+        q_data = questions_data[idx]
         system, user = build_annotate_prompt(q_data)
-        annotate_json: dict | None = None
-        _last_err: Exception | None = None
-        for _attempt in range(3):
+        last_err: Exception | None = None
+        for attempt in range(3):
             try:
-                result = await provider.complete(system=system, user=user, max_tokens=8192)
+                async with _annot_semaphore:
+                    result = await provider.complete(system=system, user=user, max_tokens=8192)
                 parsed = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
                 if not parsed:
                     raise ValueError("LLM returned empty or un-parseable annotation JSON")
                 annotate_json = normalize_annotation(parsed)
                 annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
-                pass2_meta_list.append({
-                    "question_index": i,
+                meta = {
+                    "question_index": idx,
                     "provider": result.provider,
                     "model": result.model,
                     "latency_ms": result.latency_ms,
                     "token_usage": getattr(result, "token_usage", None) or {},
-                })
-                break
-            except ValueError as _json_err:
-                _last_err = _json_err
+                }
+                return idx, annotate_json, None, meta
+            except ValueError as json_err:
+                last_err = json_err
                 logger.warning(
                     "Annotation JSON parse failed (attempt %d/3) for question_index %d: %s",
-                    _attempt + 1, i, _json_err,
+                    attempt + 1, idx, json_err,
                 )
-                if _attempt < 2:
-                    await asyncio.sleep(0.3 * (2 ** _attempt))
-            except Exception as _exc:
-                _last_err = _exc
+                if attempt < 2:
+                    await asyncio.sleep(0.3 * (2 ** attempt))
+            except Exception as exc:
+                last_err = exc
                 break
+        return idx, None, last_err, None
+
+    # Fire all annotation calls concurrently, bounded by semaphore
+    job.status = "annotating"
+    await db.commit()
+
+    annot_results = await asyncio.gather(
+        *[_annotate_one(idx) for idx in _annot_order],
+        return_exceptions=False,
+    )
+    # Build index: question_index -> (annotate_json, last_err, meta)
+    _annot_by_idx: dict[int, tuple[dict | None, Exception | None, dict | None]] = {}
+    for idx, ajson, err, meta in annot_results:
+        _annot_by_idx[idx] = (ajson, err, meta)
+        if meta:
+            pass2_meta_list.append(meta)
+
+    # ---- Phase 2: Serial validate + persist (original question order) ----
+    for i, q_data in enumerate(questions_data):
+        annotate_json, _last_err, _meta = _annot_by_idx.get(i, (None, None, None))
+
         if annotate_json is None:
             all_errors.append({
                 "question_index": i,
                 "step": "annotating",
-                "error": str(_last_err),
+                "error": str(_last_err) if _last_err else "annotation returned None",
                 "source_question_number": q_data.get("source_question_number"),
             })
             continue
