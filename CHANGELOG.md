@@ -5,6 +5,541 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-18 — Phase 8 end-to-end hardening bug remediation
+
+**Model:** Claude Opus 4.7
+**Branch:** `main`
+
+Validated the 12 findings in the `DEBUG_LOG.md` Phase 8 end-to-end hardening
+review against the current working tree and resolved each.
+
+### Fixes
+
+- Added real-filesystem integration tests for the admin amendment promote
+  endpoints — the genuine `amendment_review` implementation now runs against
+  tmp dirs instead of canned mocks.
+- Promotion tests now verify regenerated master.json/doc content and the
+  amendment file's failure-state routing to `needs_manual_patch/`.
+- `_FakeDb` in the capture tests now honors query filtering; added a test that
+  jobs failing the query predicate are skipped.
+- Added a 12-thread concurrent-write test for `_link_candidate` file locking.
+- `scripts/amendments.py` now validates and resolves `--repo-root` rather than
+  trusting the script's `__file__` location.
+- Added a full capture → approve → promote → re-appraisal end-to-end test.
+- `test_amendments_cli.py` now monkeypatches `amendment_review.REPO_ROOT`.
+
+### Verdicts (no change)
+
+- Finding 1 was already resolved by the Phase 7 fix (re-appraisal runs outside
+  the promotion try/except).
+- Findings 3, 9, 10 judged by-design: error codes are already split correctly
+  (422 validation vs 409 conflict), and the `issubset`/SQL-substring test
+  assertions are intentional forward-compat smoke checks.
+
+### Verification
+
+- Target suite: `65 passed` (+5 new tests).
+- Related suites (`test_ingestion_analysis.py`, `test_rule_doc_patcher.py`,
+  `test_pipeline.py`, `test_backend_regressions.py`): `110 passed`.
+
+---
+
+## 2026-05-18 — Phase 8 end-to-end hardening audit
+
+**Model:** Claude Opus 4.7
+**Branch:** `main`
+
+Closed out Phase 8 of the rules-update workflow. Phase 8 is a verification
+exercise — every line item was already built incrementally during Phases 2–7
+and their bug-remediation passes — so this audit mapped each item to its
+existing test(s), confirmed no gaps, and ran the full gate.
+
+### Audit result
+
+- All 10 Phase 8 test items and all 7 Acceptance Criteria are covered by
+  existing tests; each checkbox in `TASKS_RULES_UPDATE_FEATURE.md` now cites
+  the specific test(s) that satisfy it.
+- `python scripts/gen_vocab.py --check` → `vocabulary in sync`.
+- `uv run pytest` → `441 passed, 2 skipped`. The 4 collection errors are
+  pre-existing in `backend/test_ocr_live.py` (a standalone live-OCR script with
+  a missing `image` fixture), unrelated to the rules-update feature.
+
+All eight phases (0–8) of the approval-gated rules-update workflow are complete.
+
+---
+
+## 2026-05-18 — Phase 7 ingestion analysis bug remediation
+
+**Model:** Claude Opus 4.7
+**Branch:** `main`
+
+Validated the 10 findings in the `DEBUG_LOG.md` Phase 7 ingestion-analysis
+review against current code and fixed the genuine defects.
+
+### Fixes
+
+- Moved `write_reappraisals_for_master_growth` outside `promote_amendment`'s
+  rollback try/except so a re-appraisal IO failure can no longer roll back an
+  already-committed promotion. Re-appraisal now runs best-effort after commit
+  and logs a warning on failure (added `logging` + module logger to
+  `amendment_review.py`).
+- `write_ingestion_analysis` now skips question markdown files for records with
+  no taxonomy fields and no question text, so pass1-fallback rows no longer
+  emit empty `# Question` stubs (`_has_question_content` helper).
+- `_amendment_candidates` now falls back to the shared `extract_amendment_proposal`,
+  capturing the legacy top-level `amendment_proposal` key it previously missed.
+- `write_reappraisals_for_master_growth` now uses `rglob` instead of a
+  fixed-depth `glob("*/*/...")` pattern.
+- `_exam_code` reads `source_metadata` once instead of twice.
+
+### Verdicts (not defects)
+
+- Hashes-in-DB: the spec requires hashes in every ingestion *analysis report*,
+  which is satisfied; a `QuestionJob` column is scope expansion.
+- Richer `summary.md` per-question detail: usability enhancement, deferred.
+- Best-effort `except Exception` around analysis writing in `ingest.py`: by
+  design — analysis writing must not fail an ingestion; it is logged.
+
+### Verification
+
+- Added `test_reappraisal_markdown_records_exam_and_hash_comparison`,
+  `test_question_records_falls_back_to_pass1_questions`,
+  `test_question_records_handles_single_question_pass2_without_annotations`,
+  `test_question_records_handles_empty_annotations_list`,
+  `test_empty_question_records_do_not_emit_stub_files`, and
+  `test_amendment_candidates_captures_legacy_top_level_proposal`.
+- Verified with:
+  `uv run pytest tests/test_ingestion_analysis.py tests/test_amendment_review.py
+  tests/test_amendments_cli.py tests/test_amendments.py tests/test_amendment_capture.py
+  tests/test_pipeline.py tests/test_backend_regressions.py tests/test_rule_doc_patcher.py -q`
+  (`146 passed`).
+
+---
+
+## 2026-05-18 — Rules update workflow Phase 7 ingestion analysis reports
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Implemented reproducible official ingestion analysis reports and vocabulary
+growth re-appraisal records.
+
+### Reports
+
+- Added `app.pipeline.ingestion_analysis` to write immutable report folders under
+  `analysis/ingestion/<exam>/run_<date>_<job-id>/`.
+- Reports include `summary.md`, `taxonomy_coverage.json`,
+  `validation_failures.json`, `amendment_candidates.json`, and per-question
+  markdown files.
+- Each report stores `master_json_hash`, `reading_rules_hash`,
+  `grammar_rules_hash`, and `ontology_hash`.
+- Official ingest completion now attempts to write an analysis report; generated
+  and unofficial jobs are skipped.
+- Amendment promotion now creates `reappraisal_<master_hash>.md` files for prior
+  official analyses whose stored master hash is older than the current
+  `master.json`.
+- Marked Phase 7 complete in `TASKS_RULES_UPDATE_FEATURE.md`.
+
+### Verification
+
+- Added tests for report layout, official-only behavior, hash recording,
+  re-appraisal creation after `master_json_hash` changes, and the promotion hook.
+- Verified with:
+  `uv run pytest tests/test_ingestion_analysis.py tests/test_amendment_review.py tests/test_amendments_cli.py tests/test_vocab_consistency.py tests/test_pipeline.py tests/test_backend_regressions.py -q`
+  (`119 passed`).
+
+---
+
+## 2026-05-18 — Phase 6 consistency scanner bug remediation
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Fixed the Phase 6 consistency scanner issues recorded in `DEBUG_LOG.md`.
+
+### Fixes
+
+- Updated reading-shape checks to honor both `skill_family_key` and
+  `reading_skill_family_key`.
+- Consolidated shared field-to-vocabulary mappings in `app.models.vocab_fields`
+  and wired amendment capture, candidate capture, and the scanner through it.
+- Changed DB collection to async streaming with `yield_per` instead of loading
+  all rows at once.
+- Added reverse domain checks for grammar-domain records that carry reading
+  skill/focus keys.
+- Made `--no-fail` severity-aware: non-blocking findings can exit 0, but
+  blocking findings still fail.
+- Derived hierarchical parent mismatch checks from `master.json` parent-set
+  metadata, with alias support for known parent fields.
+
+### Verification
+
+- Added regression coverage for alias-based shape checks, shared mapping reuse,
+  dynamic parent mappings, reverse domain mismatch, severity-aware exit codes,
+  and async DB collection.
+- Verified scanner execution with:
+  `uv run python ../scripts/check_vocab_consistency.py --exports ../analysis --json --no-fail`
+  (`ok: true`).
+- Verified with:
+  `uv run pytest tests/test_vocab_consistency.py tests/test_vocab_sync.py tests/test_pipeline.py tests/test_amendments_cli.py tests/test_amendment_capture.py tests/test_amendment_review.py -q`
+  (`82 passed`).
+
+---
+
+## 2026-05-18 — Rules update workflow Phase 6 vocabulary consistency scanner
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Implemented the Phase 6 scanner for checking persisted DB/JSONB data and
+generated exports against the active compiled vocabulary in `master.json`.
+
+### Scanner
+
+- Added `scripts/check_vocab_consistency.py` with `--all`, `--db`, `--exports`,
+  `--json`, and `--no-fail` options.
+- Scanner inspects `question_jobs.pass1_json`, `question_jobs.pass2_json`,
+  `question_jobs.validation_errors_jsonb`, `question_annotations` JSONB fields,
+  `question_options`, and JSON/YAML export files.
+- Reports unknown keys, deprecated keys, wrong hierarchical parents,
+  reading-domain items with grammar keys, Cross-Text items missing
+  `prose_paired`/paired passage data, and quantitative evidence items missing
+  table/graph stimulus data.
+- Marked Phase 6 complete in `TASKS_RULES_UPDATE_FEATURE.md`.
+
+### Verification
+
+- Added fixture tests for every required scanner error type, option-row scanning,
+  machine-readable JSON reports, and JSON/YAML export loading.
+- Verified scanner execution with:
+  `uv run python ../scripts/check_vocab_consistency.py --exports ../analysis --json --no-fail`
+  (`ok: true`).
+- Verified with:
+  `uv run pytest tests/test_vocab_consistency.py tests/test_vocab_sync.py tests/test_pipeline.py tests/test_amendments_cli.py -q`
+  (`57 passed`).
+
+---
+
+## 2026-05-18 — Phase 5 dev CLI bug remediation
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Fixed the Phase 5 dev CLI issues recorded in `DEBUG_LOG.md`.
+
+### Fixes
+
+- Added `--repo-root` to `scripts/gen_vocab.py` so
+  `--promote-from-amendment` can operate against non-default repo roots without
+  monkeypatching globals.
+- Split the CLI transition tests so request-more-evidence, approve, and reject
+  each run from an appropriate starting amendment state.
+- Added explicit successful-promotion output confirming ontology.py and VOCAB
+  appendices were regenerated from `master.json`.
+
+### Verification
+
+- Verified with:
+  `uv run pytest tests/test_amendments_cli.py tests/test_vocab_sync.py tests/test_amendment_review.py tests/test_rule_doc_patcher.py -q`
+  (`36 passed`).
+
+---
+
+## 2026-05-18 — Rules update workflow Phase 5 dev CLI
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Implemented the local development CLI for the approval-gated amendment workflow.
+
+### CLI
+
+- Added `scripts/amendments.py` with `list`, `show`, `approve`, `reject`,
+  `request-more-evidence`, and `promote` commands.
+- Wired all CLI commands to the shared `app.pipeline.amendment_review` service
+  used by the admin API, so local development cannot bypass approval gates.
+- Added `scripts/gen_vocab.py --promote-from-amendment AMENDMENT_ID` as the
+  approved promotion path while keeping legacy `--promote` fenced behind
+  `--unsafe-direct-promote`.
+- Marked Phase 5 complete in `TASKS_RULES_UPDATE_FEATURE.md`.
+
+### Verification
+
+- Added CLI tests for list/show/approval/rejection/request-more-evidence,
+  promotion, blocked unapproved promotion, and `gen_vocab.py`
+  `--promote-from-amendment`.
+- Verified with:
+  `uv run pytest tests/test_amendments_cli.py tests/test_amendment_review.py tests/test_admin_router.py tests/test_rule_doc_patcher.py tests/test_amendments.py tests/test_vocab_sync.py -q`
+  (`56 passed`).
+
+---
+
+## 2026-05-18 — Phase 4 admin review API bug remediation
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Fixed the Phase 4 admin review API issues recorded in `DEBUG_LOG.md`.
+
+### Fixes
+
+- Added explicit amendment status-transition guards for approve, reject, request
+  more evidence, and promote operations.
+- Blocked promotion of approved-status files found outside the pending review
+  directory.
+- Added `error_code` classification to amendment operation results and mapped
+  API failures to clearer HTTP statuses: 404 for missing amendments, 422 for
+  validation failures, and 409 for conflicts.
+- Added `apply_loaded_rule_doc_patch` so promotion uses the already-loaded
+  amendment object instead of re-reading the file mid-operation.
+
+### Verification
+
+- Added service-level tests for reject and request-more-evidence behavior,
+  invalid status transitions, promotion directory validation, and rollback after
+  regeneration failure.
+- Added API coverage for amendment validation failures returning 422.
+- Verified with:
+  `uv run pytest tests/test_amendment_review.py tests/test_admin_router.py tests/test_rule_doc_patcher.py tests/test_amendments.py -q`
+  (`44 passed`).
+
+---
+
+## 2026-05-18 — Rules update workflow Phase 4 admin review API
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Implemented the admin-facing amendment review and promotion workflow.
+
+### Admin API
+
+- Added `GET /admin/amendments` and `GET /admin/amendments/{id}` for review
+  queue listing and amendment detail.
+- Added `POST /admin/amendments/{id}/approve`, `/reject`,
+  `/request-more-evidence`, and `/promote`.
+- Added shared `app.pipeline.amendment_review` service code so Phase 5 CLI work
+  can reuse the same approval and promotion gates.
+
+### Promotion Gates
+
+- Approval validates official-source schema, clean rule-doc dry-run, candidate
+  linkage or candidate creation, inactive proposed key, and hierarchical parent
+  validity.
+- Promotion requires an approved amendment, adds the active key to
+  `vocabulary/master.json`, applies the rule-doc body patch, regenerates
+  ontology/VOCAB appendices through the existing generator path, moves the file
+  into `vocabulary/amendments/approved/`, and records promotion metadata.
+- Marked Phase 4 complete in `TASKS_RULES_UPDATE_FEATURE.md`.
+
+### Verification
+
+- Added service tests for approval validation, candidate creation, blocked
+  duplicate active keys, guarded promotion, master/doc mutation, regeneration,
+  and approved-file movement.
+- Added API tests for list/show/approve/reject/request-more-evidence/promote.
+- Verified with:
+  `uv run pytest tests/test_amendment_review.py tests/test_admin_router.py tests/test_rule_doc_patcher.py tests/test_amendments.py -q`
+  (`36 passed`).
+
+---
+
+## 2026-05-18 — Phase 3 rule-doc patcher bug remediation
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Fixed the Phase 3 rule-doc patch engine issues recorded in `DEBUG_LOG.md`.
+
+### Fixes
+
+- Made generated VOCAB block detection parse matching START/END markers so
+  editable body text immediately after an END marker is no longer treated as
+  generated appendix content.
+- Replaced the bare `assert result.doc_path is not None` with an explicit
+  failure path that marks the amendment `needs_manual_patch` and preserves
+  conflict details.
+- Made appendix regeneration opt-in for `apply_rule_doc_patch`; guarded the
+  opt-in path so regeneration cannot run until the amendment value is active in
+  `vocabulary/master.json`.
+
+### Verification
+
+- Added regression tests for ambiguous body anchors, generated-block boundary
+  handling, missing document-path results, default no-regeneration behavior, and
+  guarded appendix regeneration.
+- Verified with `uv run pytest tests/test_rule_doc_patcher.py -q`
+  (`10 passed`).
+
+---
+
+## 2026-05-18 — Rules update workflow Phase 3 rule-doc patch engine
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Implemented the shared rule-document body patch engine needed before admin API
+or CLI promotion can safely update `master.json`.
+
+### Patch Engine
+
+- Added `backend/app/pipeline/rule_doc_patcher.py` with dry-run and apply
+  support for amendment `rule_doc_patch` payloads targeting:
+  - `rules_agent_dsat_reading_v2.md`
+  - `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+- Patch dry-runs return unified diffs for reviewer/admin display without writing
+  files.
+- Patch application performs exact body-anchor replacement. Generated appendix
+  regeneration is handled by the guarded promotion flow after `master.json`
+  contains the approved amendment value.
+- Generated VOCAB appendix blocks are protected: patches targeting or anchoring
+  inside `<!-- VOCAB:... -->` blocks are rejected.
+- Patch failures move amendment files to
+  `vocabulary/amendments/needs_manual_patch/`, set status to
+  `needs_manual_patch`, and write conflict details into `review_notes`.
+
+### Verification
+
+- Added tests for dry-run diffs, successful body patching, generated VOCAB block
+  rejection, missing-section rejection, and `needs_manual_patch` failure
+  handling.
+- Verified with `uv run python scripts/gen_vocab.py --check`
+  (`vocabulary in sync`).
+- Verified with:
+  `uv run pytest tests/test_pipeline.py tests/test_backend_regressions.py tests/test_amendments.py tests/test_amendment_capture.py tests/test_rule_doc_patcher.py tests/test_prompts.py tests/test_vocab_sync.py tests/test_ontology.py`
+  (`136 passed`).
+
+---
+
+## 2026-05-18 — Rules update workflow Phase 0 governance baseline
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Closed the direct vocabulary-promotion governance gap before implementing the
+rule-doc patch engine. `master.json` is now documented as the compiled
+enforcement manifest after approved rule amendments, not the casual authoring
+surface for new taxonomy rules.
+
+### Governance
+
+- Updated `scripts/gen_vocab.py` docs and CLI help to distinguish regeneration,
+  candidate review, and approved-amendment promotion.
+- Blocked legacy `scripts/gen_vocab.py --promote VOCAB VALUE` by default.
+  Direct promotion now requires the explicit development-only
+  `--unsafe-direct-promote` flag.
+- Added `docs/backend/VOCABULARY_GOVERNANCE.md` documenting the invariant:
+  rule-doc body approval comes before active vocabulary growth.
+- Marked Phase 0 complete in `TASKS_RULES_UPDATE_FEATURE.md`.
+
+### Verification
+
+- Added regression coverage proving unapproved direct promotion cannot mutate
+  `master.json`; the explicit unsafe escape hatch remains available for isolated
+  development.
+
+---
+
+## 2026-05-18 — Rename plausibility-source vocabulary constant
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Renamed the misspelled internal vocabulary constant
+`PLANSIBILITY_SOURCE_KEYS` to `PLAUSIBILITY_SOURCE_KEYS` across the active
+vocabulary source, generated artifacts, validation code, amendment/candidate
+maps, and tests. The external field name remains unchanged:
+`plausibility_source_key`.
+
+### Fixes
+
+- Updated `vocabulary/master.json` and `scripts/gen_vocab.py` to use
+  `PLAUSIBILITY_SOURCE_KEYS`.
+- Regenerated `backend/app/models/ontology.py` and both rules-doc VOCAB
+  appendices from the corrected vocabulary name.
+- Updated option validation, vocabulary candidate capture, amendment proposal
+  capture, and ontology tests to import/map the corrected constant.
+- Removed stale generated `PLANSIBILITY_SOURCE_KEYS` appendix blocks left behind
+  by the marker rename.
+
+### Verification
+
+- Verified vocabulary artifacts with `uv run python scripts/gen_vocab.py --check`
+  (`vocabulary in sync`).
+
+---
+
+## 2026-05-18 — Phase 2 amendment capture medium-bug remediation
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Resolved the medium-severity issues from the `DEBUG_LOG.md` Phase 2 amendment
+capture review and followed the affected code paths through ingest finalization,
+candidate linking, amendment deduplication, vocabulary field mapping, and tests.
+
+### Fixes
+
+- Preserved job-level Pass 2 annotation data during normal ingest finalization.
+  Single-question jobs now keep the flat annotation payload in `job.pass2_json`
+  alongside `_pass2_meta` and `_amendment_proposals`; multi-question jobs retain
+  per-question annotations under `_annotations`.
+- Added locked read-modify-write behavior when linking amendment IDs back into
+  `vocabulary/candidates.json`, matching the concurrency guard used by the
+  candidate recorder.
+- Kept conflicting duplicate amendment proposal body fields visible to reviewers.
+  Duplicate proposals still merge supporting examples by stable amendment ID, but
+  conflicting definitions, rationale, rule-doc patches, and master-json patches
+  are now captured in `review_notes`.
+- Completed the directly affected field map chain by adding
+  `syntactic_trap_key -> SYNTACTIC_TRAP_KEYS` and
+  `transition_subtype_key -> TRANSITION_SUBTYPE_KEYS` to both amendment capture
+  and vocabulary candidate mapping.
+
+### Verification
+
+- Added regressions for preserved single-question `pass2_json`, duplicate proposal
+  conflict notes, and the new ontology field mappings.
+- Verified with:
+  `uv run pytest tests/test_pipeline.py tests/test_backend_regressions.py tests/test_amendments.py tests/test_amendment_capture.py tests/test_prompts.py tests/test_vocab_sync.py`
+  (`117 passed`).
+
+---
+
+## 2026-05-18 — Rules update workflow Phase 2 completion
+
+**Model:** GPT-5 Codex
+**Branch:** `main`
+
+Completed the missing Phase 2 pieces for approval-gated rule amendment capture.
+Official Pass 2 annotations can now emit reviewable amendment proposals without
+allowing proposed keys into production annotation fields, and completed jobs can
+be replayed for pending amendment-file creation.
+
+### Amendment capture
+
+- Added completed-job backfill helpers in `backend/app/pipeline/amendments.py`
+  to scan completed official ingest jobs and capture pending amendment files
+  from `pass2_json.reasoning.amendment_proposal`.
+- Added multi-question replay support through `pass2_json["_amendment_proposals"]`
+  so normal ingest runs preserve enough proposal metadata for later review.
+- Non-official and generated amendment proposals are now dropped with durable
+  warning records on `validation_errors_jsonb`, not only logger output.
+- Normal ingest now stores amendment proposal metadata alongside Pass 2 LLM
+  metadata while preserving existing warning records during final job status
+  cleanup.
+
+### Verification
+
+- Added tests for official proposal capture, non-official warning persistence,
+  multi-question replay, completed-job scanning, deduplication, and candidate
+  linkage.
+- Verified with:
+  `uv run pytest tests/test_pipeline.py tests/test_backend_regressions.py tests/test_amendments.py tests/test_amendment_capture.py tests/test_prompts.py tests/test_vocab_sync.py`
+  (`115 passed`).
+
+---
+
 ## 2026-05-18 — Master vocabulary file: single source of truth + review queue
 
 **Model:** Claude Opus 4.7 (`claude-opus-4-7`)

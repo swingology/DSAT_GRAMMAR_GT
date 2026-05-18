@@ -185,7 +185,7 @@ REASONING_TRAP_KEYS = (
 )
 
 # --- V3 §10.3 plausibility_source_key ---
-PLANSIBILITY_SOURCE_KEYS = (
+PLAUSIBILITY_SOURCE_KEYS = (
     "nearest_noun_attraction", "punctuation_style_bias", "auditory_similarity",
     "grammar_fit_only", "formal_register_match", "common_idiom_pull", "none",
     "passage_vocabulary_overlap", "topical_proximity", "partial_truth",

@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-"""Controlled-vocabulary source-of-truth tooling.
+"""Controlled-vocabulary generation and review-queue tooling.
 
-`vocabulary/master.json` is the single source of truth for every controlled
-vocabulary the ingestion/generation pipeline uses. This script keeps the two
-derived artefacts in sync with it:
+`vocabulary/master.json` is the compiled enforcement manifest for every active
+controlled vocabulary the ingestion/generation pipeline uses. New active keys
+must originate as approved rule-document amendments; this file is the generated
+enforcement surface after that approval, not the casual authoring surface for
+new taxonomy rules.
+
+This script keeps the two derived artefacts in sync with master.json:
 
   * ``backend/app/models/ontology.py``  — the Python constants the validators
     import.
@@ -12,12 +16,21 @@ derived artefacts in sync with it:
 Modes
 -----
 ``--bootstrap``  One-time: import the *current* ontology.py and dump it to
-                 master.json. Run once to seed the source of truth, then never
-                 again — after this, master.json is hand-edited.
+                 master.json. Run once to seed the manifest, then never again.
 ``--generate``   Regenerate ontology.py and the rules-doc appendix blocks from
-                 master.json. The normal edit workflow.
+                 current master.json after an approved manifest change.
 ``--check``      Exit non-zero if ontology.py / the docs are out of sync with
                  master.json. Wired into CI.
+``--list-candidates``
+                 Inspect unknown keys captured during validation. Candidate
+                 rows are review input only; they are not active vocabulary.
+``--promote-from-amendment``
+                 Promote one already-approved amendment through the same gated
+                 library used by the admin API.
+``--promote``    Legacy direct promotion path. Blocked by default because it
+                 bypasses the amendment approval invariant. Development use
+                 requires --unsafe-direct-promote and must not be used for the
+                 normal rules-update workflow.
 
 Only ``status == "active"`` entries are emitted into ontology.py and the docs;
 ``candidate`` and ``deprecated`` entries live in master.json for the review
@@ -85,7 +98,7 @@ REGISTRY: list[dict] = [
      "comment": "V3 §12.1 distractor_type_key (option-level)"},
     {"name": "REASONING_TRAP_KEYS", "kind": "flat", "domain": "reading",
      "comment": "Reading v2 §10 reasoning_trap_key (question-level)"},
-    {"name": "PLANSIBILITY_SOURCE_KEYS", "kind": "flat", "domain": "shared",
+    {"name": "PLAUSIBILITY_SOURCE_KEYS", "kind": "flat", "domain": "shared",
      "comment": "V3 §10.3 plausibility_source_key"},
     {"name": "ANSWER_MECHANISM_KEYS", "kind": "flat", "domain": "shared",
      "comment": "V3 §3.3 answer_mechanism_key"},
@@ -185,7 +198,8 @@ def bootstrap() -> dict:
         vocabularies.append(entry)
     return {
         "schema_version": SCHEMA_VERSION,
-        "note": ("Canonical controlled vocabulary. Edit THIS file, then run "
+        "note": ("Compiled controlled-vocabulary enforcement manifest. New active "
+                 "keys must come from approved rule-document amendments; then run "
                  "scripts/gen_vocab.py --generate. ontology.py and the rules-doc "
                  "VOCAB blocks are generated artefacts — do not hand-edit them."),
         "vocabularies": vocabularies,
@@ -280,7 +294,9 @@ def _vocab_block(voc: dict) -> str:
 APPENDIX_HEADING = "## Appendix V — Controlled Vocabulary (generated)"
 APPENDIX_PREAMBLE = (
     "The key lists below are generated from `vocabulary/master.json` by\n"
-    "`scripts/gen_vocab.py`. Do not hand-edit them — edit master.json and\n"
+    "`scripts/gen_vocab.py`. Do not hand-edit them. Active vocabulary growth\n"
+    "must start with an approved rule-doc body amendment, then update\n"
+    "`vocabulary/master.json` as the compiled enforcement manifest and\n"
     "regenerate. They stay in lockstep with the validator enums in\n"
     "`backend/app/models/ontology.py`."
 )
@@ -375,6 +391,9 @@ def cmd_check(args) -> int:
 # --- candidates review queue ----------------------------------------------
 CANDIDATES_PATH = REPO_ROOT / "vocabulary" / "candidates.json"
 
+if str(BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(BACKEND_ROOT))
+
 
 def _load_candidates() -> dict:
     if not CANDIDATES_PATH.exists():
@@ -399,8 +418,11 @@ def cmd_list_candidates(args) -> int:
               f"last_seen={c.get('last_seen')}")
         if c.get("job_ids"):
             print(f"    jobs: {', '.join(c['job_ids'])}")
-    print("\npromote: python scripts/gen_vocab.py --promote VOCAB VALUE "
-          "[--parent PARENT]")
+    print("\nCandidates are review input only. Active vocabulary promotion requires "
+          "an approved amendment.")
+    print("approved promote: python scripts/gen_vocab.py --promote-from-amendment AMENDMENT_ID")
+    print("legacy unsafe promote: python scripts/gen_vocab.py --promote VOCAB VALUE "
+          "[--parent PARENT] --unsafe-direct-promote")
     print("reject:  python scripts/gen_vocab.py --reject VOCAB VALUE")
     return 0
 
@@ -415,6 +437,15 @@ def _drop_candidate(data: dict, vocab: str, value: str) -> bool:
 
 
 def cmd_promote(args) -> int:
+    if not args.unsafe_direct_promote:
+        print(
+            "error: direct --promote is blocked. Active vocabulary growth must "
+            "come from an approved amendment; use "
+            "--promote-from-amendment AMENDMENT_ID. For isolated development only, pass "
+            "--unsafe-direct-promote.",
+            file=sys.stderr,
+        )
+        return 2
     vocab_name, value = args.promote
     master = json.loads(MASTER_PATH.read_text())
     voc = next((v for v in master["vocabularies"] if v["name"] == vocab_name), None)
@@ -443,6 +474,30 @@ def cmd_promote(args) -> int:
     return cmd_generate(args)
 
 
+def cmd_promote_from_amendment(args) -> int:
+    from app.pipeline import amendment_review
+
+    repo_root = args.repo_root.resolve()
+    result = amendment_review.promote_amendment(
+        args.promote_from_amendment,
+        reviewer=args.reviewer,
+        notes=args.notes,
+        repo_root=repo_root,
+    )
+    if not result.ok:
+        print(result.error, file=sys.stderr)
+        if result.details:
+            print(json.dumps(result.details, indent=2, ensure_ascii=False), file=sys.stderr)
+        return 1
+    amendment = result.amendment
+    print(
+        f"promoted amendment {args.promote_from_amendment}"
+        + (f" ({amendment.affected_vocab} {amendment.proposed_value})" if amendment else "")
+    )
+    print(f"regenerated ontology.py and VOCAB appendices from {repo_root / 'vocabulary' / 'master.json'}")
+    return 0
+
+
 def cmd_reject(args) -> int:
     vocab_name, value = args.reject
     cands = _load_candidates()
@@ -467,11 +522,19 @@ def main() -> int:
     g.add_argument("--list-candidates", action="store_true",
                    help="show the vocabulary review queue")
     g.add_argument("--promote", nargs=2, metavar=("VOCAB", "VALUE"),
-                   help="promote a candidate key into master.json + regenerate")
+                   help="legacy direct candidate promotion; blocked unless --unsafe-direct-promote is set")
+    g.add_argument("--promote-from-amendment", metavar="AMENDMENT_ID",
+                   help="promote an already-approved amendment through the gated workflow")
     g.add_argument("--reject", nargs=2, metavar=("VOCAB", "VALUE"),
                    help="drop a candidate key from the review queue")
     p.add_argument("--parent", help="parent key, required for hierarchical vocabularies")
     p.add_argument("--description", help="description for a promoted key")
+    p.add_argument("--repo-root", type=Path, default=REPO_ROOT,
+                   help="repository root for --promote-from-amendment")
+    p.add_argument("--reviewer", default="gen_vocab_cli", help="reviewer name for amendment promotion metadata")
+    p.add_argument("--notes", default="", help="review notes for amendment promotion metadata")
+    p.add_argument("--unsafe-direct-promote", action="store_true",
+                   help="development-only bypass for legacy --promote; do not use for approved vocabulary growth")
     args = p.parse_args()
     if args.bootstrap:
         return cmd_bootstrap(args)
@@ -481,6 +544,8 @@ def main() -> int:
         return cmd_list_candidates(args)
     if args.promote:
         return cmd_promote(args)
+    if args.promote_from_amendment:
+        return cmd_promote_from_amendment(args)
     if args.reject:
         return cmd_reject(args)
     return cmd_check(args)

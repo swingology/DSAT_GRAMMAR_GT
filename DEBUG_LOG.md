@@ -1,5 +1,504 @@
 # Debug Log
 
+## 2026-05-18 - VLM-Fused Extraction Drops All Passage Text
+Report created by: Claude Sonnet 4.6
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+1. **Critical:** ~~qwen3-vl VLM-fused extraction drops ALL passage text — 0/33 questions have `current_passage_text`.~~
+   - Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22` (Test 5 sec01 mod01). The OCR strategy was `ollama` (qwen3-vl:235b-instruct-cloud), which uses the VLM-fused path: the vision model processes page images directly and its output IS the extraction result (Pass 1 is skipped entirely via `raw_text = "_vision_fused_"` sentinel at `ingest.py:1498`). The model successfully extracted question stems, options, and answer keys, but **returned `passage_text: null` at the top level and omitted `passage_text` from every question dict**. For most questions, the VLM also dumped passage content directly into `question_text` (e.g., Q6's `question_text` starts with "The following text is adapted from Jean Webster's 1912 novel Daddy-Long-Legs..."). For Q1, the passage was dropped entirely (only the 65-char stem survived).
+   - The pymupdf raw_text (32866 chars) in `pass1_json.raw_text` **does contain all passage content** — e.g., Q1's passage about "The King's Coin" starts at char offset 539.
+   - Root cause: `build_vision_extract_prompt()` sends only page images to the VLM with no raw_text context. The prompt instructs the model to output `passage_text` per the JSON schema, but qwen3-vl ignores this field systematically and embeds passage content in `question_text` instead.
+   - **Fixed:** Added two post-extraction helpers in `ingest.py`: (1) `_split_passage_from_question()` detects passage content in `question_text` using stem-opener patterns (e.g., "Which choice", "As used in the text", "Which quotation") at sentence boundaries (period, blank `_______`, or newline) and splits it into `passage_text` / `question_text`. (2) `_recover_passage_from_raw_text()` uses pymupdf `raw_text` to recover passages the VLM completely dropped (like Q1) — it finds the question stem in the raw text, looks backwards for the question number marker, and extracts the passage between them. Both helpers run inside `_normalize_extracted_questions()` after the shared_passage propagation step. Result: 33/33 questions now have properly separated passage_text and question_text.
+
+## 2026-05-18 - Ingestion Test Run (Test_5_digital_sec01_mod01) [attempt 3]
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+1. **Medium:** 18 question-number/OCR crosscheck mismatches (qnum_ocr_crosscheck step).
+   - Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22` reached `needs_review` with 33/33 questions extracted and created. All 18 validation errors are `qnum_ocr_crosscheck` mismatches where the LLM-extracted question number differs from the OCR-detected number. Representative examples: question_index 15 (LLM=16, OCR=40), question_index 16 (LLM=17, OCR=30), question_index 17 (LLM=18, OCR=20). The mismatches suggest OCR misreads of question numbers on this particular test form (Test 5 sec01 mod01) — the pattern (40, 30, 20, 16, 17) looks like OCR confusing stylized digits. No blocking validation errors; no "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.
+
+2. **High (prerequisite resolved this attempt):** Database had no tables — Alembic migrations needed.
+   - The Postgres container was healthy on port 5434 but the `dsat_dev` database was completely empty (0 tables). The `run.sh` script only checks Postgres connectivity, not schema readiness. First two attempts today failed before reaching this point (Docker context issue), so the missing schema went unnoticed. Running `uv run alembic upgrade head` (migrations 001-018) resolved the issue and the ingestion job then submitted and completed successfully.
+   - **Fixed:** Ran `alembic upgrade head` to create all 18 migration steps.
+
+3. **High:** Graph/chart image crops not generated — layout detection produced no stimulus regions.
+   - Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22`. Q14 (`stimulus_mode_key: table_and_passage`) and Q16 (`stimulus_mode_key: graph_and_passage`) both have structured data in `question_stimulus_assets` (JSON with series/headers), but no image crops were stored in `local_object_store/page-crops/charts/` or `page-crops/tables/` — those directories only contain `.gitkeep` files. The `ocr-artifacts/layout/` directory is also empty, meaning `detect_layout()` either failed silently or the vision model (`glm-ocr`) did not return valid region data with `chart`/`table` typed regions for the pages containing Q14 and Q16. Page renders do exist on disk (13 PNGs under `local_object_store/page-renders/official/5/verbal/section_01/module_01/`). The `crop_and_store()` code path is wired correctly and would have fired if `match_stimulus_regions_for_question()` returned chart/table regions — but it received none from layout detection. Result: no visual crop of the Q16 graph (line chart: "Ratio of Manganese to Calcium") or Q14 table ("Candidate Species for De-extinction") was saved; only the LLM-extracted structured JSON survived.
+   - **Status:** Unresolved — layout detection needs debugging to determine why `glm-ocr` is not detecting chart/table regions on Test 5 page renders.
+
+## 2026-05-18 - Ingestion Test Run (Test_5_digital_sec01_mod01) [attempt 2]
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+1. **High:** Docker daemon not running — ingestion test cannot execute.
+   - The test runner (`run.sh`) requires Postgres on localhost:5434, started via `docker compose up -d db`. Docker client v29.2.1 is installed but the daemon is unreachable: Docker context is `desktop-linux` pointing to `/home/jb/.docker/desktop/docker.sock` which does not exist, and the system socket `/var/run/docker.sock` also has no responding daemon. The runner emitted `RESULT_JSON:{"error":"postgres unavailable"}` and exited before any job was submitted.
+   - **Status:** Blocked — Docker daemon must be started manually (e.g., `sudo service docker start` or launch Docker Desktop). Same root cause as attempt 1 earlier today.
+
+## 2026-05-18 - Ingestion Test Run (Test_5_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+1. **High:** Docker daemon unavailable — ingestion test could not run.
+   - The test runner (`run.sh`) requires Postgres on localhost:5434, provided by a Docker container (`postgres:16` in `docker-compose.yml`). Docker socket at `/home/jb/.docker/desktop/docker.sock` does not exist; system socket `/var/run/docker.sock` exists but Docker daemon is not running. `sudo service docker start` failed (no sudo access). The runner emitted `RESULT_JSON:{"error":"postgres unavailable"}` and exited before submitting any job.
+   - **Status:** Blocked — requires Docker daemon to be started manually by the user.
+
+## 2026-05-18 - Phase 8 End-to-End Hardening Review
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+**Validation pass (2026-05-18, Claude Opus 4.7):** All 12 findings re-checked
+against the current working tree (Phase 7 fixes already applied). Findings 2,
+4, 5, 6, 7, 8, 11, 12 confirmed as gaps and fixed. Finding 1 confirmed already
+fixed by Phase 7. Findings 3, 9, 10 judged by-design (verdicts inline). Verified
+with `uv run pytest tests/test_admin_router.py tests/test_amendment_review.py
+tests/test_amendment_capture.py tests/test_amendments.py tests/test_amendments_cli.py
+tests/test_vocab_consistency.py` (`65 passed`) plus
+`tests/test_ingestion_analysis.py tests/test_rule_doc_patcher.py tests/test_pipeline.py
+tests/test_backend_regressions.py` (`110 passed`).
+
+### Findings
+
+1. ~~**Medium:** `promote_amendment` re-appraisal call inside try/except creates rollback hazard.~~
+   - ~~`amendment_review.py:232-233` — `write_reappraisals_for_master_growth` is called inside the promotion try/except block. If re-appraisal raises an exception (e.g., permission error, disk full), the broad `except Exception` at line 234 calls `_restore_files(backups)`, undoing the already-committed master.json update and rule doc patch.~~
+   - **Fixed:** Already resolved by the Phase 7 fix. Confirmed in current code:
+     `write_reappraisals_for_master_growth` runs at `amendment_review.py:238-249`,
+     outside the promotion try/except, in its own best-effort try/except that
+     logs a warning and never rolls back. No further change needed.
+
+2. ~~**Medium:** Admin router tests are all mocked — no integration test for the actual file-system promotion flow.~~
+   - ~~`test_admin_router.py` tests for amendment endpoints all monkeypatch `amendment_review` functions to return canned results. None exercise the real code paths that touch the filesystem.~~
+   - **Fixed:** Added `test_admin_amendment_promote_flow_against_real_filesystem`
+     and `test_admin_amendment_promote_unapproved_returns_422_real_filesystem`
+     to `test_admin_router.py`. They build a real on-disk repo in `tmp_path`,
+     re-bind every `amendment_review` function via `functools.partial(repo_root=repo)`
+     so the genuine implementation runs against tmp dirs (no canned results),
+     and drive the approve → promote flow through the actual router endpoints,
+     asserting master.json/doc updates, file moves, and the 422 status guard.
+     Only the external `regenerate_vocab_appendices` subprocess is stubbed.
+
+3. **Medium (verdict: by-design):** `_amendment_or_404` maps `error_code="conflict"` to HTTP 409.
+   - Re-checked current code: `amendment_review.py` uses `error_code="validation"`
+     (→422) for "Proposed key is already active" (line 301) and for all status-guard
+     errors (`_require_status`, line 422; `promote_amendment` lines 177/184). Only
+     genuinely ambiguous rule-doc patch anchors (`dry_run_rule_doc_patch` /
+     `apply_loaded_rule_doc_patch` failures) surface `error_code="conflict"` (→409).
+     The two-code split is therefore already correct and meaningful: 422 for
+     client-side validation failures, 409 for an actionable repository-state
+     conflict needing a manual patch. No behavior change made. The new
+     `test_admin_amendment_promote_unapproved_returns_422_real_filesystem`
+     additionally pins the validation → 422 mapping through the real code path.
+
+4. ~~**Low:** `test_promote_patches_doc_updates_master_regenerates_and_moves_file` doesn't verify the regenerated content.~~
+   - **Fixed:** The fake `regenerate_vocab_appendices` now asserts, at call time,
+     that master.json already carries the new `evidence_scope_shift` entry and
+     that the reading rule doc body was patched. The test also verifies the new
+     master entry's `status`/`parent`/`description`, the promoted amendment
+     file's `status` and `promotion` review note, and that the candidate row was
+     dropped after promotion.
+
+5. ~~**Low:** `test_promote_restores_master_and_doc_when_regeneration_fails` doesn't verify the amendment file state on failure.~~
+   - **Fixed:** The test now asserts the amendment file state after a
+     regeneration failure: it is no longer in `pending/`, was not promoted to
+     `approved/`, and was routed to `needs_manual_patch/` with
+     `status="needs_manual_patch"` and a `rule_doc_patch_failure` review note.
+
+6. ~~**Low:** `test_capture_amendments_from_completed_official_jobs_scans_db` uses a fake DB that ignores query filtering.~~
+   - **Fixed:** `_FakeDb` now applies the same predicate as the real query
+     (`job_type == "ingest"`, `content_origin == "official"`, completed status,
+     non-null `pass2_json`) and records the executed statement. Added
+     `test_capture_amendments_skips_jobs_that_fail_query_filter`, which feeds in
+     non-official, wrong-type, and null-`pass2_json` jobs and asserts only the
+     official ingest job is captured.
+
+7. ~~**Low:** No test for concurrent file access in `_link_candidate` (fcntl.flock).~~
+   - **Fixed:** Added `test_link_candidate_concurrent_writes_do_not_lose_amendment_ids`
+     to `test_amendments.py`. It launches 12 threads (synchronized on a barrier
+     for maximum contention) that each link a distinct amendment id to the same
+     candidate row, then asserts every id survived — proving the `fcntl.flock`
+     exclusive lock serializes the read-modify-write.
+
+8. ~~**Low:** CLI `scripts/amendments.py` hardcodes `REPO_ROOT` from `__file__`.~~
+   - **Fixed:** `--repo-root` now uses a `_resolve_repo_root` type converter
+     that `expanduser().resolve()`s the path and rejects any directory missing a
+     `vocabulary/` subdirectory with a clear `argparse` error. The default
+     remains the script-relative `REPO_ROOT` (correct because the script lives
+     inside the repo), but an explicit `--repo-root` is now validated.
+
+9. **Low (verdict: by-design):** `issubset` rather than exact-match in the vocab-consistency scanner test.
+   - Confirmed intentional: the scanner is expected to grow new diagnostic
+     codes, and `issubset` keeps the test stable across additive changes. Exact
+     matching would make every new error code a breaking test change. Left as-is;
+     recorded here as a deliberate forward-compatibility decision.
+
+10. **Low (verdict: by-design):** `test_collect_db_records_streams_rows_from_async_session` uses a hardcoded SQL text check.
+    - Confirmed intentional: the substring check on `str(stmt)` is a lightweight
+      smoke assertion that the query targets the expected tables without standing
+      up a real database. A query refactor that changes table names *should*
+      prompt a deliberate test update. Left as-is as an accepted trade-off.
+
+11. ~~**Low:** No end-to-end test for the full `capture → approve → promote → re-appraisal` flow.~~
+    - **Fixed:** Added `test_capture_approve_promote_reappraisal_end_to_end` to
+      `test_amendment_review.py`. It captures a proposal via
+      `capture_amendment_proposal`, approves and promotes it through the real
+      `amendment_review` functions, and seeds a prior `taxonomy_coverage.json`
+      with a stale master hash so the test verifies promotion triggers
+      `write_reappraisals_for_master_growth` and writes a `reappraisal_*.md`
+      report. Only the `regenerate_vocab_appendices` subprocess is stubbed.
+
+12. ~~**Low:** `test_gen_vocab_promote_from_amendment_uses_gated_workflow` does not monkeypatch `amendment_review.REPO_ROOT`.~~
+    - **Fixed:** The test now also `monkeypatch.setattr(amendment_review,
+      "REPO_ROOT", repo)`, so if `cmd_promote_from_amendment` ever stops
+      forwarding `repo_root` the promotion would no longer silently fall back to
+      the real repository root.
+
+## 2026-05-18 - Phase 7 Ingestion Analysis & Re-Appraisal Review
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+**Validation pass (2026-05-18, Claude Opus 4.7):** All 10 findings re-checked
+against current code. Findings 1, 3, 4, 5, 6, 7, 10 confirmed and fixed.
+Findings 2, 8, 9 judged not defects (verdicts below). Verified with
+`uv run pytest tests/test_ingestion_analysis.py tests/test_amendment_review.py
+tests/test_amendments_cli.py tests/test_amendments.py tests/test_amendment_capture.py
+tests/test_pipeline.py tests/test_backend_regressions.py tests/test_rule_doc_patcher.py`
+(`146 passed`).
+
+1. ~~**Medium:** `write_reappraisals_for_master_growth` is called inside `promote_amendment`'s try/except block after `_drop_candidate` succeeds.~~
+   - `amendment_review.py:232-233` — if the re-appraisal write raises an exception, it triggers `_restore_files(backups)` which undoes the master.json update and rule doc patch that already succeeded. A re-appraisal IO failure would roll back a successful promotion.
+   - **Fixed:** Moved the `write_reappraisals_for_master_growth` call outside the
+     promotion try/except. Re-appraisal now runs only after the promotion is
+     fully committed, inside its own best-effort try/except that logs a warning
+     (`logger`) and never rolls back. Added `logging` + module logger to
+     `amendment_review.py`.
+
+2. **Medium (verdict: not a defect):** Hashes are not stored back into the DB job record.
+   - The task spec says "Store hashes in every ingestion analysis" but hashes are only written to JSON files on disk (`taxonomy_coverage.json`). There is no `master_json_hash` / `reading_rules_hash` / `grammar_rules_hash` / `ontology_hash` column on `QuestionJob`.
+   - **Verdict:** The spec text is "Store hashes in every ingestion *analysis*",
+     and the analysis report is the unit being produced. All four hashes are
+     written into every report (`taxonomy_coverage.json`, `validation_failures.json`,
+     `amendment_candidates.json`, and `summary.md`). The Phase 7 exit criteria
+     are met. Adding `QuestionJob` columns is a schema change / scope expansion,
+     not a fix — left as a potential future enhancement, not actioned.
+
+3. ~~**Low:** `_question_records` falls back to `pass1_json` which lacks annotation fields.~~
+   - When `pass2_json` is None it returns `pass1_json` records that produce empty `# Question` markdown files.
+   - **Fixed:** Added `_has_question_content`; `write_ingestion_analysis` now
+     skips writing a question file for any record with no taxonomy fields and
+     no question text, so pass1-fallback rows no longer emit empty stubs.
+
+4. ~~**Low:** `_exam_code` evaluates `pass1.get("source_metadata")` twice.~~
+   - The original finding text is largely self-refuting (concludes the behavior "is actually fine"); the only real nit is the double `.get()` call.
+   - **Fixed:** `_exam_code` now reads `source_metadata` once into `raw_meta`
+     and reuses it.
+
+5. ~~**Low:** `_amendment_candidates` does not use `extract_amendment_proposal` from `amendments.py`.~~
+   - It manually walked `_amendment_proposals` / `reasoning.amendment_proposal` and missed the legacy top-level `amendment_proposal` key.
+   - **Fixed:** `_amendment_candidates` now falls back to the shared
+     `extract_amendment_proposal`, which handles both `reasoning.amendment_proposal`
+     and the legacy top-level `amendment_proposal` key.
+
+6. ~~**Low:** `glob("*/*/taxonomy_coverage.json")` assumes exactly 2-level depth.~~
+   - **Fixed:** `write_reappraisals_for_master_growth` now uses
+     `rglob("taxonomy_coverage.json")`, which is layout-independent.
+
+7. ~~**Low:** No test for re-appraisal content correctness.~~
+   - **Fixed:** Added `test_reappraisal_markdown_records_exam_and_hash_comparison`
+     verifying the re-appraisal markdown carries both hashes, the source exam
+     code, and the question count.
+
+8. **Low (verdict: enhancement, not a defect):** `_summary_markdown` doesn't include per-question details or hash comparison guidance.
+   - **Verdict:** The Phase 7 spec only requires a `summary.md` to exist, and it
+     does, with counts and all four hashes. Richer per-question diffing is a
+     usability enhancement, not a correctness defect — deferred, not actioned.
+
+9. **Low (verdict: by design):** `write_ingestion_analysis` is called in `ingest.py:1956-1959` with a bare `except Exception` that logs a warning.
+   - **Verdict:** This is intentional. Analysis report writing is best-effort
+     and must never fail an otherwise successful ingestion. The failure is
+     logged (`logger.warning`), not silently swallowed. Keeping the non-fatal
+     behavior is correct; no change made.
+
+10. ~~**Low:** No test for `_question_records` fallback paths.~~
+    - **Fixed:** Added `test_question_records_falls_back_to_pass1_questions`,
+      `test_question_records_handles_single_question_pass2_without_annotations`,
+      `test_question_records_handles_empty_annotations_list`,
+      `test_empty_question_records_do_not_emit_stub_files`, and
+      `test_amendment_candidates_captures_legacy_top_level_proposal`.
+
+## 2026-05-18 - Phase 6 Consistency Scanner Review
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+1. ~~**Medium:** `_check_reading_shape_rules` only checks `skill_family_key`, not `reading_skill_family_key`.~~
+   - `check_vocab_consistency.py:231-232` — reads `payload.get("skill_family_key")` for
+     Cross-Text and quantitative shape rules, but `FIELD_TO_VOCAB` also maps
+     `reading_skill_family_key` to the same vocabulary. Records using
+     `reading_skill_family_key` instead of `skill_family_key` will skip both
+     `cross_text_missing_prose_paired` and `quantitative_missing_graphic_data` checks.
+   - **Fixed:** Shape checks now accept `skill_family_key` and
+     `reading_skill_family_key`; fixture coverage verifies both Cross-Text and
+     quantitative issues are reported through the alias.
+
+2. ~~**Low:** `FIELD_TO_VOCAB` is duplicated in 3 places (scanner, amendments, vocab_candidates).~~
+   - Scanner has 19 entries, amendments has 13, vocab_candidates has 13. The scanner
+     legitimately has more (target-prefixed variants, `distractor_distance`), but the
+     shared 13 entries must be kept in sync manually. A new field added to one but not
+     the others will silently be missed.
+   - **Fixed:** Added shared `app.models.vocab_fields` mappings. Amendment
+     capture and candidate capture now use `BASE_FIELD_TO_VOCAB`; the scanner
+     uses `SCANNER_FIELD_TO_VOCAB` for base plus scanner-only fields.
+
+3. ~~**Low:** `collect_db_records` loads all rows with no limit or chunking.~~
+   - `select(QuestionJob)`, `select(QuestionAnnotation)`, `select(QuestionOption)` with
+     no `limit()` or batching. Acceptable for a CLI tool on small datasets but will OOM
+     on large production databases.
+   - **Fixed:** DB collection now uses async streaming with `yield_per`
+     execution options for jobs, annotations, and options.
+
+4. ~~**Low:** `_check_domain_rules` only flags grammar keys on reading questions, not the reverse.~~
+   - Doesn't check for `skill_family_key` or `reading_focus_key` on grammar-domain questions.
+   - **Fixed:** Domain checks now also flag grammar-domain records that carry
+     reading skill/focus keys.
+
+5. ~~**Low:** `--no-fail` exits 0 on all issues regardless of severity.~~
+   - `check_vocab_consistency.py:402` — treats blocking errors and review warnings
+     equally. A CI pipeline using `--no-fail` will never catch any issue.
+   - **Fixed:** `--no-fail` now exits 0 only for non-blocking findings; blocking
+     issues still return non-zero. Added `exit_code_for_report` coverage.
+
+6. ~~**Low:** `PARENT_FIELD_BY_CHILD_FIELD` is hardcoded; new hierarchical vocabularies
+     added to `master.json` won't be scanned for parent mismatches.
+   - `scripts/check_vocab_consistency.py:46-51`~~
+   - **Fixed:** Parent-child checks now derive hierarchical vocabulary
+     relationships from `master.json` parent-set metadata, with alias fields for
+     known parent vocabularies. Added dynamic hierarchical fixture coverage.
+
+7. ~~**Low:** No DB integration test for `collect_db_records` or `run_scan --all/--db`.~~
+   - All 4 tests use in-memory fixtures via `scan_records`/`scan_option_rows`. The async
+     DB path and `run_scan` flow are untested.
+   - **Fixed:** Added async-session fixture coverage for `collect_db_records`
+     using streamed fake rows for jobs, annotations, and options.
+
+## 2026-05-18 - Phase 5 Dev CLI Review
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+1. ~~**Low:** `gen_vocab.py --promote-from-amendment` hardcodes `repo_root=REPO_ROOT`.~~
+   - `gen_vocab.py:484` — unlike `amendments.py` which has `--repo-root`, the
+     promote-from-amendment path has no CLI flag for custom repo root. Tests
+     monkeypatch `gen_vocab.REPO_ROOT` instead. Both default to the same root,
+     so this only affects non-standard layouts.
+   - **Fixed:** Added `--repo-root` to `scripts/gen_vocab.py` and routed
+     `--promote-from-amendment` through the supplied repository root.
+
+2. ~~**Low:** CLI test exercises 4 transitions on the same amendment sequentially,
+   masking the Phase 4 status-guard gap.
+   - `test_amendments_cli.py:119-138` — does `request-more-evidence` → `approve` →
+     `reject` on the same amendment. Each succeeds because there's no status
+     transition validation, reinforcing that the gap exists but hiding it behind
+     a passing test.
+   - `tests/test_amendments_cli.py`~~
+   - **Fixed:** Split the CLI transition coverage into independent tests for
+     list/show, request-more-evidence, approve, and reject so each command runs
+     from an appropriate starting state.
+
+3. ~~**Low:** `gen_vocab.py --promote-from-amendment` gives no explicit regeneration
+     confirmation output.
+   - `gen_vocab.py:492-495` — prints `"promoted amendment ..."` but doesn't confirm
+     that `ontology.py` and VOCAB blocks were regenerated. `amendment_review.promote_amendment`
+     handles regeneration internally; the user just sees the amendment status.
+   - `scripts/gen_vocab.py`~~
+   - **Fixed:** Successful `--promote-from-amendment` now prints an explicit
+     regeneration confirmation naming the `master.json` source.
+
+4. **Info:** All Phase 5 checklist items are complete. CLI (`scripts/amendments.py`)
+     implements all 6 subcommands, shares logic with the admin API through
+     `amendment_review`, `gen_vocab.py --promote-from-amendment` is gated behind
+     the approval workflow, and `--promote` is blocked without
+     `--unsafe-direct-promote`. 5 CLI tests pass.
+
+## 2026-05-18 - Phase 4 Admin Review API Review
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+1. ~~**Medium:** `approve_amendment` has no status transition guard.~~
+   - `amendment_review.py:67-87` — does not check `amendment.status` before approving. Allows double-approve, approve-after-reject, and approve-after-promote, silently overwriting the status and `admin_decision`. Only `promote_amendment` has a status guard (`amendment.status != APPROVED`).
+   - **Fixed:** `approve_amendment` now only accepts `pending` and
+     `more_evidence_requested` amendments. Invalid transitions return a
+     validation failure instead of overwriting status/admin metadata.
+
+2. ~~**Medium:** `reject_amendment` has no status transition guard.~~
+   - `amendment_review.py:90-108` — allows rejecting an already-promoted amendment. The file moves to `rejected/` but the key remains active in `master.json`, creating inconsistency between file state and vocabulary state.
+   - **Fixed:** `reject_amendment` now blocks `promoted` amendments and only
+     allows rejection from pre-promotion review states.
+
+3. ~~**Medium:** `_restore_files` rollback on promotion failure is untested.~~
+   - `amendment_review.py:190-192` — the try/except with `_restore_files(backups)` is the critical safety mechanism if patching fails after `master.json` has been mutated. No test exercises this path; the only promotion test mocks regeneration so it never fails mid-operation.
+   - **Fixed:** Added a promotion regression that forces regeneration failure
+     after `master.json` mutation and verifies both `master.json` and the rule
+     doc body are restored.
+
+4. ~~**Low:** `request_more_evidence` has no status transition guard.~~
+   - `amendment_review.py:111-126` — can be called on already-approved or already-promoted amendments with no semantic validation.
+   - **Fixed:** `request_more_evidence` now only accepts `pending`
+     amendments.
+
+5. ~~**Low:** No business-logic test for `reject_amendment`.~~
+   - Only a mocked router test exists (`test_admin_router.py:121`). No test in `test_amendment_review.py` verifies that the file actually moves to `rejected/` and the status updates.
+   - **Fixed:** Added service-level tests proving rejection moves the file,
+     updates status, and blocks promoted amendments.
+
+6. ~~**Low:** No business-logic test for `request_more_evidence`.~~
+   - Same as finding 5 — only a mocked router test.
+   - **Fixed:** Added service-level tests proving pending amendments can request
+     more evidence and approved amendments cannot.
+
+7. ~~**Low:** `_amendment_or_404` returns HTTP 409 for all non-not-found errors.~~
+   - `admin.py:61` — schema validation failures, already-active-key, and patch failures all return 409 (Conflict). Some are more naturally 422 or 400.
+   - **Fixed:** `AmendmentOperationResult` now carries an `error_code`, and the
+     router maps `not_found` to 404, `validation` to 422, and true conflicts to
+     409.
+
+8. ~~**Low:** `promote_amendment` doesn't verify amendment file directory.~~
+   - Uses `_find_amendment_path` which searches all directories. A manually placed `approved`-status file in `rejected/` would pass the status check. Unlikely edge case.
+   - **Fixed:** Promotion now requires the approved amendment file to still be
+     in the pending review directory before promotion.
+
+9. ~~**Low:** Dual-read pattern in `promote_amendment` is fragile.~~
+   - `amendment_review.py:162` calls `apply_rule_doc_patch(loaded.path, ...)` which re-reads the amendment file. The file still has `status=approved` at that point. Works correctly now but the implicit ordering dependency could confuse future maintainers.
+   - **Fixed:** Added `apply_loaded_rule_doc_patch` and changed promotion to pass
+     the already-loaded amendment object into the patcher, removing the implicit
+     re-read dependency.
+
+## 2026-05-18 - Phase 3 Rule-Doc Patch Engine Review
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+1. ~~**Low:** `_inside_generated_vocab_block` off-by-one edge case.~~
+   - `rule_doc_patcher.py:174-182` — `rfind("<!-- VOCAB:", 0, index + 1)` and the `block_end + len(" END -->")` comparison can include text after the `END -->` marker on the same line. In practice `END -->` is line-terminal so this rarely triggers, but the bounds check is imprecise.
+   - **Fixed:** Generated VOCAB block detection now parses matching
+     `<!-- VOCAB:... START -->` / `<!-- VOCAB:... END -->` markers and treats
+     only the exact generated block bounds as protected. Added a regression
+     proving an editable anchor immediately after an END marker is accepted.
+
+2. ~~**Low:** `apply_rule_doc_patch` uses bare `assert` for `result.doc_path is not None`.~~
+   - `rule_doc_patcher.py:62` — assertions are stripped with `-O`, so if an unreachable code path produced `ok=True` with `doc_path=None`, it would crash in production with no useful message. Should be an explicit `if result.doc_path is None: raise ValueError(...)`.
+   - **Fixed:** Replaced the bare assert with an explicit guard that returns a
+     failed `RuleDocPatchResult`, marks the amendment `needs_manual_patch`, and
+     records conflict details.
+
+3. ~~**Low:** No test for ambiguous `before` anchor (count > 1).~~
+   - `_validate_body_patch_target` returns an "ambiguous" error when `text.count(patch.before) > 1`, but no test covers this case. The code is correct but untested.
+   - **Fixed:** Added `test_rule_doc_patch_rejects_ambiguous_before_anchor`.
+
+4. ~~**Medium:** `apply_rule_doc_patch` regenerates appendix blocks from `master.json` *without* first adding the new key to it.~~
+   - `rule_doc_patcher.py:63-67` — `regenerate_vocab_appendices()` runs `gen_vocab.py --generate`, which emits only active keys from master.json. If the approved key hasn't been promoted into master.json yet (that's Phase 4's job), the regenerated appendix blocks will omit the new key, making the patch incomplete until a separate promotion step adds it. The ordering constraint (master.json update before body patch + regeneration) isn't documented or enforced.
+   - **Fixed:** Appendix regeneration is now opt-in and guarded. Calling
+     `apply_rule_doc_patch(..., regenerate_appendix=True)` before the amendment
+     value is active in `vocabulary/master.json` fails before writing the rule
+     document, moves the amendment to `needs_manual_patch`, and skips
+     regeneration. Phase 4 can safely opt in after master promotion.
+
+## 2026-05-18 - Phase 2 Amendment Capture Review
+Report created by: Claude Sonnet 4.6
+Git branch: `main`
+Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
+
+### Findings
+
+1. ~~**Medium:** `pass2_json` overwrite loses annotation data for single-question jobs.~~
+   - **Fixed:** Single-question jobs now merge the annotation into `pass2_payload`
+     via `pass2_payload.update(pass2_annotation_records[0]["annotation"])` at
+     `ingest.py:1926`. Multi-question jobs store annotations under `_annotations`.
+     The original bug (metadata-only payload) is resolved.
+
+2. ~~**Medium:** `_link_candidate` writes to `candidates.json` without file locking.~~
+   - **Fixed:** `_link_candidate` now uses `fcntl.flock(fh.fileno(), fcntl.LOCK_EX)`
+     with a `fcntl = None` graceful fallback (non-Linux platforms). Matches the
+     locking pattern in `vocab_candidates.py`.
+
+3. ~~**Medium:** Dedup key too aggressive — `_merge_supporting_example` discards
+   second proposal's body fields.~~
+   - **Fixed:** `_merge_supporting_example` now calls
+     `_conflicting_proposal_note(existing, amendment)` which compares `definition`,
+     `current_best_fit`, `why_current_rules_are_insufficient`, `official_evidence`,
+     `rule_doc_patch`, and `master_json_patch`. Conflicts are appended to
+     `review_notes` as structured JSON. Test
+     `test_duplicate_proposals_preserve_conflicting_body_fields_in_review_notes`
+     verifies the conflict detection.
+
+4. ~~**Medium:** `_affected_vocab` fails for several real vocabularies.~~
+   - **Fixed:** `FIELD_TO_VOCAB` now maps all 14 annotation-relevant fields including
+     `syntactic_trap_key` → `SYNTACTIC_TRAP_KEYS` and `transition_subtype_key` →
+     `TRANSITION_SUBTYPE_KEYS`. Test
+     `test_capture_amendment_proposal_maps_additional_ontology_fields` verifies both
+     new entries.
+
+5. **Low:** `PLANSIBILITY_SOURCE_KEYS` typo propagated to `FIELD_TO_VOCAB`.
+   - `amendments.py:38` maps `plausibility_source_key` → `PLANSIBILITY_SOURCE_KEYS`,
+     matching the typo in `ontology.py:188` and `master.json:1629`. Consistent
+     so no runtime mismatch, but the misspelling is now permanent in amendment
+     files and generated artifacts.
+
+6. **Low:** No test for `ValidationError` path in `capture_amendment_proposal`.
+   - The `except (TypeError, ValueError, ValidationError)` block at
+     `amendments.py:86` is never exercised by tests. A malformed proposal
+     (missing required fields) should be tested to verify the warning is
+     recorded and `None` returned.
+
+7. **Low:** No test for warning survival through final job cleanup.
+   - `_record_job_warning` adds warnings to `job.validation_errors_jsonb`, but
+     the ingest pipeline's final cleanup (ingest.py:1926-1931) rebuilds
+     `validation_errors_jsonb` from `existing_job_warnings + all_errors`. No
+     integration test proves amendment-capture warnings survive this pass.
+
+8. **Low:** `_merge_supporting_example` re-validates entire `RuleAmendment`.
+   - `amendments.py:341-354` calls `RuleAmendment.model_validate(data)` on the
+     whole merged dict. If the file's metadata is stale or the schema has
+     evolved, this could fail on a previously valid amendment.
+
+9. **Low:** `_record_job_warning` doesn't deduplicate.
+   - If the same job triggers `capture_amendment_proposal` twice (normal flow
+     + backfill), identical warnings are appended without dedup.
+
+10. **Low:** Prompt-to-schema alignment is weak — now observed via logging.
+    - The annotation prompt says "A proposal must include affected_doc,
+      affected_vocab, proposed_value…" but `_proposal_to_amendment` has many
+      fallback paths (`proposal.get("proposed_key")`, `proposal.get("evidence_text")`,
+      `proposal.get("reason")`) suggesting the LLM regularly uses different field
+      names. Rather than adding a JSON schema to the prompt (which would make
+      LLM output formula-based), observational logging was added: `_first()`
+      helper tracks which fallback fields the LLM used, and `logger.info`
+      logs heuristic inference in `_affected_doc`, `_affected_vocab`,
+      `_proposed_value`. After construction, amendment logs all fallback
+      mappings: `"amendment %s used fallback field mappings: %s"`.
+
 ## 2026-05-18 - Controlled-Vocabulary Audit (ontology vs rules docs)
 Report created by: Claude Opus 4.7
 Git branch: `main`
@@ -75,14 +574,31 @@ present and unfixed in this job's stored validation errors.
    submission. To force a fresh run, the existing asset/job for this checksum
    must be removed or a re-ingestion flag added to the runner.
 
-2. **High:** q6/q7 still blocked at `validating` step in existing job
+2. ~~**High:** q6/q7 still blocked at `validating` step in existing job
    `c9aeeb9d` — `reading_focus_key 'structural_pattern' is not allowed for
    skill_family_key 'text_structure_and_purpose'` (severity `blocking`),
    question_index 5 (source_question_number 6) and question_index 6
    (source_question_number 7). Both questions remain absent from the 31 created
    (33 extracted). The ontology/rules-doc desync described in the 2026-05-17
    "Reading Ontology vs Rules-Doc Desync" entry is NOT yet resolved in the data
-   for this job. A fresh re-ingest is required to confirm any code-side fix.
+   for this job. A fresh re-ingest is required to confirm any code-side fix.~~
+   - **Diagnosed (2026-05-18, Claude Opus 4.7):** Not a live code bug. `git blame`
+     of `ontology.py:330` shows `READING_FOCUS_BY_SKILL_FAMILY['text_structure_and_purpose']`
+     listed `overall_purpose, text_structure, sentence_function, rhetorical_shift,
+     author_stance` (no `structural_pattern`) until commit `bbb6c51`
+     (2026-05-18 05:01, "Reconcile controlled vocabularies"). Job `c9aeeb9d` was
+     ingested 2026-05-17 — under the old map — so `validator.py:185` blocked the
+     LLM-emitted `structural_pattern` focus key and dropped q6/q7. Those errors
+     are a frozen snapshot in `validation_errors_jsonb`.
+   - **Fixed:** Current code already accepts `structural_pattern` for
+     `text_structure_and_purpose` (verified by invoking `validate_question`
+     directly — no `reading_focus_key` error). Added regression tests
+     `test_validate_text_structure_accepts_structural_pattern` and
+     `test_validate_rejects_focus_key_from_wrong_family` in `test_pipeline.py`
+     to lock the mapping and prove the family/focus gate still rejects
+     cross-family keys. The stale stored errors in job `c9aeeb9d` remain until a
+     fresh re-ingest, which is itself blocked by the duplicate-checksum
+     rejection (finding 1 / separate re-ingest-flag gap).
 
 3. **Medium:** 6 `question_number_validation` `out_of_range` warnings in job
    `c9aeeb9d` — question_index 27–32 carry numbers 28–33, flagged "outside

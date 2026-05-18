@@ -2023,27 +2023,6 @@ regenerate. They stay in lockstep with the validator enums in
 - `false_concession_trap`
 <!-- VOCAB:reading:REASONING_TRAP_KEYS END -->
 
-<!-- VOCAB:shared:PLANSIBILITY_SOURCE_KEYS START -->
-<!-- generated from vocabulary/master.json — do not hand-edit -->
-**`PLANSIBILITY_SOURCE_KEYS`** — V3 §10.3 plausibility_source_key
-
-- `nearest_noun_attraction`
-- `punctuation_style_bias`
-- `auditory_similarity`
-- `grammar_fit_only`
-- `formal_register_match`
-- `common_idiom_pull`
-- `none`
-- `passage_vocabulary_overlap`
-- `topical_proximity`
-- `partial_truth`
-- `common_sense_appeal`
-- `common_definition_appeal`
-- `near_synonym_appeal`
-- `rhetorical_surface_similarity`
-- `attribution_swap`
-<!-- VOCAB:shared:PLANSIBILITY_SOURCE_KEYS END -->
-
 <!-- VOCAB:shared:ANSWER_MECHANISM_KEYS START -->
 <!-- generated from vocabulary/master.json — do not hand-edit -->
 **`ANSWER_MECHANISM_KEYS`** — V3 §3.3 answer_mechanism_key
@@ -2393,3 +2372,24 @@ regenerate. They stay in lockstep with the validator enums in
 - `technology`
 - `environment`
 <!-- VOCAB:shared:TOPIC_BROAD_KEYS END -->
+
+<!-- VOCAB:shared:PLAUSIBILITY_SOURCE_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`PLAUSIBILITY_SOURCE_KEYS`** — V3 §10.3 plausibility_source_key
+
+- `nearest_noun_attraction`
+- `punctuation_style_bias`
+- `auditory_similarity`
+- `grammar_fit_only`
+- `formal_register_match`
+- `common_idiom_pull`
+- `none`
+- `passage_vocabulary_overlap`
+- `topical_proximity`
+- `partial_truth`
+- `common_sense_appeal`
+- `common_definition_appeal`
+- `near_synonym_appeal`
+- `rhetorical_surface_similarity`
+- `attribution_swap`
+<!-- VOCAB:shared:PLAUSIBILITY_SOURCE_KEYS END -->

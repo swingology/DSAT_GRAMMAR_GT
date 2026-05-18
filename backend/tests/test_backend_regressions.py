@@ -446,6 +446,9 @@ async def test_run_pipeline_persists_reading_domain_question(monkeypatch):
     assert annotation.annotation_jsonb["question_family_key"] == "information_and_ideas"
     assert annotation.annotation_jsonb["skill_family_key"] == "command_of_evidence_textual"
     assert annotation.annotation_jsonb["reading_focus_key"] == "evidence_supports_claim"
+    assert job.pass2_json["question_family_key"] == "information_and_ideas"
+    assert job.pass2_json["skill_family_key"] == "command_of_evidence_textual"
+    assert job.pass2_json["_pass2_meta"][0]["question_index"] == 0
     assert job.question_id == question.id
 
 

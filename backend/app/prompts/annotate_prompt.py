@@ -205,6 +205,19 @@ _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the gi
    must be drawn verbatim from the allowed-values list below. Output is rejected
    if any of these keys is not an exact match.
 
+7. AMENDMENT PROPOSALS:
+   • Current content_origin: {content_origin}
+   • Use existing approved keys for actual annotation. Never put proposed keys in
+     production annotation fields.
+   • If content_origin is "official" and no existing rule/key fits the official
+     item, you may emit reasoning.amendment_proposal.
+   • If content_origin is not "official", reasoning.amendment_proposal MUST be
+     null or omitted.
+   • A proposal must include affected_doc, affected_vocab, proposed_value,
+     parent_key when applicable, definition, current_best_fit,
+     why_current_rules_are_insufficient, official_evidence, rule_doc_patch, and
+     master_json_patch.
+
 {allowed_keys}
 
 {rules_context}"""
@@ -289,6 +302,7 @@ def build_annotate_prompt(q_data: dict | None = None, rules_file_path: str = "",
         q_data = kwargs.pop("extract_json", None)
     if q_data is None:
         q_data = {}
+    content_origin = kwargs.pop("content_origin", None) or q_data.get("content_origin") or "unknown"
 
     if rules_file_path and os.path.exists(rules_file_path):
         with open(rules_file_path, "r", encoding="utf-8") as f:
@@ -308,6 +322,7 @@ def build_annotate_prompt(q_data: dict | None = None, rules_file_path: str = "",
     system = _SYSTEM_BASE.format(
         rules_context=rules_context,
         allowed_keys=_ALLOWED_KEYS_BLOCK,
+        content_origin=content_origin,
     )
     user = f"Annotate the following extracted question:\n\n{json.dumps(q_data, indent=2)}"
     return system, user

@@ -415,7 +415,193 @@ def _clean_option_label(label: str | None) -> str:
     return label.strip().rstrip(").").upper()
 
 
-def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str | None, dict]:
+# High-confidence SAT stem openers — phrases that almost always begin a question
+# stem rather than passage content. Ambiguous phrases like "the author" or
+# "the narrator" are excluded because they commonly appear inside passages.
+_HIGH_CONFIDENCE_STEM_OPENERS: tuple[str, ...] = (
+    "as used in the text",
+    "as used in line",
+    "based on the passage",
+    "based on the text",
+    "which choice",
+    "which quotation",
+    "what does the word",
+    "what is the word",
+    "which finding",
+    "according to the passage",
+    "according to the text",
+    "over the course of the passage",
+    "over the course of the text",
+    "it can reasonably be inferred",
+    "it can be inferred",
+    "which statement",
+    "which claim",
+    "which idea",
+    "which sentence",
+    "which provides",
+    "which best",
+    "which most",
+    "which most effectively",
+    "which most logically",
+    "what is the main",
+    "what is the primary",
+    "how does the",
+    "how is the",
+    "why does the",
+)
+
+# Passage-bearing stimulus modes — only these should have passage_text.
+_PASSAGE_MODES = frozenset({
+    "passage_excerpt", "paired_passages", "table_and_passage", "graph_and_passage",
+    "notes_and_prompt",
+})
+
+
+def _split_passage_from_question(q_data: dict) -> None:
+    """Detect passage content embedded in question_text and split it out.
+
+    Many VLMs dump the passage + stem into ``question_text`` instead of
+    separating them into ``passage_text``. This function looks for a
+    stem-opener pattern at a sentence boundary and moves everything
+    before it into ``passage_text``. Mutates ``q_data`` in place.
+    """
+    if q_data.get("passage_text"):
+        return  # already separated
+
+    qt: str = q_data.get("question_text", "")
+    if not qt:
+        return
+
+    # Search for the first high-confidence stem-opener in the text.
+    # The stem must be at a sentence boundary — preceded by a period,
+    # blank (_______), newline, or the start of the text.
+    best_pos = -1
+    qt_lower = qt.lower()
+    for opener in _HIGH_CONFIDENCE_STEM_OPENERS:
+        pos = 0
+        while True:
+            idx = qt_lower.find(opener, pos)
+            if idx < 0:
+                break
+            # Check that the opener is at a sentence boundary.
+            at_boundary = idx == 0
+            if not at_boundary:
+                # Two boundary patterns:
+                # 1. After a period/sentence-end (possibly with spaces): "text. Which..."
+                # 2. After a fill-in-the-blank (_______): "_______ Which..."
+                #    The _______ itself counts as a boundary.
+                prefix = qt[:idx].rstrip()
+                if prefix.endswith("_______"):
+                    at_boundary = True
+                else:
+                    # Look back through spaces/underscores/dashes for a period
+                    for back in range(1, min(11, idx + 1)):
+                        c = qt[idx - back]
+                        if c in ".!?\n":
+                            at_boundary = True
+                            break
+                        if c not in " _-":
+                            break
+            if at_boundary:
+                # Only split if there's meaningful passage content before
+                # the stem — skip if the opener IS the entire question_text.
+                passage_part = qt[:idx].strip()
+                if len(passage_part) > 30:
+                    if best_pos < 0 or idx < best_pos:
+                        best_pos = idx
+                    break  # take the first boundary match for this opener
+            pos = idx + 1
+
+    if best_pos > 0:
+        passage = qt[:best_pos].strip()
+        stem = qt[best_pos:].strip()
+        q_data["passage_text"] = passage
+        q_data["question_text"] = stem
+
+
+def _recover_passage_from_raw_text(q_data: dict, raw_text: str) -> None:
+    """Recover a dropped passage from pymupdf raw_text.
+
+    When the VLM completely omits a passage (e.g., Q1's passage about
+    "The King's Coin"), this function locates the passage in the pymupdf
+    raw text by finding the question stem first, then looking backwards
+    for the question number marker. Mutates ``q_data`` in place.
+    """
+    if q_data.get("passage_text"):
+        return  # already have passage
+
+    mode = q_data.get("stimulus_mode_key", "")
+    if mode not in _PASSAGE_MODES:
+        return  # no passage expected for this mode
+
+    qnum = q_data.get("source_question_number")
+    if qnum is None:
+        return
+
+    stem = q_data.get("question_text", "").strip()
+    if not stem:
+        return
+
+    # Strategy: find the stem in raw_text first, then look backwards for
+    # the question number. This avoids false matches on page headers like
+    # "Module \n1 \nReading and Writing" which also contain the number 1.
+    stem_pos = _find_stem_in_raw_text(stem, raw_text)
+    if stem_pos < 0:
+        return
+
+    # Look backwards from the stem position for the question number marker.
+    # The marker is typically "\n{N}\n" on its own line, or "  {N}  " inline.
+    qnum_str = str(int(qnum))
+    # Search backwards for a line that is just the question number.
+    # SAT passages can be long (multiple paragraphs), so allow up to 2000 chars.
+    search_start = max(0, stem_pos - 2000)
+    chunk = raw_text[search_start:stem_pos]
+    # Find the LAST occurrence of the question number on its own line
+    qnum_pattern = re.compile(rf"(?:^|\n)\s*{qnum_str}\s*\n")
+    best_match = None
+    for m in qnum_pattern.finditer(chunk):
+        best_match = m
+    if best_match is None:
+        return
+
+    # Extract text from the question number to the stem
+    abs_start = search_start + best_match.end()
+    passage = raw_text[abs_start:stem_pos].strip()
+    if len(passage) < 30:
+        return  # too short to be a real passage
+
+    q_data["passage_text"] = passage
+
+
+def _find_stem_in_raw_text(stem: str, raw_text: str) -> int:
+    """Find the position of a question stem in pymupdf raw text.
+
+    Handles whitespace differences between the VLM-extracted stem and
+    the pymupdf text (line breaks, extra spaces, etc.).
+    """
+    # Try progressively shorter exact anchors (fast path)
+    for length in (40, 30, 20):
+        anchor = stem[:length]
+        pos = raw_text.find(anchor)
+        if pos >= 0:
+            return pos
+
+    # Try first few words as anchor — handles line-break differences
+    words = stem.split()
+    if len(words) >= 4:
+        word_anchor = " ".join(words[:4])
+        pos = raw_text.find(word_anchor)
+        if pos >= 0:
+            return pos
+        # Also try with the words on separate lines
+        for i in range(len(raw_text) - len(word_anchor)):
+            if re.sub(r"\s+", " ", raw_text[i:i + len(word_anchor) + 20])[:len(word_anchor)] == word_anchor:
+                return i
+
+    return -1
+
+
+def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tuple[list[dict], str | None, dict]:
     """Normalize LLM extract output to a list of per-question dicts.
 
     Handles both the new format (``{passage_text, questions: [...]}``) and
@@ -449,6 +635,10 @@ def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str 
         if shared_passage and not enriched.get("passage_text"):
             enriched["passage_text"] = shared_passage
 
+        # Post-extraction: separate passage from question_text when VLM
+        # dumps passage content into the stem field.
+        _split_passage_from_question(enriched)
+
         # Normalize correct_option_label: "A)" / "A." / "a" → "A"
         if "correct_option_label" in enriched:
             enriched["correct_option_label"] = _clean_option_label(enriched["correct_option_label"])
@@ -480,6 +670,16 @@ def _normalize_extracted_questions(extract_root: dict) -> tuple[list[dict], str 
             continue
         seen_texts.add(q_text_key)
         questions.append(enriched)
+
+    # Pymupdf fallback: recover passages the VLM completely dropped.
+    # For the VLM-fused path, raw_text is the sentinel "_vision_fused_";
+    # the actual pymupdf text lives in extract_root["raw_text"].
+    _pymupdf_raw = raw_text
+    if raw_text == "_vision_fused_":
+        _pymupdf_raw = (extract_root or {}).get("raw_text", "")
+    if _pymupdf_raw:
+        for enriched in questions:
+            _recover_passage_from_raw_text(enriched, _pymupdf_raw)
 
     return questions, shared_passage, shared_source
 
@@ -1630,7 +1830,9 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             return
 
     # Normalize to a list of per-question dicts (handles both new and legacy formats)
-    questions_data, shared_passage, shared_source = _normalize_extracted_questions(extract_root)
+    questions_data, shared_passage, shared_source = _normalize_extracted_questions(
+        extract_root, raw_text=raw_text,
+    )
 
     # Record extraction count for benchmark comparison (questions after dedup, before validation)
     job.pass1_json = {
@@ -1738,6 +1940,8 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     # ---- Per-question loop ----
     created_question_ids: list[uuid.UUID] = []
     pass2_meta_list: list[dict] = []
+    pass2_annotation_records: list[dict] = []
+    amendment_proposal_records: list[dict] = []
 
     # ---- Phase 1: Concurrent annotation ----
     # Sort questions by domain so identical system prompts run consecutively,
@@ -1761,7 +1965,8 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     async def _annotate_one(idx: int) -> tuple[int, dict | None, Exception | None, dict | None]:
         """Annotate a single question with retry. Returns (idx, annotate_json, last_err, meta)."""
         q_data = questions_data[idx]
-        system, user = build_annotate_prompt(q_data)
+        prompt_q_data = {**q_data, "content_origin": job.content_origin}
+        system, user = build_annotate_prompt(prompt_q_data)
         last_err: Exception | None = None
         for attempt in range(3):
             try:
@@ -1820,6 +2025,38 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 "source_question_number": q_data.get("source_question_number"),
             })
             continue
+
+        try:
+            from app.pipeline.amendments import capture_amendment_proposal, extract_amendment_proposal
+            pass2_annotation_records.append({
+                "question_index": i,
+                "source_question_number": q_data.get("source_question_number"),
+                "annotation": annotate_json,
+            })
+            amendment_proposal = extract_amendment_proposal(annotate_json)
+            if amendment_proposal:
+                amendment_proposal_records.append({
+                    "source_question_number": q_data.get("source_question_number"),
+                    "q_data": {
+                        "source_exam_code": q_data.get("source_exam_code"),
+                        "source_subject_code": q_data.get("source_subject_code"),
+                        "source_section_code": q_data.get("source_section_code"),
+                        "source_module_code": q_data.get("source_module_code"),
+                        "source_question_number": q_data.get("source_question_number"),
+                        "question_text": q_data.get("question_text"),
+                        "skill_family_key": q_data.get("skill_family_key"),
+                        "grammar_role_key": q_data.get("grammar_role_key"),
+                    },
+                    "amendment_proposal": amendment_proposal,
+                })
+            capture_amendment_proposal(job=job, q_data=q_data, annotate_json=annotate_json)
+        except Exception as exc:
+            logger.warning(
+                "amendment proposal capture failed for job %s q%s: %s",
+                job.id,
+                q_data.get("source_question_number") or i + 1,
+                exc,
+            )
 
         # ---- Overlap check (unofficial/generated only) ----
         overlaps: list = []
@@ -1886,9 +2123,24 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             continue
 
     # ---- Final job status ----
+    pass2_payload: dict = {}
+    if len(pass2_annotation_records) == 1:
+        pass2_payload.update(pass2_annotation_records[0]["annotation"])
+    elif pass2_annotation_records:
+        pass2_payload["_annotations"] = pass2_annotation_records
     if pass2_meta_list:
-        job.pass2_json = {"_pass2_meta": pass2_meta_list}
-    job.validation_errors_jsonb = all_errors if all_errors else None
+        pass2_payload["_pass2_meta"] = pass2_meta_list
+    if amendment_proposal_records:
+        pass2_payload["_amendment_proposals"] = amendment_proposal_records
+    if pass2_payload:
+        job.pass2_json = pass2_payload
+
+    existing_job_warnings = [
+        item for item in (job.validation_errors_jsonb or [])
+        if isinstance(item, dict) and item.get("severity") == "warning"
+    ]
+    combined_validation_records = [*existing_job_warnings, *all_errors]
+    job.validation_errors_jsonb = combined_validation_records if combined_validation_records else None
 
     if created_question_ids:
         # At least one question succeeded
@@ -1902,6 +2154,12 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             **(job.pass1_json or {}),
             "_created_question_ids": [str(qid) for qid in created_question_ids],
         }
+        if job.content_origin == "official":
+            try:
+                from app.pipeline.ingestion_analysis import write_ingestion_analysis
+                write_ingestion_analysis(job)
+            except Exception as exc:
+                logger.warning("failed to write ingestion analysis for job %s: %s", job.id, exc)
     else:
         # All questions failed
         job.status = "failed"
@@ -2327,7 +2585,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     await db.commit()
 
     from app.prompts.annotate_prompt import enforce_nullability, _detect_domain
-    system, user = build_annotate_prompt(extract_json)
+    system, user = build_annotate_prompt({**extract_json, "content_origin": job.content_origin})
     try:
         result = await provider.complete(system=system, user=user, max_tokens=8192)
         annotate_json = normalize_annotation(

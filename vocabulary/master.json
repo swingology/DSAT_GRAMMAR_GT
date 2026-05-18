@@ -1626,7 +1626,7 @@
       ]
     },
     {
-      "name": "PLANSIBILITY_SOURCE_KEYS",
+      "name": "PLAUSIBILITY_SOURCE_KEYS",
       "kind": "flat",
       "domain": "shared",
       "comment": "V3 §10.3 plausibility_source_key",

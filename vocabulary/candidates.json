@@ -40,6 +40,36 @@
       "occurrences": 1,
       "job_ids": [],
       "contexts": []
+    },
+    {
+      "vocab": "QUESTION_FAMILY_KEYS",
+      "value": "reading_information_and_ideas",
+      "field": "question_family_key",
+      "first_seen": "2026-05-18T18:03:29.323393+00:00",
+      "last_seen": "2026-05-18T18:03:29.323393+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "rhetorical_synth",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-18T20:53:39.423606+00:00",
+      "last_seen": "2026-05-18T20:53:39.423606+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "synthesis_from_notes",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-18T20:53:39.423862+00:00",
+      "last_seen": "2026-05-18T20:53:39.423862+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
     }
   ]
 }

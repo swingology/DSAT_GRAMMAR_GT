@@ -3,7 +3,7 @@ from app.models.ontology import (
     OVERLAP_STATUSES, RELATION_TYPES, ASSET_TYPES, CHANGE_SOURCES,
     GRAMMAR_ROLE_KEYS, GRAMMAR_FOCUS_KEYS, SYNTACTIC_TRAP_KEYS,
     STIMULUS_MODE_KEYS, STEM_TYPE_KEYS, DISTRACTOR_TYPE_KEYS,
-    PLANSIBILITY_SOURCE_KEYS, ANSWER_MECHANISM_KEYS, SOLVER_PATTERN_KEYS,
+    PLAUSIBILITY_SOURCE_KEYS, ANSWER_MECHANISM_KEYS, SOLVER_PATTERN_KEYS,
     READING_SKILL_FAMILY_KEYS, READING_FOCUS_KEYS,
     PASSAGE_ARCHITECTURE_KEYS, STUDENT_FAILURE_MODE_KEYS,
     TEST_CONSTRUCT_KEYS, CRAFT_SUBCONSTRUCT_KEYS, TEXT_RELATIONSHIP_KEYS,
@@ -67,9 +67,9 @@ def test_reading_v2_option_analysis_keys():
     assert "topical_relevance_without_logical_connection" in DISTRACTOR_TYPE_KEYS
     assert "wrong_table_row_or_column" in DISTRACTOR_TYPE_KEYS
     assert "figurative_literal_confusion" in DISTRACTOR_TYPE_KEYS
-    assert "passage_vocabulary_overlap" in PLANSIBILITY_SOURCE_KEYS
-    assert "near_synonym_appeal" in PLANSIBILITY_SOURCE_KEYS
-    assert "rhetorical_surface_similarity" in PLANSIBILITY_SOURCE_KEYS
+    assert "passage_vocabulary_overlap" in PLAUSIBILITY_SOURCE_KEYS
+    assert "near_synonym_appeal" in PLAUSIBILITY_SOURCE_KEYS
+    assert "rhetorical_surface_similarity" in PLAUSIBILITY_SOURCE_KEYS
     assert "figurative_meaning_blindness" in STUDENT_FAILURE_MODE_KEYS
     assert "subgroup_overgeneralization" in STUDENT_FAILURE_MODE_KEYS
 

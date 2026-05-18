@@ -10,6 +10,12 @@ from app.pipeline.orchestrator import (
 from app.pipeline.validator import validate_question
 
 
+@pytest.fixture(autouse=True)
+def _isolate_vocab_candidate_writes(monkeypatch):
+    """Pipeline validation tests use fake keys; don't mutate repo candidates."""
+    monkeypatch.setattr("app.pipeline.validator.record_unknown_field", lambda *args, **kwargs: None)
+
+
 # --- Orchestrator state machine tests ---
 
 def test_can_transition_pending_to_parsing():
@@ -169,6 +175,48 @@ def test_validate_quantitative_requires_graphic_data():
     }
     errors = validate_question(q, content_origin="official")
     assert any(e["field"] == "graphic_data" and e["severity"] == "blocking" for e in errors)
+
+
+def test_validate_text_structure_accepts_structural_pattern():
+    """Regression: structural_pattern is a valid reading_focus_key for
+    text_structure_and_purpose. The ontology map omitted it before commit
+    bbb6c51, which blocked q6/q7 of Test_4 ingestion at the validating step.
+    """
+    q = {
+        "question_text": "How is the passage organized?",
+        "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"},
+                    {"label": "C", "text": "c"}, {"label": "D", "text": "d"}],
+        "correct_option_label": "A",
+        "question_family_key": "craft_and_structure",
+        "skill_family_key": "text_structure_and_purpose",
+        "reading_focus_key": "structural_pattern",
+        "difficulty_overall": "medium",
+        "explanation_short": "Because A.",
+    }
+    errors = validate_question(q, content_origin="official")
+    assert not any(e["field"] == "reading_focus_key" for e in errors)
+
+
+def test_validate_rejects_focus_key_from_wrong_family():
+    """The family/focus gate still rejects a focus key valid for a different
+    skill family, so the structural_pattern fix did not weaken enforcement.
+    """
+    q = {
+        "question_text": "How is the passage organized?",
+        "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"},
+                    {"label": "C", "text": "c"}, {"label": "D", "text": "d"}],
+        "correct_option_label": "A",
+        "question_family_key": "craft_and_structure",
+        "skill_family_key": "text_structure_and_purpose",
+        "reading_focus_key": "evidence_supports_claim",
+        "difficulty_overall": "medium",
+        "explanation_short": "Because A.",
+    }
+    errors = validate_question(q, content_origin="official")
+    assert any(
+        e["field"] == "reading_focus_key" and e["severity"] == "blocking"
+        for e in errors
+    )
 
 
 def test_validate_bad_correct_label():
@@ -692,3 +740,90 @@ class TestExtractJsonArrayFromText:
         from app.parsers.json_parser import extract_json_array_from_text
         result = extract_json_array_from_text('{"single": true}')
         assert result == [{"single": True}]
+
+
+# --- Passage separator tests ---
+
+class TestSplitPassageFromQuestion:
+    def _call(self, q_data):
+        from app.routers.ingest import _split_passage_from_question
+        _split_passage_from_question(q_data)
+        return q_data
+
+    def test_already_separated(self):
+        q = {"question_text": "Which choice?", "passage_text": "A passage."}
+        self._call(q)
+        assert q["passage_text"] == "A passage."
+
+    def test_short_sentence_only(self):
+        q = {"question_text": "Which choice completes the text?", "stimulus_mode_key": "sentence_only"}
+        self._call(q)
+        assert "passage_text" not in q or not q.get("passage_text")
+
+    def test_period_before_which_choice(self):
+        q = {
+            "question_text": "The sun is a star at the center of our solar system and it is very hot. Which choice best describes the main idea?",
+            "stimulus_mode_key": "passage_excerpt",
+        }
+        result = self._call(q)
+        assert "The sun is a star" in result["passage_text"]
+        assert result["question_text"] == "Which choice best describes the main idea?"
+
+    def test_blank_before_which_choice(self):
+        q = {
+            "question_text": "The researchers discovered that the coral population _______ Which choice most logically completes the text?",
+            "stimulus_mode_key": "passage_excerpt",
+        }
+        result = self._call(q)
+        assert "coral population" in result["passage_text"]
+        assert result["question_text"] == "Which choice most logically completes the text?"
+
+    def test_as_used_in_the_text(self):
+        q = {
+            "question_text": "The following text is from a novel. Fox-Foot was walking. As used in the text, what does the word \"trace\" most nearly mean?",
+            "stimulus_mode_key": "passage_excerpt",
+        }
+        result = self._call(q)
+        assert "Fox-Foot" in result["passage_text"]
+        assert "trace" in result["question_text"]
+
+    def test_no_stem_opener_no_split(self):
+        q = {
+            "question_text": "Some passage without any stem opener pattern at all in it whatsoever.",
+            "stimulus_mode_key": "passage_excerpt",
+        }
+        result = self._call(q)
+        assert not result.get("passage_text")
+
+    def test_which_quotation_opener(self):
+        q = {
+            "question_text": "In the story, the banker is described as being very upset about something: _______ Which quotation from the story most effectively illustrates the claim?",
+            "stimulus_mode_key": "passage_excerpt",
+        }
+        result = self._call(q)
+        assert "banker" in result["passage_text"]
+        assert "Which quotation" in result["question_text"]
+
+
+class TestRecoverPassageFromRawText:
+    def _call(self, q_data, raw_text):
+        from app.routers.ingest import _recover_passage_from_raw_text
+        _recover_passage_from_raw_text(q_data, raw_text)
+        return q_data
+
+    def test_already_has_passage(self):
+        q = {"question_text": "Which?", "passage_text": "Already here", "stimulus_mode_key": "passage_excerpt", "source_question_number": 1}
+        result = self._call(q, "irrelevant")
+        assert result["passage_text"] == "Already here"
+
+    def test_sentence_only_skipped(self):
+        q = {"question_text": "Which?", "stimulus_mode_key": "sentence_only", "source_question_number": 1}
+        result = self._call(q, "raw text")
+        assert not result.get("passage_text")
+
+    def test_recover_from_raw_text(self):
+        raw = "Module 1\n1\nThe following text is from a novel about nature.\nAs used in the text, what does the word mean?\nA) X\nB) Y\n"
+        q = {"question_text": "As used in the text, what does the word mean?", "stimulus_mode_key": "passage_excerpt", "source_question_number": 1}
+        result = self._call(q, raw)
+        assert "The following text" in result["passage_text"]
+        assert result["question_text"] == "As used in the text, what does the word mean?"

@@ -60,6 +60,345 @@ def test_admin_eval_score_not_found(client):
     assert resp.status_code == 404
 
 
+def test_admin_amendments_list(client, monkeypatch):
+    from app.routers import admin as admin_router
+
+    monkeypatch.setattr(
+        admin_router.amendment_review,
+        "list_amendments",
+        lambda: [{"amendment_id": "amd-test", "status": "pending"}],
+    )
+
+    resp = client.get("/admin/amendments", headers=AUTH)
+
+    assert resp.status_code == 200
+    assert resp.json()[0]["amendment_id"] == "amd-test"
+
+
+def test_admin_amendment_show_not_found(client, monkeypatch):
+    from app.routers import admin as admin_router
+
+    monkeypatch.setattr(
+        admin_router.amendment_review,
+        "load_amendment_by_id",
+        lambda amendment_id: admin_router.amendment_review.AmendmentOperationResult(
+            ok=False,
+            error="Amendment not found",
+            error_code="not_found",
+        ),
+    )
+
+    resp = client.get("/admin/amendments/missing", headers=AUTH)
+
+    assert resp.status_code == 404
+
+
+def test_admin_amendment_validation_error_returns_422(client, monkeypatch):
+    from app.routers import admin as admin_router
+
+    monkeypatch.setattr(
+        admin_router.amendment_review,
+        "approve_amendment",
+        lambda amendment_id, reviewer, notes: admin_router.amendment_review.AmendmentOperationResult(
+            ok=False,
+            error="Proposed key is already active",
+            error_code="validation",
+        ),
+    )
+
+    resp = client.post("/admin/amendments/amd-test/approve", headers=AUTH)
+
+    assert resp.status_code == 422
+
+
+def test_admin_amendment_approve(client, monkeypatch):
+    from app.routers import admin as admin_router
+
+    class Amendment:
+        def to_file_dict(self):
+            return {"amendment_id": "amd-test", "status": "approved"}
+
+    monkeypatch.setattr(
+        admin_router.amendment_review,
+        "approve_amendment",
+        lambda amendment_id, reviewer, notes: admin_router.amendment_review.AmendmentOperationResult(
+            ok=True,
+            amendment=Amendment(),
+        ),
+    )
+
+    resp = client.post(
+        "/admin/amendments/amd-test/approve",
+        json={"reviewer": "tester", "notes": "ok"},
+        headers=AUTH,
+    )
+
+    assert resp.status_code == 200
+    assert resp.json()["status"] == "approved"
+
+
+def test_admin_amendment_reject(client, monkeypatch):
+    from app.routers import admin as admin_router
+
+    class Amendment:
+        def to_file_dict(self):
+            return {"amendment_id": "amd-test", "status": "rejected"}
+
+    monkeypatch.setattr(
+        admin_router.amendment_review,
+        "reject_amendment",
+        lambda amendment_id, reviewer, notes: admin_router.amendment_review.AmendmentOperationResult(
+            ok=True,
+            amendment=Amendment(),
+        ),
+    )
+
+    resp = client.post("/admin/amendments/amd-test/reject", headers=AUTH)
+
+    assert resp.status_code == 200
+    assert resp.json()["status"] == "rejected"
+
+
+def test_admin_amendment_request_more_evidence(client, monkeypatch):
+    from app.routers import admin as admin_router
+
+    class Amendment:
+        def to_file_dict(self):
+            return {"amendment_id": "amd-test", "status": "more_evidence_requested"}
+
+    monkeypatch.setattr(
+        admin_router.amendment_review,
+        "request_more_evidence",
+        lambda amendment_id, reviewer, notes: admin_router.amendment_review.AmendmentOperationResult(
+            ok=True,
+            amendment=Amendment(),
+        ),
+    )
+
+    resp = client.post("/admin/amendments/amd-test/request-more-evidence", headers=AUTH)
+
+    assert resp.status_code == 200
+    assert resp.json()["status"] == "more_evidence_requested"
+
+
+def test_admin_amendment_promote(client, monkeypatch):
+    from app.routers import admin as admin_router
+
+    class Amendment:
+        def to_file_dict(self):
+            return {"amendment_id": "amd-test", "status": "promoted"}
+
+    monkeypatch.setattr(
+        admin_router.amendment_review,
+        "promote_amendment",
+        lambda amendment_id, reviewer, notes: admin_router.amendment_review.AmendmentOperationResult(
+            ok=True,
+            amendment=Amendment(),
+        ),
+    )
+
+    resp = client.post("/admin/amendments/amd-test/promote", headers=AUTH)
+
+    assert resp.status_code == 200
+    assert resp.json()["status"] == "promoted"
+
+
+def _amendment_repo(tmp_path):
+    """Build a real on-disk repo layout for amendment integration tests."""
+    import json
+
+    for name in ("pending", "approved", "rejected", "needs_manual_patch"):
+        (tmp_path / "vocabulary" / "amendments" / name).mkdir(parents=True)
+    (tmp_path / "rules_agent_dsat_reading_v2.md").write_text(
+        "\n".join([
+            "# Reading Rules",
+            "",
+            "## Reading focus keys",
+            "- `central_idea` - Existing central idea guidance.",
+            "",
+            "<!-- VOCAB:reading:READING_FOCUS_BY_SKILL_FAMILY START -->",
+            "- `central_idea`",
+            "<!-- VOCAB:reading:READING_FOCUS_BY_SKILL_FAMILY END -->",
+            "",
+        ]),
+        encoding="utf-8",
+    )
+    (tmp_path / "rules_agent_dsat_grammar_ingestion_generation_v7.md").write_text(
+        "# Grammar Rules\n", encoding="utf-8"
+    )
+    master = {
+        "schema_version": 1,
+        "vocabularies": [
+            {
+                "name": "READING_SKILL_FAMILY_KEYS",
+                "kind": "flat",
+                "entries": [{
+                    "value": "information_and_ideas",
+                    "status": "active",
+                    "added": "2026-05-18",
+                    "description": "",
+                }],
+            },
+            {
+                "name": "READING_FOCUS_BY_SKILL_FAMILY",
+                "kind": "hierarchical",
+                "parent_set": "READING_SKILL_FAMILY_KEYS",
+                "entries": [{
+                    "value": "central_idea",
+                    "parent": "information_and_ideas",
+                    "status": "active",
+                    "added": "2026-05-18",
+                    "description": "",
+                }],
+            },
+        ],
+    }
+    (tmp_path / "vocabulary" / "master.json").write_text(
+        json.dumps(master, indent=2) + "\n", encoding="utf-8"
+    )
+    (tmp_path / "vocabulary" / "candidates.json").write_text(
+        json.dumps({"schema_version": 1, "candidates": []}, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return tmp_path
+
+
+def _amendment_payload(**overrides):
+    payload = {
+        "amendment_id": "amd-int",
+        "source_job_id": "job-1",
+        "source_exam_code": "PT04",
+        "source_subject_code": "verbal",
+        "source_section_code": "01",
+        "source_module_code": "01",
+        "source_question_number": 6,
+        "content_origin": "official",
+        "affected_doc": "reading",
+        "proposal_type": "new_controlled_vocab_key",
+        "affected_vocab": "READING_FOCUS_BY_SKILL_FAMILY",
+        "proposed_value": "evidence_scope_shift",
+        "parent_key": "information_and_ideas",
+        "definition": "Evidence scope distinction.",
+        "current_best_fit": "central_idea",
+        "why_current_rules_are_insufficient": "Existing rules do not split evidence scope.",
+        "official_evidence": "Official evidence.",
+        "rule_doc_patch": {
+            "target_section": "## Reading focus keys",
+            "before": "- `central_idea` - Existing central idea guidance.",
+            "after": (
+                "- `central_idea` - Existing central idea guidance.\n"
+                "- `evidence_scope_shift` - Evidence scope distinction."
+            ),
+            "rationale": "Official evidence requires it.",
+        },
+        "master_json_patch": {
+            "affected_vocab": "READING_FOCUS_BY_SKILL_FAMILY",
+            "proposed_value": "evidence_scope_shift",
+            "parent_key": "information_and_ideas",
+            "description": "Evidence scope distinction.",
+        },
+        "supporting_examples": [{
+            "source_job_id": "job-1",
+            "source_exam_code": "PT04",
+            "source_subject_code": "verbal",
+            "source_section_code": "01",
+            "source_module_code": "01",
+            "source_question_number": 6,
+            "official_evidence": "Official evidence.",
+        }],
+    }
+    payload.update(overrides)
+    return payload
+
+
+def _bind_repo(monkeypatch, repo):
+    """Re-bind every amendment_review function default to a real tmp repo.
+
+    Each amendment_review function takes a ``repo_root`` keyword that defaults
+    to the module-level ``REPO_ROOT``. Wrapping every function in a
+    ``functools.partial`` with ``repo_root`` pre-bound redirects both the
+    router-level calls (which pass no ``repo_root``) and the internal
+    function-to-function calls (which pass ``repo_root`` explicitly; partial
+    keyword override keeps that consistent) at the genuine tmp repo. Unlike the
+    canned-result stubs above, this exercises the real filesystem code paths,
+    status transitions, and amendment file writes/moves.
+    """
+    import functools
+
+    from app.routers import admin as admin_router
+
+    module = admin_router.amendment_review
+    for name in (
+        "list_amendments",
+        "load_amendment_by_id",
+        "approve_amendment",
+        "reject_amendment",
+        "request_more_evidence",
+        "promote_amendment",
+    ):
+        real = getattr(module, name)
+        monkeypatch.setattr(module, name, functools.partial(real, repo_root=repo))
+
+
+def test_admin_amendment_promote_flow_against_real_filesystem(client, monkeypatch, tmp_path):
+    """End-to-end: approve then promote a real on-disk amendment via the router.
+
+    Exercises the genuine amendment_review code paths (no canned results) so a
+    miswired error-code mapping or file-move bug would fail here.
+    """
+    import json
+
+    repo = _amendment_repo(tmp_path)
+    pending = repo / "vocabulary" / "amendments" / "pending" / "amd-int.json"
+    pending.write_text(json.dumps(_amendment_payload(), indent=2) + "\n", encoding="utf-8")
+
+    # gen_vocab regeneration shells out; stub only that external step.
+    monkeypatch.setattr(
+        "app.pipeline.rule_doc_patcher.regenerate_vocab_appendices",
+        lambda *, repo_root: __import__(
+            "app.pipeline.rule_doc_patcher", fromlist=["RuleDocPatchResult"]
+        ).RuleDocPatchResult(ok=True, amendment_id="", affected_doc="", doc_path=None),
+    )
+    monkeypatch.setattr(
+        "app.pipeline.ingestion_analysis.write_reappraisals_for_master_growth",
+        lambda *, repo_root: [],
+    )
+    _bind_repo(monkeypatch, repo)
+
+    approve = client.post("/admin/amendments/amd-int/approve", headers=AUTH)
+    assert approve.status_code == 200
+    assert approve.json()["status"] == "approved"
+
+    promote = client.post("/admin/amendments/amd-int/promote", headers=AUTH)
+    assert promote.status_code == 200
+    assert promote.json()["status"] == "promoted"
+
+    assert not pending.exists()
+    assert (repo / "vocabulary" / "amendments" / "approved" / "amd-int.json").exists()
+    master = json.loads((repo / "vocabulary" / "master.json").read_text(encoding="utf-8"))
+    focus = next(v for v in master["vocabularies"] if v["name"] == "READING_FOCUS_BY_SKILL_FAMILY")
+    assert any(e["value"] == "evidence_scope_shift" for e in focus["entries"])
+    doc = (repo / "rules_agent_dsat_reading_v2.md").read_text(encoding="utf-8")
+    assert "`evidence_scope_shift`" in doc
+
+
+def test_admin_amendment_promote_unapproved_returns_422_real_filesystem(client, monkeypatch, tmp_path):
+    """Promoting a still-pending amendment hits the real status guard -> 422."""
+    import json
+
+    repo = _amendment_repo(tmp_path)
+    pending = repo / "vocabulary" / "amendments" / "pending" / "amd-int.json"
+    pending.write_text(json.dumps(_amendment_payload(), indent=2) + "\n", encoding="utf-8")
+    _bind_repo(monkeypatch, repo)
+
+    resp = client.post("/admin/amendments/amd-int/promote", headers=AUTH)
+
+    assert resp.status_code == 422
+    assert "approved before promotion" in resp.json()["detail"]["error"]
+    # File untouched - still pending.
+    assert pending.exists()
+
+
 def test_admin_relations_list_accepts_pagination(client):
     resp = client.get("/admin/relations?limit=10&offset=0", headers=AUTH)
     assert resp.status_code == 200

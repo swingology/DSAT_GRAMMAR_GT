@@ -19,6 +19,24 @@ def test_annotate_prompt_loads_current_rules():
     assert "JSON" in system
 
 
+def test_annotate_prompt_includes_official_amendment_guard():
+    system, _user = build_annotate_prompt(
+        extract_json={"question_text": "test", "options": [], "correct_option_label": "A"},
+        content_origin="official",
+    )
+    assert "Current content_origin: official" in system
+    assert "reasoning.amendment_proposal" in system
+
+
+def test_annotate_prompt_blocks_non_official_amendments():
+    system, _user = build_annotate_prompt(
+        extract_json={"question_text": "test", "options": [], "correct_option_label": "A"},
+        content_origin="generated",
+    )
+    assert "Current content_origin: generated" in system
+    assert 'If content_origin is not "official"' in system
+
+
 def test_generate_prompt_includes_target():
     request = {
         "target_grammar_role_key": "agreement",

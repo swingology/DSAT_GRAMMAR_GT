@@ -18,6 +18,7 @@ from app.models.db import (
 )
 from app.models.ontology import RELATION_TYPES
 from app.models.payload import AdminEditRequest, EvaluationScoreRequest
+from app.pipeline import amendment_review
 from app.pipeline.option_hydration import clear_option_annotations
 
 
@@ -44,7 +45,87 @@ class RelationCreateRequest(BaseModel):
     notes: Optional[str] = None
 
 
+class AmendmentDecisionRequest(BaseModel):
+    reviewer: str = "admin"
+    notes: str = ""
+
+
 router = APIRouter(prefix="/admin", tags=["admin"])
+
+
+def _amendment_or_404(result: amendment_review.AmendmentOperationResult):
+    if result.ok:
+        if result.amendment is None:
+            return {"ok": True}
+        return result.amendment.to_file_dict()
+    status_by_code = {
+        "not_found": 404,
+        "validation": 422,
+        "conflict": 409,
+    }
+    status_code = status_by_code.get(result.error_code, 409)
+    raise HTTPException(
+        status_code=status_code,
+        detail={"error": result.error, "details": result.details or {}},
+    )
+
+
+@router.get("/amendments")
+async def list_amendments(_auth: str = Depends(admin_required)):
+    return amendment_review.list_amendments()
+
+
+@router.get("/amendments/{amendment_id}")
+async def get_amendment(amendment_id: str, _auth: str = Depends(admin_required)):
+    return _amendment_or_404(amendment_review.load_amendment_by_id(amendment_id))
+
+
+@router.post("/amendments/{amendment_id}/approve")
+async def approve_amendment(
+    amendment_id: str,
+    body: AmendmentDecisionRequest | None = None,
+    _auth: str = Depends(admin_required),
+):
+    body = body or AmendmentDecisionRequest()
+    return _amendment_or_404(
+        amendment_review.approve_amendment(amendment_id, reviewer=body.reviewer, notes=body.notes)
+    )
+
+
+@router.post("/amendments/{amendment_id}/reject")
+async def reject_amendment(
+    amendment_id: str,
+    body: AmendmentDecisionRequest | None = None,
+    _auth: str = Depends(admin_required),
+):
+    body = body or AmendmentDecisionRequest()
+    return _amendment_or_404(
+        amendment_review.reject_amendment(amendment_id, reviewer=body.reviewer, notes=body.notes)
+    )
+
+
+@router.post("/amendments/{amendment_id}/request-more-evidence")
+async def request_more_evidence(
+    amendment_id: str,
+    body: AmendmentDecisionRequest | None = None,
+    _auth: str = Depends(admin_required),
+):
+    body = body or AmendmentDecisionRequest()
+    return _amendment_or_404(
+        amendment_review.request_more_evidence(amendment_id, reviewer=body.reviewer, notes=body.notes)
+    )
+
+
+@router.post("/amendments/{amendment_id}/promote")
+async def promote_amendment(
+    amendment_id: str,
+    body: AmendmentDecisionRequest | None = None,
+    _auth: str = Depends(admin_required),
+):
+    body = body or AmendmentDecisionRequest()
+    return _amendment_or_404(
+        amendment_review.promote_amendment(amendment_id, reviewer=body.reviewer, notes=body.notes)
+    )
 
 
 @router.get("/questions")

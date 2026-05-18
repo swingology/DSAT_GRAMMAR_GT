@@ -2,7 +2,7 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from app.models.ontology import (
-    DISTRACTOR_TYPE_KEYS, PLANSIBILITY_SOURCE_KEYS,
+    DISTRACTOR_TYPE_KEYS, PLAUSIBILITY_SOURCE_KEYS,
     STUDENT_FAILURE_MODE_KEYS, DISTRACTOR_DISTANCE_KEYS,
 )
 from app.models.vocab_candidates import record_unknown_field
@@ -42,7 +42,7 @@ class OptionAnalysis(BaseModel):
     @field_validator("plausibility_source_key")
     @classmethod
     def validate_plausibility(cls, v):
-        if v and v not in PLANSIBILITY_SOURCE_KEYS:
+        if v and v not in PLAUSIBILITY_SOURCE_KEYS:
             record_unknown_field("plausibility_source_key", v)
         return v
 

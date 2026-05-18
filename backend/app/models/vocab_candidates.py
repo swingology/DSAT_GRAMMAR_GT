@@ -19,6 +19,7 @@ import datetime as _dt
 import json
 import logging
 from pathlib import Path
+from app.models.vocab_fields import BASE_FIELD_TO_VOCAB
 
 try:  # POSIX file locking — present on the Linux deploy target
     import fcntl
@@ -37,19 +38,7 @@ _MAX_SAMPLES = 5  # cap stored job_ids / contexts per candidate
 # Maps an annotation field name to the master.json vocabulary it belongs to.
 # Used so callers can pass the field they were validating and let this module
 # resolve the vocabulary.
-FIELD_TO_VOCAB = {
-    "question_family_key": "QUESTION_FAMILY_KEYS",
-    "grammar_role_key": "GRAMMAR_ROLE_KEYS",
-    "grammar_focus_key": "GRAMMAR_FOCUS_BY_ROLE",
-    "stimulus_mode_key": "STIMULUS_MODE_KEYS",
-    "stem_type_key": "STEM_TYPE_KEYS",
-    "skill_family_key": "READING_SKILL_FAMILY_KEYS",
-    "reading_focus_key": "READING_FOCUS_BY_SKILL_FAMILY",
-    "distractor_type_key": "DISTRACTOR_TYPE_KEYS",
-    "plausibility_source_key": "PLANSIBILITY_SOURCE_KEYS",
-    "student_failure_mode_key": "STUDENT_FAILURE_MODE_KEYS",
-    "reasoning_trap_key": "REASONING_TRAP_KEYS",
-}
+FIELD_TO_VOCAB = BASE_FIELD_TO_VOCAB
 
 
 def _now() -> str:
