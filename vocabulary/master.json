@@ -1,0 +1,4015 @@
+{
+  "schema_version": 1,
+  "note": "Canonical controlled vocabulary. Edit THIS file, then run scripts/gen_vocab.py --generate. ontology.py and the rules-doc VOCAB blocks are generated artefacts — do not hand-edit them.",
+  "vocabularies": [
+    {
+      "name": "CONTENT_ORIGINS",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Content origin",
+      "entries": [
+        {
+          "value": "official",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "unofficial",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "generated",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "JOB_TYPES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Job types",
+      "entries": [
+        {
+          "value": "ingest",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "generate",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "reannotate",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "overlap_check",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "JOB_STATUSES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Job statuses (state machine)",
+      "entries": [
+        {
+          "value": "pending",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "parsing",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "extracting",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "generating",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "annotating",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "overlap_checking",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "validating",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "approved",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "needs_review",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "failed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "PRACTICE_STATUSES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Practice status",
+      "entries": [
+        {
+          "value": "draft",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "active",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "retired",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "OVERLAP_STATUSES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Overlap status",
+      "entries": [
+        {
+          "value": "none",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "possible",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "confirmed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "RELATION_TYPES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Relation types",
+      "entries": [
+        {
+          "value": "overlaps_official",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "derived_from",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "near_duplicate",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "generated_from",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "adapted_from",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ASSET_TYPES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Asset types",
+      "entries": [
+        {
+          "value": "pdf",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "image",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "screenshot",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "markdown",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "json",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "text",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "CHANGE_SOURCES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Change sources",
+      "entries": [
+        {
+          "value": "ingest",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "generate",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "admin_edit",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "reprocess",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "STIMULUS_MODE_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §3.1 stimulus_mode_key",
+      "entries": [
+        {
+          "value": "sentence_only",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "passage_excerpt",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "prose_single",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "prose_paired",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "prose_plus_table",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "prose_plus_graph",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "notes_bullets",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "notes_summary",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "poem",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TEST_FORMAT_KEYS",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Rules v7 generation format keys",
+      "entries": [
+        {
+          "value": "digital_app_adaptive",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "nondigital_linear_accommodation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SOURCE_STATS_FORMAT_KEYS",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Rules v7 source stats format keys",
+      "entries": [
+        {
+          "value": "official_digital",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "official_nondigital_linear",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "STEM_TYPE_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §3.2 stem_type_key",
+      "entries": [
+        {
+          "value": "complete_the_text",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_main_idea",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_main_purpose",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_structure_description",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_sentence_function",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_likely_response",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_best_support",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_best_quote",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_best_completion_from_data",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_best_grammar_revision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_best_transition",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_best_notes_synthesis",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_words_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_word_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_cross_text_connection",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_text_relationship",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_agreement_across_texts",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_difference_across_texts",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_best_inference",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_command_of_evidence_textual",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_command_of_evidence_quantitative",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_central_detail",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_detail",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_best_illustration",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "choose_best_weakener",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "conform_to_standard_english",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "most_logically_completes",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "synthesize_information",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "compare_contributions",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GRAMMAR_ROLE_KEYS",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "V3 §5 grammar_role_key",
+      "entries": [
+        {
+          "value": "sentence_boundary",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "agreement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "verb_form",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "modifier",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "parallel_structure",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "pronoun",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GRAMMAR_FOCUS_BY_ROLE",
+      "kind": "hierarchical",
+      "domain": "grammar",
+      "comment": "V3 §6 grammar_focus_key (grouped by role)",
+      "parent_set": "GRAMMAR_ROLE_KEYS",
+      "derived_flat": "GRAMMAR_FOCUS_KEYS",
+      "entries": [
+        {
+          "value": "sentence_fragment",
+          "parent": "sentence_boundary",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "comma_splice",
+          "parent": "sentence_boundary",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "run_on_sentence",
+          "parent": "sentence_boundary",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "sentence_boundary",
+          "parent": "sentence_boundary",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "subject_verb_agreement",
+          "parent": "agreement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "pronoun_antecedent_agreement",
+          "parent": "agreement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "noun_countability",
+          "parent": "agreement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "determiners_articles",
+          "parent": "agreement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "affirmative_agreement",
+          "parent": "agreement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "verb_tense_consistency",
+          "parent": "verb_form",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "verb_form",
+          "parent": "verb_form",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "voice_active_passive",
+          "parent": "verb_form",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "negation",
+          "parent": "verb_form",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "modifier_placement",
+          "parent": "modifier",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "comparative_structures",
+          "parent": "modifier",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "illogical_comparison",
+          "parent": "modifier",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "adjective_adverb_distinction",
+          "parent": "modifier",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "logical_predication",
+          "parent": "modifier",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "relative_pronouns",
+          "parent": "modifier",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "punctuation_comma",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "colon_dash_use",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "semicolon_use",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "conjunctive_adverb_usage",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "apostrophe_use",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "possessive_contraction",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "appositive_punctuation",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "hyphen_usage",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "quotation_punctuation",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "unnecessary_internal_punctuation",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "end_punctuation_question_statement",
+          "parent": "punctuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "parallel_structure",
+          "parent": "parallel_structure",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "elliptical_constructions",
+          "parent": "parallel_structure",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "conjunction_usage",
+          "parent": "parallel_structure",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "pronoun_case",
+          "parent": "pronoun",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "pronoun_clarity",
+          "parent": "pronoun",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "pronoun_antecedent_agreement",
+          "parent": "pronoun",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "redundancy_concision",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "precision_word_choice",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "register_style_consistency",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "logical_relationships",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "emphasis_meaning_shifts",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_interpretation_claims",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "transition_logic",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "commonly_confused_words",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "preposition_idiom",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SYNTACTIC_TRAP_KEYS",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "V3 §9 syntactic_trap_key",
+      "entries": [
+        {
+          "value": "none",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "nearest_noun_attraction",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "garden_path",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "early_clause_anchor",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "nominalization_obscures_subject",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "interruption_breaks_subject_verb",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "long_distance_dependency",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "pronoun_ambiguity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "scope_of_negation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "modifier_attachment_ambiguity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "presupposition_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "temporal_sequence_ambiguity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "multiple",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DISTRACTOR_TYPE_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §12.1 distractor_type_key (option-level)",
+      "entries": [
+        {
+          "value": "semantic_imprecision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "logical_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "scope_error",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "tone_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "grammar_error",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "punctuation_error",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "transition_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_misread",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "goal_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "partially_supported",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "overstatement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "understatement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "rhetorical_irrelevance",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "partial_match",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "correct",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "topical_relevance_without_logical_connection",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "indirect_evidence",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "inverted_logic",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "detail_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "overreach",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_context_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "connotation_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "plausible_synonym",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_action_verb",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "reversed_attribution",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "confirmed_when_contradicted",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_table_row_or_column",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_group_comparison",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "single_measure_focus",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "local_maximum_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "same_direction_assumption",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "absolute_value_confusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "constraint_ignored",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "individual_inference_from_aggregate_bins",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "local_semantic_role_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "tone_register_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "rhetorical_scope_shift",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "author_action_misclassification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_relationship_blend",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "attribution_blend",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "agreement_degree_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "cause_effect_misalignment",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contradiction",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "figurative_literal_confusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "false_concession_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "REASONING_TRAP_KEYS",
+      "kind": "flat",
+      "domain": "reading",
+      "comment": "Reading v2 §10 reasoning_trap_key (question-level)",
+      "entries": [
+        {
+          "value": "topical_relevance_without_logical_connection",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "partial_match",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "indirect_evidence",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "inverted_logic",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "keyword_matching",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "single_sector_focus",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_context_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "detail_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "topic_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "overreach",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contradiction",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "absolute_language",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "outside_knowledge",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "cause_effect_misalignment",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "scope_extension",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "overspecification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_time_window",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "direction_reversal",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_table_row_or_column",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_group_comparison",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "single_measure_focus",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "local_maximum_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "same_direction_assumption",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "absolute_value_confusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "constraint_ignored",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "individual_inference_from_aggregate_bins",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "common_definition_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "semantic_relatedness_without_precision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "connotation_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "plausible_synonym",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "also_true_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_scope",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_action_verb",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "overstated_position",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "partial_purpose",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "reversed_attribution",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "extreme_language",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "textual_mimicry",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "confirmed_when_contradicted",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "polarity_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "local_semantic_role_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "tone_register_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "rhetorical_scope_shift",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "author_action_misclassification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_relationship_blend",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "attribution_blend",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "agreement_degree_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "figurative_literal_confusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "false_concession_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "PLANSIBILITY_SOURCE_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §10.3 plausibility_source_key",
+      "entries": [
+        {
+          "value": "nearest_noun_attraction",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "punctuation_style_bias",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "auditory_similarity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "grammar_fit_only",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "formal_register_match",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "common_idiom_pull",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "none",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "passage_vocabulary_overlap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "topical_proximity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "partial_truth",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "common_sense_appeal",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "common_definition_appeal",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "near_synonym_appeal",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "rhetorical_surface_similarity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "attribution_swap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ANSWER_MECHANISM_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §3.3 answer_mechanism_key",
+      "entries": [
+        {
+          "value": "rule_application",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "pattern_matching",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_location",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "inference",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_synthesis",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_matching",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contextual_substitution",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "rhetorical_classification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "cross_text_comparison",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "polarity_resolution",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SOLVER_PATTERN_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §3.3 solver_pattern_key",
+      "entries": [
+        {
+          "value": "apply_grammar_rule_directly",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "locate_error_zone",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "compare_register",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evaluate_transition",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "synthesize_notes",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "eliminate_by_boundary",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "locate_claim_then_match_evidence",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "read_graphic_then_match_claim",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "summarize_then_compare",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "locate_detail_directly",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_logical_gap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "substitute_and_test",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "classify_rhetorical_move",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "summarize_both_then_compare",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "apply_negation_logic",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "locate_figurative_function",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "STUDENT_FAILURE_MODE_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §21.3 student_failure_mode_key",
+      "entries": [
+        {
+          "value": "nearest_noun_reflex",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "comma_fix_illusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "formal_word_bias",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "longer_answer_bias",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "punctuation_intimidation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "surface_similarity_bias",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "scope_blindness",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "modifier_hitchhike",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "chronological_assumption",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "extreme_word_trap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "overreading",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "underreading",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "grammar_fit_only",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "register_confusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "pronoun_anchor_error",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "parallel_shape_bias",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "transition_assumption",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "idiom_memory_pull",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "false_precision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "negation_blindness",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "connotation_surface_match",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "local_role_misread",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "register_tone_blindness",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "figurative_meaning_blindness",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "exact_value_misread",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "individual_from_aggregate",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "all_measures_not_checked",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_comparison_direction",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_group_selected",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_row_column_lookup",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "single_measure_overread",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "local_maximum_overread",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "absolute_value_overweighting",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "constraint_ignored",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "two_part_claim_partial_match",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "control_group_misidentification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_scope_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "subgroup_overgeneralization",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "parenthetical_function_confusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "rhetorical_verb_partial",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "scope_role_confusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "author_action_overread",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "attribution_swap",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "agreement_degree_overread",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "relationship_simplification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "polarity_blindness",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "tense_proximity_pull",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "internal_unit_punctuation_insertion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "declarative_question_confusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "restrictive_appositive_comma_insertion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "title_name_comma_insertion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "nonfinite_for_finite",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "inflected_after_modal",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "plural_pronoun_for_clause_antecedent",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "past_tense_for_literary_present",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "transition_wrong_direction",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "notes_synthesis_wrong_goal",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "notes_synthesis_audience_mismatch",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "adverb_adjective_confusion",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "illogical_comparison_blindness",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "confused_word_substitution",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "preposition_idiom_error",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "notes_synthesis_content_omission",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DISTRACTOR_DISTANCE_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §21.2 distractor_distance",
+      "entries": [
+        {
+          "value": "wide",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "moderate",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "tight",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DIFFICULTY_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §3.3 difficulty keys",
+      "entries": [
+        {
+          "value": "low",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "medium",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "high",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FREQUENCY_BANDS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §3.3 frequency bands",
+      "entries": [
+        {
+          "value": "very_high",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "high",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "medium",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "low",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "very_low",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TENSE_REGISTER_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §17.6 tense register keys",
+      "entries": [
+        {
+          "value": "narrative_past",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "scientific_general_present",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "historical_past",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "study_procedure_past",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "established_finding_present",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "mixed_with_explicit_shift",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "literary_present",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "PASSAGE_ARCHITECTURE_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "V3 §22 passage_architecture_key",
+      "entries": [
+        {
+          "value": "science_setup_finding_implication",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "science_hypothesis_method_result",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "history_claim_evidence_limitation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "history_assumption_revision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "literature_observation_interpretation_shift",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "literature_character_conflict_reveal",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "economics_theory_exception_example",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "economics_problem_solution_tradeoff",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "rhetoric_claim_counterclaim_resolution",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "notes_fact_selection_contrast",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "unexpected_finding",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "cautionary_framing",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "problem_solution",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "compare_contrast",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "chronological_sequence",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "research_summary",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "claim_evidence_explanation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "analogy_driven_argument",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "multi_perspective_presentation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "qualification_restatement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "experiment_hypothesis_control_result",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "indirect_effect_mediation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "alternative_explanation_ruled_out",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "mechanism_manipulation_test",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "studied_subgroup_generalization_limit",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "QUESTION_FAMILY_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "question_family_key",
+      "entries": [
+        {
+          "value": "conventions_grammar",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "craft_and_structure",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "information_and_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "READING_QUESTION_FAMILY_KEYS",
+      "kind": "flat",
+      "domain": "reading",
+      "comment": "Reading question families (subset of QUESTION_FAMILY_KEYS)",
+      "entries": [
+        {
+          "value": "craft_and_structure",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "information_and_ideas",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "READING_SKILL_FAMILY_KEYS",
+      "kind": "flat",
+      "domain": "reading",
+      "comment": "Reading skill families",
+      "entries": [
+        {
+          "value": "command_of_evidence_textual",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "command_of_evidence_quantitative",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "central_ideas_and_details",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "inferences",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "words_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "text_structure_and_purpose",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "cross_text_connections",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "READING_FOCUS_BY_SKILL_FAMILY",
+      "kind": "hierarchical",
+      "domain": "reading",
+      "comment": "Reading v2 reading_focus_key (grouped by skill family)",
+      "parent_set": "READING_SKILL_FAMILY_KEYS",
+      "derived_flat": "READING_FOCUS_KEYS",
+      "entries": [
+        {
+          "value": "evidence_supports_claim",
+          "parent": "command_of_evidence_textual",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_weakens_claim",
+          "parent": "command_of_evidence_textual",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_illustrates_claim",
+          "parent": "command_of_evidence_textual",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_explains_claim",
+          "parent": "command_of_evidence_textual",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_qualifies_claim",
+          "parent": "command_of_evidence_textual",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_supports_claim",
+          "parent": "command_of_evidence_quantitative",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_weakens_claim",
+          "parent": "command_of_evidence_quantitative",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_completes_example",
+          "parent": "command_of_evidence_quantitative",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_comparison",
+          "parent": "command_of_evidence_quantitative",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "data_trend",
+          "parent": "command_of_evidence_quantitative",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "central_idea",
+          "parent": "central_ideas_and_details",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "main_purpose",
+          "parent": "central_ideas_and_details",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "passage_summary",
+          "parent": "central_ideas_and_details",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "supporting_detail",
+          "parent": "central_ideas_and_details",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "character_or_author_detail",
+          "parent": "central_ideas_and_details",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "causal_inference",
+          "parent": "inferences",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "motivational_inference",
+          "parent": "inferences",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "implication_inference",
+          "parent": "inferences",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "predictive_inference",
+          "parent": "inferences",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "cross_text_inference",
+          "parent": "inferences",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contextual_meaning",
+          "parent": "words_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "connotation_fit",
+          "parent": "words_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "precision_fit",
+          "parent": "words_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "register_fit",
+          "parent": "words_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "underlined_word_meaning",
+          "parent": "words_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "polarity_fit",
+          "parent": "words_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "figurative_language_meaning",
+          "parent": "words_in_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "overall_purpose",
+          "parent": "text_structure_and_purpose",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "sentence_function",
+          "parent": "text_structure_and_purpose",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "structural_pattern",
+          "parent": "text_structure_and_purpose",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "author_stance",
+          "parent": "text_structure_and_purpose",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "text2_response_to_text1",
+          "parent": "cross_text_connections",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "both_texts_agree",
+          "parent": "cross_text_connections",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "texts_disagree",
+          "parent": "cross_text_connections",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "text2_qualifies_text1",
+          "parent": "cross_text_connections",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "text2_contradicts_text1",
+          "parent": "cross_text_connections",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "methodological_critique",
+          "parent": "cross_text_connections",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "expectation_violation",
+          "parent": "cross_text_connections",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TEST_CONSTRUCT_KEYS",
+      "kind": "flat",
+      "domain": "reading",
+      "comment": "Reading v2 target_test_construct_key",
+      "entries": [
+        {
+          "value": "contextual_semantic_precision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "rhetorical_function_precision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "cross_text_relationship_precision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "evidence_relation_precision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "inference_boundary_control",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "quantitative_constraint_tracking",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "figurative_interpretation_precision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "CRAFT_SUBCONSTRUCT_KEYS",
+      "kind": "flat",
+      "domain": "reading",
+      "comment": "Reading v2 target_craft_subconstruct_key",
+      "entries": [
+        {
+          "value": "wic_local_semantic_role",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wic_tone_register_fit",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wic_polarity_logic",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "tsp_global_rhetorical_purpose",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "tsp_local_sentence_function",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "tsp_author_action_precision",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "ctc_agreement_degree",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "ctc_attribution_tracking",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "ctc_response_to_claim",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TEXT_RELATIONSHIP_KEYS",
+      "kind": "flat",
+      "domain": "reading",
+      "comment": "Reading v2 cross-text relationship keys",
+      "entries": [
+        {
+          "value": "direct_contradiction",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "confirmation_with_qualification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "expectation_violation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "methodological_critique",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "partial_agreement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "broad_support",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "causal_specification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "QUANTITATIVE_SUB_PATTERN_KEYS",
+      "kind": "flat",
+      "domain": "reading",
+      "comment": "Reading v2 quantitative_sub_pattern",
+      "entries": [
+        {
+          "value": "standard",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "exact_value_lookup",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "timing_constrained",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "all_measures",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "repeated_highest",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "two_variable_opposite",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "composition_change",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "binned_distribution",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SENTENCE_FUNCTION_ROLE_KEYS",
+      "kind": "flat",
+      "domain": "reading",
+      "comment": "Reading v2 target_sentence_function_role",
+      "entries": [
+        {
+          "value": "concession",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "elaboration",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contrast_motivation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "parenthetical_definition",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "example",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "consequence",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "hypothesis",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "counter_evidence",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "scope_qualification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "conventional_approach",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "obstacle",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "background_setup",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TRANSITION_SUBTYPE_KEYS",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "Grammar v7 transition_subtype_key",
+      "entries": [
+        {
+          "value": "sequence_final_event",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contrast_refutation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "addition",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "result_consequence",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "chronology",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "alternative",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "emphasis_support",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "causal_chain",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "specificity_elaboration",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "purpose_action",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "frequency_difference",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "simultaneity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "similarity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "appropriateness",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "change_over_time",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "exception",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "final_realization",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "converse_opposite",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "present_continuation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "direct_refutation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "logical_consequence",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "concession_qualification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "example",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "restatement_clarification",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SYNTHESIS_GOAL_KEYS",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "Grammar v7 notes synthesis goal keys",
+      "entries": [
+        {
+          "value": "emphasize_similarity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "emphasize_difference",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "explain_advantage",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "explain_mechanism",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "present_research",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "present_theory",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "introduce_work",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "describe_work",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "emphasize_achievement",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "make_generalization",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contrast_quantities",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "compare_measurements",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "emphasize_sample",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_category",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_profession",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_setting",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_title",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_year",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_duration",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_distance",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_author_pseudonym",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contrast_structural_types",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "present_study_aim",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_statistical_method",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "identify_statistical_authorship_method",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "explain_technique_advantage",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "explain_misconception_naming",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "challenge_with_quotation",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "challenge_explanation_with_quote",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "present_study_overview",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "present_methodology",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "present_study_conclusions",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "emphasize_significance",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "explain_format_advantage",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "emphasize_duration_and_purpose",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "emphasize_size_similarity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contrast_origins",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "provide_historical_overview",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contrast_formal_structures",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "contextualize_changing_beliefs",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "compare_hypothesis_scope",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "emphasize_age_similarity",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "AUDIENCE_KNOWLEDGE_KEYS",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "Grammar v7 audience knowledge keys",
+      "entries": [
+        {
+          "value": "audience_familiar",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "audience_unfamiliar",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "not_specified",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "REQUIRED_CONTENT_KEYS",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "Grammar v7 required content keys",
+      "entries": [
+        {
+          "value": "comparison_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "definition_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "background_omit",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "measurement_values_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "result_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "title_and_content_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "achievement_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "owner_of_achievement_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "category_label_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "sample_location_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "profession_label_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "setting_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "year_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "duration_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "distance_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "author_identity_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "mechanism_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "structural_roles_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "study_aim_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "statistical_method_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "misconception_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "quotation_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "study_finding_summary_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "method_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "conclusion_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "significance_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "advantage_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "purpose_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "origin_labels_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "timeline_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "formal_feature_labels_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "scope_terms_needed",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SYNTHESIS_DISTRACTOR_FAILURE_KEYS",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "Grammar v7 synthesis distractor failure keys",
+      "entries": [
+        {
+          "value": "wrong_goal",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "omits_required_content",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "adds_background_audience_does_not_need",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "correct_topic_wrong_comparison",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "omits_unfamiliar_context",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "wrong_audience_assumption",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "misstates_required_relationship",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "irrelevant_background",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TOPIC_BROAD_KEYS",
+      "kind": "flat",
+      "domain": "shared",
+      "comment": "Broad topic keys",
+      "entries": [
+        {
+          "value": "science",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "history",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "literature",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "social_studies",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "humanities",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "arts",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "economics",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "technology",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        },
+        {
+          "value": "environment",
+          "status": "active",
+          "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    }
+  ]
+}

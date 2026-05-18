@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "not_a_real_role",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-18T12:39:19.484170+00:00",
+      "last_seen": "2026-05-18T12:39:19.484170+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "not_a_real_focus",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-18T12:39:19.485176+00:00",
+      "last_seen": "2026-05-18T12:39:19.485176+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "STIMULUS_MODE_KEYS",
+      "value": "bad_mode",
+      "field": "stimulus_mode_key",
+      "first_seen": "2026-05-18T12:39:19.485882+00:00",
+      "last_seen": "2026-05-18T12:39:19.485882+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "STEM_TYPE_KEYS",
+      "value": "bad_stem",
+      "field": "stem_type_key",
+      "first_seen": "2026-05-18T12:39:19.486483+00:00",
+      "last_seen": "2026-05-18T12:39:19.486483+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    }
+  ]
+}

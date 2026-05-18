@@ -5,6 +5,56 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-18 — Master vocabulary file: single source of truth + review queue
+
+**Model:** Claude Opus 4.7 (`claude-opus-4-7`)
+**Branch:** `main`
+
+The controlled vocabulary was hand-maintained in three places — `ontology.py`,
+`rules_agent_dsat_reading_v2.md`, and the grammar v7 doc — which kept drifting
+out of sync (the bug class behind Test 4 q6/q7). This change makes one file the
+source of truth and adds a non-blocking growth path for keys the LLM invents.
+
+### Source of truth
+
+- **New `vocabulary/master.json`** — canonical home of all 41 controlled
+  vocabularies (599 entries), each tagged with domain, status
+  (`active`/`candidate`/`deprecated`), and `added` date. Hierarchical
+  vocabularies (`GRAMMAR_FOCUS_BY_ROLE`, `READING_FOCUS_BY_SKILL_FAMILY`) carry
+  a `parent`.
+- **New `scripts/gen_vocab.py`** — regenerates `ontology.py` and the rules-doc
+  `<!-- VOCAB:... -->` appendix blocks from master.json. `--bootstrap` seeded
+  master.json from the existing ontology.py (verified: every constant
+  round-trips identically). `--generate` is the edit workflow; `--check` is the
+  drift gate.
+- **`ontology.py` is now a generated artefact** — header says so; edits go to
+  master.json.
+
+### Review queue (non-blocking vocabulary growth)
+
+- **New `backend/app/models/vocab_candidates.py`** — when the pipeline meets a
+  key not yet in the vocabulary it records it in `vocabulary/candidates.json`
+  (job id, occurrences, context) instead of dropping or hard-failing it. Writes
+  are `fcntl`-locked because Pass-2 annotation runs concurrently.
+- **`validator.py`** records unknown question-level keys; signature gained an
+  optional `job_id`.
+- **`options.py`** — the `distractor_type_key`, `plausibility_source_key`, and
+  `student_failure_mode_key` validators no longer `raise ValueError` on an
+  unknown key; they record a candidate and keep the value so the question still
+  ingests. `distractor_distance` (a fixed micro-enum) still hard-rejects.
+- **`gen_vocab.py --list-candidates / --promote / --reject`** — review the
+  queue and promote real keys into master.json (promotion auto-regenerates).
+
+### Propagation & CI
+
+- Both rules docs gained an `Appendix V — Controlled Vocabulary (generated)`
+  section with one fenced VOCAB block per vocabulary, regenerated in lockstep.
+- `backend/tests/test_vocab_sync.py` runs `gen_vocab.py --check` as the drift
+  gate (the repo has no separate CI runner) and covers candidate recording,
+  dedup, and the non-blocking option behaviour.
+
+---
+
 ## 2026-05-18 — Controlled-vocabulary reconciliation (ontology ↔ rules docs)
 
 **Model:** Claude Opus 4.7 (`claude-opus-4-7`)

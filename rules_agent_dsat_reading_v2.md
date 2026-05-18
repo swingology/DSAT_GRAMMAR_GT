@@ -1757,3 +1757,639 @@ question, confirm:
 *Domain coverage: Information and Ideas, Craft and Structure*
 *Companion file: `rules_agent_dsat_grammar_ingestion_generetion_v7.md`*
 *Supersedes: v1.0 + v1.1 addendum — these remain as historical reference, not as active load targets*
+
+## Appendix V — Controlled Vocabulary (generated)
+
+The key lists below are generated from `vocabulary/master.json` by
+`scripts/gen_vocab.py`. Do not hand-edit them — edit master.json and
+regenerate. They stay in lockstep with the validator enums in
+`backend/app/models/ontology.py`.
+
+<!-- VOCAB:system:CONTENT_ORIGINS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`CONTENT_ORIGINS`** — Content origin
+
+- `official`
+- `unofficial`
+- `generated`
+<!-- VOCAB:system:CONTENT_ORIGINS END -->
+
+<!-- VOCAB:system:JOB_TYPES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`JOB_TYPES`** — Job types
+
+- `ingest`
+- `generate`
+- `reannotate`
+- `overlap_check`
+<!-- VOCAB:system:JOB_TYPES END -->
+
+<!-- VOCAB:system:JOB_STATUSES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`JOB_STATUSES`** — Job statuses (state machine)
+
+- `pending`
+- `parsing`
+- `extracting`
+- `generating`
+- `annotating`
+- `overlap_checking`
+- `validating`
+- `approved`
+- `needs_review`
+- `failed`
+<!-- VOCAB:system:JOB_STATUSES END -->
+
+<!-- VOCAB:system:PRACTICE_STATUSES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`PRACTICE_STATUSES`** — Practice status
+
+- `draft`
+- `active`
+- `retired`
+<!-- VOCAB:system:PRACTICE_STATUSES END -->
+
+<!-- VOCAB:system:OVERLAP_STATUSES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`OVERLAP_STATUSES`** — Overlap status
+
+- `none`
+- `possible`
+- `confirmed`
+<!-- VOCAB:system:OVERLAP_STATUSES END -->
+
+<!-- VOCAB:system:RELATION_TYPES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`RELATION_TYPES`** — Relation types
+
+- `overlaps_official`
+- `derived_from`
+- `near_duplicate`
+- `generated_from`
+- `adapted_from`
+<!-- VOCAB:system:RELATION_TYPES END -->
+
+<!-- VOCAB:system:ASSET_TYPES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`ASSET_TYPES`** — Asset types
+
+- `pdf`
+- `image`
+- `screenshot`
+- `markdown`
+- `json`
+- `text`
+<!-- VOCAB:system:ASSET_TYPES END -->
+
+<!-- VOCAB:system:CHANGE_SOURCES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`CHANGE_SOURCES`** — Change sources
+
+- `ingest`
+- `generate`
+- `admin_edit`
+- `reprocess`
+<!-- VOCAB:system:CHANGE_SOURCES END -->
+
+<!-- VOCAB:shared:STIMULUS_MODE_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`STIMULUS_MODE_KEYS`** — V3 §3.1 stimulus_mode_key
+
+- `sentence_only`
+- `passage_excerpt`
+- `prose_single`
+- `prose_paired`
+- `prose_plus_table`
+- `prose_plus_graph`
+- `notes_bullets`
+- `notes_summary`
+- `poem`
+<!-- VOCAB:shared:STIMULUS_MODE_KEYS END -->
+
+<!-- VOCAB:system:TEST_FORMAT_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`TEST_FORMAT_KEYS`** — Rules v7 generation format keys
+
+- `digital_app_adaptive`
+- `nondigital_linear_accommodation`
+<!-- VOCAB:system:TEST_FORMAT_KEYS END -->
+
+<!-- VOCAB:system:SOURCE_STATS_FORMAT_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`SOURCE_STATS_FORMAT_KEYS`** — Rules v7 source stats format keys
+
+- `official_digital`
+- `official_nondigital_linear`
+<!-- VOCAB:system:SOURCE_STATS_FORMAT_KEYS END -->
+
+<!-- VOCAB:shared:STEM_TYPE_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`STEM_TYPE_KEYS`** — V3 §3.2 stem_type_key
+
+- `complete_the_text`
+- `choose_main_idea`
+- `choose_main_purpose`
+- `choose_structure_description`
+- `choose_sentence_function`
+- `choose_likely_response`
+- `choose_best_support`
+- `choose_best_quote`
+- `choose_best_completion_from_data`
+- `choose_best_grammar_revision`
+- `choose_best_transition`
+- `choose_best_notes_synthesis`
+- `choose_words_in_context`
+- `choose_word_in_context`
+- `choose_cross_text_connection`
+- `choose_text_relationship`
+- `choose_agreement_across_texts`
+- `choose_difference_across_texts`
+- `choose_best_inference`
+- `choose_command_of_evidence_textual`
+- `choose_command_of_evidence_quantitative`
+- `choose_central_detail`
+- `choose_detail`
+- `choose_best_illustration`
+- `choose_best_weakener`
+- `conform_to_standard_english`
+- `most_logically_completes`
+- `synthesize_information`
+- `compare_contributions`
+<!-- VOCAB:shared:STEM_TYPE_KEYS END -->
+
+<!-- VOCAB:shared:DISTRACTOR_TYPE_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`DISTRACTOR_TYPE_KEYS`** — V3 §12.1 distractor_type_key (option-level)
+
+- `semantic_imprecision`
+- `logical_mismatch`
+- `scope_error`
+- `tone_mismatch`
+- `grammar_error`
+- `punctuation_error`
+- `transition_mismatch`
+- `data_misread`
+- `goal_mismatch`
+- `partially_supported`
+- `overstatement`
+- `understatement`
+- `rhetorical_irrelevance`
+- `partial_match`
+- `correct`
+- `topical_relevance_without_logical_connection`
+- `indirect_evidence`
+- `inverted_logic`
+- `detail_trap`
+- `overreach`
+- `data_context_mismatch`
+- `connotation_mismatch`
+- `plausible_synonym`
+- `wrong_action_verb`
+- `reversed_attribution`
+- `confirmed_when_contradicted`
+- `wrong_table_row_or_column`
+- `wrong_group_comparison`
+- `single_measure_focus`
+- `local_maximum_trap`
+- `same_direction_assumption`
+- `absolute_value_confusion`
+- `constraint_ignored`
+- `individual_inference_from_aggregate_bins`
+- `local_semantic_role_mismatch`
+- `tone_register_mismatch`
+- `rhetorical_scope_shift`
+- `author_action_misclassification`
+- `evidence_relationship_blend`
+- `attribution_blend`
+- `agreement_degree_mismatch`
+- `cause_effect_misalignment`
+- `contradiction`
+- `figurative_literal_confusion`
+- `false_concession_trap`
+<!-- VOCAB:shared:DISTRACTOR_TYPE_KEYS END -->
+
+<!-- VOCAB:reading:REASONING_TRAP_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`REASONING_TRAP_KEYS`** — Reading v2 §10 reasoning_trap_key (question-level)
+
+- `topical_relevance_without_logical_connection`
+- `partial_match`
+- `indirect_evidence`
+- `inverted_logic`
+- `keyword_matching`
+- `single_sector_focus`
+- `data_context_mismatch`
+- `detail_trap`
+- `topic_trap`
+- `overreach`
+- `contradiction`
+- `absolute_language`
+- `outside_knowledge`
+- `cause_effect_misalignment`
+- `scope_extension`
+- `overspecification`
+- `wrong_time_window`
+- `direction_reversal`
+- `wrong_table_row_or_column`
+- `wrong_group_comparison`
+- `single_measure_focus`
+- `local_maximum_trap`
+- `same_direction_assumption`
+- `absolute_value_confusion`
+- `constraint_ignored`
+- `individual_inference_from_aggregate_bins`
+- `common_definition_trap`
+- `semantic_relatedness_without_precision`
+- `connotation_mismatch`
+- `plausible_synonym`
+- `also_true_trap`
+- `wrong_scope`
+- `wrong_action_verb`
+- `overstated_position`
+- `partial_purpose`
+- `reversed_attribution`
+- `extreme_language`
+- `textual_mimicry`
+- `confirmed_when_contradicted`
+- `polarity_mismatch`
+- `local_semantic_role_mismatch`
+- `tone_register_mismatch`
+- `rhetorical_scope_shift`
+- `author_action_misclassification`
+- `evidence_relationship_blend`
+- `attribution_blend`
+- `agreement_degree_mismatch`
+- `figurative_literal_confusion`
+- `false_concession_trap`
+<!-- VOCAB:reading:REASONING_TRAP_KEYS END -->
+
+<!-- VOCAB:shared:PLANSIBILITY_SOURCE_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`PLANSIBILITY_SOURCE_KEYS`** — V3 §10.3 plausibility_source_key
+
+- `nearest_noun_attraction`
+- `punctuation_style_bias`
+- `auditory_similarity`
+- `grammar_fit_only`
+- `formal_register_match`
+- `common_idiom_pull`
+- `none`
+- `passage_vocabulary_overlap`
+- `topical_proximity`
+- `partial_truth`
+- `common_sense_appeal`
+- `common_definition_appeal`
+- `near_synonym_appeal`
+- `rhetorical_surface_similarity`
+- `attribution_swap`
+<!-- VOCAB:shared:PLANSIBILITY_SOURCE_KEYS END -->
+
+<!-- VOCAB:shared:ANSWER_MECHANISM_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`ANSWER_MECHANISM_KEYS`** — V3 §3.3 answer_mechanism_key
+
+- `rule_application`
+- `pattern_matching`
+- `evidence_location`
+- `inference`
+- `data_synthesis`
+- `evidence_matching`
+- `contextual_substitution`
+- `rhetorical_classification`
+- `cross_text_comparison`
+- `polarity_resolution`
+<!-- VOCAB:shared:ANSWER_MECHANISM_KEYS END -->
+
+<!-- VOCAB:shared:SOLVER_PATTERN_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`SOLVER_PATTERN_KEYS`** — V3 §3.3 solver_pattern_key
+
+- `apply_grammar_rule_directly`
+- `locate_error_zone`
+- `compare_register`
+- `evaluate_transition`
+- `synthesize_notes`
+- `eliminate_by_boundary`
+- `locate_claim_then_match_evidence`
+- `read_graphic_then_match_claim`
+- `summarize_then_compare`
+- `locate_detail_directly`
+- `identify_logical_gap`
+- `substitute_and_test`
+- `classify_rhetorical_move`
+- `summarize_both_then_compare`
+- `apply_negation_logic`
+- `locate_figurative_function`
+<!-- VOCAB:shared:SOLVER_PATTERN_KEYS END -->
+
+<!-- VOCAB:shared:STUDENT_FAILURE_MODE_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`STUDENT_FAILURE_MODE_KEYS`** — V3 §21.3 student_failure_mode_key
+
+- `nearest_noun_reflex`
+- `comma_fix_illusion`
+- `formal_word_bias`
+- `longer_answer_bias`
+- `punctuation_intimidation`
+- `surface_similarity_bias`
+- `scope_blindness`
+- `modifier_hitchhike`
+- `chronological_assumption`
+- `extreme_word_trap`
+- `overreading`
+- `underreading`
+- `grammar_fit_only`
+- `register_confusion`
+- `pronoun_anchor_error`
+- `parallel_shape_bias`
+- `transition_assumption`
+- `idiom_memory_pull`
+- `false_precision`
+- `negation_blindness`
+- `connotation_surface_match`
+- `local_role_misread`
+- `register_tone_blindness`
+- `figurative_meaning_blindness`
+- `exact_value_misread`
+- `individual_from_aggregate`
+- `all_measures_not_checked`
+- `wrong_comparison_direction`
+- `wrong_group_selected`
+- `wrong_row_column_lookup`
+- `single_measure_overread`
+- `local_maximum_overread`
+- `absolute_value_overweighting`
+- `constraint_ignored`
+- `two_part_claim_partial_match`
+- `control_group_misidentification`
+- `evidence_scope_mismatch`
+- `subgroup_overgeneralization`
+- `parenthetical_function_confusion`
+- `rhetorical_verb_partial`
+- `scope_role_confusion`
+- `author_action_overread`
+- `attribution_swap`
+- `agreement_degree_overread`
+- `relationship_simplification`
+- `polarity_blindness`
+- `tense_proximity_pull`
+- `internal_unit_punctuation_insertion`
+- `declarative_question_confusion`
+- `restrictive_appositive_comma_insertion`
+- `title_name_comma_insertion`
+- `nonfinite_for_finite`
+- `inflected_after_modal`
+- `plural_pronoun_for_clause_antecedent`
+- `past_tense_for_literary_present`
+- `transition_wrong_direction`
+- `notes_synthesis_wrong_goal`
+- `notes_synthesis_audience_mismatch`
+- `adverb_adjective_confusion`
+- `illogical_comparison_blindness`
+- `confused_word_substitution`
+- `preposition_idiom_error`
+- `notes_synthesis_content_omission`
+<!-- VOCAB:shared:STUDENT_FAILURE_MODE_KEYS END -->
+
+<!-- VOCAB:shared:DISTRACTOR_DISTANCE_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`DISTRACTOR_DISTANCE_KEYS`** — V3 §21.2 distractor_distance
+
+- `wide`
+- `moderate`
+- `tight`
+<!-- VOCAB:shared:DISTRACTOR_DISTANCE_KEYS END -->
+
+<!-- VOCAB:shared:DIFFICULTY_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`DIFFICULTY_KEYS`** — V3 §3.3 difficulty keys
+
+- `low`
+- `medium`
+- `high`
+<!-- VOCAB:shared:DIFFICULTY_KEYS END -->
+
+<!-- VOCAB:shared:FREQUENCY_BANDS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`FREQUENCY_BANDS`** — V3 §3.3 frequency bands
+
+- `very_high`
+- `high`
+- `medium`
+- `low`
+- `very_low`
+<!-- VOCAB:shared:FREQUENCY_BANDS END -->
+
+<!-- VOCAB:shared:TENSE_REGISTER_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`TENSE_REGISTER_KEYS`** — V3 §17.6 tense register keys
+
+- `narrative_past`
+- `scientific_general_present`
+- `historical_past`
+- `study_procedure_past`
+- `established_finding_present`
+- `mixed_with_explicit_shift`
+- `literary_present`
+<!-- VOCAB:shared:TENSE_REGISTER_KEYS END -->
+
+<!-- VOCAB:shared:PASSAGE_ARCHITECTURE_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`PASSAGE_ARCHITECTURE_KEYS`** — V3 §22 passage_architecture_key
+
+- `science_setup_finding_implication`
+- `science_hypothesis_method_result`
+- `history_claim_evidence_limitation`
+- `history_assumption_revision`
+- `literature_observation_interpretation_shift`
+- `literature_character_conflict_reveal`
+- `economics_theory_exception_example`
+- `economics_problem_solution_tradeoff`
+- `rhetoric_claim_counterclaim_resolution`
+- `notes_fact_selection_contrast`
+- `unexpected_finding`
+- `cautionary_framing`
+- `problem_solution`
+- `compare_contrast`
+- `chronological_sequence`
+- `research_summary`
+- `claim_evidence_explanation`
+- `analogy_driven_argument`
+- `multi_perspective_presentation`
+- `qualification_restatement`
+- `experiment_hypothesis_control_result`
+- `indirect_effect_mediation`
+- `alternative_explanation_ruled_out`
+- `mechanism_manipulation_test`
+- `studied_subgroup_generalization_limit`
+<!-- VOCAB:shared:PASSAGE_ARCHITECTURE_KEYS END -->
+
+<!-- VOCAB:shared:QUESTION_FAMILY_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`QUESTION_FAMILY_KEYS`** — question_family_key
+
+- `conventions_grammar`
+- `expression_of_ideas`
+- `craft_and_structure`
+- `information_and_ideas`
+<!-- VOCAB:shared:QUESTION_FAMILY_KEYS END -->
+
+<!-- VOCAB:reading:READING_QUESTION_FAMILY_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`READING_QUESTION_FAMILY_KEYS`** — Reading question families (subset of QUESTION_FAMILY_KEYS)
+
+- `craft_and_structure`
+- `information_and_ideas`
+<!-- VOCAB:reading:READING_QUESTION_FAMILY_KEYS END -->
+
+<!-- VOCAB:reading:READING_SKILL_FAMILY_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`READING_SKILL_FAMILY_KEYS`** — Reading skill families
+
+- `command_of_evidence_textual`
+- `command_of_evidence_quantitative`
+- `central_ideas_and_details`
+- `inferences`
+- `words_in_context`
+- `text_structure_and_purpose`
+- `cross_text_connections`
+<!-- VOCAB:reading:READING_SKILL_FAMILY_KEYS END -->
+
+<!-- VOCAB:reading:READING_FOCUS_BY_SKILL_FAMILY START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`READING_FOCUS_BY_SKILL_FAMILY`** — Reading v2 reading_focus_key (grouped by skill family)
+
+- **`command_of_evidence_textual`**
+  - `evidence_supports_claim`
+  - `evidence_weakens_claim`
+  - `evidence_illustrates_claim`
+  - `evidence_explains_claim`
+  - `evidence_qualifies_claim`
+- **`command_of_evidence_quantitative`**
+  - `data_supports_claim`
+  - `data_weakens_claim`
+  - `data_completes_example`
+  - `data_comparison`
+  - `data_trend`
+- **`central_ideas_and_details`**
+  - `central_idea`
+  - `main_purpose`
+  - `passage_summary`
+  - `supporting_detail`
+  - `character_or_author_detail`
+- **`inferences`**
+  - `causal_inference`
+  - `motivational_inference`
+  - `implication_inference`
+  - `predictive_inference`
+  - `cross_text_inference`
+- **`words_in_context`**
+  - `contextual_meaning`
+  - `connotation_fit`
+  - `precision_fit`
+  - `register_fit`
+  - `underlined_word_meaning`
+  - `polarity_fit`
+  - `figurative_language_meaning`
+- **`text_structure_and_purpose`**
+  - `overall_purpose`
+  - `sentence_function`
+  - `structural_pattern`
+  - `author_stance`
+- **`cross_text_connections`**
+  - `text2_response_to_text1`
+  - `both_texts_agree`
+  - `texts_disagree`
+  - `text2_qualifies_text1`
+  - `text2_contradicts_text1`
+  - `methodological_critique`
+  - `expectation_violation`
+<!-- VOCAB:reading:READING_FOCUS_BY_SKILL_FAMILY END -->
+
+<!-- VOCAB:reading:TEST_CONSTRUCT_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`TEST_CONSTRUCT_KEYS`** — Reading v2 target_test_construct_key
+
+- `contextual_semantic_precision`
+- `rhetorical_function_precision`
+- `cross_text_relationship_precision`
+- `evidence_relation_precision`
+- `inference_boundary_control`
+- `quantitative_constraint_tracking`
+- `figurative_interpretation_precision`
+<!-- VOCAB:reading:TEST_CONSTRUCT_KEYS END -->
+
+<!-- VOCAB:reading:CRAFT_SUBCONSTRUCT_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`CRAFT_SUBCONSTRUCT_KEYS`** — Reading v2 target_craft_subconstruct_key
+
+- `wic_local_semantic_role`
+- `wic_tone_register_fit`
+- `wic_polarity_logic`
+- `tsp_global_rhetorical_purpose`
+- `tsp_local_sentence_function`
+- `tsp_author_action_precision`
+- `ctc_agreement_degree`
+- `ctc_attribution_tracking`
+- `ctc_response_to_claim`
+<!-- VOCAB:reading:CRAFT_SUBCONSTRUCT_KEYS END -->
+
+<!-- VOCAB:reading:TEXT_RELATIONSHIP_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`TEXT_RELATIONSHIP_KEYS`** — Reading v2 cross-text relationship keys
+
+- `direct_contradiction`
+- `confirmation_with_qualification`
+- `expectation_violation`
+- `methodological_critique`
+- `partial_agreement`
+- `broad_support`
+- `causal_specification`
+<!-- VOCAB:reading:TEXT_RELATIONSHIP_KEYS END -->
+
+<!-- VOCAB:reading:QUANTITATIVE_SUB_PATTERN_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`QUANTITATIVE_SUB_PATTERN_KEYS`** — Reading v2 quantitative_sub_pattern
+
+- `standard`
+- `exact_value_lookup`
+- `timing_constrained`
+- `all_measures`
+- `repeated_highest`
+- `two_variable_opposite`
+- `composition_change`
+- `binned_distribution`
+<!-- VOCAB:reading:QUANTITATIVE_SUB_PATTERN_KEYS END -->
+
+<!-- VOCAB:reading:SENTENCE_FUNCTION_ROLE_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`SENTENCE_FUNCTION_ROLE_KEYS`** — Reading v2 target_sentence_function_role
+
+- `concession`
+- `elaboration`
+- `contrast_motivation`
+- `parenthetical_definition`
+- `example`
+- `consequence`
+- `hypothesis`
+- `counter_evidence`
+- `scope_qualification`
+- `conventional_approach`
+- `obstacle`
+- `background_setup`
+<!-- VOCAB:reading:SENTENCE_FUNCTION_ROLE_KEYS END -->
+
+<!-- VOCAB:shared:TOPIC_BROAD_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`TOPIC_BROAD_KEYS`** — Broad topic keys
+
+- `science`
+- `history`
+- `literature`
+- `social_studies`
+- `humanities`
+- `arts`
+- `economics`
+- `technology`
+- `environment`
+<!-- VOCAB:shared:TOPIC_BROAD_KEYS END -->

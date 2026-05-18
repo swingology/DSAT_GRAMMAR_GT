@@ -13,11 +13,20 @@ from app.models.ontology import (
     STIMULUS_MODE_KEYS,
     STEM_TYPE_KEYS,
 )
+from app.models.vocab_candidates import record_unknown_field
 
 
-def validate_question(question_data: dict, content_origin: str = "official") -> List[Dict]:
+def validate_question(
+    question_data: dict,
+    content_origin: str = "official",
+    job_id: str | None = None,
+) -> List[Dict]:
     """Validate a question dict against PRD rules.
     Returns a list of error dicts: [{"severity": "blocking"|"review"|"warning", "field": str, "message": str}]
+
+    Unknown controlled-vocabulary keys are additionally recorded in the
+    vocabulary review queue (vocabulary/candidates.json) for later promotion;
+    recording is non-blocking and never changes the validation outcome.
     """
     errors = []
 
@@ -98,6 +107,7 @@ def validate_question(question_data: dict, content_origin: str = "official") -> 
             "field": "question_family_key",
             "message": f"Unknown question_family_key: {question_family!r}",
         })
+        record_unknown_field("question_family_key", question_family, job_id=job_id)
 
     grammar_role = question_data.get("grammar_role_key")
     if grammar_role and grammar_role not in GRAMMAR_ROLE_KEYS:
@@ -106,6 +116,7 @@ def validate_question(question_data: dict, content_origin: str = "official") -> 
             "field": "grammar_role_key",
             "message": f"Unknown grammar_role_key: {grammar_role!r}. Valid: {list(GRAMMAR_ROLE_KEYS)}",
         })
+        record_unknown_field("grammar_role_key", grammar_role, job_id=job_id)
 
     grammar_focus = question_data.get("grammar_focus_key")
     if grammar_focus and grammar_focus not in GRAMMAR_FOCUS_KEYS:
@@ -114,6 +125,7 @@ def validate_question(question_data: dict, content_origin: str = "official") -> 
             "field": "grammar_focus_key",
             "message": f"Unknown grammar_focus_key: {grammar_focus!r}",
         })
+        record_unknown_field("grammar_focus_key", grammar_focus, job_id=job_id)
 
     if grammar_role and grammar_focus:
         allowed_foci = GRAMMAR_FOCUS_BY_ROLE.get(grammar_role, ())
@@ -131,6 +143,7 @@ def validate_question(question_data: dict, content_origin: str = "official") -> 
             "field": "stimulus_mode_key",
             "message": f"Unknown stimulus_mode_key: {stimulus_mode!r}",
         })
+        record_unknown_field("stimulus_mode_key", stimulus_mode, job_id=job_id)
 
     stem_type = question_data.get("stem_type_key")
     if stem_type and stem_type not in STEM_TYPE_KEYS:
@@ -139,6 +152,7 @@ def validate_question(question_data: dict, content_origin: str = "official") -> 
             "field": "stem_type_key",
             "message": f"Unknown stem_type_key: {stem_type!r}",
         })
+        record_unknown_field("stem_type_key", stem_type, job_id=job_id)
 
     skill_family_key = question_data.get("skill_family_key")
     reading_focus_key = question_data.get("reading_focus_key")
@@ -161,6 +175,7 @@ def validate_question(question_data: dict, content_origin: str = "official") -> 
                 "field": "skill_family_key",
                 "message": f"Invalid reading skill_family_key: {skill_family_key!r}",
             })
+            record_unknown_field("skill_family_key", skill_family_key, job_id=job_id)
         if not reading_focus_key:
             errors.append({
                 "severity": "blocking",

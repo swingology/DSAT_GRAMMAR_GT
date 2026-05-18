@@ -5,6 +5,7 @@ from app.models.ontology import (
     DISTRACTOR_TYPE_KEYS, PLANSIBILITY_SOURCE_KEYS,
     STUDENT_FAILURE_MODE_KEYS, DISTRACTOR_DISTANCE_KEYS,
 )
+from app.models.vocab_candidates import record_unknown_field
 
 
 class OptionAnalysis(BaseModel):
@@ -25,25 +26,31 @@ class OptionAnalysis(BaseModel):
     distractor_distance: Optional[str] = None
     distractor_competition_score: Optional[float] = Field(default=None, ge=0.0, le=1.0)
 
+    # Controlled-vocabulary fields below are non-blocking: an unknown key is
+    # recorded in the vocabulary review queue (vocabulary/candidates.json) and
+    # the value is kept so the question still ingests. A human promotes real
+    # keys into master.json; hallucinated ones are rejected. This deliberately
+    # trades strict rejection for visibility — see the 2026-05-18 vocabulary
+    # source-of-truth decision.
     @field_validator("distractor_type_key")
     @classmethod
     def validate_distractor_type(cls, v):
         if v and v not in DISTRACTOR_TYPE_KEYS:
-            raise ValueError(f"Invalid distractor_type_key: {v}")
+            record_unknown_field("distractor_type_key", v)
         return v
 
     @field_validator("plausibility_source_key")
     @classmethod
     def validate_plausibility(cls, v):
         if v and v not in PLANSIBILITY_SOURCE_KEYS:
-            raise ValueError(f"Invalid plausibility_source_key: {v}")
+            record_unknown_field("plausibility_source_key", v)
         return v
 
     @field_validator("student_failure_mode_key")
     @classmethod
     def validate_failure_mode(cls, v):
         if v and v not in STUDENT_FAILURE_MODE_KEYS:
-            raise ValueError(f"Invalid student_failure_mode_key: {v}")
+            record_unknown_field("student_failure_mode_key", v)
         return v
 
     @field_validator("distractor_distance")
