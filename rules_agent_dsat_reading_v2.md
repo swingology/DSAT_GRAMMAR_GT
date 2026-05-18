@@ -517,9 +517,14 @@ Use `solver_pattern_key` to describe the step-by-step solving strategy.
 
 ## 10. Reasoning Trap Keys
 
-Use `reasoning_trap_key` to describe the primary wrong-answer mechanism for the question.
-This applies at the question level (for the most dangerous trap) and at the option level
-(per option).
+Use `reasoning_trap_key` to record the single most dangerous wrong-answer mechanism
+for the **question as a whole**. Choose exactly one key from §10.1 or §10.2 below.
+
+Per-option wrong-answer mechanisms are recorded separately in each option's
+`distractor_type_key` field — use the §12.1 list for that field, not this one.
+The two vocabularies overlap but are **not interchangeable**: `reasoning_trap_key`
+(question-level) is drawn only from §10; `distractor_type_key` (option-level) is
+drawn only from §12.1.
 
 ### 10.1 Information and Ideas reasoning trap keys
 
@@ -539,14 +544,11 @@ This applies at the question level (for the most dangerous trap) and at the opti
 - `cause_effect_misalignment` — proposes a relationship the passage does not establish
 - `scope_extension` — applies a conclusion to a population or domain the passage does not address
 - `overspecification` — correct in direction but too specific (e.g., names a sub-group the passage does not specify)
-- `wrong_row_or_column` — quantitative; option uses the correct table but cites the wrong row or column identifier
 - `wrong_time_window` — quantitative; option uses real data that is accurate for a different time period than the one the passage's constraint specifies
-- `all_measures_not_checked` — quantitative; option is true for one measure or one time point but the passage claim requires the comparison to hold across all measures or all periods
-- `individual_from_aggregate` — quantitative; option infers individual-level information from a binned or aggregated graphic that only supports group-level claims
 - `direction_reversal` — quantitative; option correctly identifies the variable being tracked but states the opposite direction of change
-- `wrong_table_row_or_column` — quantitative; option uses the correct table/graph but selects the wrong row, column, category, bar, or plotted point
+- `wrong_table_row_or_column` — quantitative; option uses the correct table/graph but selects the wrong row, column, category, bar, or plotted point identifier
 - `wrong_group_comparison` — quantitative; option compares the wrong treatment group, control group, population, or category
-- `single_measure_focus` — quantitative; option is true for one measure but the claim requires all listed measures or conditions
+- `single_measure_focus` — quantitative; option is true for one measure or one time point but the claim requires the comparison to hold across all listed measures, conditions, or periods
 - `local_maximum_trap` — quantitative; option cites a locally high value that is not highest across the full required interval or set
 - `same_direction_assumption` — quantitative; option assumes two variables move in the same direction when the data show opposite movement
 - `absolute_value_confusion` — quantitative; option accurately describes an absolute count or amount but misses a percentage, proportion, or composition shift

@@ -5,6 +5,56 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-18 — Controlled-vocabulary reconciliation (ontology ↔ rules docs)
+
+**Model:** Claude Opus 4.7 (`claude-opus-4-7`)
+**Branch:** `main`
+
+A full cross-reference audit of `backend/app/models/ontology.py` against
+`rules_agent_dsat_reading_v2.md` and
+`rules_agent_dsat_grammar_ingestion_generation_v7.md` found two controlled
+vocabularies still desynced — the same class of bug that blocked Test 4 q6/q7.
+LLM-emittable keys were missing from the validator enums, so any question
+carrying them failed at the `validating` step.
+
+### Ontology
+
+- **`STUDENT_FAILURE_MODE_KEYS` extended 46 → 63 keys.** Added the 16
+  grammar-specific `student_failure_mode_key` values from grammar_v7 §D.7 (e.g.
+  `transition_wrong_direction`, `nonfinite_for_finite`,
+  `notes_synthesis_wrong_goal`), plus `tense_proximity_pull` and reading_v2 §19's
+  approved synonym `polarity_blindness`. `student_failure_mode_key` is mandatory
+  on every distractor and hard-validated at `options.py:42-46`.
+- **New `REASONING_TRAP_KEYS` set (49 keys).** A dedicated controlled vocabulary
+  for the question-level `reasoning_trap_key` field, distinct from
+  `DISTRACTOR_TYPE_KEYS` (the option-level §12.1 list).
+
+### Validation
+
+- Added a `reasoning_trap_key` `@field_validator` to `QuestionAnnotation`
+  (`annotation.py`) — previously an unvalidated free-text field.
+- `annotate_prompt.py` ALLOWED KEY VALUES block now lists `reasoning_trap_key`'s
+  vocabulary, with an explicit note not to use the §12.1 `distractor_type_key`
+  list for it.
+
+### Rules docs
+
+- **reading_v2 §10 deduplicated:** `wrong_row_or_column`,
+  `individual_from_aggregate`, and `all_measures_not_checked` merged into
+  `wrong_table_row_or_column`, `individual_inference_from_aggregate_bins`, and
+  `single_measure_focus`.
+- reading_v2 §10 intro rewritten to state §10 governs `reasoning_trap_key`
+  (question-level) and §12.1 governs `distractor_type_key` (option-level) — the
+  two vocabularies overlap but are not interchangeable.
+
+### Deferred
+
+- Generate-side `target_reasoning_trap_key` lives in untyped `generation_profile`
+  JSONB (`payload.py:42`) and cannot be validated until the profile is typed;
+  `REASONING_TRAP_KEYS` is ready for that change.
+
+---
+
 ## 2026-05-16 — Apply pending DB migrations (017, 018)
 
 **Model:** Claude Opus 4.7 (`claude-opus-4-7`)

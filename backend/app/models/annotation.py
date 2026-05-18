@@ -7,6 +7,7 @@ from app.models.ontology import (
     STUDENT_FAILURE_MODE_KEYS, PASSAGE_ARCHITECTURE_KEYS,
     DISTRACTOR_DISTANCE_KEYS, QUESTION_FAMILY_KEYS,
     READING_SKILL_FAMILY_KEYS, READING_FOCUS_KEYS,
+    REASONING_TRAP_KEYS,
 )
 
 
@@ -113,6 +114,13 @@ class QuestionAnnotation(BaseModel):
         return v
 
     model_config = {"populate_by_name": True}
+
+    @field_validator("reasoning_trap_key")
+    @classmethod
+    def validate_reasoning_trap_key(cls, v):
+        if v and v not in REASONING_TRAP_KEYS:
+            raise ValueError(f"Invalid reasoning_trap_key: {v}")
+        return v
 
     @field_validator("distractor_distance")
     @classmethod

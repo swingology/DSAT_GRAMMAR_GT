@@ -1,5 +1,97 @@
 # Debug Log
 
+## 2026-05-18 - Controlled-Vocabulary Audit (ontology vs rules docs)
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `8ffc83f` — router - needs review flag fixed
+
+**Context:** Full cross-reference of every controlled-vocabulary set in
+`backend/app/models/ontology.py` against `rules_agent_dsat_reading_v2.md` and
+`rules_agent_dsat_grammar_ingestion_generation_v7.md`. The 2026-05-18 reading-focus
+fix resolved one instance of the desync class; this audit found the same class
+(see 2026-05-16 18-PDF run finding 4) still live in two larger vocabularies.
+Validator behavior confirmed in `backend/app/models/options.py` and `annotation.py`.
+
+### Findings
+
+1. **High:** `STUDENT_FAILURE_MODE_KEYS` missing the entire grammar v7 §D.7
+   grammar-specific failure-mode block. `student_failure_mode_key` is mandatory
+   on every distractor (worked example §B.12 emits these verbatim) and is
+   validated at `options.py:42-46` (`ValueError` on miss). 17 absent keys.
+   - **Fixed:** Added `tense_proximity_pull`, `polarity_blindness` (reading v2
+     §19 approved synonym) and the 16 §D.7 grammar keys to
+     `STUDENT_FAILURE_MODE_KEYS` in `ontology.py` (now 63 keys, all unique).
+
+2. ~~**High:** Reading v2 §10.1/§10.2 `reasoning_trap_key` trap vocabulary — 21
+   keys absent from `DISTRACTOR_TYPE_KEYS`. The question-level `reasoning_trap_key`
+   field (`annotation.py:24`) has no validator so is not blocking, but §10 states
+   the same vocabulary applies per-option, and per-option `distractor_type_key`
+   IS validated (`options.py:31`). reading_v2 is internally inconsistent: §12.1's
+   `distractor_type_key` list omits these §10 keys.~~
+   - Re-traced: `distractor_type_key` is NOT blocking — every §12.1 key is already
+     in `DISTRACTOR_TYPE_KEYS`; the risk was only LLM cross-contamination between
+     §10 and §12.1. `reasoning_trap_key` was confirmed a consumed signal (generation
+     reads `target_reasoning_trap_key`), so it warrants a controlled vocabulary.
+   - **Fixed (2026-05-18):** Added `REASONING_TRAP_KEYS` (49 keys) to `ontology.py`
+     as a dedicated set distinct from `DISTRACTOR_TYPE_KEYS`. reading_v2 §10 was
+     deduplicated first — `wrong_row_or_column`, `individual_from_aggregate`,
+     `all_measures_not_checked` merged into `wrong_table_row_or_column`,
+     `individual_inference_from_aggregate_bins`, `single_measure_focus`. Added a
+     `reasoning_trap_key` `@field_validator` to `annotation.py`; added the set to
+     the `annotate_prompt.py` ALLOWED KEY VALUES block; tightened reading_v2 §10
+     intro to state §10 governs `reasoning_trap_key` and §12.1 governs
+     `distractor_type_key` (not interchangeable).
+   - **Follow-up (deferred):** generate-side `target_reasoning_trap_key` is stored
+     in untyped `generation_profile` JSONB (`payload.py:42`) — no schema, so it
+     cannot be validated yet. Typing `generation_profile` is a separate change;
+     `REASONING_TRAP_KEYS` is ready for it.
+
+3. **Low:** Ontology extras absent from both rules docs (cosmetic, never surfaced
+   to the LLM, unverifiable): `STIMULUS_MODE_KEYS` `notes_summary`;
+   `STEM_TYPE_KEYS` `conform_to_standard_english`, `compare_contributions`,
+   `synthesize_information`. Not fixed — left pending doc reconciliation.
+
+## 2026-05-18 - Ingestion Test Run (Test_4_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `8ffc83f` — router - needs review flag fixed
+
+**Context:** Attempted the official-verbal ingestion pipeline test for
+Test_4_digital_sec01_mod01. The API rejected the submission before any job was
+created: `{"detail":"This file has already been ingested (duplicate
+checksum)."}`. The PDF was already ingested as job
+`c9aeeb9d-cc84-4012-bc8f-5af8366f16c8` on 2026-05-17. The bundled runner has no
+re-ingestion / force flag, so no fresh job ran. Findings below reflect the
+state of the existing job `c9aeeb9d` (status `approved`, 33 extracted /
+31 created, 8 validation errors). No new pipeline behavior could be verified;
+the prior q6/q7 `reading_focus_key` block (see 2026-05-17 entry below) remains
+present and unfixed in this job's stored validation errors.
+
+### Findings
+
+1. **Prereq failure:** Duplicate-checksum rejection — Test_4_digital_sec01_mod01
+   could not be re-ingested. RESULT_JSON: `{"error":"no job_id","response":"..
+   This file has already been ingested (duplicate checksum)."}`. Run aborted at
+   submission. To force a fresh run, the existing asset/job for this checksum
+   must be removed or a re-ingestion flag added to the runner.
+
+2. **High:** q6/q7 still blocked at `validating` step in existing job
+   `c9aeeb9d` — `reading_focus_key 'structural_pattern' is not allowed for
+   skill_family_key 'text_structure_and_purpose'` (severity `blocking`),
+   question_index 5 (source_question_number 6) and question_index 6
+   (source_question_number 7). Both questions remain absent from the 31 created
+   (33 extracted). The ontology/rules-doc desync described in the 2026-05-17
+   "Reading Ontology vs Rules-Doc Desync" entry is NOT yet resolved in the data
+   for this job. A fresh re-ingest is required to confirm any code-side fix.
+
+3. **Medium:** 6 `question_number_validation` `out_of_range` warnings in job
+   `c9aeeb9d` — question_index 27–32 carry numbers 28–33, flagged "outside
+   expected range 1–27 for verbal/mod01". Non-blocking; these reflect the
+   pre-`bb1c597` (1,27) cap and predate the (1,33) range correction.
+
+Note: The "Option labels must be exactly {A, B, C, D}, got ['']" cascade did
+NOT appear in job `c9aeeb9d`. No new run executed today.
+
 ## 2026-05-17 - Ingestion Test Run (Test_4_digital_sec01_mod02)
 Report created by: Claude Opus 4.7
 Git branch: `main`
@@ -48,7 +140,7 @@ desync between the LLM-facing rules doc and the code ontology.
 
 ### Findings
 
-1. **High: `reading_focus_key` controlled vocabulary has diverged between
+1. ~~**High: `reading_focus_key` controlled vocabulary has diverged between
    `rules_agent_dsat_reading_v2.md` and `backend/app/models/ontology.py`.**
    - The Pass 2 annotate prompt injects the full reading rules doc *and* a
      code-derived allowed-keys block — these now contradict each other.
@@ -65,9 +157,24 @@ desync between the LLM-facing rules doc and the code ontology.
        is shared. Rules §7.7 has 6 keys absent from code; code has 3 keys absent
        from rules. Every cross-text question is a latent validation failure.
    - Likely the same root cause behind the earlier "unknown enum key" symptoms
-     (bug-106), not generic model sloppiness.
-   - **Fix pending:** reconcile the rules doc and `ontology.py` so the two
-     controlled vocabularies are identical (canonical direction to be chosen).
+     (bug-106), not generic model sloppiness.~~
+   - **Fixed (2026-05-18):** Reconciled `ontology.py` to the rules doc as the
+     canonical source — the rules doc is internally self-consistent and is
+     referenced by both the annotate and generate prompts (tables, checklists),
+     so it is cheaper and safer to make the ontology follow it than vice versa.
+     `READING_FOCUS_BY_SKILL_FAMILY` updated: `text_structure_and_purpose` →
+     `(overall_purpose, sentence_function, structural_pattern, author_stance)`;
+     `words_in_context` gains `figurative_language_meaning`;
+     `cross_text_connections` → the full rules §7.7 set (`text2_response_to_text1,
+     both_texts_agree, texts_disagree, text2_qualifies_text1,
+     text2_contradicts_text1, methodological_critique, expectation_violation`).
+     All 38 reading focus keys now appear verbatim in the rules doc. Verified the
+     5 dropped keys (`text_structure`, `rhetorical_shift`, `agreement_across_texts`,
+     `difference_across_texts`, `shared_topic_different_conclusion`) have no DB
+     rows in `question_annotations` and no code references, so no migration is
+     needed. The allowed-keys block in `annotate_prompt.py` is built from this
+     same ontology, so prompt and validator are now consistent. Unblocks Test 4
+     q6/q7.
 
 ## 2026-05-16 - Full Ingestion Run Error Tracking (18 PDFs)
 Report created by: Claude Opus 4.7

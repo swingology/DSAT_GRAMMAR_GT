@@ -12,6 +12,7 @@ from app.models.ontology import (
     STIMULUS_MODE_KEYS,
     STEM_TYPE_KEYS,
     READING_FOCUS_BY_SKILL_FAMILY,
+    REASONING_TRAP_KEYS,
 )
 
 
@@ -34,6 +35,12 @@ def _build_allowed_keys_block() -> str:
     ]
     for family, focuses in READING_FOCUS_BY_SKILL_FAMILY.items():
         lines.append(f"  {family}: {', '.join(focuses)}")
+    lines.append("")
+    lines.append(
+        "reasoning_trap_key (question-level, reading domains) MUST be one of "
+        "(per reading_v2 §10 — do NOT use the §12.1 distractor_type_key list here):"
+    )
+    lines.append("  " + ", ".join(REASONING_TRAP_KEYS))
     lines.append("")
     lines.append(
         "Never invent a synonym or descriptive variant. If none fits perfectly, "
