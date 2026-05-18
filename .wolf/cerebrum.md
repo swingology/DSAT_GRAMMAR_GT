@@ -46,3 +46,11 @@
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
+
+- 2026-05-18 — Ingest jobs with any non-blocking validation warning (e.g.
+  qnum_ocr_crosscheck) now route to `needs_review` instead of `approved`, and
+  their questions persist as `practice_status="draft"` (held out of student
+  rotation) until an admin clears them. Chosen over a passive jobs-list badge
+  because warnings on auto-approved jobs were otherwise invisible. Trigger is
+  any entry in `all_errors`; `defer_activation` flag in `_run_pipeline` is
+  computed before the persist loop and passed to `_persist_single_question`.

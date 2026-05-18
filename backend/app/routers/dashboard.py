@@ -179,10 +179,14 @@ async def review_items_fragment(
                 f'<span>{_esc(e.get("field",""))} — {_esc(e.get("message",""))}</span></div>'
             )
         for e in warnings:
+            # validate_question warnings use field/message; qnum and OCR
+            # cross-check warnings use step/issue/detail — fall back across both.
+            w_field = e.get("field") or e.get("step") or ""
+            w_msg = e.get("message") or e.get("detail") or e.get("issue") or ""
             err_html += (
                 f'<div class="flex items-start gap-2 text-amber-700 text-xs">'
                 f'<span class="font-bold mt-0.5">WARN</span>'
-                f'<span>{_esc(e.get("field",""))} — {_esc(e.get("message",""))}</span></div>'
+                f'<span>{_esc(w_field)} — {_esc(w_msg)}</span></div>'
             )
 
         opts = opts_by_qid.get(qid_str, [])

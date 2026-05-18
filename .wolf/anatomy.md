@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-16T18:22:19.291Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-18T00:18:41.923Z
 > Files: 690 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
@@ -25,7 +25,7 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~22163 tok)
 - `CLAUDE.md` — OpenWolf (~274 tok)
-- `DEBUG_LOG.md` — Debug Log (~16732 tok)
+- `DEBUG_LOG.md` — Debug Log (~23295 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
@@ -916,9 +916,9 @@
 ## backend/app/routers/
 
 - `admin.py` — API: 5 endpoints (~6973 tok)
-- `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14684 tok)
+- `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` — API: 2 endpoints (~4450 tok)
-- `ingest.py` (~30788 tok)
+- `ingest.py` (~31954 tok)
 - `student.py` — API: 3 endpoints (~1880 tok)
 
 ## backend/app/storage/
@@ -949,7 +949,7 @@
 
 - `conftest.py` — Force test env before any app imports — use assignment, not setdefault (~385 tok)
 - `test_admin_router.py` — test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, test_admin_re (~556 tok)
-- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~12642 tok)
+- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~12686 tok)
 - `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~601 tok)
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
 - `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)

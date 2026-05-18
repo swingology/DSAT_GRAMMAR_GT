@@ -1101,7 +1101,7 @@ def test_validate_qnums_null_number():
 
 
 def test_validate_qnums_out_of_range():
-    qs = _make_qs([25, 26, 28])  # 28 > 27 for verbal
+    qs = _make_qs([32, 33, 35])  # 35 > 33 cap for verbal
     warns = ingest_router._validate_question_numbers(qs, "verbal", "01")
     issues = [w["issue"] for w in warns]
     assert "out_of_range" in issues

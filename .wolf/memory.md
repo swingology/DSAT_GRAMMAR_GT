@@ -469,3 +469,40 @@
 | 11:22 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 25 reads | ~142025 tok |
 | 11:24 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 25 reads | ~142025 tok |
 | 18:01 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 26 reads | ~142951 tok |
+| 07:13 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 26 reads | ~142951 tok |
+| 07:15 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 26 reads | ~142951 tok |
+| 07:17 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 26 reads | ~142951 tok |
+| 07:18 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 26 reads | ~142951 tok |
+| 07:23 | Session end: 43 writes across 13 files (ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md, admin.py) | 26 reads | ~142951 tok |
+| 07:25 | Edited DEBUG_LOG.md | modified feat() | ~568 |
+| 07:26 | Audited reading_focus_key rules-vs-ontology desync; logged bug-109 | DEBUG_LOG.md, buglog.json | done | ~1100 |
+
+## Session: 2026-05-17 07:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:32 | Edited backend/tests/test_backend_regressions.py | inline fix | ~17 |
+| 08:32 | Edited DEBUG_LOG.md | expanded (+15 lines) | ~224 |
+| 08:33 | Session end: 2 writes across 2 files (test_backend_regressions.py, DEBUG_LOG.md) | 3 reads | ~66542 tok |
+
+## Session: 2026-05-17 08:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-17 08:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:03 | Edited DEBUG_LOG.md | expanded (+20 lines) | ~286 |
+| 10:03 | ingestion test Test_4 sec01 mod02 | DEBUG_LOG.md | job approved 33/33, 33 qnum_ocr_crosscheck warnings (off-by-one) | ~94k |
+| 10:03 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~23350 tok |
+| 17:18 | Edited backend/app/routers/ingest.py | 2→3 lines | ~30 |
+| 17:18 | Edited backend/app/routers/ingest.py | 6→11 lines | ~146 |
+| 17:18 | Edited backend/app/routers/ingest.py | 2→6 lines | ~80 |
+| 17:18 | Edited backend/app/routers/ingest.py | 2→3 lines | ~40 |
+| 17:18 | Edited backend/app/routers/ingest.py | 5→6 lines | ~90 |
+| 17:18 | Edited backend/app/routers/dashboard.py | 6→10 lines | ~164 |
+| 03:22 | route warning-carrying ingest jobs into review queue | ingest.py, dashboard.py | needs_review + draft persist when validation warnings present | ~12k |
+| 03:23 | Session end: 7 writes across 3 files (DEBUG_LOG.md, ingest.py, dashboard.py) | 4 reads | ~76345 tok |
+| 03:26 | Session end: 7 writes across 3 files (DEBUG_LOG.md, ingest.py, dashboard.py) | 4 reads | ~76345 tok |

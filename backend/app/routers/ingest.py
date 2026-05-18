@@ -498,6 +498,7 @@ async def _persist_single_question(
     layout_paths: dict | None = None,
     provider=None,
     suspect_question_indices: set[int] | None = None,
+    defer_activation: bool = False,
 ) -> uuid.UUID:
     """Create Question + QuestionVersion + QuestionAnnotation + QuestionOption rows.
 
@@ -534,11 +535,16 @@ async def _persist_single_question(
             return question_id
 
     official_auto_activate = _should_auto_activate_official(get_settings())
-    practice_status = (
-        "active"
-        if job.content_origin == "official" and official_auto_activate
-        else "draft" if job.content_origin == "official" else "active"
-    )
+    if defer_activation:
+        # Job carries validation warnings — hold the question out of student
+        # rotation as a draft until an admin clears it from the review queue.
+        practice_status = "draft"
+    else:
+        practice_status = (
+            "active"
+            if job.content_origin == "official" and official_auto_activate
+            else "draft" if job.content_origin == "official" else "active"
+        )
     overlap_status = "possible" if overlaps else "none"
 
     question = Question(
@@ -1725,6 +1731,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         except Exception as e:
             logger.warning("Diagnostics write failed for job %s: %s", job.id, e)
 
+    # Any pre-persist warning (question-number / OCR cross-check) routes the
+    # whole job into the manual review queue and holds its questions as drafts.
+    defer_activation = bool(all_errors)
+
     # ---- Per-question loop ----
     created_question_ids: list[uuid.UUID] = []
     pass2_meta_list: list[dict] = []
@@ -1856,6 +1866,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     layout_paths=layout_paths,
                     provider=stimulus_provider,
                     suspect_question_indices=suspect_qnum_indices,
+                    defer_activation=defer_activation,
                 )
                 db.add(QuestionJobQuestion(job_id=job.id, question_id=question_id))
             created_question_ids.append(question_id)
@@ -1882,10 +1893,11 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     if created_question_ids:
         # At least one question succeeded
         job.question_id = created_question_ids[0]  # primary question for the job
-        if job.content_origin == "official" and not _should_auto_activate_official(settings):
-            job.status = "needs_review"
-        else:
-            job.status = "approved"
+        needs_review = (
+            (job.content_origin == "official" and not _should_auto_activate_official(settings))
+            or bool(all_errors)
+        )
+        job.status = "needs_review" if needs_review else "approved"
         job.pass1_json = {
             **(job.pass1_json or {}),
             "_created_question_ids": [str(qid) for qid in created_question_ids],

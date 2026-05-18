@@ -1,5 +1,74 @@
 # Debug Log
 
+## 2026-05-17 - Ingestion Test Run (Test_4_digital_sec01_mod02)
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `4ec08a4` — test: add concurrent annotation tests and fix mock settings
+
+**Context:** Ran the official-verbal ingestion pipeline test for
+Test_4_digital_sec01_mod02 (job 31ab501e-6b29-4d0f-87f9-021c1d539a2b). Job
+reached `approved` with 33/33 extracted and 33/33 created — no blocking
+validation errors, no per-question validating-step failures. The "Option
+labels must be exactly {A, B, C, D}, got ['']" cascade did NOT appear.
+
+### Findings
+
+1. **Medium:** 33 qnum_ocr_crosscheck warnings — every question (indices 0–32)
+   flagged a question-number mismatch between the LLM-extracted value and the
+   OCR text. Job 31ab501e-6b29-4d0f-87f9-021c1d539a2b, all 33 questions.
+   Representative: "question_index 0: LLM extracted 1 but OCR text shows 2".
+   Consistent off-by-one offset module-wide; non-blocking — job reached
+   approved and persisted all 33 questions.
+
+## 2026-05-17 - Stale Test After Verbal Cap Correction
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `4ec08a4` — test: add concurrent annotation tests and fix mock settings
+
+### Findings
+
+1. **Low:** `test_validate_qnums_out_of_range` failed — not an ingestion regression.
+   - Commit `bb1c597` changed the verbal range in `_DSAT_QUESTION_RANGES`
+     (ingest.py:197-198) from `(1, 27)` to `(1, 33)` but did not update the test.
+   - Test data `[25, 26, 28]` (comment `# 28 > 27 for verbal`) is now fully in
+     range, so `_validate_question_numbers` emits no `out_of_range` warning.
+   - **Fixed:** updated test data to `[32, 33, 35]` (`35 > 33 cap`) in
+     test_backend_regressions.py:1104; still triggers `non_contiguous` too.
+
+## 2026-05-17 - Reading Ontology vs Rules-Doc Desync (Test 4 ingest)
+Report created by: Claude Opus 4.7
+Git branch: `main`
+Git checkpoint: `bb1c597` — feat(ingest): correct verbal question cap and add ingestion test tooling
+
+**Context:** Test 4 sec01/mod01 ingest (job `c9aeeb9d`) reached `approved` with 31/33
+questions persisted. Two questions (q6, q7) were blocked at the `validating` step:
+`reading_focus_key 'structural_pattern' is not allowed for skill_family_key
+'text_structure_and_purpose'`. Investigation traced this to a controlled-vocabulary
+desync between the LLM-facing rules doc and the code ontology.
+
+### Findings
+
+1. **High: `reading_focus_key` controlled vocabulary has diverged between
+   `rules_agent_dsat_reading_v2.md` and `backend/app/models/ontology.py`.**
+   - The Pass 2 annotate prompt injects the full reading rules doc *and* a
+     code-derived allowed-keys block — these now contradict each other.
+   - The validator checks the code ontology (`READING_FOCUS_BY_SKILL_FAMILY`);
+     the LLM trusts the richer, repeated rules-doc descriptions. Any question
+     whose focus the model names per the rules doc fails validation.
+   - Full audit of all 7 reading skill families — 4 match, 3 drift:
+     - `text_structure_and_purpose`: rules says `structural_pattern`, code says
+       `text_structure`; code also has `rhetorical_shift`, rules §7.6 does not.
+       → directly blocked Test 4 q6, q7.
+     - `words_in_context`: rules §7.5 adds `figurative_language_meaning`; code
+       ontology lacks it.
+     - `cross_text_connections`: near-total divergence — only `text2_response_to_text1`
+       is shared. Rules §7.7 has 6 keys absent from code; code has 3 keys absent
+       from rules. Every cross-text question is a latent validation failure.
+   - Likely the same root cause behind the earlier "unknown enum key" symptoms
+     (bug-106), not generic model sloppiness.
+   - **Fix pending:** reconcile the rules doc and `ontology.py` so the two
+     controlled vocabularies are identical (canonical direction to be chosen).
+
 ## 2026-05-16 - Full Ingestion Run Error Tracking (18 PDFs)
 Report created by: Claude Opus 4.7
 Git branch: `main`
