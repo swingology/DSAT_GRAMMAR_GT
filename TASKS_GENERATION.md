@@ -370,27 +370,25 @@ Files: `backend/app/routers/generate.py` (`_is_transient_error`, `_batch_counter
 **Goal:** Define a stable multi-model review contract for generated-question
 quality.
 
-- [ ] Create `rules_agent_dsat_review_v1.md` at repo root holding scoring
+- [x] Create `rules_agent_dsat_review_v1.md` at repo root holding scoring
   dimensions, anchor bands per numeric score, and the strict JSON schema
   reviewers must return.
-- [ ] Rubric must score:
-  - DSAT realism
-  - SAT style fidelity
-  - target taxonomy match
-  - difficulty match
-  - distractor quality
-  - correct-answer defensibility
-  - explanation quality
-  - grammar/reading rule compliance
-  - copy or near-duplicate risk
-  - student-facing ambiguity risk
-- [ ] Rubric must return strict JSON.
-- [ ] Rubric must include `verdict`:
+- [x] Rubric must score:
+  - DSAT realism → `realism_score`
+  - SAT style fidelity → `sat_fidelity_score`
+  - target taxonomy match → `taxonomy_match_score`
+  - difficulty match → `difficulty_match_score`
+  - distractor quality + correct-answer defensibility → `distractor_quality_score`
+  - explanation quality + student-facing ambiguity risk → `explanation_quality_score`
+  - copy/near-duplicate risk → `copy_risk_score` (inverted)
+  - grammar/reading rule compliance → folded into `taxonomy_match_score`
+- [x] Rubric must return strict JSON.
+- [x] Rubric must include `verdict`:
   - `accept`
   - `needs_human_review`
   - `reject`
-- [ ] Rubric must require short reasons for every score below threshold.
-- [ ] **Create `backend/app/prompts/review_prompt.py`** loader that composes:
+- [x] Rubric must require short reasons for every score below threshold.
+- [x] **Create `backend/app/prompts/review_prompt.py`** loader that composes:
   - `rules_agent_dsat_review_v1.md` (rubric).
   - `rules_agent_dsat_grammar_ingestion_generation_v7.md` **always**,
     regardless of question domain (prose-style canon for all DSAT
@@ -399,20 +397,26 @@ quality.
     question (additive on top of grammar v7).
   - Question payload, options, annotation, source examples, overlap
     status, original request.
-- [ ] **Create `llm_review_results` table** (per Locked Decisions data
+- [x] **Create `llm_review_results` table** (per Locked Decisions data
   model). Includes `rubric_version` (filename version string) and
   `rules_versions_jsonb` snapshot of `{grammar, reading}` versions in
   effect at review time, so each row stands alone for audit.
-- [ ] **Create `review_runs` table** (per Locked Decisions review run
+- [x] **Create `review_runs` table** (per Locked Decisions review run
   grouping): `id`, `question_id`, `generation_batch_id` (nullable),
   `triggered_by`, `triggered_by_admin_token` (nullable),
   `rubric_version`, `rules_versions_jsonb`, `status` (`running` |
   `complete` | `partial` | `failed`), `started_at`, `completed_at`.
-- [ ] Add tests for parsing valid review JSON and rejecting malformed review
-  output.
-- [ ] Version the rubric with `rubric_version` (filename = version
+- [x] Add tests for parsing valid review JSON and rejecting malformed review
+  output. (`backend/tests/test_review_parser.py`: 25 tests; `backend/tests/test_review_prompt.py`: 16 tests)
+- [x] Version the rubric with `rubric_version` (filename = version
   string). Write-once: new version = new file; never edit a published
   version after it has been used for real reviews.
+
+**Files:** `rules_agent_dsat_review_v1.md`, `backend/app/prompts/review_prompt.py`,
+`backend/app/review/parser.py`, `backend/app/models/db.py` (ReviewRun, LlmReviewResult),
+`backend/app/models/ontology.py` (review enums), `backend/app/config.py` (thresholds),
+`backend/migrations/versions/022_phase3_review_tables.py`,
+`backend/tests/test_review_parser.py`, `backend/tests/test_review_prompt.py`
 
 **Exit criteria:** One generated question can be reviewed by one model and
 produce a durable, structured quality review with rubric + grammar canon
@@ -423,33 +427,38 @@ loaded and a `review_run_id` linking reviewer rows to their run.
 **Goal:** Run OpenAI, Claude, and DeepSeek-style reviewers against saved
 generated candidates.
 
-- [ ] Add review provider config:
+- [x] Add review provider config:
   - `GENERATION_REVIEW_PROVIDERS=openai,anthropic,ollama`
   - `GENERATION_REVIEW_OPENAI_MODEL`
   - `GENERATION_REVIEW_ANTHROPIC_MODEL`
   - `GENERATION_REVIEW_OLLAMA_MODEL=deepseek-v4-pro:cloud`
   - `GENERATION_REVIEW_MAX_CONCURRENT`
-- [ ] Add a review runner that loads:
+  - `GENERATION_REVIEW_MAX_RETRIES`
+- [x] Add a review runner that loads:
   - saved generated question
   - options
   - annotation
   - generation request
   - source official examples
   - overlap status
-- [ ] Run reviewers concurrently with a semaphore.
-- [ ] Save one review result per provider/model.
-- [ ] Treat review failure as a review status, not as deletion of the generated
+- [x] Run reviewers concurrently with a semaphore.
+- [x] Save one review result per provider/model.
+- [x] Treat review failure as a review status, not as deletion of the generated
   question.
-- [ ] Add endpoint:
+- [x] Add endpoint:
   - `POST /admin/questions/{question_id}/review-swarm`
+  - `GET /admin/questions/{question_id}/review-runs`
   - `POST /generate/batches/{batch_id}/review-swarm`
-- [ ] Add tests for:
+- [x] Add tests for:
   - all reviewers succeed
   - one reviewer fails
   - malformed reviewer JSON
-  - duplicate review prevention
-  - review rerun creates a new `review_run_id` while preserving previous
-    review rows
+  - duplicate review prevention (rerun creates new review_run_id)
+  - batch review swarm skips already-reviewed questions
+  - empty batch returns empty results
+  - nonexistent batch raises ValueError
+
+**Files:** `backend/app/review/runner.py`, `backend/app/routers/admin.py` (review-swarm and review-runs endpoints), `backend/app/routers/generate.py` (batch review-swarm endpoint), `backend/tests/test_review_runner.py` (18 tests)
 
 **Exit criteria:** A saved generated question can receive independent reviews
 from OpenAI, Claude, and DeepSeek/DeepSeek-via-Ollama without blocking the
@@ -459,24 +468,26 @@ question's saved record.
 
 **Goal:** Turn review-swarm output into deterministic admin-facing status.
 
-- [ ] Add consensus calculation after review results are saved.
-- [ ] Default policy:
+- [x] Add consensus calculation after review results are saved.
+- [x] Default policy:
   - reject recommended if any model reports high copy risk
   - reject recommended if average realism is below threshold
   - needs human review if reviewer disagreement is high
   - admin review ready if all core averages clear threshold
   - blocked if official overlap status is unresolved
-- [ ] Store consensus output in the dedicated `consensus_verdicts` table.
-- [ ] Add config thresholds:
+- [x] Store consensus output in the dedicated `consensus_verdicts` table.
+- [x] Add config thresholds:
   - `GENERATION_MIN_REALISM_SCORE`
   - `GENERATION_MIN_SAT_FIDELITY_SCORE`
   - `GENERATION_MIN_DISTRACTOR_QUALITY_SCORE`
   - `GENERATION_MIN_TAXONOMY_MATCH_SCORE`
   - `GENERATION_MAX_COPY_RISK_SCORE`
   - `GENERATION_MAX_REVIEWER_DISAGREEMENT`
-- [ ] Add tests for each verdict path.
-- [ ] Do not activate generated questions from consensus alone in the initial
+- [x] Add tests for each verdict path.
+- [x] Do not activate generated questions from consensus alone in the initial
   build.
+
+**Files:** `backend/app/review/consensus.py`, `backend/app/models/db.py` (ConsensusVerdict model), `backend/app/review/runner.py` (wired consensus after review), `backend/migrations/versions/023_phase5_consensus_verdicts.py`, `backend/tests/test_consensus.py` (17 tests)
 
 **Exit criteria:** Every reviewed generated question has a consensus verdict
 that the admin dashboard can filter and sort.

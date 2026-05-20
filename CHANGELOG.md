@@ -5,6 +5,105 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-20 — Phase 5: Consensus Gate
+
+**Model:** Claude Opus 4.6
+**Branch:** `generation_build`
+
+Implemented the deterministic consensus gate that converts review-swarm
+output into admin-facing verdicts.
+
+### New modules
+
+- `backend/app/review/consensus.py` — Consensus computation:
+  - `compute_consensus()` — ordered first-match-wins algorithm producing one
+    of five verdicts: `blocked_overlap`, `insufficient_reviews`,
+    `reject_recommended`, `regenerate_recommended`, `admin_review_ready`
+  - `_compute_disagreement()` — mean standard deviation across all scored
+    dimensions (including copy risk)
+  - `save_consensus()` — async persistence of `ConsensusVerdict` row after
+    review swarm completion
+- `backend/migrations/versions/023_phase5_consensus_verdicts.py` — migration
+  creating `consensus_verdicts` table with `consensus_verdict_enum` PG type
+
+### Verdict algorithm (ordered, first-match-wins)
+
+1. **blocked_overlap** — question has confirmed official overlap (unresolved)
+2. **insufficient_reviews** — zero successful reviewer results
+3. **reject_recommended** — max copy risk exceeds threshold (>5.0)
+4. **reject_recommended** — average realism below threshold (<7.0)
+5. **admin_review_ready** with `high_disagreement_flag=True` — reviewer
+   disagreement exceeds threshold (>1.5)
+6. **regenerate_recommended** — any core dimension average below threshold
+7. **admin_review_ready** — all thresholds cleared
+
+Config thresholds (landed in Phase 3, now consumed by consensus):
+`generation_min_realism_score=7.0`, `generation_min_sat_fidelity_score=7.0`,
+`generation_min_distractor_quality_score=6.5`,
+`generation_min_taxonomy_match_score=7.5`, `generation_max_copy_risk_score=5.0`,
+`generation_max_reviewer_disagreement=1.5`.
+
+### Model changes
+
+- `ConsensusVerdict` model added to `db.py` with: `question_id`,
+  `review_run_id`, `generation_batch_id`, `reviewer_count`, per-dimension
+  averages, `max_copy_risk`, vote counts, `reviewer_disagreement`,
+  `high_disagreement_flag`, `consensus_verdict` enum, `reasons_jsonb`.
+
+### Runner integration
+
+- `run_review_swarm()` in `runner.py` now calls `save_consensus()` after
+  finalizing the review run status, using the question's `official_overlap_status`
+  for the overlap check.
+
+### Tests
+
+- `backend/tests/test_consensus.py` — 17 tests: blocked_overlap,
+  insufficient_reviews, reject for high copy risk, reject for low realism,
+  disagreement flag, regenerate for below-threshold dimensions,
+  admin_review_ready for all-clear, edge cases (failed reviewer exclusion,
+  priority of copy risk over realism, blocked overlap overriding perfect
+  scores). 607 total tests pass.
+
+---
+
+## 2026-05-20 — Phase 4: Multi-model review runner
+
+**Model:** Claude Opus 4.6
+**Branch:** `generation_build`
+
+Implemented the review swarm runner that orchestrates concurrent multi-model
+review of generated questions using OpenAI, Claude, and DeepSeek providers.
+
+### New modules
+
+- `backend/app/review/runner.py` — Review swarm orchestrator:
+  - `_provider_config()` / `_review_providers()` — maps config to (provider, model) tuples
+  - `_load_question_for_review()` — loads question, annotation, options, source examples,
+    overlap status, and generation request for the review prompt
+  - `_call_review_provider()` — LLM call with `@with_retry` (2 attempts)
+  - `_run_single_reviewer()` — runs one provider, parses response via `review/parser.py`,
+    persists `LlmReviewResult` with `transient_failed`/`permanent_failed` classification
+  - `run_review_swarm()` — creates `ReviewRun`, builds prompt, runs all reviewers
+    concurrently with a semaphore (`generation_review_max_concurrent`), finalizes run
+    status as `complete`/`partial`/`failed`
+  - `run_batch_review_swarm()` — reviews all generated questions in a batch that haven't
+    been reviewed yet
+
+### New endpoints
+
+- `POST /admin/questions/{question_id}/review-swarm` — trigger single-question review
+- `GET /admin/questions/{question_id}/review-runs` — list all review runs for a question
+- `POST /generate/batches/{batch_id}/review-swarm` — trigger batch review
+
+### Tests
+
+- `backend/tests/test_review_runner.py` — 18 tests: provider config, swarm
+  success/partial/failure, malformed JSON handling, re-review creating new run IDs,
+  batch review, question loading, version constants. 590 total tests pass.
+
+---
+
 ## 2026-05-20 — Phase 2 gap remediation: terminal failures, retry finalization, and candidate boundary
 
 **Model:** GPT-5 Codex
