@@ -1,12 +1,13 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-20T02:33:58.771Z
-> Files: 716 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-20T17:58:08.722Z
+> Files: 725 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
 
 - `generic-rolling-parnas.md` — Crop / Layout Provenance Implementation Plan (~3582 tok)
 - `squishy-giggling-dolphin.md` — Plan: Separate Passage Text from Question Text in Extraction Pipeline (~1307 tok)
+- `steady-moseying-music.md` — Phase 3: Review Swarm Rubric — Implementation Plan (~4357 tok)
 - `vivid-giggling-riddle.md` — Plan: Benchmark Markdown Reports + SUMMARY.md Auto-Update (~959 tok)
 - `wiggly-shimmying-leaf.md` — Plan: OCR Strategy Benchmark Endpoint (~1287 tok)
 
@@ -24,11 +25,13 @@
 - `.gitignore` — Git ignore rules (~36 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~28975 tok)
+- `CHANGELOG.md` — CHANGELOG (~32921 tok)
 - `CLAUDE.md` — OpenWolf (~274 tok)
-- `DEBUG_LOG.md` — Debug Log (~37165 tok)
+- `DEBUG_LOG.md` — Debug Log (~37705 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
+- `FUTURE_FEATURES.md` — Future Features (~4267 tok)
+- `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~7592 tok)
 - `INGESTION_README.md` — DSAT Backend — Ingestion Pipeline (~6616 tok)
@@ -41,6 +44,7 @@
 - `rules_agent_dsat_grammar_ingestion_generation_v7.md` — rules_agent_dsat_grammar_ingestion_generetion_v7.md (~27429 tok)
 - `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~24022 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
+- `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~14265 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
 - `TASKS_OCR.md` — OCR Integration — Phased Task Plan (~7143 tok)
@@ -883,7 +887,7 @@
 
 ## backend/app/
 
-- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~962 tok)
+- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~1206 tok)
 - `main.py` — lifespan (~1371 tok)
 
 ## backend/app/llm/
@@ -898,10 +902,10 @@
 ## backend/app/models/
 
 - `annotation.py` — Pass 2 Pydantic schema — Question annotation output. (~1452 tok)
-- `db.py` — Declares QuestionJob (~5071 tok)
+- `db.py` — Declares QuestionJob (~5911 tok)
 - `ontology.py` — Allowed keys, enums, constants. GENERATED from vocabulary/master.json — do not hand-edit; run scripts/gen_vocab.py --generate. (~5613 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~1558 tok)
+- `payload.py` — HTTP request/response models. (~5414 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -928,9 +932,9 @@
 
 ## backend/app/routers/
 
-- `admin.py` — API: 5 endpoints (~6973 tok)
+- `admin.py` — API: 9 endpoints (~7651 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
-- `generate.py` — API: 2 endpoints (~4450 tok)
+- `generate.py` (~13010 tok)
 - `ingest.py` (~35824 tok)
 - `student.py` — API: 3 endpoints (~1880 tok)
 
@@ -958,19 +962,24 @@
 - `014_add_comparison_group_index.py` — Add index on question_jobs.comparison_group_id for benchmark poll queries. (~126 tok)
 - `015_official_question_unique_constraint.py` — Unique constraint on official question canonical identity. (~272 tok)
 - `019_widen_question_vocab_columns.py` — Widen VARCHAR vocab key columns on the questions table. (~333 tok)
+- `020_add_rejected_status_and_reason_columns.py` — Phase 0: add `rejected` practice_status value and rejection reason columns. (~556 tok)
+- `021_phase1_generation_batches.py` — Phase 1: generation batches, idempotency keys, job batch linkage. (~2042 tok)
 
 ## backend/tests/
 
 - `conftest.py` — Force test env before any app imports — use assignment, not setdefault (~385 tok)
-- `test_admin_router.py` — Amendment: test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, te (~4008 tok)
+- `test_admin_router.py` — FakeQuestion: test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, (~5434 tok)
 - `test_amendment_capture.py` — Tests for extracting and storing Pass 2 amendment proposals. (~3724 tok)
 - `test_amendment_review.py` — Tests for admin amendment review and promotion operations. (~5112 tok)
 - `test_amendments_cli.py` — Tests for local development amendment CLI commands. (~2584 tok)
 - `test_amendments.py` — Tests for approval-gated rules amendment schemas. (~1165 tok)
-- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~13736 tok)
+- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~16252 tok)
 - `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~601 tok)
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
 - `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)
+- `test_generate_batches.py` — Phase 1 (generation factory) — batch endpoint, request validation, (~5374 tok)
+- `test_generate_router.py` — test_generate_questions_valid_body, test_generate_compare_valid_body, test_generate_run_invalid_uuid (~1404 tok)
+- `test_generate_runner.py` — Phase 2 (generation factory) — runner, failure classification, batch (~3805 tok)
 - `test_ingest_router.py` — test_resolve_provider_and_model_uses_default_ollama_model, test_resolve_provider_and_model_respects_ (~8845 tok)
 - `test_ingestion_analysis.py` — Tests for ingestion analysis reports and re-appraisal creation. (~1792 tok)
 - `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
@@ -993,4 +1002,4 @@
 
 ## vocabulary/
 
-- `master.json` (~29574 tok)
+- `master.json` (~29894 tok)

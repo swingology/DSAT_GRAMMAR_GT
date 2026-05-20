@@ -125,6 +125,24 @@
           "status": "active",
           "added": "2026-05-18",
           "description": ""
+        },
+        {
+          "value": "failed_transient",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Job failed with a transient error after auto-retry exhaustion (HTTP 429, 5xx, timeout, provider rate limit). Eligible for admin retry via /generate/batches/{id}/retry-failed."
+        },
+        {
+          "value": "failed_permanent",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Job failed with a non-recoverable error (malformed JSON after repair, model refusal, validation failure). Does not auto-retry; admin must regenerate-from-spec."
+        },
+        {
+          "value": "retrying",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Row-level guard set during a retry attempt to prevent duplicate concurrent retries of the same job."
         }
       ]
     },
@@ -151,6 +169,12 @@
           "status": "active",
           "added": "2026-05-18",
           "description": ""
+        },
+        {
+          "value": "rejected",
+          "status": "active",
+          "added": "2026-05-19",
+          "description": "Failed quality review; terminal state, audit-preserved. Distinct from retired (post-active removal)."
         }
       ]
     },

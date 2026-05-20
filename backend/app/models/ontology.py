@@ -19,11 +19,12 @@ JOB_TYPES = (
 JOB_STATUSES = (
     "pending", "parsing", "extracting", "generating", "annotating",
     "overlap_checking", "validating", "approved", "needs_review", "failed",
+    "failed_transient", "failed_permanent", "retrying",
 )
 
 # --- Practice status ---
 PRACTICE_STATUSES = (
-    "draft", "active", "retired",
+    "draft", "active", "retired", "rejected",
 )
 
 # --- Overlap status ---

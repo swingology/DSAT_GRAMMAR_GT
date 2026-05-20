@@ -338,7 +338,13 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive"))
 
-    await generate_router._run_generate_pipeline(job, db, {"seed": "value"})
+    # Use a lineage key (target_grammar_role_key) that should flow into
+    # generation_profile_jsonb. `seed` is now classified as operational
+    # under the Phase 0 _SOURCE_SET_OPERATIONAL_KEYS expansion and is
+    # filtered out by _generation_profile_payload.
+    await generate_router._run_generate_pipeline(
+        job, db, {"target_grammar_role_key": "agreement"}
+    )
 
     question = next(obj for obj in db.added if isinstance(obj, Question))
     annotation = next(obj for obj in db.added if isinstance(obj, QuestionAnnotation))
@@ -346,10 +352,148 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
     assert question.latest_version_id is not None
     assert question.latest_annotation_id is not None
     assert job.question_id == question.id
+    assert job.status == "approved"
     assert annotation.generation_profile_jsonb == {
         "model_version": "rules_agent_v7.0",
-        "seed": "value",
+        "target_grammar_role_key": "agreement",
     }
+
+
+@pytest.mark.asyncio
+async def test_generate_pipeline_flattens_nested_question_payload(monkeypatch):
+    db = _FakeDB()
+    job = SimpleNamespace(
+        id=uuid.uuid4(),
+        provider_name="anthropic",
+        model_name="model",
+        prompt_version="v3.0",
+        rules_version="rules",
+        validation_errors_jsonb=None,
+        pass1_json=None,
+        pass2_json=None,
+        status="extracting",
+        question_id=None,
+    )
+    generated = {
+        "question": {
+            "prompt_text": "Nested generated question",
+            "passage_text": "Nested generated passage",
+            "correct_option_label": "B",
+            "options": [
+                {"label": "A", "text": "Wrong"},
+                {"label": "B", "text": "Correct"},
+                {"label": "C", "text": "Wrong"},
+                {"label": "D", "text": "Wrong"},
+            ],
+        }
+    }
+    annotated = {
+        "explanation_short": "Nested explanation",
+        "explanation_full": "Long nested explanation",
+        "annotation_confidence": 0.88,
+        "needs_human_review": False,
+    }
+    responses = iter([generated, annotated])
+    provider = SimpleNamespace(
+        complete=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text="generate", provider="anthropic", model="m1", latency_ms=10),
+                SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        )
+    )
+    validated_payloads = []
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_: next(responses))
+    monkeypatch.setattr(generate_router, "validate_question", lambda payload, **_kwargs: validated_payloads.append(payload) or [])
+    monkeypatch.setattr(generate_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive"))
+
+    await generate_router._run_generate_pipeline(job, db, {"seed": "value"})
+
+    question = next(obj for obj in db.added if isinstance(obj, Question))
+    version = next(obj for obj in db.added if isinstance(obj, QuestionVersion))
+    assert job.pass1_json["question_text"] == "Nested generated question"
+    assert job.pass1_json["correct_option_label"] == "B"
+    assert validated_payloads[0]["question_text"] == "Nested generated question"
+    assert validated_payloads[0]["correct_option_label"] == "B"
+    assert question.current_question_text == "Nested generated question"
+    assert question.current_correct_option_label == "B"
+    assert version.question_text == "Nested generated question"
+    assert version.correct_option_label == "B"
+    assert job.status == "approved"
+
+
+@pytest.mark.asyncio
+async def test_generate_pipeline_marks_overlap_candidates_for_review(monkeypatch):
+    db = _FakeDB()
+    job = SimpleNamespace(
+        id=uuid.uuid4(),
+        provider_name="anthropic",
+        model_name="model",
+        prompt_version="v3.0",
+        rules_version="rules",
+        validation_errors_jsonb=None,
+        pass1_json=None,
+        pass2_json=None,
+        status="extracting",
+        question_id=None,
+    )
+    generated = {
+        "question_text": "Generated overlap question",
+        "passage_text": "Generated overlap passage",
+        "correct_option_label": "A",
+        "options": [
+            {"label": "A", "text": "Correct"},
+            {"label": "B", "text": "Wrong"},
+            {"label": "C", "text": "Wrong"},
+            {"label": "D", "text": "Wrong"},
+        ],
+    }
+    annotated = {
+        "explanation_short": "Overlap explanation",
+        "explanation_full": "Long overlap explanation",
+        "annotation_confidence": 0.88,
+        "needs_human_review": False,
+    }
+    responses = iter([generated, annotated])
+    provider = SimpleNamespace(
+        complete=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text="generate", provider="anthropic", model="m1", latency_ms=10),
+                SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        )
+    )
+    overlaps = [{"question_id": str(uuid.uuid4()), "similarity": 0.91}]
+    persist_overlap_relations = AsyncMock()
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_: next(responses))
+    monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(return_value=overlaps))
+    monkeypatch.setattr(generate_router, "persist_overlap_relations", persist_overlap_relations)
+    monkeypatch.setattr(generate_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive"))
+
+    await generate_router._run_generate_pipeline(job, db, {"seed": "value"})
+
+    assert job.status == "needs_review"
+    assert job.validation_errors_jsonb == [
+        {
+            "severity": "review",
+            "field": "official_overlap_status",
+            "message": "Generated question has possible official overlap",
+        }
+    ]
+    persist_overlap_relations.assert_awaited_once_with(
+        question_id=job.question_id,
+        overlaps=overlaps,
+        db=db,
+    )
 
 
 def test_provider_api_key_selection():

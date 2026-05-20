@@ -2954,6 +2954,9 @@ regenerate. They stay in lockstep with the validator enums in
 - `approved`
 - `needs_review`
 - `failed`
+- `failed_transient` — Job failed with a transient error after auto-retry exhaustion (HTTP 429, 5xx, timeout, provider rate limit). Eligible for admin retry via /generate/batches/{id}/retry-failed.
+- `failed_permanent` — Job failed with a non-recoverable error (malformed JSON after repair, model refusal, validation failure). Does not auto-retry; admin must regenerate-from-spec.
+- `retrying` — Row-level guard set during a retry attempt to prevent duplicate concurrent retries of the same job.
 <!-- VOCAB:system:JOB_STATUSES END -->
 
 <!-- VOCAB:system:PRACTICE_STATUSES START -->
@@ -2963,6 +2966,7 @@ regenerate. They stay in lockstep with the validator enums in
 - `draft`
 - `active`
 - `retired`
+- `rejected` — Failed quality review; terminal state, audit-preserved. Distinct from retired (post-active removal).
 <!-- VOCAB:system:PRACTICE_STATUSES END -->
 
 <!-- VOCAB:system:OVERLAP_STATUSES START -->

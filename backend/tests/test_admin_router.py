@@ -35,6 +35,176 @@ def test_admin_reject_not_found(client):
     assert resp.status_code == 404
 
 
+def test_admin_reject_is_non_destructive(monkeypatch):
+    """Rejecting a question flips practice_status to 'rejected', records the
+    reason/timestamp/admin token, and does NOT delete linked evaluations,
+    annotations, relations, or option annotation fields.
+    """
+    import uuid as _uuid
+    from datetime import datetime, timezone
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+    from app.database import get_db
+    from app.routers import admin as admin_router
+
+    qid = _uuid.uuid4()
+
+    class FakeQuestion:
+        def __init__(self):
+            self.id = qid
+            self.practice_status = "draft"
+            self.rejection_reason = None
+            self.rejected_at = None
+            self.rejected_by_admin_token = None
+            self.updated_at = datetime.now(timezone.utc)
+            self.latest_annotation_id = _uuid.uuid4()
+
+    fake_q = FakeQuestion()
+    execute_calls = []
+
+    class FakeSession:
+        async def get(self, model, pk):
+            if pk == qid:
+                return fake_q
+            return None
+
+        async def execute(self, stmt):
+            # The non-destructive reject path must NOT issue DELETEs or
+            # SELECTs against options for the purpose of clearing
+            # annotations. Track everything so the assertion below catches
+            # any regression.
+            execute_calls.append(stmt)
+
+            class _R:
+                def scalars(self_inner):
+                    return self_inner
+
+                def all(self_inner):
+                    return []
+
+                def unique(self_inner):
+                    return self_inner
+
+            return _R()
+
+        async def flush(self):
+            pass
+
+        async def commit(self):
+            pass
+
+        async def refresh(self, obj):
+            pass
+
+        def add(self, obj):
+            pass
+
+    fake = FakeSession()
+
+    async def _override_get_db():
+        yield fake
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.post(
+                f"/admin/questions/{qid}/reject",
+                json={"reason": "off-topic stimulus"},
+                headers=AUTH,
+            )
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["practice_status"] == "rejected"
+    assert body["rejection_reason"] == "off-topic stimulus"
+    assert body["rejected_at"] is not None
+
+    # In-memory state on the fake row reflects the metadata-only update
+    assert fake_q.practice_status == "rejected"
+    assert fake_q.rejection_reason == "off-topic stimulus"
+    assert fake_q.rejected_at is not None
+    assert fake_q.rejected_by_admin_token == "admin-test-key"
+    # The destructive path used to null this — confirm it stays set
+    assert fake_q.latest_annotation_id is not None
+
+    # No SQL statements should have been issued at all: the new handler
+    # is metadata-only on the loaded ORM instance.
+    assert execute_calls == [], (
+        "Rejection must not issue DELETE/SELECT against linked tables; "
+        f"saw {len(execute_calls)} statement(s)."
+    )
+
+
+def test_admin_reject_accepts_empty_body(monkeypatch):
+    """Reject must work even when no reason is supplied (body is optional)."""
+    import uuid as _uuid
+    from datetime import datetime, timezone
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+    from app.database import get_db
+
+    qid = _uuid.uuid4()
+
+    class FakeQuestion:
+        def __init__(self):
+            self.id = qid
+            self.practice_status = "draft"
+            self.rejection_reason = None
+            self.rejected_at = None
+            self.rejected_by_admin_token = None
+            self.updated_at = datetime.now(timezone.utc)
+            self.latest_annotation_id = None
+
+    fake_q = FakeQuestion()
+
+    class FakeSession:
+        async def get(self, model, pk):
+            return fake_q if pk == qid else None
+
+        async def execute(self, stmt):
+            class _R:
+                def scalars(self_inner):
+                    return self_inner
+
+                def all(self_inner):
+                    return []
+
+                def unique(self_inner):
+                    return self_inner
+
+            return _R()
+
+        async def flush(self):
+            pass
+
+        async def commit(self):
+            pass
+
+        async def refresh(self, obj):
+            pass
+
+        def add(self, obj):
+            pass
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.post(f"/admin/questions/{qid}/reject", headers=AUTH)
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 200
+    assert resp.json()["practice_status"] == "rejected"
+    assert resp.json()["rejection_reason"] is None
+
+
 def test_admin_confirm_overlap_not_found(client):
     resp = client.post(
         "/admin/questions/00000000-0000-0000-0000-000000000000/confirm-overlap",

@@ -183,100 +183,168 @@ Recommended fields:
 ## Phase 0: Current-State Alignment
 
 **Goal:** Make sure the current generation path has a clear baseline before
-adding batch and swarm behavior.
+adding batch and swarm behavior, and land the destructive-rejection fix that
+later phases depend on.
 
-- [ ] Confirm generated questions are always saved before review.
-- [ ] Confirm generated questions stay `draft` by default.
-- [ ] Confirm admin approval is required before generated questions appear in
-  student retrieval.
-- [ ] Confirm `source_question_ids` only loads stored official questions.
-- [ ] Confirm generation prompts include both grammar and reading rule
-  markdowns.
-- [ ] Add or update a short architecture note explaining:
+- [x] Confirm generated questions are always saved before review.
+  (`backend/app/routers/generate.py::_run_generate_pipeline` saves
+  `Question`/`QuestionVersion`/`QuestionAnnotation`/`QuestionOption`
+  rows before any review hooks fire.)
+- [x] Confirm generated questions stay `draft` by default.
+  (`generate.py:275`, `practice_status="draft"`.)
+- [x] Confirm admin approval is required before generated questions appear
+  in student retrieval. (`backend/app/routers/questions.py` filters by
+  `practice_status='active'`; only `admin_required` flips drafts to
+  active.)
+- [x] Confirm `source_question_ids` only loads stored official questions.
+  (`generate.py::_load_official_source_examples` filters
+  `content_origin='official'`.)
+- [x] Confirm generation prompts include both grammar and reading rule
+  markdowns. (`backend/app/prompts/generate_prompt.py` loads
+  `rules_agent_dsat_grammar_ingestion_generation_v7.md` and
+  `rules_agent_dsat_reading_v2.md`.)
+- [x] Add or update a short architecture note explaining:
   - official questions are the generation foundation
   - generated items are candidates until reviewed
   - review swarm output is not the same as admin approval
+  (`GENERATION_ARCHITECTURE.md` at repo root)
+- [x] **`practice_status_enum` migration:** add `"rejected"` as a fourth
+  value alongside `draft`, `active`, `retired`. Updated
+  `vocabulary/master.json` and regenerated
+  `backend/app/models/ontology.py` via `scripts/gen_vocab.py --generate`.
+  Migration `020_add_rejected_status_and_reason_columns.py` ships the
+  enum extension with `autocommit_block()` so the new value is visible
+  in-migration. Verified live: `{draft, active, retired, rejected}`.
+- [x] **New columns on `questions`:** `rejection_reason` (Text, nullable),
+  `rejected_at` (DateTime tz, nullable), `rejected_by_admin_token`
+  (String 128, nullable). Single migration `020_*` alongside the enum
+  bump.
+- [x] **Rewrite `reject_question`** (`backend/app/routers/admin.py`) as
+  metadata-only. Sets `practice_status='rejected'`, populates the three
+  reason columns, preserves all annotations/options/relations/evaluations
+  and `latest_annotation_id`. `RejectQuestionRequest` body accepts an
+  optional `reason`. Regression test
+  `test_admin_reject_is_non_destructive` asserts execute_calls is empty
+  during rejection. Override-row writing deferred to Phase 6 when
+  `reviewer_admin_overrides` exists.
+- [x] **Expand `_SOURCE_SET_OPERATIONAL_KEYS`** in
+  `backend/app/routers/generate.py` to the locked 10-key set; deduplicated
+  the constant (no more private copy in `_generation_profile_payload`).
+  Regression test
+  `test_source_set_operational_keys_filter_strips_all_operational`
+  snapshots the set and asserts the lineage-survives invariant.
 
 **Exit criteria:** The baseline behavior is documented and covered by targeted
-tests.
+tests. Rejection is non-destructive. The `rejected` enum and reason columns
+exist. `_SOURCE_SET_OPERATIONAL_KEYS` matches the locked filter.
 
 ## Phase 1: Batch Generation Contract
 
-**Goal:** Let admins and self-study agents request variable quantities of
-generated questions.
+**Goal:** Let admins request variable quantities of generated questions while
+laying the batch identity/audit fields that the Phase 8 self-study endpoint
+will reuse.
 
-- [ ] Add a `GenerationBatchRequest` model with:
+- [x] Add a `GenerationBatchRequest` model with:
   - `requested_count`, bounded by config
   - grammar target fields
   - reading target fields
   - `difficulty_overall`
   - `source_question_ids`
-  - `requested_by`
-  - `student_id`, optional
   - `release_policy`
   - `provider_name`, optional
   - `model_name`, optional
-- [ ] Add validation rules:
+  - Requester identity is derived by the endpoint and stored on the batch:
+    `requested_by`, `student_id`, and `requested_by_user_token`
+- [x] Add validation rules:
   - request must contain a complete grammar target or complete reading target
   - `requested_count` must be within admin-configured limits
-  - self-study-agent requests must include a student identifier or profile
-    reference
-  - self-study-agent identity must preserve the caller `user_token` as
-    `requested_by_user_token`; when it resolves to an existing `User`, also
-    store `student_id`
-  - `release_policy` defaults to `admin_review_required`
-- [ ] Add a `GenerationBatch` persistence model and migration.
-- [ ] Add `generation_batch_id` linkage for generated jobs. Saved questions
+  - `POST /generate/batches` is admin-only per the locked auth table; self-study
+    request validation and `user_token` resolution are deferred to
+    `POST /api/study/generation-requests` in Phase 8
+  - admin-created batches store `requested_by='admin'`, `student_id=null`, and
+    `requested_by_user_token=null` in both columns and frozen request payloads
+  - `release_policy` defaults to `admin_review_required` and is limited to the
+    locked values: `admin_review_required`, `auto_release_on_accept`, `dry_run`
+- [x] Add a `GenerationBatch` persistence model and migration.
+  (`backend/app/models/db.py::GenerationBatch`, migration `021_phase1_generation_batches.py`)
+- [x] Add `generation_batch_id` linkage for generated jobs. Saved questions
   reach their batch through `QuestionJob.question_id -> Question`.
-- [ ] Add durable `QuestionJob.generation_request_jsonb` storage so failed
-  jobs can be retried without depending on a saved `Question` row.
-- [ ] Add enum/schema migration work required by this feature before any code
+- [x] Add durable `QuestionJob.generation_request_jsonb` storage so failed
+  jobs can be retried without depending on a saved `Question` row. The snapshot
+  is populated at job creation with the per-job source IDs, provider/model,
+  seed, temperature, retry attempt, and derived requester identity.
+- [x] Add enum/schema migration work required by this feature before any code
   writes the new values:
   - `job_status_enum`: `failed_transient`, `failed_permanent`, `retrying`
-  - `practice_status_enum`: `rejected`
+  - `practice_status_enum`: `rejected` — **already landed in Phase 0**;
+    listed here for cross-reference only
   - `overlap_status_enum`: no new value planned; `none` remains the only clean
     state, and admin-cleared overlaps return to `none`
   - generated ontology constants and migration enum values must stay in sync
-- [ ] Add `questions.is_canonical_source` for the canonical official-source
+- [x] Add `questions.is_canonical_source` for the canonical official-source
   fallback pool.
-- [ ] Add config:
+- [x] Add config:
   - `GENERATION_MAX_BATCH_SIZE`
   - `GENERATION_DEFAULT_BATCH_SIZE`
   - `GENERATION_MAX_PENDING_BATCHES`
-- [ ] Add endpoint:
+- [x] Add endpoint:
   - `POST /generate/batches`
   - `GET /generate/batches/{batch_id}`
   - `GET /generate/batches/{batch_id}/questions`
-- [ ] Ensure existing `POST /generate/questions` remains backward-compatible for
+- [x] **Idempotency support on `POST /generate/batches`:**
+  - Add `generation_batch_idempotency_keys` table (`idempotency_key`,
+    `requested_by`, `generation_batch_id`, `expires_at`, `created_at`)
+    with unique constraint on `(idempotency_key, requested_by)`.
+  - Read `Idempotency-Key` header; if present, delete expired rows for
+    that key first, then look up live mapping. Hit returns the original
+    batch response; miss creates a new batch and inserts a key row with
+    `expires_at = now + 24h`. Empty/missing header opts out.
+  - `Idempotency-Key` is NOT copied into `GenerationBatch.request_jsonb`.
+- [x] Ensure existing `POST /generate/questions` remains backward-compatible for
   one-off admin generation.
 
-**Exit criteria:** A caller can request N targeted questions and receive a
-batch ID with N queued generation jobs.
+**Exit criteria:** An admin caller can request N targeted questions and receive
+a batch ID with N queued generation jobs. Repeated calls with the same
+`Idempotency-Key` return the original batch.
 
 ## Phase 2: Quantity-Aware Generation Runner
 
 **Goal:** Execute batches safely while preserving one-question traceability.
 
-- [ ] Create one `QuestionJob` per requested generated question.
-- [ ] Copy the batch request into each job's durable request metadata before
-  the runner starts.
-- [ ] Preserve one LLM generation call per question.
-- [ ] Save each generated candidate as:
+- [x] Create one `QuestionJob` per requested generated question.
+  (`backend/app/routers/generate.py` — Phase 1 already queued; Phase 2 wires runner)
+- [x] Copy the batch request into each job's durable request metadata before
+  the runner starts. (`QuestionJob.generation_request_jsonb`)
+- [x] Preserve one LLM generation call per question. (`_run_generate_pipeline`)
+- [x] Save each generated candidate as:
   - `Question`
   - `QuestionVersion`
   - `QuestionAnnotation`
   - `QuestionOption`
   - YAML archive mirror
-- [ ] Run official overlap detection per saved question.
-- [ ] Track batch counters:
-  - created
-  - failed
-  - needs review
-  - rejected
-  - approved
-- [ ] Add retry behavior for failed individual generation jobs without rerunning
-  the entire batch.
-- [ ] Keep job pipeline success separate from admin release:
+  - A model output becomes a saved candidate only after generation,
+    annotation, and blocking validation pass. Malformed JSON, refusals,
+    ontology mismatch, and blocking validation failures stay on
+    `QuestionJob` as terminal `failed_permanent` audit records and do not
+    create partial `Question` rows.
+- [x] Run official overlap detection per saved question. (`detect_overlaps` →
+  `persist_overlap_relations` in `_run_generate_pipeline`)
+- [x] Track batch counters (atomic SQL UPDATE per terminal job status):
+  - created (`created_count` incremented in `_run_generate_pipeline` after persist)
+  - failed (`failed_count` — `failed_permanent` + `failed_transient`)
+  - needs review (`needs_review_count`)
+  - approved (`accepted_count`)
+  (`_update_batch_counters`, `_finalize_batch_status`)
+- [x] Add retry behavior for failed individual generation jobs without rerunning
+  the entire batch. (`POST /generate/batches/{batch_id}/retry-failed`; respects
+  `GENERATION_JOB_MAX_RETRIES=3`; only jobs without a saved `Question` row are
+  requeued, preventing duplicate saved candidates after post-persist failures)
+- [x] Failure classification: transient (network/provider) → `failed_transient`;
+  permanent (JSON parse, validation) → `failed_permanent`. (`_is_transient_error`)
+- [x] Ensure every runner failure path settles to a terminal status before
+  counters/finalization run: setup/source loading, prompt build, generation,
+  annotation, validation, persistence, overlap detection, and YAML export.
+- [x] Keep job pipeline success separate from admin release:
   - job status means the generation/review pipeline state
   - `Question.practice_status` means student visibility and admin decision
   - a generated job must not imply student approval just because the candidate
@@ -284,18 +352,27 @@ batch ID with N queued generation jobs.
   - current/legacy `QuestionJob.status = "approved"` must be treated only as
     "pipeline accepted or candidate saved"; dashboard/API copy must not label it
     as admin approval
-- [ ] Add idempotency key support so repeated admin clicks do not create
-  duplicate batches.
+- [x] Idempotency key support already landed in Phase 1; this phase relies
+  on it (cross-reference only).
 
-**Exit criteria:** Batch generation can partially succeed, and every generated
-candidate has an individual status, saved payload, and audit trail.
+**Exit criteria:** Batch generation can partially succeed. Every valid generated
+candidate has an individual status, saved payload, and audit trail; every
+invalid generation attempt has a terminal `QuestionJob` status with retained
+payload/error evidence.
+
+Files: `backend/app/routers/generate.py` (`_is_transient_error`, `_batch_counter_field`,
+`_update_batch_counters`, `_run_batch_job`, `_finalize_batch_status`, `_run_batch_pipeline`,
+`retry_failed_batch_jobs`), `backend/app/config.py` (`generation_job_max_retries`),
+`backend/tests/test_generate_runner.py` (30 tests — all pass).
 
 ## Phase 3: Review Swarm Rubric
 
 **Goal:** Define a stable multi-model review contract for generated-question
 quality.
 
-- [ ] Create a rubric prompt for generated-question realism review.
+- [ ] Create `rules_agent_dsat_review_v1.md` at repo root holding scoring
+  dimensions, anchor bands per numeric score, and the strict JSON schema
+  reviewers must return.
 - [ ] Rubric must score:
   - DSAT realism
   - SAT style fidelity
@@ -313,12 +390,33 @@ quality.
   - `needs_human_review`
   - `reject`
 - [ ] Rubric must require short reasons for every score below threshold.
+- [ ] **Create `backend/app/prompts/review_prompt.py`** loader that composes:
+  - `rules_agent_dsat_review_v1.md` (rubric).
+  - `rules_agent_dsat_grammar_ingestion_generation_v7.md` **always**,
+    regardless of question domain (prose-style canon for all DSAT
+    writing).
+  - `rules_agent_dsat_reading_v2.md` only when the candidate is a reading
+    question (additive on top of grammar v7).
+  - Question payload, options, annotation, source examples, overlap
+    status, original request.
+- [ ] **Create `llm_review_results` table** (per Locked Decisions data
+  model). Includes `rubric_version` (filename version string) and
+  `rules_versions_jsonb` snapshot of `{grammar, reading}` versions in
+  effect at review time, so each row stands alone for audit.
+- [ ] **Create `review_runs` table** (per Locked Decisions review run
+  grouping): `id`, `question_id`, `generation_batch_id` (nullable),
+  `triggered_by`, `triggered_by_admin_token` (nullable),
+  `rubric_version`, `rules_versions_jsonb`, `status` (`running` |
+  `complete` | `partial` | `failed`), `started_at`, `completed_at`.
 - [ ] Add tests for parsing valid review JSON and rejecting malformed review
   output.
-- [ ] Version the rubric with `rubric_version`.
+- [ ] Version the rubric with `rubric_version` (filename = version
+  string). Write-once: new version = new file; never edit a published
+  version after it has been used for real reviews.
 
 **Exit criteria:** One generated question can be reviewed by one model and
-produce a durable, structured quality review.
+produce a durable, structured quality review with rubric + grammar canon
+loaded and a `review_run_id` linking reviewer rows to their run.
 
 ## Phase 4: Multi-Model Review Runner
 
@@ -427,6 +525,12 @@ generated candidates efficiently.
   results, consensus rows, overlap relations, and generation lineage for audit.
 - [ ] Capture reviewer/admin agreement or disagreement implicitly during
   approve/reject; do not add a separate "reviewer was wrong" action.
+- [ ] **`reviewer_admin_overrides` plumbing:** approve and reject handlers
+  generate one `admin_decision_id` (uuid4) per click and reuse it across
+  the N rows written — one per reviewer in the latest completed review
+  run for that question. Each row records `reviewer_verdict`,
+  `admin_verdict`, and `override_direction` (`reviewer_correct` |
+  `reviewer_too_harsh` | `reviewer_too_lenient`).
 - [ ] Add list endpoints optimized for dashboard filtering and pagination.
 
 **Exit criteria:** Admin can filter to the riskiest generated questions first,
@@ -445,9 +549,14 @@ inventory awareness.
   - `reading_skill_family_key`
   - `reading_focus_key`
   - `stimulus_mode_key`
-  - `origin=official|generated|mixed`
-  - `exclude_seen`
+  - `origin=official|generated|mixed` (default `mixed`)
+  - `exclude_seen` (boolean; default `true` for student tokens, `false`
+    for admin tokens — derived from the `admin_or_student_required`
+    dependency, not from a request body field)
   - `limit`
+- [ ] Introduce the `admin_or_student_required` dependency in
+  `backend/app/auth.py` returning `(scope, key)`; this endpoint and the
+  Phase 8 endpoints use it.
 - [ ] Add result metadata:
   - active inventory count for the requested target
   - whether generated questions were included
@@ -583,6 +692,15 @@ Planned student/study endpoints:
 - Regression tests that generated drafts never appear in student retrieval.
 - Regression tests that official overlap blocks approval.
 - Regression tests that rejected generated questions remain auditable.
+- Regression test for the request payload identity invariant:
+  `Question.generation_source_set == {k: v for k, v in
+  QuestionJob.generation_request_jsonb.items() if k not in
+  _SOURCE_SET_OPERATIONAL_KEYS}`. Failure indicates a leaked operational
+  key or a missing strip step.
+- Regression test that `reject_question` is non-destructive: rejecting a
+  question with annotations, options, evaluations, relations, and review
+  results preserves all of them and only flips `practice_status` plus
+  populates the reason columns.
 
 ## Operational Safeguards
 
@@ -617,13 +735,23 @@ Still open:
 
 ## Recommended Build Order
 
-1. Generation batch model and request validation.
+0. Phase 0 alignment: enum + reason-column migration, non-destructive
+   `reject_question`, expanded `_SOURCE_SET_OPERATIONAL_KEYS`. Prerequisite
+   for every subsequent phase.
+1. Generation batch model and request validation, including idempotency
+   support and `generation_batch_idempotency_keys` table.
 2. Quantity-aware generation runner with saved candidates.
-3. Review rubric and one-model review runner.
+3. Review rubric, `review_runs` + `llm_review_results` tables, and
+   one-model review runner.
 4. Multi-model review swarm.
-5. Consensus verdict storage.
-6. Admin dashboard filtering and visual review cards.
-7. Student retrieval API expansion.
+   - **Run the 50-question calibration batch with placeholder thresholds
+     before Phase 5 storage lands**; lock final threshold values informed
+     by results. Then build Phase 5.
+5. Consensus verdict storage and `reviewer_admin_overrides` table.
+6. Admin dashboard filtering and visual review cards (implicit override
+   capture on approve/reject).
+7. Student retrieval API expansion + `admin_or_student_required`
+   dependency.
 8. Self-study agent request layer.
 9. Quality analytics.
 10. Optional controlled auto-release.
@@ -632,9 +760,10 @@ Still open:
 
 Resolved via grilling session 2026-05-19. These are load-bearing
 architectural choices that supersede ambiguous prose elsewhere in this
-document. Smaller mechanical items (dashboard metric catalog, alert
-thresholds, exact auth scopes) and explicitly deferred items (Phase 10
-auto-release gating until calibration data exists) remain open.
+document. Smaller mechanical items (Phase 9 dashboard metric catalog,
+cost/token alert thresholds) and explicitly deferred items (Phase 10
+auto-release gating until calibration data exists) remain open. Auth
+scopes are locked below.
 
 ### Data model
 
@@ -738,8 +867,12 @@ auto-release gating until calibration data exists) remain open.
   rubric or canon bumps, not as the primary path. `skip_review` debug
   flag available on batch request.
 - Reviewer composition rules:
-  - Exclude the generator's provider from the swarm
-    (self-grading bias).
+  - Exclude the generator's **provider** from the swarm
+    (self-grading bias). This is the conservative rule even when the
+    same provider hosts unrelated model families (e.g., Ollama running
+    `qwen3-vl` as generator and `deepseek-v4-pro` as reviewer is still
+    blocked — relax to model-level exclusion only after calibration
+    shows the conservative rule is unnecessary).
   - One model per provider; identical rubric makes additional
     same-provider models low value.
   - Configured reviewer providers: OpenAI, Anthropic, Ollama
@@ -1124,6 +1257,11 @@ _SOURCE_SET_OPERATIONAL_KEYS = {
     "release_policy",
 }
 ```
+
+`idempotency_key` is in the filter as **defense-in-depth** — the locked
+design also keeps it out of `request_jsonb` by storing it in
+`generation_batch_idempotency_keys`. The filter entry catches accidental
+leaks if a future code path copies the header into the request payload.
 
 `source_question_ids` and content spec keys (`grammar_role_key`,
 `reading_focus_key`, etc.) are lineage and stay.

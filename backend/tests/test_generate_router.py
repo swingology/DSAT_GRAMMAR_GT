@@ -82,3 +82,58 @@ def test_generate_question_without_domain_target_rejected(client):
         json={"difficulty_overall": "medium"},
     )
     assert resp.status_code == 422
+
+
+def test_source_set_operational_keys_filter_strips_all_operational():
+    """Identity invariant: `generation_source_set` is the request payload
+    with `_SOURCE_SET_OPERATIONAL_KEYS` stripped. Lineage keys (content
+    spec, source IDs) must survive; operational keys (provider, model,
+    seed, retry, batch workflow) must be removed.
+    """
+    from app.routers.generate import _SOURCE_SET_OPERATIONAL_KEYS
+
+    expected_operational = {
+        "provider_name", "model_name", "seed", "temperature",
+        "retry_attempt", "idempotency_key",
+        "requested_count", "requested_by", "student_id",
+        "requested_by_user_token", "release_policy",
+    }
+    assert _SOURCE_SET_OPERATIONAL_KEYS == expected_operational, (
+        "Operational keys set drifted from the locked Phase 0 filter; "
+        "see TASKS_GENERATION.md `## Locked Decisions` -> Request Payload "
+        "Layering."
+    )
+
+    request_data = {
+        # Lineage (must survive)
+        "target_grammar_role_key": "agreement",
+        "target_grammar_focus_key": "subject_verb_agreement",
+        "target_syntactic_trap_key": "none",
+        "difficulty_overall": "medium",
+        "source_question_ids": ["q-1", "q-2"],
+        # Operational (must be stripped)
+        "provider_name": "anthropic",
+        "model_name": "claude-sonnet-4-6",
+        "seed": 42,
+        "temperature": 0.7,
+        "retry_attempt": 1,
+        "idempotency_key": "client-abc",
+        "requested_count": 5,
+        "requested_by": "admin",
+        "student_id": 17,
+        "requested_by_user_token": "00000000-0000-0000-0000-000000000000",
+        "release_policy": "admin_review_required",
+    }
+
+    filtered = {
+        k: v for k, v in request_data.items() if k not in _SOURCE_SET_OPERATIONAL_KEYS
+    }
+
+    assert filtered == {
+        "target_grammar_role_key": "agreement",
+        "target_grammar_focus_key": "subject_verb_agreement",
+        "target_syntactic_trap_key": "none",
+        "difficulty_overall": "medium",
+        "source_question_ids": ["q-1", "q-2"],
+    }
+    assert not (set(filtered) & _SOURCE_SET_OPERATIONAL_KEYS)

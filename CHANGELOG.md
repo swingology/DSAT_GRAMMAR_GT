@@ -1,7 +1,373 @@
 # CHANGELOG
 
 All significant changes to this project. Timestamps are commit time (PDT, UTC-7).
-Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
+Agent/model varies by entry; see each entry's `Model` line.
+
+---
+
+## 2026-05-20 — Phase 2 gap remediation: terminal failures, retry finalization, and candidate boundary
+
+**Model:** GPT-5 Codex
+**Branch:** `generation_build`
+
+Closed the Phase 2 gaps found against `TASKS_GENERATION.md` and
+`GENERATION_ARCHITECTURE.md`.
+
+### Runner fixes
+
+- `_is_transient_error` now treats provider retry errors, HTTP 429/5xx, network
+  timeouts, rate limits, and model-loading messages as transient while keeping
+  generic `RuntimeError`, JSON parse failures, and validation failures
+  permanent.
+- `_run_generate_pipeline` now settles setup/source loading, prompt build,
+  generation, annotation, validation, persistence, overlap detection, and YAML
+  export failures to terminal job statuses with `validation_errors_jsonb`
+  evidence.
+- Blocking validation failures now become `failed_permanent` and do not create
+  partial `Question` rows. A saved generated item is the candidate boundary for
+  later overlap/review/admin release.
+- Post-persist failures are locked as `failed_permanent`, and the retry endpoint
+  refuses to requeue any failed job that already has a saved `Question` row, so
+  retries cannot duplicate saved candidates.
+- `_run_batch_job` catches unexpected runner exceptions and still increments the
+  right terminal batch counter.
+- Retry jobs now run through `_run_retry_batch_job`, which finalizes the batch
+  after each retried job settles.
+- `retry_failed_batch_jobs` no longer consumes the same SQLAlchemy scalar result
+  twice; jobs at or above `GENERATION_JOB_MAX_RETRIES` are locked as
+  `failed_permanent`.
+
+### Docs alignment
+
+- Clarified `TASKS_GENERATION.md` and `GENERATION_ARCHITECTURE.md`: valid
+  generated outputs become saved candidates; malformed/refused/invalid outputs
+  remain terminal `QuestionJob` audit records.
+
+### Tests
+
+- `backend/tests/test_generate_runner.py` expanded from 21 to 30 tests covering
+  the new terminal-status, retry-cap, retry-finalization, and coroutine cleanup
+  paths.
+- Full backend suite: `uv run pytest tests/ -q` -> 531 passed, 2 skipped.
+
+---
+
+## 2026-05-20 — Phase 2 (generation factory): runner, failure classification, batch counters, and retry endpoint
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+Wired the batch runner so batches actually execute. Phase 1 queued `pending` jobs;
+Phase 2 dispatches them concurrently, classifies failures, tracks counters atomically,
+and exposes a retry endpoint for transient failures.
+
+### Config
+
+- `generation_job_max_retries: int = 3` added to `backend/app/config.py` — caps
+  how many times a `failed_transient` job may be retried via the retry endpoint.
+
+### Runner pipeline (`backend/app/routers/generate.py`)
+
+- `_is_transient_error(exc)` — returns `True` for network/provider errors, `False`
+  for `ValueError` (JSON parse failure). Drives `failed_transient` vs
+  `failed_permanent` status assignment on every failure path in
+  `_run_generate_pipeline`.
+- `_batch_counter_field(job_status)` — maps terminal job status to the
+  `GenerationBatch` column name (`accepted_count`, `needs_review_count`,
+  `failed_count`, or `None` for non-terminal).
+- `_run_generate_pipeline` return type changed from `None` → `str` (terminal job
+  status). Every failure path now returns the status string so orchestrators can
+  route to the right counter.
+- `created_count` incremented atomically via `sa_update` immediately after a
+  question is successfully persisted to the DB (inside `_run_generate_pipeline`,
+  guarded by `getattr(job, "generation_batch_id", None)`).
+- YAML export moved to execute before the overlap-check branch so it always runs
+  when a question is saved, regardless of overlap result.
+- Persist failure status changed from `"failed"` → `"failed_permanent"` (DB
+  errors after a partial write should not be retried automatically).
+- `_update_batch_counters(batch_id, job_status, db)` — atomic `sa_update` to the
+  appropriate batch counter column; called by `_run_batch_job` after each job
+  terminates.
+- `_run_batch_job(job_id, batch_id, request_data, *, is_retry=False)` — opens its
+  own `async_session`, optionally marks the job `retrying`, runs the full pipeline,
+  and increments the batch counter.
+- `_finalize_batch_status(batch_id, db)` — called after all jobs in a batch
+  complete; sets `batch.status = "completed"` (any success) or `"failed"` (all
+  jobs failed).
+- `_run_batch_pipeline(batch_id)` — marks batch `generating`, fetches all `pending`
+  jobs, dispatches each as an `asyncio.create_task` wrapped in `run_with_job_limit`,
+  gathers all tasks, then calls `_finalize_batch_status`.
+- `create_generation_batch` fires `_run_batch_pipeline(batch.id)` via
+  `asyncio.create_task` immediately after the endpoint commits so jobs begin
+  executing in the background.
+
+### Retry endpoint
+
+- `POST /generate/batches/{batch_id}/retry-failed` — finds all `failed_transient`
+  jobs for the batch whose `retry_count < generation_job_max_retries`, decrements
+  `batch.failed_count` for each, and re-queues them via `_run_batch_job` with
+  `is_retry=True`. Returns `{batch_id, retried_count}`.
+
+### Tests
+
+- `backend/tests/test_generate_runner.py` — 21 new tests covering:
+  - `_is_transient_error` and `_batch_counter_field` unit tests
+  - `_run_generate_pipeline` classifies `ValueError` as `failed_permanent` and
+    `ConnectionError` as `failed_transient`
+  - `_finalize_batch_status` sets `completed`/`failed` correctly and is a no-op
+    when jobs are still pending or the batch is missing
+  - Retry endpoint: 404 for unknown batch, zero-count when no retriable jobs,
+    correct count with two jobs queued, max-retries respected, `failed_count`
+    decremented
+- All 522 non-live tests pass (regression suite clean).
+
+---
+
+## 2026-05-20 — Phase 1 (generation factory): batch contract, idempotency, and architecture note
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+Completed all Phase 1 deliverables from `TASKS_GENERATION.md`. The batch
+endpoint, persistence layer, idempotency table, config knobs, and validation
+model are now fully wired. Phase 2 (runner execution) can attach directly to
+the `pending` jobs this endpoint queues.
+
+### Schema
+
+- New table `generation_batches`: stores one row per batch request with
+  denormalized counters (`created_count`, `accepted_count`, `rejected_count`,
+  `failed_count`, `needs_review_count`), `requested_by`, `student_id`,
+  `requested_by_user_token`, `release_policy`, `regenerate_source_batch_id`,
+  `status`, and standard timestamps. Indexes on `status`, `student_id`,
+  `requested_by_user_token`, `(requested_by, created_at)`.
+- New table `generation_batch_idempotency_keys`: maps
+  `(idempotency_key, requested_by)` → `generation_batch_id` with a 24h TTL.
+  Unique constraint on `(idempotency_key, requested_by)`. Expired rows are
+  deleted before each lookup/create so the same key is reusable after TTL.
+- `question_jobs` gains three columns: `generation_batch_id` (FK, nullable,
+  indexed), `generation_request_jsonb` (durable per-job request snapshot),
+  `retry_count` + `last_retry_at` for Phase 2 retry plumbing.
+- `questions` gains `is_canonical_source` boolean (default false) for the
+  official-source fallback pool.
+- `job_status_enum` extended with `failed_transient`, `failed_permanent`,
+  `retrying` — needed by Phase 2 runner before it writes those values.
+- Migration: `021_phase1_generation_batches.py` (`020 → 021`).
+
+### ORM models
+
+- `backend/app/models/db.py`: `GenerationBatch`, `GenerationBatchIdempotencyKey`
+  added; `QuestionJob` updated with new columns; `Question` updated with
+  `is_canonical_source`.
+
+### Config (`backend/app/config.py`)
+
+- `generation_max_batch_size` (default 25)
+- `generation_default_batch_size` (default 5)
+- `generation_max_pending_batches` (default 20)
+- `generation_batch_idempotency_ttl_hours` (default 24)
+
+### Request/response models (`backend/app/models/payload.py`)
+
+- `GenerationBatchRequest`: stricter than the legacy `GenerationRequest`.
+  Enforces full mandatory-field lists per grammar v7 §B.1.1 and reading v2
+  §16.1 including domain-exclusive validation (grammar and reading fields
+  cannot be mixed), `very_low` frequency rejection, and conditional fields
+  for `transition_logic`, `choose_best_notes_synthesis`, `polarity_fit`,
+  `sentence_function`, `command_of_evidence_quantitative`,
+  `craft_and_structure`, and `evidence_illustrates_claim`. `release_policy`
+  is limited to the locked values: `admin_review_required`,
+  `auto_release_on_accept`, and `dry_run`.
+- `GenerationBatchResponse`: returns `id`, `status`, `requested_count`,
+  `created_at`, `job_ids`, `idempotent_replay`.
+
+### Endpoints (`backend/app/routers/generate.py`)
+
+- `POST /generate/batches`: validates request, checks pending-batch cap,
+  validates caller-supplied `source_question_ids` (existence + official-only
+  + annotation-backed domain match when annotation exists), persists batch + N
+  jobs in `pending` status, writes idempotency key row when `Idempotency-Key`
+  header is present.
+- `GET /generate/batches/{batch_id}`: returns batch counters and metadata.
+- `GET /generate/batches/{batch_id}/questions`: returns job list with
+  per-job `question_id` (null until Phase 2 runner populates it).
+- `POST /generate/questions` (legacy) remains backward-compatible.
+
+### Contract alignment
+
+- `POST /generate/batches` is admin-only per the locked auth table in
+  `TASKS_GENERATION.md`; student-triggered generation remains a Phase 8
+  `/api/study/generation-requests` concern.
+- Frozen `GenerationBatch.request_jsonb` now includes the derived identity
+  fields `requested_by`, `student_id`, and `requested_by_user_token`.
+- Each queued `QuestionJob.generation_request_jsonb` now freezes per-job
+  `source_question_ids`, provider/model, seed, temperature, retry attempt, and
+  derived requester identity at job creation. Caller-supplied source IDs are
+  used exactly; omitted source IDs are selected from matched active official
+  questions, with canonical official sources as fallback.
+
+### Idempotency
+
+- `Idempotency-Key` header (optional). On hit: deletes expired rows for the
+  key first, then returns the original batch with `idempotent_replay=true`.
+  On miss: creates batch + key row. Empty/missing header opts out entirely.
+  Key is stored only in `generation_batch_idempotency_keys`, never in
+  `GenerationBatch.request_jsonb`.
+
+### Architecture documentation
+
+- `GENERATION_ARCHITECTURE.md` (repo root): explains the three-layer design —
+  official questions as generation foundation, generated items as candidates,
+  review-swarm output as advisory (not admin approval). Also covers rejection
+  semantics (`rejected` vs `retired`) and key file references.
+
+### Tests
+
+- `backend/tests/test_generate_batches.py`: 26 tests covering grammar/reading
+  complete requests, mandatory-field rejection, `very_low` frequency guard,
+  conditional-field guards (`transition_logic`, `polarity_fit`), mixed-domain
+  rejection, count cap, idempotency replay, idempotency opt-out, pending-batch
+  cap (429), release-policy validation, source-ID validation (invalid UUID,
+  unknown ID, non-official ID, annotation-domain mismatch), per-job frozen
+  source IDs, GET 404/400 paths, and legacy endpoint backward-compatibility.
+
+### Verification
+
+- `uv run pytest tests/test_generate_batches.py -q` → **26 passed**.
+- `uv run pytest tests/test_generate_batches.py tests/test_generate_router.py
+  tests/test_backend_regressions.py -q` → **94 passed**.
+- `uv run pytest tests/ -q` → **501 passed, 2 skipped**.
+
+---
+
+## 2026-05-19 — Phase 0 (generation factory): non-destructive rejection + payload filter
+
+**Model:** Claude Opus 4.7
+**Branch:** `generation_build`
+
+Landed the Phase 0 prerequisites from `TASKS_GENERATION.md` so the
+review-swarm and audit-trail features in later phases have a stable
+foundation to attach to. No behavior depends on a swarm yet; this is
+pure groundwork.
+
+### Schema
+
+- Added `"rejected"` value to the `practice_status_enum` PostgreSQL type
+  alongside existing `draft`, `active`, `retired`. `rejected` is the new
+  terminal state for failed quality review; `retired` keeps its meaning
+  of post-activation removal.
+- Added three nullable columns on `questions`: `rejection_reason` (Text),
+  `rejected_at` (DateTime tz), `rejected_by_admin_token` (String 128).
+- Migration `020_add_rejected_status_and_reason_columns.py` ships both
+  changes; uses `autocommit_block()` for the enum extension so the new
+  value is visible in the same migration.
+- Regenerated `backend/app/models/ontology.py` and the rules-doc VOCAB
+  appendices from `vocabulary/master.json` via `scripts/gen_vocab.py
+  --generate`.
+
+### Behavior
+
+- `POST /admin/questions/{id}/reject` (`backend/app/routers/admin.py`)
+  is now metadata-only. The previous implementation deleted
+  `LlmEvaluation`, `QuestionAnnotation`, and `QuestionRelation` rows
+  and cleared per-option annotation fields, which would have wiped
+  review-swarm data once that data starts accumulating. The new
+  endpoint flips `practice_status` to `rejected`, records reason
+  (from optional `RejectQuestionRequest.reason`), timestamp, and the
+  admin API key. Annotations, options, relations, evaluations, and
+  the `latest_annotation_id` pointer are all preserved.
+- Hard-delete remains available via `DELETE /admin/questions/{id}`
+  for the rare case where physical removal is genuinely needed.
+
+### Generation payload filter
+
+- Expanded `_SOURCE_SET_OPERATIONAL_KEYS` in
+  `backend/app/routers/generate.py` from `{provider_name, model_name}`
+  to the locked 10-key set (provider/model/seed/temperature,
+  retry_attempt/idempotency_key, requested_count/requested_by/
+  student_id/requested_by_user_token/release_policy).
+- Deduplicated the constant: `_generation_profile_payload` no longer
+  carries its own private copy.
+- `idempotency_key` is included as defense-in-depth even though the
+  locked design also keeps it out of the request payload by storing it
+  in a separate table.
+
+### Tests
+
+- `test_admin_reject_is_non_destructive`: asserts no SQL DELETE/SELECT
+  is issued against linked tables during rejection, and that
+  `latest_annotation_id` is preserved.
+- `test_admin_reject_accepts_empty_body`: dashboard's existing
+  no-body POST still works.
+- `test_source_set_operational_keys_filter_strips_all_operational`:
+  snapshot test of the exact 10-key set plus the lineage-survives
+  identity invariant.
+- Updated `test_generate_pipeline_flushes_before_wiring_latest_pointers`
+  to use a lineage key instead of `seed` (which is now correctly
+  classified as operational and stripped from
+  `generation_profile_jsonb`).
+
+### Verification
+
+- Migration applies cleanly: `alembic upgrade head` → `019 -> 020`.
+- Live DB enum: `{draft, active, retired, rejected}`.
+- Live DB columns on `questions`: `rejection_reason`, `rejected_at`,
+  `rejected_by_admin_token` present.
+- Full backend suite: `uv run pytest tests/ -q` → `475 passed,
+  2 skipped`.
+
+---
+
+## 2026-05-20 — Generation overlap status completion fix
+
+**Model:** GPT-5 Codex
+**Branch:** `generation_build`
+
+Fixed a generation run-status bug where saved generated questions could leave
+their job stuck in `overlap_checking` after official-overlap detection finished.
+
+### Fix
+
+- Generation jobs now return to `approved` when no official overlap is found.
+- Generation jobs now move to `needs_review` when possible official overlap is
+  found, with a review-severity validation entry explaining the overlap risk.
+- Added regression tests for both clear-overlap and possible-overlap generation
+  paths.
+
+### Verification
+
+- Focused status tests: `3 passed`.
+- Generation/regression suite: `90 passed`.
+- Full backend suite: `uv run pytest tests/ -q` → `472 passed, 2 skipped`.
+
+---
+
+## 2026-05-20 — Generation nested payload flattening fix
+
+**Model:** GPT-5 Codex
+**Branch:** `generation_build`
+
+Fixed a generation pipeline schema mismatch where strong model output could
+nest the generated question under `pass1_json.question`, leaving
+`question_text`, `correct_option_label`, and options unavailable at the top
+level for validation and persistence.
+
+### Fix
+
+- Added Pass 1 generation normalization so nested fields such as
+  `question.prompt_text`, `question.correct_option_label`, and
+  `question.options` are flattened before validation, annotation, persistence,
+  overlap detection, and YAML export.
+- Preserved the original nested `question` object in `pass1_json` for
+  traceability.
+- Added a regression test covering the nested `question.prompt_text` payload
+  shape from source-backed generation.
+
+### Verification
+
+- Targeted regression: `1 passed`.
+- Generation/regression suite: `89 passed`.
+- Full backend suite: `uv run pytest tests/ -q` → `471 passed, 2 skipped`.
 
 ---
 

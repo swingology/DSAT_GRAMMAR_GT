@@ -19,7 +19,6 @@ from app.models.db import (
 from app.models.ontology import RELATION_TYPES
 from app.models.payload import AdminEditRequest, EvaluationScoreRequest
 from app.pipeline import amendment_review
-from app.pipeline.option_hydration import clear_option_annotations
 
 
 class EvaluationCreateRequest(BaseModel):
@@ -48,6 +47,10 @@ class RelationCreateRequest(BaseModel):
 class AmendmentDecisionRequest(BaseModel):
     reviewer: str = "admin"
     notes: str = ""
+
+
+class RejectQuestionRequest(BaseModel):
+    reason: Optional[str] = None
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -351,37 +354,36 @@ async def approve_question(
 @router.post("/questions/{question_id}/reject")
 async def reject_question(
     question_id: str,
+    body: RejectQuestionRequest = RejectQuestionRequest(),
     db: AsyncSession = Depends(get_db),
-    _auth: str = Depends(admin_required),
+    auth_token: str = Depends(admin_required),
 ):
+    """Reject a question without destroying audit evidence.
+
+    Sets `practice_status='rejected'` and records the reason, timestamp,
+    and admin token. Annotations, options, options' annotation fields,
+    relations, evaluations, and any future review-swarm rows are
+    preserved so the question's history remains auditable.
+    """
     qid = _parse_uuid(question_id)
     q = await db.get(Question, qid)
     if not q:
         raise HTTPException(status_code=404, detail="Question not found")
 
-    q.practice_status = "retired"
-    q.updated_at = datetime.now(timezone.utc)
-
-    # Clear circular FK before deleting annotations
-    q.latest_annotation_id = None
-    await db.flush()
-
-    # Delete linked metadata: evaluations, annotations, relations
-    await db.execute(delete(LlmEvaluation).where(LlmEvaluation.question_id == qid))
-    await db.execute(delete(QuestionAnnotation).where(QuestionAnnotation.question_id == qid))
-    await db.execute(
-        delete(QuestionRelation).where(
-            (QuestionRelation.from_question_id == qid) | (QuestionRelation.to_question_id == qid)
-        )
-    )
-
-    # Null out per-option annotation fields — keep option structure but clear LLM analysis
-    opts_result = await db.execute(select(QuestionOption).where(QuestionOption.question_id == qid))
-    for opt in opts_result.scalars().all():
-        clear_option_annotations(opt)
+    now = datetime.now(timezone.utc)
+    q.practice_status = "rejected"
+    q.rejection_reason = body.reason
+    q.rejected_at = now
+    q.rejected_by_admin_token = auth_token
+    q.updated_at = now
 
     await db.commit()
-    return {"id": str(q.id), "practice_status": "retired"}
+    return {
+        "id": str(q.id),
+        "practice_status": "rejected",
+        "rejected_at": now.isoformat(),
+        "rejection_reason": body.reason,
+    }
 
 
 @router.delete("/questions/{question_id}")

@@ -76,6 +76,14 @@ class Settings(BaseSettings):
     # CORS — comma-separated list of allowed origins, or "*" to allow all
     cors_allowed_origins: str = "*"
 
+    # Generation batches (Phase 1)
+    generation_max_batch_size: int = 25
+    generation_default_batch_size: int = 5
+    generation_max_pending_batches: int = 20
+    generation_batch_idempotency_ttl_hours: int = 24
+    # Generation job retry limit (Phase 2) — transient failures only
+    generation_job_max_retries: int = 3
+
     # Logging
     log_level: str = "INFO"
     log_json: bool = True

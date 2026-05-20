@@ -1,6 +1,6 @@
 """HTTP request/response models."""
 from pydantic import BaseModel, Field, field_validator, model_validator
-from typing import Optional, List, Any, Dict
+from typing import Optional, List, Any, Dict, Literal
 from datetime import datetime
 
 
@@ -167,6 +167,273 @@ class GenerationRequest(_GenerationTargetRequest):
 
 class GenerationCompareRequest(_GenerationTargetRequest):
     providers: List[str] = Field(default_factory=lambda: ["ollama"])
+
+
+# --- Phase 1: Generation batch contract --------------------------------------
+#
+# Stricter than `GenerationRequest`. Enforces the full mandatory-field lists
+# from the rules-agent canon:
+#
+#   * grammar: rules_agent_dsat_grammar_ingestion_generation_v7.md §B.1.1
+#   * reading: rules_agent_dsat_reading_v2.md §16.1 (+ §2.2 conditionals)
+#
+# A request that wouldn't pass the rules-agent's own "validate generation
+# request" step (Step 1 of B.2 in the grammar doc) is rejected here with
+# 422 before any job is queued.
+
+ReleasePolicy = Literal["admin_review_required", "auto_release_on_accept", "dry_run"]
+
+
+class GenerationBatchRequest(BaseModel):
+    # --- Quantity ---
+    requested_count: int = Field(..., ge=1, description="Number of questions to generate in this batch.")
+
+    # --- Workflow ---
+    release_policy: ReleasePolicy = "admin_review_required"
+
+    # --- Source examples (caller-supplied; auto-selected when empty) ---
+    source_question_ids: Optional[List[str]] = None
+
+    # --- Optional provider/model override (operational; stripped from lineage) ---
+    provider_name: Optional[str] = None
+    model_name: Optional[str] = None
+
+    # --- Common shared spec ---
+    difficulty_overall: str = "medium"
+    stimulus_mode_key: Optional[str] = None
+    stem_type_key: Optional[str] = None
+
+    # --- Grammar target fields (per v7 §B.1.1) ---
+    target_grammar_role_key: Optional[str] = None
+    target_grammar_focus_key: Optional[str] = None
+    target_syntactic_trap_key: str = "none"
+    target_frequency_band: Optional[str] = None
+    test_format_key: Optional[str] = None
+
+    # Conditional grammar (transition_logic items)
+    target_transition_subtype_key: Optional[str] = None
+    distractor_transition_subtypes: Optional[List[str]] = None
+
+    # Conditional grammar (choose_best_notes_synthesis items)
+    target_synthesis_goal_key: Optional[str] = None
+    target_audience_knowledge_key: Optional[str] = None
+    target_required_content_key: Optional[str] = None
+    distractor_synthesis_failures: Optional[List[str]] = None
+
+    # --- Reading target fields (per v2 §16.1) ---
+    target_skill_family_key: Optional[str] = None
+    target_reading_skill_family_key: Optional[str] = None  # legacy alias
+    target_reading_focus_key: Optional[str] = None
+    target_test_construct_key: Optional[str] = None
+    target_craft_subconstruct_key: Optional[str] = None
+    target_reasoning_trap_key: Optional[str] = None
+    target_distractor_pattern: Optional[List[str]] = None
+    passage_structure_pattern: Optional[str] = None
+
+    # Conditional reading (per v2 §2.2)
+    polarity_context: Optional[str] = None
+    target_sentence_function_role: Optional[str] = None
+    quantitative_sub_pattern: Optional[str] = None
+    passage_architecture_key: Optional[str] = None
+    inference_type_note: Optional[str] = None
+    two_part_claim: Optional[bool] = None
+
+    # Question family (used to determine when craft_subconstruct is required)
+    question_family_key: Optional[str] = None
+
+    @field_validator(
+        "target_grammar_role_key", "target_grammar_focus_key",
+        "target_frequency_band", "test_format_key",
+        "target_skill_family_key", "target_reading_skill_family_key",
+        "target_reading_focus_key", "target_test_construct_key",
+        "target_craft_subconstruct_key", "target_reasoning_trap_key",
+        "passage_structure_pattern", "stimulus_mode_key", "stem_type_key",
+        "question_family_key", "target_transition_subtype_key",
+        "target_synthesis_goal_key", "target_audience_knowledge_key",
+        "target_required_content_key", "polarity_context",
+        "target_sentence_function_role", "quantitative_sub_pattern",
+        "passage_architecture_key", "inference_type_note",
+        mode="before",
+    )
+    @classmethod
+    def _blank_to_none(cls, value):
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
+
+    @model_validator(mode="after")
+    def _enforce_rules_canon(self):
+        grammar_has_any = bool(
+            self.target_grammar_role_key or self.target_grammar_focus_key
+        )
+        reading_skill = self.target_reading_skill_family_key or self.target_skill_family_key
+        reading_has_any = bool(reading_skill or self.target_reading_focus_key)
+
+        if grammar_has_any and reading_has_any:
+            raise ValueError(
+                "Batch request mixes grammar and reading target fields; "
+                "specify one domain per batch."
+            )
+        if not grammar_has_any and not reading_has_any:
+            raise ValueError(
+                "Batch request must specify either a grammar target or a "
+                "reading target."
+            )
+
+        if grammar_has_any:
+            self._enforce_grammar_mandatory()
+        else:
+            self._enforce_reading_mandatory()
+
+        return self
+
+    # --- Internal: per-domain mandatory enforcement ---
+
+    _GRAMMAR_MANDATORY: tuple = (
+        # (attribute, public field name shown in error)
+        ("target_grammar_role_key", "target_grammar_role_key"),
+        ("target_grammar_focus_key", "target_grammar_focus_key"),
+        ("target_frequency_band", "target_frequency_band"),
+        ("difficulty_overall", "difficulty_overall"),
+        ("test_format_key", "test_format_key"),
+        ("stimulus_mode_key", "stimulus_mode_key"),
+        ("stem_type_key", "stem_type_key"),
+    )
+
+    _READING_MANDATORY: tuple = (
+        # target_skill_family_key OR target_reading_skill_family_key handled
+        # specially below
+        ("target_reading_focus_key", "target_reading_focus_key"),
+        ("target_test_construct_key", "target_test_construct_key"),
+        ("target_reasoning_trap_key", "target_reasoning_trap_key"),
+        ("target_distractor_pattern", "target_distractor_pattern"),
+        ("passage_structure_pattern", "passage_structure_pattern"),
+        ("stimulus_mode_key", "stimulus_mode_key"),
+        ("stem_type_key", "stem_type_key"),
+        ("difficulty_overall", "difficulty_overall"),
+    )
+
+    def _enforce_grammar_mandatory(self):
+        missing = [
+            label for attr, label in self._GRAMMAR_MANDATORY
+            if not getattr(self, attr)
+        ]
+        if missing:
+            raise ValueError(
+                "Grammar batch request is missing required field(s) "
+                f"{missing}; see rules_agent_dsat_grammar_ingestion_"
+                "generation_v7.md §B.1.1."
+            )
+
+        # `very_low` frequency requires explicit justification per v7 §B.1.1.
+        # The batch endpoint does not accept it.
+        if self.target_frequency_band == "very_low":
+            raise ValueError(
+                "target_frequency_band='very_low' is not accepted by the "
+                "batch endpoint without explicit justification "
+                "(see v7 §B.1.1)."
+            )
+
+        # Conditional: transition_logic items need transition subtype +
+        # distractor list (3 items).
+        if self.target_grammar_focus_key == "transition_logic":
+            cond_missing = []
+            if not self.target_transition_subtype_key:
+                cond_missing.append("target_transition_subtype_key")
+            if not self.distractor_transition_subtypes or len(self.distractor_transition_subtypes) != 3:
+                cond_missing.append("distractor_transition_subtypes (array of 3)")
+            if cond_missing:
+                raise ValueError(
+                    "transition_logic grammar requests require additional "
+                    f"field(s): {cond_missing}; see v7 §B.1.1."
+                )
+
+        # Conditional: choose_best_notes_synthesis items need synthesis
+        # goal/audience/content + distractor failures (3 items).
+        if self.target_grammar_focus_key == "choose_best_notes_synthesis" or \
+                self.stem_type_key == "choose_best_notes_synthesis":
+            cond_missing = []
+            if not self.target_synthesis_goal_key:
+                cond_missing.append("target_synthesis_goal_key")
+            if not self.target_audience_knowledge_key:
+                cond_missing.append("target_audience_knowledge_key")
+            if not self.target_required_content_key:
+                cond_missing.append("target_required_content_key")
+            if not self.distractor_synthesis_failures or len(self.distractor_synthesis_failures) != 3:
+                cond_missing.append("distractor_synthesis_failures (array of 3)")
+            if cond_missing:
+                raise ValueError(
+                    "choose_best_notes_synthesis grammar requests require "
+                    f"additional field(s): {cond_missing}; see v7 §B.1.1."
+                )
+
+    def _enforce_reading_mandatory(self):
+        # Skill family is required, accepting either alias.
+        if not (self.target_skill_family_key or self.target_reading_skill_family_key):
+            raise ValueError(
+                "Reading batch request requires target_skill_family_key "
+                "(or alias target_reading_skill_family_key); see "
+                "rules_agent_dsat_reading_v2.md §16.1."
+            )
+
+        missing = [
+            label for attr, label in self._READING_MANDATORY
+            if not getattr(self, attr)
+        ]
+        # target_distractor_pattern must be a list of exactly 3 items if
+        # present
+        if self.target_distractor_pattern is not None and len(self.target_distractor_pattern) != 3:
+            raise ValueError(
+                "target_distractor_pattern must be an array of exactly 3 "
+                "items (per v2 §16.1)."
+            )
+
+        if missing:
+            raise ValueError(
+                "Reading batch request is missing required field(s) "
+                f"{missing}; see rules_agent_dsat_reading_v2.md §16.1."
+            )
+
+        # Conditional fields from v2 §2.2
+        skill = self.target_skill_family_key or self.target_reading_skill_family_key
+        focus = self.target_reading_focus_key
+
+        if focus == "polarity_fit" and not self.polarity_context:
+            raise ValueError(
+                "target_reading_focus_key='polarity_fit' requires "
+                "polarity_context (per v2 §2.2)."
+            )
+        if focus == "sentence_function" and not self.target_sentence_function_role:
+            raise ValueError(
+                "target_reading_focus_key='sentence_function' requires "
+                "target_sentence_function_role (per v2 §2.2)."
+            )
+        if skill == "command_of_evidence_quantitative" and not self.quantitative_sub_pattern:
+            raise ValueError(
+                "target_skill_family_key='command_of_evidence_quantitative' "
+                "requires quantitative_sub_pattern (per v2 §2.2)."
+            )
+        if self.question_family_key == "craft_and_structure" and not self.target_craft_subconstruct_key:
+            raise ValueError(
+                "question_family_key='craft_and_structure' requires "
+                "target_craft_subconstruct_key (per v2 §2.2)."
+            )
+        if focus == "evidence_illustrates_claim" and self.two_part_claim is None:
+            raise ValueError(
+                "target_reading_focus_key='evidence_illustrates_claim' "
+                "requires two_part_claim (boolean, per v2 §2.2)."
+            )
+
+
+class GenerationBatchResponse(BaseModel):
+    id: str
+    status: str
+    requested_count: int
+    created_at: Optional[datetime] = None
+    job_ids: List[str] = Field(default_factory=list)
+    idempotent_replay: bool = False
+
+    model_config = {"from_attributes": True}
 
 
 class JobResponse(BaseModel):

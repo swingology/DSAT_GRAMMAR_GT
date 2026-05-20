@@ -41,6 +41,10 @@ class QuestionJob(Base):
     validation_errors_jsonb = Column(JSONB, nullable=True)
     comparison_group_id = Column(UUID(as_uuid=True), nullable=True)
     question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=True)
+    generation_batch_id = Column(UUID(as_uuid=True), ForeignKey("generation_batches.id"), nullable=True)
+    generation_request_jsonb = Column(JSONB, nullable=True)
+    retry_count = Column(Integer, nullable=False, default=0)
+    last_retry_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
@@ -94,6 +98,10 @@ class Question(Base):
     metadata_managed_by_llm = Column(Boolean, nullable=False, default=True)
     latest_annotation_id = Column(UUID(as_uuid=True), ForeignKey("question_annotations.id"), nullable=True)
     latest_version_id = Column(UUID(as_uuid=True), ForeignKey("question_versions.id"), nullable=True)
+    is_canonical_source = Column(Boolean, nullable=False, default=False)
+    rejection_reason = Column(Text, nullable=True)
+    rejected_at = Column(DateTime(timezone=True), nullable=True)
+    rejected_by_admin_token = Column(String(128), nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
@@ -299,6 +307,55 @@ class LlmEvaluation(Base):
     score_generation = Column(Float, nullable=True)
     review_notes = Column(Text, nullable=True)
     recommended_for_default = Column(Boolean, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+
+# --- Generation factory (Phase 1) tables ---
+
+class GenerationBatch(Base):
+    __tablename__ = "generation_batches"
+    __table_args__ = (
+        Index("ix_generation_batches_status", "status"),
+        Index("ix_generation_batches_student_id", "student_id"),
+        Index("ix_generation_batches_requested_by_user_token", "requested_by_user_token"),
+        Index("ix_generation_batches_requested_by_created_at", "requested_by", "created_at"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    requested_count = Column(Integer, nullable=False)
+    request_jsonb = Column(JSONB, nullable=False)
+    requested_by = Column(String(32), nullable=False)
+    student_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    requested_by_user_token = Column(UUID(as_uuid=True), nullable=True)
+    release_policy = Column(String(40), nullable=False, default="admin_review_required")
+    regenerate_source_batch_id = Column(UUID(as_uuid=True), ForeignKey("generation_batches.id"), nullable=True)
+    status = Column(String(40), nullable=False, default="pending")
+
+    created_count = Column(Integer, nullable=False, default=0)
+    accepted_count = Column(Integer, nullable=False, default=0)
+    rejected_count = Column(Integer, nullable=False, default=0)
+    failed_count = Column(Integer, nullable=False, default=0)
+    needs_review_count = Column(Integer, nullable=False, default=0)
+
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+
+class GenerationBatchIdempotencyKey(Base):
+    __tablename__ = "generation_batch_idempotency_keys"
+    __table_args__ = (
+        UniqueConstraint("idempotency_key", "requested_by",
+                         name="uq_generation_batch_idem_per_requester"),
+        Index("ix_generation_batch_idem_expires_at", "expires_at"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    idempotency_key = Column(String(128), nullable=False)
+    requested_by = Column(String(32), nullable=False)
+    generation_batch_id = Column(UUID(as_uuid=True),
+                                 ForeignKey("generation_batches.id"),
+                                 nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
 
