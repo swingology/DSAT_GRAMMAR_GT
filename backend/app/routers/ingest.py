@@ -614,16 +614,18 @@ def _find_stem_in_raw_text(stem: str, raw_text: str) -> int:
     return -1
 
 
-def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tuple[list[dict], str | None, dict]:
+def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tuple[list[dict], str | None, dict, list[dict]]:
     """Normalize LLM extract output to a list of per-question dicts.
 
     Handles both the new format (``{passage_text, questions: [...]}``) and
     the legacy single-question format (flat top-level fields).
 
-    Returns ``(questions, shared_passage, shared_source)`` where each question
-    dict has its own ``question_text``, ``options``, ``correct_option_label``,
-    ``source_question_number``, etc., with shared ``passage_text`` and source
-    fields merged in.
+    Returns ``(questions, shared_passage, shared_source, norm_errors)`` where
+    each question dict has its own ``question_text``, ``options``,
+    ``correct_option_label``, ``source_question_number``, etc., with shared
+    ``passage_text`` and source fields merged in. ``norm_errors`` surfaces
+    dropped questions (empty stem after passage split, duplicate composite key)
+    as validation errors so silent loss is visible in ``validation_errors_jsonb``.
     """
     shared_passage = extract_root.get("passage_text")
     shared_source = {
@@ -638,9 +640,15 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
     else:
         raw_questions = [extract_root]
 
-    seen_texts: set[str] = set()
+    # Dedupe by (question_text, source_question_number) so SAT-shaped near-duplicate
+    # stems ("Which choice best…", "As used in the text…") are retained when their
+    # question numbers differ. The single-stem key was destructive: after
+    # _split_passage_from_question carved passages off, multiple early questions
+    # collapsed to the same generic stem and got silently dropped.
+    seen_keys: set[tuple[str, object]] = set()
     questions = []
-    for q in raw_questions:
+    norm_errors: list[dict] = []
+    for raw_idx, q in enumerate(raw_questions):
         enriched = dict(q)
         for k, v in shared_source.items():
             if v and not enriched.get(k):
@@ -671,17 +679,43 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
             for idx, opt in enumerate(opts):
                 opt["label"] = "ABCD"[idx]
 
-        # Drop blanks and deduplicate by question_text
+        # Drop blanks and surface as a validation error so silent loss is
+        # visible. Most often triggers when _split_passage_from_question moves
+        # the entire stem into passage_text.
         q_text_key = (enriched.get("question_text") or "").strip().lower()
         if not q_text_key:
             logger.warning(
                 "_normalize_extracted_questions: skipping entry with empty question_text (raw index %d)",
-                len(questions),
+                raw_idx,
             )
+            norm_errors.append({
+                "step": "normalize",
+                "issue": "dropped_empty_stem",
+                "raw_index": raw_idx,
+                "source_question_number": enriched.get("source_question_number"),
+                "detail": (
+                    f"raw_index {raw_idx}: question_text empty after passage split — "
+                    f"source_question_number={enriched.get('source_question_number')!r}"
+                ),
+            })
             continue
-        if q_text_key in seen_texts:
+
+        # Composite dedupe key. The LLM's source_question_number is included so
+        # SAT stems shared across multiple questions are not collapsed.
+        dedupe_key = (q_text_key, enriched.get("source_question_number"))
+        if dedupe_key in seen_keys:
+            norm_errors.append({
+                "step": "normalize",
+                "issue": "dropped_duplicate_stem",
+                "raw_index": raw_idx,
+                "source_question_number": enriched.get("source_question_number"),
+                "detail": (
+                    f"raw_index {raw_idx}: duplicate (question_text, source_question_number) — "
+                    f"source_question_number={enriched.get('source_question_number')!r}"
+                ),
+            })
             continue
-        seen_texts.add(q_text_key)
+        seen_keys.add(dedupe_key)
         questions.append(enriched)
 
     # Pymupdf fallback: recover passages the VLM completely dropped.
@@ -694,7 +728,7 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
         for enriched in questions:
             _recover_passage_from_raw_text(enriched, _pymupdf_raw)
 
-    return questions, shared_passage, shared_source
+    return questions, shared_passage, shared_source, norm_errors
 
 
 async def _persist_single_question(
@@ -1843,9 +1877,14 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             return
 
     # Normalize to a list of per-question dicts (handles both new and legacy formats)
-    questions_data, shared_passage, shared_source = _normalize_extracted_questions(
+    questions_data, shared_passage, shared_source, norm_errors = _normalize_extracted_questions(
         extract_root, raw_text=raw_text,
     )
+    if norm_errors:
+        logger.warning(
+            "Normalization dropped %d question(s) for job %s: %s",
+            len(norm_errors), job.id, norm_errors,
+        )
 
     # Record extraction count for benchmark comparison (questions after dedup, before validation)
     job.pass1_json = {
@@ -1876,6 +1915,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     # Validate LLM-inferred question numbers for official batches
     all_errors: list[dict] = []
     suspect_qnum_indices: set[int] = set()
+    # Surface normalization drops (empty stems, duplicates) in validation_errors_jsonb
+    # so they're visible in the job record, not just server logs.
+    if norm_errors:
+        all_errors.extend(norm_errors)
     if job.content_origin == "official":
         qnum_warnings = _validate_question_numbers(questions_data, subject_code, module_code)
         if qnum_warnings:

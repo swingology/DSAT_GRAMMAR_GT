@@ -1007,7 +1007,7 @@ async def test_run_pipeline_reassigns_pass1_json_with_created_ids(monkeypatch):
 
 def test_normalize_questions_strips_trailing_paren_from_correct_label():
     """VLMs sometimes emit 'A)' instead of 'A' for correct_option_label."""
-    result, _, _ = ingest_router._normalize_extracted_questions({
+    result, _, _, _ = ingest_router._normalize_extracted_questions({
         "questions": [
             {"question_text": "Q1", "correct_option_label": "A)", "options": []},
         ]
@@ -1016,7 +1016,7 @@ def test_normalize_questions_strips_trailing_paren_from_correct_label():
 
 
 def test_normalize_questions_strips_trailing_period_from_correct_label():
-    result, _, _ = ingest_router._normalize_extracted_questions({
+    result, _, _, _ = ingest_router._normalize_extracted_questions({
         "questions": [
             {"question_text": "Q1", "correct_option_label": "B.", "options": []},
         ]
@@ -1025,7 +1025,7 @@ def test_normalize_questions_strips_trailing_period_from_correct_label():
 
 
 def test_normalize_questions_lowercased_correct_label_upcased():
-    result, _, _ = ingest_router._normalize_extracted_questions({
+    result, _, _, _ = ingest_router._normalize_extracted_questions({
         "questions": [
             {"question_text": "Q1", "correct_option_label": "c)", "options": []},
         ]
@@ -1035,7 +1035,7 @@ def test_normalize_questions_lowercased_correct_label_upcased():
 
 def test_normalize_questions_strips_option_label_parens():
     """Option labels like 'A)' should also be normalized."""
-    result, _, _ = ingest_router._normalize_extracted_questions({
+    result, _, _, _ = ingest_router._normalize_extracted_questions({
         "questions": [
             {
                 "question_text": "Q1",
@@ -1055,7 +1055,7 @@ def test_normalize_questions_strips_option_label_parens():
 
 def test_normalize_questions_deduplicates_identical_question_text():
     """VLMs sometimes hallucinate duplicate question rows; only the first should survive."""
-    result, _, _ = ingest_router._normalize_extracted_questions({
+    result, _, _, _ = ingest_router._normalize_extracted_questions({
         "questions": [
             {"question_text": "What is X?", "correct_option_label": "A", "options": []},
             {"question_text": "What is X?", "correct_option_label": "B", "options": []},
@@ -1069,13 +1069,62 @@ def test_normalize_questions_deduplicates_identical_question_text():
 
 
 def test_normalize_questions_dedup_is_case_insensitive():
-    result, _, _ = ingest_router._normalize_extracted_questions({
+    result, _, _, _ = ingest_router._normalize_extracted_questions({
         "questions": [
             {"question_text": "What is X?", "correct_option_label": "A", "options": []},
             {"question_text": "WHAT IS X?", "correct_option_label": "B", "options": []},
         ]
     })
     assert len(result) == 1
+
+
+def test_normalize_questions_keeps_same_stem_different_qnum():
+    """SAT reading questions 2-5 routinely share the stem 'Which choice…'. With
+    distinct source_question_numbers they must all survive — pre-fix behavior
+    silently dropped 3 of these 4 as duplicates."""
+    result, _, _, errs = ingest_router._normalize_extracted_questions({
+        "questions": [
+            {"question_text": "Which choice best describes...", "source_question_number": 2, "options": []},
+            {"question_text": "Which choice best describes...", "source_question_number": 3, "options": []},
+            {"question_text": "Which choice best describes...", "source_question_number": 4, "options": []},
+            {"question_text": "Which choice best describes...", "source_question_number": 5, "options": []},
+        ]
+    })
+    assert len(result) == 4
+    assert [q["source_question_number"] for q in result] == [2, 3, 4, 5]
+    assert errs == []
+
+
+def test_normalize_questions_surfaces_empty_stem_drop():
+    """Empty stem after passage split must surface as a validation error, not
+    silently disappear with only a log warning."""
+    result, _, _, errs = ingest_router._normalize_extracted_questions({
+        "questions": [
+            {"question_text": "Q1?", "source_question_number": 1, "options": []},
+            {"question_text": "", "source_question_number": 2, "options": []},
+        ]
+    })
+    assert len(result) == 1
+    assert len(errs) == 1
+    assert errs[0]["step"] == "normalize"
+    assert errs[0]["issue"] == "dropped_empty_stem"
+    assert errs[0]["source_question_number"] == 2
+
+
+def test_normalize_questions_surfaces_duplicate_drop():
+    """Same composite key (text, source_question_number) must surface a
+    dropped_duplicate_stem validation error."""
+    result, _, _, errs = ingest_router._normalize_extracted_questions({
+        "questions": [
+            {"question_text": "Q1?", "source_question_number": 7, "options": []},
+            {"question_text": "Q1?", "source_question_number": 7, "options": []},
+        ]
+    })
+    assert len(result) == 1
+    assert len(errs) == 1
+    assert errs[0]["step"] == "normalize"
+    assert errs[0]["issue"] == "dropped_duplicate_stem"
+    assert errs[0]["source_question_number"] == 7
 
 
 # ── _validate_question_numbers ────────────────────────────────────────────────

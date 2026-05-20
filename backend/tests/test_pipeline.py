@@ -486,7 +486,7 @@ class TestNormalizeExtractedQuestions:
                 {"question_text": "Q2", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "B", "source_question_number": 2},
             ],
         }
-        questions, shared_passage, shared_source = _normalize_extracted_questions(extract)
+        questions, shared_passage, shared_source, _ = _normalize_extracted_questions(extract)
 
         assert len(questions) == 2
         assert questions[0]["question_text"] == "Q1"
@@ -506,7 +506,7 @@ class TestNormalizeExtractedQuestions:
             "source_exam_code": "PT1",
             "source_question_number": 1,
         }
-        questions, shared_passage, shared_source = _normalize_extracted_questions(extract)
+        questions, shared_passage, shared_source, _ = _normalize_extracted_questions(extract)
 
         assert len(questions) == 1
         assert questions[0]["question_text"] == "Single Q"
@@ -525,7 +525,7 @@ class TestNormalizeExtractedQuestions:
                 {"question_text": "Q1", "options": [{"label": "A", "text": "a"}, {"label": "B", "text": "b"}, {"label": "C", "text": "c"}, {"label": "D", "text": "d"}], "correct_option_label": "A", "source_question_number": 1},
             ],
         }
-        questions, _, _ = _normalize_extracted_questions(extract)
+        questions, _, _, _ = _normalize_extracted_questions(extract)
 
         assert questions[0]["source_exam_code"] == "PT5"
         assert questions[0]["source_section_code"] == "S1"
@@ -536,7 +536,7 @@ class TestNormalizeExtractedQuestions:
         from app.routers.ingest import _normalize_extracted_questions
 
         extract = {"passage_text": "P", "questions": []}
-        questions, _, _ = _normalize_extracted_questions(extract)
+        questions, _, _, _ = _normalize_extracted_questions(extract)
         assert questions == []
 
 
