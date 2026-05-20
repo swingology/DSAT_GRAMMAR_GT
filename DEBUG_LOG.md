@@ -1,5 +1,40 @@
 # Debug Log
 
+## 2026-05-20 - TASKS_INGESTION_REFACTOR Pre-Coding Review
+Report created by: GPT-5 Codex
+Git branch: `generation_build`
+Git checkpoint: `21227c7` - feat(generation): support reading generation sources
+
+### Findings
+
+1. **Medium:** Task 3 is stale/already implemented.
+   - `backend/app/prompts/annotate_prompt.py` already gates annotation rule context by `_detect_domain()` inside `build_annotate_prompt()`: grammar questions get grammar rules, reading questions get reading rules, and unknown questions get a limited combined context. Before coding starts, re-scope Task 3 to regression tests/metrics instead of reimplementing prompt routing.
+
+2. **Medium:** Task 2 is stale/already implemented.
+   - `backend/app/prompts/extract_prompt.py` already keeps raw OCR text out of `build_vision_extract_prompt()`; the VLM prompt relies on page images plus metadata. Treat this as a regression-test task, not an implementation task.
+
+3. **Medium:** Task 6 is unsafe as written.
+   - `backend/app/llm/ollama_provider.py` documents that `TEXT_TIMEOUT` was raised from 120s to 300s because large extraction payloads exceeded the prior ceiling. Reducing it globally after Anthropic prompt caching would also affect Ollama/non-Anthropic text paths, including extraction. Make timeout reduction measurement-gated, provider/path-specific, or configurable.
+
+4. **Medium:** Task 4 needs a narrower skip condition.
+   - Current qnum crosscheck issues in `backend/app/routers/ingest.py` are warnings/deferred-activation signals, not necessarily terminal blockers. Skipping Pass 2 for those would remove useful taxonomy/review data from draft questions. Only skip annotation for structural blockers that make persistence invalid or intentionally impossible.
+
+5. **Medium:** Task 5 should reuse existing visual-stimulus detection.
+   - The proposed table/chart gate is directionally correct, but checking only `table_data` / `graph_data` is too narrow. Use `_stimulus_candidates()` plus visual `stimulus_mode_key` values so the gate covers `stimulus_assets`, `visual_assets`, shorthand `tables/charts/graphs/figures`, and extracted visual modes.
+
+6. **Low:** Task 1 needs a provider-contract note.
+   - Anthropic cache-control system blocks should not silently change the shared `LLMProvider.complete(system: str, ...)` contract used by OpenAI and Ollama providers. Either keep provider-neutral string prompts with an Anthropic-specific cache adapter or intentionally update the protocol and provider tests. Verification should also record Anthropic cache token usage in `LLMResponse.token_usage`.
+
+7. **Low:** Tasks 7 and 8 appear to be no-ops.
+   - Page renders are already stored once and reused through `_collect_page_images()`. OCR fallback providers also appear lazily instantiated inside selected strategy branches rather than eagerly created by `_build_ocr_chain()`. Keep these as confirmation checks unless new evidence shows otherwise.
+
+8. **Low:** Task 9 is stale/inverted.
+   - `.claude/skills/ingestion-test/run.sh` already sleeps 15 seconds between polls. Changing that to 10 seconds would poll more often, not less. Leave it alone or update the task wording.
+
+### Recommendation
+
+Update `TASKS_INGESTION_REFACTOR.md` before implementation: move Tasks 2, 3, 7, 8, and 9 into confirmed/no-op or regression-test-only status; tighten Tasks 4 and 5; and make Task 6 config/measurement-driven instead of a hard-coded timeout reduction.
+
 ## 2026-05-20 - Ingestion Test Run (Test_7_digital_sec01_mod01) [verification re-run]
 Report created by: Claude (ingestion-test skill subagent)
 Git branch: `main`
