@@ -1358,3 +1358,46 @@ async def retry_failed_batch_jobs(
         ).add_done_callback(_log_task_exception)
 
     return {"batch_id": batch_id, "retried_count": len(retriable)}
+
+
+# --- Phase 4: Batch review swarm -------------------------------------------------
+
+
+@router.post("/batches/{batch_id}/review-swarm")
+async def trigger_batch_review_swarm(
+    batch_id: str,
+    db: AsyncSession = Depends(get_db),
+    auth_token: str = Depends(admin_required),
+):
+    """Run the review swarm on all generated questions in a batch.
+
+    For each question that has been generated but not yet reviewed, creates
+    a new review run with all configured reviewers. Questions that already
+    have a completed review run are skipped (re-review creates a new run).
+
+    Returns the list of review results per question.
+    """
+    try:
+        bid = uuid.UUID(batch_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid UUID")
+
+    batch = await db.get(GenerationBatch, bid)
+    if not batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+
+    from app.review.runner import run_batch_review_swarm
+    try:
+        review_results = await run_batch_review_swarm(
+            bid,
+            triggered_by="manual_batch",
+            admin_token=auth_token,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+    return {
+        "batch_id": batch_id,
+        "review_results": review_results,
+        "reviewed_count": len(review_results),
+    }

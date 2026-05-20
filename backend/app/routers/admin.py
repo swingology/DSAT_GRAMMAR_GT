@@ -14,7 +14,7 @@ from app.auth import admin_required
 from app.models.db import (
     Question, QuestionAnnotation, QuestionVersion, QuestionOption,
     QuestionRelation, QuestionJob, QuestionAsset, LlmEvaluation, UserProgress,
-    QuestionStimulusAsset,
+    QuestionStimulusAsset, ReviewRun, LlmReviewResult,
 )
 from app.models.ontology import RELATION_TYPES
 from app.models.payload import AdminEditRequest, EvaluationScoreRequest
@@ -738,3 +738,116 @@ async def delete_relation(
     await db.delete(rel)
     await db.commit()
     return {"detail": "Relation deleted"}
+
+
+# --- Phase 4: Review swarm endpoints ---------------------------------------------
+
+
+@router.post("/questions/{question_id}/review-swarm")
+async def trigger_review_swarm(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    auth_token: str = Depends(admin_required),
+):
+    """Trigger a multi-model review swarm for a single generated question.
+
+    Creates a ReviewRun, runs all configured reviewers concurrently, and
+    returns the run status with individual reviewer results.
+
+    A new review run is always created — re-reviewing a question produces a
+    new `review_run_id` while preserving previous review rows.
+    """
+    qid = _parse_uuid(question_id)
+    question = await db.get(Question, qid)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    if question.content_origin != "generated":
+        raise HTTPException(
+            status_code=400,
+            detail="Review swarm is only available for generated questions",
+        )
+
+    from app.review.runner import run_review_swarm
+    review_run = await run_review_swarm(
+        qid,
+        triggered_by="manual_question",
+        admin_token=auth_token,
+    )
+
+    # Load review results for this run
+    result_rows = await db.execute(
+        select(LlmReviewResult).where(LlmReviewResult.review_run_id == review_run.id)
+    )
+    results = result_rows.scalars().all()
+
+    return {
+        "review_run_id": str(review_run.id),
+        "question_id": str(qid),
+        "status": review_run.status,
+        "rubric_version": review_run.rubric_version,
+        "started_at": review_run.started_at.isoformat() if review_run.started_at else None,
+        "completed_at": review_run.completed_at.isoformat() if review_run.completed_at else None,
+        "results": [
+            {
+                "id": str(r.id),
+                "provider_name": r.provider_name,
+                "model_name": r.model_name,
+                "verdict": r.verdict,
+                "scores_jsonb": r.scores_jsonb,
+                "review_status": r.review_status,
+                "latency_ms": r.latency_ms,
+                "error_message": r.error_message,
+            }
+            for r in results
+        ],
+    }
+
+
+@router.get("/questions/{question_id}/review-runs")
+async def list_review_runs(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """List all review runs for a question, most recent first."""
+    qid = _parse_uuid(question_id)
+    question = await db.get(Question, qid)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    runs = await db.execute(
+        select(ReviewRun)
+        .where(ReviewRun.question_id == qid)
+        .order_by(ReviewRun.started_at.desc())
+    )
+    review_runs = runs.scalars().all()
+
+    result_list = []
+    for run in review_runs:
+        result_rows = await db.execute(
+            select(LlmReviewResult).where(LlmReviewResult.review_run_id == run.id)
+        )
+        results = result_rows.scalars().all()
+        result_list.append({
+            "review_run_id": str(run.id),
+            "status": run.status,
+            "triggered_by": run.triggered_by,
+            "rubric_version": run.rubric_version,
+            "started_at": run.started_at.isoformat() if run.started_at else None,
+            "completed_at": run.completed_at.isoformat() if run.completed_at else None,
+            "results": [
+                {
+                    "id": str(r.id),
+                    "provider_name": r.provider_name,
+                    "model_name": r.model_name,
+                    "verdict": r.verdict,
+                    "scores_jsonb": r.scores_jsonb,
+                    "review_status": r.review_status,
+                    "latency_ms": r.latency_ms,
+                    "error_message": r.error_message,
+                }
+                for r in results
+            ],
+        })
+
+    return {"question_id": str(qid), "review_runs": result_list}
