@@ -815,11 +815,21 @@ _PAGE = """<!DOCTYPE html>
               <div class="grid grid-cols-2 gap-3">
                 <div class="field">
                   <label>Grammar Role Key</label>
-                  <input name="target_grammar_role_key" class="inp" placeholder="sentence_structure_boundaries" required>
+                  <input name="target_grammar_role_key" class="inp" placeholder="sentence_structure_boundaries">
                 </div>
                 <div class="field">
                   <label>Grammar Focus Key</label>
-                  <input name="target_grammar_focus_key" class="inp" placeholder="comma_splice" required>
+                  <input name="target_grammar_focus_key" class="inp" placeholder="comma_splice">
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="field">
+                  <label>Reading Skill Family Key</label>
+                  <input name="target_reading_skill_family_key" class="inp" placeholder="words_in_context">
+                </div>
+                <div class="field">
+                  <label>Reading Focus Key</label>
+                  <input name="target_reading_focus_key" class="inp" placeholder="figurative_language_meaning">
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-3">
@@ -835,6 +845,10 @@ _PAGE = """<!DOCTYPE html>
                     <option value="hard">hard</option>
                   </select>
                 </div>
+              </div>
+              <div class="field">
+                <label>Test Construct Key</label>
+                <input name="target_test_construct_key" class="inp" placeholder="figurative_interpretation_precision">
               </div>
               <div class="grid grid-cols-2 gap-3">
                 <div class="field">
@@ -1098,13 +1112,26 @@ _PAGE = """<!DOCTYPE html>
       const form = document.getElementById('generate-form');
       const formData = new FormData(form);
       const body = {
-        target_grammar_role_key: formData.get('target_grammar_role_key'),
-        target_grammar_focus_key: formData.get('target_grammar_focus_key'),
-        target_syntactic_trap_key: formData.get('target_syntactic_trap_key') || 'none',
         difficulty_overall: formData.get('difficulty_overall') || 'medium',
         provider_name: formData.get('provider_name') || null,
         model_name: formData.get('model_name') || null,
       };
+      [
+        'target_grammar_role_key',
+        'target_grammar_focus_key',
+        'target_syntactic_trap_key',
+        'target_reading_skill_family_key',
+        'target_reading_focus_key',
+        'target_test_construct_key',
+      ].forEach((key) => {
+        const value = String(formData.get(key) || '').trim();
+        if (value) {
+          body[key] = value;
+        }
+      });
+      if (!body.target_syntactic_trap_key && body.target_grammar_role_key) {
+        body.target_syntactic_trap_key = 'none';
+      }
       const sourceIds = parseCsvIds(String(formData.get('source_question_ids') || ''));
       if (sourceIds.length) {
         body.source_question_ids = sourceIds;

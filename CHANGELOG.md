@@ -5,6 +5,35 @@ Agent: **Claude Sonnet 4.6** (`claude-sonnet-4-6`)
 
 ---
 
+## 2026-05-20 — Important: generation request contract supports reading and grammar
+
+**Model:** GPT-5 Codex
+**Branch:** `generation_build`
+
+Expanded the generation request path so generated DSAT questions can be
+targeted by either grammar or reading taxonomy while continuing to use the two
+rule markdown sources that produced the strongest independent generation
+results.
+
+### Important
+
+- `GenerationRequest` and `GenerationCompareRequest` now accept complete grammar
+  targets or complete reading targets.
+- Generation prompts now always include both `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+  and `rules_agent_dsat_reading_v2.md`.
+- When `source_question_ids` are supplied, stored official questions,
+  annotations, and options are loaded into the generation prompt as foundational
+  source examples for style, taxonomy, passage architecture, distractor
+  construction, and difficulty calibration.
+- The dashboard generation form now supports reading-target fields instead of
+  forcing grammar-only inputs.
+
+### Verification
+
+- Full backend suite: `uv run pytest tests/ -q` → `470 passed, 2 skipped`.
+
+---
+
 ## 2026-05-18 — Phase 8 end-to-end hardening bug remediation
 
 **Model:** Claude Opus 4.7

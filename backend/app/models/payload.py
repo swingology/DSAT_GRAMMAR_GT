@@ -1,5 +1,5 @@
 """HTTP request/response models."""
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Optional, List, Any, Dict
 from datetime import datetime
 
@@ -103,23 +103,70 @@ class EvaluationScoreRequest(BaseModel):
     recommended_for_default: Optional[bool] = None
 
 
-class GenerationRequest(BaseModel):
-    target_grammar_role_key: str
-    target_grammar_focus_key: str
+class _GenerationTargetRequest(BaseModel):
+    target_grammar_role_key: Optional[str] = None
+    target_grammar_focus_key: Optional[str] = None
     target_syntactic_trap_key: str = "none"
+    target_reading_skill_family_key: Optional[str] = None
+    target_skill_family_key: Optional[str] = None
+    target_reading_focus_key: Optional[str] = None
+    target_test_construct_key: Optional[str] = None
+    target_question_family_key: Optional[str] = None
+    question_family_key: Optional[str] = None
     difficulty_overall: str = "medium"
     source_question_ids: Optional[List[str]] = None
+
+    @field_validator(
+        "target_grammar_role_key",
+        "target_grammar_focus_key",
+        "target_reading_skill_family_key",
+        "target_skill_family_key",
+        "target_reading_focus_key",
+        "target_test_construct_key",
+        "target_question_family_key",
+        "question_family_key",
+        mode="before",
+    )
+    @classmethod
+    def _blank_to_none(cls, value):
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
+
+    @model_validator(mode="after")
+    def _require_supported_generation_target(self):
+        grammar_has_any = bool(self.target_grammar_role_key or self.target_grammar_focus_key)
+        grammar_complete = bool(self.target_grammar_role_key and self.target_grammar_focus_key)
+
+        reading_skill = self.target_reading_skill_family_key or self.target_skill_family_key
+        reading_has_any = bool(reading_skill or self.target_reading_focus_key)
+        reading_complete = bool(reading_skill and self.target_reading_focus_key)
+
+        if grammar_has_any and not grammar_complete:
+            raise ValueError(
+                "Grammar generation requires both target_grammar_role_key "
+                "and target_grammar_focus_key"
+            )
+        if reading_has_any and not reading_complete:
+            raise ValueError(
+                "Reading generation requires target_reading_focus_key plus "
+                "target_reading_skill_family_key or target_skill_family_key"
+            )
+        if not grammar_complete and not reading_complete:
+            raise ValueError(
+                "Generation requests must include either a complete grammar target "
+                "or a complete reading target"
+            )
+        return self
+
+
+class GenerationRequest(_GenerationTargetRequest):
     provider_name: Optional[str] = None
     model_name: Optional[str] = None
 
 
-class GenerationCompareRequest(BaseModel):
-    target_grammar_role_key: str
-    target_grammar_focus_key: str
-    target_syntactic_trap_key: str = "none"
-    difficulty_overall: str = "medium"
+class GenerationCompareRequest(_GenerationTargetRequest):
     providers: List[str] = Field(default_factory=lambda: ["ollama"])
-    source_question_ids: Optional[List[str]] = None
 
 
 class JobResponse(BaseModel):

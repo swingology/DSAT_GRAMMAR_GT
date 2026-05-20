@@ -367,6 +367,78 @@ def test_provider_api_key_selection():
 
 
 @pytest.mark.asyncio
+async def test_generation_loads_official_source_examples():
+    db = _FakeDB()
+    question_id = uuid.uuid4()
+    version_id = uuid.uuid4()
+    annotation_id = uuid.uuid4()
+    question = Question(
+        id=question_id,
+        content_origin="official",
+        source_exam_code="PT01",
+        source_subject_code="verbal",
+        source_section_code="01",
+        source_module_code="02",
+        source_question_number=7,
+        stimulus_mode_key="sentence_only",
+        stem_type_key="complete_the_text",
+        current_question_text="Which choice completes the text?",
+        current_passage_text="The official passage text.",
+        current_correct_option_label="A",
+        practice_status="active",
+        official_overlap_status="none",
+        latest_version_id=version_id,
+        latest_annotation_id=annotation_id,
+    )
+    annotation = QuestionAnnotation(
+        id=annotation_id,
+        question_id=question_id,
+        question_version_id=version_id,
+        provider_name="anthropic",
+        model_name="model",
+        prompt_version="v3.0",
+        rules_version="rules",
+        annotation_jsonb={"grammar_focus_key": "subject_verb_agreement"},
+        explanation_jsonb={},
+        confidence_jsonb={},
+    )
+    option = QuestionOption(
+        id=uuid.uuid4(),
+        question_id=question_id,
+        question_version_id=version_id,
+        option_label="A",
+        option_text="is",
+        is_correct=True,
+        option_role="correct",
+    )
+    db.execute_results = [
+        _ScalarResult(items=[question]),
+        _ScalarResult(items=[annotation]),
+        _ScalarResult(items=[option]),
+    ]
+
+    examples = await generate_router._load_official_source_examples(db, [str(question_id)])
+
+    assert examples == [
+        {
+            "source_question_id": str(question_id),
+            "source_exam_code": "PT01",
+            "source_subject_code": "verbal",
+            "source_section_code": "01",
+            "source_module_code": "02",
+            "source_question_number": 7,
+            "stimulus_mode_key": "sentence_only",
+            "stem_type_key": "complete_the_text",
+            "question_text": "Which choice completes the text?",
+            "passage_text": "The official passage text.",
+            "correct_option_label": "A",
+            "annotation": {"grammar_focus_key": "subject_verb_agreement"},
+            "options": [{"label": "A", "text": "is", "is_correct": True}],
+        }
+    ]
+
+
+@pytest.mark.asyncio
 async def test_run_pipeline_persists_reading_domain_question(monkeypatch):
     db = _FakeDB()
     job = SimpleNamespace(

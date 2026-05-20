@@ -151,11 +151,53 @@ def test_generation_request_valid():
     assert req.target_grammar_focus_key == "subject_verb_agreement"
 
 
+def test_generation_request_valid_reading_domain():
+    from app.models.payload import GenerationRequest
+    req = GenerationRequest(
+        target_reading_skill_family_key="words_in_context",
+        target_reading_focus_key="figurative_language_meaning",
+        target_test_construct_key="figurative_interpretation_precision",
+        difficulty_overall="medium",
+    )
+    assert req.target_reading_focus_key == "figurative_language_meaning"
+
+
+def test_generation_request_accepts_legacy_reading_skill_field():
+    from app.models.payload import GenerationRequest
+    req = GenerationRequest(
+        target_skill_family_key="words_in_context",
+        target_reading_focus_key="figurative_language_meaning",
+    )
+    assert req.target_skill_family_key == "words_in_context"
+
+
+def test_generation_request_rejects_missing_generation_target():
+    from app.models.payload import GenerationRequest
+    with pytest.raises(ValidationError):
+        GenerationRequest(difficulty_overall="medium")
+
+
+def test_generation_request_rejects_partial_reading_target():
+    from app.models.payload import GenerationRequest
+    with pytest.raises(ValidationError):
+        GenerationRequest(target_reading_focus_key="figurative_language_meaning")
+
+
 def test_generation_compare_request_valid():
     from app.models.payload import GenerationCompareRequest
     req = GenerationCompareRequest(
         target_grammar_role_key="agreement",
         target_grammar_focus_key="subject_verb_agreement",
+        providers=["anthropic", "openai"],
+    )
+    assert len(req.providers) == 2
+
+
+def test_generation_compare_request_valid_reading_domain():
+    from app.models.payload import GenerationCompareRequest
+    req = GenerationCompareRequest(
+        target_reading_skill_family_key="words_in_context",
+        target_reading_focus_key="figurative_language_meaning",
         providers=["anthropic", "openai"],
     )
     assert len(req.providers) == 2

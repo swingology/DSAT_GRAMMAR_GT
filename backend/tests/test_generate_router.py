@@ -59,3 +59,26 @@ def test_generate_question_without_provider_uses_default(client):
         },
     )
     assert resp.status_code != 422
+
+
+def test_generate_question_reading_request_accepted(client):
+    resp = client.post(
+        "/generate/questions",
+        headers={**AUTH, "Content-Type": "application/json"},
+        json={
+            "target_reading_skill_family_key": "words_in_context",
+            "target_reading_focus_key": "figurative_language_meaning",
+            "target_test_construct_key": "figurative_interpretation_precision",
+            "difficulty_overall": "medium",
+        },
+    )
+    assert resp.status_code != 422
+
+
+def test_generate_question_without_domain_target_rejected(client):
+    resp = client.post(
+        "/generate/questions",
+        headers={**AUTH, "Content-Type": "application/json"},
+        json={"difficulty_overall": "medium"},
+    )
+    assert resp.status_code == 422

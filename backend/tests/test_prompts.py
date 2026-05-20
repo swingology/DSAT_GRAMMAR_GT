@@ -47,6 +47,7 @@ def test_generate_prompt_includes_target():
     system, user = build_generate_prompt(generation_request=request)
     assert "subject_verb_agreement" in user
     assert "Grammar v7 RULES REFERENCE" in system
+    assert "Reading v2 RULES REFERENCE" in system
     assert "## B.4 Distractor Generation Heuristics by Grammar Focus" in system
 
 
@@ -59,7 +60,26 @@ def test_generate_prompt_loads_reading_generation_rules():
     }
     system, user = build_generate_prompt(generation_request=request)
     assert "figurative_language_meaning" in user
+    assert "Grammar v7 RULES REFERENCE" in system
     assert "Reading v2 RULES REFERENCE" in system
     assert "## 16. Generation Rules" in system
     assert "### 16.9 Per-focus generation and distractor recipes" in system
     assert "## 21. Validator Checklist" in system
+
+
+def test_generate_prompt_names_official_source_examples_as_foundational():
+    request = {
+        "target_grammar_role_key": "agreement",
+        "target_grammar_focus_key": "subject_verb_agreement",
+    }
+    examples = [
+        {
+            "source_question_id": "00000000-0000-0000-0000-000000000001",
+            "question_text": "Which choice completes the text?",
+            "annotation": {"grammar_focus_key": "subject_verb_agreement"},
+        }
+    ]
+    _system, user = build_generate_prompt(generation_request=request, source_examples=examples)
+    assert "Stored official questions are serving as the foundational source for generation" in user
+    assert "Do not copy passages, stems, or options" in user
+    assert "00000000-0000-0000-0000-000000000001" in user

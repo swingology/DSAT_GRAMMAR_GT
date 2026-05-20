@@ -140,10 +140,15 @@ Rules:
 
 def build_generate_prompt(generation_request: dict, source_examples: list = None) -> tuple[str, str]:
     """Build system and user prompts for question generation."""
-    rules_context = _load_generation_rule_context(_infer_generation_domain(generation_request))
+    rules_context = _load_generation_rule_context()
     user_parts = [f"Generation request:\n{json.dumps(generation_request, indent=2)}"]
     if source_examples:
-        user_parts.append(f"\nSource examples for reference:\n{json.dumps(source_examples, indent=2)}")
+        user_parts.append(
+            "\nStored official questions are serving as the foundational source for generation. "
+            "Use these examples to calibrate DSAT style, taxonomy, passage architecture, "
+            "distractor construction, and difficulty. Do not copy passages, stems, or options.\n"
+            f"{json.dumps(source_examples, indent=2)}"
+        )
     user = "\n".join(user_parts)
     system = GENERATE_SYSTEM_PROMPT
     if rules_context:

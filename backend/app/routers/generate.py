@@ -56,6 +56,97 @@ def _provider_api_key(settings, provider_name: str) -> str:
     return ""
 
 
+def _without_none_values(payload: dict) -> dict:
+    return {key: value for key, value in payload.items() if value is not None}
+
+
+async def _load_official_source_examples(db: AsyncSession, source_question_ids: list[str] | None) -> list[dict]:
+    """Load stored official questions to use as generation source examples."""
+    if not source_question_ids:
+        return []
+
+    parsed_ids: list[uuid.UUID] = []
+    for raw_id in source_question_ids:
+        try:
+            parsed_ids.append(uuid.UUID(str(raw_id)))
+        except (TypeError, ValueError):
+            logger.warning("Ignoring invalid source_question_id for generation: %r", raw_id)
+
+    if not parsed_ids:
+        return []
+
+    q_result = await db.execute(
+        select(Question).where(
+            Question.id.in_(parsed_ids),
+            Question.content_origin == "official",
+        )
+    )
+    questions = q_result.unique().scalars().all()
+    q_by_id = {q.id: q for q in questions}
+
+    ann_ids = [q.latest_annotation_id for q in questions if q.latest_annotation_id]
+    if ann_ids:
+        ann_result = await db.execute(select(QuestionAnnotation).where(QuestionAnnotation.id.in_(ann_ids)))
+        ann_by_id = {ann.id: ann for ann in ann_result.scalars().all()}
+    else:
+        ann_by_id = {}
+
+    version_to_qid = {q.latest_version_id: q.id for q in questions if q.latest_version_id}
+    opts_by_qid: dict[uuid.UUID, list[QuestionOption]] = {}
+    if version_to_qid:
+        opts_result = await db.execute(
+            select(QuestionOption)
+            .where(QuestionOption.question_version_id.in_(list(version_to_qid.keys())))
+            .order_by(QuestionOption.question_id, QuestionOption.option_label)
+        )
+        for opt in opts_result.scalars().all():
+            qid = version_to_qid.get(opt.question_version_id)
+            if qid:
+                opts_by_qid.setdefault(qid, []).append(opt)
+
+    examples: list[dict] = []
+    for source_id in parsed_ids:
+        q = q_by_id.get(source_id)
+        if not q:
+            logger.warning("Generation source_question_id was not a stored official question: %s", source_id)
+            continue
+
+        ann = ann_by_id.get(q.latest_annotation_id) if q.latest_annotation_id else None
+        example = _without_none_values({
+            "source_question_id": str(q.id),
+            "source_exam_code": q.source_exam_code,
+            "source_subject_code": q.source_subject_code,
+            "source_section_code": q.source_section_code,
+            "source_module_code": q.source_module_code,
+            "source_question_number": q.source_question_number,
+            "stimulus_mode_key": q.stimulus_mode_key,
+            "stem_type_key": q.stem_type_key,
+            "question_text": q.current_question_text,
+            "passage_text": q.current_passage_text,
+            "paired_passage_text": q.current_paired_passage_text,
+            "underlined_text": q.current_underlined_text,
+            "correct_option_label": q.current_correct_option_label,
+            "annotation": ann.annotation_jsonb if ann else None,
+        })
+        options = [
+            _without_none_values({
+                "label": opt.option_label,
+                "text": opt.option_text,
+                "is_correct": opt.is_correct,
+                "distractor_type_key": opt.distractor_type_key,
+                "why_plausible": opt.why_plausible,
+                "why_wrong": opt.why_wrong,
+                "student_failure_mode_key": opt.student_failure_mode_key,
+            })
+            for opt in opts_by_qid.get(q.id, [])
+        ]
+        if options:
+            example["options"] = options
+        examples.append(example)
+
+    return examples
+
+
 async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_data: dict):
     from app.llm.factory import get_provider
     from app.prompts.generate_prompt import build_generate_prompt
@@ -70,7 +161,8 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     )
 
     # Generate — 3-attempt retry on malformed JSON
-    system, user = build_generate_prompt(generation_request=request_data)
+    source_examples = await _load_official_source_examples(db, request_data.get("source_question_ids"))
+    system, user = build_generate_prompt(generation_request=request_data, source_examples=source_examples)
     generated = None
     _last_err: Exception | None = None
     for _attempt in range(3):
