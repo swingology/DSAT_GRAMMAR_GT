@@ -447,3 +447,35 @@ TOPIC_BROAD_KEYS = (
     "science", "history", "literature", "social_studies", "humanities", "arts",
     "economics", "technology", "environment",
 )
+
+# --- Review task types for the generation review swarm ---
+REVIEW_TASK_TYPES = (
+    "generation_realism_review",
+)
+
+# --- Per-reviewer outcome status ---
+REVIEW_STATUSES = (
+    "ok", "transient_failed", "permanent_failed",
+)
+
+# --- Review run lifecycle status ---
+REVIEW_RUN_STATUSES = (
+    "running", "complete", "partial", "failed",
+)
+
+# --- What triggered a review run ---
+TRIGGERED_BY_VALUES = (
+    "auto_on_save", "manual_question", "manual_batch", "recalibration",
+    "rubric_bump",
+)
+
+# --- Per-reviewer verdict on a generated question ---
+REVIEW_VERDICTS = (
+    "accept", "needs_human_review", "reject",
+)
+
+# --- Consensus verdict after multi-model review (Phase 5) ---
+CONSENSUS_VERDICTS = (
+    "admin_review_ready", "reject_recommended", "regenerate_recommended",
+    "blocked_overlap", "insufficient_reviews",
+)

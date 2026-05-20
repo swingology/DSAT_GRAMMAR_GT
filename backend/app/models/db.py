@@ -12,6 +12,8 @@ from app.models.ontology import (
     CONTENT_ORIGINS, JOB_TYPES, JOB_STATUSES, PRACTICE_STATUSES,
     OVERLAP_STATUSES, RELATION_TYPES, ASSET_TYPES, CHANGE_SOURCES,
     DISTRACTOR_TYPE_KEYS,
+    REVIEW_STATUSES, REVIEW_RUN_STATUSES, TRIGGERED_BY_VALUES,
+    REVIEW_VERDICTS, CONSENSUS_VERDICTS,
 )
 
 def _utcnow():
@@ -356,6 +358,87 @@ class GenerationBatchIdempotencyKey(Base):
                                  ForeignKey("generation_batches.id"),
                                  nullable=False)
     expires_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+
+# --- Review swarm tables (Phase 3) ---
+
+class ReviewRun(Base):
+    __tablename__ = "review_runs"
+    __table_args__ = (
+        Index("ix_review_runs_question_id", "question_id"),
+        Index("ix_review_runs_status", "status"),
+        Index("ix_review_runs_generation_batch_id", "generation_batch_id"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
+    generation_batch_id = Column(UUID(as_uuid=True), ForeignKey("generation_batches.id"), nullable=True)
+    triggered_by = Column(Enum(*TRIGGERED_BY_VALUES, name="triggered_by_enum"), nullable=False)
+    triggered_by_admin_token = Column(String(128), nullable=True)
+    rubric_version = Column(String(20), nullable=False)
+    rules_versions_jsonb = Column(JSONB, nullable=False, default=dict)
+    status = Column(Enum(*REVIEW_RUN_STATUSES, name="review_run_status_enum"), nullable=False, default="running")
+    started_at = Column(DateTime(timezone=True), default=_utcnow)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+
+
+class LlmReviewResult(Base):
+    __tablename__ = "llm_review_results"
+    __table_args__ = (
+        Index("ix_llm_review_results_question_id", "question_id"),
+        Index("ix_llm_review_results_review_run_id", "review_run_id"),
+        Index("ix_llm_review_results_provider_model", "provider_name", "model_name"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
+    job_id = Column(UUID(as_uuid=True), ForeignKey("question_jobs.id"), nullable=True)
+    generation_batch_id = Column(UUID(as_uuid=True), ForeignKey("generation_batches.id"), nullable=True)
+    review_run_id = Column(UUID(as_uuid=True), ForeignKey("review_runs.id"), nullable=False)
+    provider_name = Column(String(50), nullable=False)
+    model_name = Column(String(100), nullable=False)
+    task_type = Column(String(20), nullable=False, default="generation_realism_review")
+    rubric_version = Column(String(20), nullable=False)
+    rules_versions_jsonb = Column(JSONB, nullable=False, default=dict)
+    scores_jsonb = Column(JSONB, nullable=False, default=dict)
+    verdict = Column(Enum(*REVIEW_VERDICTS, name="verdict_enum"), nullable=False)
+    review_notes = Column(Text, nullable=True)
+    raw_response_jsonb = Column(JSONB, nullable=True)
+    latency_ms = Column(Integer, nullable=True)
+    token_usage_jsonb = Column(JSONB, nullable=True)
+    review_status = Column(Enum(*REVIEW_STATUSES, name="review_status_enum"), nullable=False, default="ok")
+    error_message = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+
+class ConsensusVerdict(Base):
+    __tablename__ = "consensus_verdicts"
+    __table_args__ = (
+        Index("ix_consensus_verdicts_question_id", "question_id"),
+        Index("ix_consensus_verdicts_review_run_id", "review_run_id"),
+        Index("ix_consensus_verdicts_generation_batch_id", "generation_batch_id"),
+        Index("ix_consensus_verdicts_consensus_verdict", "consensus_verdict"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
+    review_run_id = Column(UUID(as_uuid=True), ForeignKey("review_runs.id"), nullable=False)
+    generation_batch_id = Column(UUID(as_uuid=True), ForeignKey("generation_batches.id"), nullable=True)
+    reviewer_count = Column(Integer, nullable=False)
+    average_realism = Column(Float, nullable=True)
+    average_sat_fidelity = Column(Float, nullable=True)
+    average_difficulty_match = Column(Float, nullable=True)
+    average_distractor_quality = Column(Float, nullable=True)
+    average_taxonomy_match = Column(Float, nullable=True)
+    max_copy_risk = Column(Float, nullable=True)
+    accept_votes = Column(Integer, nullable=False, default=0)
+    needs_review_votes = Column(Integer, nullable=False, default=0)
+    reject_votes = Column(Integer, nullable=False, default=0)
+    reviewer_disagreement = Column(Float, nullable=True)
+    high_disagreement_flag = Column(Boolean, nullable=False, default=False)
+    consensus_verdict = Column(Enum(*CONSENSUS_VERDICTS, name="consensus_verdict_enum"), nullable=False)
+    reasons_jsonb = Column(JSONB, nullable=False, default=dict)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
 

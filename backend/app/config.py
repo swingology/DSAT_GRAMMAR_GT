@@ -84,6 +84,21 @@ class Settings(BaseSettings):
     # Generation job retry limit (Phase 2) — transient failures only
     generation_job_max_retries: int = 3
 
+    # Review swarm thresholds (Phase 3) — all scores 0-10
+    generation_min_realism_score: float = 7.0
+    generation_min_sat_fidelity_score: float = 7.0
+    generation_min_distractor_quality_score: float = 6.5
+    generation_min_taxonomy_match_score: float = 7.5
+    generation_max_copy_risk_score: float = 5.0
+    generation_max_reviewer_disagreement: float = 1.5
+    # Review swarm composition (Phase 4 runner will use these)
+    generation_review_providers: str = "openai,anthropic,ollama"
+    generation_review_openai_model: str = "gpt-4o"
+    generation_review_anthropic_model: str = "claude-sonnet-4-6"
+    generation_review_ollama_model: str = "deepseek-v4-pro:cloud"
+    generation_review_max_concurrent: int = 6
+    generation_review_max_retries: int = 2
+
     # Logging
     log_level: str = "INFO"
     log_json: bool = True

@@ -4034,6 +4034,180 @@
           "description": ""
         }
       ]
+    },
+    {
+      "name": "REVIEW_TASK_TYPES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Review task types for the generation review swarm",
+      "entries": [
+        {
+          "value": "generation_realism_review",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Multi-model quality review of generated DSAT questions"
+        }
+      ]
+    },
+    {
+      "name": "REVIEW_STATUSES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Per-reviewer outcome status",
+      "entries": [
+        {
+          "value": "ok",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Review completed successfully"
+        },
+        {
+          "value": "transient_failed",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Review failed due to transient error (rate limit, network)"
+        },
+        {
+          "value": "permanent_failed",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Review failed permanently (malformed output, model refusal)"
+        }
+      ]
+    },
+    {
+      "name": "REVIEW_RUN_STATUSES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Review run lifecycle status",
+      "entries": [
+        {
+          "value": "running",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Review run in progress"
+        },
+        {
+          "value": "complete",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "All reviewers completed successfully"
+        },
+        {
+          "value": "partial",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Some reviewers failed but minimum completed"
+        },
+        {
+          "value": "failed",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Review run failed entirely"
+        }
+      ]
+    },
+    {
+      "name": "TRIGGERED_BY_VALUES",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "What triggered a review run",
+      "entries": [
+        {
+          "value": "auto_on_save",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Automatically triggered when a generated question is saved"
+        },
+        {
+          "value": "manual_question",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Admin manually triggered review for a single question"
+        },
+        {
+          "value": "manual_batch",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Admin manually triggered review for a batch"
+        },
+        {
+          "value": "recalibration",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Re-review triggered by calibration threshold change"
+        },
+        {
+          "value": "rubric_bump",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Re-review triggered by rubric version change"
+        }
+      ]
+    },
+    {
+      "name": "REVIEW_VERDICTS",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Per-reviewer verdict on a generated question",
+      "entries": [
+        {
+          "value": "accept",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Question meets all quality thresholds"
+        },
+        {
+          "value": "needs_human_review",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Borderline quality; human review recommended"
+        },
+        {
+          "value": "reject",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Question fails quality thresholds"
+        }
+      ]
+    },
+    {
+      "name": "CONSENSUS_VERDICTS",
+      "kind": "flat",
+      "domain": "system",
+      "comment": "Consensus verdict after multi-model review (Phase 5)",
+      "entries": [
+        {
+          "value": "admin_review_ready",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "All thresholds cleared; ready for admin review"
+        },
+        {
+          "value": "reject_recommended",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Consensus recommends rejection"
+        },
+        {
+          "value": "regenerate_recommended",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Consensus recommends regeneration"
+        },
+        {
+          "value": "blocked_overlap",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Unresolved official overlap blocks approval"
+        },
+        {
+          "value": "insufficient_reviews",
+          "status": "active",
+          "added": "2026-05-20",
+          "description": "Fewer than 2 reviewers succeeded"
+        }
+      ]
     }
   ]
 }

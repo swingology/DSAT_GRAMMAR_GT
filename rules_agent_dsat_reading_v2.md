@@ -2397,3 +2397,60 @@ regenerate. They stay in lockstep with the validator enums in
 - `rhetorical_surface_similarity`
 - `attribution_swap`
 <!-- VOCAB:shared:PLAUSIBILITY_SOURCE_KEYS END -->
+
+<!-- VOCAB:system:REVIEW_TASK_TYPES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`REVIEW_TASK_TYPES`** — Review task types for the generation review swarm
+
+- `generation_realism_review` — Multi-model quality review of generated DSAT questions
+<!-- VOCAB:system:REVIEW_TASK_TYPES END -->
+
+<!-- VOCAB:system:REVIEW_STATUSES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`REVIEW_STATUSES`** — Per-reviewer outcome status
+
+- `ok` — Review completed successfully
+- `transient_failed` — Review failed due to transient error (rate limit, network)
+- `permanent_failed` — Review failed permanently (malformed output, model refusal)
+<!-- VOCAB:system:REVIEW_STATUSES END -->
+
+<!-- VOCAB:system:REVIEW_RUN_STATUSES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`REVIEW_RUN_STATUSES`** — Review run lifecycle status
+
+- `running` — Review run in progress
+- `complete` — All reviewers completed successfully
+- `partial` — Some reviewers failed but minimum completed
+- `failed` — Review run failed entirely
+<!-- VOCAB:system:REVIEW_RUN_STATUSES END -->
+
+<!-- VOCAB:system:TRIGGERED_BY_VALUES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`TRIGGERED_BY_VALUES`** — What triggered a review run
+
+- `auto_on_save` — Automatically triggered when a generated question is saved
+- `manual_question` — Admin manually triggered review for a single question
+- `manual_batch` — Admin manually triggered review for a batch
+- `recalibration` — Re-review triggered by calibration threshold change
+- `rubric_bump` — Re-review triggered by rubric version change
+<!-- VOCAB:system:TRIGGERED_BY_VALUES END -->
+
+<!-- VOCAB:system:REVIEW_VERDICTS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`REVIEW_VERDICTS`** — Per-reviewer verdict on a generated question
+
+- `accept` — Question meets all quality thresholds
+- `needs_human_review` — Borderline quality; human review recommended
+- `reject` — Question fails quality thresholds
+<!-- VOCAB:system:REVIEW_VERDICTS END -->
+
+<!-- VOCAB:system:CONSENSUS_VERDICTS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`CONSENSUS_VERDICTS`** — Consensus verdict after multi-model review (Phase 5)
+
+- `admin_review_ready` — All thresholds cleared; ready for admin review
+- `reject_recommended` — Consensus recommends rejection
+- `regenerate_recommended` — Consensus recommends regeneration
+- `blocked_overlap` — Unresolved official overlap blocks approval
+- `insufficient_reviews` — Fewer than 2 reviewers succeeded
+<!-- VOCAB:system:CONSENSUS_VERDICTS END -->
