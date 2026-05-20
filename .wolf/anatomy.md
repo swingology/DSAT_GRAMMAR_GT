@@ -1,11 +1,12 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-18T00:18:41.923Z
-> Files: 690 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-18T23:15:53.535Z
+> Files: 714 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
 
 - `generic-rolling-parnas.md` — Crop / Layout Provenance Implementation Plan (~3582 tok)
+- `squishy-giggling-dolphin.md` — Plan: Separate Passage Text from Question Text in Extraction Pipeline (~1307 tok)
 - `vivid-giggling-riddle.md` — Plan: Benchmark Markdown Reports + SUMMARY.md Auto-Update (~959 tok)
 - `wiggly-shimmying-leaf.md` — Plan: OCR Strategy Benchmark Endpoint (~1287 tok)
 
@@ -23,9 +24,9 @@
 - `.gitignore` — Git ignore rules (~36 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~22163 tok)
+- `CHANGELOG.md` — CHANGELOG (~28975 tok)
 - `CLAUDE.md` — OpenWolf (~274 tok)
-- `DEBUG_LOG.md` — Debug Log (~23295 tok)
+- `DEBUG_LOG.md` — Debug Log (~34928 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
@@ -38,9 +39,12 @@
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark Directory (~830 tok)
 - `Reading_v1_rules_report.md` — Reading_v1 Rules Impact Report (~4265 tok)
 - `rules_agent_dsat_grammar_ingestion_generation_v7.md` — rules_agent_dsat_grammar_ingestion_generetion_v7.md (~27429 tok)
-- `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~22055 tok)
+- `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~24022 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
+- `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
 - `TASKS_OCR.md` — OCR Integration — Phased Task Plan (~7143 tok)
+- `TASKS_RULES_UPDATE_FEATURE.md` — Rules Update Feature Task List (~3740 tok)
+- `TODOS.md` — TODOS (~379 tok)
 - `vdb_comparison.md` — Vector DB Ground Truth Comparison (~1567 tok)
 
 ## .claude/
@@ -892,8 +896,12 @@
 
 ## backend/app/models/
 
+- `annotation.py` — Pass 2 Pydantic schema — Question annotation output. (~1452 tok)
 - `db.py` — Declares QuestionJob (~3950 tok)
+- `ontology.py` — Allowed keys, enums, constants. GENERATED from vocabulary/master.json — do not hand-edit; run scripts/gen_vocab.py --generate. (~5613 tok)
+- `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
 - `payload.py` — HTTP request/response models. (~1558 tok)
+- `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
 
@@ -903,12 +911,16 @@
 
 ## backend/app/pipeline/
 
+- `amendment_review.py` — Admin review and promotion operations for rule amendments. (~5047 tok)
+- `amendments.py` — Capture and persist official-source rule amendment proposals. (~5459 tok)
+- `ingestion_analysis.py` — Write reproducible ingestion analysis reports and re-appraisals. (~2600 tok)
 - `option_hydration.py` — Utilities for populating QuestionOption annotation fields from annotate_json. (~636 tok)
 - `overlap.py` — Overlap detection between unofficial/generated questions and official questions. (~1690 tok)
-- `validator.py` — Validation rules from PRD §15. (~2538 tok)
+- `validator.py` — Validation rules from PRD §15. (~2948 tok)
 
 ## backend/app/prompts/
 
+- `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~3480 tok)
 - `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~1186 tok)
 - `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
 - `stimulus_prompt.py` — Vision prompt for annotating cropped stimulus regions (tables, charts, figures). (~543 tok)
@@ -918,7 +930,7 @@
 - `admin.py` — API: 5 endpoints (~6973 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` — API: 2 endpoints (~4450 tok)
-- `ingest.py` (~31954 tok)
+- `ingest.py` (~34933 tok)
 - `student.py` — API: 3 endpoints (~1880 tok)
 
 ## backend/app/storage/
@@ -948,17 +960,35 @@
 ## backend/tests/
 
 - `conftest.py` — Force test env before any app imports — use assignment, not setdefault (~385 tok)
-- `test_admin_router.py` — test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, test_admin_re (~556 tok)
+- `test_admin_router.py` — Amendment: test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, te (~4008 tok)
+- `test_amendment_capture.py` — Tests for extracting and storing Pass 2 amendment proposals. (~3724 tok)
+- `test_amendment_review.py` — Tests for admin amendment review and promotion operations. (~5112 tok)
+- `test_amendments_cli.py` — Tests for local development amendment CLI commands. (~2584 tok)
+- `test_amendments.py` — Tests for approval-gated rules amendment schemas. (~1165 tok)
 - `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~12686 tok)
 - `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~601 tok)
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
 - `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)
 - `test_ingest_router.py` — test_resolve_provider_and_model_uses_default_ollama_model, test_resolve_provider_and_model_respects_ (~8845 tok)
+- `test_ingestion_analysis.py` — Tests for ingestion analysis reports and re-appraisal creation. (~1792 tok)
 - `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
 - `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~2181 tok)
-- `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~8426 tok)
+- `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~10245 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~486 tok)
+- `test_vocab_sync.py` — Tests for the controlled-vocabulary source-of-truth system. (~925 tok)
 
 ## docs/PRD/
 
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~10510 tok)
+
+## scripts/
+
+- `amendments.py` — Local development CLI for approval-gated rule amendments. (~1235 tok)
+- `dev_reset_ingestion.sh` — dev_reset_ingestion.sh (~902 tok)
+- `dev_reset_ingestion.sql` — DEV-ONLY: TRUNCATEs all question_* tables + llm_evaluations (CASCADE clears user_progress), keeps users; clears the duplicate-checksum guard so PDFs can be re-ingested. (~625 tok)
+- `export_review.py` — Export ingested questions to a markdown review file with tables and passages. (~1399 tok)
+- `gen_vocab.py` — Controlled-vocabulary source-of-truth tooling. (~6018 tok)
+
+## vocabulary/
+
+- `master.json` (~29574 tok)

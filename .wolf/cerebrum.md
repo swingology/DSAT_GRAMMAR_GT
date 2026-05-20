@@ -10,6 +10,9 @@
 
 ## Key Learnings
 
+- **VLM-fused extraction (qwen3-vl) drops `passage_text`** — the model ignores the schema field and dumps passage content into `question_text` instead. `_split_passage_from_question()` (stem-opener regex) and `_recover_passage_from_raw_text()` (pymupdf fallback) in `_normalize_extracted_questions()` fix this. The stem openers must be high-confidence only (not "the author"/"the narrator" which appear in passages); `_______` blanks count as sentence boundaries.
+- **Pymupdf raw_text recovery requires 2000-char lookback** — SAT passages can be 600+ chars between question number and stem. The 500-char window was too small for Q1.
+
 - **Project:** DSAT_REDUX_MD
 - Backend PRD lives at `docs/PRD/INGESTION_PRD.md`; older Wolf anatomy/root references to `INGESTION_PRD.md` can be stale.
 - Backend PRD v2.1 Known Open Gaps are not fully current: OCR code exists in `backend/app/routers/ingest.py`, but the PRD still describes OCR strategies as not implemented.
@@ -42,10 +45,13 @@
 - [2026-05-14] Do not assume root `INGESTION_PRD.md` exists from stale anatomy output; use `docs/PRD/INGESTION_PRD.md` for backend PRD audits.
 - [2026-05-14] When inserting new numbered sections into long rule docs, immediately rg the affected heading prefix (e.g. `^### 16\.`) to catch duplicate/out-of-order numbering.
 - [2026-05-16] When replacing text in DEBUG_LOG.md with python `content.replace()`, double-check that variable names (`old5` vs `new9`) match — a typo caused finding #5's text to be replaced with finding #9's text instead of finding #5's strikethrough version.
+- [2026-05-18] `backend/app/models/ontology.py` is a GENERATED file — do not hand-edit it, nor the `<!-- VOCAB:... -->` appendix blocks in the rules docs. Edit `vocabulary/master.json` and run `python scripts/gen_vocab.py --generate`. `--check` is the drift gate.
+- [2026-05-18] When LLM output fields drift from expected schema names, prefer observational logging (log which fallbacks were used) over deterministic constraints (JSON schema in prompt). User explicitly rejects adding JSON schema to prompts — it makes LLM output formula-based.
 
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
+- [2026-05-18] Controlled vocabulary: `vocabulary/master.json` is the single source of truth; `ontology.py` and rules-doc VOCAB blocks are generated from it. New keys the LLM invents go to `vocabulary/candidates.json` (non-blocking review queue), promoted via `gen_vocab.py --promote`. Chose master-JSON-canonical over ontology-canonical for strongest consistency, and a review queue over auto-append so vocabulary growth stays human-controlled. options.py option-level validators demoted from hard `ValueError` to non-blocking candidate recording.
 
 - 2026-05-18 — Ingest jobs with any non-blocking validation warning (e.g.
   qnum_ocr_crosscheck) now route to `needs_review` instead of `approved`, and

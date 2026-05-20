@@ -2,7 +2,12 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| 16:15 | Ingestion test for Test_5_digital_sec01_mod01 (attempt 4) — duplicate checksum blocked re-submission; queried existing job edb9c0a8 directly from DB: needs_review, 33/33 extracted/created, 18 qnum_ocr_crosscheck mismatches, no option-label cascade | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md | success (same results as attempt 3) | ~1k |
+| 13:53 | Ingestion test for Test_5_digital_sec01_mod01 completed (attempt 3) — job edb9c0a8 reached needs_review, 33/33 questions, 18 qnum_ocr_crosscheck mismatches, no option-label cascade | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md, .wolf/buglog.json | success (18 medium warnings) | ~2k |
+| 14:45 | Fixed VLM-fused passage separation bug — added _split_passage_from_question() (stem-opener regex split) and _recover_passage_from_raw_text() (pymupdf fallback) to _normalize_extracted_questions(). 33/33 questions now have passage_text. | ingest.py, test_pipeline.py, DEBUG_LOG.md | success | ~3k |
+| 13:34 | Ingestion test for Test_5_digital_sec01_mod01 blocked again (attempt 2) — Docker daemon not running, Postgres unavailable | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md | blocked (infrastructure) | ~500 |
 | 10:55 | Logged 17 open gaps (4 ingestion, 6 generate, 7 admin/cross-cutting) to DEBUG_LOG.md as new 2026-05-16 Open Gap Inventory section | DEBUG_LOG.md | success | ~2k |
+| 13:25 | Ingestion test for Test_5_digital_sec01_mod01 blocked — Docker daemon not running, Postgres unavailable | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md | blocked (infrastructure) | ~1k |
 | 11:08 | Fixed 4 open gaps: OCR fallback logging (#7), page render size limit (#9), generate_compare shared reference (#5), closure comment (#22) | ingest.py, pdf_parser.py, generate.py, DEBUG_LOG.md | success | ~500 |
 | 16:14 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/feedback_debug-log-workflow.md | — | ~207 |
 | session | Exhaustive gap-fill: grammar v7 +B.3/B.4 rules for 5 promoted keys, 2 new syntactic traps, 5 failure modes, checks 26–29, D.3 rule 17; reading v2 +figurative WIC key, polarity_resolution mech, 5 TSP verbs, 3 passage archs, CoE-T vs CID disambiguation, false_concession_trap, causal_specification | rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md | success | ~110k |
@@ -506,3 +511,360 @@
 | 03:22 | route warning-carrying ingest jobs into review queue | ingest.py, dashboard.py | needs_review + draft persist when validation warnings present | ~12k |
 | 03:23 | Session end: 7 writes across 3 files (DEBUG_LOG.md, ingest.py, dashboard.py) | 4 reads | ~76345 tok |
 | 03:26 | Session end: 7 writes across 3 files (DEBUG_LOG.md, ingest.py, dashboard.py) | 4 reads | ~76345 tok |
+
+## Session: 2026-05-18 03:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 03:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 03:46 | Edited backend/app/models/ontology.py | 12→14 lines | ~164 |
+| 03:51 | Edited DEBUG_LOG.md | modified Fixed() | ~674 |
+| 03:45 | Resumed bug-109: reconciled reading ontology to rules doc | ontology.py, buglog.json, DEBUG_LOG.md | 38 focus keys now match rules; no DB orphans; unblocks Test 4 q6/q7 | ~6k |
+| 03:51 | Session end: 2 writes across 2 files (ontology.py, DEBUG_LOG.md) | 1 reads | ~886 tok |
+| 03:53 | Session end: 2 writes across 2 files (ontology.py, DEBUG_LOG.md) | 1 reads | ~886 tok |
+| 03:54 | Edited DEBUG_LOG.md | expanded (+41 lines) | ~643 |
+| 03:53 | ingestion-test Test_4_sec01_mod01 — blocked: duplicate checksum, prior job c9aeeb9d approved 31/33, q6/q7 reading_focus_key block unverified | DEBUG_LOG.md, buglog.json | prereq failure logged | ~6k |
+| 04:13 | Session end: 3 writes across 2 files (ontology.py, DEBUG_LOG.md) | 2 reads | ~25145 tok |
+| 04:14 | Session end: 3 writes across 2 files (ontology.py, DEBUG_LOG.md) | 2 reads | ~25145 tok |
+
+## Session: 2026-05-18 04:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 04:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 04:42 | Edited backend/app/models/ontology.py | expanded (+12 lines) | ~260 |
+| 04:43 | Edited DEBUG_LOG.md | modified docs() | ~588 |
+| 04:44 | Session end: 2 writes across 2 files (ontology.py, DEBUG_LOG.md) | 4 reads | ~77127 tok |
+| 04:51 | Edited backend/app/models/ontology.py | expanded (+30 lines) | ~548 |
+| 04:51 | Edited backend/app/models/annotation.py | 2→3 lines | ~22 |
+| 04:51 | Edited backend/app/models/annotation.py | modified validate_reasoning_trap_key() | ~80 |
+| 04:52 | Edited rules_agent_dsat_reading_v2.md | 5→10 lines | ~144 |
+| 04:52 | Edited rules_agent_dsat_reading_v2.md | 9→6 lines | ~235 |
+| 04:52 | Edited backend/app/prompts/annotate_prompt.py | 5→6 lines | ~40 |
+| 04:52 | Edited backend/app/prompts/annotate_prompt.py | modified items() | ~122 |
+| 04:53 | Edited DEBUG_LOG.md | modified Fixed() | ~470 |
+| 04:58 | Session end: 10 writes across 5 files (ontology.py, DEBUG_LOG.md, annotation.py, rules_agent_dsat_reading_v2.md, annotate_prompt.py) | 6 reads | ~78848 tok |
+| 04:59 | Edited CHANGELOG.md | expanded (+50 lines) | ~626 |
+| 04:59 | Session end: 11 writes across 6 files (ontology.py, DEBUG_LOG.md, annotation.py, rules_agent_dsat_reading_v2.md, annotate_prompt.py) | 7 reads | ~101682 tok |
+| 05:04 | Session end: 11 writes across 6 files (ontology.py, DEBUG_LOG.md, annotation.py, rules_agent_dsat_reading_v2.md, annotate_prompt.py) | 9 reads | ~105632 tok |
+
+## Session: 2026-05-18 05:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 05:23 | Created scripts/gen_vocab.py | — | ~4648 |
+| 05:23 | Edited scripts/gen_vocab.py | modified _load_ontology() | ~137 |
+| 05:23 | Edited scripts/gen_vocab.py | 5→5 lines | ~24 |
+| 05:24 | Edited scripts/gen_vocab.py | 11→11 lines | ~92 |
+| 05:25 | Edited scripts/gen_vocab.py | modified render_doc_blocks() | ~541 |
+| 05:25 | Edited scripts/gen_vocab.py | 9→4 lines | ~57 |
+| 05:25 | Edited scripts/gen_vocab.py | _replace_doc_blocks() → _apply_doc_blocks() | ~61 |
+| 05:29 | Created backend/app/models/vocab_candidates.py | — | ~1565 |
+| 05:30 | Edited backend/app/pipeline/validator.py | modified validate_question() | ~253 |
+| 05:30 | Edited backend/app/pipeline/validator.py | 23→26 lines | ~346 |
+| 05:36 | Edited backend/app/pipeline/validator.py | 15→17 lines | ~211 |
+| 05:36 | Edited backend/app/pipeline/validator.py | 6→7 lines | ~104 |
+| 05:36 | Edited backend/app/models/options.py | added 1 import(s) | ~101 |
+
+## Session: 2026-05-18 05:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 05:36 | Edited backend/app/models/options.py | modified validate_distractor_type() | ~322 |
+| 05:37 | Edited scripts/gen_vocab.py | modified _load_candidates() | ~1312 |
+| 05:38 | Edited vocabulary/master.json | reduced (-6 lines) | ~47 |
+| 05:38 | Created backend/tests/test_vocab_sync.py | — | ~925 |
+| 05:40 | Edited CHANGELOG.md | expanded (+50 lines) | ~687 |
+| 12:40 | Built master vocab system: master.json source-of-truth + gen_vocab.py generator + candidates review queue | gen_vocab.py, master.json, vocab_candidates.py, validator.py, options.py, ontology.py, 2 rules docs, test_vocab_sync.py, CHANGELOG.md | A+B+C complete; 122 tests pass; --check drift gate green | ~140k |
+| 05:41 | Session end: 5 writes across 5 files (options.py, gen_vocab.py, master.json, test_vocab_sync.py, CHANGELOG.md) | 3 reads | ~31178 tok |
+| 05:46 | Session end: 5 writes across 5 files (options.py, gen_vocab.py, master.json, test_vocab_sync.py, CHANGELOG.md) | 3 reads | ~31178 tok |
+
+## Session: 2026-05-18 06:07
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 06:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 06:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 06:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 06:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 06:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 07:25 | Edited DEBUG_LOG.md | expanded (+73 lines) | ~1154 |
+| 07:25 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 8 reads | ~85198 tok |
+| 07:41 | Edited DEBUG_LOG.md | 30→27 lines | ~441 |
+| 07:41 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 8 reads | ~86731 tok |
+| 07:43 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 8 reads | ~86731 tok |
+| 07:45 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 8 reads | ~86731 tok |
+| 07:47 | Edited backend/app/pipeline/amendments.py | modified _proposal_to_amendment() | ~492 |
+| 07:47 | Edited backend/app/pipeline/amendments.py | expanded (+9 lines) | ~294 |
+| 07:49 | Edited backend/app/pipeline/amendments.py | modified _affected_doc() | ~534 |
+
+## Session: 2026-05-18 07:51
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 07:52 | Edited DEBUG_LOG.md | 7→11 lines | ~222 |
+| 07:56 | All 66 tests pass after logging changes | — | No regressions | ~200 |
+| 07:56 | Updated DEBUG_LOG.md #10 to reflect observational logging approach | DEBUG_LOG.md | Noted user preference against deterministic schemas for LLM output | ~100 |
+| 07:52 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~26184 tok |
+| 09:27 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~26184 tok |
+| 09:33 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 6 reads | ~86256 tok |
+| 09:37 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 6 reads | ~86256 tok |
+| 09:42 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 8 reads | ~86256 tok |
+| 09:45 | Edited DEBUG_LOG.md | expanded (+23 lines) | ~514 |
+| 09:45 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 8 reads | ~86897 tok |
+| 10:02 | Edited DEBUG_LOG.md | expanded (+43 lines) | ~780 |
+| 10:02 | Session end: 3 writes across 1 files (DEBUG_LOG.md) | 13 reads | ~95728 tok |
+| 10:19 | Edited DEBUG_LOG.md | expanded (+35 lines) | ~489 |
+| 10:19 | Session end: 4 writes across 1 files (DEBUG_LOG.md) | 15 reads | ~97176 tok |
+| 10:33 | Edited DEBUG_LOG.md | expanded (+46 lines) | ~707 |
+| 10:33 | Session end: 5 writes across 1 files (DEBUG_LOG.md) | 17 reads | ~98655 tok |
+| 10:38 | Session end: 5 writes across 1 files (DEBUG_LOG.md) | 17 reads | ~99421 tok |
+
+## Session: 2026-05-18 10:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 10:57
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 11:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:07 | Edited DEBUG_LOG.md | expanded (+38 lines) | ~1248 |
+| 11:07 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~30250 tok |
+| 11:10 | Edited backend/tests/test_pipeline.py | modified test_validate_text_structure_accepts_structural_pattern() | ~543 |
+| 11:11 | Edited DEBUG_LOG.md | modified Diagnosed() | ~500 |
+| 11:12 | Session end: 3 writes across 2 files (DEBUG_LOG.md, test_pipeline.py) | 3 reads | ~41127 tok |
+| 11:13 | Session end: 3 writes across 2 files (DEBUG_LOG.md, test_pipeline.py) | 3 reads | ~41127 tok |
+| 11:15 | Created scripts/dev_reset_ingestion.sql | — | ~625 |
+| 11:15 | Created scripts/dev_reset_ingestion.sh | — | ~347 |
+| 11:18 | Session end: 5 writes across 4 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh) | 3 reads | ~42169 tok |
+| 11:22 | Created scripts/dev_reset_ingestion.sh | — | ~847 |
+| 11:22 | Edited scripts/dev_reset_ingestion.sh | modified clear_storage() | ~168 |
+| 11:24 | Session end: 7 writes across 4 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh) | 4 reads | ~43603 tok |
+| 11:30 | Edited backend/app/pipeline/amendment_review.py | added 1 import(s) | ~82 |
+| 11:30 | Edited backend/app/pipeline/amendment_review.py | 1→3 lines | ~27 |
+| 11:30 | Edited backend/app/pipeline/amendment_review.py | expanded (+10 lines) | ~234 |
+| 11:30 | Edited backend/app/pipeline/ingestion_analysis.py | "*/*/taxonomy_coverage.jso" → "taxonomy_coverage.json" | ~21 |
+| 11:30 | Edited backend/app/pipeline/ingestion_analysis.py | modified enumerate() | ~147 |
+| 11:31 | Edited backend/app/pipeline/ingestion_analysis.py | modified _has_question_content() | ~208 |
+| 11:31 | Edited backend/app/pipeline/ingestion_analysis.py | modified _amendment_candidates() | ~201 |
+| 11:31 | Edited backend/app/pipeline/ingestion_analysis.py | modified isinstance() | ~80 |
+| 11:31 | Edited backend/tests/test_ingestion_analysis.py | modified test_reappraisal_markdown_records_exam_and_hash_comparison() | ~907 |
+| 11:32 | Edited DEBUG_LOG.md | modified pass() | ~1328 |
+| 11:32 | Edited CHANGELOG.md | expanded (+48 lines) | ~620 |
+| 11:33 | Session end: 18 writes across 8 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 8 reads | ~71471 tok |
+| 11:33 | Session end: 18 writes across 8 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 8 reads | ~71471 tok |
+| 11:36 | Edited TASKS_RULES_UPDATE_FEATURE.md | expanded (+35 lines) | ~1055 |
+| 11:36 | Edited CHANGELOG.md | expanded (+24 lines) | ~275 |
+| 11:36 | Session end: 20 writes across 9 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 9 reads | ~72896 tok |
+| 11:40 | Session end: 20 writes across 9 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 9 reads | ~72896 tok |
+| 11:43 | Edited DEBUG_LOG.md | modified uses() | ~1926 |
+| 11:43 | Session end: 21 writes across 9 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 22 reads | ~129107 tok |
+| 11:43 | Session end: 21 writes across 9 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 22 reads | ~129107 tok |
+| 11:46 | Session end: 21 writes across 9 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 22 reads | ~129107 tok |
+| 11:49 | Created TASKS_OCR_IMAGE.md | — | ~2758 |
+| 11:50 | Session end: 22 writes across 10 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 22 reads | ~132062 tok |
+| 11:56 | Session end: 22 writes across 10 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 22 reads | ~132062 tok |
+| 11:57 | Edited TASKS_OCR_IMAGE.md | modified mechanism() | ~797 |
+| 11:57 | Edited TASKS_OCR_IMAGE.md | 10→14 lines | ~249 |
+| 11:57 | Edited TASKS_OCR_IMAGE.md | 2→3 lines | ~55 |
+| 11:58 | Edited TASKS_OCR_IMAGE.md | 5→5 lines | ~61 |
+| 11:58 | Session end: 26 writes across 10 files (DEBUG_LOG.md, test_pipeline.py, dev_reset_ingestion.sql, dev_reset_ingestion.sh, amendment_review.py) | 23 reads | ~136471 tok |
+
+## Session: 2026-05-18 11:58
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:01 | Edited scripts/amendments.py | modified _resolve_repo_root() | ~201 |
+| 12:01 | Edited backend/tests/test_admin_router.py | modified _amendment_repo() | ~2408 |
+| 12:02 | Edited backend/tests/test_amendment_review.py | assert() → get() | ~792 |
+| 12:02 | Edited TASKS_OCR_IMAGE.md | modified that() | ~836 |
+| 12:02 | Edited backend/tests/test_amendment_review.py | modified test_promote_restores_master_and_doc_when_regeneration_fails() | ~527 |
+| 12:02 | Edited TASKS_OCR_IMAGE.md | reduced (-19 lines) | ~76 |
+| 12:02 | Edited TASKS_OCR_IMAGE.md | 6→8 lines | ~131 |
+| 12:02 | Edited TASKS_OCR_IMAGE.md | expanded (+31 lines) | ~410 |
+| 12:03 | Edited TASKS_OCR_IMAGE.md | expanded (+10 lines) | ~288 |
+| 12:03 | Edited backend/tests/test_amendment_review.py | added 1 import(s) | ~53 |
+| 12:03 | Session end: 10 writes across 4 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md) | 10 reads | ~54843 tok |
+| 12:03 | Edited backend/tests/test_amendment_review.py | modified test_capture_approve_promote_reappraisal_end_to_end() | ~1351 |
+| 12:04 | Edited backend/tests/test_amendment_capture.py | modified __init__() | ~858 |
+| 12:04 | Edited backend/tests/test_amendments.py | added 3 import(s) | ~78 |
+| 12:06 | Edited backend/tests/test_amendments_cli.py | modified fake_regenerate() | ~224 |
+| 12:06 | Session end: 14 writes across 7 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 11 reads | ~57354 tok |
+| 12:06 | Edited backend/tests/test_admin_router.py | expanded (+6 lines) | ~431 |
+| 12:07 | Edited backend/tests/test_admin_router.py | modified _bind_repo() | ~326 |
+| 12:08 | Edited DEBUG_LOG.md | modified via() | ~2029 |
+| 19:10 | Phase 8 hardening review: verified 12 findings, fixed 8, verdicts on 3+1 by-design | DEBUG_LOG.md, test_admin_router.py, test_amendment_review.py, test_amendment_capture.py, test_amendments.py, test_amendments_cli.py, scripts/amendments.py | 175 tests pass | ~9k |
+| 12:09 | Session end: 17 writes across 8 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 11 reads | ~60415 tok |
+| 12:09 | Edited TASKS_OCR_IMAGE.md | expanded (+11 lines) | ~301 |
+| 12:09 | Edited TASKS_OCR_IMAGE.md | 12→13 lines | ~204 |
+| 12:10 | Session end: 19 writes across 8 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 11 reads | ~61097 tok |
+| 12:14 | Edited TASKS_OCR_IMAGE.md | expanded (+10 lines) | ~266 |
+| 12:15 | Session end: 20 writes across 8 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 11 reads | ~61392 tok |
+| 12:16 | Edited CHANGELOG.md | modified suites() | ~459 |
+| 12:16 | Session end: 21 writes across 9 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 12 reads | ~90620 tok |
+| 12:18 | Session end: 21 writes across 9 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 12 reads | ~90620 tok |
+| 12:19 | Edited TASKS_OCR_IMAGE.md | expanded (+6 lines) | ~194 |
+| 12:20 | Edited TASKS_OCR_IMAGE.md | added error handling | ~628 |
+| 12:20 | Edited TASKS_OCR_IMAGE.md | 3→6 lines | ~120 |
+| 12:20 | Edited TASKS_OCR_IMAGE.md | expanded (+12 lines) | ~294 |
+| 12:21 | Session end: 25 writes across 9 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 12 reads | ~92575 tok |
+| 12:23 | Edited TASKS_OCR_IMAGE.md | expanded (+11 lines) | ~545 |
+| 12:23 | Edited TASKS_OCR_IMAGE.md | 7→11 lines | ~187 |
+| 12:24 | Edited TASKS_OCR_IMAGE.md | modified report() | ~437 |
+| 12:24 | Edited TASKS_OCR_IMAGE.md | 4→7 lines | ~98 |
+| 12:24 | Edited TASKS_OCR_IMAGE.md | 7→10 lines | ~158 |
+| 12:24 | Edited TASKS_OCR_IMAGE.md | 6→8 lines | ~124 |
+| 12:24 | Edited TASKS_OCR_IMAGE.md | 3→8 lines | ~134 |
+| 12:25 | Session end: 32 writes across 9 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 12 reads | ~94986 tok |
+| 12:25 | Edited TASKS_OCR_IMAGE.md | 3→6 lines | ~111 |
+| 12:27 | Edited TASKS_OCR_IMAGE.md | expanded (+11 lines) | ~253 |
+| 12:28 | Session end: 34 writes across 9 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 12 reads | ~95541 tok |
+| 12:29 | Edited TASKS_OCR_IMAGE.md | expanded (+16 lines) | ~382 |
+| 12:29 | Edited TASKS_OCR_IMAGE.md | 7→5 lines | ~62 |
+| 12:29 | Edited TASKS_OCR_IMAGE.md | modified key() | ~170 |
+| 12:30 | Session end: 37 writes across 9 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 12 reads | ~96396 tok |
+| 12:33 | Edited TASKS_OCR_IMAGE.md | modified Deferred() | ~121 |
+| 12:38 | Edited TASKS_OCR_IMAGE.md | expanded (+23 lines) | ~360 |
+| 12:43 | Edited TASKS_OCR_IMAGE.md | 3→4 lines | ~82 |
+| 12:43 | Edited TASKS_OCR_IMAGE.md | 5→6 lines | ~110 |
+| 12:43 | Edited TASKS_OCR_IMAGE.md | 6→6 lines | ~109 |
+| 12:45 | Edited TASKS_OCR_IMAGE.md | expanded (+7 lines) | ~170 |
+| 12:45 | Edited TASKS_OCR_IMAGE.md | modified REGRESSION() | ~201 |
+| 12:51 | Edited TASKS_OCR_IMAGE.md | expanded (+14 lines) | ~508 |
+| 12:51 | Edited TASKS_OCR_IMAGE.md | 4→9 lines | ~177 |
+| 12:51 | Edited TASKS_OCR_IMAGE.md | expanded (+11 lines) | ~254 |
+| 12:51 | Edited TASKS_OCR_IMAGE.md | 17→21 lines | ~366 |
+| 12:51 | Edited TASKS_OCR_IMAGE.md | 3→5 lines | ~98 |
+| 12:52 | Edited TASKS_OCR_IMAGE.md | 3→6 lines | ~102 |
+| 12:53 | Created TODOS.md | — | ~405 |
+| 12:54 | Session end: 51 writes across 10 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 14 reads | ~107398 tok |
+| 13:12 | Session end: 51 writes across 10 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 14 reads | ~107398 tok |
+| 13:12 | Session end: 51 writes across 10 files (amendments.py, test_admin_router.py, test_amendment_review.py, TASKS_OCR_IMAGE.md, test_amendment_capture.py) | 14 reads | ~107398 tok |
+
+## Session: 2026-05-18 13:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-18 13:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:27 | Edited DEBUG_LOG.md | expanded (+11 lines) | ~246 |
+| 13:27 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 3 reads | ~33103 tok |
+| 13:34 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 3 reads | ~33103 tok |
+| 13:35 | Edited DEBUG_LOG.md | expanded (+11 lines) | ~280 |
+
+## Session: 2026-05-18 13:40
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:54 | Edited DEBUG_LOG.md | modified High() | ~468 |
+| 13:54 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~33666 tok |
+| 13:58 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~34083 tok |
+| 14:00 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~34083 tok |
+| 14:12 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~34083 tok |
+| 14:14 | Created scripts/export_review.py | — | ~1399 |
+| 14:15 | Session end: 2 writes across 2 files (DEBUG_LOG.md, export_review.py) | 4 reads | ~35482 tok |
+| 15:22 | Session end: 2 writes across 2 files (DEBUG_LOG.md, export_review.py) | 4 reads | ~35482 tok |
+| 15:24 | Session end: 2 writes across 2 files (DEBUG_LOG.md, export_review.py) | 4 reads | ~35482 tok |
+| 15:27 | Session end: 2 writes across 2 files (DEBUG_LOG.md, export_review.py) | 6 reads | ~70621 tok |
+| 15:30 | Session end: 2 writes across 2 files (DEBUG_LOG.md, export_review.py) | 7 reads | ~70621 tok |
+| 15:32 | Edited DEBUG_LOG.md | modified High() | ~537 |
+| 15:32 | Session end: 3 writes across 2 files (DEBUG_LOG.md, export_review.py) | 7 reads | ~71196 tok |
+
+## Session: 2026-05-18 15:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:47 | Edited DEBUG_LOG.md | expanded (+13 lines) | ~560 |
+| 15:47 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 5 reads | ~71615 tok |
+| 15:50 | Created ../.claude/plans/squishy-giggling-dolphin.md | — | ~1051 |
+| 15:51 | Created ../.claude/plans/squishy-giggling-dolphin.md | — | ~1395 |
+| 15:53 | Edited backend/app/routers/ingest.py | modified _split_passage_from_question() | ~1386 |
+| 15:53 | Edited backend/app/routers/ingest.py | modified get() | ~102 |
+| 15:53 | Edited backend/app/routers/ingest.py | expanded (+10 lines) | ~167 |
+| 15:54 | Edited backend/app/routers/ingest.py | 2→4 lines | ~62 |
+| 15:54 | Edited backend/app/routers/ingest.py | 4→3 lines | ~56 |
+| 15:55 | Edited backend/app/routers/ingest.py | expanded (+11 lines) | ~433 |
+| 15:57 | Edited backend/app/routers/ingest.py | 31→34 lines | ~288 |
+| 15:57 | Edited backend/app/routers/ingest.py | modified _split_passage_from_question() | ~636 |
+| 15:58 | Edited backend/app/routers/ingest.py | modified end() | ~518 |
+| 15:59 | Edited backend/app/routers/ingest.py | modified _recover_passage_from_raw_text() | ~749 |
+| 16:00 | Edited backend/app/routers/ingest.py | 5→6 lines | ~108 |
+| 16:00 | Edited backend/app/routers/ingest.py | modified in() | ~259 |
+| 16:01 | Edited backend/tests/test_pipeline.py | modified _call() | ~1137 |
+| 16:01 | Edited backend/tests/test_pipeline.py | modified test_period_before_which_choice() | ~128 |
+| 16:01 | Edited backend/tests/test_pipeline.py | modified test_blank_before_which_choice() | ~128 |
+| 16:01 | Edited backend/tests/test_pipeline.py | modified test_which_quotation_opener() | ~128 |
+| 16:02 | Edited DEBUG_LOG.md | 5→5 lines | ~583 |
+| 16:03 | Session end: 20 writes across 4 files (DEBUG_LOG.md, squishy-giggling-dolphin.md, ingest.py, test_pipeline.py) | 10 reads | ~102240 tok |
+| 16:04 | Session end: 20 writes across 4 files (DEBUG_LOG.md, squishy-giggling-dolphin.md, ingest.py, test_pipeline.py) | 10 reads | ~102240 tok |
+| 16:06 | Session end: 20 writes across 4 files (DEBUG_LOG.md, squishy-giggling-dolphin.md, ingest.py, test_pipeline.py) | 10 reads | ~102240 tok |
+| 16:09 | Session end: 20 writes across 4 files (DEBUG_LOG.md, squishy-giggling-dolphin.md, ingest.py, test_pipeline.py) | 10 reads | ~102240 tok |
+| 16:15 | Session end: 20 writes across 4 files (DEBUG_LOG.md, squishy-giggling-dolphin.md, ingest.py, test_pipeline.py) | 10 reads | ~102341 tok |
+| 16:15 | Edited DEBUG_LOG.md | expanded (+13 lines) | ~446 |
+
+## Session: 2026-05-19 12:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-19 12:58
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-19 16:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-19 16:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-20 17:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-20 17:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

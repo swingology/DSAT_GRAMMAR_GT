@@ -1,80 +1,12 @@
 {
-  "session_id": "session-2026-05-17-0837",
-  "started": "2026-05-17T15:37:38.491Z",
-  "files_read": {
-    "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md": {
-      "count": 3,
-      "tokens": 23044,
-      "first_read": "2026-05-17T15:46:54.762Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/backend/app/routers/ingest.py": {
-      "count": 9,
-      "tokens": 30788,
-      "first_read": "2026-05-18T00:13:30.957Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/backend/app/routers/admin.py": {
-      "count": 1,
-      "tokens": 6973,
-      "first_read": "2026-05-18T00:13:44.885Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/backend/app/routers/dashboard.py": {
-      "count": 4,
-      "tokens": 14684,
-      "first_read": "2026-05-18T00:13:48.670Z"
-    }
-  },
-  "files_written": [
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md",
-      "action": "edit",
-      "tokens": 306,
-      "at": "2026-05-17T17:03:28.971Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/routers/ingest.py",
-      "action": "edit",
-      "tokens": 30,
-      "at": "2026-05-18T00:18:25.142Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/routers/ingest.py",
-      "action": "edit",
-      "tokens": 146,
-      "at": "2026-05-18T00:18:27.840Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/routers/ingest.py",
-      "action": "edit",
-      "tokens": 80,
-      "at": "2026-05-18T00:18:32.400Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/routers/ingest.py",
-      "action": "edit",
-      "tokens": 40,
-      "at": "2026-05-18T00:18:34.082Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/routers/ingest.py",
-      "action": "edit",
-      "tokens": 90,
-      "at": "2026-05-18T00:18:36.265Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/routers/dashboard.py",
-      "action": "edit",
-      "tokens": 164,
-      "at": "2026-05-18T00:18:41.936Z"
-    }
-  ],
-  "edit_counts": {
-    "DEBUG_LOG.md": 1,
-    "backend/app/routers/ingest.py": 5,
-    "backend/app/routers/dashboard.py": 1
-  },
-  "anatomy_hits": 4,
+  "session_id": "session-2026-05-20-1722",
+  "started": "2026-05-20T00:22:12.417Z",
+  "files_read": {},
+  "files_written": [],
+  "edit_counts": {},
+  "anatomy_hits": 0,
   "anatomy_misses": 0,
-  "repeated_reads_warned": 13,
+  "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 7
+  "stop_count": 0
 }

@@ -1,5 +1,18 @@
 # Debug Log
 
+## 2026-05-18 - Ingestion Test Run (Test_5_digital_sec01_mod01) [attempt 4]
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `3a3eb72` — test 5 sec01 mod 01 successful - only chart bug left
+
+### Findings
+
+1. **Medium:** 18 question-number/OCR crosscheck mismatches (qnum_ocr_crosscheck step).
+   - Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22` reached `needs_review` with 33/33 questions extracted and 33/33 created. All 18 validation errors are `qnum_ocr_crosscheck` mismatches where the LLM-extracted question number differs from the OCR-detected number. Representative examples: question_index 15 (LLM=16, OCR=40), question_index 16 (LLM=17, OCR=30), question_index 17 (LLM=18, OCR=20), question_index 18 (LLM=19, OCR=16), question_index 19 (LLM=20, OCR=17). The mismatches suggest OCR misreads of question numbers on Test 5 sec01 mod01 — the pattern (40, 30, 20, 16, 17) looks like OCR confusing stylized digits on this particular test form. No blocking validation errors; no "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.
+
+2. **Low:** Duplicate checksum prevented re-ingestion — test runner does not handle already-ingested PDFs gracefully.
+   - The run.sh script exited with `RESULT_JSON:{"error":"no job_id","response":"{\"detail\":\"This file has already been ingested (duplicate checksum).\"}"}` because the PDF was already ingested in a prior session. The script does not have a code path for retrieving the existing job_id when a duplicate is detected. The existing job data was collected via direct DB queries instead.
+
 ## 2026-05-18 - VLM-Fused Extraction Drops All Passage Text
 Report created by: Claude Sonnet 4.6
 Git branch: `main`
