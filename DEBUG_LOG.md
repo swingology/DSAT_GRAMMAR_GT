@@ -41,11 +41,13 @@ Git checkpoint: `657570b` — Filter passage line numbers from qnum OCR crossche
 1. **High:** Blocking validation errors on Cross-Text Connections question (validating step).
    - Job `dc235908-e4a0-48e0-b152-99f61cc3d09f` (Test_6_digital_sec01_mod02). Status: `needs_review`. Extracted 16, created 15. Question at index 7 (source Q12) tagged as Cross-Text Connections is missing required `stimulus_mode_key='prose_paired'` and `paired_passage_text`. Both errors flagged as `blocking`, which prevented this question from being created (15 created vs 16 extracted).
 
-2. **High:** Non-contiguous question numbers with gaps at [2, 3, 4, 5] (question_number_validation step).
-   - Same job. Found question numbers [1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 27, 30] — gaps at 2, 3, 4, 5. LLM skips early questions (2-5) and extracts non-sequential tail numbers (19, 27, 30), matching the same systematic extraction pattern seen on Test_5 and Test_6 mod01.
+2. ~~**High:** Non-contiguous question numbers with gaps at [2, 3, 4, 5] (question_number_validation step).~~
+   - ~~Same job. Found question numbers [1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 27, 30] — gaps at 2, 3, 4, 5. LLM skips early questions (2-5) and extracts non-sequential tail numbers (19, 27, 30), matching the same systematic extraction pattern seen on Test_5 and Test_6 mod01.~~
+   - **Fixed (e3be02b):** Root cause was `_normalize_extracted_questions` deduping by `question_text` alone after `_split_passage_from_question` collapsed near-duplicate SAT stems ("Which choice…") to identical strings. LLM was always emitting 33 questions; the normalize layer was silently dropping ~half. Dedupe key is now `(question_text, source_question_number)`. Verified on Test_7 mod01 (job 01e44c3f): 33/33 with contiguous numbering 1–33.
 
-3. **Medium:** 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).
-   - Same job. Representative: question_index 15 LLM=30 but OCR=17. The crosscheck flags the non-contiguous LLM numbering vs sequential OCR-detected numbers — a symptom of the same underlying extraction issue as finding 2.
+3. ~~**Medium:** 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).~~
+   - ~~Same job. Representative: question_index 15 LLM=30 but OCR=17. The crosscheck flags the non-contiguous LLM numbering vs sequential OCR-detected numbers — a symptom of the same underlying extraction issue as finding 2.~~
+   - **Fixed (e3be02b, downstream symptom):** All mismatches were caused by finding 2 — restoring the missing questions also restored sequential numbering, eliminating the crosscheck mismatches.
 
 4. **No "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.** That regression remains absent.
 
@@ -56,11 +58,13 @@ Git checkpoint: `657570b` — Filter passage line numbers from qnum OCR crossche
 
 ### Findings
 
-1. **High:** Non-contiguous question numbers with gaps at [2, 3, 5] (question_number_validation step).
-   - Job `21993eaf-0cc6-43c4-94b1-789d66dd267f` (Test_6_digital_sec01_mod01). Status: `needs_review`. Extracted 17, created 17. Found question numbers [1, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 26, 31] — gaps at 2, 3, 5. LLM is skipping early questions (2, 3, 5) and extracting non-sequential tail numbers (19, 26, 31), matching the same systematic extraction pattern seen on Test_5.
+1. ~~**High:** Non-contiguous question numbers with gaps at [2, 3, 5] (question_number_validation step).~~
+   - ~~Job `21993eaf-0cc6-43c4-94b1-789d66dd267f` (Test_6_digital_sec01_mod01). Status: `needs_review`. Extracted 17, created 17. Found question numbers [1, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 26, 31] — gaps at 2, 3, 5. LLM is skipping early questions (2, 3, 5) and extracting non-sequential tail numbers (19, 26, 31), matching the same systematic extraction pattern seen on Test_5.~~
+   - **Fixed (e3be02b):** Same `_normalize_extracted_questions` silent-dedupe bug. See Test_6 mod02 finding 2 above. Confirmed via DB inspection that `pass1_json.questions` always contained 33 raw entries; the normalize layer was dropping ~half.
 
-2. **Medium:** 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).
-   - Same job. Representative: question_index 16 LLM=31 but OCR=17. The crosscheck flags the non-contiguous LLM numbering vs the sequential OCR-detected numbers, a symptom of the same underlying extraction issue as finding 1.
+2. ~~**Medium:** 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).~~
+   - ~~Same job. Representative: question_index 16 LLM=31 but OCR=17. The crosscheck flags the non-contiguous LLM numbering vs the sequential OCR-detected numbers, a symptom of the same underlying extraction issue as finding 1.~~
+   - **Fixed (e3be02b, downstream symptom):** Resolved by fixing finding 1.
 
 3. **No "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.** No blocking `validating`-step errors; job reached `needs_review` with all 17 extracted questions persisted.
 
@@ -71,20 +75,24 @@ Git checkpoint: `66fbf69` — Update OpenWolf session state and debug log
 
 ### Findings
 
-1. **High:** Mod01 — non-contiguous question numbers with gaps at [3, 4, 5, 7] (question_number_validation step).
-   - Job `245d37e6-3e5a-41fc-b5aa-1289c41804ca` (Test_5_digital_sec01_mod01). Status: `needs_review`. Extracted 16, created 16. Found question numbers [1, 2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 23, 31] — gaps at 3, 4, 5, 7. The LLM appears to be extracting questions with non-sequential numbers (jumping from 2→6, 7→8, and oddities like 20, 23, 31 in the tail), suggesting OCR or extraction confusion on this test form.
+1. ~~**High:** Mod01 — non-contiguous question numbers with gaps at [3, 4, 5, 7] (question_number_validation step).~~
+   - ~~Job `245d37e6-3e5a-41fc-b5aa-1289c41804ca` (Test_5_digital_sec01_mod01). Status: `needs_review`. Extracted 16, created 16. Found question numbers [1, 2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 23, 31] — gaps at 3, 4, 5, 7. The LLM appears to be extracting questions with non-sequential numbers (jumping from 2→6, 7→8, and oddities like 20, 23, 31 in the tail), suggesting OCR or extraction confusion on this test form.~~
+   - **Fixed (e3be02b):** Misdiagnosis at the time — the LLM was NOT confused, it was emitting 33 questions cleanly. `_normalize_extracted_questions` deduped by stem alone and silently dropped near-duplicate SAT stems. Composite-key dedupe restored.
 
-2. **High:** Mod01 — 14 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).
-   - Same job. Representative: question_index 15 LLM extracted 31 but OCR shows 16. The crosscheck correctly flags the non-contiguous numbering as mismatches between LLM-extracted and OCR-detected question numbers. This is a symptom of the same underlying extraction issue (item 1 above).
+2. ~~**High:** Mod01 — 14 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).~~
+   - ~~Same job. Representative: question_index 15 LLM extracted 31 but OCR shows 16. The crosscheck correctly flags the non-contiguous numbering as mismatches between LLM-extracted and OCR-detected question numbers. This is a symptom of the same underlying extraction issue (item 1 above).~~
+   - **Fixed (e3be02b, downstream symptom):** Resolved by fixing finding 1.
 
 3. **High:** Mod02 — blocking validation error: missing paired_passage_text for Cross-Text Connections question (validating step).
    - Job `72048cf4-303f-4eb4-a098-49b7f9539956` (Test_5_digital_sec01_mod02). Status: `needs_review`. Extracted 16, created 15. Question at index 3 (source Q8) is tagged as Cross-Text Connections but has no `paired_passage_text` field. This is a blocking validation error that prevents auto-approval.
 
-4. **High:** Mod02 — non-contiguous question numbers with gaps at [3, 4, 5, 7] (question_number_validation step).
-   - Same job. Found question numbers [1, 2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 30] — gaps at 3, 4, 5, 7. Same pattern as mod01: the LLM skips question numbers 3-5 and 7.
+4. ~~**High:** Mod02 — non-contiguous question numbers with gaps at [3, 4, 5, 7] (question_number_validation step).~~
+   - ~~Same job. Found question numbers [1, 2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 30] — gaps at 3, 4, 5, 7. Same pattern as mod01: the LLM skips question numbers 3-5 and 7.~~
+   - **Fixed (e3be02b):** Same dedupe-loss root cause. See finding 1.
 
-5. **High:** Mod02 — 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).
-   - Same job. Representative: question_index 15 LLM=30 but OCR=50. Confirms systematic question-number extraction problems on Test 5.
+5. ~~**High:** Mod02 — 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).~~
+   - ~~Same job. Representative: question_index 15 LLM=30 but OCR=50. Confirms systematic question-number extraction problems on Test 5.~~
+   - **Fixed (e3be02b, downstream symptom):** Resolved by fixing finding 4.
 
 6. **Medium:** Duplicate checksum prevented mod02 re-ingestion via run.sh.
    - The mod02 PDF was already ingested from a prior session. The runner exited with `{"error":"no job_id","response":"{\"detail\":\"This file has already been ingested (duplicate checksum).\"}"}`. Data for mod02 was collected from the existing job via direct DB queries.
@@ -109,8 +117,9 @@ Git checkpoint: `3a3eb72` — test 5 sec01 mod 01 successful - only chart bug le
 
 ### Findings
 
-1. **Medium:** 18 question-number/OCR crosscheck mismatches (qnum_ocr_crosscheck step).
-   - Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22` reached `needs_review` with 33/33 questions extracted and 33/33 created. All 18 validation errors are `qnum_ocr_crosscheck` mismatches where the LLM-extracted question number differs from the OCR-detected number. Representative examples: question_index 15 (LLM=16, OCR=40), question_index 16 (LLM=17, OCR=30), question_index 17 (LLM=18, OCR=20), question_index 18 (LLM=19, OCR=16), question_index 19 (LLM=20, OCR=17). The mismatches suggest OCR misreads of question numbers on Test 5 sec01 mod01 — the pattern (40, 30, 20, 16, 17) looks like OCR confusing stylized digits on this particular test form. No blocking validation errors; no "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.
+1. ~~**Medium:** 18 question-number/OCR crosscheck mismatches (qnum_ocr_crosscheck step).~~
+   - ~~Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22` reached `needs_review` with 33/33 questions extracted and 33/33 created. All 18 validation errors are `qnum_ocr_crosscheck` mismatches where the LLM-extracted question number differs from the OCR-detected number. Representative examples: question_index 15 (LLM=16, OCR=40), question_index 16 (LLM=17, OCR=30), question_index 17 (LLM=18, OCR=20), question_index 18 (LLM=19, OCR=16), question_index 19 (LLM=20, OCR=17). The mismatches suggest OCR misreads of question numbers on Test 5 sec01 mod01 — the pattern (40, 30, 20, 16, 17) looks like OCR confusing stylized digits on this particular test form. No blocking validation errors; no "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.~~
+   - **Fixed (657570b):** Root cause was OCR-side false positives, not the LLM. `_scan_qnums_from_ocr` was accepting passage line numbers (poetry/SAT "5, 10, 15, 20" margins) as question numbers and aligning them positionally against the LLM's question list. Changed to strict `+1` contiguity: the first bare integer is accepted, subsequent integers only accepted if they equal previous+1. Passage line numbers and OCR misreads no longer slot into the comparison list.
 
 2. **Low:** Duplicate checksum prevented re-ingestion — test runner does not handle already-ingested PDFs gracefully.
    - The run.sh script exited with `RESULT_JSON:{"error":"no job_id","response":"{\"detail\":\"This file has already been ingested (duplicate checksum).\"}"}` because the PDF was already ingested in a prior session. The script does not have a code path for retrieving the existing job_id when a duplicate is detected. The existing job data was collected via direct DB queries instead.
@@ -135,8 +144,9 @@ Git checkpoint: `00a9307` — Add master vocabulary file as single source of tru
 
 ### Findings
 
-1. **Medium:** 18 question-number/OCR crosscheck mismatches (qnum_ocr_crosscheck step).
-   - Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22` reached `needs_review` with 33/33 questions extracted and created. All 18 validation errors are `qnum_ocr_crosscheck` mismatches where the LLM-extracted question number differs from the OCR-detected number. Representative examples: question_index 15 (LLM=16, OCR=40), question_index 16 (LLM=17, OCR=30), question_index 17 (LLM=18, OCR=20). The mismatches suggest OCR misreads of question numbers on this particular test form (Test 5 sec01 mod01) — the pattern (40, 30, 20, 16, 17) looks like OCR confusing stylized digits. No blocking validation errors; no "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.
+1. ~~**Medium:** 18 question-number/OCR crosscheck mismatches (qnum_ocr_crosscheck step).~~
+   - ~~Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22` reached `needs_review` with 33/33 questions extracted and created. All 18 validation errors are `qnum_ocr_crosscheck` mismatches where the LLM-extracted question number differs from the OCR-detected number. Representative examples: question_index 15 (LLM=16, OCR=40), question_index 16 (LLM=17, OCR=30), question_index 17 (LLM=18, OCR=20). The mismatches suggest OCR misreads of question numbers on this particular test form (Test 5 sec01 mod01) — the pattern (40, 30, 20, 16, 17) looks like OCR confusing stylized digits. No blocking validation errors; no "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.~~
+   - **Fixed (657570b):** Same OCR-side false-positive root cause as the attempt-4 entry above. Strict `+1` contiguity in `_scan_qnums_from_ocr` filters passage line numbers.
 
 2. **High (prerequisite resolved this attempt):** Database had no tables — Alembic migrations needed.
    - The Postgres container was healthy on port 5434 but the `dsat_dev` database was completely empty (0 tables). The `run.sh` script only checks Postgres connectivity, not schema readiness. First two attempts today failed before reaching this point (Docker context issue), so the missing schema went unnoticed. Running `uv run alembic upgrade head` (migrations 001-018) resolved the issue and the ingestion job then submitted and completed successfully.
