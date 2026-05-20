@@ -348,17 +348,30 @@ def _scan_qnums_from_ocr(ocr_text: str) -> list[int]:
     themselves, returning them in document order as a cross-check source.
     """
     import re
-    found: list[int] = []
-    seen: set[int] = set()
+    # Collect every bare integer candidate in document order first, then walk
+    # them enforcing a strictly contiguous +1 sequence after the first value.
+    # Question numbers in a module are 1, 2, 3, … so any candidate that does
+    # not equal previous+1 (passage line numbers like 5, 10, 15; OCR misreads;
+    # stray duplicates) is dropped. If the very first candidate is a passage
+    # line number rather than a real question number, the function will
+    # return a short list — but _verify_qnums_against_ocr bails out when the
+    # scan is sparser than the question count, which keeps that case safe.
+    candidates: list[int] = []
     for line in ocr_text.splitlines():
         stripped = line.strip()
         # Match a bare number, optionally followed by . or ) — e.g. "3", "3.", "3)"
         m = re.fullmatch(r"(\d{1,2})[.)]?", stripped)
         if m:
             n = int(m.group(1))
-            if 1 <= n <= 50 and n not in seen:
-                found.append(n)
-                seen.add(n)
+            if 1 <= n <= 50:
+                candidates.append(n)
+
+    found: list[int] = []
+    for n in candidates:
+        if not found:
+            found.append(n)
+        elif n == found[-1] + 1:
+            found.append(n)
     return found
 
 

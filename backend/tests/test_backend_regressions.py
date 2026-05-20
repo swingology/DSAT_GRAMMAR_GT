@@ -1173,6 +1173,32 @@ def test_scan_qnums_deduplicates():
     assert ingest_router._scan_qnums_from_ocr(ocr) == [3]
 
 
+def test_scan_qnums_rejects_passage_line_numbers():
+    # Poetry-style line numbers (5, 10, 15, 20) appearing before a question
+    # number must not be aligned positionally against question slots.
+    ocr = (
+        "5\nWhen first the sun...\n"
+        "10\nThe waves did roar...\n"
+        "15\nAnd then she spoke...\n"
+        "20\nFinal stanza here.\n"
+        "16\nWhich choice best describes...\n"
+        "17\nAs used in line 4...\n"
+    )
+    # Strict +1 contiguity: 5 is accepted as the first candidate, then 10 ≠ 6
+    # so it's rejected, and likewise 15, 20, 16, 17 all fail the +1 check.
+    # The resulting list is too short for _verify_qnums_against_ocr to use
+    # (len < questions → it returns no warnings rather than false-aligning
+    # line numbers to question slots).
+    assert ingest_router._scan_qnums_from_ocr(ocr) == [5]
+
+
+def test_scan_qnums_monotonic_skips_descending():
+    # OCR misreads producing descending values (40, 30, 20) must not pass
+    # through once the sequence has advanced past them.
+    ocr = "16\nQ16 stem\n40\nstray\n17\nQ17 stem\n30\nstray\n18\nQ18 stem"
+    assert ingest_router._scan_qnums_from_ocr(ocr) == [16, 17, 18]
+
+
 # ── _verify_qnums_against_ocr ─────────────────────────────────────────────────
 
 def test_verify_qnums_clean_match():
