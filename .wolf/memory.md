@@ -2,6 +2,7 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| 17:42 | Ingestion test for Test_5 (both modules). Mod01: job 245d37e6 needs_review, 16/16 extracted/created, 1 qnum_validation + 14 qnum_ocr_crosscheck (non-contiguous [1,2,6,8-17,20,23,31]). Mod02: prior job 72048cf4 needs_review, 16/16 extracted, 15 created, 1 blocking (missing paired_passage_text for Cross-Text Q8), 1 qnum_validation + 16 qnum_ocr_crosscheck. No option-label cascade in either module. | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md, .wolf/buglog.json | success (both jobs needs_review) | ~2k |
 | 16:15 | Ingestion test for Test_5_digital_sec01_mod01 (attempt 4) — duplicate checksum blocked re-submission; queried existing job edb9c0a8 directly from DB: needs_review, 33/33 extracted/created, 18 qnum_ocr_crosscheck mismatches, no option-label cascade | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md | success (same results as attempt 3) | ~1k |
 | 13:53 | Ingestion test for Test_5_digital_sec01_mod01 completed (attempt 3) — job edb9c0a8 reached needs_review, 33/33 questions, 18 qnum_ocr_crosscheck mismatches, no option-label cascade | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md, .wolf/buglog.json | success (18 medium warnings) | ~2k |
 | 14:45 | Fixed VLM-fused passage separation bug — added _split_passage_from_question() (stem-opener regex split) and _recover_passage_from_raw_text() (pymupdf fallback) to _normalize_extracted_questions(). 33/33 questions now have passage_text. | ingest.py, test_pipeline.py, DEBUG_LOG.md | success | ~3k |
@@ -868,3 +869,62 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 17:27 | Edited backend/app/routers/ingest.py | modified splitlines() | ~196 |
+| 17:28 | Edited backend/tests/test_backend_regressions.py | modified test_scan_qnums_deduplicates() | ~382 |
+| 17:28 | Edited backend/app/routers/ingest.py | modified will() | ~331 |
+| 17:29 | Edited backend/tests/test_backend_regressions.py | 6→6 lines | ~114 |
+| 17:29 | Session end: 4 writes across 2 files (ingest.py, test_backend_regressions.py) | 3 reads | ~83570 tok |
+
+## Session: 2026-05-20 17:29
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:32 | Edited DEBUG_LOG.md | expanded (+11 lines) | ~223 |
+| 17:32 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~35166 tok |
+| 17:33 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~35166 tok |
+| 17:34 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~35353 tok |
+| 17:43 | Edited DEBUG_LOG.md | expanded (+27 lines) | ~704 |
+| 17:44 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~36107 tok |
+| 17:46 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~36107 tok |
+| 17:53 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~36107 tok |
+| 17:56 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 2 reads | ~36492 tok |
+| 18:05 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 2 reads | ~36492 tok |
+| 18:05 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 2 reads | ~36492 tok |
+| 18:09 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 2 reads | ~36492 tok |
+| 18:15 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 2 reads | ~37130 tok |
+| 18:21 | Session end: 2 writes across 1 files (DEBUG_LOG.md) | 2 reads | ~37130 tok |
+| 18:28 | Edited DEBUG_LOG.md | expanded (+15 lines) | ~348 |
+| 18:28 | Ingestion test Test_6_digital_sec01_mod01. Job 21993eaf needs_review, 17/17 extracted/created, 1 question_number_validation (gaps [2,3,5], found [1,4,6-17,19,26,31]) + 16 qnum_ocr_crosscheck. Same systematic non-contiguous LLM extraction pattern as Test_5. No option-label cascade. | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md | success (needs_review) | ~1k |
+| 18:29 | Session end: 3 writes across 1 files (DEBUG_LOG.md) | 2 reads | ~37502 tok |
+| 18:31 | Session end: 3 writes across 1 files (DEBUG_LOG.md) | 2 reads | ~37502 tok |
+| 18:36 | Session end: 3 writes across 1 files (DEBUG_LOG.md) | 3 reads | ~37502 tok |
+| 18:38 | Session end: 3 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~72639 tok |
+| 18:39 | Edited backend/app/routers/ingest.py | modified _normalize_extracted_questions() | ~230 |
+| 18:39 | Edited DEBUG_LOG.md | expanded (+18 lines) | ~433 |
+| 18:39 | Edited backend/app/routers/ingest.py | modified enumerate() | ~1054 |
+| 18:42 | Ingestion test Test_6 sec01 mod02 | DEBUG_LOG.md | needs_review; 16 extracted/15 created; CTC blocking validation on q12 | ~2k |
+| 18:40 | Edited backend/app/routers/ingest.py | inline fix | ~19 |
+| 18:40 | Edited backend/app/routers/ingest.py | 4→9 lines | ~115 |
+| 18:40 | Edited backend/tests/test_backend_regressions.py | inline fix | ~20 |
+| 18:40 | Edited backend/tests/test_pipeline.py | inline fix | ~27 |
+| 18:40 | Edited backend/tests/test_pipeline.py | inline fix | ~20 |
+| 18:40 | Edited backend/tests/test_backend_regressions.py | modified test_normalize_questions_dedup_is_case_insensitive() | ~753 |
+| 18:41 | Session end: 12 writes across 4 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py) | 6 reads | ~99552 tok |
+| 18:42 | Edited backend/app/routers/ingest.py | 4→8 lines | ~113 |
+| 18:42 | Session end: 13 writes across 4 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py) | 6 reads | ~99665 tok |
+| 18:53 | Session end: 13 writes across 4 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py) | 6 reads | ~99665 tok |
+| 18:55 | Edited DEBUG_LOG.md | modified Resolved() | ~453 |
+| 18:55 | Ran ingestion test Test_7 sec01 mod01 — needs_review 33→32, single VARCHAR(40) truncation on stem_type_key Q14; normalization gap pattern resolved | DEBUG_LOG.md, buglog.json | logged | ~800 |
+| 18:57 | Session end: 14 writes across 4 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py) | 6 reads | ~100537 tok |
+| 19:12 | Created backend/migrations/versions/019_widen_question_vocab_columns.py | — | ~333 |
+| 19:13 | Edited backend/app/models/db.py | 2→2 lines | ~33 |
+| 19:13 | Edited backend/app/models/db.py | 11→11 lines | ~180 |
+| 19:14 | Session end: 17 writes across 6 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py, 019_widen_question_vocab_columns.py) | 11 reads | ~114714 tok |
+| 19:24 | Session end: 17 writes across 6 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py, 019_widen_question_vocab_columns.py) | 11 reads | ~114831 tok |
+| 19:27 | Session end: 17 writes across 6 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py, 019_widen_question_vocab_columns.py) | 13 reads | ~119130 tok |
+| 19:29 | Created TASKS_INGESTION_REFACTOR.md | — | ~2546 |
+| 19:29 | Session end: 18 writes across 7 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py, 019_widen_question_vocab_columns.py) | 13 reads | ~121857 tok |
+| 19:33 | Edited DEBUG_LOG.md | modified Resolved() | ~350 |
+| 19:34 | Test_7 mod01 verification re-run: 33/33 approved, zero validation errors; bug-121 marked fixed | DEBUG_LOG.md, buglog.json | success | ~3k |
+| 19:34 | Session end: 19 writes across 7 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py, 019_widen_question_vocab_columns.py) | 13 reads | ~122637 tok |
+| 19:34 | Session end: 19 writes across 7 files (DEBUG_LOG.md, ingest.py, test_backend_regressions.py, test_pipeline.py, 019_widen_question_vocab_columns.py) | 13 reads | ~122637 tok |

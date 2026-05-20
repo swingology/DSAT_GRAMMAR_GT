@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-18T23:15:53.535Z
-> Files: 714 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-20T02:33:58.771Z
+> Files: 716 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.claude/plans/
 
@@ -26,7 +26,7 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~28975 tok)
 - `CLAUDE.md` — OpenWolf (~274 tok)
-- `DEBUG_LOG.md` — Debug Log (~34928 tok)
+- `DEBUG_LOG.md` — Debug Log (~37165 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
@@ -41,6 +41,7 @@
 - `rules_agent_dsat_grammar_ingestion_generation_v7.md` — rules_agent_dsat_grammar_ingestion_generetion_v7.md (~27429 tok)
 - `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~24022 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
+- `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
 - `TASKS_OCR.md` — OCR Integration — Phased Task Plan (~7143 tok)
 - `TASKS_RULES_UPDATE_FEATURE.md` — Rules Update Feature Task List (~3740 tok)
@@ -897,7 +898,7 @@
 ## backend/app/models/
 
 - `annotation.py` — Pass 2 Pydantic schema — Question annotation output. (~1452 tok)
-- `db.py` — Declares QuestionJob (~3950 tok)
+- `db.py` — Declares QuestionJob (~5071 tok)
 - `ontology.py` — Allowed keys, enums, constants. GENERATED from vocabulary/master.json — do not hand-edit; run scripts/gen_vocab.py --generate. (~5613 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
 - `payload.py` — HTTP request/response models. (~1558 tok)
@@ -930,7 +931,7 @@
 - `admin.py` — API: 5 endpoints (~6973 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` — API: 2 endpoints (~4450 tok)
-- `ingest.py` (~34933 tok)
+- `ingest.py` (~35824 tok)
 - `student.py` — API: 3 endpoints (~1880 tok)
 
 ## backend/app/storage/
@@ -956,6 +957,7 @@
 
 - `014_add_comparison_group_index.py` — Add index on question_jobs.comparison_group_id for benchmark poll queries. (~126 tok)
 - `015_official_question_unique_constraint.py` — Unique constraint on official question canonical identity. (~272 tok)
+- `019_widen_question_vocab_columns.py` — Widen VARCHAR vocab key columns on the questions table. (~333 tok)
 
 ## backend/tests/
 
@@ -965,7 +967,7 @@
 - `test_amendment_review.py` — Tests for admin amendment review and promotion operations. (~5112 tok)
 - `test_amendments_cli.py` — Tests for local development amendment CLI commands. (~2584 tok)
 - `test_amendments.py` — Tests for approval-gated rules amendment schemas. (~1165 tok)
-- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~12686 tok)
+- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~13736 tok)
 - `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~601 tok)
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
 - `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)
@@ -973,7 +975,7 @@
 - `test_ingestion_analysis.py` — Tests for ingestion analysis reports and re-appraisal creation. (~1792 tok)
 - `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
 - `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~2181 tok)
-- `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~10245 tok)
+- `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~10248 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~486 tok)
 - `test_vocab_sync.py` — Tests for the controlled-vocabulary source-of-truth system. (~925 tok)
 

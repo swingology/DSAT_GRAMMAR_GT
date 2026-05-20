@@ -1,5 +1,107 @@
 # Debug Log
 
+## 2026-05-20 - Ingestion Test Run (Test_7_digital_sec01_mod01) [verification re-run]
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `765bea0` — Widen vocab key columns and reconcile model with migration 012
+
+### Findings
+
+1. **Resolved (verification PASS):** Job `01e44c3f-be54-4d14-8c17-b01eb9877156`. Status: `approved`. Extracted 33, created 33 (full parity). `validation_errors_jsonb` is empty across every step (0 rows) — no `extracting`, `normalizing`, `validating`, `persisting`, or `qnum_ocr_crosscheck` errors. This is the clean run targeted by the three-fix sequence (657570b strict +1 contiguity, e3be02b composite-key dedupe, 765bea0 VARCHAR(100) widening).
+
+2. **bug-121 (stem_type_key VARCHAR(40) overflow) did NOT recur.** Migration 019 widening to VARCHAR(100) verified — the same Test_7_mod01 input that previously truncated `identify_evidence_that_supports_conclusion` now persists cleanly. Marking bug-121 as fixed (fixed_by commit 765bea0) in buglog.json.
+
+3. **The `[2, 3, 4, 5]` early-question gap pattern did NOT recur.** Source question numbers persisted contiguously 1–33.
+
+4. **The option-labels `got ['']` cascade did NOT appear.** Zero validating-step errors.
+
+## 2026-05-20 - Ingestion Test Run (Test_7_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `657570b` — Filter passage line numbers from qnum OCR crosscheck
+
+### Findings
+
+1. **High:** Persisting step — `StringDataRightTruncationError` on `stem_type_key` (persisting step).
+   - Job `310142c4-fb50-479a-818b-66753722435b` (Test_7_digital_sec01_mod01). Status: `needs_review`. Extracted 33, created 32. Question at index 13 (source Q14) failed to INSERT because `stem_type_key` value `'identify_evidence_that_supports_conclusion'` (44 chars) exceeds the `VARCHAR(40)` column limit. SQLAlchemy/asyncpg raised `value too long for type character varying(40)`. Only the persisting step had any error (1 total); single question dropped (33→32).
+
+2. **Resolved (normalization fix verified):** The systematic `[2, 3, 4, 5]` (and similar early-number) gap pattern reported on Test_5, Test_6_mod01, and Test_6_mod02 is GONE on Test_7_mod01. Persisted `source_question_number`s are contiguous 1–13, 15–33 — the only missing value (14) is the question dropped by the persisting-step truncation in finding 1, not by normalization. No `normalize`-step errors appeared in `validation_errors_jsonb` (zero `dropped_empty_stem` / `dropped_duplicate_stem` diagnostics).
+
+3. **No "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.** That regression remains absent.
+
+4. **No `qnum_ocr_crosscheck` mismatches and no `question_number_validation` errors recorded** — the only entry in `validation_errors_jsonb` is the single `persisting` truncation above.
+
+## 2026-05-19 - Ingestion Test Run (Test_6_digital_sec01_mod02)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `657570b` — Filter passage line numbers from qnum OCR crosscheck
+
+### Findings
+
+1. **High:** Blocking validation errors on Cross-Text Connections question (validating step).
+   - Job `dc235908-e4a0-48e0-b152-99f61cc3d09f` (Test_6_digital_sec01_mod02). Status: `needs_review`. Extracted 16, created 15. Question at index 7 (source Q12) tagged as Cross-Text Connections is missing required `stimulus_mode_key='prose_paired'` and `paired_passage_text`. Both errors flagged as `blocking`, which prevented this question from being created (15 created vs 16 extracted).
+
+2. **High:** Non-contiguous question numbers with gaps at [2, 3, 4, 5] (question_number_validation step).
+   - Same job. Found question numbers [1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 27, 30] — gaps at 2, 3, 4, 5. LLM skips early questions (2-5) and extracts non-sequential tail numbers (19, 27, 30), matching the same systematic extraction pattern seen on Test_5 and Test_6 mod01.
+
+3. **Medium:** 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).
+   - Same job. Representative: question_index 15 LLM=30 but OCR=17. The crosscheck flags the non-contiguous LLM numbering vs sequential OCR-detected numbers — a symptom of the same underlying extraction issue as finding 2.
+
+4. **No "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.** That regression remains absent.
+
+## 2026-05-19 - Ingestion Test Run (Test_6_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `657570b` — Filter passage line numbers from qnum OCR crosscheck
+
+### Findings
+
+1. **High:** Non-contiguous question numbers with gaps at [2, 3, 5] (question_number_validation step).
+   - Job `21993eaf-0cc6-43c4-94b1-789d66dd267f` (Test_6_digital_sec01_mod01). Status: `needs_review`. Extracted 17, created 17. Found question numbers [1, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 26, 31] — gaps at 2, 3, 5. LLM is skipping early questions (2, 3, 5) and extracting non-sequential tail numbers (19, 26, 31), matching the same systematic extraction pattern seen on Test_5.
+
+2. **Medium:** 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).
+   - Same job. Representative: question_index 16 LLM=31 but OCR=17. The crosscheck flags the non-contiguous LLM numbering vs the sequential OCR-detected numbers, a symptom of the same underlying extraction issue as finding 1.
+
+3. **No "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.** No blocking `validating`-step errors; job reached `needs_review` with all 17 extracted questions persisted.
+
+## 2026-05-19 - Ingestion Test Run (Test_5)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `main`
+Git checkpoint: `66fbf69` — Update OpenWolf session state and debug log
+
+### Findings
+
+1. **High:** Mod01 — non-contiguous question numbers with gaps at [3, 4, 5, 7] (question_number_validation step).
+   - Job `245d37e6-3e5a-41fc-b5aa-1289c41804ca` (Test_5_digital_sec01_mod01). Status: `needs_review`. Extracted 16, created 16. Found question numbers [1, 2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 23, 31] — gaps at 3, 4, 5, 7. The LLM appears to be extracting questions with non-sequential numbers (jumping from 2→6, 7→8, and oddities like 20, 23, 31 in the tail), suggesting OCR or extraction confusion on this test form.
+
+2. **High:** Mod01 — 14 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).
+   - Same job. Representative: question_index 15 LLM extracted 31 but OCR shows 16. The crosscheck correctly flags the non-contiguous numbering as mismatches between LLM-extracted and OCR-detected question numbers. This is a symptom of the same underlying extraction issue (item 1 above).
+
+3. **High:** Mod02 — blocking validation error: missing paired_passage_text for Cross-Text Connections question (validating step).
+   - Job `72048cf4-303f-4eb4-a098-49b7f9539956` (Test_5_digital_sec01_mod02). Status: `needs_review`. Extracted 16, created 15. Question at index 3 (source Q8) is tagged as Cross-Text Connections but has no `paired_passage_text` field. This is a blocking validation error that prevents auto-approval.
+
+4. **High:** Mod02 — non-contiguous question numbers with gaps at [3, 4, 5, 7] (question_number_validation step).
+   - Same job. Found question numbers [1, 2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 26, 30] — gaps at 3, 4, 5, 7. Same pattern as mod01: the LLM skips question numbers 3-5 and 7.
+
+5. **High:** Mod02 — 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).
+   - Same job. Representative: question_index 15 LLM=30 but OCR=50. Confirms systematic question-number extraction problems on Test 5.
+
+6. **Medium:** Duplicate checksum prevented mod02 re-ingestion via run.sh.
+   - The mod02 PDF was already ingested from a prior session. The runner exited with `{"error":"no job_id","response":"{\"detail\":\"This file has already been ingested (duplicate checksum).\"}"}`. Data for mod02 was collected from the existing job via direct DB queries.
+
+7. **No "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared** in either module.
+
+## 2026-05-19 - Ingestion Test Run (Test_5) — Docker prerequisite failure
+Report created by: Claude
+Git branch: `main`
+Git checkpoint: `66fbf69` — Update OpenWolf session state and debug log
+
+### Findings
+
+1. **High:** Docker daemon not running — Postgres unavailable, ingestion test could not execute.
+   - The test runner (`run.sh Test_5`) exited immediately with `RESULT_JSON:{"error":"postgres unavailable"}`. The Docker daemon was not running (`Cannot connect to the Docker daemon at unix:///home/jb/.docker/desktop/docker.sock`), so the Postgres container could not be started. No ingestion job was submitted or processed.
+   - This is an environment prerequisite failure, not a pipeline bug. Start Docker before running ingestion tests.
+
 ## 2026-05-18 - Ingestion Test Run (Test_5_digital_sec01_mod01) [attempt 4]
 Report created by: Claude (ingestion-test skill subagent)
 Git branch: `main`

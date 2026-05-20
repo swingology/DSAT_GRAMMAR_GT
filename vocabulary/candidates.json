@@ -70,6 +70,26 @@
       "occurrences": 1,
       "job_ids": [],
       "contexts": []
+    },
+    {
+      "vocab": "STEM_TYPE_KEYS",
+      "value": "choose_grammatically_correct_form",
+      "field": "stem_type_key",
+      "first_seen": "2026-05-20T01:53:59.330761+00:00",
+      "last_seen": "2026-05-20T01:53:59.687331+00:00",
+      "occurrences": 4,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "STEM_TYPE_KEYS",
+      "value": "synthesize_information_from_notes",
+      "field": "stem_type_key",
+      "first_seen": "2026-05-20T01:53:59.880312+00:00",
+      "last_seen": "2026-05-20T01:54:00.358310+00:00",
+      "occurrences": 4,
+      "job_ids": [],
+      "contexts": []
     }
   ]
 }
