@@ -302,6 +302,110 @@ async def test_pipeline_settles_overlap_exception(monkeypatch):
     assert job.validation_errors_jsonb[0]["step"] == "overlap_checking"
 
 
+@pytest.mark.asyncio
+async def test_pipeline_auto_runs_review_after_clean_save(monkeypatch):
+    from app.routers import generate as generate_router
+
+    job = _make_job(generation_batch_id=_uuid.uuid4())
+    db = _FakePipelineSession()
+    generated = {
+        "question_text": "Generated question",
+        "correct_option_label": "A",
+        "options": [
+            {"label": "A", "text": "Correct"},
+            {"label": "B", "text": "Wrong"},
+        ],
+    }
+    annotated = {
+        "explanation_short": "Ok",
+        "explanation_full": "Ok",
+        "annotation_confidence": 0.9,
+        "needs_human_review": False,
+    }
+    responses = iter([generated, annotated])
+    provider = AsyncMock()
+    provider.complete.side_effect = [
+        SimpleNamespace(raw_text="generate", provider="ollama", model="m", latency_ms=1),
+        SimpleNamespace(raw_text="annotate", provider="ollama", model="m", latency_ms=1),
+    ]
+    review_calls = []
+
+    async def fake_auto_review(question_id, generation_batch_id):
+        review_calls.append((question_id, generation_batch_id))
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.storage.yaml_export.export_generated_question", lambda **_kwargs: None)
+    monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
+    monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(return_value=[]))
+    monkeypatch.setattr(generate_router, "_run_auto_review_swarm", fake_auto_review)
+
+    result = await generate_router._run_generate_pipeline(
+        job, db, {"source_question_ids": [], "provider_name": "ollama", "model_name": "x"}
+    )
+    await asyncio.sleep(0)
+
+    assert result == "approved"
+    assert len(review_calls) == 1
+    assert review_calls[0][0] == job.question_id
+    assert review_calls[0][1] == job.generation_batch_id
+
+
+@pytest.mark.asyncio
+async def test_pipeline_skip_review_suppresses_auto_review(monkeypatch):
+    from app.routers import generate as generate_router
+
+    job = _make_job()
+    db = _FakePipelineSession()
+    generated = {
+        "question_text": "Generated question",
+        "correct_option_label": "A",
+        "options": [
+            {"label": "A", "text": "Correct"},
+            {"label": "B", "text": "Wrong"},
+        ],
+    }
+    annotated = {
+        "explanation_short": "Ok",
+        "explanation_full": "Ok",
+        "annotation_confidence": 0.9,
+        "needs_human_review": False,
+    }
+    responses = iter([generated, annotated])
+    provider = AsyncMock()
+    provider.complete.side_effect = [
+        SimpleNamespace(raw_text="generate", provider="ollama", model="m", latency_ms=1),
+        SimpleNamespace(raw_text="annotate", provider="ollama", model="m", latency_ms=1),
+    ]
+    mock_auto_review = AsyncMock()
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.storage.yaml_export.export_generated_question", lambda **_kwargs: None)
+    monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
+    monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(return_value=[]))
+    monkeypatch.setattr(generate_router, "_run_auto_review_swarm", mock_auto_review)
+
+    result = await generate_router._run_generate_pipeline(
+        job,
+        db,
+        {
+            "source_question_ids": [],
+            "provider_name": "ollama",
+            "model_name": "x",
+            "skip_review": True,
+        },
+    )
+    await asyncio.sleep(0)
+
+    assert result == "approved"
+    mock_auto_review.assert_not_called()
+
+
 # ---------------------------------------------------------------------------
 # _finalize_batch_status
 # ---------------------------------------------------------------------------

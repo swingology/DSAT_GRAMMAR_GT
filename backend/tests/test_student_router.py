@@ -6,7 +6,10 @@ def test_student_recall_requires_auth(client):
 def test_student_recall_with_auth(client):
     resp = client.get("/api/questions", headers={"X-API-Key": "student-test-key"})
     assert resp.status_code == 200
-    assert isinstance(resp.json(), list)
+    data = resp.json()
+    assert "items" in data
+    assert "inventory" in data
+    assert isinstance(data["items"], list)
 
 
 def test_student_submit_invalid_uuid(client):

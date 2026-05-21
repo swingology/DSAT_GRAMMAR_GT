@@ -36,6 +36,11 @@ _THRESHOLD_SETTINGS = {
     "taxonomy_match_score": "generation_min_taxonomy_match_score",
 }
 
+_REGENERATE_THRESHOLD_SETTINGS = {
+    "distractor_quality_score": "generation_min_distractor_quality_score",
+    "taxonomy_match_score": "generation_min_taxonomy_match_score",
+}
+
 # Inverted: higher is worse
 _MAX_THRESHOLD_SETTINGS = {
     "copy_risk_score": "generation_max_copy_risk_score",
@@ -58,12 +63,13 @@ def compute_consensus(
     The verdict algorithm is ordered first-match-wins:
 
     1. blocked_overlap — question has unresolved official overlap
-    2. insufficient_reviews — no successful reviewer results
+    2. insufficient_reviews — fewer than two successful reviewer results
     3. reject_recommended — any reviewer reports high copy risk
     4. reject_recommended — average realism below threshold
+    5. reject_recommended — average SAT fidelity below threshold
     5. admin_review_ready (with high_disagreement_flag) — reviewer
        disagreement exceeds threshold
-    6. regenerate_recommended — any core dimension average below threshold
+    6. regenerate_recommended — distractor or taxonomy average below threshold
     7. admin_review_ready — all thresholds cleared
     """
     settings = get_settings()
@@ -75,23 +81,20 @@ def compute_consensus(
     reasons: list[str] = []
 
     # 1. Blocked overlap
-    if overlap_status == "confirmed":
+    if overlap_status != "none":
         return _verdict_dict(
             consensus_verdict="blocked_overlap",
             reviewer_count=reviewer_count,
-            reasons=["Question has confirmed official overlap"],
+            reasons=[f"Question has unresolved official overlap: {overlap_status}"],
             **_averages_and_votes(ok_results, reviewer_count),
         )
 
-    if overlap_status == "possible":
-        reasons.append("Question has possible official overlap (not yet resolved)")
-
     # 2. Insufficient reviews
-    if reviewer_count == 0:
+    if reviewer_count < 2:
         return _verdict_dict(
             consensus_verdict="insufficient_reviews",
-            reviewer_count=0,
-            reasons=["No successful reviewer results"],
+            reviewer_count=reviewer_count,
+            reasons=[f"Only {reviewer_count} successful reviewer result(s); at least 2 required"],
             **_zero_averages(),
         )
 
@@ -113,7 +116,7 @@ def compute_consensus(
 
     # 3. Reject recommended — high copy risk
     copy_risk_threshold = getattr(settings, _MAX_THRESHOLD_SETTINGS["copy_risk_score"])
-    if max_copy_risk is not None and max_copy_risk > copy_risk_threshold:
+    if max_copy_risk is not None and max_copy_risk >= copy_risk_threshold:
         return _verdict_dict(
             consensus_verdict="reject_recommended",
             reviewer_count=reviewer_count,
@@ -126,7 +129,7 @@ def compute_consensus(
             accept_votes=accept_votes,
             needs_review_votes=needs_review_votes,
             reject_votes=reject_votes,
-            reasons=[f"Max copy risk {max_copy_risk:.1f} exceeds threshold {copy_risk_threshold}"],
+            reasons=[f"Max copy risk {max_copy_risk:.1f} meets or exceeds threshold {copy_risk_threshold}"],
         )
 
     # 4. Reject recommended — low realism
@@ -147,17 +150,35 @@ def compute_consensus(
             reasons=[f"Average realism {avg['realism_score']:.1f} below threshold {realism_threshold}"],
         )
 
-    # 5. Reviewer disagreement
-    disagreement = _compute_disagreement(ok_results, avg)
+    # 5. Reject recommended — low SAT fidelity
+    sat_fidelity_threshold = getattr(settings, _THRESHOLD_SETTINGS["sat_fidelity_score"])
+    if avg.get("sat_fidelity_score") is not None and avg["sat_fidelity_score"] < sat_fidelity_threshold:
+        return _verdict_dict(
+            consensus_verdict="reject_recommended",
+            reviewer_count=reviewer_count,
+            average_realism=avg.get("realism_score"),
+            average_sat_fidelity=avg.get("sat_fidelity_score"),
+            average_difficulty_match=avg.get("difficulty_match_score"),
+            average_distractor_quality=avg.get("distractor_quality_score"),
+            average_taxonomy_match=avg.get("taxonomy_match_score"),
+            max_copy_risk=max_copy_risk,
+            accept_votes=accept_votes,
+            needs_review_votes=needs_review_votes,
+            reject_votes=reject_votes,
+            reasons=[f"Average SAT fidelity {avg['sat_fidelity_score']:.1f} below threshold {sat_fidelity_threshold}"],
+        )
+
+    # 6. Reviewer disagreement
+    disagreement = _compute_disagreement(ok_results)
     max_disagreement = getattr(settings, _DISAGREEMENT_SETTING)
     high_disagreement_flag = disagreement is not None and disagreement > max_disagreement
 
     if high_disagreement_flag:
         reasons.append(f"Reviewer disagreement {disagreement:.2f} exceeds threshold {max_disagreement}")
 
-    # 6. Regenerate recommended — any core dimension below threshold
+    # 7. Regenerate recommended — distractor or taxonomy below threshold
     below_threshold_dims = []
-    for dim, setting_key in _THRESHOLD_SETTINGS.items():
+    for dim, setting_key in _REGENERATE_THRESHOLD_SETTINGS.items():
         threshold = getattr(settings, setting_key)
         if avg.get(dim) is not None and avg[dim] < threshold:
             below_threshold_dims.append(f"{dim} {avg[dim]:.1f} < {threshold}")
@@ -166,10 +187,6 @@ def compute_consensus(
     # but for admin_review_ready we flag borderline copy risk)
     if max_copy_risk is not None and max_copy_risk > copy_risk_threshold * 0.8:
         reasons.append(f"Borderline copy risk: {max_copy_risk:.1f}")
-
-    # Possible overlap flag
-    if overlap_status == "possible":
-        reasons.append("Possible overlap not yet resolved; admin should verify before approving")
 
     if below_threshold_dims and not high_disagreement_flag:
         return _verdict_dict(
@@ -210,35 +227,30 @@ def compute_consensus(
 
 def _compute_disagreement(
     ok_results: Sequence[LlmReviewResult],
-    averages: dict,
 ) -> float | None:
-    """Compute mean standard deviation across all scored dimensions.
+    """Compute the reviewer disagreement metric.
 
-    Returns the average of per-dimension standard deviations, or None
-    if there are fewer than 2 reviewers.
+    Locked Phase 5 semantics combine two signals: standard deviation of
+    realism scores, and the number of distinct reviewer verdicts. Returning
+    the max lets either signal trip the shared threshold.
     """
     if len(ok_results) < 2:
         return None
 
-    dim_stds = []
-    for dim in _AVERAGE_DIMENSIONS:
-        values = [r.scores_jsonb.get(dim) for r in ok_results if isinstance(r.scores_jsonb, dict)]
-        values = [v for v in values if isinstance(v, (int, float))]
-        if len(values) < 2:
-            continue
-        mean = sum(values) / len(values)
-        variance = sum((v - mean) ** 2 for v in values) / len(values)
-        dim_stds.append(variance ** 0.5)
+    realism_values = [
+        r.scores_jsonb.get("realism_score")
+        for r in ok_results
+        if isinstance(r.scores_jsonb, dict)
+    ]
+    realism_values = [v for v in realism_values if isinstance(v, (int, float))]
+    realism_stddev = 0.0
+    if len(realism_values) >= 2:
+        mean = sum(realism_values) / len(realism_values)
+        variance = sum((v - mean) ** 2 for v in realism_values) / len(realism_values)
+        realism_stddev = variance ** 0.5
 
-    # Also include copy_risk_score
-    copy_values = [r.scores_jsonb.get("copy_risk_score") for r in ok_results if isinstance(r.scores_jsonb, dict)]
-    copy_values = [v for v in copy_values if isinstance(v, (int, float))]
-    if len(copy_values) >= 2:
-        mean = sum(copy_values) / len(copy_values)
-        variance = sum((v - mean) ** 2 for v in copy_values) / len(copy_values)
-        dim_stds.append(variance ** 0.5)
-
-    return sum(dim_stds) / len(dim_stds) if dim_stds else None
+    verdict_count = len({r.verdict for r in ok_results if r.verdict})
+    return max(realism_stddev, float(verdict_count))
 
 
 def _verdict_dict(

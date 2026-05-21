@@ -93,11 +93,11 @@ def test_source_set_operational_keys_filter_strips_all_operational():
     from app.routers.generate import _SOURCE_SET_OPERATIONAL_KEYS
 
     expected_operational = {
-        "provider_name", "model_name", "seed", "temperature",
-        "retry_attempt", "idempotency_key",
-        "requested_count", "requested_by", "student_id",
-        "requested_by_user_token", "release_policy",
-    }
+            "provider_name", "model_name", "seed", "temperature",
+            "retry_attempt", "idempotency_key", "derived_from_question_id",
+            "requested_count", "requested_by", "student_id",
+            "requested_by_user_token", "release_policy", "skip_review",
+        }
     assert _SOURCE_SET_OPERATIONAL_KEYS == expected_operational, (
         "Operational keys set drifted from the locked Phase 0 filter; "
         "see TASKS_GENERATION.md `## Locked Decisions` -> Request Payload "
@@ -123,6 +123,7 @@ def test_source_set_operational_keys_filter_strips_all_operational():
         "student_id": 17,
         "requested_by_user_token": "00000000-0000-0000-0000-000000000000",
         "release_policy": "admin_review_required",
+        "skip_review": True,
     }
 
     filtered = {

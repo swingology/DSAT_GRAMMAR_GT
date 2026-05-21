@@ -11,7 +11,10 @@ class StudentQuestionResponse(BaseModel):
     current_question_text: str
     current_passage_text: Optional[str] = None
     practice_status: str
+    grammar_role_key: Optional[str] = None
     grammar_focus_key: Optional[str] = None
+    reading_skill_family_key: Optional[str] = None
+    reading_focus_key: Optional[str] = None
     difficulty_overall: Optional[str] = None
     stimulus_mode_key: Optional[str] = None
     source_exam_code: Optional[str] = None
@@ -21,6 +24,21 @@ class StudentQuestionResponse(BaseModel):
     options: List[dict] = Field(default_factory=list)
 
     model_config = {"from_attributes": True}
+
+
+class InventoryMetadata(BaseModel):
+    """Active-question inventory summary returned with every /api/questions response."""
+    matching_target_total: int
+    matching_unseen: int
+    served: int
+    includes_generated: bool
+    below_threshold: bool
+    threshold: int
+
+
+class StudentQuestionsListResponse(BaseModel):
+    items: List[StudentQuestionResponse]
+    inventory: InventoryMetadata
 
 
 class QuestionRecallResponse(BaseModel):
@@ -190,6 +208,7 @@ class GenerationBatchRequest(BaseModel):
 
     # --- Workflow ---
     release_policy: ReleasePolicy = "admin_review_required"
+    skip_review: bool = False
 
     # --- Source examples (caller-supplied; auto-selected when empty) ---
     source_question_ids: Optional[List[str]] = None

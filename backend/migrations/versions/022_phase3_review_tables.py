@@ -36,43 +36,29 @@ depends_on = None
 
 
 def upgrade():
-    # Create PG enum types before any column uses them.
+    # Create PG enum types before any column uses them. Use explicit
+    # existence checks because PostgreSQL has no CREATE TYPE IF NOT EXISTS.
     with op.get_context().autocommit_block():
-        op.execute(
-            "ALTER TYPE review_run_status_enum ADD VALUE IF NOT EXISTS 'running'"
-            if op.get_bind().execute(
-                sa.text("SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'review_run_status_enum')")
-            ).scalar()
-            else "CREATE TYPE review_run_status_enum AS ENUM ('running', 'complete', 'partial', 'failed')"
-        )
-
-    # Safer: create types unconditionally with CREATE TYPE ... IF NOT EXISTS
-    # and add values inside autocommit blocks.
-    # Since these are new types, just create them directly.
-    with op.get_context().autocommit_block():
-        op.execute(
-            "CREATE TYPE review_run_status_enum AS ENUM "
-            "('running', 'complete', 'partial', 'failed')"
-        )
-
-    with op.get_context().autocommit_block():
-        op.execute(
-            "CREATE TYPE review_status_enum AS ENUM "
-            "('ok', 'transient_failed', 'permanent_failed')"
-        )
-
-    with op.get_context().autocommit_block():
-        op.execute(
-            "CREATE TYPE triggered_by_enum AS ENUM "
-            "('auto_on_save', 'manual_question', 'manual_batch', "
-            "'recalibration', 'rubric_bump')"
-        )
-
-    with op.get_context().autocommit_block():
-        op.execute(
-            "CREATE TYPE verdict_enum AS ENUM "
-            "('accept', 'needs_human_review', 'reject')"
-        )
+        op.execute("""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'review_run_status_enum') THEN
+                CREATE TYPE review_run_status_enum AS ENUM ('running', 'complete', 'partial', 'failed');
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'review_status_enum') THEN
+                CREATE TYPE review_status_enum AS ENUM ('ok', 'transient_failed', 'permanent_failed');
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'triggered_by_enum') THEN
+                CREATE TYPE triggered_by_enum AS ENUM (
+                    'auto_on_save', 'manual_question', 'manual_batch',
+                    'recalibration', 'rubric_bump'
+                );
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'verdict_enum') THEN
+                CREATE TYPE verdict_enum AS ENUM ('accept', 'needs_human_review', 'reject');
+            END IF;
+        END $$;
+        """)
 
     # --- review_runs ---
     op.create_table(
@@ -86,14 +72,14 @@ def upgrade():
         sa.Column("triggered_by", postgresql.ENUM(
             "auto_on_save", "manual_question", "manual_batch",
             "recalibration", "rubric_bump",
-            name="triggered_by_enum"), nullable=False),
+            name="triggered_by_enum", create_type=False), nullable=False),
         sa.Column("triggered_by_admin_token", sa.String(length=128), nullable=True),
         sa.Column("rubric_version", sa.String(length=20), nullable=False),
         sa.Column("rules_versions_jsonb", postgresql.JSONB(), nullable=False,
                   server_default=sa.text("'{}'::jsonb")),
         sa.Column("status", postgresql.ENUM(
             "running", "complete", "partial", "failed",
-            name="review_run_status_enum"), nullable=False,
+            name="review_run_status_enum", create_type=False), nullable=False,
             server_default="running"),
         sa.Column("started_at", sa.DateTime(timezone=True),
                   server_default=sa.func.now()),
@@ -128,14 +114,14 @@ def upgrade():
                   server_default=sa.text("'{}'::jsonb")),
         sa.Column("verdict", postgresql.ENUM(
             "accept", "needs_human_review", "reject",
-            name="verdict_enum"), nullable=False),
+            name="verdict_enum", create_type=False), nullable=False),
         sa.Column("review_notes", sa.Text(), nullable=True),
         sa.Column("raw_response_jsonb", postgresql.JSONB(), nullable=True),
         sa.Column("latency_ms", sa.Integer(), nullable=True),
         sa.Column("token_usage_jsonb", postgresql.JSONB(), nullable=True),
         sa.Column("review_status", postgresql.ENUM(
             "ok", "transient_failed", "permanent_failed",
-            name="review_status_enum"), nullable=False,
+            name="review_status_enum", create_type=False), nullable=False,
             server_default="ok"),
         sa.Column("error_message", sa.Text(), nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True),

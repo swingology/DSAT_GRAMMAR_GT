@@ -5,6 +5,111 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-20 — Phase 7: Student Retrieval API Expansion
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+Implemented the Phase 7 student-facing question retrieval API with full filter coverage and inventory metadata.
+
+### Added
+
+- Added `admin_or_student_required` dependency to `backend/app/auth.py` returning
+  `(scope, key)` tuple; used by this endpoint and reserved for Phase 8.
+- Rewrote `GET /api/questions` (`backend/app/routers/student.py`) with full filter set:
+  `domain`, `difficulty`, `grammar_role_key`, `grammar_focus_key`,
+  `reading_skill_family_key`, `reading_focus_key`, `stimulus_mode_key`,
+  `origin` (official/generated/mixed), `exclude_seen`, `user_token`, `limit`, `offset`.
+- Added `StudentQuestionsListResponse` wrapping `items` and `inventory` metadata block.
+- Added `InventoryMetadata` with `matching_target_total`, `matching_unseen`, `served`,
+  `includes_generated`, `below_threshold`, `threshold`.
+- Extended `StudentQuestionResponse` with `grammar_role_key`, `reading_skill_family_key`,
+  `reading_focus_key`. Answer key never exposed.
+- Implemented `exclude_seen` resurface logic: correct answers never resurface;
+  wrong answers resurface after `self_study_resurface_days` (default 30 days).
+- Added `inventory_sufficient_threshold` (default 5) and `self_study_resurface_days`
+  (default 30) to `backend/app/config.py`.
+- Added `backend/tests/test_student_retrieval.py` with 30 tests covering grammar filters,
+  reading filters, difficulty, origin, exclude_seen defaults per scope, resurface logic,
+  active-only enforcement, inventory metadata shape, and answer-key exclusion.
+
+### Verification
+
+- Full backend suite: `uv run pytest tests/ -q` → `652 passed, 2 skipped`.
+
+---
+
+## 2026-05-20 — Phase 6: Admin Dashboard Review Queue
+
+**Model:** GPT-5 Codex
+**Branch:** `generation_build`
+
+Implemented the Phase 6 generated-question review queue.
+
+### Added
+
+- Added `reviewer_admin_overrides` as an append-only audit table and migration
+  (`024_phase6_reviewer_admin_overrides.py`).
+- Added generated-question admin list/detail/action endpoints:
+  `GET /admin/generated-questions`,
+  `GET /admin/generated-questions/{question_id}`,
+  approve/reject aliases, and regenerate-from-spec.
+- Added reviewer/admin agreement capture on approve/reject. Each click writes
+  one `admin_decision_id` shared across override rows for the latest review run.
+- Expanded `/dashboard/review` with Phase 6 filters, candidate cards, review
+  swarm score tables, source-example comparison, edit controls, approve/reject,
+  re-review, regenerate, and pagination.
+- Regenerate-from-spec now carries `derived_from_question_id`, reselection of
+  source examples, and a per-question attempt cap.
+- Added regression coverage for non-destructive rejection and reviewer/admin
+  override row creation.
+
+### Verification
+
+- `uv run alembic upgrade head` applied `023 -> 024`.
+- Affected suite: `171 passed`.
+- Full backend suite: `uv run pytest tests/ -q` → `622 passed, 2 skipped`.
+
+---
+
+## 2026-05-20 — Phase 0–5 generation implementation gap remediation
+
+**Model:** GPT-5 Codex
+**Branch:** `generation_build`
+
+Resolved the Phase 0–5 gaps found by comparing `TASKS_GENERATION.md`,
+`GENERATION_ARCHITECTURE.md`, `CHANGELOG.md`, and the live implementation.
+
+### Fixes
+
+- Fixed `022_phase3_review_tables.py` so review enum types are created once
+  and reused with `create_type=False`; clean migration now reaches Phase 3.
+- Fixed `023_phase5_consensus_verdicts.py` so `consensus_verdicts.id` is a
+  PostgreSQL UUID, matching the ORM model.
+- Aligned consensus with the locked Phase 5 algorithm: unresolved
+  `possible`/`confirmed` overlap blocks, fewer than two successful reviewers
+  yields `insufficient_reviews`, copy risk rejects at the configured maximum,
+  low SAT fidelity rejects, and disagreement combines realism variance with
+  verdict diversity.
+- Review runs now always write a consensus row, including all-failed review
+  swarms.
+- Auto-review now runs after clean generated-question save, skips when overlap
+  is unresolved, and can be suppressed with `skip_review` for debug/calibration
+  batches.
+- The review swarm now excludes the generator provider before dispatching
+  reviewer calls.
+- Added the missing Phase 3 changelog entry for the review rubric, parser,
+  prompt loader, review tables, and tests.
+
+### Verification
+
+- `uv run alembic upgrade head` applied `021 -> 022 -> 023` cleanly.
+- Full backend suite: `uv run pytest tests/ -q` → `613 passed, 2 skipped`.
+- Current Phase 0–5 implementation review has no remaining critical, high, or
+  medium severity gaps.
+
+---
+
 ## 2026-05-20 — Phase 5: Consensus Gate
 
 **Model:** Claude Opus 4.6
@@ -19,8 +124,8 @@ output into admin-facing verdicts.
   - `compute_consensus()` — ordered first-match-wins algorithm producing one
     of five verdicts: `blocked_overlap`, `insufficient_reviews`,
     `reject_recommended`, `regenerate_recommended`, `admin_review_ready`
-  - `_compute_disagreement()` — mean standard deviation across all scored
-    dimensions (including copy risk)
+  - `_compute_disagreement()` — realism-score standard deviation combined
+    with reviewer verdict diversity
   - `save_consensus()` — async persistence of `ConsensusVerdict` row after
     review swarm completion
 - `backend/migrations/versions/023_phase5_consensus_verdicts.py` — migration
@@ -28,14 +133,17 @@ output into admin-facing verdicts.
 
 ### Verdict algorithm (ordered, first-match-wins)
 
-1. **blocked_overlap** — question has confirmed official overlap (unresolved)
-2. **insufficient_reviews** — zero successful reviewer results
-3. **reject_recommended** — max copy risk exceeds threshold (>5.0)
+1. **blocked_overlap** — question has unresolved official overlap (`possible`
+   or `confirmed`)
+2. **insufficient_reviews** — fewer than two successful reviewer results
+3. **reject_recommended** — max copy risk meets/exceeds threshold (>=5.0)
 4. **reject_recommended** — average realism below threshold (<7.0)
-5. **admin_review_ready** with `high_disagreement_flag=True` — reviewer
+5. **reject_recommended** — average SAT fidelity below threshold (<7.0)
+6. **admin_review_ready** with `high_disagreement_flag=True` — reviewer
    disagreement exceeds threshold (>1.5)
-6. **regenerate_recommended** — any core dimension average below threshold
-7. **admin_review_ready** — all thresholds cleared
+7. **regenerate_recommended** — distractor quality or taxonomy match average
+   below threshold
+8. **admin_review_ready** — all thresholds cleared
 
 Config thresholds (landed in Phase 3, now consumed by consensus):
 `generation_min_realism_score=7.0`, `generation_min_sat_fidelity_score=7.0`,
@@ -58,12 +166,12 @@ Config thresholds (landed in Phase 3, now consumed by consensus):
 
 ### Tests
 
-- `backend/tests/test_consensus.py` — 17 tests: blocked_overlap,
+- `backend/tests/test_consensus.py` — 20 tests: blocked_overlap,
   insufficient_reviews, reject for high copy risk, reject for low realism,
-  disagreement flag, regenerate for below-threshold dimensions,
+  reject for low SAT fidelity, disagreement flag, regenerate for below-threshold dimensions,
   admin_review_ready for all-clear, edge cases (failed reviewer exclusion,
   priority of copy risk over realism, blocked overlap overriding perfect
-  scores). 607 total tests pass.
+  scores). 613 total tests pass.
 
 ---
 
@@ -98,9 +206,45 @@ review of generated questions using OpenAI, Claude, and DeepSeek providers.
 
 ### Tests
 
-- `backend/tests/test_review_runner.py` — 18 tests: provider config, swarm
-  success/partial/failure, malformed JSON handling, re-review creating new run IDs,
-  batch review, question loading, version constants. 590 total tests pass.
+- `backend/tests/test_review_runner.py` — 19 tests: provider config, generator
+  provider exclusion, swarm success/partial/failure, malformed JSON handling,
+  re-review creating new run IDs, batch review, question loading, version
+  constants. 613 total tests pass.
+
+---
+
+## 2026-05-20 — Phase 3: Review Swarm Rubric
+
+**Model:** Claude Opus 4.6
+**Branch:** `generation_build`
+
+Implemented the stable review-swarm rubric contract for generated-question
+quality review.
+
+### Rubric and prompt
+
+- Added `rules_agent_dsat_review_v1.md` with the seven scoring dimensions:
+  realism, SAT fidelity, difficulty match, distractor quality, taxonomy match,
+  explanation quality, and inverted copy risk.
+- Added `backend/app/prompts/review_prompt.py`, which loads the review rubric,
+  always includes grammar v7 as the DSAT prose canon, conditionally includes
+  reading v2 for reading candidates, and injects question payload, options,
+  annotation, source examples, overlap status, and original request metadata.
+
+### Persistence and parsing
+
+- Added `backend/app/review/parser.py` for strict review JSON parsing and score
+  validation.
+- Added `review_runs` and `llm_review_results` storage through
+  `backend/migrations/versions/022_phase3_review_tables.py`.
+- Added `ReviewRun` and `LlmReviewResult` ORM models plus review enums in
+  `backend/app/models/ontology.py`.
+
+### Tests
+
+- `backend/tests/test_review_parser.py` and
+  `backend/tests/test_review_prompt.py` cover valid review JSON, malformed
+  output rejection, prompt composition, and rubric/rules version constants.
 
 ---
 

@@ -29,15 +29,26 @@ depends_on = None
 def upgrade():
     # Create PG enum type for consensus verdicts.
     with op.get_context().autocommit_block():
-        op.execute(
-            "CREATE TYPE consensus_verdict_enum AS ENUM "
-            "('admin_review_ready', 'reject_recommended', "
-            "'regenerate_recommended', 'blocked_overlap', 'insufficient_reviews')"
-        )
+        op.execute("""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'consensus_verdict_enum') THEN
+                CREATE TYPE consensus_verdict_enum AS ENUM (
+                    'admin_review_ready', 'reject_recommended',
+                    'regenerate_recommended', 'blocked_overlap', 'insufficient_reviews'
+                );
+            END IF;
+        END $$;
+        """)
 
     op.create_table(
         "consensus_verdicts",
-        sa.Column("id", sa.String(36), server_default=sa.text("gen_random_uuid()"), primary_key=True),
+        sa.Column(
+            "id",
+            postgresql.UUID(as_uuid=True),
+            server_default=sa.text("gen_random_uuid()"),
+            primary_key=True,
+        ),
         sa.Column(
             "question_id",
             postgresql.UUID(as_uuid=True),
@@ -70,13 +81,14 @@ def upgrade():
         sa.Column("high_disagreement_flag", sa.Boolean, nullable=False, server_default=sa.text("false")),
         sa.Column(
             "consensus_verdict",
-            sa.Enum(
+            postgresql.ENUM(
                 "admin_review_ready",
                 "reject_recommended",
                 "regenerate_recommended",
                 "blocked_overlap",
                 "insufficient_reviews",
                 name="consensus_verdict_enum",
+                create_type=False,
             ),
             nullable=False,
         ),

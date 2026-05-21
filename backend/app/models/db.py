@@ -442,6 +442,32 @@ class ConsensusVerdict(Base):
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
 
+class ReviewerAdminOverride(Base):
+    __tablename__ = "reviewer_admin_overrides"
+    __table_args__ = (
+        UniqueConstraint(
+            "admin_decision_id",
+            "llm_review_result_id",
+            name="uq_reviewer_admin_override_decision_result",
+        ),
+        Index("ix_reviewer_admin_overrides_question_id", "question_id"),
+        Index("ix_reviewer_admin_overrides_llm_review_result_id", "llm_review_result_id"),
+        Index("ix_reviewer_admin_overrides_admin_decision_id", "admin_decision_id"),
+        Index("ix_reviewer_admin_overrides_override_direction", "override_direction"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    admin_decision_id = Column(UUID(as_uuid=True), nullable=False)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
+    llm_review_result_id = Column(UUID(as_uuid=True), ForeignKey("llm_review_results.id"), nullable=False)
+    reviewer_verdict = Column(String(40), nullable=False)
+    admin_verdict = Column(String(40), nullable=False)
+    override_direction = Column(String(40), nullable=False)
+    admin_token = Column(String(128), nullable=True)
+    admin_notes = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+
 # --- Segment B tables ---
 
 class User(Base):

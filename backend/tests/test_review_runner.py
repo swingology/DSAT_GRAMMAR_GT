@@ -16,6 +16,7 @@ import pytest
 from app.review.runner import (
     _provider_config,
     _review_providers,
+    _exclude_generator_provider,
     _load_question_for_review,
     _run_single_reviewer,
     run_review_swarm,
@@ -135,6 +136,15 @@ class TestReviewProviders:
         providers = _review_providers(settings)
         assert providers == []
 
+    def test_generator_provider_excluded(self):
+        settings = _make_settings(generation_review_providers="openai,anthropic,ollama")
+        providers = _review_providers(settings)
+        filtered = _exclude_generator_provider(providers, "ollama")
+        assert filtered == [
+            ("openai", "gpt-4o"),
+            ("anthropic", "claude-sonnet-4-6"),
+        ]
+
 
 # ---------------------------------------------------------------------------
 # Runner tests — all reviewers succeed
@@ -163,7 +173,8 @@ class TestRunReviewSwarm:
 
         with patch("app.review.runner.get_provider") as mock_get_provider, \
              patch("app.review.runner._load_question_for_review") as mock_load, \
-             patch("app.review.runner.async_session") as mock_session_ctx:
+             patch("app.review.runner.async_session") as mock_session_ctx, \
+             patch("app.review.consensus.save_consensus", new_callable=AsyncMock) as mock_save_consensus:
 
             mock_provider = AsyncMock()
             mock_provider.complete.return_value = mock_llm_response
@@ -227,7 +238,8 @@ class TestRunReviewSwarm:
 
         with patch("app.review.runner.get_provider") as mock_get_provider, \
              patch("app.review.runner._load_question_for_review") as mock_load, \
-             patch("app.review.runner.async_session") as mock_session_ctx:
+             patch("app.review.runner.async_session") as mock_session_ctx, \
+             patch("app.review.consensus.save_consensus", new_callable=AsyncMock) as mock_save_consensus:
 
             mock_provider = AsyncMock()
             mock_provider.complete.side_effect = mock_complete
@@ -280,7 +292,8 @@ class TestRunReviewSwarm:
 
         with patch("app.review.runner.get_provider") as mock_get_provider, \
              patch("app.review.runner._load_question_for_review") as mock_load, \
-             patch("app.review.runner.async_session") as mock_session_ctx:
+             patch("app.review.runner.async_session") as mock_session_ctx, \
+             patch("app.review.consensus.save_consensus", new_callable=AsyncMock) as mock_save_consensus:
 
             mock_provider = AsyncMock()
             mock_provider.complete.return_value = bad_response
@@ -311,6 +324,7 @@ class TestRunReviewSwarm:
 
             # All reviewers failed -> run status is "failed"
             assert mock_review_run.status == "failed"
+            mock_save_consensus.assert_awaited_once()
 
 
 # ---------------------------------------------------------------------------

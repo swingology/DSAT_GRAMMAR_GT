@@ -1,12 +1,13 @@
+import asyncio
 import uuid
 from datetime import datetime, timezone
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select, delete, update
+from sqlalchemy import select, delete, update, func, and_, case
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from typing import Optional, List
+from typing import Any, Optional, List
 from pydantic import BaseModel
 
 from app.database import get_db
@@ -14,11 +15,15 @@ from app.auth import admin_required
 from app.models.db import (
     Question, QuestionAnnotation, QuestionVersion, QuestionOption,
     QuestionRelation, QuestionJob, QuestionAsset, LlmEvaluation, UserProgress,
-    QuestionStimulusAsset, ReviewRun, LlmReviewResult,
+    QuestionStimulusAsset, GenerationBatch, ReviewRun, LlmReviewResult,
+    ConsensusVerdict, ReviewerAdminOverride,
 )
 from app.models.ontology import RELATION_TYPES
-from app.models.payload import AdminEditRequest, EvaluationScoreRequest
+from app.models.payload import AdminEditRequest, EvaluationScoreRequest, GenerationBatchRequest
 from app.pipeline import amendment_review
+
+
+REGENERATE_MAX_ATTEMPTS_PER_QUESTION = 3
 
 
 class EvaluationCreateRequest(BaseModel):
@@ -217,6 +222,678 @@ def _validated_relation_type(relation_type: str) -> str:
     return relation_type
 
 
+def _admin_override_direction(reviewer_verdict: str, admin_verdict: str) -> str:
+    if reviewer_verdict == admin_verdict:
+        return "reviewer_correct"
+    if admin_verdict == "accept":
+        return "reviewer_too_harsh"
+    return "reviewer_too_lenient"
+
+
+async def _latest_review_results_for_admin_override(
+    qid: UUID,
+    db: AsyncSession,
+) -> list[LlmReviewResult]:
+    run_result = await db.execute(
+        select(ReviewRun)
+        .where(
+            ReviewRun.question_id == qid,
+            ReviewRun.status.in_(("complete", "partial")),
+        )
+        .order_by(ReviewRun.completed_at.desc().nullslast(), ReviewRun.started_at.desc())
+        .limit(1)
+    )
+    review_run = run_result.scalars().first()
+    if review_run is None:
+        return []
+
+    result = await db.execute(
+        select(LlmReviewResult)
+        .where(LlmReviewResult.review_run_id == review_run.id)
+        .order_by(LlmReviewResult.provider_name, LlmReviewResult.model_name)
+    )
+    return result.scalars().all()
+
+
+async def _write_reviewer_admin_overrides(
+    *,
+    qid: UUID,
+    admin_verdict: str,
+    admin_token: str | None,
+    admin_notes: str | None,
+    db: AsyncSession,
+) -> tuple[UUID, int]:
+    review_results = await _latest_review_results_for_admin_override(qid, db)
+    admin_decision_id = uuid.uuid4()
+    for review_result in review_results:
+        db.add(
+            ReviewerAdminOverride(
+                id=uuid.uuid4(),
+                admin_decision_id=admin_decision_id,
+                question_id=qid,
+                llm_review_result_id=review_result.id,
+                reviewer_verdict=review_result.verdict,
+                admin_verdict=admin_verdict,
+                override_direction=_admin_override_direction(
+                    review_result.verdict,
+                    admin_verdict,
+                ),
+                admin_token=admin_token,
+                admin_notes=admin_notes,
+                created_at=datetime.now(timezone.utc),
+            )
+        )
+    return admin_decision_id, len(review_results)
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, UUID):
+        return str(value)
+    if isinstance(value, datetime):
+        return value.isoformat()
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _json_safe(item) for key, item in value.items()}
+    return value
+
+
+def _annotation_domain(annotation: dict[str, Any] | None) -> str | None:
+    if not annotation:
+        return None
+    if annotation.get("reading_skill_family_key") or annotation.get("reading_focus_key"):
+        return "reading"
+    if annotation.get("grammar_role_key") or annotation.get("grammar_focus_key"):
+        return "grammar"
+    return None
+
+
+def _source_ids_for_candidate(
+    question: Question,
+    job: QuestionJob | None,
+) -> list[str]:
+    source_ids = []
+    if job and isinstance(job.generation_request_jsonb, dict):
+        source_ids = job.generation_request_jsonb.get("source_question_ids") or []
+    if not source_ids and isinstance(question.generation_source_set, dict):
+        source_ids = question.generation_source_set.get("source_question_ids") or []
+    return [str(item) for item in source_ids]
+
+
+async def _serialize_generated_candidates(
+    questions: list[Question],
+    db: AsyncSession,
+) -> list[dict[str, Any]]:
+    if not questions:
+        return []
+
+    qids = [q.id for q in questions]
+
+    ann_ids = [q.latest_annotation_id for q in questions if q.latest_annotation_id]
+    ann_map = {}
+    if ann_ids:
+        ann_rows = await db.execute(select(QuestionAnnotation).where(QuestionAnnotation.id.in_(ann_ids)))
+        ann_map = {ann.id: ann for ann in ann_rows.scalars().all()}
+
+    version_to_qid = {q.latest_version_id: q.id for q in questions if q.latest_version_id}
+    opts_by_qid: dict[UUID, list[QuestionOption]] = {}
+    if version_to_qid:
+        opt_rows = await db.execute(
+            select(QuestionOption)
+            .where(QuestionOption.question_version_id.in_(list(version_to_qid.keys())))
+            .order_by(QuestionOption.question_id, QuestionOption.option_label)
+        )
+        for opt in opt_rows.scalars().all():
+            qid = version_to_qid.get(opt.question_version_id)
+            if qid:
+                opts_by_qid.setdefault(qid, []).append(opt)
+
+    job_rows = await db.execute(
+        select(QuestionJob)
+        .where(QuestionJob.question_id.in_(qids))
+        .order_by(QuestionJob.question_id, QuestionJob.created_at.desc())
+    )
+    latest_job_by_qid: dict[UUID, QuestionJob] = {}
+    for job in job_rows.scalars().all():
+        latest_job_by_qid.setdefault(job.question_id, job)
+
+    batch_ids = [
+        job.generation_batch_id
+        for job in latest_job_by_qid.values()
+        if job.generation_batch_id
+    ]
+    batch_by_id = {}
+    if batch_ids:
+        batch_rows = await db.execute(select(GenerationBatch).where(GenerationBatch.id.in_(batch_ids)))
+        batch_by_id = {batch.id: batch for batch in batch_rows.scalars().all()}
+
+    consensus_rows = await db.execute(
+        select(ConsensusVerdict)
+        .where(ConsensusVerdict.question_id.in_(qids))
+        .order_by(ConsensusVerdict.question_id, ConsensusVerdict.created_at.desc())
+    )
+    latest_consensus_by_qid: dict[UUID, ConsensusVerdict] = {}
+    for verdict in consensus_rows.scalars().all():
+        latest_consensus_by_qid.setdefault(verdict.question_id, verdict)
+
+    run_rows = await db.execute(
+        select(ReviewRun)
+        .where(ReviewRun.question_id.in_(qids))
+        .order_by(ReviewRun.question_id, ReviewRun.started_at.desc())
+    )
+    latest_run_by_qid: dict[UUID, ReviewRun] = {}
+    for run in run_rows.scalars().all():
+        latest_run_by_qid.setdefault(run.question_id, run)
+
+    review_results_by_run: dict[UUID, list[LlmReviewResult]] = {}
+    run_ids = [run.id for run in latest_run_by_qid.values()]
+    if run_ids:
+        review_rows = await db.execute(
+            select(LlmReviewResult)
+            .where(LlmReviewResult.review_run_id.in_(run_ids))
+            .order_by(LlmReviewResult.provider_name, LlmReviewResult.model_name)
+        )
+        for review in review_rows.scalars().all():
+            review_results_by_run.setdefault(review.review_run_id, []).append(review)
+
+    source_ids: set[UUID] = set()
+    for question in questions:
+        job = latest_job_by_qid.get(question.id)
+        for raw_id in _source_ids_for_candidate(question, job):
+            try:
+                source_ids.add(UUID(raw_id))
+            except ValueError:
+                continue
+
+    source_by_id: dict[UUID, Question] = {}
+    if source_ids:
+        source_rows = await db.execute(select(Question).where(Question.id.in_(source_ids)))
+        source_by_id = {source.id: source for source in source_rows.scalars().all()}
+
+    items = []
+    for question in questions:
+        annotation_row = ann_map.get(question.latest_annotation_id) if question.latest_annotation_id else None
+        annotation = annotation_row.annotation_jsonb if annotation_row else None
+        explanation = annotation_row.explanation_jsonb if annotation_row else None
+        job = latest_job_by_qid.get(question.id)
+        batch = batch_by_id.get(job.generation_batch_id) if job and job.generation_batch_id else None
+        consensus = latest_consensus_by_qid.get(question.id)
+        review_run = latest_run_by_qid.get(question.id)
+        review_results = review_results_by_run.get(review_run.id, []) if review_run else []
+
+        item_source_examples = []
+        for raw_id in _source_ids_for_candidate(question, job):
+            try:
+                source = source_by_id.get(UUID(raw_id))
+            except ValueError:
+                source = None
+            if source:
+                item_source_examples.append({
+                    "id": str(source.id),
+                    "source_exam_code": source.source_exam_code,
+                    "source_section_code": source.source_section_code,
+                    "source_module_code": source.source_module_code,
+                    "source_question_number": source.source_question_number,
+                    "question_text": source.current_question_text,
+                    "passage_text": source.current_passage_text,
+                    "correct_option_label": source.current_correct_option_label,
+                })
+            else:
+                item_source_examples.append({"id": raw_id})
+
+        items.append({
+            "id": str(question.id),
+            "content_origin": question.content_origin,
+            "practice_status": question.practice_status,
+            "official_overlap_status": question.official_overlap_status,
+            "domain": _annotation_domain(annotation),
+            "question_text": question.current_question_text,
+            "passage_text": question.current_passage_text,
+            "paired_passage_text": question.current_paired_passage_text,
+            "underlined_text": question.current_underlined_text,
+            "correct_option_label": question.current_correct_option_label,
+            "explanation_text": question.current_explanation_text,
+            "annotation": annotation,
+            "annotation_explanation": explanation,
+            "options": [
+                {
+                    "label": opt.option_label,
+                    "text": opt.option_text,
+                    "is_correct": opt.is_correct,
+                    "distractor_type_key": opt.distractor_type_key,
+                    "why_plausible": opt.why_plausible,
+                    "why_wrong": opt.why_wrong,
+                    "student_failure_mode_key": opt.student_failure_mode_key,
+                }
+                for opt in opts_by_qid.get(question.id, [])
+            ],
+            "job": None if not job else {
+                "id": str(job.id),
+                "status": job.status,
+                "provider_name": job.provider_name,
+                "model_name": job.model_name,
+                "generation_request_jsonb": _json_safe(job.generation_request_jsonb or {}),
+                "validation_errors_jsonb": _json_safe(job.validation_errors_jsonb or []),
+                "created_at": job.created_at.isoformat() if job.created_at else None,
+            },
+            "batch": None if not batch else {
+                "id": str(batch.id),
+                "requested_by": batch.requested_by,
+                "student_id": batch.student_id,
+                "requested_by_user_token": str(batch.requested_by_user_token) if batch.requested_by_user_token else None,
+                "release_policy": batch.release_policy,
+                "status": batch.status,
+            },
+            "consensus": None if not consensus else {
+                "id": str(consensus.id),
+                "review_run_id": str(consensus.review_run_id),
+                "reviewer_count": consensus.reviewer_count,
+                "average_realism": consensus.average_realism,
+                "average_sat_fidelity": consensus.average_sat_fidelity,
+                "average_difficulty_match": consensus.average_difficulty_match,
+                "average_distractor_quality": consensus.average_distractor_quality,
+                "average_taxonomy_match": consensus.average_taxonomy_match,
+                "max_copy_risk": consensus.max_copy_risk,
+                "accept_votes": consensus.accept_votes,
+                "needs_review_votes": consensus.needs_review_votes,
+                "reject_votes": consensus.reject_votes,
+                "reviewer_disagreement": consensus.reviewer_disagreement,
+                "high_disagreement_flag": consensus.high_disagreement_flag,
+                "consensus_verdict": consensus.consensus_verdict,
+                "reasons_jsonb": _json_safe(consensus.reasons_jsonb or []),
+                "created_at": consensus.created_at.isoformat() if consensus.created_at else None,
+            },
+            "review_run": None if not review_run else {
+                "id": str(review_run.id),
+                "status": review_run.status,
+                "triggered_by": review_run.triggered_by,
+                "rubric_version": review_run.rubric_version,
+                "started_at": review_run.started_at.isoformat() if review_run.started_at else None,
+                "completed_at": review_run.completed_at.isoformat() if review_run.completed_at else None,
+            },
+            "review_results": [
+                {
+                    "id": str(review.id),
+                    "provider_name": review.provider_name,
+                    "model_name": review.model_name,
+                    "scores_jsonb": _json_safe(review.scores_jsonb or {}),
+                    "verdict": review.verdict,
+                    "review_notes": review.review_notes,
+                    "review_status": review.review_status,
+                    "error_message": review.error_message,
+                    "latency_ms": review.latency_ms,
+                }
+                for review in review_results
+            ],
+            "source_examples": item_source_examples,
+            "created_at": question.created_at.isoformat() if question.created_at else None,
+            "updated_at": question.updated_at.isoformat() if question.updated_at else None,
+            "rejection_reason": question.rejection_reason,
+            "rejected_at": question.rejected_at.isoformat() if question.rejected_at else None,
+        })
+
+    return items
+
+
+def _parse_optional_datetime(raw: str | None) -> datetime | None:
+    if not raw:
+        return None
+    try:
+        return datetime.fromisoformat(raw)
+    except ValueError:
+        raise HTTPException(status_code=400, detail=f"Invalid datetime: {raw!r}")
+
+
+@router.get("/generated-questions")
+async def list_generated_questions(
+    generation_batch_id: Optional[str] = None,
+    requested_by: Optional[str] = None,
+    student_id: Optional[int] = None,
+    domain: Optional[str] = None,
+    grammar_role_key: Optional[str] = None,
+    grammar_focus_key: Optional[str] = None,
+    reading_skill_family_key: Optional[str] = None,
+    reading_focus_key: Optional[str] = None,
+    difficulty: Optional[str] = None,
+    generator_provider: Optional[str] = None,
+    generator_model: Optional[str] = None,
+    reviewer_provider: Optional[str] = None,
+    reviewer_model: Optional[str] = None,
+    min_average_realism: Optional[float] = None,
+    consensus_verdict: Optional[str] = None,
+    min_reviewer_disagreement: Optional[float] = None,
+    overlap_status: Optional[str] = None,
+    practice_status: Optional[str] = Query("draft"),
+    created_from: Optional[str] = None,
+    created_to: Optional[str] = None,
+    limit: int = Query(25, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    stmt = select(Question).where(Question.content_origin == "generated")
+    joined_annotation = False
+    joined_job = False
+    joined_batch = False
+    joined_consensus = False
+    joined_review = False
+
+    latest_consensus = (
+        select(
+            ConsensusVerdict.question_id.label("question_id"),
+            func.max(ConsensusVerdict.created_at).label("created_at"),
+        )
+        .group_by(ConsensusVerdict.question_id)
+        .subquery()
+    )
+
+    def ensure_annotation():
+        nonlocal stmt, joined_annotation
+        if not joined_annotation:
+            stmt = stmt.join(
+                QuestionAnnotation,
+                Question.latest_annotation_id == QuestionAnnotation.id,
+            )
+            joined_annotation = True
+
+    def ensure_job():
+        nonlocal stmt, joined_job
+        if not joined_job:
+            stmt = stmt.join(QuestionJob, QuestionJob.question_id == Question.id)
+            joined_job = True
+
+    def ensure_batch():
+        nonlocal stmt, joined_batch
+        ensure_job()
+        if not joined_batch:
+            stmt = stmt.join(GenerationBatch, GenerationBatch.id == QuestionJob.generation_batch_id)
+            joined_batch = True
+
+    def ensure_consensus():
+        nonlocal stmt, joined_consensus
+        if not joined_consensus:
+            stmt = stmt.outerjoin(latest_consensus, latest_consensus.c.question_id == Question.id)
+            stmt = stmt.outerjoin(
+                ConsensusVerdict,
+                and_(
+                    ConsensusVerdict.question_id == Question.id,
+                    ConsensusVerdict.created_at == latest_consensus.c.created_at,
+                ),
+            )
+            joined_consensus = True
+
+    if practice_status:
+        stmt = stmt.where(Question.practice_status == practice_status)
+    if overlap_status:
+        stmt = stmt.where(Question.official_overlap_status == overlap_status)
+    created_from_dt = _parse_optional_datetime(created_from)
+    created_to_dt = _parse_optional_datetime(created_to)
+    if created_from_dt:
+        stmt = stmt.where(Question.created_at >= created_from_dt)
+    if created_to_dt:
+        stmt = stmt.where(Question.created_at <= created_to_dt)
+
+    if generation_batch_id:
+        ensure_job()
+        try:
+            stmt = stmt.where(QuestionJob.generation_batch_id == UUID(generation_batch_id))
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid generation_batch_id")
+    if generator_provider:
+        ensure_job()
+        stmt = stmt.where(QuestionJob.provider_name == generator_provider)
+    if generator_model:
+        ensure_job()
+        stmt = stmt.where(QuestionJob.model_name == generator_model)
+    if requested_by:
+        ensure_batch()
+        stmt = stmt.where(GenerationBatch.requested_by == requested_by)
+    if student_id is not None:
+        ensure_batch()
+        stmt = stmt.where(GenerationBatch.student_id == student_id)
+
+    if domain or grammar_role_key or grammar_focus_key or reading_skill_family_key or reading_focus_key or difficulty:
+        ensure_annotation()
+    if domain == "grammar":
+        stmt = stmt.where(QuestionAnnotation.annotation_jsonb["grammar_role_key"].astext.isnot(None))
+    elif domain == "reading":
+        stmt = stmt.where(QuestionAnnotation.annotation_jsonb["reading_skill_family_key"].astext.isnot(None))
+    elif domain not in (None, ""):
+        raise HTTPException(status_code=400, detail="domain must be grammar or reading")
+    if grammar_role_key:
+        stmt = stmt.where(QuestionAnnotation.annotation_jsonb["grammar_role_key"].astext == grammar_role_key)
+    if grammar_focus_key:
+        stmt = stmt.where(QuestionAnnotation.annotation_jsonb["grammar_focus_key"].astext == grammar_focus_key)
+    if reading_skill_family_key:
+        stmt = stmt.where(QuestionAnnotation.annotation_jsonb["reading_skill_family_key"].astext == reading_skill_family_key)
+    if reading_focus_key:
+        stmt = stmt.where(QuestionAnnotation.annotation_jsonb["reading_focus_key"].astext == reading_focus_key)
+    if difficulty:
+        stmt = stmt.where(QuestionAnnotation.annotation_jsonb["difficulty_overall"].astext == difficulty)
+
+    if consensus_verdict or min_average_realism is not None or min_reviewer_disagreement is not None:
+        ensure_consensus()
+    if consensus_verdict:
+        stmt = stmt.where(ConsensusVerdict.consensus_verdict == consensus_verdict)
+    if min_average_realism is not None:
+        stmt = stmt.where(ConsensusVerdict.average_realism >= min_average_realism)
+    if min_reviewer_disagreement is not None:
+        stmt = stmt.where(ConsensusVerdict.reviewer_disagreement >= min_reviewer_disagreement)
+
+    if reviewer_provider or reviewer_model:
+        ensure_consensus()
+        if not joined_review:
+            stmt = stmt.join(LlmReviewResult, LlmReviewResult.review_run_id == ConsensusVerdict.review_run_id)
+            joined_review = True
+        if reviewer_provider:
+            stmt = stmt.where(LlmReviewResult.provider_name == reviewer_provider)
+        if reviewer_model:
+            stmt = stmt.where(LlmReviewResult.model_name == reviewer_model)
+
+    ensure_consensus()
+    risk_rank = case(
+        (ConsensusVerdict.consensus_verdict == "blocked_overlap", 0),
+        (ConsensusVerdict.consensus_verdict == "reject_recommended", 1),
+        (ConsensusVerdict.consensus_verdict == "regenerate_recommended", 2),
+        (ConsensusVerdict.consensus_verdict == "insufficient_reviews", 3),
+        (ConsensusVerdict.high_disagreement_flag.is_(True), 4),
+        else_=5,
+    )
+    stmt = (
+        stmt.order_by(risk_rank, ConsensusVerdict.reviewer_disagreement.desc().nullslast(), Question.created_at.desc())
+        .offset(offset)
+        .limit(limit + 1)
+    )
+    result = await db.execute(stmt)
+    questions = result.unique().scalars().all()
+    has_more = len(questions) > limit
+    questions = questions[:limit]
+    items = await _serialize_generated_candidates(questions, db)
+    return {
+        "items": items,
+        "limit": limit,
+        "offset": offset,
+        "next_offset": offset + limit if has_more else None,
+    }
+
+
+@router.get("/generated-questions/{question_id}")
+async def get_generated_question(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    qid = _parse_uuid(question_id)
+    question = await db.get(Question, qid)
+    if not question or question.content_origin != "generated":
+        raise HTTPException(status_code=404, detail="Generated question not found")
+    items = await _serialize_generated_candidates([question], db)
+    return items[0]
+
+
+@router.post("/generated-questions/{question_id}/approve")
+async def approve_generated_question(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    return await approve_question(question_id, db=db, _auth=_auth)
+
+
+@router.post("/generated-questions/{question_id}/reject")
+async def reject_generated_question(
+    question_id: str,
+    body: RejectQuestionRequest = RejectQuestionRequest(),
+    db: AsyncSession = Depends(get_db),
+    auth_token: str = Depends(admin_required),
+):
+    return await reject_question(question_id, body=body, db=db, auth_token=auth_token)
+
+
+@router.post("/generated-questions/{question_id}/regenerate")
+async def regenerate_generated_question(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    from app.routers import generate as generate_router
+
+    qid = _parse_uuid(question_id)
+    question = await db.get(Question, qid)
+    if not question or question.content_origin != "generated":
+        raise HTTPException(status_code=404, detail="Generated question not found")
+
+    child_result = await db.execute(
+        select(Question.id).where(Question.derived_from_question_id == qid)
+    )
+    child_count = len(child_result.scalars().all())
+    queued_result = await db.execute(
+        select(QuestionJob.id).where(
+            QuestionJob.job_type == "generate",
+            QuestionJob.question_id.is_(None),
+            QuestionJob.status.in_(
+                (
+                    "pending",
+                    "generating",
+                    "retrying",
+                    "extracting",
+                    "annotating",
+                    "overlap_checking",
+                    "validating",
+                )
+            ),
+            QuestionJob.generation_request_jsonb["derived_from_question_id"].astext == str(qid),
+        )
+    )
+    queued_count = len(queued_result.scalars().all())
+    if child_count + queued_count >= REGENERATE_MAX_ATTEMPTS_PER_QUESTION:
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "Regenerate limit reached for this question "
+                f"({REGENERATE_MAX_ATTEMPTS_PER_QUESTION} attempts)"
+            ),
+        )
+
+    job_result = await db.execute(
+        select(QuestionJob)
+        .where(QuestionJob.question_id == qid)
+        .order_by(QuestionJob.created_at.desc())
+        .limit(1)
+    )
+    source_job = job_result.scalars().first()
+    if source_job is None or not isinstance(source_job.generation_request_jsonb, dict):
+        raise HTTPException(status_code=409, detail="No generation request snapshot available")
+    source_request = dict(source_job.generation_request_jsonb)
+    if isinstance(question.generation_source_set, dict):
+        source_request.update(question.generation_source_set)
+
+    now = datetime.now(timezone.utc)
+    source_request.pop("source_question_ids", None)
+    source_request["requested_count"] = 1
+    source_request.setdefault("release_policy", "admin_review_required")
+    source_request["provider_name"] = source_request.get("provider_name") or source_job.provider_name
+    source_request["model_name"] = source_request.get("model_name") or source_job.model_name
+    try:
+        batch_request = GenerationBatchRequest.model_validate(source_request)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=409,
+            detail={"error": "Stored generation request is no longer valid", "message": str(exc)},
+        )
+
+    domain = generate_router._domain_for_batch(batch_request)
+    selected_source_ids = await generate_router._select_source_question_ids_for_batch(
+        db,
+        batch_request,
+        domain,
+        [],
+    )
+
+    request_jsonb = batch_request.model_dump()
+    request_jsonb["requested_by"] = "admin"
+    request_jsonb["student_id"] = None
+    request_jsonb["requested_by_user_token"] = None
+
+    batch = GenerationBatch(
+        id=uuid.uuid4(),
+        requested_count=1,
+        request_jsonb=request_jsonb,
+        requested_by="admin",
+        student_id=None,
+        requested_by_user_token=None,
+        release_policy=request_jsonb["release_policy"],
+        regenerate_source_batch_id=source_job.generation_batch_id,
+        status="pending",
+        created_at=now,
+        updated_at=now,
+    )
+    db.add(batch)
+
+    retry_request = dict(request_jsonb)
+    retry_request.pop("requested_count", None)
+    retry_request["source_question_ids"] = selected_source_ids[0] if selected_source_ids else []
+    retry_request["retry_attempt"] = 0
+    retry_request["provider_name"] = retry_request.get("provider_name") or source_job.provider_name
+    retry_request["model_name"] = retry_request.get("model_name") or source_job.model_name
+    retry_request["requested_by"] = "admin"
+    retry_request["student_id"] = None
+    retry_request["requested_by_user_token"] = None
+    retry_request["derived_from_question_id"] = str(qid)
+    retry_request["seed"] = uuid.uuid4().int % 2_147_483_647
+    retry_request.setdefault("temperature", 0.7)
+
+    job = QuestionJob(
+        id=uuid.uuid4(),
+        job_type="generate",
+        content_origin="generated",
+        input_format="spec",
+        status="pending",
+        provider_name=retry_request["provider_name"],
+        model_name=retry_request["model_name"],
+        prompt_version=source_job.prompt_version,
+        rules_version=source_job.rules_version,
+        generation_batch_id=batch.id,
+        generation_request_jsonb=retry_request,
+        retry_count=0,
+        created_at=now,
+        updated_at=now,
+    )
+    db.add(job)
+    await db.commit()
+
+    asyncio.create_task(generate_router._run_batch_pipeline(batch.id)).add_done_callback(
+        generate_router._log_task_exception
+    )
+
+    return {
+        "source_question_id": str(qid),
+        "batch_id": str(batch.id),
+        "job_id": str(job.id),
+        "status": batch.status,
+    }
+
+
 @router.patch("/questions/{question_id}")
 async def edit_question(
     question_id: str,
@@ -347,8 +1024,20 @@ async def approve_question(
 
     q.practice_status = "active"
     q.updated_at = datetime.now(timezone.utc)
+    admin_decision_id, override_count = await _write_reviewer_admin_overrides(
+        qid=qid,
+        admin_verdict="accept",
+        admin_token=_auth,
+        admin_notes=None,
+        db=db,
+    )
     await db.commit()
-    return {"id": str(q.id), "practice_status": "active"}
+    return {
+        "id": str(q.id),
+        "practice_status": "active",
+        "admin_decision_id": str(admin_decision_id),
+        "reviewer_admin_override_count": override_count,
+    }
 
 
 @router.post("/questions/{question_id}/reject")
@@ -376,6 +1065,13 @@ async def reject_question(
     q.rejected_at = now
     q.rejected_by_admin_token = auth_token
     q.updated_at = now
+    admin_decision_id, override_count = await _write_reviewer_admin_overrides(
+        qid=qid,
+        admin_verdict="reject",
+        admin_token=auth_token,
+        admin_notes=body.reason,
+        db=db,
+    )
 
     await db.commit()
     return {
@@ -383,6 +1079,8 @@ async def reject_question(
         "practice_status": "rejected",
         "rejected_at": now.isoformat(),
         "rejection_reason": body.reason,
+        "admin_decision_id": str(admin_decision_id),
+        "reviewer_admin_override_count": override_count,
     }
 
 

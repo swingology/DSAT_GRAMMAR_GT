@@ -50,10 +50,12 @@ _SOURCE_SET_OPERATIONAL_KEYS = {
     "provider_name", "model_name", "seed", "temperature",
     # retry plumbing
     "retry_attempt", "idempotency_key",
+    # regeneration parent, stored in the dedicated Question FK
+    "derived_from_question_id",
     # batch-level workflow metadata that does not belong on a single
     # question's content lineage
     "requested_count", "requested_by", "student_id",
-    "requested_by_user_token", "release_policy",
+    "requested_by_user_token", "release_policy", "skip_review",
 }
 
 _GRAMMAR_SOURCE_EXAMPLE_COUNT = 3
@@ -123,6 +125,19 @@ async def _mark_job_failed(
     job.validation_errors_jsonb = [error_payload(step, exc)]
     await db.commit()
     return final_status
+
+
+async def _run_auto_review_swarm(
+    question_id: uuid.UUID,
+    generation_batch_id: uuid.UUID | None,
+) -> None:
+    from app.review.runner import run_review_swarm
+
+    await run_review_swarm(
+        question_id,
+        triggered_by="auto_on_save",
+        generation_batch_id=generation_batch_id,
+    )
 
 
 def _generation_profile_payload(*sources: dict | None) -> dict | None:
@@ -540,6 +555,18 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     version_id = uuid.uuid4()
     annotation_id = uuid.uuid4()
     now = datetime.now(timezone.utc)
+    derived_from_question_id = None
+    if request_data.get("derived_from_question_id"):
+        try:
+            derived_from_question_id = uuid.UUID(str(request_data["derived_from_question_id"]))
+        except (TypeError, ValueError) as exc:
+            return await _mark_job_failed(
+                job,
+                db,
+                step="validating",
+                exc=exc,
+                status="failed_permanent",
+            )
 
     # Persist inside a savepoint so a DB error only rolls back this question,
     # leaving the session valid for the status update that follows.
@@ -557,6 +584,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
                 current_explanation_text=annotate_json.get("explanation_short", ""),
                 practice_status="draft",
                 official_overlap_status="none",
+                derived_from_question_id=derived_from_question_id,
                 generation_source_set={k: v for k, v in request_data.items() if k not in _SOURCE_SET_OPERATIONAL_KEYS},
                 is_admin_edited=False,
                 metadata_managed_by_llm=True,
@@ -675,6 +703,13 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
             return "needs_review"
         job.status = "approved"
         await db.commit()
+        if not request_data.get("skip_review"):
+            asyncio.create_task(
+                _run_auto_review_swarm(
+                    question_id,
+                    getattr(job, "generation_batch_id", None),
+                )
+            ).add_done_callback(_log_task_exception)
         return "approved"
     except Exception as exc:
         logger.error("Generate overlap/export failed (job %s): %s", job.id, exc)

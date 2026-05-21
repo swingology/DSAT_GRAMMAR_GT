@@ -497,7 +497,7 @@ that the admin dashboard can filter and sort.
 **Goal:** Let admins visually inspect, filter, approve, reject, and regenerate
 generated candidates efficiently.
 
-- [ ] Add dashboard filters:
+- [x] Add dashboard filters:
   - generation batch
   - requested by admin vs self-study agent
   - student/profile origin
@@ -512,7 +512,7 @@ generated candidates efficiently.
   - reviewer disagreement
   - overlap status
   - creation date
-- [ ] Candidate card must show:
+- [x] Candidate card must show:
   - passage or stimulus
   - question stem
   - answer options
@@ -524,25 +524,31 @@ generated candidates efficiently.
   - overlap warning
   - review-swarm score table
   - reviewer notes and reject reasons
-- [ ] Actions:
+- [x] Actions:
   - approve
   - reject
   - edit
   - request re-review
   - regenerate from same spec
   - compare with official source examples
-- [ ] Ensure rejection does not delete candidate evidence. It should mark
+- [x] Ensure rejection does not delete candidate evidence. It should mark
   `practice_status = "rejected"` and preserve annotations, options, review
   results, consensus rows, overlap relations, and generation lineage for audit.
-- [ ] Capture reviewer/admin agreement or disagreement implicitly during
+- [x] Capture reviewer/admin agreement or disagreement implicitly during
   approve/reject; do not add a separate "reviewer was wrong" action.
-- [ ] **`reviewer_admin_overrides` plumbing:** approve and reject handlers
+- [x] **`reviewer_admin_overrides` plumbing:** approve and reject handlers
   generate one `admin_decision_id` (uuid4) per click and reuse it across
   the N rows written — one per reviewer in the latest completed review
   run for that question. Each row records `reviewer_verdict`,
   `admin_verdict`, and `override_direction` (`reviewer_correct` |
   `reviewer_too_harsh` | `reviewer_too_lenient`).
-- [ ] Add list endpoints optimized for dashboard filtering and pagination.
+- [x] Add list endpoints optimized for dashboard filtering and pagination.
+
+**Status 2026-05-20:** Complete. Implemented `GET /admin/generated-questions`
+and detail/action endpoints, `/dashboard/review` filtering and review cards,
+append-only `reviewer_admin_overrides` capture on approve/reject, regenerate
+from same spec, and pagination support. Verified with `uv run alembic upgrade
+head` and the full backend suite (`622 passed, 2 skipped`).
 
 **Exit criteria:** Admin can filter to the riskiest generated questions first,
 visually inspect them, and reject or approve without leaving the dashboard.
@@ -552,7 +558,7 @@ visually inspect them, and reject or approve without leaving the dashboard.
 **Goal:** Serve approved questions to students with richer targeting and
 inventory awareness.
 
-- [ ] Extend `GET /api/questions` filters:
+- [x] Extend `GET /api/questions` filters:
   - `domain`
   - `difficulty`
   - `grammar_role_key`
@@ -565,17 +571,25 @@ inventory awareness.
     for admin tokens — derived from the `admin_or_student_required`
     dependency, not from a request body field)
   - `limit`
-- [ ] Introduce the `admin_or_student_required` dependency in
+- [x] Introduce the `admin_or_student_required` dependency in
   `backend/app/auth.py` returning `(scope, key)`; this endpoint and the
   Phase 8 endpoints use it.
-- [ ] Add result metadata:
+- [x] Add result metadata:
   - active inventory count for the requested target
   - whether generated questions were included
   - whether inventory is below threshold
-- [ ] Ensure student-facing payload never exposes answer key.
-- [ ] Ensure only `practice_status = "active"` questions are served.
-- [ ] Add tests for grammar filters, reading filters, difficulty filters,
+- [x] Ensure student-facing payload never exposes answer key.
+- [x] Ensure only `practice_status = "active"` questions are served.
+- [x] Add tests for grammar filters, reading filters, difficulty filters,
   exclude-seen behavior, and active-only enforcement.
+
+**Status 2026-05-20:** Complete. Added `admin_or_student_required` auth dependency,
+rewrote `GET /api/questions` with full filter set, added `StudentQuestionsListResponse`
+with `inventory` metadata block (matching_target_total, matching_unseen, served,
+includes_generated, below_threshold, threshold), implemented exclude_seen resurface
+logic (correct=never, wrong=resurface after 30 days), added `inventory_sufficient_threshold`
+and `self_study_resurface_days` config. 30 new tests in `test_student_retrieval.py`.
+Full suite: 652 passed, 2 skipped.
 
 **Exit criteria:** A student or study agent can retrieve targeted active
 questions across grammar and reading without seeing draft candidates.
@@ -1245,8 +1259,8 @@ derivation rule between them.
 | Layer | What it holds | Frozen at |
 | --- | --- | --- |
 | `GenerationBatch.request_jsonb` | Raw POST body received at `/generate/batches`. Includes `requested_count`, `requested_by`, `student_id`, `requested_by_user_token`, `release_policy`, the content spec, optional `source_question_ids`. Does not include the `Idempotency-Key` header; that lives in `generation_batch_idempotency_keys`. | Batch creation |
-| `QuestionJob.generation_request_jsonb` | Per-question specialization of the batch request: content spec + operational keys (`provider_name`, `model_name`, `seed`, `temperature`, `retry_attempt`) + the actual source examples picked from the rotation pool for this specific job (differs across siblings within a batch). | Job creation |
-| `Question.generation_source_set` | Content lineage. Derived from `QuestionJob.generation_request_jsonb` by stripping operational keys. Source example IDs are retained (they are lineage, not operational). | Question save |
+| `QuestionJob.generation_request_jsonb` | Per-question specialization of the batch request: content spec + operational keys (`provider_name`, `model_name`, `seed`, `temperature`, `retry_attempt`, `derived_from_question_id`) + the actual source examples picked from the rotation pool for this specific job (differs across siblings within a batch). | Job creation |
+| `Question.generation_source_set` | Content lineage. Derived from `QuestionJob.generation_request_jsonb` by stripping operational keys. Source example IDs are retained (they are lineage, not operational). Regeneration parentage is stored in `Question.derived_from_question_id`, not duplicated in this JSONB. | Question save |
 
 Identity invariant (asserted by test):
 
@@ -1263,9 +1277,9 @@ Expanded operational-keys filter (current set in
 ```python
 _SOURCE_SET_OPERATIONAL_KEYS = {
     "provider_name", "model_name", "seed", "temperature",
-    "retry_attempt", "idempotency_key",
+    "retry_attempt", "idempotency_key", "derived_from_question_id",
     "requested_count", "requested_by", "student_id", "requested_by_user_token",
-    "release_policy",
+    "release_policy", "skip_review",
 }
 ```
 

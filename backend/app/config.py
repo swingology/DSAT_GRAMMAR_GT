@@ -99,6 +99,10 @@ class Settings(BaseSettings):
     generation_review_max_concurrent: int = 6
     generation_review_max_retries: int = 2
 
+    # Student retrieval (Phase 7)
+    inventory_sufficient_threshold: int = 5
+    self_study_resurface_days: int = 30
+
     # Logging
     log_level: str = "INFO"
     log_json: bool = True

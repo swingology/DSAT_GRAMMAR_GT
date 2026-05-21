@@ -53,6 +53,20 @@ def _review_providers(settings) -> list[tuple[str, str]]:
     return result
 
 
+def _exclude_generator_provider(
+    providers: list[tuple[str, str]],
+    generator_provider_name: str | None,
+) -> list[tuple[str, str]]:
+    """Remove the generating provider from the review swarm."""
+    if not generator_provider_name:
+        return providers
+    return [
+        (provider_name, model_name)
+        for provider_name, model_name in providers
+        if provider_name != generator_provider_name
+    ]
+
+
 async def _load_question_for_review(
     question_id: uuid.UUID,
     db: AsyncSession,
@@ -144,7 +158,6 @@ async def _load_question_for_review(
     }
 
 
-@with_retry(max_attempts=2, base_delay=1.0, max_delay=15.0)
 async def _call_review_provider(
     provider_name: str,
     model_name: str,
@@ -154,7 +167,7 @@ async def _call_review_provider(
 ) -> tuple[str, int, dict | None]:
     """Call a single LLM provider for review. Returns (raw_text, latency_ms, token_usage).
 
-    Retries once on transient errors via with_retry.
+    Retries transient errors using the configured review retry limit.
     """
     api_key, model = _provider_config(provider_name, settings)
     provider = get_provider(
@@ -164,13 +177,22 @@ async def _call_review_provider(
         default_model=model,
     )
     start = time.monotonic()
-    result = await provider.complete(
-        system=system_prompt,
-        user=user_prompt,
-        model=model,
-        max_tokens=_REVIEW_MAX_TOKENS,
-        temperature=_REVIEW_TEMPERATURE,
-    )
+
+    async def _complete_once():
+        return await provider.complete(
+            system=system_prompt,
+            user=user_prompt,
+            model=model,
+            max_tokens=_REVIEW_MAX_TOKENS,
+            temperature=_REVIEW_TEMPERATURE,
+        )
+
+    retrying_complete = with_retry(
+        max_attempts=settings.generation_review_max_retries,
+        base_delay=1.0,
+        max_delay=15.0,
+    )(_complete_once)
+    result = await retrying_complete()
     latency_ms = int((time.monotonic() - start) * 1000)
     token_usage = None
     if result.token_usage:
@@ -304,8 +326,9 @@ async def run_review_swarm(
         generation_request=context["generation_request"],
     )
 
-    # Load job_id for context
+    # Load job_id and generator provider for audit and self-grading exclusion.
     job_id = None
+    generator_provider_name = None
     async with async_session() as db:
         job_result = await db.execute(
             select(QuestionJob).where(QuestionJob.question_id == question_id)
@@ -314,11 +337,12 @@ async def run_review_swarm(
         job = job_result.scalars().first()
         if job:
             job_id = job.id
+            generator_provider_name = job.provider_name
+
+    providers = _exclude_generator_provider(providers, generator_provider_name)
 
     # Run reviewers concurrently with semaphore
     semaphore = asyncio.Semaphore(max_concurrent)
-    results: list[LlmReviewResult | None] = []
-
     async def _bounded_review(provider_name: str, model_name: str):
         async with semaphore:
             return await _run_single_reviewer(
@@ -367,22 +391,21 @@ async def run_review_swarm(
         review_run.completed_at = datetime.now(timezone.utc)
         await db.commit()
 
-    # Compute and save consensus verdict (Phase 5)
-    ok_results = [r for r in task_results if r is not None and r.review_status == "ok"]
-    if ok_results:
-        from app.review.consensus import save_consensus
-        # Fetch overlap status for the question
-        async with async_session() as db:
-            question = await db.get(Question, question_id)
-            overlap_status = getattr(question, "official_overlap_status", "none") if question else "none"
-            await save_consensus(
-                question_id=question_id,
-                review_run_id=review_run_id,
-                review_results=ok_results,
-                overlap_status=overlap_status,
-                generation_batch_id=generation_batch_id,
-                db=db,
-            )
+    # Compute and save consensus verdict (Phase 5). This runs even when
+    # all reviewers failed so the admin queue has an insufficient_reviews row.
+    from app.review.consensus import save_consensus
+    review_results = [r for r in task_results if r is not None]
+    async with async_session() as db:
+        question = await db.get(Question, question_id)
+        overlap_status = getattr(question, "official_overlap_status", "none") if question else "none"
+        await save_consensus(
+            question_id=question_id,
+            review_run_id=review_run_id,
+            review_results=review_results,
+            overlap_status=overlap_status,
+            generation_batch_id=generation_batch_id,
+            db=db,
+        )
 
     return review_run
 

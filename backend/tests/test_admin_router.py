@@ -35,6 +35,12 @@ def test_admin_reject_not_found(client):
     assert resp.status_code == 404
 
 
+def test_admin_generated_questions_list_empty(client):
+    resp = client.get("/admin/generated-questions", headers=AUTH)
+    assert resp.status_code == 200
+    assert resp.json() == {"items": [], "limit": 25, "offset": 0, "next_offset": None}
+
+
 def test_admin_reject_is_non_destructive(monkeypatch):
     """Rejecting a question flips practice_status to 'rejected', records the
     reason/timestamp/admin token, and does NOT delete linked evaluations,
@@ -70,10 +76,9 @@ def test_admin_reject_is_non_destructive(monkeypatch):
             return None
 
         async def execute(self, stmt):
-            # The non-destructive reject path must NOT issue DELETEs or
-            # SELECTs against options for the purpose of clearing
-            # annotations. Track everything so the assertion below catches
-            # any regression.
+            # Phase 6 may read review-run rows to capture reviewer/admin
+            # agreement, but the reject path must not delete or clear linked
+            # evidence rows.
             execute_calls.append(stmt)
 
             class _R:
@@ -82,6 +87,9 @@ def test_admin_reject_is_non_destructive(monkeypatch):
 
                 def all(self_inner):
                     return []
+
+                def first(self_inner):
+                    return None
 
                 def unique(self_inner):
                     return self_inner
@@ -130,10 +138,9 @@ def test_admin_reject_is_non_destructive(monkeypatch):
     # The destructive path used to null this — confirm it stays set
     assert fake_q.latest_annotation_id is not None
 
-    # No SQL statements should have been issued at all: the new handler
-    # is metadata-only on the loaded ORM instance.
-    assert execute_calls == [], (
-        "Rejection must not issue DELETE/SELECT against linked tables; "
+    assert body["reviewer_admin_override_count"] == 0
+    assert not any(stmt.__class__.__name__ == "Delete" for stmt in execute_calls), (
+        "Rejection must not issue DELETE against linked tables; "
         f"saw {len(execute_calls)} statement(s)."
     )
 
@@ -172,6 +179,9 @@ def test_admin_reject_accepts_empty_body(monkeypatch):
 
                 def all(self_inner):
                     return []
+
+                def first(self_inner):
+                    return None
 
                 def unique(self_inner):
                     return self_inner

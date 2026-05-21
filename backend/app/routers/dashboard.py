@@ -1,13 +1,14 @@
 """Local admin dashboard for ingestion, generation, and inspection."""
 import json
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import HTMLResponse
-from sqlalchemy import select, text
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import admin_required
 from app.database import get_db
 from app.models.db import QuestionJob, Question, QuestionOption
+from app.routers.admin import list_generated_questions
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
@@ -116,58 +117,80 @@ async def review_queue_page(_auth: str = Depends(admin_required)):
 
 @router.get("/review-items", response_class=HTMLResponse)
 async def review_items_fragment(
+    generation_batch_id: str | None = None,
+    requested_by: str | None = None,
+    student_id: int | None = None,
+    domain: str | None = None,
+    grammar_role_key: str | None = None,
+    grammar_focus_key: str | None = None,
+    reading_skill_family_key: str | None = None,
+    reading_focus_key: str | None = None,
+    difficulty: str | None = None,
+    generator_provider: str | None = None,
+    generator_model: str | None = None,
+    reviewer_provider: str | None = None,
+    reviewer_model: str | None = None,
+    min_average_realism: float | None = None,
+    consensus_verdict: str | None = None,
+    min_reviewer_disagreement: float | None = None,
+    overlap_status: str | None = None,
+    practice_status: str | None = Query("draft"),
+    created_from: str | None = None,
+    created_to: str | None = None,
+    limit: int = Query(25, ge=1, le=100),
+    offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    rows = await db.execute(text("""
-        WITH latest_job AS (
-            SELECT DISTINCT ON (question_id)
-                id as job_id,
-                question_id,
-                status,
-                validation_errors_jsonb,
-                created_at
-            FROM question_jobs
-            ORDER BY question_id, created_at DESC
-        )
-        SELECT
-            q.id, q.source_exam_code, q.source_question_number, q.stem_type_key,
-            q.content_origin, q.current_question_text, q.current_passage_text,
-            q.current_paired_passage_text, q.current_underlined_text,
-            q.current_correct_option_label, q.practice_status,
-            lj.validation_errors_jsonb, lj.job_id, q.latest_version_id
-        FROM questions q
-        JOIN latest_job lj ON lj.question_id = q.id
-        WHERE lj.status = 'needs_review'
-        ORDER BY q.source_exam_code NULLS LAST,
-                 q.source_question_number::int NULLS LAST
-    """))
-    items = rows.fetchall()
+    data = await list_generated_questions(
+        generation_batch_id=generation_batch_id or None,
+        requested_by=requested_by or None,
+        student_id=student_id,
+        domain=domain or None,
+        grammar_role_key=grammar_role_key or None,
+        grammar_focus_key=grammar_focus_key or None,
+        reading_skill_family_key=reading_skill_family_key or None,
+        reading_focus_key=reading_focus_key or None,
+        difficulty=difficulty or None,
+        generator_provider=generator_provider or None,
+        generator_model=generator_model or None,
+        reviewer_provider=reviewer_provider or None,
+        reviewer_model=reviewer_model or None,
+        min_average_realism=min_average_realism,
+        consensus_verdict=consensus_verdict or None,
+        min_reviewer_disagreement=min_reviewer_disagreement,
+        overlap_status=overlap_status or None,
+        practice_status=practice_status or None,
+        created_from=created_from or None,
+        created_to=created_to or None,
+        limit=limit,
+        offset=offset,
+        db=db,
+        _auth=_auth,
+    )
+    items = data["items"]
 
     if not items:
         return HTMLResponse(
             '<p class="text-sm text-slate-400 text-center py-10">'
-            'No items in review queue. Everything is approved or pending.</p>'
+            'No generated candidates match the current filters.</p>'
         )
 
-    version_ids = [row[13] for row in items if row[13]]
-    opts_result = await db.execute(
-        select(QuestionOption)
-        .where(QuestionOption.question_version_id.in_(version_ids))
-        .order_by(QuestionOption.question_id, QuestionOption.option_label)
-    )
-    opts_by_qid: dict[str, list] = {}
-    for opt in opts_result.scalars().all():
-        key = str(opt.question_id)
-        opts_by_qid.setdefault(key, []).append(opt)
-
     cards = []
-    for row in items:
-        qid, exam, qnum, stem, origin, qtext, ptext, paired_ptext, underlined_text, correct, pstatus, errors, job_id, _ver = row
-        qid_str = str(qid)
-        job_id_str = str(job_id)
+    for item in items:
+        qid_str = item["id"]
+        q_short = qid_str[:8]
+        job = item.get("job") or {}
+        job_id_str = job.get("id") or ""
+        batch = item.get("batch") or {}
+        consensus = item.get("consensus") or {}
+        review_results = item.get("review_results") or []
+        annotation = item.get("annotation") or {}
+        request = job.get("generation_request_jsonb") or {}
+        source_examples = item.get("source_examples") or []
+        errors = job.get("validation_errors_jsonb") or []
+        correct = item.get("correct_option_label")
 
-        errors = errors or []
         blocking = [e for e in errors if e.get("severity") == "blocking"]
         warnings = [e for e in errors if e.get("severity") != "blocking"]
 
@@ -189,26 +212,18 @@ async def review_items_fragment(
                 f'<span>{_esc(w_field)} — {_esc(w_msg)}</span></div>'
             )
 
-        opts = opts_by_qid.get(qid_str, [])
         opts_html = ""
-        for o in opts:
-            is_correct = o.option_label == correct
+        for opt in item.get("options", []):
+            is_correct = opt.get("label") == correct
             bg = "bg-emerald-50 border-emerald-300 text-emerald-800" if is_correct else "bg-slate-50 border-slate-200 text-slate-700"
             opts_html += (
                 f'<div class="flex items-start gap-2 rounded-lg border px-3 py-2 text-sm {bg}">'
-                f'<span class="font-mono font-bold min-w-[1.2rem]">{_esc(o.option_label)}</span>'
-                f'<span>{_esc(o.option_text or "")}</span>'
+                f'<span class="font-mono font-bold min-w-[1.2rem]">{_esc(opt.get("label") or "")}</span>'
+                f'<span>{_esc(opt.get("text") or "")}</span>'
                 f'</div>'
             )
         if not opts_html:
             opts_html = '<p class="text-xs text-slate-400 italic">No options stored.</p>'
-
-        source_label = f'{_esc(exam or "?")} Q{qnum or "?"}'
-        origin_cls = {
-            "official": "bg-blue-100 text-blue-700",
-            "unofficial": "bg-amber-100 text-amber-700",
-            "generated": "bg-violet-100 text-violet-700",
-        }.get(origin or "", "bg-slate-100 text-slate-600")
 
         def _truncate(t):
             if not t:
@@ -216,24 +231,89 @@ async def review_items_fragment(
             escaped = _esc(t[:500] + "…" if len(t) > 500 else t)
             return f'<p class="text-sm text-slate-800 leading-snug whitespace-pre-wrap">{escaped}</p>'
 
-        passage_block = _truncate(ptext)
-        paired_block = _truncate(paired_ptext) if paired_ptext else ""
+        review_rows = ""
+        for review in review_results:
+            scores = review.get("scores_jsonb") or {}
+            review_rows += f"""
+        <tr class="border-b border-slate-100">
+          <td class="py-1.5 pr-2 text-xs">{_esc(review.get("provider_name") or "")}</td>
+          <td class="py-1.5 pr-2 text-xs">{_esc(review.get("model_name") or "")}</td>
+          <td class="py-1.5 pr-2 text-xs">{_esc(review.get("verdict") or "")}</td>
+          <td class="py-1.5 pr-2 text-xs tabular-nums">{scores.get("realism_score", "—")}</td>
+          <td class="py-1.5 pr-2 text-xs tabular-nums">{scores.get("sat_fidelity_score", "—")}</td>
+          <td class="py-1.5 pr-2 text-xs tabular-nums">{scores.get("copy_risk_score", "—")}</td>
+          <td class="py-1.5 text-xs text-slate-500">{_esc(review.get("review_notes") or review.get("error_message") or "")}</td>
+        </tr>"""
+        if not review_rows:
+            review_rows = '<tr><td colspan="7" class="py-2 text-xs text-slate-400">No review results yet.</td></tr>'
+
+        source_rows = ""
+        for source in source_examples:
+            source_rows += f"""
+        <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 space-y-1">
+          <div class="flex gap-2 text-xs text-slate-500">
+            <span class="font-mono">{_esc(source.get("id", "")[:8])}…</span>
+            <span>{_esc(source.get("source_exam_code") or "")} {_esc(source.get("source_module_code") or "")} Q{_esc(source.get("source_question_number") or "")}</span>
+            <span>correct {_esc(source.get("correct_option_label") or "")}</span>
+          </div>
+          <p class="text-sm text-slate-800">{_esc(source.get("question_text") or "")}</p>
+        </div>"""
+        if not source_rows:
+            source_rows = '<p class="text-xs text-slate-400">No source examples recorded.</p>'
+
+        request_keys = [
+            "target_grammar_role_key", "target_grammar_focus_key",
+            "target_reading_skill_family_key", "target_skill_family_key",
+            "target_reading_focus_key", "difficulty_overall",
+            "stimulus_mode_key", "stem_type_key",
+        ]
+        request_summary = {key: request.get(key) for key in request_keys if request.get(key)}
+        annotation_keys = [
+            "grammar_role_key", "grammar_focus_key",
+            "reading_skill_family_key", "reading_focus_key",
+            "difficulty_overall", "stimulus_mode_key", "stem_type_key",
+        ]
+        annotation_summary = {key: annotation.get(key) for key in annotation_keys if annotation.get(key)}
+
+        passage_block = _truncate(item.get("passage_text"))
         underlined_block = (
             f'<div class="mt-2 rounded border border-amber-200 bg-amber-50 px-3 py-2">'
             f'<p class="text-xs font-semibold text-amber-700 mb-1">Underlined portion</p>'
-            f'<p class="text-sm text-slate-800">{_esc(underlined_text)}</p></div>'
-        ) if underlined_text else ""
+            f'<p class="text-sm text-slate-800">{_esc(item.get("underlined_text"))}</p></div>'
+        ) if item.get("underlined_text") else ""
+        consensus_chip = consensus.get("consensus_verdict") or "not_reviewed"
+        overlap_chip = item.get("official_overlap_status") or "none"
+        rejection_html = (
+            f'<div class="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-800">'
+            f'<span class="font-semibold">Reject reason:</span> {_esc(item.get("rejection_reason"))}</div>'
+            if item.get("rejection_reason")
+            else ""
+        )
+        generator_label = " ".join(
+            part for part in [job.get("provider_name"), job.get("model_name")] if part
+        ) or "unknown generator"
+        reviewer_disagreement = consensus.get("reviewer_disagreement")
+        average_realism = consensus.get("average_realism")
+        batch_label = batch.get("id", "")[:8] + "…" if batch.get("id") else "no batch"
+        requested_by = batch.get("requested_by") or "unknown"
+        student_origin = batch.get("student_id")
+        student_label = f"student {student_origin}" if student_origin is not None else "admin/profile none"
 
         cards.append(f"""
-<div class="card p-5 space-y-4" id="rq-{qid_str[:8]}">
+<div class="card p-5 space-y-4" id="rq-{q_short}">
   <div class="flex flex-wrap items-center gap-3">
-    <span class="font-semibold text-slate-800 text-base">{source_label}</span>
-    <span class="chip {origin_cls}">{_esc(origin or "?")}</span>
-    <span class="chip chip-soft">{_esc(stem or "?")}</span>
+    <span class="font-semibold text-slate-800 text-base">{_esc(item.get("domain") or "generated")}</span>
+    <span class="chip chip-soft">{_esc(item.get("practice_status") or "")}</span>
+    <span class="chip chip-soft">{_esc(consensus_chip)}</span>
+    <span class="chip chip-soft">overlap {_esc(overlap_chip)}</span>
+    <span class="chip chip-soft">realism {_esc(average_realism if average_realism is not None else "—")}</span>
+    <span class="chip chip-soft">disagreement {_esc(reviewer_disagreement if reviewer_disagreement is not None else "—")}</span>
     <span class="text-xs text-slate-400 font-mono">{qid_str[:12]}…</span>
     <div class="ml-auto flex gap-2">
-      <button onclick="rqReannotate('{qid_str}','{job_id_str}')"
-              class="btn btn-sky text-xs px-3 py-1.5 w-auto">Reannotate</button>
+      <button onclick="rqReviewSwarm('{qid_str}')"
+              class="btn btn-sky text-xs px-3 py-1.5 w-auto">Re-review</button>
+      <button onclick="rqRegenerate('{qid_str}')"
+              class="btn btn-slate text-xs px-3 py-1.5 w-auto">Regenerate</button>
       <button onclick="rqApprove('{qid_str}')"
               class="btn btn-emerald text-xs px-3 py-1.5 w-auto">Approve</button>
       <button onclick="rqReject('{qid_str}')"
@@ -241,27 +321,97 @@ async def review_items_fragment(
     </div>
   </div>
 
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+      <p class="font-semibold text-slate-600">Batch</p>
+      <p class="font-mono text-slate-700">{_esc(batch_label)}</p>
+      <p class="text-slate-500">requested by {_esc(requested_by)}</p>
+    </div>
+    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+      <p class="font-semibold text-slate-600">Origin</p>
+      <p class="text-slate-700">{_esc(student_label)}</p>
+      <p class="text-slate-500">{_esc(batch.get("release_policy") or "")}</p>
+    </div>
+    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+      <p class="font-semibold text-slate-600">Generator</p>
+      <p class="text-slate-700">{_esc(generator_label)}</p>
+      <p class="font-mono text-slate-500">{_esc(job_id_str[:8] + "…" if job_id_str else "no job")}</p>
+    </div>
+    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+      <p class="font-semibold text-slate-600">Created</p>
+      <p class="text-slate-700">{_esc(item.get("created_at") or "—")}</p>
+      <p class="text-slate-500">updated {_esc(item.get("updated_at") or "—")}</p>
+    </div>
+  </div>
+
   <div class="space-y-1 rounded-lg border border-red-100 bg-red-50 p-3">
     {err_html or '<span class="text-xs text-slate-400">No validation errors recorded.</span>'}
   </div>
+  {rejection_html}
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <div class="space-y-1">
       <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Question</p>
-      <p class="text-sm text-slate-800 leading-snug">{_esc(qtext or "")}</p>
+      <p class="text-sm text-slate-800 leading-snug">{_esc(item.get("question_text") or "")}</p>
     </div>
     <div class="space-y-1">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">{'Text 1 / Passage' if paired_ptext else 'Passage'}</p>
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">{'Text 1 / Passage' if item.get("paired_passage_text") else 'Passage'}</p>
       {passage_block}
       {underlined_block}
-      {'<p class="text-xs font-medium text-slate-500 uppercase tracking-wide mt-2">Text 2 (paired)</p>' + _truncate(paired_ptext) if paired_ptext else ""}
+      {'<p class="text-xs font-medium text-slate-500 uppercase tracking-wide mt-2">Text 2 (paired)</p>' + _truncate(item.get("paired_passage_text")) if item.get("paired_passage_text") else ""}
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 text-xs">
+    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+      <p class="font-semibold text-slate-600 mb-1">Requested target</p>
+      <pre class="whitespace-pre-wrap text-slate-700">{_esc(json.dumps(request_summary, indent=2))}</pre>
+    </div>
+    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+      <p class="font-semibold text-slate-600 mb-1">Actual annotation</p>
+      <pre class="whitespace-pre-wrap text-slate-700">{_esc(json.dumps(annotation_summary, indent=2))}</pre>
+    </div>
+    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+      <p class="font-semibold text-slate-600 mb-1">Consensus reasons</p>
+      <pre class="whitespace-pre-wrap text-slate-700">{_esc(json.dumps(consensus.get("reasons_jsonb") or [], indent=2))}</pre>
     </div>
   </div>
 
   <div class="space-y-2">
     <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Options</p>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">{opts_html}</div>
+    <p class="text-xs text-slate-600">Correct answer: <span class="font-mono font-semibold">{_esc(correct or "—")}</span></p>
   </div>
+
+  <div class="space-y-1 rounded-lg border border-slate-200 bg-white p-3">
+    <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Explanation</p>
+    {_truncate(item.get("explanation_text"))}
+  </div>
+
+  <div class="space-y-2">
+    <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Review swarm scores and notes</p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b border-slate-200 text-xs text-slate-400">
+            <th class="py-1.5 pr-2 font-medium">Provider</th>
+            <th class="py-1.5 pr-2 font-medium">Model</th>
+            <th class="py-1.5 pr-2 font-medium">Verdict</th>
+            <th class="py-1.5 pr-2 font-medium">Realism</th>
+            <th class="py-1.5 pr-2 font-medium">SAT</th>
+            <th class="py-1.5 pr-2 font-medium">Copy</th>
+            <th class="py-1.5 font-medium">Notes</th>
+          </tr>
+        </thead>
+        <tbody>{review_rows}</tbody>
+      </table>
+    </div>
+  </div>
+
+  <details class="group" id="sources-{q_short}">
+    <summary class="cursor-pointer text-xs font-semibold text-sky-600 hover:text-sky-800 select-none">Compare with official source examples</summary>
+    <div class="mt-3 grid grid-cols-1 lg:grid-cols-2 gap-3">{source_rows}</div>
+  </details>
 
   <details class="group">
     <summary class="cursor-pointer text-xs font-semibold text-sky-600 hover:text-sky-800 select-none list-none flex items-center gap-1">
@@ -273,19 +423,19 @@ async def review_items_fragment(
     <form class="mt-3 space-y-3" onsubmit="return rqSave(event, '{qid_str}')">
       <div class="field">
         <label class="text-xs text-slate-500">Question text</label>
-        <textarea name="question_text" rows="3" class="inp text-sm">{_esc(qtext or "")}</textarea>
+        <textarea name="question_text" rows="3" class="inp text-sm">{_esc(item.get("question_text") or "")}</textarea>
       </div>
       <div class="field">
         <label class="text-xs text-slate-500">Passage text (Text 1)</label>
-        <textarea name="passage_text" rows="4" class="inp text-sm">{_esc(ptext or "")}</textarea>
+        <textarea name="passage_text" rows="4" class="inp text-sm">{_esc(item.get("passage_text") or "")}</textarea>
       </div>
       <div class="field">
         <label class="text-xs text-slate-500">Text 2 / Paired passage (compare questions — leave blank if single passage)</label>
-        <textarea name="paired_passage_text" rows="4" class="inp text-sm">{_esc(paired_ptext or "")}</textarea>
+        <textarea name="paired_passage_text" rows="4" class="inp text-sm">{_esc(item.get("paired_passage_text") or "")}</textarea>
       </div>
       <div class="field">
         <label class="text-xs text-slate-500">Underlined portion (exact text that is underlined in the passage — leave blank if none)</label>
-        <textarea name="underlined_text" rows="2" class="inp text-sm">{_esc(underlined_text or "")}</textarea>
+        <textarea name="underlined_text" rows="2" class="inp text-sm">{_esc(item.get("underlined_text") or "")}</textarea>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div class="field">
@@ -306,15 +456,30 @@ async def review_items_fragment(
         <button type="button" onclick="rqSaveThenReannotate('{qid_str}', '{job_id_str}', this.closest('form'))"
                 class="btn btn-sky text-xs px-4 py-2 w-auto">Save + Reannotate</button>
       </div>
-      <div id="edit-result-{qid_str[:8]}" class="text-xs text-slate-500"></div>
+      <div id="edit-result-{q_short}" class="text-xs text-slate-500"></div>
     </form>
   </details>
 </div>""")
 
     count = len(items)
+    next_offset = data.get("next_offset")
+    current_offset = data.get("offset") or 0
+    next_button_offset = next_offset if next_offset is not None else current_offset
+    pager_html = f"""
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-sm text-slate-500">{count} item{"s" if count != 1 else ""} need attention.</p>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="setReviewOffset({max(current_offset - limit, 0)})"
+                class="btn btn-slate text-xs px-3 py-1.5 w-auto"
+                {"disabled" if current_offset <= 0 else ""}>Previous</button>
+        <span class="text-xs text-slate-400">offset {current_offset}</span>
+        <button type="button" onclick="setReviewOffset({next_button_offset})"
+                class="btn btn-slate text-xs px-3 py-1.5 w-auto"
+                {"disabled" if next_offset is None else ""}>Next</button>
+      </div>
+    </div>"""
     return HTMLResponse(
-        f'<p class="text-sm text-slate-500 mb-4">{count} item{"s" if count != 1 else ""} need attention.</p>'
-        + "\n".join(cards)
+        pager_html + "\n".join(cards)
     )
 
 
@@ -381,12 +546,140 @@ _REVIEW_PAGE = """<!DOCTYPE html>
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-6 py-6">
-    <div id="review-queue"
-         hx-get="/dashboard/review-items"
-         hx-trigger="load"
-         hx-swap="innerHTML">
-      <p class="text-sm text-slate-400 text-center py-10">Loading review queue…</p>
+  <main class="max-w-6xl mx-auto px-6 py-6 space-y-5">
+    <form id="review-filter-form" class="card p-4 space-y-4" onsubmit="reloadQueue(); return false;">
+      <div class="grid grid-cols-1 md:grid-cols-4 xl:grid-cols-6 gap-3">
+        <div class="field">
+          <label>Batch ID</label>
+          <input name="generation_batch_id" class="inp" placeholder="uuid">
+        </div>
+        <div class="field">
+          <label>Requested by</label>
+          <select name="requested_by" class="inp">
+            <option value="">any</option>
+            <option value="admin">admin</option>
+            <option value="self_study_agent">self-study agent</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Student ID</label>
+          <input name="student_id" type="number" min="1" class="inp" placeholder="any">
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select name="practice_status" class="inp">
+            <option value="draft" selected>draft</option>
+            <option value="rejected">rejected</option>
+            <option value="active">active</option>
+            <option value="">any</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Domain</label>
+          <select name="domain" class="inp">
+            <option value="">any</option>
+            <option value="grammar">grammar</option>
+            <option value="reading">reading</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Overlap</label>
+          <select name="overlap_status" class="inp">
+            <option value="">any</option>
+            <option value="none">none</option>
+            <option value="possible">possible</option>
+            <option value="confirmed">confirmed</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 xl:grid-cols-6 gap-3">
+        <div class="field">
+          <label>Grammar role</label>
+          <input name="grammar_role_key" class="inp" placeholder="role key">
+        </div>
+        <div class="field">
+          <label>Grammar focus</label>
+          <input name="grammar_focus_key" class="inp" placeholder="focus key">
+        </div>
+        <div class="field">
+          <label>Reading family</label>
+          <input name="reading_skill_family_key" class="inp" placeholder="family key">
+        </div>
+        <div class="field">
+          <label>Reading focus</label>
+          <input name="reading_focus_key" class="inp" placeholder="focus key">
+        </div>
+        <div class="field">
+          <label>Difficulty</label>
+          <select name="difficulty" class="inp">
+            <option value="">any</option>
+            <option value="easy">easy</option>
+            <option value="medium">medium</option>
+            <option value="hard">hard</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Consensus</label>
+          <select name="consensus_verdict" class="inp">
+            <option value="">any</option>
+            <option value="blocked_overlap">blocked_overlap</option>
+            <option value="reject_recommended">reject_recommended</option>
+            <option value="regenerate_recommended">regenerate_recommended</option>
+            <option value="insufficient_reviews">insufficient_reviews</option>
+            <option value="admin_review_ready">admin_review_ready</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 xl:grid-cols-7 gap-3">
+        <div class="field">
+          <label>Generator provider</label>
+          <input name="generator_provider" class="inp" placeholder="openai">
+        </div>
+        <div class="field">
+          <label>Generator model</label>
+          <input name="generator_model" class="inp" placeholder="model">
+        </div>
+        <div class="field">
+          <label>Reviewer provider</label>
+          <input name="reviewer_provider" class="inp" placeholder="anthropic">
+        </div>
+        <div class="field">
+          <label>Reviewer model</label>
+          <input name="reviewer_model" class="inp" placeholder="model">
+        </div>
+        <div class="field">
+          <label>Min realism</label>
+          <input name="min_average_realism" type="number" min="0" max="10" step="0.1" class="inp" placeholder="0-10">
+        </div>
+        <div class="field">
+          <label>Min disagreement</label>
+          <input name="min_reviewer_disagreement" type="number" min="0" step="0.1" class="inp" placeholder="0.0">
+        </div>
+        <div class="field">
+          <label>Limit</label>
+          <input name="limit" type="number" min="1" max="100" value="25" class="inp">
+        </div>
+        <div class="field">
+          <label>Offset</label>
+          <input name="offset" type="number" min="0" value="0" class="inp">
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto_auto] gap-3 items-end">
+        <div class="field">
+          <label>Created from</label>
+          <input name="created_from" type="datetime-local" class="inp">
+        </div>
+        <div class="field">
+          <label>Created to</label>
+          <input name="created_to" type="datetime-local" class="inp">
+        </div>
+        <button type="submit" class="btn btn-sky text-xs px-4 py-2">Apply filters</button>
+        <button type="button" onclick="resetFilters()" class="btn btn-slate text-xs px-4 py-2">Reset</button>
+      </div>
+    </form>
+
+    <div id="review-queue">
+      <p class="text-sm text-slate-400 text-center py-10">Loading review queue...</p>
     </div>
     <div id="action-log" class="mt-6 space-y-2"></div>
   </main>
@@ -423,10 +716,44 @@ _REVIEW_PAGE = """<!DOCTYPE html>
       if (container.children.length > 10) container.lastChild.remove();
     }
 
-    function reloadQueue() {
+    function reviewQueryString() {
+      const form = document.getElementById('review-filter-form');
+      const params = new URLSearchParams();
+      for (const [key, value] of new FormData(form).entries()) {
+        const trimmed = String(value).trim();
+        if (trimmed) params.set(key, trimmed);
+      }
+      return params.toString();
+    }
+
+    async function reloadQueue() {
       const el = document.getElementById('review-queue');
       el.innerHTML = '<p class="text-sm text-slate-400 text-center py-10">Refreshing…</p>';
-      htmx.trigger(el, 'load');
+      const query = reviewQueryString();
+      const path = '/dashboard/review-items' + (query ? '?' + query : '');
+      try {
+        const headers = {};
+        const key = getKey();
+        if (key) headers['X-API-Key'] = key;
+        const res = await fetch(path, { headers });
+        const html = await res.text();
+        if (!res.ok) throw { status: res.status, data: html };
+        el.innerHTML = html;
+      } catch(err) {
+        el.innerHTML = '<p class="text-sm text-red-700 text-center py-10">Review queue load failed: ' +
+          String(err.data || err.status || err).slice(0, 180) + '</p>';
+      }
+    }
+
+    function resetFilters() {
+      document.getElementById('review-filter-form').reset();
+      reloadQueue();
+    }
+
+    function setReviewOffset(offset) {
+      const input = document.querySelector('#review-filter-form [name="offset"]');
+      if (input) input.value = String(Math.max(0, Number(offset) || 0));
+      reloadQueue();
     }
 
     async function rqSave(evt, qid) {
@@ -485,8 +812,11 @@ _REVIEW_PAGE = """<!DOCTYPE html>
 
     async function rqApprove(qid) {
       try {
-        await apiFetch('/admin/questions/' + qid + '/approve', { method: 'POST' });
+        const res = await apiFetch('/admin/generated-questions/' + qid + '/approve', { method: 'POST' });
         log('Approved ' + qid.slice(0,8) + '… — removing from queue');
+        if (res.reviewer_admin_override_count !== undefined) {
+          log('Captured ' + res.reviewer_admin_override_count + ' reviewer/admin override rows');
+        }
         const card = document.getElementById('rq-' + qid.slice(0,8));
         if (card) { card.style.opacity = '0.4'; card.style.pointerEvents = 'none'; }
       } catch(err) {
@@ -495,16 +825,46 @@ _REVIEW_PAGE = """<!DOCTYPE html>
     }
 
     async function rqReject(qid) {
-      if (!confirm('Mark this question as rejected/archived?')) return;
+      const reason = prompt('Reject reason for audit trail:', 'admin rejected from review queue');
+      if (reason === null) return;
       try {
-        await apiFetch('/admin/questions/' + qid + '/reject', { method: 'POST' });
+        const res = await apiFetch('/admin/generated-questions/' + qid + '/reject', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason }),
+        });
         log('Rejected ' + qid.slice(0,8) + '…');
+        if (res.reviewer_admin_override_count !== undefined) {
+          log('Captured ' + res.reviewer_admin_override_count + ' reviewer/admin override rows');
+        }
         const card = document.getElementById('rq-' + qid.slice(0,8));
         if (card) { card.style.opacity = '0.4'; card.style.pointerEvents = 'none'; }
       } catch(err) {
         log('Reject failed: ' + JSON.stringify(err.data).slice(0, 100), false);
       }
     }
+
+    async function rqReviewSwarm(qid) {
+      try {
+        const res = await apiFetch('/admin/questions/' + qid + '/review-swarm', { method: 'POST' });
+        log('Review swarm completed for ' + qid.slice(0,8) + '… status=' + (res.status || '?'));
+        await reloadQueue();
+      } catch(err) {
+        log('Review swarm failed: ' + JSON.stringify(err.data).slice(0, 100), false);
+      }
+    }
+
+    async function rqRegenerate(qid) {
+      if (!confirm('Create a new single-question batch from this candidate spec?')) return;
+      try {
+        const res = await apiFetch('/admin/generated-questions/' + qid + '/regenerate', { method: 'POST' });
+        log('Regeneration batch queued: ' + (res.batch_id || '').slice(0,8) + '…');
+      } catch(err) {
+        log('Regenerate failed: ' + JSON.stringify(err.data).slice(0, 100), false);
+      }
+    }
+
+    reloadQueue();
   </script>
 </body>
 </html>"""

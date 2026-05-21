@@ -5,7 +5,11 @@ from unittest.mock import AsyncMock
 import pytest
 from fastapi import HTTPException
 
-from app.models.db import LlmEvaluation, Question, QuestionAnnotation, QuestionJob, QuestionOption, QuestionRelation, QuestionVersion
+from app.models.db import (
+    GenerationBatch, LlmEvaluation, LlmReviewResult, Question,
+    QuestionAnnotation, QuestionJob, QuestionOption, QuestionRelation,
+    QuestionVersion, ReviewerAdminOverride, ReviewRun,
+)
 from app.models.payload import AdminEditRequest
 from app.routers import admin as admin_router
 from app.routers import generate as generate_router
@@ -342,8 +346,14 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
     # generation_profile_jsonb. `seed` is now classified as operational
     # under the Phase 0 _SOURCE_SET_OPERATIONAL_KEYS expansion and is
     # filtered out by _generation_profile_payload.
+    parent_question_id = uuid.uuid4()
     await generate_router._run_generate_pipeline(
-        job, db, {"target_grammar_role_key": "agreement"}
+        job,
+        db,
+        {
+            "target_grammar_role_key": "agreement",
+            "derived_from_question_id": str(parent_question_id),
+        },
     )
 
     question = next(obj for obj in db.added if isinstance(obj, Question))
@@ -351,6 +361,7 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
     assert db.flush_count == 1
     assert question.latest_version_id is not None
     assert question.latest_annotation_id is not None
+    assert question.derived_from_question_id == parent_question_id
     assert job.question_id == question.id
     assert job.status == "approved"
     assert annotation.generation_profile_jsonb == {
@@ -811,6 +822,245 @@ async def test_approve_question_allows_official_items():
 
 
 @pytest.mark.asyncio
+async def test_approve_question_captures_reviewer_admin_overrides():
+    db = _FakeDB()
+    question_id = uuid.uuid4()
+    run_id = uuid.uuid4()
+    question = Question(
+        id=question_id,
+        content_origin="generated",
+        current_question_text="Generated",
+        current_passage_text=None,
+        current_correct_option_label="A",
+        current_explanation_text=None,
+        practice_status="draft",
+        official_overlap_status="none",
+        is_admin_edited=False,
+        metadata_managed_by_llm=True,
+    )
+    review_run = ReviewRun(
+        id=run_id,
+        question_id=question_id,
+        triggered_by="manual_question",
+        rubric_version="v1",
+        rules_versions_jsonb={},
+        status="complete",
+    )
+    accept_result = LlmReviewResult(
+        id=uuid.uuid4(),
+        question_id=question_id,
+        review_run_id=run_id,
+        provider_name="openai",
+        model_name="m1",
+        rubric_version="v1",
+        rules_versions_jsonb={},
+        scores_jsonb={},
+        verdict="accept",
+        review_status="ok",
+    )
+    reject_result = LlmReviewResult(
+        id=uuid.uuid4(),
+        question_id=question_id,
+        review_run_id=run_id,
+        provider_name="anthropic",
+        model_name="m2",
+        rubric_version="v1",
+        rules_versions_jsonb={},
+        scores_jsonb={},
+        verdict="reject",
+        review_status="ok",
+    )
+    db.get_map[(Question, question_id)] = question
+    db.execute_results = [
+        _ScalarResult(first_item=review_run),
+        _ScalarResult(items=[accept_result, reject_result]),
+    ]
+
+    result = await admin_router.approve_question(str(question_id), db=db, _auth="admin-token")
+
+    overrides = [obj for obj in db.added if isinstance(obj, ReviewerAdminOverride)]
+    assert result["reviewer_admin_override_count"] == 2
+    assert len(overrides) == 2
+    assert {row.admin_decision_id for row in overrides} == {uuid.UUID(result["admin_decision_id"])}
+    assert {row.override_direction for row in overrides} == {"reviewer_correct", "reviewer_too_harsh"}
+    assert {row.admin_verdict for row in overrides} == {"accept"}
+    assert {row.admin_token for row in overrides} == {"admin-token"}
+
+
+@pytest.mark.asyncio
+async def test_reject_question_captures_reviewer_admin_overrides():
+    db = _FakeDB()
+    question_id = uuid.uuid4()
+    run_id = uuid.uuid4()
+    question = Question(
+        id=question_id,
+        content_origin="generated",
+        current_question_text="Generated",
+        current_passage_text=None,
+        current_correct_option_label="A",
+        current_explanation_text=None,
+        practice_status="draft",
+        official_overlap_status="none",
+        is_admin_edited=False,
+        metadata_managed_by_llm=True,
+    )
+    review_run = ReviewRun(
+        id=run_id,
+        question_id=question_id,
+        triggered_by="manual_question",
+        rubric_version="v1",
+        rules_versions_jsonb={},
+        status="complete",
+    )
+    review_result = LlmReviewResult(
+        id=uuid.uuid4(),
+        question_id=question_id,
+        review_run_id=run_id,
+        provider_name="openai",
+        model_name="m1",
+        rubric_version="v1",
+        rules_versions_jsonb={},
+        scores_jsonb={},
+        verdict="accept",
+        review_status="ok",
+    )
+    db.get_map[(Question, question_id)] = question
+    db.execute_results = [
+        _ScalarResult(first_item=review_run),
+        _ScalarResult(items=[review_result]),
+    ]
+
+    result = await admin_router.reject_question(
+        str(question_id),
+        body=admin_router.RejectQuestionRequest(reason="too close to source"),
+        db=db,
+        auth_token="admin-token",
+    )
+
+    overrides = [obj for obj in db.added if isinstance(obj, ReviewerAdminOverride)]
+    assert result["reviewer_admin_override_count"] == 1
+    assert overrides[0].admin_decision_id == uuid.UUID(result["admin_decision_id"])
+    assert overrides[0].reviewer_verdict == "accept"
+    assert overrides[0].admin_verdict == "reject"
+    assert overrides[0].override_direction == "reviewer_too_lenient"
+    assert overrides[0].admin_notes == "too close to source"
+    assert question.practice_status == "rejected"
+
+
+@pytest.mark.asyncio
+async def test_regenerate_generated_question_creates_derived_single_job(monkeypatch):
+    db = _FakeDB()
+    question_id = uuid.uuid4()
+    source_batch_id = uuid.uuid4()
+    question = Question(
+        id=question_id,
+        content_origin="generated",
+        current_question_text="Generated",
+        current_passage_text=None,
+        current_correct_option_label="A",
+        current_explanation_text=None,
+        practice_status="rejected",
+        official_overlap_status="none",
+        is_admin_edited=False,
+        metadata_managed_by_llm=True,
+        generation_source_set={
+            "target_grammar_role_key": "sentence_structure_boundaries",
+            "target_grammar_focus_key": "comma_splice",
+            "target_syntactic_trap_key": "none",
+            "target_frequency_band": "medium",
+            "difficulty_overall": "medium",
+            "test_format_key": "standard",
+            "stimulus_mode_key": "sentence_only",
+            "stem_type_key": "choose_best_revision",
+        },
+    )
+    source_job = QuestionJob(
+        id=uuid.uuid4(),
+        job_type="generate",
+        content_origin="generated",
+        input_format="spec",
+        status="approved",
+        provider_name="openai",
+        model_name="gpt-test",
+        prompt_version="v3.0",
+        rules_version="rules",
+        generation_batch_id=source_batch_id,
+        generation_request_jsonb={},
+    )
+    db.get_map[(Question, question_id)] = question
+    db.execute_results = [
+        _ScalarResult(items=[]),
+        _ScalarResult(items=[]),
+        _ScalarResult(first_item=source_job),
+    ]
+
+    async def _fresh_sources(*_args, **_kwargs):
+        return [["00000000-0000-0000-0000-000000000001"]]
+
+    class _FakeTask:
+        def add_done_callback(self, _callback):
+            return None
+
+    def _fake_create_task(coro):
+        coro.close()
+        return _FakeTask()
+
+    monkeypatch.setattr(generate_router, "_select_source_question_ids_for_batch", _fresh_sources)
+    monkeypatch.setattr(admin_router.asyncio, "create_task", _fake_create_task)
+
+    result = await admin_router.regenerate_generated_question(
+        str(question_id),
+        db=db,
+        _auth="admin-token",
+    )
+
+    batch = next(obj for obj in db.added if isinstance(obj, GenerationBatch))
+    job = next(obj for obj in db.added if isinstance(obj, QuestionJob) and obj is not source_job)
+    assert result["batch_id"] == str(batch.id)
+    assert result["job_id"] == str(job.id)
+    assert batch.requested_count == 1
+    assert batch.regenerate_source_batch_id == source_batch_id
+    assert job.generation_request_jsonb["derived_from_question_id"] == str(question_id)
+    assert job.generation_request_jsonb["source_question_ids"] == [
+        "00000000-0000-0000-0000-000000000001"
+    ]
+    assert "requested_count" not in job.generation_request_jsonb
+
+
+@pytest.mark.asyncio
+async def test_regenerate_generated_question_enforces_attempt_cap():
+    db = _FakeDB()
+    question_id = uuid.uuid4()
+    question = Question(
+        id=question_id,
+        content_origin="generated",
+        current_question_text="Generated",
+        current_passage_text=None,
+        current_correct_option_label="A",
+        current_explanation_text=None,
+        practice_status="rejected",
+        official_overlap_status="none",
+        is_admin_edited=False,
+        metadata_managed_by_llm=True,
+    )
+    db.get_map[(Question, question_id)] = question
+    db.execute_results = [
+        _ScalarResult(items=[uuid.uuid4(), uuid.uuid4(), uuid.uuid4()]),
+        _ScalarResult(items=[]),
+    ]
+
+    with pytest.raises(HTTPException) as exc:
+        await admin_router.regenerate_generated_question(
+            str(question_id),
+            db=db,
+            _auth="admin-token",
+        )
+
+    assert exc.value.status_code == 409
+    assert db.added == []
+
+
+@pytest.mark.asyncio
 async def test_approve_question_blocks_official_with_overlap():
     db = _FakeDB()
     question_id = uuid.uuid4()
@@ -1057,12 +1307,20 @@ async def test_student_recall_combines_annotation_filters_with_one_join():
 
     db = _StatementDB()
     await student_router.student_recall(
-        grammar_focus="subject_verb_agreement",
+        domain=None,
         difficulty="medium",
+        grammar_role_key=None,
+        grammar_focus_key="subject_verb_agreement",
+        reading_skill_family_key=None,
+        reading_focus_key=None,
+        stimulus_mode_key=None,
+        origin=None,
+        exclude_seen=None,
+        user_token=None,
         limit=20,
         offset=0,
         db=db,
-        _auth="ok",
+        auth=("student", "test"),
     )
 
     sql = str(db.statement)
