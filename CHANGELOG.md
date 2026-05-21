@@ -5,6 +5,116 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-20 — Phase 9: Generation Quality Analytics
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+Implemented the Phase 9 generation quality analytics layer — five read-only admin
+endpoints that measure which generator/reviewer model combinations produce the best
+student-ready questions.
+
+### Added
+
+- `GET /admin/analytics/generation` — Overall quality metrics for the lookback window:
+  `generated_count`, `reviewed_count`, `approved_count`, `rejected_count`,
+  `failed_count`, `acceptance_rate`, `copy_risk_failures`,
+  `avg_reviewer_disagreement`, acceptance rate broken down by generator
+  provider/model, and rejection reason distribution.
+- `GET /admin/analytics/review` — Per-reviewer-model metrics: average scores per
+  rubric dimension (`realism`, `sat_fidelity`, `difficulty_match`,
+  `distractor_quality`, `taxonomy_match`), admin override rate, and token usage
+  by provider.
+- `GET /admin/analytics/batches` — Batch-level aggregates: requested vs created vs
+  approved vs rejected vs failed counts, average review latency (ms), and token
+  usage per provider.
+- `GET /admin/analytics/trends` — Time-series acceptance rate bucketed by `day` or
+  `week`; configurable via `granularity` query param.
+- `GET /admin/analytics/export` — Full generated-question export as JSON for offline
+  analysis; includes per-question practice status, overlap status, generator
+  provider/model, consensus verdict, realism avg, copy risk, and disagreement flag.
+- All endpoints accept a `days` query parameter (default 30, max 365) as the lookback
+  window. `trends` minimum is 7 days.
+- Added analytics payload models to `backend/app/models/payload.py`:
+  `GeneratorModelStats`, `ReviewerModelStats`, `BatchAggregates`,
+  `TokenUsageByProvider`, `GenerationTrendPoint`, `RejectionReasonCount`,
+  `GenerationAnalyticsResponse`, `ReviewAnalyticsResponse`,
+  `BatchAnalyticsResponse`, `TrendAnalyticsResponse`.
+- Added `backend/tests/test_analytics.py` with 28 tests covering response shape,
+  auth enforcement, empty-DB zero values, query parameter validation (bounds,
+  invalid granularity), and per-field presence.
+
+### Verification
+
+- `uv run pytest tests/test_analytics.py -v` → `28 passed`.
+- Full backend suite: `uv run pytest tests/ -q` → `719 passed, 2 skipped`.
+
+---
+
+## 2026-05-20 — Phase 8: Self-Study Agent Request Layer
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+Implemented the Phase 8 self-study agent layer: weakness profiling, inventory-gated generation requests, and batch status tracking.
+
+### Added
+
+- Added `POST /api/study/recommendations` (`backend/app/routers/student.py`) — read-only
+  weakness profile probe returning top-K target recommendations with live inventory counts.
+- Added `POST /api/study/generation-requests` — self-study agent main entry point.
+  Computes weakness profile, serves existing pool questions per target, and creates
+  `GenerationBatch` + `QuestionJob` rows only when inventory is below threshold and all
+  rate caps allow. `release_policy` is forced to `admin_review_required` regardless of
+  caller input.
+- Added `GET /api/study/generation-requests/{batch_id}` — batch status endpoint;
+  students can only view their own batches (403 on mismatch).
+- Added `_weakness_score` helper implementing the locked formula:
+  `miss_rate × exp(-days_since_last / 14) × sqrt(attempt_count)`.
+- Added `_compute_weakness_targets` — builds bucketed weakness scores from recent
+  `UserProgress` rows, applies top-K=5 cap, and enforces at-most-2-targets-per-focus-key.
+  Requires minimum 3 attempts per bucket to qualify.
+- Added `_inventory_for_target`, `_pending_batch_exists_for_target`,
+  `_target_on_cooldown`, `_daily_gen_count`, `_pending_batch_count`,
+  `_on_quality_cooldown` helpers enforcing all seven rate and quality caps.
+- Added `_create_self_study_batch` — creates a `GenerationBatch` + `QuestionJob` rows
+  and kicks off `_run_batch_pipeline` in a background asyncio task.
+- Added `_fetch_pool_questions` — returns active unseen questions for a target
+  (student-facing, no answer key).
+- Added payload models to `backend/app/models/payload.py`:
+  `WeaknessTarget`, `StudyRecommendationsRequest`, `StudyRecommendationsResponse`,
+  `StudyGenerationRequest`, `StudyGenerationResponse`, `StudyBatchStatusResponse`.
+- Added 11 self-study config knobs to `backend/app/config.py`:
+  `self_study_lookback_days` (30), `self_study_recency_half_life_days` (14),
+  `self_study_top_k` (5), `self_study_min_attempts_per_target` (3),
+  `self_study_min_gen_batch_size` (3), `self_study_target_cooldown_hours` (24),
+  `self_study_gen_per_student_per_day` (20), `self_study_max_pending_per_target` (10),
+  `self_study_max_pending_batches_per_student` (3),
+  `self_study_poor_quality_cooldown_hours` (24), plus `self_study_resurface_days` (30)
+  carried over from Phase 7.
+- Added migration `025_phase8_self_study.py` (`revision = "025"`, `down_revision = "024"`):
+  adds `missed_reading_focus_key`, `missed_reading_skill_family_key`,
+  `question_domain`, `question_difficulty` columns to `user_progress` with indexes.
+- Auto-populated denormalized `UserProgress` target fields at answer-submit time
+  (`POST /api/submit`) from the question's latest annotation JSONB.
+- Added `backend/tests/test_self_study.py` with 39 tests covering: weakness score
+  formula, bucket computation edge cases, inventory helpers, cooldown/cap helpers,
+  all three endpoint shapes, auth enforcement, ownership check (403), and the
+  `admin_review_required` force invariant.
+
+### Fixed
+
+- Renamed `024_phase8_self_study.py` → `025_phase8_self_study.py` and updated
+  `revision = "025"` / `down_revision = "024"` to resolve a duplicate Alembic head
+  collision with `024_phase6_reviewer_admin_overrides.py`. The old file must be deleted.
+
+### Verification
+
+- `uv run pytest tests/test_self_study.py -v` → `39 passed`.
+- `uv run alembic heads` → single head `025` (after deleting `024_phase8_self_study.py`).
+
+---
+
 ## 2026-05-20 — Phase 7: Student Retrieval API Expansion
 
 **Model:** Claude Sonnet 4.6

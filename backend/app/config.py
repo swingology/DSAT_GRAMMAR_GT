@@ -103,6 +103,18 @@ class Settings(BaseSettings):
     inventory_sufficient_threshold: int = 5
     self_study_resurface_days: int = 30
 
+    # Self-study agent (Phase 8)
+    self_study_lookback_days: int = 30
+    self_study_recency_half_life_days: int = 14
+    self_study_top_k: int = 5
+    self_study_min_attempts_per_target: int = 3
+    self_study_min_gen_batch_size: int = 3
+    self_study_target_cooldown_hours: int = 24
+    self_study_gen_per_student_per_day: int = 20
+    self_study_max_pending_per_target: int = 10
+    self_study_max_pending_batches_per_student: int = 3
+    self_study_poor_quality_cooldown_hours: int = 24
+
     # Logging
     log_level: str = "INFO"
     log_json: bool = True

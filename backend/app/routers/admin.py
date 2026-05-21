@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select, delete, update, func, and_, case
+from sqlalchemy import select, delete, update, func, and_, case, text, cast, Float
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import Any, Optional, List
@@ -19,7 +19,13 @@ from app.models.db import (
     ConsensusVerdict, ReviewerAdminOverride,
 )
 from app.models.ontology import RELATION_TYPES
-from app.models.payload import AdminEditRequest, EvaluationScoreRequest, GenerationBatchRequest
+from app.models.payload import (
+    AdminEditRequest, EvaluationScoreRequest, GenerationBatchRequest,
+    GeneratorModelStats, ReviewerModelStats, BatchAggregates, TokenUsageByProvider,
+    GenerationTrendPoint, RejectionReasonCount,
+    GenerationAnalyticsResponse, ReviewAnalyticsResponse,
+    BatchAnalyticsResponse, TrendAnalyticsResponse,
+)
 from app.pipeline import amendment_review
 
 
@@ -1549,3 +1555,468 @@ async def list_review_runs(
         })
 
     return {"question_id": str(qid), "review_runs": result_list}
+
+
+# ---------------------------------------------------------------------------
+# Phase 9: Generation Quality Analytics endpoints
+# ---------------------------------------------------------------------------
+
+
+def _days_cutoff(days: int):
+    from datetime import timedelta
+    return datetime.now(timezone.utc) - timedelta(days=days)
+
+
+@router.get("/analytics/generation", response_model=GenerationAnalyticsResponse)
+async def generation_analytics(
+    days: int = Query(30, ge=1, le=365, description="Lookback window in days"),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Overall generation quality metrics for the admin dashboard."""
+    cutoff = _days_cutoff(days)
+
+    # --- Question status counts ---
+    status_rows = await db.execute(
+        select(Question.practice_status, func.count().label("cnt"))
+        .where(
+            Question.content_origin == "generated",
+            Question.created_at >= cutoff,
+        )
+        .group_by(Question.practice_status)
+    )
+    status_counts: dict[str, int] = {row.practice_status: row.cnt for row in status_rows.all()}
+    approved_count = status_counts.get("active", 0)
+    rejected_count = status_counts.get("rejected", 0)
+    draft_count = status_counts.get("draft", 0)
+    generated_count = sum(status_counts.values())
+    total_decided = approved_count + rejected_count
+    acceptance_rate = round(approved_count / total_decided, 4) if total_decided else 0.0
+
+    # --- Reviewed count (questions with at least one completed review run) ---
+    reviewed_result = await db.execute(
+        select(func.count(func.distinct(ReviewRun.question_id)))
+        .join(Question, Question.id == ReviewRun.question_id)
+        .where(
+            Question.content_origin == "generated",
+            ReviewRun.status.in_(("complete", "partial")),
+            ReviewRun.started_at >= cutoff,
+        )
+    )
+    reviewed_count = reviewed_result.scalars().first() or 0
+
+    # --- Failed count (jobs that hit failed_permanent without a saved question) ---
+    failed_result = await db.execute(
+        select(func.count())
+        .select_from(QuestionJob)
+        .where(
+            QuestionJob.status == "failed_permanent",
+            QuestionJob.question_id.is_(None),
+            QuestionJob.created_at >= cutoff,
+        )
+    )
+    failed_count = failed_result.scalars().first() or 0
+
+    # --- Copy-risk failures (consensus_verdict = reject_recommended from copy risk) ---
+    copy_risk_result = await db.execute(
+        select(func.count(func.distinct(ConsensusVerdict.question_id)))
+        .join(Question, Question.id == ConsensusVerdict.question_id)
+        .where(
+            Question.content_origin == "generated",
+            ConsensusVerdict.consensus_verdict == "reject_recommended",
+            ConsensusVerdict.created_at >= cutoff,
+        )
+    )
+    copy_risk_failures = copy_risk_result.scalars().first() or 0
+
+    # --- Average reviewer disagreement ---
+    disagreement_result = await db.execute(
+        select(func.avg(ConsensusVerdict.reviewer_disagreement))
+        .join(Question, Question.id == ConsensusVerdict.question_id)
+        .where(
+            Question.content_origin == "generated",
+            ConsensusVerdict.reviewer_disagreement.isnot(None),
+            ConsensusVerdict.created_at >= cutoff,
+        )
+    )
+    avg_disagreement_raw = disagreement_result.scalars().first()
+    avg_reviewer_disagreement = round(float(avg_disagreement_raw), 4) if avg_disagreement_raw is not None else None
+
+    # --- Acceptance rate by generator provider/model ---
+    gen_model_rows = await db.execute(
+        select(
+            QuestionJob.provider_name,
+            QuestionJob.model_name,
+            func.count().label("total"),
+            func.sum(case((Question.practice_status == "active", 1), else_=0)).label("approved"),
+            func.sum(case((Question.practice_status == "rejected", 1), else_=0)).label("rejected"),
+        )
+        .join(Question, Question.id == QuestionJob.question_id)
+        .where(
+            Question.content_origin == "generated",
+            QuestionJob.created_at >= cutoff,
+        )
+        .group_by(QuestionJob.provider_name, QuestionJob.model_name)
+    )
+    by_generator_model = []
+    for row in gen_model_rows.all():
+        decided = row.approved + row.rejected
+        by_generator_model.append(GeneratorModelStats(
+            provider_name=row.provider_name,
+            model_name=row.model_name,
+            generated_count=row.total,
+            approved_count=row.approved,
+            rejected_count=row.rejected,
+            acceptance_rate=round(row.approved / decided, 4) if decided else 0.0,
+        ))
+
+    # --- Rejection reason distribution ---
+    reason_rows = await db.execute(
+        select(Question.rejection_reason, func.count().label("cnt"))
+        .where(
+            Question.content_origin == "generated",
+            Question.practice_status == "rejected",
+            Question.created_at >= cutoff,
+        )
+        .group_by(Question.rejection_reason)
+        .order_by(func.count().desc())
+    )
+    rejection_reasons = [
+        RejectionReasonCount(reason=row.rejection_reason, count=row.cnt)
+        for row in reason_rows.all()
+    ]
+
+    return GenerationAnalyticsResponse(
+        days=days,
+        generated_count=generated_count,
+        reviewed_count=reviewed_count,
+        approved_count=approved_count,
+        rejected_count=rejected_count,
+        failed_count=failed_count,
+        acceptance_rate=acceptance_rate,
+        copy_risk_failures=copy_risk_failures,
+        avg_reviewer_disagreement=avg_reviewer_disagreement,
+        by_generator_model=by_generator_model,
+        rejection_reasons=rejection_reasons,
+    )
+
+
+@router.get("/analytics/review", response_model=ReviewAnalyticsResponse)
+async def review_analytics(
+    days: int = Query(30, ge=1, le=365),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Per-reviewer-model quality and admin override rate metrics."""
+    cutoff = _days_cutoff(days)
+
+    # --- Per-reviewer average scores ---
+    reviewer_rows = await db.execute(
+        select(
+            LlmReviewResult.provider_name,
+            LlmReviewResult.model_name,
+            func.count().label("review_count"),
+            func.avg(
+                cast(LlmReviewResult.scores_jsonb["realism_score"].astext, Float)
+            ).label("avg_realism"),
+            func.avg(
+                cast(LlmReviewResult.scores_jsonb["sat_fidelity_score"].astext, Float)
+            ).label("avg_sat_fidelity"),
+            func.avg(
+                cast(LlmReviewResult.scores_jsonb["difficulty_match_score"].astext, Float)
+            ).label("avg_difficulty_match"),
+            func.avg(
+                cast(LlmReviewResult.scores_jsonb["distractor_quality_score"].astext, Float)
+            ).label("avg_distractor_quality"),
+            func.avg(
+                cast(LlmReviewResult.scores_jsonb["taxonomy_match_score"].astext, Float)
+            ).label("avg_taxonomy_match"),
+        )
+        .where(
+            LlmReviewResult.review_status == "ok",
+            LlmReviewResult.created_at >= cutoff,
+        )
+        .group_by(LlmReviewResult.provider_name, LlmReviewResult.model_name)
+    )
+    reviewer_score_map: dict = {}
+    for row in reviewer_rows.all():
+        key = (row.provider_name, row.model_name)
+        reviewer_score_map[key] = {
+            "review_count": row.review_count,
+            "avg_realism": round(float(row.avg_realism), 4) if row.avg_realism is not None else None,
+            "avg_sat_fidelity": round(float(row.avg_sat_fidelity), 4) if row.avg_sat_fidelity is not None else None,
+            "avg_difficulty_match": round(float(row.avg_difficulty_match), 4) if row.avg_difficulty_match is not None else None,
+            "avg_distractor_quality": round(float(row.avg_distractor_quality), 4) if row.avg_distractor_quality is not None else None,
+            "avg_taxonomy_match": round(float(row.avg_taxonomy_match), 4) if row.avg_taxonomy_match is not None else None,
+        }
+
+    # --- Admin override rate per reviewer model ---
+    override_rows = await db.execute(
+        select(
+            LlmReviewResult.provider_name,
+            LlmReviewResult.model_name,
+            func.count().label("total"),
+            func.sum(
+                case((ReviewerAdminOverride.override_direction == "reviewer_correct", 1), else_=0)
+            ).label("correct_count"),
+        )
+        .join(ReviewerAdminOverride, ReviewerAdminOverride.llm_review_result_id == LlmReviewResult.id)
+        .where(ReviewerAdminOverride.created_at >= cutoff)
+        .group_by(LlmReviewResult.provider_name, LlmReviewResult.model_name)
+    )
+    override_map: dict = {}
+    for row in override_rows.all():
+        key = (row.provider_name, row.model_name)
+        override_rate = round(1.0 - (row.correct_count / row.total), 4) if row.total else 0.0
+        override_map[key] = {
+            "total_overrides": row.total,
+            "correct_count": row.correct_count,
+            "override_rate": override_rate,
+        }
+
+    # Merge reviewer stats
+    all_keys = set(reviewer_score_map.keys()) | set(override_map.keys())
+    by_reviewer_model = []
+    for key in sorted(all_keys):
+        scores = reviewer_score_map.get(key, {})
+        overrides = override_map.get(key, {})
+        provider, model = key
+        by_reviewer_model.append(ReviewerModelStats(
+            provider_name=provider,
+            model_name=model,
+            review_count=scores.get("review_count", 0),
+            avg_realism=scores.get("avg_realism"),
+            avg_sat_fidelity=scores.get("avg_sat_fidelity"),
+            avg_difficulty_match=scores.get("avg_difficulty_match"),
+            avg_distractor_quality=scores.get("avg_distractor_quality"),
+            avg_taxonomy_match=scores.get("avg_taxonomy_match"),
+            override_rate=overrides.get("override_rate"),
+            total_overrides=overrides.get("total_overrides", 0),
+            correct_count=overrides.get("correct_count", 0),
+        ))
+
+    # --- Token usage by provider ---
+    token_rows = await db.execute(
+        select(
+            LlmReviewResult.provider_name,
+            func.count().label("review_count"),
+            func.sum(
+                cast(LlmReviewResult.token_usage_jsonb["input_tokens"].astext, Float)
+            ).label("input_tokens"),
+            func.sum(
+                cast(LlmReviewResult.token_usage_jsonb["output_tokens"].astext, Float)
+            ).label("output_tokens"),
+        )
+        .where(
+            LlmReviewResult.token_usage_jsonb.isnot(None),
+            LlmReviewResult.created_at >= cutoff,
+        )
+        .group_by(LlmReviewResult.provider_name)
+    )
+    token_usage = [
+        TokenUsageByProvider(
+            provider_name=row.provider_name,
+            review_count=row.review_count,
+            total_input_tokens=int(row.input_tokens or 0),
+            total_output_tokens=int(row.output_tokens or 0),
+        )
+        for row in token_rows.all()
+    ]
+
+    return ReviewAnalyticsResponse(
+        days=days,
+        by_reviewer_model=by_reviewer_model,
+        token_usage=token_usage,
+    )
+
+
+@router.get("/analytics/batches", response_model=BatchAnalyticsResponse)
+async def batch_analytics(
+    days: int = Query(30, ge=1, le=365),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Batch-level aggregate metrics: requested vs created, review latency, token usage."""
+    cutoff = _days_cutoff(days)
+
+    # --- Batch aggregates ---
+    agg_result = await db.execute(
+        select(
+            func.count().label("batch_count"),
+            func.sum(GenerationBatch.requested_count).label("total_requested"),
+            func.sum(GenerationBatch.created_count).label("total_created"),
+            func.sum(GenerationBatch.accepted_count).label("total_accepted"),
+            func.sum(GenerationBatch.rejected_count).label("total_rejected"),
+            func.sum(GenerationBatch.failed_count).label("total_failed"),
+        )
+        .where(GenerationBatch.created_at >= cutoff)
+    )
+    agg = agg_result.first()  # may be None when DB is empty
+
+    # --- Average review latency (ms) ---
+    latency_result = await db.execute(
+        select(
+            func.avg(
+                func.extract("epoch", ReviewRun.completed_at - ReviewRun.started_at) * 1000
+            ).label("avg_ms")
+        )
+        .where(
+            ReviewRun.status.in_(("complete", "partial")),
+            ReviewRun.completed_at.isnot(None),
+            ReviewRun.started_at >= cutoff,
+        )
+    )
+    avg_latency_raw = latency_result.scalars().first()
+    avg_review_latency_ms = round(float(avg_latency_raw), 1) if avg_latency_raw is not None else None
+
+    aggregates = BatchAggregates(
+        batch_count=getattr(agg, "batch_count", None) or 0,
+        total_requested=int(getattr(agg, "total_requested", None) or 0),
+        total_created=int(getattr(agg, "total_created", None) or 0),
+        total_accepted=int(getattr(agg, "total_accepted", None) or 0),
+        total_rejected=int(getattr(agg, "total_rejected", None) or 0),
+        total_failed=int(getattr(agg, "total_failed", None) or 0),
+        avg_review_latency_ms=avg_review_latency_ms,
+    )
+
+    # --- Token usage by provider (same query as review analytics) ---
+    token_rows = await db.execute(
+        select(
+            LlmReviewResult.provider_name,
+            func.count().label("review_count"),
+            func.sum(
+                cast(LlmReviewResult.token_usage_jsonb["input_tokens"].astext, Float)
+            ).label("input_tokens"),
+            func.sum(
+                cast(LlmReviewResult.token_usage_jsonb["output_tokens"].astext, Float)
+            ).label("output_tokens"),
+        )
+        .where(
+            LlmReviewResult.token_usage_jsonb.isnot(None),
+            LlmReviewResult.created_at >= cutoff,
+        )
+        .group_by(LlmReviewResult.provider_name)
+    )
+    token_usage = [
+        TokenUsageByProvider(
+            provider_name=row.provider_name,
+            review_count=row.review_count,
+            total_input_tokens=int(row.input_tokens or 0),
+            total_output_tokens=int(row.output_tokens or 0),
+        )
+        for row in token_rows.all()
+    ]
+
+    return BatchAnalyticsResponse(
+        days=days,
+        aggregates=aggregates,
+        token_usage=token_usage,
+    )
+
+
+@router.get("/analytics/trends", response_model=TrendAnalyticsResponse)
+async def trend_analytics(
+    days: int = Query(30, ge=7, le=365),
+    granularity: str = Query("week", pattern="^(day|week)$"),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Generation quality trend over time, bucketed by day or week."""
+    cutoff = _days_cutoff(days)
+    trunc = "week" if granularity == "week" else "day"
+
+    trend_rows = await db.execute(
+        select(
+            func.date_trunc(trunc, Question.created_at).label("period"),
+            func.count().label("generated"),
+            func.sum(case((Question.practice_status == "active", 1), else_=0)).label("approved"),
+            func.sum(case((Question.practice_status == "rejected", 1), else_=0)).label("rejected"),
+        )
+        .where(
+            Question.content_origin == "generated",
+            Question.created_at >= cutoff,
+        )
+        .group_by(text("1"))
+        .order_by(text("1"))
+    )
+
+    points = []
+    for row in trend_rows.all():
+        decided = row.approved + row.rejected
+        points.append(GenerationTrendPoint(
+            period=row.period.isoformat() if row.period else "",
+            generated=row.generated,
+            approved=row.approved,
+            rejected=row.rejected,
+            acceptance_rate=round(row.approved / decided, 4) if decided else 0.0,
+        ))
+
+    return TrendAnalyticsResponse(days=days, granularity=granularity, points=points)
+
+
+@router.get("/analytics/export")
+async def analytics_export(
+    days: int = Query(30, ge=1, le=365),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Full analytics export as JSON for offline analysis."""
+    cutoff = _days_cutoff(days)
+
+    # Fetch all generated questions with their job info for export
+    rows = await db.execute(
+        select(
+            Question.id,
+            Question.practice_status,
+            Question.content_origin,
+            Question.official_overlap_status,
+            Question.rejection_reason,
+            Question.rejected_at,
+            Question.created_at,
+            QuestionJob.provider_name,
+            QuestionJob.model_name,
+        )
+        .outerjoin(QuestionJob, and_(
+            QuestionJob.question_id == Question.id,
+            QuestionJob.job_type == "generate",
+        ))
+        .where(
+            Question.content_origin == "generated",
+            Question.created_at >= cutoff,
+        )
+        .order_by(Question.created_at.desc())
+    )
+
+    questions_export = []
+    for row in rows.all():
+        # Get latest consensus verdict for this question
+        cv_result = await db.execute(
+            select(ConsensusVerdict)
+            .where(ConsensusVerdict.question_id == row.id)
+            .order_by(ConsensusVerdict.created_at.desc())
+            .limit(1)
+        )
+        cv = cv_result.scalars().first()
+
+        questions_export.append({
+            "question_id": str(row.id),
+            "practice_status": row.practice_status,
+            "overlap_status": row.official_overlap_status,
+            "rejection_reason": row.rejection_reason,
+            "rejected_at": row.rejected_at.isoformat() if row.rejected_at else None,
+            "created_at": row.created_at.isoformat() if row.created_at else None,
+            "generator_provider": row.provider_name,
+            "generator_model": row.model_name,
+            "consensus_verdict": cv.consensus_verdict if cv else None,
+            "avg_realism": cv.average_realism if cv else None,
+            "max_copy_risk": cv.max_copy_risk if cv else None,
+            "reviewer_disagreement": cv.reviewer_disagreement if cv else None,
+            "high_disagreement": cv.high_disagreement_flag if cv else None,
+        })
+
+    return {
+        "days": days,
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "question_count": len(questions_export),
+        "questions": questions_export,
+    }

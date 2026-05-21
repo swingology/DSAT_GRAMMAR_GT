@@ -92,6 +92,9 @@ class UserProgressCreate(BaseModel):
     selected_option_label: str = Field(pattern=r"^[A-D]$")
     missed_grammar_focus_key: Optional[str] = None
     missed_syntactic_trap_key: Optional[str] = None
+    # Phase 8: reading equivalents (client-optional; auto-populated from annotation)
+    missed_reading_focus_key: Optional[str] = None
+    missed_reading_skill_family_key: Optional[str] = None
 
 
 class UserStats(BaseModel):
@@ -503,3 +506,150 @@ class UserResponse(BaseModel):
     created_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
+
+
+# --- Phase 8: Self-study agent request layer ---------------------------------
+
+
+class WeaknessTarget(BaseModel):
+    """One identified weak target dimension from the student's progress history."""
+    domain: str
+    focus_key: str
+    skill_family_key: Optional[str] = None
+    grammar_role_key: Optional[str] = None
+    difficulty: str
+    weakness_score: float
+    miss_count: int
+    attempt_count: int
+    miss_rate: float
+    days_since_last_attempt: float
+    inventory_unseen: int
+    inventory_below_threshold: bool
+
+
+class StudyRecommendationsRequest(BaseModel):
+    user_token: str
+
+
+class StudyRecommendationsResponse(BaseModel):
+    user_id: int
+    top_targets: List[WeaknessTarget]
+    threshold: int
+
+
+class StudyGenerationRequest(BaseModel):
+    user_token: str
+
+
+class StudyGenerationResponse(BaseModel):
+    user_id: int
+    questions: List[StudentQuestionResponse]
+    inventory: InventoryMetadata
+    new_batch_ids: List[str] = Field(default_factory=list)
+    targets_analyzed: int
+    targets_with_new_batch: int
+    skip_reasons: Dict[str, str] = Field(default_factory=dict)
+
+
+class StudyBatchStatusResponse(BaseModel):
+    batch_id: str
+    status: str
+    requested_count: int
+    created_count: int
+    accepted_count: int
+    rejected_count: int
+    failed_count: int
+    needs_review_count: int
+    release_policy: str
+    requested_by: str
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+
+# ---------------------------------------------------------------------------
+# Phase 9: Generation Quality Analytics payload models
+# ---------------------------------------------------------------------------
+
+class GeneratorModelStats(BaseModel):
+    provider_name: str
+    model_name: str
+    generated_count: int
+    approved_count: int
+    rejected_count: int
+    acceptance_rate: float
+
+
+class ReviewerModelStats(BaseModel):
+    provider_name: str
+    model_name: str
+    review_count: int
+    avg_realism: Optional[float]
+    avg_sat_fidelity: Optional[float]
+    avg_difficulty_match: Optional[float]
+    avg_distractor_quality: Optional[float]
+    avg_taxonomy_match: Optional[float]
+    override_rate: Optional[float]
+    total_overrides: int
+    correct_count: int
+
+
+class BatchAggregates(BaseModel):
+    total_requested: int
+    total_created: int
+    total_accepted: int
+    total_rejected: int
+    total_failed: int
+    batch_count: int
+    avg_review_latency_ms: Optional[float]
+
+
+class TokenUsageByProvider(BaseModel):
+    provider_name: str
+    review_count: int
+    total_input_tokens: int
+    total_output_tokens: int
+
+
+class GenerationTrendPoint(BaseModel):
+    period: str
+    generated: int
+    approved: int
+    rejected: int
+    acceptance_rate: float
+
+
+class RejectionReasonCount(BaseModel):
+    reason: Optional[str]
+    count: int
+
+
+class GenerationAnalyticsResponse(BaseModel):
+    days: int
+    generated_count: int
+    reviewed_count: int
+    approved_count: int
+    rejected_count: int
+    failed_count: int
+    acceptance_rate: float
+    copy_risk_failures: int
+    avg_reviewer_disagreement: Optional[float]
+    by_generator_model: List[GeneratorModelStats]
+    rejection_reasons: List[RejectionReasonCount]
+
+
+class ReviewAnalyticsResponse(BaseModel):
+    days: int
+    by_reviewer_model: List[ReviewerModelStats]
+    token_usage: List[TokenUsageByProvider]
+
+
+class BatchAnalyticsResponse(BaseModel):
+    days: int
+    aggregates: BatchAggregates
+    token_usage: List[TokenUsageByProvider]
+
+
+class TrendAnalyticsResponse(BaseModel):
+    days: int
+    granularity: str
+    points: List[GenerationTrendPoint]

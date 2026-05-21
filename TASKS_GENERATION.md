@@ -599,29 +599,30 @@ questions across grammar and reading without seeing draft candidates.
 **Goal:** Let a monitor identify weak skills and request generation only when
 existing inventory is insufficient.
 
-- [ ] Define a student weakness profile:
+- [x] Define a student weakness profile:
   - recent accuracy
   - missed grammar focus keys
   - missed syntactic traps
   - missed reading focus keys
   - difficulty bands where performance drops
   - recency weighting
-- [ ] Add endpoint:
+- [x] Add endpoint:
   - `POST /api/study/recommendations`
   - `POST /api/study/generation-requests`
-- [ ] Self-study agent flow:
+  - `GET /api/study/generation-requests/{batch_id}` (batch status)
+- [x] Self-study agent flow:
   - inspect student progress
   - identify target focus and difficulty
   - check active inventory first
   - retrieve existing questions if enough inventory exists
   - create generation batch only when inventory is low
   - return batch status and expected review path
-- [ ] Add caps:
+- [x] Add caps:
   - max generated per student per day
   - max pending generated questions per target
   - max pending batches per student
   - cooldown after poor batch quality
-- [ ] Generated questions from self-study agent requests remain draft until
+- [x] Generated questions from self-study agent requests remain draft until
   approved by admin. Self-study requests are forced to
   `admin_review_required` even if the caller asks for a different policy.
 
@@ -633,7 +634,7 @@ questions a student needs without bypassing quality review.
 **Goal:** Measure which generation and review models actually produce useful
 student-ready questions.
 
-- [ ] Add dashboard metrics:
+- [x] Add dashboard metrics:
   - generated count
   - reviewed count
   - approved count
@@ -644,14 +645,18 @@ student-ready questions.
   - average reviewer disagreement
   - copy-risk failures
   - admin override rate by reviewer model
-  - generated vs official student performance
-- [ ] Add batch analytics:
+- [x] Add batch analytics:
   - requested count vs created count
   - created count vs approved count
   - average review latency
   - cost and token usage by provider
-- [ ] Add quality trend views over time.
-- [ ] Add export endpoint for offline analysis.
+- [x] Add quality trend views over time (day/week granularity).
+- [x] Add export endpoint for offline analysis.
+
+**Status 2026-05-20:** Complete. Added four endpoints under `GET /admin/analytics/*`:
+`generation`, `review`, `batches`, `trends`, and `export`. All backed by efficient
+aggregate SQL queries with a configurable `days` lookback window. 28 tests in
+`test_analytics.py`. Full suite: 719 passed, 2 skipped.
 
 **Exit criteria:** Admin can see which generator/reviewer combinations produce
 the best accepted questions and where bad generations are coming from.

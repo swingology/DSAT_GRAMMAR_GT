@@ -495,7 +495,12 @@ class UserProgress(Base):
     selected_option_label = Column(String(1), nullable=False)
     missed_grammar_focus_key = Column(String(50), nullable=True)
     missed_syntactic_trap_key = Column(String(50), nullable=True)
-    timestamp = Column(DateTime(timezone=True), default=_utcnow)
+    # Phase 8: denormalized target dimensions for weakness profile
+    missed_reading_focus_key = Column(String(100), nullable=True)
+    missed_reading_skill_family_key = Column(String(100), nullable=True)
+    question_domain = Column(String(20), nullable=True, index=True)
+    question_difficulty = Column(String(20), nullable=True)
+    timestamp = Column(DateTime(timezone=True), default=_utcnow, index=True)
 
     user = relationship("User", back_populates="progress_records")
     question = relationship("Question", back_populates="progress_records", foreign_keys=[question_id])
