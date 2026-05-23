@@ -231,6 +231,129 @@ Use `argparse`, `pathlib`, `json`, and either `httpx` or the existing project
 HTTP dependency. Keep server/Docker startup behavior optional, because the full
 batch runner should be usable against any already-running backend.
 
+## Granular Academic Topic Taxonomy
+
+**Status:** Schema exists but vocabulary is incomplete. Ready for implementation when a new ingestion database is created or when migrating existing questions.
+
+**Database Location:**
+- Table: `questions` (or `question_annotations` for versioned topics)
+- Fields: `topic_broad` (controlled vocab), `topic_fine` (free-text / controlled vocab TBD)
+- Current broad categories only: `science`, `history`, `literature`, `social_studies`, `humanities`, `arts`, `economics`, `technology`, `environment`
+
+**Code References:**
+- `/home/jb/DSAT_REDUX_MD/backend/app/models/annotation.py` lines 30-31: Pydantic model defines `topic_broad` and `topic_fine`
+- `/home/jb/DSAT_REDUX_MD/backend/app/models/db.py` line 74: Database column `source_subject_code` (free-text, e.g., "ENG")
+- `/home/jb/DSAT_REDUX_MD/vocabulary/master.json`: Controlled vocabulary for `TOPIC_BROAD_KEYS` (9 categories)
+- `/home/jb/DSAT_REDUX_MD/backend/app/models/ontology.py` lines 444-448: Generated constants from master.json
+
+**The Gap:**
+
+The current system only tracks 9 broad topic categories. Specific academic subjects like "Cherokee history," "marine biology / kelp forests," "Jazz tap dance," "Impressionist art," "Native American artists," etc., all collapse into broad buckets (`history`, `science`, `arts`). There is no granular subject taxonomy to:
+
+1. Filter questions by specific academic discipline
+2. Analyze coverage across specific subjects (e.g., "do we have enough Indigenous history passages?")
+3. Identify content gaps in the question bank
+4. Generate questions that fill specific subject gaps
+
+**Proposed Solution:**
+
+Implement a **two-tier topic system** with granular `topic_fine` values:
+
+```yaml
+topic_broad: history
+topic_fine: indigenous_history_cherokee  # or: us_history_politics, art_history_impressionism
+
+topic_broad: science
+topic_fine: marine_biology_kelp_forests  # or: physics_optics, anthropology_linguistics
+
+topic_broad: arts
+topic_fine: dance_jazz_tap  # or: visual_arts_contemporary, music_jazz
+```
+
+**Implementation Approaches:**
+
+1. **Controlled vocabulary:** Define `TOPIC_FINE_KEYS` in `vocabulary/master.json` with a hierarchy mapping fine topics to broad categories. Pro: consistency. Con: requires maintenance.
+
+2. **LLM-extracted free text:** Use Pass 2 annotation to extract topics from passage content. Store as normalized strings. Pro: automatic. Con: may need deduplication ("Native American" vs "Indigenous" vs "First Nations").
+
+3. **Hybrid:** LLM suggests fine topics → human review → promotion to controlled vocab via `gen_vocab.py --promote` (same workflow as other vocabulary).
+
+**When to Implement:**
+
+- **New database creation:** Add `topic_fine` column with controlled vocab or free-text index
+- **Migration:** Back-annotate existing questions using Pass 2 reannotation (`job_type: reannotate`)
+- **UI filtering:** Enable `/questions?topic_fine=indigenous_history` endpoint
+
+**Sample Topics from Real Tests (CB_BB_TEST_10):**
+
+Based on actual College Board Test 10 content:
+- `linguistics_writing_systems` (Cherokee script / Sequoyah)
+- `poetry_analysis_contemporary` (John Ashbery)
+- `indigenous_history_public_health` (Annie Dodge Wauneka / Diné)
+- `marine_biology_ecosystems` (kelp forests)
+- `logic_epistemology` (source of claims / self-interest)
+- `dance_history_african_american` (jazz tap)
+- `literature_british_19thc` (Jane Austen Mansfield Park)
+- `art_history_impressionism` (Degas frames)
+- `contemporary_art_native_american` (Jeffrey Gibson punching bags)
+- `architecture_conceptual` (Gins & Arakawa)
+- `paleontology_dinosaurs` (dicraeosaurid fossil / Thar Desert)
+- `astronomy_history` (Pleiades star cluster)
+- `biochemistry_genetics` (Severo Ochoa PNPase)
+- `agricultural_history` (Lost Apple Project / apple varieties)
+- `rural_history_19thc` (general stores)
+- `ecology_indigenous_practices` (Potawatomi sweetgrass harvesting)
+- `chemistry_materials` (plastic recycling / superabsorbent polymers)
+- `physics_cosmic_rays` (Miyake event / carbon-14)
+- `us_history_politics` (1960 Kennedy-Nixon debate)
+- `geography_human_environment` (Carl Sauer / Navajo landscape)
+
+**Related Work:**
+
+- `CB_ANSWERS_QUESTIONS_ANALYSIS.md` contains subject distribution recommendations
+- `PASSAGE_ARCHITECTURE_KEYS` in ontology.py already tracks passage structures by domain
+- `SYNTHESIS_GOAL_KEYS` in grammar rules already includes subject-aware goals like `identify_profession`, `identify_category`
+
+**Admin Dashboard Integration:**
+
+The topic taxonomy must be editable and appendable through the admin dashboard. This enables:
+
+1. **Dynamic topic addition:** Content admins can add new academic topics as they ingest new test forms or identify gaps (e.g., adding `computer_science_ai_ethics` when a new passage about AI appears in an official test)
+
+2. **Multiple generation sources:** When generating questions, the system can suggest topics from:
+   - Existing questions in the database (`SELECT DISTINCT topic_fine FROM questions`)
+   - Official test coverage analysis (`CB_ANSWERS_QUESTIONS_ANALYSIS.md`)
+   - Admin-curated priority topics (e.g., "we need more economics passages")
+   - LLM-suggested topics during Pass 2 annotation (subject to admin approval)
+
+3. **Topic approval workflow:** New topics suggested by LLM or extracted from passages should appear in a dashboard queue for admin review before being promoted to the controlled vocabulary used in generation prompts
+
+4. **Generation seeding:** The dashboard should allow admins to select specific `topic_fine` values as seeds for generation jobs, ensuring the pipeline produces questions on target academic subjects rather than random distributions
+
+**Database Schema Addition:**
+
+```sql
+-- New table for topic management
+CREATE TABLE topic_fine_vocabulary (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    topic_fine_key VARCHAR(100) NOT NULL UNIQUE,  -- e.g., "indigenous_history_cherokee"
+    topic_broad VARCHAR(50) NOT NULL REFERENCES ontology.topic_broad_keys,  -- e.g., "history"
+    display_name VARCHAR(200) NOT NULL,  -- Human-readable: "Indigenous History: Cherokee"
+    description TEXT,  -- Optional context for admins
+    is_active BOOLEAN DEFAULT true,
+    source VARCHAR(50),  -- 'admin_created', 'llm_extracted', 'official_test', 'generated'
+    usage_count INTEGER DEFAULT 0,  -- How many questions use this topic
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(100)  -- Admin username or 'system'
+);
+
+-- Index for dashboard filtering
+CREATE INDEX idx_topic_fine_active ON topic_fine_vocabulary(is_active);
+CREATE INDEX idx_topic_fine_broad ON topic_fine_vocabulary(topic_broad);
+```
+
+This enables the admin UI to: browse topics by broad category, deactivate low-quality topics, see usage counts to identify coverage gaps, and one-click add topics to generation seed lists.
+
 ## Student Vocabulary Capture From Question Text
 
 When a student is reading a question or passage, the client should support
