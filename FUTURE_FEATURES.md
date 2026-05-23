@@ -189,3 +189,92 @@ flowchart LR
 ```
 
 Supabase Postgres should store the structured metadata and relational links. Object storage should store PDFs, rendered pages, crops, and other binary artifacts. The database should store object-storage paths so any UI can reconstruct the source context for a question.
+
+## Python-Based Ingestion Runner
+
+The current ingestion runners are Bash scripts: `backend/run_full_ingestion.sh`
+for full-batch official PDF ingestion and `.claude/skills/ingestion-test/run.sh`
+for single-test/dev workflow. Both scripts are mostly orchestration and can be
+ported cleanly to a Python CLI.
+
+### Target Behavior
+
+A Python runner should support both single-test and full-batch modes:
+
+- discover official PDFs under `TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL`
+- parse `Test_N_digital_secXX_modYY.pdf` metadata into exam, section, and module codes
+- submit each PDF to `/ingest/official/pdf`
+- poll `/ingest/jobs/{job_id}` until a terminal state
+- write per-PDF JSON results to a configurable results directory
+- print a structured summary of approved, needs-review, failed, submit-failed, and timed-out jobs
+- optionally query local Postgres for extracted/created counts and validation-error summaries
+
+### Advantages Over Bash
+
+- **Reliable JSON handling:** avoid repeated shell pipelines such as `echo | python3 -c`.
+- **Clearer error handling:** distinguish duplicate checksum, malformed response, server unavailable, timeout, failed job, and database unavailable.
+- **Duplicate recovery:** when the API reports an already-ingested file, the runner can look up or reuse the existing job instead of returning `no_job_id`.
+- **Better reporting:** produce structured summaries with validation errors by step, extracted/created counts, and per-test outcomes.
+- **Configurable CLI:** support flags such as `--target`, `--full`, `--results-dir`, `--timeout`, `--poll-interval`, `--api-base`, and `--api-key`.
+- **More portable:** reduce dependence on Bash-specific behavior, `sed`, `tail`, curl formatting, and shell quoting.
+- **Easier testing:** filename parsing, response handling, polling, timeout behavior, and summary aggregation can be covered with unit tests.
+- **Future storage workflows:** Python can more naturally support local Postgres inspection, Supabase migration metadata, object-storage checks, and retry/skip policies.
+
+### Implementation Direction
+
+Create a Python CLI such as `backend/scripts/run_ingestion.py` or
+`scripts/run_ingestion.py`. Keep the existing shell scripts initially as thin
+compatibility wrappers that call the Python implementation. Once the Python
+runner is stable, retire the duplicated Bash logic.
+
+Use `argparse`, `pathlib`, `json`, and either `httpx` or the existing project
+HTTP dependency. Keep server/Docker startup behavior optional, because the full
+batch runner should be usable against any already-running backend.
+
+## Student Vocabulary Capture From Question Text
+
+When a student is reading a question or passage, the client should support
+selecting/highlighting a word or short phrase and opening a contextual action
+menu. This turns difficult vocabulary encountered during practice into an
+immediate learning loop instead of a separate manual note-taking workflow.
+
+### Student-Facing Behavior
+
+- Student highlights a word or short phrase inside question text, passage text,
+  or answer choices.
+- Right-click, long-press, or a small selection toolbar opens vocabulary actions.
+- Action 1: show a lightweight definition bubble near the selected text.
+- Action 2: add the selected word or phrase to the student's vocabulary list.
+- The saved vocabulary item can feed a flash-card / spaced-repetition feature in
+  this app or an adjacent umbrella study app.
+
+### Product Value
+
+- Keeps the student in the question-reading flow while removing vocabulary
+  friction.
+- Captures authentic unknown words from real SAT-style practice rather than
+  relying only on generic vocabulary lists.
+- Creates a durable per-student vocabulary history that can be reviewed later.
+- Supports future personalization: prioritize words the student repeatedly
+  highlights, misses, or saves from hard questions.
+
+### Implementation Direction
+
+Start with a client-side selection menu in the student question reader. The
+definition bubble can use a dictionary API, a local vocabulary source, or an LLM
+definition service, but it should preserve the original sentence context so
+definitions can be disambiguated.
+
+Persist saved vocabulary items with enough context for later review:
+
+- selected text
+- normalized lemma, if available
+- source question ID
+- source passage/question excerpt
+- surrounding sentence
+- timestamp
+- student ID / user token
+- optional definition shown at save time
+
+The flash-card layer can then schedule saved words through spaced repetition
+and optionally group them by test, topic, difficulty, or source passage.

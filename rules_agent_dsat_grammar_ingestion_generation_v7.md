@@ -614,6 +614,18 @@ forms after the modal.
 Template:
 `[Subject] would/could/should/might ______ [object or complement].`
 
+Shared-helping-verb trap:
+Use a coordinated verb phrase where the modal auxiliary appears before the
+first verb but governs both verbs joined by "and." The second coordinated verb
+must also be plain/base form, even though the auxiliary is not repeated.
+
+Template:
+`[Subject] would/could/should/might [plain verb] [object] and ______ [object or complement].`
+
+Correct option: plain (base) form of the second coordinated verb.
+Wrong options: past tense, third-person singular, gerund, or participle that
+incorrectly treats the second verb as independent of the shared modal.
+
 Correct option: plain (base) form of the verb.
 Wrong options: third-person singular inflected, past tense, continuous.
 
@@ -1055,7 +1067,7 @@ Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "
 | Distractor | Error | Plausibility source |
 |---|---|---|
 | 1 | Nonfinite participle where a finite main or relative-clause verb is required | `grammar_fit_only` |
-| 2 | Inflected verb after a modal auxiliary | `auditory_similarity` |
+| 2 | Inflected verb after a modal auxiliary, including a second coordinated verb governed by a shared modal | `auditory_similarity` |
 | 3 | Bare infinitive or past participle that leaves the clause without a predicate | `grammar_fit_only` |
 
 ### `voice_active_passive`
@@ -2560,7 +2572,8 @@ noun and the proper name that follows it
 finite verb is required in a main clause or relative clause
 
 `inflected_after_modal` — student chooses a past-tense, third-person-singular,
-or continuous form after a modal auxiliary
+gerund, or participle form after a modal auxiliary, including when the modal is
+shared across coordinated verbs joined by "and"
 
 `plural_pronoun_for_clause_antecedent` — student chooses a plural pronoun when
 the antecedent is an entire preceding clause or event
