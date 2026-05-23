@@ -872,6 +872,7 @@ async def test_approve_question_captures_reviewer_admin_overrides():
     )
     db.get_map[(Question, question_id)] = question
     db.execute_results = [
+        _ScalarResult(first_item=None),  # dry-run approval guard
         _ScalarResult(first_item=review_run),
         _ScalarResult(items=[accept_result, reject_result]),
     ]
@@ -885,6 +886,57 @@ async def test_approve_question_captures_reviewer_admin_overrides():
     assert {row.override_direction for row in overrides} == {"reviewer_correct", "reviewer_too_harsh"}
     assert {row.admin_verdict for row in overrides} == {"accept"}
     assert {row.admin_token for row in overrides} == {"admin-token"}
+
+
+@pytest.mark.asyncio
+async def test_approve_question_blocks_dry_run_generated_items():
+    db = _FakeDB()
+    question_id = uuid.uuid4()
+    batch_id = uuid.uuid4()
+    question = Question(
+        id=question_id,
+        content_origin="generated",
+        current_question_text="Generated",
+        current_passage_text=None,
+        current_correct_option_label="A",
+        current_explanation_text=None,
+        practice_status="draft",
+        official_overlap_status="none",
+        is_admin_edited=False,
+        metadata_managed_by_llm=True,
+    )
+    batch = GenerationBatch(
+        id=batch_id,
+        requested_count=1,
+        request_jsonb={"release_policy": "dry_run"},
+        requested_by="admin",
+        release_policy="dry_run",
+        status="completed",
+    )
+    job = QuestionJob(
+        id=uuid.uuid4(),
+        job_type="generate",
+        content_origin="generated",
+        input_format="spec",
+        status="approved",
+        provider_name="openai",
+        model_name="gpt-test",
+        prompt_version="v3.0",
+        rules_version="test",
+        question_id=question_id,
+        generation_batch_id=batch_id,
+    )
+    db.get_map[(Question, question_id)] = question
+    db.get_map[(GenerationBatch, batch_id)] = batch
+    db.execute_results = [_ScalarResult(first_item=job)]
+
+    with pytest.raises(HTTPException) as exc:
+        await admin_router.approve_question(str(question_id), db=db, _auth="ok")
+
+    assert exc.value.status_code == 409
+    assert "Dry-run" in exc.value.detail
+    assert question.practice_status == "draft"
+    assert db.commit_count == 0
 
 
 @pytest.mark.asyncio

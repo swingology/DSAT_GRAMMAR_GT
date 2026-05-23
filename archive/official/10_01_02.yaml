@@ -1,0 +1,1365 @@
+exam_code: '10'
+section_code: '01'
+module_code: '02'
+questions:
+- question_number: 1
+  question_id: 31503576-f3f1-55dd-93ba-886d12ae43df
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: 'In the early 1800s, the Cherokee scholar Sequoyah created the first
+    script, or writing system, for an Indigenous language in the United States. Because
+    it represented the sounds of spoken Cherokee so accurately, his script was easy
+    to learn and thus quickly achieved _______ use: by 1830, over 90 percent of the
+    Cherokee people could read and write it.'
+  correct_option_label: A
+  options:
+  - label: A
+    text: widespread
+  - label: B
+    text: careful
+  - label: C
+    text: unintended
+  - label: D
+    text: infrequent
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_words_in_context
+    explanation_short: The sentence describes rapid and broad adoption, so 'widespread'
+      is the most logical and precise word.
+    explanation_full: The passage states that Sequoyah's script was easy to learn
+      and that by 1830 over 90 percent of Cherokee people could read and write it.
+      This indicates that the script quickly became common or prevalent. 'Widespread'
+      means found or distributed over a large area or number of people, which perfectly
+      matches the context. 'Careful' does not fit because the sentence emphasizes
+      speed and breadth, not caution. 'Unintended' contradicts the deliberate creation
+      of the script. 'Infrequent' is the opposite of what the evidence suggests.
+    needs_human_review: false
+- question_number: 2
+  question_id: 68ca9e46-d842-5154-93e3-da3b7ee594ea
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: Researchers have struggled to pinpoint specific causes for hiccups,
+    which happen when a person’s diaphragm contracts _______. However, neuroscientist
+    Kimberley Whitehead has found that these uncontrollable contractions may play
+    an important role in helping infants regulate their breathing.
+  correct_option_label: A
+  options:
+  - label: A
+    text: involuntarily
+  - label: B
+    text: beneficially
+  - label: C
+    text: strenuously
+  - label: D
+    text: smoothly
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_words_in_context
+    explanation_short: The word 'involuntarily' is directly cued by 'uncontrollable
+      contractions' in the next sentence.
+    explanation_full: The blank describes how the diaphragm contracts during hiccups.
+      The following sentence refers to 'these uncontrollable contractions,' making
+      'involuntarily' the only word that matches the meaning of 'uncontrollable.'
+      The other options describe the effect (beneficially) or incorrect manners (strenuously,
+      smoothly).
+- question_number: 3
+  question_id: b29f91e7-73ef-55f2-8511-c5e9b0d3a4bc
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: The province of Xoconochco was situated on the Pacific coast, hundreds
+    of kilometers southeast of Tenochtitlan, the capital of the Aztec Empire. Because
+    Xoconochco’s location within the empire was so _______, cacao and other trade
+    goods produced there could reach the capital only after a long overland journey.
+  correct_option_label: D
+  options:
+  - label: A
+    text: unobtrusive
+  - label: B
+    text: concealed
+  - label: C
+    text: approximate
+  - label: D
+    text: peripheral
+  annotation:
+    grammar_focus_key: precision
+    grammar_role_key: word_choice
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The word 'peripheral' most precisely describes a location on
+      the edge of the empire, far from the capital, which explains the long journey.
+    explanation_full: The sentence indicates that Xoconochco's location caused trade
+      goods to require a long overland journey to reach the capital. 'Peripheral'
+      means situated on the edge or periphery, far from the center, which directly
+      accounts for the distance. 'Unobtrusive' and 'concealed' relate to being hidden
+      or not noticeable, not to distance. 'Approximate' means roughly correct and
+      is unrelated to location.
+- question_number: 4
+  question_id: 21008afb-ca3e-5781-9fd8-610cf993c46f
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: Proposals to raise the age at which retirees begin receiving government
+    transfers of funds are generally discussed in terms of the effects on transfer
+    recipients, but Andria Smythe has argued that delaying such transfers could _______
+    wealth creation among working adults by lengthening the period in which they are
+    providing financial support to their nonworking parents.
+  correct_option_label: A
+  options:
+  - label: A
+    text: stymie
+  - label: B
+    text: compound
+  - label: C
+    text: disparage
+  - label: D
+    text: outstrip
+  annotation:
+    grammar_focus_key: word_choice
+    grammar_role_key: verb
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The sentence indicates that delaying transfers would hinder
+      wealth creation because working adults would have to support their parents longer.
+      'Stymie' means to hinder or obstruct, fitting the context.
+    explanation_full: The passage presents Andria Smythe's argument that raising the
+      retirement age for government transfers would have a negative effect on wealth
+      creation among working adults. The reason given is that working adults would
+      have to provide financial support to their nonworking parents for a longer period.
+      Therefore, the blank requires a word that means 'hinder' or 'obstruct.' 'Stymie'
+      means to prevent or hinder the progress of something, making it the most logical
+      and precise choice. 'Compound' would suggest an increase or intensification,
+      which contradicts the negative effect described. 'Disparage' means to belittle,
+      which does not logically apply to wealth creation. 'Outstrip' means to surpass,
+      which also does not fit the context of hindrance.
+- question_number: 5
+  question_id: 1f4441ef-0b1d-53cb-9177-e43ac876a09b
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: Political blogs with conspicuous ideological alignments became an
+    integral component of US media in the early 2000s. While some commentators lauded
+    this development, asserting that such blogs had a welcome transparency missing
+    from traditional news, less _______ observers countered that such blogs tended
+    to ideological extremes that exacerbated political polarization to problematic
+    levels.
+  correct_option_label: A
+  options:
+  - label: A
+    text: sanguine
+  - label: B
+    text: recalcitrant
+  - label: C
+    text: misanthropic
+  - label: D
+    text: earnest
+  annotation:
+    grammar_focus_key: word_choice
+    grammar_role_key: adjective
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: '''Sanguine'' means cheerfully optimistic, contrasting with
+      the critical view of the ''less sanguine'' observers.'
+    explanation_full: The sentence sets up a contrast between commentators who 'lauded'
+      the blogs and 'less _______ observers' who 'countered' that the blogs worsened
+      polarization. The blank requires a word meaning optimistic or positive to complete
+      the contrast. 'Sanguine' means cheerfully optimistic, making it the most logical
+      and precise choice. 'Recalcitrant' means stubbornly uncooperative, 'misanthropic'
+      means disliking humanity, and 'earnest' means serious; none of these convey
+      the required positive outlook that would be 'less' in the critical observers.
+- question_number: 6
+  question_id: b5dd2c7f-e5aa-5e09-975f-ca5bcb51e427
+  question_text: Which choice best describes the overall purpose of the text?
+  passage_text: 'The following text is adapted from Pam Muñoz Ryan’s 2020 novel Mañanaland.
+    In the village where Max lives, there is an old fortress called La Reina. Children
+    in the village say that the fortress is haunted.
+
+
+    For as long as he could remember, Max had begged Papá [his father] to take him
+    to see La Reina and the ruins up close. He’d be a hero among his friends if he
+    was the first boy to cross the haunted gates! Just because Papá didn’t believe
+    in ghosts didn’t mean they weren’t there. Maybe this summer Papá would finally
+    take him. He was almost twelve.
+
+
+    ©2020 by Pam Muñoz Ryan'
+  correct_option_label: D
+  options:
+  - label: A
+    text: To portray how proud Max’s father is of Max
+  - label: B
+    text: To explain why Max doesn’t want to grow up yet
+  - label: C
+    text: To criticize Max for disliking summer
+  - label: D
+    text: To show how much Max wants to visit La Reina
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_main_purpose
+    explanation_short: The passage focuses on Max's strong desire to visit La Reina,
+      as shown by his repeated begging and hopeful anticipation.
+    explanation_full: The text describes Max's long-standing wish to see La Reina
+      up close, his motivation to become a hero among his friends, and his hope that
+      this summer his father will finally take him. The overall purpose is to convey
+      this desire, making option D correct. Option A is incorrect because the father's
+      pride is never mentioned. Option B is incorrect because Max's attitude toward
+      growing up is not discussed. Option C is incorrect because Max does not dislike
+      summer; he looks forward to it as a possible time for the visit.
+- question_number: 7
+  question_id: d89d2419-c18e-56a5-8a37-b2950076ba25
+  question_text: Which choice best states the main purpose of the text?
+  passage_text: 'The following text is adapted from George Bernard Shaw’s 1912 play
+    Pygmalion. Henry Higgins has just arrived at the house of his mother (Mrs. Higgins).
+    She is expecting her friends to visit soon.
+
+
+    MRS. HIGGINS: I’m serious, Henry. You offend all my friends: they stop coming
+    whenever they meet you.
+
+
+    HIGGINS: Nonsense! I know I have no small talk; but people don’t mind.
+
+
+    MRS. HIGGINS: Oh! don’t they? Small talk indeed! What about your large talk? Really,
+    dear, you mustn’t stay.'
+  correct_option_label: B
+  options:
+  - label: A
+    text: To describe what Henry’s mother does when she goes out with her friends
+  - label: B
+    text: To show that Henry’s mother wants him to leave
+  - label: C
+    text: To present a detailed account of what Henry’s home looks like
+  - label: D
+    text: To explain why Henry often visits his mother
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_main_purpose
+    explanation_short: Mrs. Higgins tells Henry he offends her friends and then says
+      he mustn't stay, showing she wants him to leave.
+    explanation_full: 'The dialogue reveals Mrs. Higgins''s frustration with Henry''s
+      effect on her social life. After explaining that her friends stop coming when
+      they meet him, she directly tells him, ''Really, dear, you mustn’t stay.'' This
+      line makes clear that her main purpose is to get Henry to leave before her friends
+      arrive. The other options describe purposes not supported by the text: there
+      is no description of her activities with friends, no detailed account of the
+      home, and no explanation of why Henry visits.'
+- question_number: 8
+  question_id: 8c113a2e-f00b-5072-80e1-b365cbd2eec3
+  question_text: Which choice best describes the function of the underlined portion
+    in the text as a whole?
+  passage_text: 'The following text is from Charlotte Forten Grimké’s 1888 poem “At
+    Newport.”
+
+
+    Oh, deep delight to watch the gladsome waves
+
+    Exultant leap upon the rugged rocks;
+
+    Ever repulsed, yet ever rushing on—
+
+    Filled with a life that will not know defeat;
+
+    To see the glorious hues of sky and sea.
+
+    The distant snowy sails, glide spirit like,
+
+    Into an unknown world, to feel the sweet
+
+    Enchantment of the sea thrill all the soul,
+
+    Clearing the clouded brain, making the heart
+
+    Leap joyous as it own bright, singing waves!'
+  correct_option_label: B
+  options:
+  - label: A
+    text: It portrays the surroundings as an imposing and intimidating scene.
+  - label: B
+    text: It characterizes the sea’s waves as a relentless and enduring force.
+  - label: C
+    text: It conveys the speaker’s ambivalence about the natural world.
+  - label: D
+    text: It draws a contrast between the sea’s waves and the speaker’s thoughts.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: poem
+    stem_type_key: choose_sentence_function
+    explanation_short: The underlined lines describe the waves as persistently rushing
+      on despite being repulsed, directly characterizing them as a relentless and
+      enduring force.
+    explanation_full: The underlined portion states that the waves are 'Ever repulsed,
+      yet ever rushing on— / Filled with a life that will not know defeat.' This personification
+      emphasizes their persistence and vitality, which aligns with the overall joyful
+      and energetic tone of the poem. Option B accurately captures this function.
+      Option A misreads the tone and scope, option C incorrectly infers ambivalence,
+      and option D invents a contrast not present in the text.
+- question_number: 9
+  question_id: 6b60854b-c0be-5b1c-bea2-7d4766bf8220
+  question_text: Which choice best states the main idea of the text?
+  passage_text: 'Believing that living in an impractical space can heighten awareness
+    and even improve health, conceptual artists Madeline Gins and Shusaku Arakawa
+    designed an apartment building in Japan to be more fanciful than functional. A
+    kitchen counter is chest-high on one side and knee-high on the other; a ceiling
+    has a door to nowhere. The effect is disorienting but invigorating: after four
+    years there, filmmaker Nobu Yamaoka reported significant health benefits.'
+  correct_option_label: D
+  options:
+  - label: A
+    text: Although inhabiting a home surrounded by fanciful features such as those
+      designed by Gins and Arakawa can be rejuvenating, it is unsustainable.
+  - label: B
+    text: Designing disorienting spaces like those in the Gins and Arakawa building
+      is the most effective way to create a physically stimulating environment.
+  - label: C
+    text: As a filmmaker, Yamaoka has long supported the designs of conceptual artists
+      such as Gins and Arakawa.
+  - label: D
+    text: Although impractical, the design of the apartment building by Gins and Arakawa
+      may improve the well-being of the building’s residents.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_main_idea
+    explanation_short: 'The passage presents a central contrast: the apartment is
+      impractical yet may improve health. Option D captures this balance.'
+    explanation_full: The first sentence introduces the belief that impractical spaces
+      can heighten awareness and improve health, and the building is described as
+      more fanciful than functional. The final sentence confirms the invigorating
+      effect with a resident's reported health benefits. Option D accurately summarizes
+      this main idea by acknowledging the impracticality while noting the potential
+      well-being improvement. Option A adds 'unsustainable,' which is not stated.
+      Option B claims it is the 'most effective' way, an unsupported absolute. Option
+      C misinterprets Yamaoka's role, suggesting long-term support rather than a single
+      report.
+- question_number: 10
+  question_id: dcfbdc59-4b60-57ed-a06e-069b9d0d059e
+  question_text: Based on the text, how does the Lord Chancellor respond to the crowd?
+  passage_text: 'The following text is adapted from Lewis Carroll’s 1889 satirical
+    novel Sylvie and Bruno. A crowd has gathered outside a room belonging to the Warden,
+    an official who reports to the Lord Chancellor.
+
+
+    One man, who was more excited than the rest, flung his hat high into the air,
+    and shouted (as well as I could make out) “Who roar for the Sub-Warden?” Everybody
+    roared, but whether it was for the Sub-Warden, or not, did not clearly appear:
+    some were shouting “Bread!” and some “Taxes!”, but no one seemed to know what
+    it was they really wanted.
+
+
+    All this I saw from the open window of the Warden’s breakfast-saloon, looking
+    across the shoulder of the Lord Chancellor.
+
+
+    “What can it all mean?” he kept repeating to himself. “I never heard such shouting
+    before—and at this time of the morning, too! And with such unanimity!”'
+  correct_option_label: D
+  options:
+  - label: A
+    text: He asks about the meaning of the crowd’s shouting, even though he claims
+      to know what the crowd wants.
+  - label: B
+    text: He indicates a desire to speak to the crowd, even though the crowd has asked
+      to speak to the Sub-Warden.
+  - label: C
+    text: He expresses sympathy for the crowd’s demands, even though the crowd’s shouting
+      annoys him.
+  - label: D
+    text: He describes the crowd as being united, even though the crowd clearly appears
+      otherwise.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_detail
+    explanation_short: The Lord Chancellor describes the crowd as united ('with such
+      unanimity'), but the narrator notes they were shouting different demands and
+      no one knew what they wanted.
+    explanation_full: The passage states that the crowd shouted different things ('Bread!'
+      and 'Taxes!') and 'no one seemed to know what it was they really wanted,' indicating
+      disunity. Yet the Lord Chancellor remarks, 'And with such unanimity!' This shows
+      he perceives them as united despite the evidence to the contrary. Option D captures
+      this contrast.
+- question_number: 11
+  question_id: 49e19071-c5c8-5018-ad92-20dee27eee62
+  question_text: Which choice most effectively uses data from the graph to complete
+    the sentence?
+  passage_text: Global biomass is the total mass of living material, such as animals
+    and plants, on Earth. A team of scientists estimated the global biomass, by species,
+    of various wild land mammals. The team found that the species with the highest
+    global biomass is the _______
+  correct_option_label: D
+  options:
+  - label: A
+    text: wild boar.
+  - label: B
+    text: eastern gray kangaroo.
+  - label: C
+    text: African bush elephant.
+  - label: D
+    text: white-tailed deer.
+  stimulus_assets:
+  - type: graph
+    title: Top Four Species of Wild Land Mammals by Global Biomass
+    structured_data:
+      x_label: Species
+      y_label: Global Biomass
+      series:
+      - label: Global Biomass
+        data:
+        - 1.5
+        - 1.0
+        - 2.0
+        - 2.5
+    render_hints:
+      chart_type: bar
+      x_label: Species
+      y_label: Global Biomass
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_plus_graph
+    stem_type_key: choose_command_of_evidence_quantitative
+    explanation_short: The graph shows white-tailed deer with the highest biomass
+      (2.5).
+    explanation_full: The bar for white-tailed deer is the tallest, indicating it
+      has the highest global biomass among the four species listed.
+    annotation_confidence: 0.95
+    needs_human_review: false
+- question_number: 12
+  question_id: c8d74e5d-4a37-557b-852a-9105ffd84729
+  question_text: Which choice most effectively uses data from the table to support
+    the research team’s conclusion?
+  passage_text: 'Number and Origin of Clamshell Tools Found at Different Levels Below
+    the Surface in Neanderthal Cave
+
+
+    Depth of tools found below surface in cave (meters) | Clamshells that Neanderthals
+    collected from the beach | Clamshells that Neanderthals harvested from the seafloor
+
+    3–4 | 99 | 33
+
+    6–7 | 1 | 0
+
+    4–5 | 2 | 0
+
+    2–3 | 7 | 0
+
+    5–6 | 18 | 7
+
+
+    Studying tools unearthed at a cave site on the western coast of Italy, archaeologist
+    Paola Villa and colleagues have determined that prehistoric Neanderthal groups
+    fashioned them from shells of clams that they harvested from the seafloor while
+    wading or diving or that washed up on the beach. Clamshells become thin and eroded
+    as they wash up on the beach, while those on the seafloor are smooth and sturdy,
+    so the research team suspects that Neanderthals prized the tools made with seafloor
+    shells. However, the team also concluded that those tools were likely more challenging
+    to obtain, noting that ______'
+  correct_option_label: A
+  options:
+  - label: A
+    text: at each depth below the surface in the cave, the difference in the numbers
+      of tools of each type suggests that shells were easier to collect from the beach
+      than to harvest from the seafloor.
+  - label: B
+    text: the highest number of tools were at a depth of 3–4 meters below the surface,
+      which suggests that the Neanderthal population at the site was highest during
+      the related period of time.
+  - label: C
+    text: at each depth below the surface in the cave, the difference in the numbers
+      of tools of each type suggests that Neanderthals preferred to use clamshells
+      from the beach because of their durability.
+  - label: D
+    text: the higher number of tools at depths of 5–6 meters below the surface in
+      the cave than at depths of 4–5 meters below the surface suggests that the size
+      of clam populations changed over time.
+  stimulus_assets:
+  - type: table
+    title: Number and Origin of Clamshell Tools Found at Different Levels Below the
+      Surface in Neanderthal Cave
+    structured_data:
+      headers:
+      - Depth (meters)
+      - Beach-collected
+      - Seafloor-harvested
+      rows:
+      - - 3–4
+        - '99'
+        - '33'
+      - - 6–7
+        - '1'
+        - '0'
+      - - 4–5
+        - '2'
+        - '0'
+      - - 2–3
+        - '7'
+        - '0'
+      - - 5–6
+        - '18'
+        - '7'
+    render_hints:
+      chart_type: table
+      x_label: null
+      y_label: null
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_plus_table
+    stem_type_key: choose_best_support
+    explanation_short: Option A uses the consistent pattern across all depths—beach-collected
+      tools outnumber seafloor-harvested tools—to support the conclusion that seafloor
+      tools were more challenging to obtain.
+    explanation_full: The research team concluded that seafloor-harvested clamshell
+      tools were likely more challenging to obtain than beach-collected ones. The
+      table shows that at every depth, the number of beach-collected tools exceeds
+      the number of seafloor-harvested tools, often by a wide margin. This consistent
+      pattern directly supports the conclusion that beach collection was easier. The
+      other options either focus on a single depth, misinterpret the reason for the
+      pattern, or draw unrelated conclusions about population or clam populations.
+- question_number: 13
+  question_id: 719af787-e91c-530e-9d32-d82ba345c166
+  question_text: Which choice best describes data from the graph that support Taylor
+    and colleagues’ conclusion?
+  passage_text: Perovskite solar cells convert light into electricity more efficiently
+    than earlier kinds of solar cells, and manufacturing advances have recently made
+    them commercially attractive. One limitation of the cells, however, has to do
+    with their electron transport layer (ETL), through which absorbed electrons must
+    pass. Often the ETL is applied through a process called spin coating, but such
+    ETLs are fairly inefficient at converting input power to output power. André Taylor
+    and colleagues tested a novel spray coating method for applying the ETL. The team
+    produced ETLs of various thicknesses and concluded that spray coating holds promise
+    for improving the power conversion efficiency of ETLs in perovskite solar cells.
+  correct_option_label: C
+  options:
+  - label: A
+    text: Both the ETL applied through spin coating and the ETL applied through spray
+      coating showed a power conversion efficiency greater than 10% at their lowest
+      performing thickness.
+  - label: B
+    text: The lowest performing ETL applied through spray coating had a higher power
+      conversion efficiency than the highest performing ETL applied through spin coating.
+  - label: C
+    text: The highest performing ETL applied through spray coating showed a power
+      conversion efficiency of approximately 13%, while the highest performing ETL
+      applied through spin coating showed a power conversion efficiency of approximately
+      11%.
+  - label: D
+    text: There was a substantial difference in power conversion efficiency between
+      the lowest and highest performing ETLs applied through spray coating.
+  stimulus_assets:
+  - type: graph
+    title: Power Conversion Efficiency of Lowest and Highest Performing Spin-coated
+      and Spray-coated Electron Transport Layers
+    structured_data:
+      x_label: Coating Method
+      y_label: Power Conversion Efficiency (%)
+      series:
+      - label: Lowest Performing
+        data:
+        - 8
+        - 12
+      - label: Highest Performing
+        data:
+        - 11
+        - 13
+    render_hints:
+      chart_type: bar
+      x_label: Coating Method
+      y_label: Power Conversion Efficiency (%)
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_plus_graph
+    stem_type_key: choose_best_support
+    explanation_short: The graph shows that the highest performing spray-coated ETL
+      achieved approximately 13% efficiency, compared to about 11% for the highest
+      spin-coated ETL, directly supporting the conclusion that spray coating improves
+      efficiency.
+    explanation_full: Taylor and colleagues concluded that spray coating holds promise
+      for improving power conversion efficiency. The graph compares the lowest and
+      highest performing ETLs for both spin coating and spray coating. The highest
+      performing spray-coated ETL reached roughly 13% efficiency, while the highest
+      spin-coated ETL reached only about 11%. This direct comparison of peak performances
+      provides the strongest evidence that spray coating can enhance efficiency. Option
+      B is factually correct but compares the lowest spray to the highest spin, which
+      is a less direct measure of the method's potential. Options A and D misrepresent
+      the data.
+- question_number: 14
+  question_id: 8a4e816b-0bcc-5921-aec0-019eef420b4a
+  question_text: Which choice most effectively uses data from the table to complete
+    the statement?
+  passage_text: 'Employment by Sector in France and the United States, 1800–2012 (%
+    of total employment)
+
+
+    Year | Agriculture in France | Manufacturing in France | Services in France |
+    Agriculture in US | Manufacturing in US | Services in US
+
+    1800 | 64 | 22 | 14 | 68 | 18 | 13
+
+    1900 | 43 | 29 | 28 | 41 | 28 | 31
+
+    1950 | 32 | 33 | 35 | 14 | 33 | 53
+
+    2012 | 3 | 21 | 76 | 2 | 18 | 80
+
+
+    Rows in table may not add up to 100 due to rounding.
+
+
+    Over the past two hundred years, the percentage of the population employed in
+    the agricultural sector has declined in both France and the United States, while
+    employment in the service sector (which includes jobs in retail, consulting, real
+    estate, etc.) has risen. However, this transition happened at very different rates
+    in the two countries. This can be seen most clearly by comparing the employment
+    by sector in both countries in _______'
+  correct_option_label: A
+  options:
+  - label: A
+    text: 1900 with the employment by sector in 1950.
+  - label: B
+    text: 1800 with the employment by sector in 2012.
+  - label: C
+    text: 1900 with the employment by sector in 2012.
+  - label: D
+    text: 1800 with the employment by sector in 1900.
+  stimulus_assets:
+  - type: table
+    title: Employment by Sector in France and the United States, 1800–2012
+    structured_data:
+      headers:
+      - Year
+      - Agriculture in France
+      - Manufacturing in France
+      - Services in France
+      - Agriculture in US
+      - Manufacturing in US
+      - Services in US
+      rows:
+      - - '1800'
+        - '64'
+        - '22'
+        - '14'
+        - '68'
+        - '18'
+        - '13'
+      - - '1900'
+        - '43'
+        - '29'
+        - '28'
+        - '41'
+        - '28'
+        - '31'
+      - - '1950'
+        - '32'
+        - '33'
+        - '35'
+        - '14'
+        - '33'
+        - '53'
+      - - '2012'
+        - '3'
+        - '21'
+        - '76'
+        - '2'
+        - '18'
+        - '80'
+    render_hints:
+      chart_type: table
+      x_label: null
+      y_label: null
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_plus_table
+    stem_type_key: choose_command_of_evidence_quantitative
+    explanation_short: Comparing 1900 and 1950 highlights the different rates of agricultural
+      decline.
+    explanation_full: The claim is that the transition from agriculture to services
+      happened at very different rates in France and the US. The 1900–1950 period
+      shows France's agricultural employment dropping from 43% to 32% (11 percentage
+      points) while the US dropped from 41% to 14% (27 percentage points), a much
+      faster decline. Other comparisons either show similar rates or span too long
+      to isolate the rate difference.
+    annotation_confidence: 0.95
+    needs_human_review: false
+- question_number: 15
+  question_id: bc67488a-177f-5964-9304-e18b609d97c7
+  question_text: Which finding, if true, would most directly support Shcherbakova
+    and colleagues’ claim?
+  passage_text: The linguistic niche hypothesis (LNH) posits that the exotericity
+    of languages (how prevalent non-native speakers are) and grammatical complexity
+    are inversely related, which the LNH ascribes to attrition of complex grammatical
+    rules as more non-native speakers adopt the language but fail to acquire those
+    rules. Focusing on two characteristics that are positive indices of grammatical
+    complexity, fusion (when new phonemes arise from the merger of previously distinct
+    ones) and informativity (languages’ capacity for meaningful variation), Olena
+    Shcherbakova and colleagues conducted a quantitative analysis for more than 1,300
+    languages and claim the outcome is inconsistent with the LNH.
+  correct_option_label: D
+  options:
+  - label: A
+    text: Shcherbakova and colleagues’ analysis showed a slightly negative correlation
+      between grammatical complexity and fusion and between grammatical complexity
+      and informativity.
+  - label: B
+    text: Shcherbakova and colleagues’ analysis showed a slightly negative correlation
+      between grammatical complexity and exotericity.
+  - label: C
+    text: Shcherbakova and colleagues’ analysis showed a slightly positive correlation
+      between grammatical complexity and fusion.
+  - label: D
+    text: Shcherbakova and colleagues’ analysis showed a slightly positive correlation
+      between fusion and exotericity and between informativity and exotericity.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_best_support
+    explanation_short: Option D shows a positive correlation between indices of grammatical
+      complexity and exotericity, contradicting the LNH's predicted inverse relationship
+      and thus supporting the claim of inconsistency.
+    explanation_full: The LNH predicts an inverse relationship between exotericity
+      and grammatical complexity. Shcherbakova and colleagues claim their analysis
+      is inconsistent with the LNH. To support this claim, a finding must show that
+      the relationship is not inverse. Option D reports a slightly positive correlation
+      between fusion (a positive index of grammatical complexity) and exotericity,
+      and between informativity (another positive index) and exotericity. This directly
+      contradicts the LNH's prediction, thereby supporting the claim that the outcome
+      is inconsistent with the LNH. Option B is the most dangerous distractor because
+      it mentions the key variables but shows a negative correlation, which would
+      actually support the LNH rather than the claim of inconsistency.
+- question_number: 16
+  question_id: 42b5e588-e7a2-5d22-8b5e-ae9509ffdad9
+  question_text: Which choice most logically completes the text?
+  passage_text: Archaeologist Christiana Kohler and her team excavated the Egyptian
+    tomb of Queen Merneith, the wife of a First Dynasty pharaoh. Some scholars claim
+    that she also ruled Egypt on her own and was actually the first female pharaoh.
+    The team found a tablet in Merneith’s tomb with writing suggesting that she was
+    in charge of the country’s treasury and other central offices. Whether Merneith
+    was a pharaoh or not, this discovery supports the idea that Merneith likely _______
+  correct_option_label: A
+  options:
+  - label: A
+    text: had an important role in Egypt’s government.
+  - label: B
+    text: lived after rather than before the First Dynasty of Egypt.
+  - label: C
+    text: traveled beyond Egypt’s borders often.
+  - label: D
+    text: created a new form of writing in Egypt.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: most_logically_completes
+- question_number: 17
+  question_id: 063675a5-e319-5c9c-a8fd-b7846009bc5e
+  question_text: Which choice most logically completes the text?
+  passage_text: In a study of the cognitive abilities of white-faced capuchin monkeys
+    (Cebus imitator), researchers neglected to control for the physical difficulty
+    of the tasks they used to evaluate the monkeys. The cognitive abilities of monkeys
+    given problems requiring little dexterity, such as sliding a panel to retrieve
+    food, were judged by the same criteria as were those of monkeys given physically
+    demanding problems, such as unscrewing a bottle and inserting a straw. The results
+    of the study, therefore, ______
+  correct_option_label: A
+  options:
+  - label: A
+    text: could suggest that there are differences in cognitive ability among the
+      monkeys even though such differences may not actually exist.
+  - label: B
+    text: are useful for identifying tasks that the monkeys lack the cognitive capacity
+      to perform but not for identifying tasks that the monkeys can perform.
+  - label: C
+    text: should not be taken as indicative of the cognitive abilities of any monkey
+      species other than C. imitator.
+  - label: D
+    text: reveal more about the monkeys’ cognitive abilities when solving artificial
+      problems than when solving problems encountered in the wild.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: most_logically_completes
+    explanation_short: The study's failure to control for physical difficulty means
+      that apparent differences in cognitive ability could actually be due to differences
+      in physical task demands.
+    explanation_full: The passage explains that monkeys were given tasks with varying
+      physical difficulty (e.g., sliding a panel vs. unscrewing a bottle), but the
+      researchers did not account for this when judging cognitive ability. Therefore,
+      the results could falsely suggest cognitive differences that are actually due
+      to physical difficulty. Option A correctly captures this implication.
+- question_number: 18
+  question_id: 6a4de090-c6a9-53c5-ba3d-ac2a51925ed8
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: 'Public-awareness campaigns about the need to reduce single-use plastics
+    can be successful, says researcher Kim Borg of Monash University in Australia,
+    when these campaigns give consumers a choice: for example, Japan achieved a 40
+    percent reduction in plastic-bag use after cashiers were instructed to ask customers
+    whether _______ wanted a bag.'
+  correct_option_label: A
+  options:
+  - label: A
+    text: they
+  - label: B
+    text: one
+  - label: C
+    text: you
+  - label: D
+    text: it
+  annotation:
+    grammar_focus_key: pronoun_antecedent_agreement
+    grammar_role_key: subject_pronoun
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The pronoun must agree with the plural antecedent 'customers',
+      so 'they' is correct.
+    explanation_full: The blank requires a pronoun referring to 'customers', which
+      is plural. 'They' is the plural pronoun; 'one' is singular and impersonal; 'you'
+      is second person; 'it' is singular and neuter. Only 'they' agrees in number.
+    needs_human_review: false
+- question_number: 19
+  question_id: f8fe6a7d-a4ad-5fa4-a2bd-65f2235d2523
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: Lucía Michel of the University of Chile observed that alkaline soils
+    contain an insoluble form of iron that blueberry plants cannot absorb, thus inhibiting
+    blueberry growth. If these plants were grown in alkaline soil alongside grasses
+    that aid in iron solubilization, _______ Michel was determined to find out.
+  correct_option_label: D
+  options:
+  - label: A
+    text: could the blueberries thrive.
+  - label: B
+    text: the blueberries could thrive.
+  - label: C
+    text: the blueberries could thrive?
+  - label: D
+    text: could the blueberries thrive?
+  annotation:
+    grammar_focus_key: subject_aux_inversion_and_punctuation
+    grammar_role_key: direct_question
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The blank requires a direct question (subject-auxiliary inversion
+      and question mark) to serve as the object of 'find out,' correctly ending the
+      sentence and allowing the following statement to stand as a separate sentence.
+    explanation_full: The passage sets up a conditional clause ('If these plants were
+      grown...') and then needs a main clause that poses the question Michel wanted
+      to answer. A direct question ('could the blueberries thrive?') is grammatically
+      required here because it is the thing she was determined to find out. The question
+      mark properly terminates the interrogative sentence, and the subsequent 'Michel
+      was determined to find out' begins a new sentence. Option D uses correct subject-auxiliary
+      inversion ('could the blueberries') and the necessary question mark. Option
+      B uses declarative word order without a question mark, creating a run-on sentence.
+      Option A has inversion but no question mark, leaving the sentence improperly
+      punctuated. Option C has a question mark but no inversion, which is ungrammatical
+      for a direct question.
+- question_number: 20
+  question_id: 171f23a8-4cd5-501f-bcf9-9bfd5e9000ea
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: Atoms in a synchrotron, a type of circular particle accelerator, travel
+    faster and faster until they ______ a desired energy level, at which point they
+    are diverted to collide with a target, smashing the atoms.
+  correct_option_label: B
+  options:
+  - label: A
+    text: will reach
+  - label: B
+    text: reach
+  - label: C
+    text: had reached
+  - label: D
+    text: are reaching
+  annotation:
+    grammar_focus_key: verb_tense
+    grammar_role_key: time_clause_verb
+    stimulus_mode_key: sentence_only
+    stem_type_key: conform_to_standard_english
+    explanation_short: The present tense 'reach' is required after 'until' in a time
+      clause referring to a future event.
+    explanation_full: In Standard English, when a time clause introduced by 'until'
+      refers to a future event, the verb in that clause must be in the present tense,
+      not the future. The main clause 'travel faster and faster' is in the present
+      tense describing a general process, and the 'until' clause indicates the point
+      at which the process ends. Therefore, 'reach' is correct. 'Will reach' incorrectly
+      uses the future tense; 'had reached' uses past perfect, which does not match
+      the present-tense main clause; 'are reaching' uses present continuous, which
+      is not appropriate for a general statement of fact.
+- question_number: 21
+  question_id: 15ab26ae-498c-5e32-af8d-07f8ace5b1e3
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: In his 1963 exhibition Exposition of Music—Electronic Television,
+    Korean American artist Nam June Paik showed how television images could be manipulated
+    to express an artist’s perspective. Today, Paik _______ considered the first video
+    artist.
+  correct_option_label: D
+  options:
+  - label: A
+    text: will be
+  - label: B
+    text: had been
+  - label: C
+    text: was
+  - label: D
+    text: is
+  annotation:
+    grammar_focus_key: verb_tense
+    grammar_role_key: main_verb
+    stimulus_mode_key: sentence_only
+    stem_type_key: conform_to_standard_english
+    explanation_short: The present tense 'is' is required to match the time adverbial
+      'Today'.
+    explanation_full: 'The sentence describes a current state: Paik is considered
+      the first video artist today. The time adverbial ''Today'' indicates present
+      time, so the present tense ''is'' is correct. ''Was'' would refer to the past,
+      ''had been'' to a past perfect, and ''will be'' to the future, none of which
+      fit the context.'
+- question_number: 22
+  question_id: d63fe2da-aa71-51fb-a6b5-5f689fd791e7
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: Former First Lady of the United States Eleanor Roosevelt and Indian
+    activist and educator Hansa Mehta were instrumental in drafting the United Nations’
+    Universal Declaration of Human Rights, a document that ______ the basic freedoms
+    to which all people are entitled.
+  correct_option_label: C
+  options:
+  - label: A
+    text: have outlined
+  - label: B
+    text: were outlining
+  - label: C
+    text: outlines
+  - label: D
+    text: outline
+  annotation:
+    grammar_focus_key: subject_verb_agreement
+    grammar_role_key: verb_number_agreement
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The subject 'a document' is singular, so the verb must be singular
+      'outlines'.
+    explanation_full: The relative clause 'that ______ the basic freedoms' modifies
+      the singular noun 'a document'. Therefore, the verb must agree in number with
+      the singular antecedent. 'Outlines' is the only singular present tense verb
+      form among the options. 'Have outlined' and 'were outlining' are plural and
+      also use incorrect tenses; 'outline' is plural.
+- question_number: 23
+  question_id: 2ea4b8fc-b263-5ede-947b-cbedc6ce6974
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: In February 1919, following the end of the First World War, women
+    from ten countries around the world convened the Inter-Allied Women’s Conference
+    in Paris. The conference’s goals were _______ ensure women’s participation in
+    the proceedings of the Paris Peace Conference, to secure the right of women to
+    serve in the League of Nations, and to advocate for human rights.
+  correct_option_label: A
+  options:
+  - label: A
+    text: 'threefold: to'
+  - label: B
+    text: threefold. To
+  - label: C
+    text: threefold to
+  - label: D
+    text: threefold; to
+  annotation:
+    grammar_focus_key: colon_usage
+    grammar_role_key: introduce_list
+    stimulus_mode_key: sentence_only
+    stem_type_key: conform_to_standard_english
+    explanation_short: A colon is used after a complete sentence to introduce a list.
+    explanation_full: 'The phrase before the blank is a complete sentence: ''The conference’s
+      goals were''. A colon is the appropriate punctuation to introduce the list of
+      goals that follows. Option B creates a fragment, Option C creates a run-on,
+      and Option D incorrectly uses a semicolon before a list that is not an independent
+      clause.'
+- question_number: 24
+  question_id: e42cec3f-00e0-5eb1-ba23-70a8e2d87b00
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: Mathematician Grigori Perelman, sometimes in conjunction with mathematicians
+    Richard S. Hamilton and Shing-Tung Yau, _______ credited with proving the Poincaré
+    conjecture. Having built on Hamilton’s previous work to solve the proof, Perelman
+    has insisted that Hamilton receive credit. Yau later found and closed gaps in
+    Perelman’s proof, persuading some mathematicians that he deserves credit as well.
+  correct_option_label: D
+  options:
+  - label: A
+    text: are
+  - label: B
+    text: have been
+  - label: C
+    text: are being
+  - label: D
+    text: is
+  annotation:
+    grammar_focus_key: subject_verb_agreement
+    grammar_role_key: subject_verb_agreement
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The singular subject 'Mathematician Grigori Perelman' requires
+      the singular verb 'is'.
+    explanation_full: The subject of the sentence is 'Mathematician Grigori Perelman',
+      which is singular. The phrase 'sometimes in conjunction with mathematicians
+      Richard S. Hamilton and Shing-Tung Yau' is a parenthetical modifier and does
+      not change the number of the subject. Therefore, the verb must agree with the
+      singular subject, making 'is' the only correct choice. Options A, B, and C are
+      plural or progressive forms that do not agree with the singular subject.
+- question_number: 25
+  question_id: b483a17f-93cc-5227-8ada-19bf5e5727e6
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: Researchers studying magnetosensation have determined why some soil-dwelling
+    roundworms in the Southern Hemisphere move in the opposite direction of Earth’s
+    magnetic field when searching for _______ in the Northern Hemisphere, the magnetic
+    field points down, into the ground, but in the Southern Hemisphere, it points
+    up, toward the surface and away from worms’ food sources.
+  correct_option_label: A
+  options:
+  - label: A
+    text: 'food:'
+  - label: B
+    text: food,
+  - label: C
+    text: food while
+  - label: D
+    text: food
+  annotation:
+    grammar_focus_key: colon_introducing_explanation
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: conform_to_standard_english
+    explanation_short: A colon is needed to introduce the explanation that follows.
+    explanation_full: The clause before the blank is an independent clause. A colon
+      is used after an independent clause to introduce an explanation, list, or quotation.
+      Here, the colon introduces the explanation of why the roundworms move in the
+      opposite direction. Option B (comma) would create a comma splice. Option C ('food
+      while') would create a fragment. Option D (no punctuation) would create a run-on
+      sentence.
+- question_number: 26
+  question_id: 9a377b27-f8ac-5fe2-b398-02d1d38b13d1
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: Most conifers (trees belonging to the phylum Coniferophyta) are evergreen.
+    That is, they keep their green leaves or needles year-round. However, not all
+    conifer species are evergreen. Larch trees, _______ lose their needles every fall.
+  correct_option_label: A
+  options:
+  - label: A
+    text: for instance,
+  - label: B
+    text: nevertheless,
+  - label: C
+    text: meanwhile,
+  - label: D
+    text: in addition,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The transition 'for instance' introduces an example of the
+      previous statement that not all conifers are evergreen.
+    explanation_full: 'The passage first establishes that most conifers are evergreen,
+      then notes an exception: not all are. The blank precedes a specific example
+      (larch trees) that illustrates this exception. ''For instance'' correctly signals
+      that the following information is an example, making the logical relationship
+      clear. The other options suggest contrast, simultaneity, or addition, none of
+      which fit the example relationship.'
+    annotation_confidence: 0.95
+    needs_human_review: false
+- question_number: 27
+  question_id: 6d9c7a53-c3d6-5902-a49c-bbbb338675c3
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: Neuroscientist Karen Konkoly wanted to determine whether individuals
+    can understand and respond to questions during REM sleep. She first taught volunteers
+    eye movements they would use to respond to basic math problems while asleep (a
+    single left-right eye movement indicated the number one). _______ she attached
+    electrodes to the volunteers’ faces to record their eye movements during sleep.
+  correct_option_label: B
+  options:
+  - label: A
+    text: Specifically,
+  - label: B
+    text: Next,
+  - label: C
+    text: For instance,
+  - label: D
+    text: In sum,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The transition 'Next' logically signals the next step in the
+      sequence of actions.
+    explanation_full: The first sentence describes the initial step of teaching volunteers
+      eye movements. The second sentence describes the subsequent step of attaching
+      electrodes. 'Next' is the only transition that correctly indicates this chronological
+      sequence. 'Specifically' would imply the second sentence elaborates on the first,
+      'For instance' would introduce an example, and 'In sum' would signal a conclusion,
+      none of which fit the relationship.
+    annotation_confidence: 0.95
+    needs_human_review: false
+- question_number: 28
+  question_id: a1b0c41b-9b99-5840-80e1-dd77e988fc2f
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: In his 1925 book The Morphology of Landscape, US geographer Carl Sauer
+    challenged prevailing views about how natural landscapes influence human cultures.
+    _______ Sauer argued that instead of being shaped entirely by their natural surroundings,
+    cultures play an active role in their own development by virtue of their interactions
+    with the environment.
+  correct_option_label: D
+  options:
+  - label: A
+    text: Similarly,
+  - label: B
+    text: Finally,
+  - label: C
+    text: Therefore,
+  - label: D
+    text: Specifically,
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: complete_the_text
+    explanation_short: The second sentence specifies Sauer's argument, so 'Specifically'
+      is the most logical transition.
+    explanation_full: The first sentence states that Sauer challenged prevailing views.
+      The second sentence explains exactly what he argued—that cultures actively shape
+      their own development through environmental interaction. 'Specifically' correctly
+      signals that the second sentence provides a more detailed account of the challenge
+      introduced in the first sentence. The other transitions imply comparison, sequence,
+      or cause-effect, none of which fit the logical relationship.
+    annotation_confidence: 0.95
+    needs_human_review: false
+- question_number: 29
+  question_id: 45e54993-3efa-535b-b7b6-def078c92ae7
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: In her 2012 analysis of tree rings from Japan’s Yaku Island, cosmic
+    ray physicist Fusa Miyake noted an anomalous carbon-14 spike dating to 774–775
+    CE, indicating that a massive burst of radiation reached Earth during that time.
+    _______ this unprecedented radiocarbon surge was dubbed a “Miyake event” in honor
+    of its discoverer.
+  correct_option_label: A
+  options:
+  - label: A
+    text: Fittingly,
+  - label: B
+    text: Similarly,
+  - label: C
+    text: However,
+  - label: D
+    text: In other words,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The transition 'Fittingly' logically signals that naming the
+      event after its discoverer is an appropriate consequence of the discovery.
+    explanation_full: 'The first sentence establishes that Fusa Miyake discovered
+      an anomalous radiation burst. The second sentence states the event was named
+      after her. ''Fittingly'' correctly conveys that the naming is a suitable and
+      expected result of her discovery. The other options introduce unsupported logical
+      relationships: comparison (''Similarly''), contrast (''However''), or restatement
+      (''In other words'').'
+    annotation_confidence: 0.95
+    needs_human_review: false
+- question_number: 30
+  question_id: 78bea3b9-7a5e-5cf4-b7cc-c86650700c27
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: Researchers Helena Mihaljeviv-Brandt, Lucía Santamaría, and Marco
+    Tullney report that while mathematicians may have traditionally worked alone,
+    evidence points to a shift in the opposite direction. _______ mathematicians are
+    choosing to collaborate with their peers—a trend illustrated by a rise in the
+    number of mathematics publications credited to multiple authors.
+  correct_option_label: D
+  options:
+  - label: A
+    text: Similarly,
+  - label: B
+    text: For this reason,
+  - label: C
+    text: Furthermore,
+  - label: D
+    text: Increasingly,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: complete_the_text
+    explanation_short: '''Increasingly'' indicates a growing trend, matching the shift
+      from solo work to collaboration.'
+    explanation_full: The first sentence establishes a shift away from traditional
+      solo work. The second sentence describes mathematicians now choosing to collaborate,
+      with evidence of rising co-authored publications. 'Increasingly' conveys that
+      this collaboration is happening more and more over time, logically connecting
+      the idea of a shift to the current trend. The other options suggest comparison
+      (Similarly), cause and effect (For this reason), or addition (Furthermore),
+      none of which are supported by the text.
+    annotation_confidence: 0.95
+    needs_human_review: false
+- question_number: 31
+  question_id: 56e76d8e-0bad-5a72-a8ab-74f0cabe807b
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: 'While researching a topic, a student has taken the following notes:
+
+
+    • Shaun Tan is an Australian author.
+
+    • In 2008, he published Tales from Outer Suburbia, a book of fifteen short stories.
+
+    • The stories describe surreal events occurring in otherwise ordinary suburban
+    neighborhoods.
+
+    • In 2018, he published Tales from the Inner City, a book of twenty-five short
+    stories.
+
+    • The stories describe surreal events occurring in otherwise ordinary urban settings.
+
+
+    The student wants to emphasize a similarity between the two books by Shaun Tan.'
+  correct_option_label: D
+  options:
+  - label: A
+    text: Shaun Tan’s book Tales from Outer Suburbia, which describes surreal events
+      occurring in otherwise ordinary places, contains fewer short stories than Tales
+      from the Inner City does.
+  - label: B
+    text: Tales from Outer Suburbia was published in 2008, and Tales from the Inner
+      City was published in 2018.
+  - label: C
+    text: Unlike Tales from the Inner City, Shaun Tan’s book Tales from Outer Suburbia
+      is set in suburban neighborhoods.
+  - label: D
+    text: Shaun Tan’s books Tales from Outer Suburbia and Tales from the Inner City
+      both describe surreal events occurring in otherwise ordinary places.
+  annotation:
+    grammar_focus_key: rhetorical_synthesis
+    grammar_role_key: synthesize_notes
+    stimulus_mode_key: notes_bullets
+    stem_type_key: synthesize_information
+    explanation_short: Option D directly states the shared characteristic of surreal
+      events in ordinary places, fulfilling the goal of emphasizing a similarity.
+    explanation_full: The student's goal is to emphasize a similarity between the
+      two books. The notes indicate that both books contain stories describing surreal
+      events in otherwise ordinary settings—suburban for Outer Suburbia and urban
+      for Inner City. Option D accurately synthesizes this commonality. Option A contrasts
+      the number of stories, Option B lists publication years without noting similarity,
+      and Option C highlights a difference in setting, all failing to meet the goal.
+- question_number: 32
+  question_id: 29b2cd54-c091-5ccc-9e65-ed64912fa7e6
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: 'While researching a topic, a student has taken the following notes:
+
+
+    • Started in 1925, the Scripps National Spelling Bee is a US-based spelling competition.
+
+    • The words used in the competition have diverse linguistic origins.
+
+    • In 2008, Sameer Mishra won by correctly spelling the word “guerdon.”
+
+    • “Guerdon” derives from the Anglo-French word “guerdun.”
+
+    • In 2009, Kavya Shivashankar won by correctly spelling the word “Laodicean.”
+
+    • “Laodicean” derives from the ancient Greek word “Laodíkeia.”
+
+
+    The student wants to emphasize a difference in the origins of the two words.'
+  correct_option_label: A
+  options:
+  - label: A
+    text: “Guerdon,” the final word of the 2008 Scripps National Spelling Bee, is
+      of Anglo-French origin, while the following year’s final word, “Laodicean,”
+      derives from ancient Greek.
+  - label: B
+    text: In 2008, Sameer Mishra won the Scripps National Spelling Bee by correctly
+      spelling the word “guerdon”; however, the following year, Kavya Shivashankar
+      won based on spelling the word “Laodicean.”
+  - label: C
+    text: Kavya Shivashankar won the 2009 Scripps National Spelling Bee by correctly
+      spelling “Laodicean,” which derives from the ancient Greek word “Laodíkeia.”
+  - label: D
+    text: The Scripps National Spelling Bee uses words from diverse linguistic origins,
+      such as “guerdon” and “Laodicean.”
+  annotation:
+    grammar_focus_key: synthesize_information
+    grammar_role_key: goal_emphasis
+    stimulus_mode_key: notes_bullets
+    stem_type_key: synthesize_information
+    explanation_short: Choice A directly states the origins of both words, fulfilling
+      the goal of emphasizing a difference in origins.
+    explanation_full: The student's goal is to emphasize a difference in the origins
+      of the two words. Option A accomplishes this by stating that 'guerdon' is of
+      Anglo-French origin and 'Laodicean' derives from ancient Greek, directly contrasting
+      their linguistic roots. Option B focuses on the winners and the act of spelling,
+      not the origins. Option C only addresses the origin of 'Laodicean,' omitting
+      'guerdon.' Option D makes a general statement about diverse origins without
+      specifying the difference between these two words.
+- question_number: 33
+  question_id: 5f349893-cd1d-5472-b248-64e16559cbc1
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: 'While researching a topic, a student has taken the following notes:
+
+
+    • In 1851, German American artist Emanuel Leutze painted Washington Crossing the
+    Delaware.
+
+    • His huge painting (149 v 255 inches) depicts the first US president crossing
+    a river with soldiers in the Revolutionary War.
+
+    • In 2019, Cree artist Kent Monkman painted mistikôsiwak (Wooden Boat People):
+    Resurgence of the People.
+
+    • Monkman’s huge painting (132 v 264 inches) was inspired by Leutze’s.
+
+    • It portrays Indigenous people in a boat rescuing refugees.
+
+
+    The student wants to emphasize a similarity between the two paintings.'
+  correct_option_label: C
+  options:
+  - label: A
+    text: Monkman, a Cree artist, finished his painting in 2019; Leutze, a German
+      American artist, completed his in 1851.
+  - label: B
+    text: Although Monkman’s painting was inspired by Leutze’s, the people and actions
+      the two paintings portray are very different.
+  - label: C
+    text: Leutze’s and Monkman’s paintings are both huge, measuring 149 v 255 inches
+      and 132 v 264 inches, respectively.
+  - label: D
+    text: Leutze’s painting depicts Revolutionary War soldiers, while Monkman’s depicts
+      Indigenous people and refugees.
+  annotation:
+    grammar_focus_key: similarity_emphasis
+    grammar_role_key: rhetorical_synthesis
+    stimulus_mode_key: notes_bullets
+    stem_type_key: synthesize_information
+    explanation_short: Option C directly states a similarity (both paintings are huge)
+      and provides specific dimensions, fulfilling the goal.
+    explanation_full: The student's goal is to emphasize a similarity between the
+      two paintings. Option C notes that both paintings are 'huge' and gives their
+      respective measurements, which is a clear similarity. The other options either
+      highlight differences (A, B, D) or provide background information that does
+      not directly emphasize a shared characteristic.

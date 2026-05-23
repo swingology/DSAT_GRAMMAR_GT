@@ -1,0 +1,1292 @@
+exam_code: '9'
+section_code: '01'
+module_code: '02'
+questions:
+- question_number: 1
+  question_id: 92a3f458-7074-539e-9c11-b611b02a285d
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: Nigerian American author Teju Cole’s ______ his two passions—photography
+    and the written word—culminates in his 2017 book, Blind Spot, which evocatively
+    combines his original photographs from his travels with his poetic prose.
+  correct_option_label: B
+  options:
+  - label: A
+    text: indifference to
+  - label: B
+    text: enthusiasm for
+  - label: C
+    text: concern about
+  - label: D
+    text: surprise at
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct answer must reflect a positive, active engagement
+      with both passions, as evidenced by the creation of a book that combines them.
+      'Enthusiasm for' is the only option that conveys this productive, celebratory
+      relationship.
+    explanation_full: The sentence describes how Teju Cole’s engagement with photography
+      and writing culminates in a creative work — his book Blind Spot — that integrates
+      both forms. The blank requires a phrase that logically connects Cole to his
+      passions in a way that leads to such a synthesis. Option B, 'enthusiasm for,'
+      correctly implies active, positive investment that motivates creative output.
+      Option A, 'indifference to,' contradicts the entire premise. Option C, 'concern
+      about,' suggests worry or critique, which doesn’t align with the celebratory
+      tone or the act of combining passions into art. Option D, 'surprise at,' implies
+      unexpectedness rather than sustained engagement. Only 'enthusiasm for' fits
+      the context of a culmination born from passionate involvement.
+    needs_human_review: false
+- question_number: 2
+  question_id: 28687b6a-839c-5bde-a080-0c1431ffcba6
+  question_text: As used in the text, what does the word “completing” most nearly
+    mean? I tried to distract myself with these sights of the ordinary world, but
+    in my mind it was the lines I had been translating and the lines that I had been
+    writing that remained in the forefront. I longed for sleep to obliterate them
+    but it eluded me. Perhaps everything would be normal again once I had sent off
+    the manuscript, I thought, and looked forward to completing the work.
+  passage_text: "Reading and Writing \n33 QUESTIONS \nThe questions in this section\
+    \ address a number of important reading and writing skills. Each \nquestion includes\
+    \ one or more passages, which may include a table or graph. Read each passage\
+    \ \nand question carefully, and then choose the best answer to the question based\
+    \ on the passage(s). \nAll questions in this section are multiple-choice with\
+    \ four answer choices. Each question has a \nsingle best answer. \n. 1 , \nThe\
+    \ following text is from Anita Desai’s 2011 novella\nTranslator Translated. While\
+    \ working on her\ntranslation of a novel written in Odia (a language of\nIndia)\
+    \ into English, the narrator looks out her\nwindow at night to clear her mind.\n\
+    I tried to distract myself with these sights of the\nordinary world, but in my\
+    \ mind it was the lines I\nhad been translating and the lines that I had\nbeen\
+    \ writing that remained in the forefront. I\nlonged for sleep to obliterate them\
+    \ but it eluded\nme. Perhaps everything would be normal again\nonce I had sent\
+    \ off the manuscript, I thought,\nand looked forward to completing the work.\n\
+    ©2011 by Anita Desai"
+  correct_option_label: B
+  options:
+  - label: A
+    text: Destroying
+  - label: B
+    text: Finishing
+  - label: C
+    text: Advertising
+  - label: D
+    text: Rejecting
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_word_in_context
+    explanation_short: The narrator is working on a translation and writing project;
+      'completing the work' refers to finishing the manuscript.
+    explanation_full: In context, the narrator is engaged in translating and writing,
+      and expresses hope that life will return to normal after sending off the manuscript.
+      The phrase 'looked forward to completing the work' logically refers to finishing
+      the manuscript. Option B, 'Finishing,' matches this meaning. Options A, C, and
+      D are semantically unrelated to the act of concluding a creative or scholarly
+      task.
+    needs_human_review: false
+- question_number: 3
+  question_id: 1a0c20b6-d2f6-58de-896b-69b64aa926f3
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: Predatory animals differ widely in how they _______ food for their
+    young. Some leave dead prey nearby for their young to consume, some bring live
+    prey to their young, and some feed their young directly from their own mouths.
+  correct_option_label: C
+  options:
+  - label: A
+    text: avoid
+  - label: B
+    text: guess
+  - label: C
+    text: provide
+  - label: D
+    text: describe
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct answer must describe the action of supplying food
+      to offspring, which 'provide' does precisely. Other options are semantically
+      related but imprecise or illogical in context.
+    explanation_full: The sentence describes varied behaviors among predatory animals
+      regarding feeding their young. The blank requires a verb that captures the general
+      act of supplying or delivering food. 'Provide' is the most precise term because
+      it encompasses all listed methods (leaving prey, bringing prey, feeding directly).
+      'Avoid' contradicts the context. 'Guess' is irrelevant. 'Describe' is illogical
+      — animals don't describe food to their young. Thus, 'provide' is both logically
+      necessary and semantically precise.
+- question_number: 4
+  question_id: 936963f7-16e3-537f-88c0-f460c9e7c6c9
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: Artist Marilyn Dingle’s intricate, coiled baskets are _______ sweetgrass
+    and palmetto palm. Following a Gullah technique that originated in West Africa,
+    Dingle skillfully winds a thin palm frond around a bunch of sweetgrass with the
+    help of a “sewing bone” to create the basket’s signature look that no factory
+    can reproduce.
+  correct_option_label: B
+  options:
+  - label: A
+    text: indicated by
+  - label: B
+    text: handmade from
+  - label: C
+    text: represented by
+  - label: D
+    text: collected with
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct phrase 'handmade from' accurately describes the
+      material origin and artisanal process of the baskets, matching the context of
+      traditional craftsmanship.
+    explanation_full: 'The passage emphasizes the artisanal, non-factory nature of
+      Dingle''s baskets and details the specific materials (sweetgrass and palmetto
+      palm) and handcrafting technique used. Option B, ''handmade from,'' is the only
+      choice that logically and precisely conveys both the material composition and
+      the manual creation process. The other options fail: ''indicated by'' and ''represented
+      by'' suggest symbolic association rather than physical construction; ''collected
+      with'' implies gathering tools or materials rather than crafting from them.'
+    needs_human_review: false
+- question_number: 5
+  question_id: 89d8d3f0-a279-556c-8aa6-5dbb845478f7
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: Beginning in the 1950s, Navajo Nation legislator Annie Dodge Wauneka
+    continuously worked to promote public health; this _______ effort involved traveling
+    throughout the vast Navajo homeland and writing a medical dictionary for speakers
+    of Diné bizaad, the Navajo language.
+  correct_option_label: C
+  options:
+  - label: A
+    text: impartial
+  - label: B
+    text: offhand
+  - label: C
+    text: persistent
+  - label: D
+    text: mandatory
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct answer must reflect the sustained, long-term nature
+      of Wauneka’s work as described by 'continuously worked' and 'throughout the
+      vast Navajo homeland.' 'Persistent' is the only option that conveys this enduring
+      quality.
+    explanation_full: The passage describes Annie Dodge Wauneka’s ongoing, decades-long
+      commitment to public health, including extensive travel and the creation of
+      a medical dictionary. The blank requires an adjective that modifies 'effort'
+      and aligns with the context of sustained, determined action. Option C, 'persistent,'
+      directly matches this meaning. Option A ('impartial') suggests neutrality, which
+      is irrelevant here. Option B ('offhand') implies casualness or lack of preparation
+      — the opposite of what the passage describes. Option D ('mandatory') suggests
+      obligation or requirement, which does not fit the voluntary, driven nature of
+      her work. Only 'persistent' captures the continuous, unwavering dedication implied
+      by the surrounding context.
+    needs_human_review: false
+- question_number: 6
+  question_id: deede4e0-9c75-53e8-b2c8-2139333de2b5
+  question_text: Which choice best describes the function of the underlined sentence
+    in the text as a whole?
+  passage_text: Oral histories—whether they consist of interviews or recordings of
+    songs and stories—can offer researchers a rich view of people’s everyday experiences.
+    For her book about coal mining communities in Kentucky during the twentieth century,
+    Karida Brown therefore relied in part on interviews with coal miners and their
+    families. By doing so, she gained valuable insights into her subjects’ day-to-day
+    lives.
+  correct_option_label: D
+  options:
+  - label: A
+    text: It provides a little-known geographical fact about Kentucky.
+  - label: B
+    text: It argues that Karida Brown is an expert on United States politics.
+  - label: C
+    text: It presents a major historical event that took place in the twentieth century.
+  - label: D
+    text: It describes how Karida Brown benefited from incorporating oral history
+      in her book.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_sentence_function
+    explanation_short: The underlined sentence explains how Karida Brown’s use of
+      oral history benefited her research, serving to illustrate the value of this
+      method in the context of her work.
+    explanation_full: 'The passage introduces oral histories as a valuable research
+      tool. The second sentence states that Karida Brown used them for her book. The
+      underlined third sentence — ''By doing so, she gained valuable insights into
+      her subjects’ day-to-day lives'' — directly explains the outcome or benefit
+      of her methodological choice. This makes its function illustrative and consequential
+      within the passage’s argument: it shows the practical payoff of using oral history.
+      Option D correctly identifies this function. Option A mischaracterizes the sentence
+      as presenting a geographical fact (it doesn’t). Option B falsely attributes
+      an argument about Brown’s expertise (the passage never claims this). Option
+      C incorrectly frames the sentence as describing a historical event (it describes
+      a research outcome, not an event).'
+- question_number: 7
+  question_id: b38eb730-4bef-5247-9b28-bf5cf376acd7
+  question_text: Which choice best states the main purpose of the text?
+  passage_text: Go forth, my son, Winged by my heart’s desire! Great reaches, yet
+    unknown, Await For your possession. I may not, if I would, Retrace the way with
+    you, My pilgrimage is through, But life is calling you!
+  correct_option_label: D
+  options:
+  - label: A
+    text: To express hope that a child will have the same accomplishments as his parent
+      did
+  - label: B
+    text: To suggest that raising a child involves many struggles
+  - label: C
+    text: To warn a child that he will face many challenges throughout his life
+  - label: D
+    text: To encourage a child to embrace the experiences life will offer
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_main_purpose
+    explanation_short: The speaker encourages the child to move forward into life’s
+      unknown experiences, acknowledging their own journey is complete.
+    explanation_full: 'The passage uses imperative language (''Go forth, my son'')
+      and imagery of uncharted territory (''Great reaches, yet unknown'') to convey
+      encouragement for the child to embrace future experiences. The speaker acknowledges
+      their own journey is over (''My pilgrimage is through''), reinforcing that the
+      child must now forge their own path. Option D correctly captures this encouraging,
+      forward-looking tone. Options A, B, and C misrepresent the tone or intent: A
+      implies comparison of accomplishments (not present), B focuses on struggles
+      (absent in text), and C frames life as a warning (contradicts ''life is calling
+      you'').'
+- question_number: 8
+  question_id: 61e28e7f-526a-579c-8bba-8b994e006f3f
+  question_text: Which choice best describes the function of the underlined sentence
+    in the text as a whole?
+  passage_text: Lily had no real intimacy with nature, but she had a passion for the
+    appropriate and could be keenly sensitive to a scene which was the fitting background
+    of her own sensations. The landscape outspread below her seemed an enlargement
+    of her present mood, and she found something of herself in its calmness, its breadth,
+    its long free reaches. On the nearer slopes the sugar-maples wavered like pyres
+    of light; lower down was a massing of grey orchards, and here and there the lingering
+    green of an oak-grove.
+  correct_option_label: D
+  options:
+  - label: A
+    text: It creates a detailed image of the physical setting of the scene.
+  - label: B
+    text: It establishes that a character is experiencing an internal conflict.
+  - label: C
+    text: It makes an assertion that the next sentence then expands on.
+  - label: D
+    text: It illustrates an idea that is introduced in the previous sentence.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_sentence_function
+    explanation_short: The underlined sentence illustrates the idea introduced in
+      the previous sentence — that Lily finds her own emotions reflected in the landscape
+      — by providing specific visual details of the scenery that mirror her inner
+      state.
+    explanation_full: 'The passage begins by establishing Lily’s relationship with
+      nature: she lacks true intimacy but is sensitive to scenes that reflect her
+      inner feelings. The second sentence states that the landscape seems to enlarge
+      her mood and that she finds herself in its qualities (calmness, breadth, etc.).
+      The underlined sentence — ''On the nearer slopes the sugar-maples wavered like
+      pyres of light; lower down was a massing of grey orchards, and here and there
+      the lingering green of an oak-grove.'' — provides concrete, sensory imagery
+      that exemplifies the abstract idea from the prior sentence. It does not introduce
+      new conflict (B), nor does it primarily set physical scene without thematic
+      connection (A). While it follows the assertion in sentence two, it doesn’t merely
+      expand on it (C); rather, it illustrates it through vivid description. Thus,
+      D is correct: it illustrates an idea introduced in the previous sentence.'
+- question_number: 9
+  question_id: 1c3260ba-9b9a-5a6f-b664-823e43839a89
+  question_text: Which choice best describes the function of the underlined statement
+    in the text as a whole?
+  passage_text: Individual elephants and Arctic herbivores such as caribou tend to
+    have fixed geographic ranges throughout their lifetimes, which had prompted some
+    researchers to speculate that the Arctic woolly mammoth, an extinct elephantid,
+    might have exhibited similar behavior. Mammoth tusks grew in sequential layers,
+    incorporating ingested minerals and organics, and so each ivory stratum reflects
+    the ratio of strontium isotopes (87Sr/86Sr) in the local environment; thus, the
+    sequence of strata shows where the animal roamed during life. Recent analysis
+    of the strontium ratios in the strata of one Arctic woolly mammoth tusk in relation
+    to the geographic distribution of strontium ratios in the environment shows the
+    animal’s range begin to expand as it reached sexual maturity, only to contract
+    again in its final 1.5 years.
+  correct_option_label: A
+  options:
+  - label: A
+    text: It discusses a characteristic shared by certain animals in order to explain
+      why researchers raised a possibility that turned out not to be supported by
+      data described later in the text.
+  - label: B
+    text: It illustrates a pattern of behavior among certain animals in order to present
+      a theory about exceptions to that pattern that is weakened by a finding described
+      later in the text.
+  - label: C
+    text: It describes a similarity in the behavior of certain animals in order to
+      show why a method described later in the text did not reveal whether another
+      animal also showed that behavior.
+  - label: D
+    text: It introduces a trait shared by certain animals in order to contextualize
+      a hypothesis about the origin of that trait that is advanced later in the text.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_sentence_function
+    explanation_short: The underlined sentence introduces a shared trait among certain
+      animals to set up a speculative hypothesis that is later contradicted by data
+      from the mammoth tusk analysis.
+    explanation_full: The underlined sentence states that individual elephants and
+      Arctic herbivores like caribou have fixed geographic ranges, which led researchers
+      to speculate that woolly mammoths might share this trait. The subsequent sentences
+      describe how scientists used strontium isotope analysis of mammoth tusks to
+      test this speculation — and found that the mammoth’s range actually expanded
+      and then contracted, contradicting the initial hypothesis. Thus, the function
+      of the underlined sentence is to introduce a characteristic shared by certain
+      animals in order to explain why researchers raised a possibility that turned
+      out not to be supported by data described later in the text — matching option
+      A.
+- question_number: 10
+  question_id: 5ebb350b-9a75-5b1b-8aa6-54f5babb0715
+  question_text: According to the text, what did Gloria Richardson lead?
+  passage_text: In the 1960s, Gloria Richardson led a movement to promote racial equality.
+    Her involvement in this effort was inspired by her daughter, Donna Richardson.
+    In 1961, Donna joined protests organized by the Student Nonviolent Coordinating
+    Committee in Cambridge, Maryland. Following her daughter, Gloria joined these
+    protests too. Gloria soon became the cochair of the Cambridge Nonviolent Action
+    Committee. She was also the leader of what became known as the Cambridge movement.
+  correct_option_label: A
+  options:
+  - label: A
+    text: The Cambridge movement
+  - label: B
+    text: Her daughter Donna’s high school
+  - label: C
+    text: Protests to support environmental protections
+  - label: D
+    text: A new business in Cambridge, Maryland
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_detail
+    explanation_short: The passage explicitly states that Gloria Richardson was the
+      leader of the Cambridge movement.
+    explanation_full: 'The final sentence of the passage directly states: ''She was
+      also the leader of what became known as the Cambridge movement.'' This makes
+      option A the correct answer. Option B is incorrect because while Donna attended
+      high school, there is no mention of Gloria leading it. Option C is incorrect
+      because the passage focuses on racial equality, not environmental protections.
+      Option D is incorrect because there is no mention of Gloria starting a business.'
+- question_number: 11
+  question_id: 6e68e482-93af-5305-b242-a5eecc6c0fc1
+  question_text: According to the text, what is true about Elinor?
+  passage_text: 'Elinor, this eldest daughter, whose advice was so effectual, possessed
+    a strength of understanding, and coolness of judgment, which qualified her, though
+    only nineteen, to be the counsellor of her mother, and enabled her frequently
+    to counteract, to the advantage of them all, that eagerness of mind in Mrs. Dashwood
+    which must generally have led to imprudence. She had an excellent heart;—her disposition
+    was affectionate, and her feelings were strong; but she knew how to govern them:
+    it was a knowledge which her mother had yet to learn; and which one of her sisters
+    had resolved never to be taught.'
+  correct_option_label: D
+  options:
+  - label: A
+    text: Elinor often argues with her mother but fails to change her mind.
+  - label: B
+    text: Elinor can be overly sensitive with regard to family matters.
+  - label: C
+    text: Elinor thinks her mother is a bad role model.
+  - label: D
+    text: Elinor is remarkably mature for her age.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_detail
+    explanation_short: The passage explicitly states that Elinor, though only nineteen,
+      possesses 'strength of understanding' and 'coolness of judgment' that qualify
+      her to counsel her mother — indicating remarkable maturity for her age.
+    explanation_full: 'The passage describes Elinor as possessing ''a strength of
+      understanding, and coolness of judgment, which qualified her, though only nineteen,
+      to be the counsellor of her mother.'' This directly supports Option D, which
+      states that Elinor is remarkably mature for her age. The other options are not
+      supported: there is no mention of Elinor arguing with her mother (A), being
+      overly sensitive (B), or thinking her mother is a bad role model (C). In fact,
+      the passage implies Elinor respects her mother enough to counsel her, and contrasts
+      her self-control with her mother’s lack of it — not moral judgment.'
+- question_number: 12
+  question_id: 63fd8326-d523-54a4-8bcd-50e50e7f4c46
+  question_text: Which choice best describes the main idea of the text?
+  passage_text: 'Culinary anthropologist Vertamae Smart-Grosvenor may be known for
+    her decades of work in national public television and radio, but her book Vibration
+    Cooking: or, the Travel Notes of a Geechee Girl is likely her most influential
+    project. The 1970 book, whose title refers to Smart-Grosvenor’s roots in the Low
+    Country of South Carolina, was unusual for its time. It combined memoir, recipes,
+    travel writing, and social commentary and challenged notions about conventions
+    of food and cooking. Long admired by many, the book and its author have shaped
+    contemporary approaches to writing about cuisine.'
+  correct_option_label: A
+  options:
+  - label: A
+    text: 'Smart-Grosvenor’s unconventional book Vibration Cooking: or, the Travel
+      Notes of a Geechee Girl is an important contribution to food writing.'
+  - label: B
+    text: Smart-Grosvenor held many different positions over her life, including reporter
+      and food writer.
+  - label: C
+    text: 'Smart-Grosvenor’s groundbreaking book Vibration Cooking: or, the Travel
+      Notes of a Geechee Girl didn’t receive the praise it deserved when it was first
+      published in 1970.'
+  - label: D
+    text: Smart-Grosvenor was a talented chef whose work inspired many people to start
+      cooking for themselves.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_main_idea
+    explanation_short: The passage emphasizes that while Smart-Grosvenor had a broad
+      career, her book is her most influential work and has shaped modern food writing
+      — directly supporting option A.
+    explanation_full: The passage opens by acknowledging Smart-Grosvenor’s media career
+      but immediately pivots to assert that her book 'is likely her most influential
+      project.' It then details how the book was unconventional, blended genres, and
+      challenged norms — culminating in the claim that it 'has shaped contemporary
+      approaches to writing about cuisine.' This structure centers the book’s significance,
+      not her biography (B), reception history (C), or culinary talent (D). Option
+      A captures this central claim precisely.
+- question_number: 13
+  question_id: af8b8667-487b-5c6b-a3ba-fc32984538c7
+  question_text: Based on the text, what is true about Mrs. Ochiltree’s acquaintances?
+  passage_text: Mrs. Ochiltree was a woman of strong individuality, whose comments
+    upon her acquaintance[s], present or absent, were marked by a frankness at times
+    no less than startling. This characteristic caused her to be more or less avoided.
+    Mrs. Ochiltree was aware of this sentiment on the part of her acquaintance[s],
+    and rather exulted in it.
+  correct_option_label: D
+  options:
+  - label: A
+    text: They try to refrain from discussing topics that would upset Mrs. Ochiltree.
+  - label: B
+    text: They are unable to spend as much time with Mrs. Ochiltree as she would like.
+  - label: C
+    text: They are too preoccupied with their own concerns to speak with Mrs. Ochiltree.
+  - label: D
+    text: They are likely offended by what Mrs. Ochiltree has said about them.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_detail
+    explanation_short: The passage states that Mrs. Ochiltree's frank comments caused
+      her to be avoided, implying her acquaintances were offended by her remarks.
+    explanation_full: 'The passage explicitly links Mrs. Ochiltree’s ''frankness''
+      — described as ''startling'' — to the consequence that she was ''more or less
+      avoided'' by her acquaintances. The phrase ''this characteristic caused her
+      to be more or less avoided'' directly implies that her acquaintances reacted
+      negatively to her comments, which aligns with being offended. Option D correctly
+      captures this inference. Options A, B, and C are unsupported: there is no mention
+      of them refraining from topics (A), time constraints (B), or preoccupation with
+      their own concerns (C).'
+- question_number: 14
+  question_id: 921758d8-464b-5a16-8d8a-44106db5616d
+  question_text: Which quotation from Mrs. Spring Fragrance’s letters most effectively
+    illustrates the claim?
+  passage_text: '“Mrs. Spring Fragrance” is a 1912 short story by Sui Sin Far. In
+    the story, Mrs. Spring Fragrance, a Chinese immigrant living in Seattle, is traveling
+    in California. In letters to her husband and friend, she demonstrates her concern
+    for what’s happening at her home in Seattle while she is away: _______'
+  correct_option_label: C
+  options:
+  - label: A
+    text: My honorable cousin is preparing for the Fifth Moon Festival, and wishes
+      me to compound for the occasion some American ‘fudge,’ for which delectable
+      sweet, made by my clumsy hands, you have sometimes shown a slight prejudice.
+  - label: B
+    text: Next week I accompany Ah Oi to the beauteous town of San José. There will
+      we be met by the son of the Illustrious Teacher.
+  - label: C
+    text: Forget not to care for the cat, the birds, and the flowers. Do not eat too
+      quickly nor fan too vigorously now that the weather is warming.
+  - label: D
+    text: I am enjoying a most agreeable visit, and American friends, as also our
+      own, strive benevolently for the accomplishment of my pleasure.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_best_illustration
+    explanation_short: Option C directly illustrates Mrs. Spring Fragrance’s concern
+      for domestic details at home — caring for pets and plants, and adjusting behavior
+      to the weather — which supports the claim that she is preoccupied with home
+      matters while away.
+    explanation_full: The passage states that Mrs. Spring Fragrance demonstrates concern
+      for what’s happening at her home in Seattle while she is away. Option C contains
+      specific instructions about daily household care (cat, birds, flowers) and personal
+      habits adjusted to seasonal change — all concrete evidence of her continued
+      emotional and practical engagement with her home environment. The other options
+      describe her current activities or social interactions during travel, not her
+      concern for home. Only C provides textual evidence that aligns with the stated
+      claim.
+- question_number: 15
+  question_id: 75d643e0-9960-5444-9281-902d9c8fa514
+  question_text: Which finding, if true, would most directly undermine Foster’s hypothesis?
+  passage_text: When digging for clams, their primary food, sea otters damage the
+    roots of eelgrass plants growing on the seafloor. Near Vancouver Island in Canada,
+    the otter population is large and well established, yet the eelgrass meadows are
+    healthier than those found elsewhere off Canada’s coast. To explain this, conservation
+    scientist Erin Foster and colleagues compared the Vancouver Island meadows to
+    meadows where otters are absent or were reintroduced only recently. Finding that
+    the Vancouver Island meadows have a more diverse gene pool than the others do,
+    Foster hypothesized that damage to eelgrass roots increases the plant’s rate of
+    sexual reproduction; this, in turn, boosts genetic diversity, which benefits the
+    meadows’ health overall.
+  correct_option_label: C
+  options:
+  - label: A
+    text: At some sites in the study, eelgrass meadows are found near otter populations
+      that are small and have only recently been reintroduced.
+  - label: B
+    text: At several sites not included in the study, there are large, well-established
+      sea otter populations but no eelgrass meadows.
+  - label: C
+    text: At several sites not included in the study, eelgrass meadows’ health correlates
+      negatively with the length of residence and size of otter populations.
+  - label: D
+    text: At some sites in the study, the health of plants unrelated to eelgrass correlates
+      negatively with the length of residence and size of otter populations.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_best_weakener
+    explanation_short: Option C directly contradicts Foster's hypothesis by showing
+      that longer otter residence and larger populations correlate with worse eelgrass
+      health — the opposite of what her causal chain predicts.
+    explanation_full: 'Foster’s hypothesis proposes a causal chain: otter root damage
+      → increased sexual reproduction → greater genetic diversity → improved eelgrass
+      health. Option C undermines this by presenting evidence that at several sites,
+      eelgrass health correlates negatively with otter population size and length
+      of residence — meaning more otter activity is associated with worse health,
+      not better. This directly contradicts the final link in Foster’s proposed mechanism.
+      Options A and D are irrelevant to the core claim about eelgrass health. Option
+      B involves sites outside the study and does not address the correlation between
+      otter presence and eelgrass health within the studied system.'
+- question_number: 16
+  question_id: d0cf3744-bc86-5f5c-b46f-586247503cfe
+  question_text: Which finding, if true, would most directly support Paredes’s argument?
+  passage_text: In the twentieth century, ethnographers made a concerted effort to
+    collect Mexican American folklore, but they did not always agree about that folklore’s
+    origins. Scholars such as Aurelio Espinosa claimed that Mexican American folklore
+    derived largely from the folklore of Spain, which ruled Mexico and what is now
+    the southwestern United States from the sixteenth to early nineteenth centuries.
+    Scholars such as Américo Paredes, by contrast, argued that while some Spanish
+    influence is undeniable, Mexican American folklore is mainly the product of the
+    ongoing interactions of various cultures in Mexico and the United States.
+  correct_option_label: D
+  options:
+  - label: A
+    text: The folklore that the ethnographers collected included several songs written
+      in the form of a décima, a type of poem originating in late sixteenth-century
+      Spain.
+  - label: B
+    text: Much of the folklore that the ethnographers collected had similar elements
+      from region to region.
+  - label: C
+    text: Most of the folklore that the ethnographers collected was previously unknown
+      to scholars.
+  - label: D
+    text: Most of the folklore that the ethnographers collected consisted of corridos—ballads
+      about history and social life—of a clearly recent origin.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_best_support
+    explanation_short: Option D supports Paredes’s claim that Mexican American folklore
+      stems from recent cultural interactions rather than solely from Spanish origins.
+    explanation_full: Paredes argues that Mexican American folklore is primarily the
+      result of ongoing cultural interactions between Mexico and the United States,
+      not merely inherited from Spanish traditions. Option D states that most collected
+      folklore consists of corridos — ballads about history and social life — of clearly
+      recent origin. This directly supports Paredes’s position by indicating that
+      the folklore reflects contemporary or recent cultural developments rather than
+      ancient Spanish roots. The other options either reinforce Spanish influence
+      (A), suggest regional uniformity without addressing origin (B), or highlight
+      scholarly novelty without linking to cultural interaction (C).
+- question_number: 17
+  question_id: 0316b72f-7af9-5e87-b217-537215ed7735
+  question_text: Among social animals that care for their young, such as chickens,
+    macaque monkeys, and humans, newborns appear to show an innate attraction to faces
+    and face-like stimuli. Elisabetta Versace and her colleagues used an image of
+    three black dots arranged in the shape of eyes and a nose or mouth to test whether
+    this trait also occurs in Testudo tortoises, which live alone and do not engage
+    in parental care. They found that tortoise hatchlings showed a significant preference
+    for the image, suggesting that ______
+  correct_option_label: B
+  options:
+  - label: A
+    text: face-like stimuli are likely perceived as harmless by newborns of social
+      species that practice parental care but as threatening by newborns of solitary
+      species without parental care.
+  - label: B
+    text: researchers should not assume that an innate attraction to face-like stimuli
+      is necessarily an adaptation related to social interaction or parental care.
+  - label: C
+    text: researchers can assume that the attraction to face-like stimuli that is
+      seen in social species that practice parental care is learned rather than innate.
+  - label: D
+    text: newly hatched Testudo tortoises show a stronger preference for face-like
+      stimuli than adult Testudo tortoises do.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: most_logically_completes
+    explanation_short: The finding that solitary, non-parental-care species like tortoises
+      also show preference for face-like stimuli undermines the assumption that this
+      trait evolved specifically for social interaction or parental care.
+    explanation_full: 'The passage presents a common assumption: that attraction to
+      face-like stimuli is an adaptation linked to social behavior and parental care.
+      The experiment with tortoises — which are solitary and lack parental care —
+      shows they still exhibit this preference. This directly challenges the assumption
+      that the trait must be tied to social interaction or parental care. Option B
+      correctly captures this implication. Option A introduces unsupported claims
+      about threat perception. Option C contradicts the passage’s framing of the trait
+      as ''innate.'' Option D introduces a comparison with adults not mentioned in
+      the passage.'
+- question_number: 18
+  question_id: 7928d2ff-aaea-5ea0-8136-6310dc5e334a
+  question_text: Aptamers—synthetic DNA or RNA molecules that bind to target molecules—can
+    be used to test for foodborne bacterial pathogens, though their specificity (the
+    probability of returning a negative result in the absence of the focal pathogen)
+    in real-world foods has been unclear. Sandeep Somvanshi et al. fabricated test
+    paper incorporating aptamers targeting strain O157:H7 of the bacteria Escherichia
+    coli; the paper shifts from pink to purple as the aptamers bind to target molecules.
+    Somvanshi et al. tested the paper in store-bought pear juice they treated with
+    E. coli O157:H7, other strains of E. coli, or other bacteria species. Following
+    exposure, the paper from the O157:H7 test was purple while papers from the other
+    tests were pink, suggesting that _______
+  correct_option_label: D
+  options:
+  - label: A
+    text: aptamer-based tests in real-world foods are more likely to show a high degree
+      of specificity if the focal pathogen is E. coli O157:H7 than if the focal pathogen
+      is another strain of E. coli or another species.
+  - label: B
+    text: uncertainty about the specificity of aptamer-based tests for pathogens in
+      real-world foods may be due to the similarity between E. coli O157:H7 and other
+      E. coli strains.
+  - label: C
+    text: the specificity of the tests in a real-world food was unaffected by the
+      aptamers’ tendency to bind to different strains of E. coli.
+  - label: D
+    text: the aptamers successfully bound to E. coli O157:H7 and the tests displayed
+      a high degree of specificity in a real-world food.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: most_logically_completes
+    explanation_short: The experiment shows the test paper only changed color when
+      exposed to the target pathogen (O157:H7), not to other strains or species —
+      this directly demonstrates high specificity in a real-world food matrix.
+    explanation_full: 'The passage describes an experiment testing aptamer-based detection
+      of E. coli O157:H7 in store-bought pear juice. The key result is that the test
+      paper turned purple only when exposed to O157:H7 and remained pink for all other
+      bacteria, including other E. coli strains. This outcome directly supports the
+      conclusion that the aptamers successfully bound to the target pathogen and that
+      the test displayed high specificity — meaning it correctly returned negative
+      results (pink) in the absence of the focal pathogen. Option D captures this
+      exact inference. Option A overgeneralizes by implying comparative specificity
+      across different focal pathogens, which wasn’t tested. Option B speculates about
+      the cause of uncertainty without evidence. Option C contradicts the data: the
+      aptamers did not bind to other strains, so their tendency to bind was irrelevant
+      — and specificity was clearly affected (positively) by the lack of binding to
+      non-targets.'
+- question_number: 19
+  question_id: a9aa2b9f-44c4-59eb-9c88-086453c4315f
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: British scientists James Watson and Francis Crick won the Nobel Prize
+    in part for their 1953 paper announcing the double helix structure of DNA, but
+    it is misleading to say that Watson and Crick discovered the double helix. _______
+    findings were based on a famous X-ray image of DNA fibers, “Photo 51,” developed
+    by X-ray crystallographer Rosalind Franklin and her graduate student Raymond Gosling.
+  correct_option_label: C
+  options:
+  - label: A
+    text: They’re
+  - label: B
+    text: It’s
+  - label: C
+    text: Their
+  - label: D
+    text: Its
+  annotation:
+    grammar_focus_key: pronoun_antecedent_agreement
+    grammar_role_key: agreement
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The blank requires a possessive pronoun modifying 'findings'
+      that refers to Watson and Crick (plural). 'Their' is correct; 'They’re' is a
+      contraction, 'It’s' and 'Its' are singular.
+    explanation_full: 'The sentence requires a possessive pronoun to modify the noun
+      ''findings.'' The subject of the preceding clause is ''Watson and Crick,'' a
+      plural compound subject. Therefore, the correct pronoun must be plural and possessive:
+      ''Their.'' Option A (''They’re'') is a contraction of ''they are,'' which is
+      not possessive. Options B (''It’s'') and D (''Its'') are singular forms and
+      do not agree with the plural antecedent. Only option C correctly provides the
+      plural possessive form needed to refer to Watson and Crick.'
+- question_number: 20
+  question_id: 88b45815-160d-5be6-8f8c-2bda910a240d
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: In the historical novel The Surrender Tree, Cuban American author
+    Margarita Engle uses poetry rather than prose _______ the true story of Cuban
+    folk hero Rosa La Bayamesa.
+  correct_option_label: D
+  options:
+  - label: A
+    text: tells
+  - label: B
+    text: told
+  - label: C
+    text: is telling
+  - label: D
+    text: to tell
+  annotation:
+    grammar_focus_key: logical_relationships
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The infinitive 'to tell' correctly expresses purpose after
+      'uses poetry rather than prose.'
+    explanation_full: 'The sentence describes the author''s purpose in using poetry:
+      to tell a story. The correct grammatical construction is the infinitive ''to
+      tell,'' which functions as an adverbial phrase indicating purpose. Option A
+      (''tells'') creates a subject-verb agreement error (author uses... tells) and
+      incorrectly implies simultaneous action. Option B (''told'') introduces tense
+      inconsistency with the present-tense main verb ''uses.'' Option C (''is telling'')
+      creates an awkward progressive form that does not express purpose. Only option
+      D (''to tell'') correctly conveys the intended meaning and follows standard
+      English conventions for expressing purpose after a verb of action.'
+- question_number: 21
+  question_id: 0912e444-2caf-597f-b656-45bec98015b4
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: Interest in mechanotransduction, the mechanism by which cells sense
+    and convert mechanical stimuli into biochemical signals, is expanding because
+    of innovative work by biomedical scientists—many of whom, like neuroscience and
+    biophysics expert Elba Serrano, _______ this mechanism to better understand how
+    the body’s neurological and biomechanical systems interact.
+  correct_option_label: C
+  options:
+  - label: A
+    text: is studying
+  - label: B
+    text: has studied
+  - label: C
+    text: study
+  - label: D
+    text: studies
+  annotation:
+    grammar_focus_key: subject_verb_agreement
+    grammar_role_key: agreement
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The subject 'many of whom' is plural, requiring the base form
+      'study' to agree with it in present tense.
+    explanation_full: The phrase 'many of whom' refers to 'biomedical scientists,'
+      which is plural. Therefore, the verb must be in its base form 'study' to maintain
+      subject-verb agreement in the present tense. Option A ('is studying') uses singular
+      form; B ('has studied') is past perfect and does not match the ongoing context;
+      D ('studies') is third-person singular and incorrect for a plural subject. Only
+      C ('study') correctly agrees with the plural subject.
+- question_number: 22
+  question_id: 51b18940-ec18-567f-b3a8-f44a727f5529
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: In crafting her fantasy fiction, Nigerian-born British author Helen
+    Oyeyemi has drawn inspiration from the classic nineteenth-century fairy tales
+    of the Brothers Grimm. Her 2014 novel Boy, Snow, Bird, for instance, is a complex
+    retelling of the story of Snow White, while her 2019 novel ______ offers a delicious
+    twist on the classic tale of Hansel and Gretel.
+  correct_option_label: C
+  options:
+  - label: A
+    text: Gingerbread—
+  - label: B
+    text: Gingerbread,
+  - label: C
+    text: Gingerbread
+  - label: D
+    text: 'Gingerbread:'
+  annotation:
+    grammar_focus_key: unnecessary_internal_punctuation
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The blank appears in a compound sentence joined by 'while'.
+      No punctuation is needed before the subject 'offers' because the clause is independent
+      and grammatically complete without any internal punctuation.
+    explanation_full: 'The sentence contains two independent clauses joined by the
+      coordinating conjunction ''while'': (1) ''Her 2014 novel Boy, Snow, Bird, for
+      instance, is a complex retelling of the story of Snow White'' and (2) ''her
+      2019 novel [blank] offers a delicious twist on the classic tale of Hansel and
+      Gretel.'' The correct option must not insert unnecessary punctuation between
+      the subject ''her 2019 novel'' and the verb ''offers''. Option C — ''Gingerbread''
+      — is correct because no comma, dash, or colon is required or appropriate at
+      this position. Option A inserts an em dash, which would incorrectly break the
+      syntactic unit ''novel Gingerbread offers''. Option B inserts a comma, which
+      creates a comma splice or interrupts the subject-verb connection. Option D inserts
+      a colon, which is inappropriate because there is no list, explanation, or quotation
+      following the blank. This is a test of unnecessary internal punctuation within
+      a required syntactic unit (subject–verb).'
+- question_number: 23
+  question_id: 918c204a-b961-55b3-af98-708cf8091990
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: Sociologist Todd Gitlin co-opted the term “recombinant,” normally
+    used in reference to genetic engineering, to describe serialized television shows
+    of the 1980s. Gitlin’s use of the term referenced TV studios’ practice of repackaging
+    successful narrative formulas as new _______ even shows that varied only slightly
+    from other shows still attracted sizeable audiences.
+  correct_option_label: D
+  options:
+  - label: A
+    text: content, in that era
+  - label: B
+    text: content; in that era,
+  - label: C
+    text: content in that era,
+  - label: D
+    text: content, in that era,
+  annotation:
+    grammar_focus_key: punctuation_comma
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: Option D correctly uses a comma to set off the parenthetical
+      phrase 'in that era' while maintaining grammatical flow with the rest of the
+      sentence.
+    explanation_full: The phrase 'in that era' is nonrestrictive and provides additional
+      context about when the shows were produced. It should be set off by commas.
+      Option D places a comma before and after 'in that era,' which is grammatically
+      correct. Option A lacks the necessary trailing comma. Option B incorrectly uses
+      a semicolon and an extra comma. Option C omits the leading comma, leaving the
+      phrase unbounded. Only D conforms to Standard English punctuation rules for
+      nonrestrictive elements.
+- question_number: 24
+  question_id: 9341f3c0-d7a1-5d04-86b4-5f81acf24f86
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: When external forces are applied to common glass made from silicates,
+    energy builds up around minuscule defects in the material, resulting in fractures.
+    Recently, engineer Erkka Frankberg of Tampere University in Finland used the chemical
+    ______ to make a glassy solid that can withstand higher strain than silicate glass
+    can before fracturing.
+  correct_option_label: D
+  options:
+  - label: A
+    text: compound, aluminum oxide
+  - label: B
+    text: compound aluminum oxide,
+  - label: C
+    text: compound, aluminum oxide,
+  - label: D
+    text: compound aluminum oxide
+  annotation:
+    grammar_focus_key: unnecessary_internal_punctuation
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The phrase 'chemical compound aluminum oxide' is a single noun
+      phrase with no internal punctuation required. Options A, B, and C incorrectly
+      insert commas that break up the syntactic unit.
+    explanation_full: 'The correct answer is D: ''compound aluminum oxide''. The phrase
+      functions as a single noun phrase modifying ''chemical'', forming the compound
+      noun ''chemical compound aluminum oxide''. No internal punctuation is needed
+      because there is no appositive, list, or clause boundary within this unit. Option
+      A inserts a comma after ''compound'', which incorrectly separates the modifier
+      from its head noun. Option B places a comma after ''oxide'', which breaks the
+      noun phrase at an unnatural point. Option C combines both errors. The correct
+      option maintains grammatical integrity by preserving the unbroken noun phrase
+      structure.'
+- question_number: 25
+  question_id: 81e65165-d6d6-592a-b55a-44abc06287ac
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: In the late nineteenth and early twentieth centuries, automobiles
+    were commonly referred to as horseless carriages after the older technology they
+    still resembled. Known as the Brass Era, this period in automotive design is remembered
+    for its grandeur and artistry, its vehicles _______ by collectors for their ornate
+    detailing and gleaming brass fittings.
+  correct_option_label: D
+  options:
+  - label: A
+    text: are highly prized
+  - label: B
+    text: had been highly prized
+  - label: C
+    text: highly prized
+  - label: D
+    text: were highly prized
+  annotation:
+    grammar_focus_key: verb_tense_consistency
+    grammar_role_key: verb_form
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The sentence describes a historical period (late 19th–early
+      20th century), so past tense is required. 'Were highly prized' correctly matches
+      the subject 'vehicles' and the historical context.
+    explanation_full: The passage refers to a specific historical period — the late
+      nineteenth and early twentieth centuries — which requires the use of past tense.
+      The subject 'its vehicles' is plural, so the verb must agree in number. Option
+      D, 'were highly prized,' correctly uses the plural past tense form of 'to be'
+      and fits the passive voice construction needed here ('vehicles were prized').
+      Option A ('are') is present tense and anachronistic. Option B ('had been') implies
+      a past-before-past relationship not supported by context. Option C omits the
+      necessary auxiliary verb, creating a sentence fragment.
+- question_number: 26
+  question_id: f44346de-1dd5-59a6-90ac-2ecf54335b1e
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: With the development of new technologies that use natural resources
+    more efficiently, the overall consumption of those resources might be expected
+    to decrease. Economists have observed that improvements in efficiency often correlate
+    negatively with resource _______ efficiency gains, lowering the cost of use, may
+    increase demand to the extent that resource consumption ultimately rises.
+  correct_option_label: D
+  options:
+  - label: A
+    text: conservation, though,
+  - label: B
+    text: conservation; though
+  - label: C
+    text: conservation, though;
+  - label: D
+    text: conservation, though
+  annotation:
+    grammar_focus_key: punctuation_comma
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The correct option uses a comma to separate the introductory
+      phrase from the main clause, and no punctuation is needed after 'though' because
+      it introduces a dependent clause that flows naturally into the main clause without
+      requiring a stronger break.
+    explanation_full: The sentence contains an introductory phrase followed by a main
+      clause. The word 'though' introduces a concessive clause that modifies the main
+      clause. In Standard English, when 'though' is used as a subordinating conjunction
+      at the end of a clause, it does not require a semicolon or additional comma
+      after it — only a comma before the introductory phrase if it precedes the main
+      clause. Option D correctly uses a comma before 'though' and no punctuation after
+      it, preserving grammatical flow and adhering to standard punctuation rules for
+      subordinate clauses introduced by 'though'. Options A, B, and C incorrectly
+      insert unnecessary punctuation (extra comma or semicolon) that disrupts the
+      syntactic unit or misapplies punctuation rules for conjunctive adverbs or independent
+      clauses.
+- question_number: 27
+  question_id: 61f8928a-23e6-5b0f-b22f-afc10ce1320e
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: Before California’s 1911 election to approve a proposition granting
+    women the right to vote, activists across the state sold tea to promote the cause
+    of suffrage. In San Francisco, the Woman’s Suffrage Party sold Equality Tea at
+    local fairs. _______ in Los Angeles, activist Nancy Tuttle Craig, who ran one
+    of California’s largest grocery store firms, distributed Votes for Women Tea.
+  correct_option_label: C
+  options:
+  - label: A
+    text: For example,
+  - label: B
+    text: To conclude,
+  - label: C
+    text: Similarly,
+  - label: D
+    text: In other words,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct transition 'Similarly,' signals that the action
+      in Los Angeles parallels the earlier example in San Francisco, maintaining the
+      pattern of suffrage activism through tea sales across different cities.
+    explanation_full: 'The passage describes how suffrage activists in California
+      used tea sales as a promotional tool before the 1911 election. The first sentence
+      introduces this statewide effort. The second sentence gives an example from
+      San Francisco. The blank is followed by another example — this time from Los
+      Angeles — showing the same type of activity (tea sales) occurring in a different
+      location. The transition ''Similarly,'' correctly signals that the Los Angeles
+      example is parallel to the San Francisco example, reinforcing the idea that
+      this was a widespread, coordinated strategy. Other options are incorrect: ''For
+      example,'' would imply the Los Angeles case is an instance of something broader
+      already stated, but no such broader category exists yet; ''To conclude,'' suggests
+      the end of an argument or list, which is premature; ''In other words,'' implies
+      restatement or clarification, not addition of a parallel example.'
+- question_number: 28
+  question_id: bdc9a9c8-c402-527f-a6a0-1b6a8674b936
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: Earth’s auroras—colorful displays of light seen above the northern
+    and southern poles—result, broadly speaking, from the Sun’s activity. _______
+    the Sun releases charged particles that are captured by Earth’s magnetic field
+    and channeled toward the poles. These particles then collide with atoms in the
+    atmosphere, causing the atoms to emit auroral light.
+  correct_option_label: A
+  options:
+  - label: A
+    text: Specifically,
+  - label: B
+    text: Similarly,
+  - label: C
+    text: Nevertheless,
+  - label: D
+    text: Hence,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct transition 'Specifically,' introduces a detailed
+      explanation of how the Sun's activity causes auroras, which logically follows
+      the general statement in the first sentence.
+    explanation_full: 'The first sentence makes a broad claim: auroras result from
+      the Sun’s activity. The second sentence provides a specific mechanism — the
+      release of charged particles, their capture by Earth’s magnetic field, and subsequent
+      collision with atmospheric atoms. The transition ''Specifically,'' signals that
+      the following sentence will elaborate on the general claim with precise detail.
+      Option B (''Similarly,'') suggests parallelism or analogy, which is not present.
+      Option C (''Nevertheless,'') implies contrast, which contradicts the supportive
+      relationship. Option D (''Hence,'') indicates consequence, but the second sentence
+      explains the cause, not the effect, of the first. Thus, ''Specifically,'' is
+      the only transition that correctly frames the explanatory relationship between
+      the two sentences.'
+- question_number: 29
+  question_id: a2cfebd0-6417-50bf-803b-7ef30ac59d0e
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: 'While researching a topic, a student has taken the following notes:
+    • The Seikan Tunnel is a rail tunnel in Japan. • It connects the island of Honshu
+    to the island of Hokkaido. • It is roughly 33 miles long. • The Channel Tunnel
+    is a rail tunnel in Europe. • It connects Folkestone, England, to Coquelles, France.
+    • It is about 31 miles long. The student wants to compare the lengths of the two
+    rail tunnels.'
+  correct_option_label: B
+  options:
+  - label: A
+    text: Some of the world’s rail tunnels, including one tunnel that extends from
+      Folkestone, England, to Coquelles, France, are longer than 30 miles.
+  - label: B
+    text: The Seikan Tunnel is roughly 33 miles long, while the slightly shorter Channel
+      Tunnel is about 31 miles long.
+  - label: C
+    text: The Seikan Tunnel, which is roughly 33 miles long, connects the Japanese
+      islands of Honshu and Hokkaido.
+  - label: D
+    text: Both the Seikan Tunnel, which is located in Japan, and the Channel Tunnel,
+      which is located in Europe, are examples of rail tunnels.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: notes_summary
+    stem_type_key: synthesize_information
+    explanation_short: Option B directly compares the lengths of the two tunnels using
+      the exact figures from the notes, fulfilling the student’s goal.
+    explanation_full: The student’s goal is to compare the lengths of the Seikan and
+      Channel Tunnels. Option B provides both lengths (33 miles and 31 miles) and
+      explicitly positions them for comparison ('roughly 33 miles long, while the
+      slightly shorter...'). Options A, C, and D either omit one length, fail to compare,
+      or include irrelevant details (location, connection points). Only B synthesizes
+      the precise numerical data needed to fulfill the stated purpose.
+    needs_human_review: false
+- question_number: 30
+  question_id: 00b240d0-a954-57c1-b1ba-86c3af9ebb85
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: 'While researching a topic, a student has taken the following notes:
+    • Pinnipeds, which include seals, sea lions, and walruses, live in and around
+    water. • Pinnipeds are descended not from sea animals but from four-legged, land-dwelling
+    carnivores. • Canadian paleobiologist Natalia Rybczynski recently found a fossil
+    with four legs, webbed toes, and the skull and teeth of a seal. • Rybczynski refers
+    to her rare find as a “transitional fossil.” • The fossil illustrates an early
+    stage in the evolution of pinnipeds from their land-dwelling ancestors. The student
+    wants to emphasize the fossil’s significance.'
+  correct_option_label: C
+  options:
+  - label: A
+    text: Canadian paleobiologist Natalia Rybczynski’s fossil has the skull and teeth
+      of a seal, which, like sea lions and walruses, is a pinniped.
+  - label: B
+    text: Pinnipeds are descended from four-legged, land-dwelling carnivores; a fossil
+      that resembles both was recently found.
+  - label: C
+    text: Having four legs but the skull and teeth of a seal, the rare fossil illustrates
+      an early stage in the evolution of pinnipeds from their land-dwelling ancestors.
+  - label: D
+    text: A “transitional fossil” was recently found by paleobiologist Natalia Rybczynski.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: notes_summary
+    stem_type_key: synthesize_information
+    explanation_short: Option C synthesizes multiple key points from the notes — the
+      fossil’s physical traits (four legs + seal skull/teeth), its classification
+      as transitional, and its evolutionary significance — to directly support the
+      student’s goal of emphasizing the fossil’s importance.
+    explanation_full: 'The student’s goal is to emphasize the fossil’s significance.
+      Option C achieves this by integrating three critical pieces of information from
+      the notes: (1) the fossil has both terrestrial features (four legs) and aquatic
+      features (seal skull and teeth), (2) it is described as a ''transitional fossil,''
+      and (3) it illustrates an early stage in pinniped evolution. This synthesis
+      directly supports the goal. Option A only states a factual detail without connecting
+      it to evolutionary significance. Option B mentions descent from land carnivores
+      and a recent fossil but omits the specific traits and transitional nature. Option
+      D merely names the fossil and discoverer without explaining its scientific value.
+      Only C fully accomplishes the stated goal.'
+- question_number: 31
+  question_id: 238d3bef-c134-5133-8273-b12d49b6904c
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: 'While researching a topic, a student has taken the following notes:
+    • Physicist Muluneh Abebe was working on a garment suited for both warm and cold
+    conditions. • He analyzed the emissivity, or ability to emit heat, of the materials
+    he planned to use. • Abebe found that reflective metal fibers emitted almost no
+    heat and had an emissivity of 0.02. • He found that silicon carbide fibers absorbed
+    large amounts of heat and had an emissivity of 0.74. • The amount of heat a material
+    absorbs is equal to the amount of heat it emits. The student wants to contrast
+    the emissivity of reflective metal fibers with that of silicon carbide fibers.'
+  correct_option_label: D
+  options:
+  - label: A
+    text: The ability of reflective metal fibers and silicon carbide fibers to emit
+      heat was determined by an analysis of each material’s emissivity.
+  - label: B
+    text: The amount of heat a material absorbs is equal to the amount it emits, as
+      evidenced in Abebe’s analyses.
+  - label: C
+    text: Though the reflective metal fibers and silicon carbide fibers had different
+      rates of emissivity, Abebe planned to use both in a garment.
+  - label: D
+    text: Whereas the reflective metal fibers had an emissivity of just 0.02, the
+      silicon carbide fibers absorbed large amounts of heat, resulting in an emissivity
+      of 0.74.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: notes_summary
+    stem_type_key: synthesize_information
+    explanation_short: Option D directly contrasts the two materials' emissivity values
+      (0.02 vs. 0.74) and links them to their thermal behavior, fulfilling the student’s
+      goal.
+    explanation_full: The student’s goal is to contrast the emissivity of reflective
+      metal fibers with that of silicon carbide fibers. Option D provides the exact
+      emissivity values for both materials (0.02 for metal fibers, 0.74 for silicon
+      carbide) and explains the thermal implication — that silicon carbide fibers
+      absorb large amounts of heat, which corresponds to high emissivity. This directly
+      fulfills the contrast requirement. Option A mentions emissivity analysis but
+      does not provide comparative values. Option B misstates the relationship by
+      implying absorption equals emission as a general law without linking it to the
+      specific materials. Option C acknowledges different emissivity rates but fails
+      to quantify or contrast them meaningfully.
+- question_number: 32
+  question_id: 62c86574-1450-5c62-8b7d-fec83b432a20
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: 'While researching a topic, a student has taken the following notes:
+    • In 2020, theater students at Radford and Virginia Tech chose an interactive,
+    online format to present a play about woman suffrage activists. • Their “Women
+    and the Vote” website featured an interactive digital drawing of a Victorian-style
+    house. • Audiences were asked to focus on a room of their choice and select from
+    that room an artifact related to the suffrage movement. • One click took them
+    to video clips, songs, artwork, and texts associated with the artifact. • The
+    play was popular with audiences because the format allowed them to control the
+    experience. The student wants to explain an advantage of the “Women and the Vote”
+    format.'
+  correct_option_label: C
+  options:
+  - label: A
+    text: “Women and the Vote” featured a drawing of a Victorian-style house with
+      several rooms, each containing suffrage artifacts.
+  - label: B
+    text: To access video clips, songs, artwork, and texts, audiences had to first
+      click on an artifact.
+  - label: C
+    text: The “Women and the Vote” format appealed to audiences because it allowed
+      them to control the experience.
+  - label: D
+    text: Using an interactive format, theater students at Radford and Virginia Tech
+      created “Women and the Vote,” a play about woman suffrage activists.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: notes_summary
+    stem_type_key: synthesize_information
+    explanation_short: 'Option C directly states the advantage mentioned in the notes:
+      audience control over the experience, which explains popularity.'
+    explanation_full: The student’s goal is to explain an advantage of the 'Women
+      and the Vote' format. The final note explicitly states that the play was popular
+      because the format allowed audiences to control the experience — this is the
+      advantage. Option C synthesizes this key point directly. Option A describes
+      a visual feature but not an advantage. Option B describes a functional step
+      (clicking) without connecting it to an advantage. Option D introduces the creators
+      and context but does not state an advantage. Only C fulfills the synthesis requirement
+      by extracting and restating the stated benefit.
+    needs_human_review: false
+- question_number: 33
+  question_id: c849abd0-54b9-5fb6-8331-973420d4cdfb
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: 'While researching a topic, a student has taken the following notes:
+    • Ducklings expend up to 62.8% less energy when swimming in a line behind their
+    mother than when swimming alone. • The physics behind this energy savings hasn’t
+    always been well understood. • Naval architect Zhiming Yuan used computer simulations
+    to study the effect of the mother duck’s wake. • The study revealed that ducklings
+    are pushed in a forward direction by the wake’s waves. • Yuan determined this
+    push reduces the effect of wave drag on the ducklings by 158%. The student wants
+    to present the study and its methodology.'
+  correct_option_label: B
+  options:
+  - label: A
+    text: A study revealed that ducklings, which expend up to 62.8% less energy when
+      swimming in a line behind their mother, also experience 158% less drag.
+  - label: B
+    text: Seeking to understand how ducklings swimming in a line behind their mother
+      save energy, Zhiming Yuan used computer simulations to study the effect of the
+      mother duck’s wake.
+  - label: C
+    text: Zhiming Yuan studied the physics behind the fact that by being pushed in
+      a forward direction by waves, ducklings save energy.
+  - label: D
+    text: Naval architect Zhiming Yuan discovered that ducklings are pushed in a forward
+      direction by the waves of their mother’s wake, reducing the effect of drag by
+      158%.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: notes_summary
+    stem_type_key: synthesize_information
+    explanation_short: Option B correctly synthesizes the key elements of the study's
+      methodology (computer simulations) and purpose (understanding how ducklings
+      save energy), aligning with the student’s goal.
+    explanation_full: The student’s goal is to present both the study and its methodology.
+      Option B explicitly mentions Zhiming Yuan’s use of computer simulations to investigate
+      the mechanism behind energy savings — directly addressing the methodological
+      component. It also frames the inquiry around the core phenomenon (energy savings),
+      which connects to the broader context of the notes. Other options either omit
+      methodology (A, C, D) or misrepresent findings (A conflates energy savings with
+      drag reduction without mentioning simulation; D states 'discovered' rather than
+      'determined via simulation,' obscuring the method). Only B fulfills the dual
+      requirement of presenting the study and its methodology.
+    needs_human_review: false

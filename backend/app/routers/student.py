@@ -4,10 +4,10 @@ import math
 import uuid as _uuid_module
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 
 from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlalchemy import select, func, and_, or_, text
+from sqlalchemy import select, func, and_, or_, text, case
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
@@ -30,11 +30,84 @@ from app.models.payload import (
     StudyGenerationRequest,
     StudyGenerationResponse,
     StudyBatchStatusResponse,
+    GenerationBatchRequest,
 )
+from app.models.ontology import GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["student"])
+
+_GRAMMAR_ROLE_BY_FOCUS = {
+    focus: role
+    for role, focus_keys in GRAMMAR_FOCUS_BY_ROLE.items()
+    for focus in focus_keys
+}
+
+_READING_SKILL_FAMILY_BY_FOCUS = {
+    focus: family
+    for family, focus_keys in READING_FOCUS_BY_SKILL_FAMILY.items()
+    for focus in focus_keys
+}
+
+_READING_TEST_CONSTRUCT_BY_FAMILY = {
+    "command_of_evidence_textual": "evidence_relation_precision",
+    "command_of_evidence_quantitative": "quantitative_constraint_tracking",
+    "central_ideas_and_details": "evidence_relation_precision",
+    "inferences": "inference_boundary_control",
+    "words_in_context": "contextual_semantic_precision",
+    "text_structure_and_purpose": "rhetorical_function_precision",
+    "cross_text_connections": "cross_text_relationship_precision",
+}
+
+_READING_STEM_BY_FOCUS = {
+    "evidence_supports_claim": "choose_best_support",
+    "evidence_weakens_claim": "choose_best_weakener",
+    "evidence_illustrates_claim": "choose_best_illustration",
+    "evidence_explains_claim": "choose_command_of_evidence_textual",
+    "evidence_qualifies_claim": "choose_command_of_evidence_textual",
+    "data_supports_claim": "choose_command_of_evidence_quantitative",
+    "data_weakens_claim": "choose_command_of_evidence_quantitative",
+    "data_completes_example": "choose_best_completion_from_data",
+    "data_comparison": "choose_command_of_evidence_quantitative",
+    "data_trend": "choose_command_of_evidence_quantitative",
+    "central_idea": "choose_main_idea",
+    "main_purpose": "choose_main_purpose",
+    "passage_summary": "choose_main_idea",
+    "supporting_detail": "choose_detail",
+    "character_or_author_detail": "choose_central_detail",
+    "causal_inference": "choose_best_inference",
+    "motivational_inference": "choose_best_inference",
+    "implication_inference": "choose_best_inference",
+    "predictive_inference": "choose_best_inference",
+    "cross_text_inference": "choose_cross_text_connection",
+    "contextual_meaning": "choose_words_in_context",
+    "connotation_fit": "choose_words_in_context",
+    "precision_fit": "choose_words_in_context",
+    "register_fit": "choose_words_in_context",
+    "underlined_word_meaning": "choose_word_in_context",
+    "polarity_fit": "choose_words_in_context",
+    "figurative_language_meaning": "choose_words_in_context",
+    "overall_purpose": "choose_main_purpose",
+    "sentence_function": "choose_sentence_function",
+    "structural_pattern": "choose_structure_description",
+    "author_stance": "choose_main_purpose",
+    "text2_response_to_text1": "choose_cross_text_connection",
+    "both_texts_agree": "choose_agreement_across_texts",
+    "texts_disagree": "choose_difference_across_texts",
+    "text2_qualifies_text1": "choose_text_relationship",
+    "text2_contradicts_text1": "choose_text_relationship",
+    "methodological_critique": "choose_text_relationship",
+    "expectation_violation": "choose_text_relationship",
+}
+
+_READING_FOCUS_ALIASES = {
+    "main_idea": "central_idea",
+}
+
+_READING_SKILL_FAMILIES = set(READING_FOCUS_BY_SKILL_FAMILY.keys())
+
+_DRY_RUN_RELEASE_POLICY = "dry_run"
 
 
 def _build_question_filter_stmt(
@@ -54,6 +127,17 @@ def _build_question_filter_stmt(
     Origin filter maps official/generated to content_origin; mixed (or None) = no filter.
     """
     stmt = select(Question).where(Question.practice_status == "active")
+
+    dry_run_exists = (
+        select(QuestionJob.id)
+        .join(GenerationBatch, GenerationBatch.id == QuestionJob.generation_batch_id)
+        .where(
+            QuestionJob.question_id == Question.id,
+            GenerationBatch.release_policy == _DRY_RUN_RELEASE_POLICY,
+        )
+        .exists()
+    )
+    stmt = stmt.where(~dry_run_exists)
 
     if origin and origin != "mixed":
         stmt = stmt.where(Question.content_origin == origin)
@@ -638,6 +722,134 @@ async def _pending_batch_count(user: User, db: AsyncSession) -> int:
     return result.scalars().first() or 0
 
 
+def _self_study_generation_request_payload(
+    target: WeaknessTarget,
+    requested_count: int,
+) -> dict[str, Any]:
+    """Build a strict GenerationBatchRequest-compatible payload."""
+    if target.domain == "grammar":
+        grammar_role = (
+            target.grammar_role_key
+            or _GRAMMAR_ROLE_BY_FOCUS.get(target.focus_key)
+            or "expression_of_ideas"
+        )
+        payload: dict[str, Any] = {
+            "requested_count": requested_count,
+            "release_policy": "admin_review_required",
+            "difficulty_overall": target.difficulty,
+            "target_grammar_role_key": grammar_role,
+            "target_grammar_focus_key": target.focus_key,
+            "target_syntactic_trap_key": "none",
+            "target_frequency_band": "medium",
+            "test_format_key": "digital_app_adaptive",
+            "stimulus_mode_key": "sentence_only",
+            "stem_type_key": "complete_the_text",
+        }
+        if target.focus_key == "transition_logic":
+            payload.update({
+                "target_transition_subtype_key": "contrast",
+                "distractor_transition_subtypes": ["cause_effect", "addition", "sequence"],
+            })
+        if target.focus_key == "choose_best_notes_synthesis":
+            payload.update({
+                "stem_type_key": "choose_best_notes_synthesis",
+                "target_synthesis_goal_key": "emphasize_shared_conclusion",
+                "target_audience_knowledge_key": "general_reader",
+                "target_required_content_key": "include_relevant_note",
+                "distractor_synthesis_failures": [
+                    "irrelevant_detail",
+                    "misstates_goal",
+                    "omits_required_content",
+                ],
+            })
+        return payload
+
+    reading_focus = _READING_FOCUS_ALIASES.get(target.focus_key, target.focus_key)
+    target_skill_family = (
+        target.skill_family_key
+        if target.skill_family_key in _READING_SKILL_FAMILIES
+        else None
+    )
+    skill_family = (
+        target_skill_family
+        or _READING_SKILL_FAMILY_BY_FOCUS.get(reading_focus)
+        or "central_ideas_and_details"
+    )
+    payload = {
+        "requested_count": requested_count,
+        "release_policy": "admin_review_required",
+        "difficulty_overall": target.difficulty,
+        "target_skill_family_key": skill_family,
+        "target_reading_skill_family_key": skill_family,
+        "target_reading_focus_key": reading_focus,
+        "target_test_construct_key": _READING_TEST_CONSTRUCT_BY_FAMILY.get(
+            skill_family,
+            "evidence_relation_precision",
+        ),
+        "target_reasoning_trap_key": "topical_relevance_without_logical_connection",
+        "target_distractor_pattern": ["too_broad", "too_narrow", "unsupported"],
+        "passage_structure_pattern": "research_summary",
+        "stimulus_mode_key": "prose_single",
+        "stem_type_key": _READING_STEM_BY_FOCUS.get(reading_focus, "choose_best_support"),
+    }
+    if reading_focus == "polarity_fit":
+        payload["polarity_context"] = "contrast_or_negation"
+    if reading_focus == "sentence_function":
+        payload["target_sentence_function_role"] = "local_rhetorical_function"
+    if skill_family == "command_of_evidence_quantitative":
+        payload["quantitative_sub_pattern"] = "standard"
+        payload["stimulus_mode_key"] = "table_or_graph"
+    if reading_focus == "evidence_illustrates_claim":
+        payload["two_part_claim"] = False
+    return payload
+
+
+def _row_int(row: Any, *names: str) -> int:
+    for name in names:
+        value = getattr(row, name, None)
+        if value is not None:
+            return int(value)
+    try:
+        index = 0 if not names or names[0].endswith("accepted") else 1
+        value = row[index]
+    except (TypeError, KeyError, IndexError):
+        value = None
+    if value is not None:
+        return int(value)
+    return 0
+
+
+async def _batch_decision_counts(batch: GenerationBatch, db: AsyncSession) -> tuple[int, int]:
+    """Return accepted/rejected counts from persisted generated questions.
+
+    Old tests and historical batches may only expose frozen batch counters;
+    keep that fallback when no batch id is available.
+    """
+    batch_id = getattr(batch, "id", None)
+    if batch_id is None:
+        return (
+            int(getattr(batch, "accepted_count", 0) or 0),
+            int(getattr(batch, "rejected_count", 0) or 0),
+        )
+
+    result = await db.execute(
+        select(
+            func.sum(case((Question.practice_status == "active", 1), else_=0)).label("accepted"),
+            func.sum(case((Question.practice_status == "rejected", 1), else_=0)).label("rejected"),
+        )
+        .select_from(QuestionJob)
+        .join(Question, Question.id == QuestionJob.question_id)
+        .where(
+            QuestionJob.generation_batch_id == batch_id,
+            Question.content_origin == "generated",
+        )
+    )
+    row = result.first()
+    if row is None:
+        return 0, 0
+    return _row_int(row, "accepted"), _row_int(row, "rejected")
+
+
 async def _on_quality_cooldown(user: User, settings, db: AsyncSession) -> bool:
     """True if >=2 of the last 3 completed self-study batches had reject_rate >= 0.5."""
     result = await db.execute(
@@ -656,8 +868,9 @@ async def _on_quality_cooldown(user: User, settings, db: AsyncSession) -> bool:
 
     poor_count = 0
     for batch in recent:
-        total = (batch.accepted_count or 0) + (batch.rejected_count or 0)
-        if total > 0 and (batch.rejected_count or 0) / total >= 0.5:
+        accepted_count, rejected_count = await _batch_decision_counts(batch, db)
+        total = accepted_count + rejected_count
+        if total > 0 and rejected_count / total >= 0.5:
             poor_count += 1
 
     return poor_count >= 2
@@ -676,27 +889,32 @@ async def _create_self_study_batch(
     Kicks off the batch pipeline in the background.
     """
     # Lazy import to avoid circular dependency at module level.
-    from app.routers.generate import _run_batch_pipeline
+    from app.routers.generate import (
+        _domain_for_batch,
+        _run_batch_pipeline,
+        _select_source_question_ids_for_batch,
+    )
     from app.job_limits import run_with_job_limit
 
     now = datetime.now(timezone.utc)
     batch_id = _uuid_module.uuid4()
 
-    # Build a minimal request_jsonb for the target.
-    focus_json_key = (
-        "target_grammar_focus_key"
-        if target.domain == "grammar"
-        else "target_reading_focus_key"
+    request_payload = _self_study_generation_request_payload(target, requested_count)
+    batch_request = GenerationBatchRequest.model_validate(request_payload)
+    domain = _domain_for_batch(batch_request)
+    selected_source_ids = await _select_source_question_ids_for_batch(
+        db,
+        batch_request,
+        domain,
+        [],
     )
-    request_jsonb: dict = {
-        "requested_count": requested_count,
+
+    request_jsonb = batch_request.model_dump()
+    request_jsonb.update({
         "requested_by": "self_study_agent",
-        "release_policy": "admin_review_required",
-        "difficulty_overall": target.difficulty,
-        focus_json_key: target.focus_key,
-    }
-    if target.domain == "reading" and target.skill_family_key:
-        request_jsonb["target_reading_skill_family_key"] = target.skill_family_key
+        "student_id": user.id,
+        "requested_by_user_token": str(user.user_token),
+    })
 
     batch = GenerationBatch(
         id=batch_id,
@@ -705,7 +923,7 @@ async def _create_self_study_batch(
         requested_by="self_study_agent",
         student_id=user.id,
         requested_by_user_token=user.user_token,
-        release_policy="admin_review_required",
+        release_policy=batch_request.release_policy,
         status="pending",
         created_at=now,
         updated_at=now,
@@ -718,16 +936,22 @@ async def _create_self_study_batch(
     model_name = settings.default_annotation_model
 
     job_ids = []
-    for _ in range(requested_count):
+    for job_index in range(requested_count):
         job_id = _uuid_module.uuid4()
         job_request = {
             **request_jsonb,
+            "source_question_ids": (
+                selected_source_ids[job_index]
+                if job_index < len(selected_source_ids)
+                else []
+            ),
             "provider_name": provider_name,
             "model_name": model_name,
-            "seed": None,
+            "seed": job_id.int % 2_147_483_647,
             "temperature": 0.7,
             "retry_attempt": 0,
         }
+        job_request.pop("requested_count", None)
         job = QuestionJob(
             id=job_id,
             job_type="generate",

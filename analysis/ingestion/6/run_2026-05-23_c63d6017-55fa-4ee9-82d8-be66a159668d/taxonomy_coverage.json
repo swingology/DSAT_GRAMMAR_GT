@@ -1,0 +1,100 @@
+{
+  "job_id": "c63d6017-55fa-4ee9-82d8-be66a159668d",
+  "source_exam_code": "6",
+  "created_at": "2026-05-23T17:15:30.237821+00:00",
+  "hashes": {
+    "master_json_hash": "f64a66170b3768eb26744654fa2bf7ba5f2988636c26f9e3cc77eb68c3b2ac66",
+    "reading_rules_hash": "766353edc7b96a522f86385ee61409fe6508e81e7243ffcb9bdf2f6b84e54aa2",
+    "grammar_rules_hash": "ec1086ada5c366e16269664b51b8f69a1f4be0200a735226e1faa99d6874e6e7",
+    "ontology_hash": "bce757805ed03df6832feb1eb45fdf862c72e3c3cc87c4d329beb0b7c34d853f"
+  },
+  "question_count": 33,
+  "field_counts": {
+    "question_family_key": {
+      "craft_and_structure": 9,
+      "information_and_ideas": 10,
+      "conventions_grammar": 12,
+      "expression_of_ideas": 2
+    },
+    "grammar_role_key": {
+      "verb_form": 1,
+      "punctuation": 3,
+      "agreement": 2,
+      "sentence_boundary": 1,
+      "expression_of_ideas": 7
+    },
+    "grammar_focus_key": {
+      "verb_form": 1,
+      "unnecessary_internal_punctuation": 1,
+      "subject_verb_agreement": 2,
+      "end_punctuation_question_statement": 1,
+      "appositive_punctuation": 1,
+      "sentence_boundary": 1,
+      "transition_logic": 5,
+      "logical_relationships": 1,
+      "precision_word_choice": 1
+    },
+    "skill_family_key": {
+      "words_in_context": 5,
+      "text_structure_and_purpose": 3,
+      "cross_text_connections": 1,
+      "central_ideas_and_details": 2,
+      "command_of_evidence_quantitative": 3,
+      "command_of_evidence_textual": 3,
+      "inferences": 2,
+      "Form, Structure, and Sense": 3,
+      "Boundaries": 4,
+      "expression_of_ideas": 5,
+      "rhetorical_synthesis": 2
+    },
+    "reading_focus_key": {
+      "precision_fit": 2,
+      "contextual_meaning": 3,
+      "sentence_function": 2,
+      "overall_purpose": 1,
+      "text2_response_to_text1": 1,
+      "central_idea": 1,
+      "data_supports_claim": 3,
+      "evidence_supports_claim": 3,
+      "causal_inference": 2,
+      "supporting_detail": 1
+    },
+    "reasoning_trap_key": {
+      "semantic_relatedness_without_precision": 1,
+      "plausible_synonym": 1,
+      "common_definition_trap": 3,
+      "wrong_scope": 2,
+      "wrong_action_verb": 1,
+      "reversed_attribution": 1,
+      "detail_trap": 1,
+      "wrong_group_comparison": 1,
+      "topical_relevance_without_logical_connection": 3,
+      "data_context_mismatch": 2,
+      "overreach": 2,
+      "topic_trap": 1
+    },
+    "stimulus_mode_key": {
+      "sentence_only": 16,
+      "passage_excerpt": 10,
+      "prose_paired": 1,
+      "prose_plus_table": 1,
+      "prose_plus_graph": 2,
+      "notes_summary": 3
+    },
+    "stem_type_key": {
+      "complete_the_text": 9,
+      "choose_word_in_context": 1,
+      "choose_sentence_function": 2,
+      "choose_main_purpose": 1,
+      "choose_text_relationship": 1,
+      "choose_main_idea": 1,
+      "choose_best_completion_from_data": 3,
+      "choose_best_support": 3,
+      "most_logically_completes": 2,
+      "choose_best_grammar_revision": 6,
+      "conform_to_standard_english": 1,
+      "synthesize_information": 1,
+      "choose_best_notes_synthesis": 2
+    }
+  }
+}

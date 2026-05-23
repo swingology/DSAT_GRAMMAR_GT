@@ -504,3 +504,66 @@ class UserProgress(Base):
 
     user = relationship("User", back_populates="progress_records")
     question = relationship("Question", back_populates="progress_records", foreign_keys=[question_id])
+
+
+class AdminQuestionAuditLog(Base):
+    """Append-only audit record written on every admin mutation of a question.
+
+    Covers: edit (question text, passage, answer key, options), approve,
+    reject, confirm_overlap, clear_overlap. Stores a before/after snapshot
+    so the full diff is recoverable without joining QuestionVersion rows.
+    """
+    __tablename__ = "admin_question_audit_logs"
+    __table_args__ = (
+        Index("ix_admin_audit_question_id", "question_id"),
+        Index("ix_admin_audit_created_at", "created_at"),
+        Index("ix_admin_audit_action", "action"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
+    admin_token = Column(String(128), nullable=False)
+    # Action type: "edit", "approve", "reject", "confirm_overlap", "clear_overlap"
+    action = Column(String(40), nullable=False)
+    # Fields touched in this action, e.g. ["correct_option_label", "question_text"]
+    fields_changed = Column(JSONB, nullable=True)
+    # Full snapshot of relevant fields before the change
+    before_jsonb = Column(JSONB, nullable=True)
+    # Full snapshot of relevant fields after the change
+    after_jsonb = Column(JSONB, nullable=True)
+    # Optional human note (from change_notes or rejection reason)
+    change_notes = Column(Text, nullable=True)
+    # Link to the new QuestionVersion created by an edit, if applicable
+    question_version_id = Column(UUID(as_uuid=True), ForeignKey("question_versions.id"), nullable=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=_utcnow)
+
+
+class AutoReleaseAuditLog(Base):
+    """Append-only record written every time auto-release activates a question.
+
+    Provides a full audit trail so admins can review every auto-activation
+    and disable auto-release with confidence that nothing is lost.
+    """
+    __tablename__ = "auto_release_audit_logs"
+    __table_args__ = (
+        Index("ix_auto_release_audit_question_id", "question_id"),
+        Index("ix_auto_release_audit_released_at", "released_at"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
+    generation_batch_id = Column(UUID(as_uuid=True), ForeignKey("generation_batches.id"), nullable=True)
+    review_run_id = Column(UUID(as_uuid=True), ForeignKey("review_runs.id"), nullable=True)
+    consensus_verdict_id = Column(UUID(as_uuid=True), ForeignKey("consensus_verdicts.id"), nullable=True)
+    # Generator identity at release time — denormalized for offline analysis
+    generator_provider_name = Column(String(50), nullable=True)
+    generator_model_name = Column(String(100), nullable=True)
+    # Stats that satisfied the acceptance-history gate
+    generator_accept_count = Column(Integer, nullable=False, default=0)
+    generator_total_count = Column(Integer, nullable=False, default=0)
+    generator_accept_rate = Column(Float, nullable=True)
+    # Which release_policy was set on the batch
+    release_policy = Column(String(40), nullable=True)
+    # Human-readable explanation of every gate that was checked
+    reasons_jsonb = Column(JSONB, nullable=True)
+    released_at = Column(DateTime(timezone=True), nullable=False, default=_utcnow)

@@ -762,15 +762,18 @@ async def test_create_self_study_batch_forces_admin_review_required():
     settings = _make_settings()
 
     created_batches = []
+    created_jobs = []
 
     class _TrackingDB:
         async def execute(self, stmt):
-            return _ScalarResult(first_item=0)
+            return _ScalarResult(items=[], first_item=0)
 
         def add(self, obj):
-            from app.models.db import GenerationBatch
+            from app.models.db import GenerationBatch, QuestionJob
             if isinstance(obj, GenerationBatch) or (hasattr(obj, "release_policy")):
                 created_batches.append(obj)
+            if isinstance(obj, QuestionJob):
+                created_jobs.append(obj)
 
         async def flush(self):
             pass
@@ -800,3 +803,16 @@ async def test_create_self_study_batch_forces_admin_review_required():
     if batch_obj is not None:
         assert batch_obj.release_policy == "admin_review_required"
         assert batch_obj.requested_by == "self_study_agent"
+        assert batch_obj.request_jsonb["target_grammar_role_key"] == "sentence_boundary"
+        assert batch_obj.request_jsonb["target_grammar_focus_key"] == "comma_splice"
+        assert batch_obj.request_jsonb["target_frequency_band"] == "medium"
+        assert batch_obj.request_jsonb["test_format_key"] == "digital_app_adaptive"
+        assert batch_obj.request_jsonb["stimulus_mode_key"] == "sentence_only"
+    assert created_jobs
+    for job in created_jobs:
+        request = job.generation_request_jsonb
+        assert "requested_count" not in request
+        assert request["release_policy"] == "admin_review_required"
+        assert request["target_grammar_role_key"] == "sentence_boundary"
+        assert request["source_question_ids"] == []
+        assert isinstance(request["seed"], int)

@@ -666,19 +666,28 @@ the best accepted questions and where bad generations are coming from.
 **Goal:** Only after enough review data exists, optionally allow narrowly scoped
 auto-release.
 
-- [ ] Define policy flags:
+- [x] Define policy flags:
   - `GENERATION_AUTO_RELEASE_ENABLED=false`
   - `GENERATION_AUTO_RELEASE_MIN_REVIEWS=3`
   - `GENERATION_AUTO_RELEASE_MIN_ACCEPT_RATE`
   - `GENERATION_AUTO_RELEASE_ALLOWED_TARGETS`
-- [ ] Auto-release requires:
+- [x] Auto-release requires:
   - no unresolved overlap
   - all review thresholds cleared
   - low reviewer disagreement
   - no copy-risk warnings
   - generator model with proven acceptance history
-- [ ] Keep an audit trail explaining every auto-release.
-- [ ] Add admin kill switch to disable auto-release immediately.
+- [x] Keep an audit trail explaining every auto-release.
+- [x] Add admin kill switch to disable auto-release immediately.
+
+**Status 2026-05-21:** Complete. `backend/app/review/auto_release.py` implements all
+8 gates (config flag, runtime kill switch, release policy, consensus verdict,
+high-disagreement flag, overlap status, allowed-targets matching, generator
+acceptance-rate history). `AutoReleaseAuditLog` model + migration
+`026_phase10_auto_release_audit.py`. Admin endpoints:
+`GET /admin/generation/auto-release/status`, `POST .../disable`, `POST .../enable`,
+`GET .../audit`. 28 tests in `test_auto_release.py` — all passing.
+Full suite: 747 passed, 2 skipped.
 
 **Exit criteria:** Auto-release is possible but opt-in, thresholded, auditable,
 and easy to disable.

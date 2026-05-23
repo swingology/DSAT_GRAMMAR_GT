@@ -1,0 +1,1463 @@
+exam_code: '9'
+section_code: '01'
+module_code: '01'
+questions:
+- question_number: 1
+  question_id: f592658e-f159-596f-adee-8a043b4fc2bb
+  question_text: As used in the text, what does the word “arranged” most nearly mean?
+  passage_text: 'The following text is adapted from Ida B. Wells’s
+
+    1970 autobiography A Crusade for Justice. Mr. Watts
+
+    is a reference to George Frederic Watts, an English
+
+    painter.
+
+    [Manchester’s] art galleries are so arranged that
+
+    the name of every picture is plainly seen and one
+
+    has no need of a catalogue to pick out the name
+
+    and the artist. This is a convenience to the
+
+    general public, which other art galleries, which
+
+    shall be nameless, might copy to advantage. To
+
+    her treasure of art Manchester has added
+
+    Mr. Watts’ latest picture, the Good Samaritan.
+
+    ©1970 by the University of Chicago Press'
+  correct_option_label: A
+  options:
+  - label: A
+    text: Organized
+  - label: B
+    text: Ranked
+  - label: C
+    text: Scheduled
+  - label: D
+    text: Discussed
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_word_in_context
+    explanation_short: The word 'arranged' refers to how the art galleries are organized
+      so that picture names are visible without a catalogue.
+    explanation_full: In context, 'arranged' describes the physical or logistical
+      setup of the art galleries such that each picture's name and artist are clearly
+      visible. The passage contrasts this with other galleries that require a catalogue,
+      implying that the arrangement is intentional and functional — making information
+      accessible. 'Organized' best captures this meaning. 'Ranked' implies hierarchy,
+      'scheduled' implies time-based planning, and 'discussed' implies verbal exchange
+      — none fit the spatial/logistical context.
+- question_number: 2
+  question_id: 4350318d-af0f-5a70-aca8-cdf4d0a57477
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: 'One challenge of generating electricity from ocean waves is that
+    wave power isn’t _______: it varies in unpredictable ways that pose technological
+    and planning problems for electricity generation.'
+  correct_option_label: D
+  options:
+  - label: A
+    text: accidental
+  - label: B
+    text: confident
+  - label: C
+    text: expensive
+  - label: D
+    text: consistent
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct answer must describe a quality that is lacking
+      in wave power — specifically, stability or predictability — which is directly
+      supported by the clause 'it varies in unpredictable ways.' 'Consistent' is the
+      only option that logically fits this context.
+    explanation_full: The sentence explains that wave power presents challenges because
+      it 'varies in unpredictable ways.' This implies that what is missing is reliability
+      or steadiness. Among the options, 'consistent' is the only word that directly
+      contrasts with 'varies unpredictably.' 'Accidental' suggests randomness but
+      not necessarily instability; 'confident' is anthropomorphic and irrelevant;
+      'expensive' introduces a cost dimension not mentioned. Thus, 'consistent' is
+      both logically required and contextually precise.
+- question_number: 3
+  question_id: 618e3a45-5c3c-556f-8f49-65c1790198b8
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: Due to their often strange images, highly experimental syntax, and
+    opaque subject matter, many of John Ashbery’s poems can be quite difficult to
+    ______ and thus are the object of heated debate among scholars.
+  correct_option_label: C
+  options:
+  - label: A
+    text: delegate
+  - label: B
+    text: compose
+  - label: C
+    text: interpret
+  - label: D
+    text: renounce
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The blank requires a verb that describes what scholars do with
+      difficult poems — 'interpret' is the only option that fits both the context
+      of scholarly debate and the nature of poetic ambiguity.
+    explanation_full: The sentence explains that Ashbery’s poems are difficult due
+      to strange imagery, experimental syntax, and opaque subject matter. The consequence
+      is that they become 'the object of heated debate among scholars.' This implies
+      that scholars are trying to make sense of them — i.e., interpret them. 'Delegate'
+      (A) implies assigning responsibility, which doesn’t fit. 'Compose' (B) means
+      to write, which contradicts the passive role of scholars. 'Renounce' (D) means
+      to reject, which contradicts the idea of ongoing debate. Only 'interpret' (C)
+      logically connects the difficulty of the poems to the scholarly activity described.
+    needs_human_review: false
+- question_number: 4
+  question_id: f1b9c3ee-6020-500c-bce7-d76d5a312af8
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: 'Diego Velázquez was the leading artist in the court of King Philip
+    IV of Spain during the seventeenth century, but his influence was hardly _______
+    Spain: realist and impressionist painters around the world employed his techniques
+    and echoed elements of his style.'
+  correct_option_label: C
+  options:
+  - label: A
+    text: derived from
+  - label: B
+    text: recognized in
+  - label: C
+    text: confined to
+  - label: D
+    text: repressed by
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The sentence contrasts Velázquez’s Spanish court role with
+      his global influence. 'Confined to' correctly implies his impact extended beyond
+      Spain, matching the evidence that international artists adopted his style.
+    explanation_full: 'The sentence presents a contrast: although Velázquez worked
+      in the Spanish court, his influence was not limited to Spain. The correct answer
+      must reflect this expansion beyond national borders. Option C, ''confined to,''
+      creates the necessary contrast — if his influence was ''hardly confined to Spain,''
+      it logically extends globally, which is confirmed by the following clause about
+      worldwide adoption of his techniques. Option A (''derived from'') suggests origin,
+      not scope. Option B (''recognized in'') is too weak and doesn’t imply limitation.
+      Option D (''repressed by'') introduces an unsupported negative connotation.
+      Thus, ''confined to'' is both logically and precisely correct.'
+    needs_human_review: false
+- question_number: 5
+  question_id: d4667135-bf79-563b-817e-3584869a72e4
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: 'Although science fiction was dominated mostly by white male authors
+    when Octavia Butler, a Black woman, began writing, she did not view the genre
+    as _______: Butler broke into the field with the publication of several short
+    stories and her 1976 novel Patternmaster, and she later became the first science
+    fiction writer to win a prestigious MacArthur Fellowship.'
+  correct_option_label: B
+  options:
+  - label: A
+    text: legitimate
+  - label: B
+    text: impenetrable
+  - label: C
+    text: compelling
+  - label: D
+    text: indecipherable
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct answer must reflect that Butler saw the genre as
+      accessible despite its demographic dominance — 'impenetrable' is the only option
+      that logically contrasts with her successful entry and achievements.
+    explanation_full: 'The sentence presents a contrast: although the genre was dominated
+      by white male authors, Butler did not see it as impenetrable — meaning she believed
+      she could enter and succeed in it. Her subsequent success (publishing stories,
+      winning a MacArthur Fellowship) confirms this interpretation. ''Legitimate''
+      and ''compelling'' are positive but do not contrast with the barrier implied
+      by the dominance; ''indecipherable'' refers to comprehension, not accessibility.
+      Only ''impenetrable'' correctly captures the idea of an insurmountable barrier
+      that Butler overcame.'
+- question_number: 6
+  question_id: 0b00489b-1185-546e-a237-5cbf3d364966
+  question_text: Which choice best describes the function of the underlined sentence?
+    [Uncle Katsuhisa] was as loud as my father was quiet. Even when he wasn’t talking,
+    he made a lot of noise, clearing his throat and sniffing and tapping his fingers.
+  passage_text: 'The following text is adapted from
+
+    Cynthia Kadohata’s 2004 novel Kira-Kira.
+
+    [Uncle Katsuhisa] was as loud as my father was
+
+    quiet. Even when he wasn’t talking, he made a lot
+
+    of noise, clearing his throat and sniffing and
+
+    tapping his fingers.
+
+    ©2004 by Cynthia Kadohata'
+  correct_option_label: C
+  options:
+  - label: A
+    text: It lists the kinds of topics Uncle Katsuhisa enjoys discussing.
+  - label: B
+    text: It suggests that Uncle Katsuhisa dislikes meeting new people.
+  - label: C
+    text: It contrasts Uncle Katsuhisa with the narrator’s father.
+  - label: D
+    text: It describes a conversation between the narrator and the narrator’s father.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_sentence_function
+    explanation_short: The sentence directly contrasts Uncle Katsuhisa's loudness
+      with the narrator’s father’s quietness, establishing a character comparison
+      that defines their differing personalities.
+    explanation_full: The underlined sentence uses explicit comparative language —
+      'as loud as my father was quiet' — to juxtapose two characters. The second clause
+      reinforces this contrast by detailing Uncle Katsuhisa’s noisy habits even in
+      silence, further emphasizing the difference between him and the narrator’s quiet
+      father. This establishes a clear character contrast, which is the primary rhetorical
+      function of the sentence. Option A is incorrect because no topics of discussion
+      are listed. Option B misattributes social discomfort to Uncle Katsuhisa, which
+      is unsupported. Option D incorrectly implies a conversation between the narrator
+      and father, which is not described.
+- question_number: 7
+  question_id: 8f93182d-a830-5df7-8d04-14f005cd22b7
+  question_text: Which choice best describes the function of the underlined sentence
+    in the text as a whole? The play is based on a short story Yamauchi had published
+    three years earlier. Adapting the story wasn’t easy. Theater relies on dialogue
+    between characters, but the original story features little dialogue and instead
+    describes its characters’ silent thoughts. To transform the story into a play,
+    Yamauchi created situations where characters reveal their thoughts by speaking
+    them aloud during conversations with each other.
+  correct_option_label: A
+  options:
+  - label: A
+    text: It offers information about how Yamauchi adapted her short story into a
+      play.
+  - label: B
+    text: It argues that Yamauchi’s play influenced later playwrights.
+  - label: C
+    text: It explains why Yamauchi’s short story is better known than the play adaptation
+      is.
+  - label: D
+    text: It describes how Yamauchi chose the actors who performed in the play.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_sentence_function
+    explanation_short: The underlined sentence explains how Yamauchi overcame the
+      challenge of adapting a dialogue-light story into a play by creating conversational
+      situations that externalize internal thoughts.
+    explanation_full: 'The passage outlines the challenge Yamauchi faced: adapting
+      a short story with minimal dialogue into a theatrical format that depends on
+      character interaction. The underlined sentence directly addresses this challenge
+      by describing her solution — crafting scenes where characters verbalize their
+      inner thoughts through dialogue. This makes it a functional explanation of adaptation
+      strategy, not a claim about influence, comparative fame, or casting decisions.
+      Option A correctly identifies this explanatory role.'
+- question_number: 8
+  question_id: 91710788-08b1-5771-8a9c-dc61d2465bd4
+  question_text: Which choice best describes the function of the underlined portion
+    in the text as a whole? In response to concerns that some recent financial crises
+    were exacerbated by consumers misunderstanding risks associated with credit cards,
+    loans, and other financial products, policymakers in many countries have instituted
+    risk-disclosure requirements on sellers of those products. Enrique Seira et al.
+    investigated a variety of risk-disclosure messages sent to thousands of credit
+    card customers and found that the messages had only small and short-lived effects
+    on behavior. Seira et al. asserted that such effects may nevertheless be worth
+    pursuing, given the negligible cost of messaging.
+  correct_option_label: A
+  options:
+  - label: A
+    text: It notes a factor that led Seira et al. to not dismiss risk-disclosure messaging
+      altogether despite their evidence of its limited utility.
+  - label: B
+    text: It acknowledges a type of risk-disclosure messaging that Seira et al. may
+      not have fully accounted for in their study.
+  - label: C
+    text: It describes a consideration that explains why Seira et al. recommended
+      risk-disclosure messaging even though its effects may be small relative to its
+      costs.
+  - label: D
+    text: It points out a circumstance that Seira et al. conceded may make risk-disclosure
+      messaging more effective than their study suggests.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_sentence_function
+    explanation_short: The underlined portion explains why Seira et al. still consider
+      risk-disclosure messaging worthwhile despite its limited impact — because the
+      cost is negligible.
+    explanation_full: 'The passage presents a study by Seira et al. that found risk-disclosure
+      messages have only small and short-lived behavioral effects. The underlined
+      sentence — ''Seira et al. asserted that such effects may nevertheless be worth
+      pursuing, given the negligible cost of messaging'' — serves to explain why the
+      researchers do not dismiss the practice entirely. It introduces a cost-benefit
+      consideration (negligible cost) that justifies continued use despite limited
+      efficacy. Option A correctly identifies this function: noting a factor (low
+      cost) that led the researchers to not dismiss the messaging. Option C incorrectly
+      implies recommendation or cost-effectiveness analysis; the passage does not
+      say the effects are ''worth it relative to costs,'' only that they are ''worth
+      pursuing'' because cost is negligible. Options B and D misrepresent the authors’
+      position as conceding unaccounted-for variables or greater effectiveness, which
+      the text does not support.'
+- question_number: 9
+  question_id: 4718df8c-400c-549b-9c97-39686a7db0ba
+  question_text: 'Based on the texts, how would Focarelli and Panetta (Text 2) most
+    likely respond to Fan’s findings (Text 1)? Text 1: When companies in the same
+    industry propose merging with one another, they often claim that the merger will
+    benefit consumers by increasing efficiency and therefore lowering prices. Economist
+    Ying Fan investigated this notion in the context of the United States newspaper
+    market. She modeled a hypothetical merger of Minneapolis-area newspapers and found
+    that subscription prices would rise following a merger. Text 2: Economists Dario
+    Focarelli and Fabio Panetta have argued that research on the effect of mergers
+    on prices has focused excessively on short-term effects, which tend to be adverse
+    for consumers. Using the case of consumer banking in Italy, they show that over
+    the long term (several years, in their study), the efficiency gains realized by
+    merged companies do result in economic benefits for consumers.'
+  passage_text: 'Text 1
+
+    When companies in the same industry propose
+
+    merging with one another, they often claim that the
+
+    merger will benefit consumers by increasing
+
+    efficiency and therefore lowering prices. Economist
+
+    Ying Fan investigated this notion in the context of
+
+    the United States newspaper market. She modeled a
+
+    hypothetical merger of Minneapolis-area newspapers
+
+    and found that subscription prices would rise
+
+    following a merger.
+
+    Text 2
+
+    Economists Dario Focarelli and Fabio Panetta have
+
+    argued that research on the effect of mergers on
+
+    prices has focused excessively on short-term effects,
+
+    which tend to be adverse for consumers. Using the
+
+    case of consumer banking in Italy, they show that
+
+    over the long term (several years, in their study), the
+
+    efficiency gains realized by merged companies do
+
+    result in economic benefits for consumers.'
+  correct_option_label: C
+  options:
+  - label: A
+    text: They would recommend that Fan compare the near-term effect of a merger on
+      subscription prices in the Minneapolis area with the effect of a merger in another
+      newspaper market.
+  - label: B
+    text: They would argue that over the long term the expenses incurred by the merged
+      newspaper company will also increase.
+  - label: C
+    text: They would encourage Fan to investigate whether the projected effect on
+      subscription prices persists over an extended period.
+  - label: D
+    text: They would claim that mergers have a different effect on consumer prices
+      in the newspaper industry than in most other industries.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_paired
+    stem_type_key: choose_text_relationship
+    explanation_short: Focarelli and Panetta emphasize long-term effects of mergers,
+      which contrasts with Fan's short-term finding. They would likely encourage extending
+      her analysis over time.
+    explanation_full: Text 2 authors argue that merger research focuses too much on
+      short-term negative effects and demonstrate that long-term efficiency gains
+      lead to consumer benefits. Fan’s finding in Text 1 is limited to short-term
+      price increases. Therefore, Focarelli and Panetta would most likely respond
+      by encouraging Fan to investigate whether her projected price increase persists
+      over an extended period — aligning with their emphasis on long-term outcomes.
+      Option C directly reflects this response. Option A misdirects by suggesting
+      cross-market comparison; B contradicts their position; D introduces an unsupported
+      industry-specific claim.
+- question_number: 10
+  question_id: 716ba8cc-a98b-57d6-aeac-59194ef11825
+  question_text: According to the text, why are ecologists worried about Pando? Utah
+    is home to Pando, a colony of about 47,000 quaking aspen trees that all share
+    a single root system. Pando is one of the largest single organisms by mass on
+    Earth, but ecologists are worried that its growth is declining in part because
+    of grazing by animals. The ecologists say that strong fences could prevent deer
+    from eating young trees and help Pando start thriving again.
+  passage_text: 'Utah is home to Pando, a colony of about
+
+    47,000 quaking aspen trees that all share a single root
+
+    system. Pando is one of the largest single organisms
+
+    by mass on Earth, but ecologists are worried that its
+
+    growth is declining in part because of grazing by
+
+    animals. The ecologists say that strong fences could
+
+    prevent deer from eating young trees and help Pando
+
+    start thriving again.'
+  correct_option_label: A
+  options:
+  - label: A
+    text: It isn’t growing at the same rate it used to.
+  - label: B
+    text: It isn’t producing young trees anymore.
+  - label: C
+    text: It can’t grow into new areas because it is blocked by fences.
+  - label: D
+    text: Its root system can’t support many more new trees.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_detail
+    explanation_short: The passage explicitly states that ecologists are worried because
+      Pando's growth is declining.
+    explanation_full: 'The passage directly states: ''ecologists are worried that
+      its growth is declining in part because of grazing by animals.'' Option A correctly
+      paraphrases this concern. Option B is incorrect because the passage mentions
+      deer eating young trees, not that Pando has stopped producing them. Option C
+      misrepresents the role of fences — they are proposed as a solution to protect
+      young trees, not as a barrier to expansion. Option D is unsupported; the passage
+      does not discuss limitations of the root system’s capacity.'
+- question_number: 11
+  question_id: 6015715f-e946-55a4-9283-a54634226fc6
+  question_text: 'According to the table, in which year was the dolphin with the ID
+    FB43 recorded with her calf? Recordings of Female Bottlenose Dolphins with Their
+    Calves: Dolphin ID | Recording year; FB07 | 2012; FB25 | 1989; FB43 | 1992; FB79
+    | 2018'
+  correct_option_label: D
+  options:
+  - label: A
+    text: '1999'
+  - label: B
+    text: '2012'
+  - label: C
+    text: '2020'
+  - label: D
+    text: '1992'
+  stimulus_assets:
+  - type: table
+    title: Recordings of Female Bottlenose Dolphins with Their Calves
+    structured_data:
+      headers:
+      - Dolphin ID
+      - Recording year
+      rows:
+      - - FB07
+        - '2012'
+      - - FB25
+        - '1989'
+      - - FB43
+        - '1992'
+      - - FB79
+        - '2018'
+    render_hints:
+      chart_type: table
+      x_label: null
+      y_label: null
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_plus_table
+    stem_type_key: choose_best_completion_from_data
+    explanation_short: The table directly lists FB43 with the recording year 1992.
+    explanation_full: 'The table titled ''Recordings of Female Bottlenose Dolphins
+      with Their Calves'' contains two columns: ''Dolphin ID'' and ''Recording year''.
+      Locating the row for Dolphin ID ''FB43'', the corresponding value in the ''Recording
+      year'' column is ''1992''. Therefore, option D is correct. All other options
+      correspond to years associated with different dolphin IDs (FB07 → 2012, FB79
+      → 2018) or are not present in the table (1999, 2020).'
+- question_number: 12
+  question_id: c33653e7-c9c5-5458-92c7-5070cdfecc61
+  question_text: 'Which choice most effectively uses data from the table to complete
+    the text? Maximum Height of Maple Trees When Fully Grown: Tree type | Maximum
+    height (feet) | Native to North America; Sugar maple | 75 | yes; Silver maple
+    | 70 | yes; Red maple | 60 | yes; Japanese maple | 25 | no; Norway maple | 50
+    | no'
+  passage_text: For a school project, a forestry student needs to recommend a maple
+    tree that is native to North America and won’t grow more than 60 feet in height.
+    Based on the characteristics of five common maple trees, she has decided to select
+    a _______
+  correct_option_label: C
+  options:
+  - label: A
+    text: silver maple.
+  - label: B
+    text: sugar maple.
+  - label: C
+    text: red maple.
+  - label: D
+    text: Norway maple.
+  stimulus_assets:
+  - type: table
+    title: Maximum Height of Maple Trees When Fully Grown
+    structured_data:
+      headers:
+      - Tree type
+      - Maximum height (feet)
+      - Native to North America
+      rows:
+      - - Sugar maple
+        - '75'
+        - 'yes'
+      - - Silver maple
+        - '70'
+        - 'yes'
+      - - Red maple
+        - '60'
+        - 'yes'
+      - - Japanese maple
+        - '25'
+        - 'no'
+      - - Norway maple
+        - '50'
+        - 'no'
+    render_hints:
+      chart_type: table
+      x_label: null
+      y_label: null
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_plus_table
+    stem_type_key: choose_best_completion_from_data
+    explanation_short: 'The correct choice must satisfy both criteria: native to North
+      America and maximum height ≤ 60 feet. Only Red maple meets both conditions.'
+    explanation_full: 'The passage requires selecting a maple tree that is native
+      to North America (third column = ''yes'') and does not exceed 60 feet in height
+      (second column ≤ 60). Reviewing the table: Sugar maple (75 ft) and Silver maple
+      (70 ft) exceed 60 ft. Japanese maple (25 ft) and Norway maple (50 ft) are under
+      60 ft but are not native to North America. Only Red maple (60 ft, native = yes)
+      satisfies both constraints. Thus, option C is correct.'
+- question_number: 13
+  question_id: 808525e0-12ea-57b3-b356-f8ecdbd1a098
+  question_text: 'Which choice best describes data in the graph that support Ayalew
+    and her colleagues’ hypothesis? Metal Content of Plants with and without Kanamycin
+    Exposure: Many plants lose their leaf color when exposed to kanamycin, an antibiotic
+    produced by some soil microorganisms. Spelman College biologist Mentewab Ayalew
+    and her colleagues hypothesized that plants’ response to kanamycin exposure involves
+    altering their uptake of metals, such as iron and zinc. The researchers grew two
+    groups of seedlings of the plant Arabidopsis thaliana, half of which were exposed
+    to kanamycin and half of which were a control group without exposure to kanamycin,
+    and measured the plants’ metal content five days after germination.'
+  correct_option_label: D
+  options:
+  - label: A
+    text: The control plants contained higher levels of zinc than iron, but plants
+      exposed to kanamycin contained higher levels of iron than zinc.
+  - label: B
+    text: Both groups of plants contained more than 200 parts per million of both
+      iron and zinc.
+  - label: C
+    text: Zinc levels were around 300 parts per million in the control plants but
+      nearly 400 parts per million in the plants exposed to kanamycin.
+  - label: D
+    text: The plants exposed to kanamycin showed lower levels of iron and zinc than
+      the control plants did.
+  stimulus_assets:
+  - type: graph
+    title: Metal Content of Plants with and without Kanamycin Exposure
+    structured_data:
+      x_label: Plant Group
+      y_label: Metal Content (parts per million)
+      series:
+      - label: Iron - Control
+        data:
+        - 250
+      - label: Iron - Kanamycin
+        data:
+        - 150
+      - label: Zinc - Control
+        data:
+        - 300
+      - label: Zinc - Kanamycin
+        data:
+        - 200
+    render_hints:
+      chart_type: bar
+      x_label: Plant Group
+      y_label: Metal Content (parts per million)
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_plus_graph
+    stem_type_key: choose_best_completion_from_data
+    explanation_short: 'The correct option directly supports the hypothesis that kanamycin
+      exposure alters metal uptake: both iron and zinc levels are lower in kanamycin-exposed
+      plants compared to controls.'
+    explanation_full: Ayalew and her colleagues hypothesized that kanamycin exposure
+      alters plants' uptake of metals. The graph shows that for both iron and zinc,
+      the metal content is significantly lower in plants exposed to kanamycin (150
+      ppm iron, 200 ppm zinc) than in control plants (250 ppm iron, 300 ppm zinc).
+      Option D correctly summarizes this pattern. Option A misrepresents the relative
+      levels within each group rather than comparing across groups. Option B states
+      a true fact but does not address the hypothesis about altered uptake due to
+      kanamycin. Option C incorrectly states that zinc levels increased with kanamycin
+      exposure, when they actually decreased.
+- question_number: 14
+  question_id: 470e7af0-c9df-531e-8dae-371584c249a1
+  question_text: 'Which choice best describes data from the table that support the
+    researcher’s hypothesis? Average Number and Duration of Torpor Bouts and Arousal
+    Episodes for Alaska Marmots and Arctic Ground Squirrels, 2008–2011: Feature |
+    Alaska marmots | Arctic ground squirrels; torpor bouts | 12 | 10.5; duration per
+    bout | 13.81 days | 16.77 days; arousal episodes | 11 | 9.5; duration per episode
+    | 21.2 hours | 14.2 hours. When hibernating, Alaska marmots and Arctic ground
+    squirrels enter a state called torpor, which minimizes the energy their bodies
+    need to function. Often a hibernating animal will temporarily come out of torpor
+    (called an arousal episode) and its metabolic rate will rise, burning more of
+    the precious energy the animal needs to survive the winter. Alaska marmots hibernate
+    in groups and therefore burn less energy keeping warm during these episodes than
+    they would if they were alone. A researcher hypothesized that because Arctic ground
+    squirrels hibernate alone, they would likely exhibit longer bouts of torpor and
+    shorter arousal episodes than Alaska marmots.'
+  correct_option_label: C
+  options:
+  - label: A
+    text: The Alaska marmots’ arousal episodes lasted for days, while the Arctic ground
+      squirrels’ arousal episodes lasted less than a day.
+  - label: B
+    text: The Alaska marmots and the Arctic ground squirrels both maintained torpor
+      for several consecutive days per bout, on average.
+  - label: C
+    text: The Alaska marmots had shorter torpor bouts and longer arousal episodes
+      than the Arctic ground squirrels did.
+  - label: D
+    text: The Alaska marmots had more torpor bouts than arousal episodes, but their
+      arousal episodes were much shorter than their torpor bouts.
+  stimulus_assets:
+  - type: table
+    title: Average Number and Duration of Torpor Bouts and Arousal Episodes for Alaska
+      Marmots and Arctic Ground Squirrels, 2008–2011
+    structured_data:
+      headers:
+      - Feature
+      - Alaska marmots
+      - Arctic ground squirrels
+      rows:
+      - - torpor bouts
+        - '12'
+        - '10.5'
+      - - duration per bout
+        - 13.81 days
+        - 16.77 days
+      - - arousal episodes
+        - '11'
+        - '9.5'
+      - - duration per episode
+        - 21.2 hours
+        - 14.2 hours
+    render_hints:
+      chart_type: table
+      x_label: null
+      y_label: null
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_plus_table
+    stem_type_key: choose_best_completion_from_data
+    explanation_short: 'The correct option directly matches the hypothesis: Arctic
+      ground squirrels have longer torpor bouts and shorter arousal episodes than
+      Alaska marmots, as shown in the table.'
+    explanation_full: The researcher hypothesized that Arctic ground squirrels, hibernating
+      alone, would exhibit longer torpor bouts and shorter arousal episodes than Alaska
+      marmots. The table shows that Arctic ground squirrels have longer torpor bouts
+      (16.77 days vs. 13.81 days) and shorter arousal episodes (14.2 hours vs. 21.2
+      hours). Option C correctly states that Alaska marmots had shorter torpor bouts
+      and longer arousal episodes than Arctic ground squirrels — which is equivalent
+      to saying Arctic ground squirrels had longer torpor bouts and shorter arousal
+      episodes. Other options either misstate durations or describe irrelevant patterns.
+- question_number: 15
+  question_id: 3907b74d-8d43-5700-b710-0e4033cf9b57
+  question_text: 'Which choice most effectively uses data from the graph to complete
+    the student’s conclusion? Percentage of Nonhexagonal Cells in Hives of Three Honeybee
+    Species: Honeybee hives consist mainly of hexagonal (six-sided) units called cells,
+    in which queens lay eggs. Hexagonal cells for eggs that develop into nonreproductive
+    workers are smaller than those for eggs that develop into reproductive drones,
+    though the size difference varies by species. Difference in cell size results
+    in a construction problem—it’s hard to neatly connect sections of small cells
+    to sections of large cells—that worsens as the difference increases. To fill in
+    gaps between the sections when building a hive, bees rely on cells that have more
+    or fewer than six sides. A student studying beehive structure consults data on
+    three species, concluding that _______'
+  correct_option_label: A
+  options:
+  - label: A
+    text: cells for worker eggs are probably closer in size to cells for drone eggs
+      in the hives of the western honeybee than in the hives of the dwarf honeybee
+      and the black dwarf honeybee.
+  - label: B
+    text: both the western honeybee and the black dwarf honeybee probably reserve
+      eight-sided cells for drone eggs, while the dwarf honeybee likely deposits drone
+      eggs in seven-sided cells.
+  - label: C
+    text: the western honeybee probably relies on many more geometrical shapes when
+      constructing cell than either the dwarf honeybee or the black dwarf honeybee
+      does.
+  - label: D
+    text: the percentage of hexagonal cells is probably slightly lower in the hives
+      of the western honeybee than in the hives of the dwarf honeybee and the black
+      dwarf honeybee.
+  stimulus_assets:
+  - type: graph
+    title: Percentage of Nonhexagonal Cells in Hives of Three Honeybee Species
+    structured_data:
+      x_label: Honeybee Species
+      y_label: Percentage of Nonhexagonal Cells
+      series:
+      - label: Western honeybee
+        data:
+        - 5
+      - label: Dwarf honeybee
+        data:
+        - 15
+      - label: Black dwarf honeybee
+        data:
+        - 12
+    render_hints:
+      chart_type: bar
+      x_label: Honeybee Species
+      y_label: Percentage of Nonhexagonal Cells
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_plus_graph
+    stem_type_key: choose_best_completion_from_data
+    explanation_short: The graph shows the western honeybee has the lowest percentage
+      of nonhexagonal cells (5%), indicating less need to fill gaps between worker
+      and drone cells, implying their sizes are closer together compared to the other
+      two species.
+    explanation_full: The passage explains that nonhexagonal cells are used to fill
+      gaps between sections of differently sized cells (worker vs. drone). The greater
+      the size difference, the more nonhexagonal cells are needed. The graph shows
+      the western honeybee has only 5% nonhexagonal cells, while the dwarf honeybee
+      has 15% and the black dwarf honeybee has 12%. This implies the western honeybee’s
+      worker and drone cells are closer in size, requiring fewer gap-filling cells.
+      Option A correctly infers this relationship from the data. Option B misattributes
+      cell shape to egg type without evidence. Option C overgeneralizes about geometrical
+      shapes beyond what the graph measures. Option D incorrectly states the percentage
+      of hexagonal cells is lower for the western honeybee — since nonhexagonal cells
+      are lowest for it, hexagonal cells must be highest.
+- question_number: 16
+  question_id: 45a366d2-3adb-5c30-863e-19f0bb54c2bb
+  question_text: Which finding, if true, would most directly support Barboza and Trejos’s
+    claim? ALSOL is a microcredit program in Mexico that makes small loans to female
+    entrepreneurs who lack the collateral and credit history to secure financing from
+    conventional banks. Borrowers use their business proceeds to repay loans in equal
+    weekly installments and incur no penalty for missed payments other than lack of
+    access to larger loans. Economists Gustavo Barboza and Sandra Trejos analyzed
+    ALSOL data and found that rural borrowers, who mostly make and sell handicrafts,
+    miss payments more often than urban borrowers do, partly because they sell their
+    goods less frequently than they could. Barboza and Trejos claim that this behavior
+    reflects strategic decisions that enable rural women to increase their profits
+    per unit sold.
+  passage_text: 'ALSOL is a microcredit program in Mexico that
+
+    makes small loans to female entrepreneurs who lack
+
+    the collateral and credit history to secure financing
+
+    from conventional banks. Borrowers use their
+
+    business proceeds to repay loans in equal weekly
+
+    installments and incur no penalty for missed
+
+    payments other than lack of access to larger loans.
+
+    Economists Gustavo Barboza and Sandra Trejos
+
+    analyzed ALSOL data and found that rural
+
+    borrowers, who mostly make and sell handicrafts,
+
+    miss payments more often than urban borrowers do,
+
+    partly because they sell their goods less frequently
+
+    than they could. Barboza and Trejos claim that this
+
+    behavior reflects strategic decisions that enable rural
+
+    women to increase their profits per unit sold.'
+  correct_option_label: D
+  options:
+  - label: A
+    text: Many marketplaces require entrepreneurs to pay marketplace operators a fixed
+      percentage of each day’s proceeds in exchange for permission to sell goods there.
+  - label: B
+    text: Rural entrepreneurs can typically sell their goods for higher prices in
+      cities than in their home areas, but the number of people selling competing
+      goods tends to be higher in cities.
+  - label: C
+    text: Due to the lower costs they incur, rural entrepreneurs tend to require smaller
+      initial loans than urban entrepreneurs do.
+  - label: D
+    text: The cost to rural entrepreneurs to bring their goods to towns with marketplaces
+      is high but largely independent of the number of goods they bring.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_best_support
+    explanation_short: Option D provides a cost structure that incentivizes rural
+      entrepreneurs to consolidate sales into fewer trips, increasing profit per unit
+      — directly supporting the claim that missed payments reflect strategic profit-maximizing
+      behavior.
+    explanation_full: Barboza and Trejos claim that rural borrowers’ higher rate of
+      missed payments is not due to inability or negligence but reflects strategic
+      decisions to maximize profit per unit sold. Option D supports this by revealing
+      that transportation costs to marketplaces are high but fixed per trip — meaning
+      rural entrepreneurs can reduce per-unit costs (and thus increase profit per
+      unit) by selling in bulk during fewer trips, even if that means missing some
+      loan payments. This directly links the observed behavior (missing payments)
+      to the claimed strategic motive (profit maximization). Other options either
+      describe general marketplace conditions (A, B) or unrelated financial characteristics
+      (C) without connecting to the strategic trade-off between payment frequency
+      and profit per unit.
+    needs_human_review: false
+- question_number: 17
+  question_id: 8633c82d-107b-5f68-b8a1-08107f084e9c
+  question_text: Which choice most logically completes the text? In documents called
+    judicial opinions, judges explain the reasoning behind their legal rulings, and
+    in those explanations they sometimes cite and discuss historical and contemporary
+    philosophers. Legal scholar and philosopher Anita L. Allen argues that while judges
+    are naturally inclined to mention philosophers whose views align with their own
+    positions, the strongest judicial opinions consider and rebut potential objections;
+    discussing philosophers whose views conflict with judges’ views could therefore
+    _______
+  correct_option_label: B
+  options:
+  - label: A
+    text: allow judges to craft judicial opinions without needing to consult philosophical
+      works.
+  - label: B
+    text: help judges improve the arguments they put forward in their judicial opinions.
+  - label: C
+    text: make judicial opinions more comprehensible to readers without legal or philosophical
+      training.
+  - label: D
+    text: bring judicial opinions in line with views that are broadly held among philosophers.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The blank requires a logical consequence of discussing opposing
+      philosophical views — improving argument quality — which aligns with the prior
+      claim that strong opinions rebut objections.
+    explanation_full: 'The passage establishes that the strongest judicial opinions
+      consider and rebut potential objections. Discussing philosophers whose views
+      conflict with the judge’s position is presented as a way to engage with opposing
+      perspectives. Option B correctly identifies that this practice would help judges
+      improve their arguments by anticipating and addressing counterarguments. The
+      other options introduce unrelated benefits (A: avoiding consultation; C: accessibility
+      to non-experts; D: alignment with popular philosophical views) not supported
+      by the text.'
+    annotation_confidence: 0.98
+    needs_human_review: false
+- question_number: 18
+  question_id: 56d49f40-63f4-5a7e-922c-590ffb1d863a
+  question_text: Which choice most logically completes the text? Although military
+    veterans make up a small proportion of the total population of the United States,
+    they occupy a significantly higher proportion of the jobs in the civilian government.
+    One possible explanation for this disproportionate representation is that military
+    service familiarizes people with certain organizational structures that are also
+    reflected in the civilian government bureaucracy, and this familiarity thus _______
+  correct_option_label: A
+  options:
+  - label: A
+    text: makes civilian government jobs especially appealing to military veterans.
+  - label: B
+    text: alters the typical relationship between military service and subsequent
+      career preferences.
+  - label: C
+    text: encourages nonveterans applying for civilian government jobs to consider
+      military service instead.
+  - label: D
+    text: increases the number of civilian government jobs that require some amount
+      of military experience to perform.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: 'The correct option logically extends the cause-effect relationship:
+      familiarity with bureaucratic structures makes government jobs appealing to
+      veterans.'
+    explanation_full: 'The passage presents a causal explanation: military service
+      exposes individuals to organizational structures similar to those in civilian
+      government, which leads to higher representation in such jobs. Option A correctly
+      completes this logic by stating that this familiarity makes civilian government
+      jobs especially appealing — directly linking the cause (familiarity) to the
+      effect (higher job representation). The other options introduce unrelated or
+      illogical consequences: B suggests altering career preferences broadly (not
+      specific to government jobs), C misdirects focus to nonveterans, and D implies
+      structural changes to job requirements, which contradicts the premise that veterans
+      are overrepresented due to personal familiarity, not formal hiring criteria.'
+    annotation_confidence: 0.95
+    needs_human_review: false
+- question_number: 19
+  question_id: 1e070ae0-ae13-501c-b883-5e11736b3b4b
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English? A member of the Cherokee Nation, Mary Golda Ross is renowned
+    for her contributions to NASA’s Planetary Flight Handbook, which _______ detailed
+    mathematical guidance for missions to Mars and Venus.
+  correct_option_label: A
+  options:
+  - label: A
+    text: provided
+  - label: B
+    text: having provided
+  - label: C
+    text: to provide
+  - label: D
+    text: providing
+  annotation:
+    grammar_focus_key: verb_tense_consistency
+    grammar_role_key: verb_form
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The relative clause requires a finite verb to complete the
+      sentence grammatically. 'Provided' is the correct past-tense verb form.
+    explanation_full: The sentence contains a nonrestrictive relative clause introduced
+      by 'which'. This clause must have a finite verb to be grammatically complete.
+      Option A, 'provided', is the simple past tense verb form that correctly completes
+      the clause. Options B ('having provided'), C ('to provide'), and D ('providing')
+      are nonfinite verb forms and cannot serve as the main verb in a clause. The
+      subject 'which' refers to 'Planetary Flight Handbook', and the action occurred
+      in the past, making 'provided' the only grammatically correct choice.
+- question_number: 20
+  question_id: 700fe56e-ad2e-5bb7-aac7-6841e208354b
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English? The classic children’s board game Chutes and Ladders is a
+    version of an ancient Nepalese game, Paramapada Sopanapata. In both games, players
+    encounter “good” or “bad” spaces while traveling along a path; landing on one
+    of the good spaces _______ a player to skip ahead and arrive closer to the end
+    goal.
+  correct_option_label: A
+  options:
+  - label: A
+    text: allows
+  - label: B
+    text: are allowing
+  - label: C
+    text: have allowed
+  - label: D
+    text: allow
+  annotation:
+    grammar_focus_key: subject_verb_agreement
+    grammar_role_key: agreement
+    stimulus_mode_key: sentence_only
+    stem_type_key: conform_to_standard_english
+    explanation_short: 'The subject ''landing on one of the good spaces'' is singular,
+      so the verb must be singular: ''allows''.'
+    explanation_full: The subject of the clause is 'landing on one of the good spaces,'
+      which is a gerund phrase acting as a singular subject. Therefore, the verb must
+      agree in number and take the singular form 'allows.' Option B ('are allowing')
+      is plural and progressive, which does not match the singular subject. Option
+      C ('have allowed') is plural perfect tense, also incorrect. Option D ('allow')
+      is plural present tense, which fails subject-verb agreement. Only option A correctly
+      matches the singular subject with the singular verb 'allows.'
+- question_number: 21
+  question_id: d587dcbc-a6fb-5e49-9522-b7f08bae2f31
+  question_text: 'Which choice completes the text so that it conforms to the conventions
+    of Standard English? In 1930, Japanese American artist Chiura Obata depicted the
+    natural beauty of Yosemite National Park in two memorable woodcuts: Evening at
+    Carl Inn and Lake Basin in the High Sierra. In 2019, _______ exhibited alongside
+    150 of Obata’s other works in a single-artist show at the Smithsonian American
+    Art Museum.'
+  correct_option_label: B
+  options:
+  - label: A
+    text: it was
+  - label: B
+    text: they were
+  - label: C
+    text: this was
+  - label: D
+    text: some were
+  annotation:
+    grammar_focus_key: pronoun_antecedent_agreement
+    grammar_role_key: agreement
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The pronoun must agree with the plural antecedent 'two memorable
+      woodcuts'.
+    explanation_full: The blank refers to 'two memorable woodcuts' — a plural noun
+      phrase — which requires a plural pronoun and verb. Option B, 'they were', correctly
+      uses the plural subject pronoun 'they' and plural verb 'were' to match the plural
+      antecedent. Option A ('it was') and C ('this was') use singular pronouns and
+      verbs, which do not agree with the plural subject. Option D ('some were') is
+      grammatically possible but semantically imprecise — 'some' does not clearly
+      refer back to the two named woodcuts, making it less precise than 'they'.
+- question_number: 22
+  question_id: 38080956-9e42-50e2-b478-b46ca3c64541
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English? Journalists have dubbed Gil Scott-Heron the “godfather of
+    rap,” a title that has appeared in hundreds of articles about him since the 1990s.
+    Scott-Heron himself resisted the godfather _______ feeling that it didn’t encapsulate
+    his devotion to the broader African American blues music tradition as well as
+    “bluesologist,” the moniker he preferred.
+  correct_option_label: D
+  options:
+  - label: A
+    text: nickname, however
+  - label: B
+    text: nickname, however;
+  - label: C
+    text: nickname, however,
+  - label: D
+    text: nickname; however,
+  annotation:
+    grammar_focus_key: conjunctive_adverb_usage
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The correct punctuation separates two independent clauses with
+      a semicolon and introduces the conjunctive adverb 'however' with a comma.
+    explanation_full: 'The sentence contains two independent clauses: (1) ''Scott-Heron
+      himself resisted the godfather nickname'' and (2) ''feeling that it didn’t encapsulate
+      his devotion...''. The word ''however'' is a conjunctive adverb connecting these
+      clauses. According to Standard English conventions, two independent clauses
+      joined by a conjunctive adverb require a semicolon before the adverb and a comma
+      after it. Option D correctly uses ''; however,''. Option A incorrectly uses
+      a comma splice. Option B incorrectly uses a semicolon without a comma after
+      ''however''. Option C incorrectly uses a comma before ''however'' instead of
+      a semicolon.'
+- question_number: 23
+  question_id: 7fe5ca6d-85ba-5a89-a462-18cf5d62c6d2
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English? Stomata, tiny pore structures in a leaf that absorb gases
+    needed for plant growth, open when guard cells surrounding each pore swell with
+    water. In a pivotal 2007 article, plant cell _______ showed that lipid molecules
+    called phosphatidylinositol phosphates are responsible for signaling guard cells
+    to open stomata.
+  correct_option_label: C
+  options:
+  - label: A
+    text: biologist, Yuree Lee
+  - label: B
+    text: biologist Yuree Lee,
+  - label: C
+    text: biologist Yuree Lee
+  - label: D
+    text: biologist, Yuree Lee,
+  annotation:
+    grammar_focus_key: appositive_punctuation
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The phrase 'plant cell biologist Yuree Lee' is an appositive
+      that renames the subject and does not require commas because it is restrictive
+      — it specifies which biologist is being referred to. Commas would incorrectly
+      suggest nonrestrictive information.
+    explanation_full: 'The correct answer is C: ''biologist Yuree Lee''. The phrase
+      functions as a restrictive appositive — it identifies the specific biologist
+      (Yuree Lee) who conducted the research. In Standard English, restrictive appositives
+      do not take commas. Options A and D incorrectly insert commas around the name,
+      treating it as nonrestrictive. Option B incorrectly places a comma only after
+      the name, breaking the syntactic unit. The correct construction maintains the
+      subject-verb agreement without interrupting the required syntactic unit (subject
+      + verb).'
+- question_number: 24
+  question_id: 75eb9b23-b56b-5582-b842-ab3b4596ab9f
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English? As cheesemaking practices spread throughout Europe and Asia
+    during and after the Neolithic, divergent strategies for preserving milk _______
+    whereas rennet-coagulated cheesemaking became key to milk preservation in Europe
+    and Southwest Asia, acid-heat coagulation methods became common among nomadic
+    herding populations of the northeastern Eurasian steppe.
+  correct_option_label: C
+  options:
+  - label: A
+    text: emerged
+  - label: B
+    text: emerged and
+  - label: C
+    text: 'emerged:'
+  - label: D
+    text: emerged,
+  annotation:
+    grammar_focus_key: colon_dash_use
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: A colon is required to introduce the contrasting clause that
+      follows, which explains the nature of the 'divergent strategies.'
+    explanation_full: The sentence presents a general claim — that divergent strategies
+      for preserving milk emerged — and then immediately provides specific examples
+      of those strategies. The colon (option C) correctly introduces this explanatory
+      contrast. A comma (D) would create a comma splice because the second clause
+      is independent. 'And' (B) creates a run-on without proper conjunction structure.
+      No punctuation (A) leaves the sentence grammatically incomplete. Only the colon
+      properly signals that what follows will illustrate or elaborate on the preceding
+      clause.
+- question_number: 25
+  question_id: 3d3b24fa-72eb-526d-ba3d-c8436390bc05
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English? Recent pollen analyses of the Aran Islands have led some
+    researchers to propose that the now treeless islands were once wooded. This hypothesis
+    _______ that certain trees, such as P. sylvestris, survived without interruption
+    or human intervention throughout the Holocene cannot stand, researchers Michael
+    O’Connell and Karen Molloy counter, unless other explanations can first be ruled
+    out.
+  correct_option_label: A
+  options:
+  - label: A
+    text: suggesting
+  - label: B
+    text: suggested
+  - label: C
+    text: suggests
+  - label: D
+    text: has suggested
+  annotation:
+    grammar_focus_key: comma_splice
+    grammar_role_key: sentence_boundary
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The correct option 'suggesting' creates a participial phrase
+      modifying 'hypothesis,' which is grammatically required to connect the two clauses
+      without creating a comma splice or run-on sentence.
+    explanation_full: 'The sentence contains two independent clauses: (1) ''Recent
+      pollen analyses... were once wooded'' and (2) ''This hypothesis... cannot stand,
+      researchers... counter, unless other explanations can first be ruled out.''
+      The blank must not create a new independent clause but instead link the second
+      clause to the subject ''hypothesis'' as a modifier. Option A, ''suggesting,''
+      correctly forms a participial phrase (''suggesting that certain trees...'')
+      that modifies ''hypothesis'' and avoids a comma splice. Options B, C, and D
+      all create finite verbs that would turn the second part into an independent
+      clause, resulting in a comma splice when joined with the first clause by a comma.
+      Only ''suggesting'' maintains grammatical correctness by functioning as a non-finite
+      modifier.'
+- question_number: 26
+  question_id: a2aa2c2c-c515-575f-89d8-749d7d3690fd
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English? Researchers studying the “terra-cotta army,” the thousands
+    of life-size statues of warriors found interred near the tomb of Emperor Qin Shi
+    Huang of China, were shocked to realize that the shape of each statue’s ears,
+    like the shape of each person’s ears, _______ unique.
+  correct_option_label: B
+  options:
+  - label: A
+    text: are
+  - label: B
+    text: is
+  - label: C
+    text: were
+  - label: D
+    text: have been
+  annotation:
+    grammar_focus_key: subject_verb_agreement
+    grammar_role_key: agreement
+    stimulus_mode_key: sentence_only
+    stem_type_key: conform_to_standard_english
+    explanation_short: The subject 'the shape' is singular, so the verb must be 'is'.
+    explanation_full: The subject of the sentence is 'the shape of each statue’s ears',
+      which is singular. The phrase 'like the shape of each person’s ears' is a comparison
+      and does not change the number of the subject. Therefore, the correct verb form
+      is the singular 'is'. Option A ('are') incorrectly treats the subject as plural.
+      Option C ('were') uses past tense unnecessarily and mismatches the present-tense
+      context. Option D ('have been') introduces an incorrect perfect aspect and also
+      fails to agree with the singular subject.
+- question_number: 27
+  question_id: 6e75891d-25b9-5924-b989-907b0196e5bc
+  question_text: Which choice completes the text with the most logical transition?
+    Chimamanda Ngozi Adichie’s 2013 novel Americanah chronicles the divergent experiences
+    of Ifemelu and Obinze, a young Nigerian couple, after high school. Ifemelu moves
+    to the United States to attend a prestigious university. ______ Obinze travels
+    to London, hoping to start a career there. However, frustrated with the lack of
+    opportunities, he soon returns to Nigeria.
+  correct_option_label: A
+  options:
+  - label: A
+    text: Meanwhile,
+  - label: B
+    text: Nevertheless,
+  - label: C
+    text: Secondly,
+  - label: D
+    text: In fact,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The transition 'Meanwhile,' correctly signals that Obinze's
+      action occurs concurrently with Ifemelu's, reflecting the parallel structure
+      of their divergent paths.
+    explanation_full: 'The passage describes two simultaneous but separate journeys:
+      Ifemelu moving to the U.S. and Obinze traveling to London. The correct transition
+      must indicate that these events are happening at the same time. ''Meanwhile,''
+      is the only option that conveys temporal simultaneity without implying contrast,
+      addition, or sequence. ''Nevertheless'' suggests contradiction, ''Secondly''
+      implies sequence, and ''In fact'' adds emphasis — none fit the context. The
+      correct answer preserves the parallel narrative structure established by the
+      passage.'
+- question_number: 28
+  question_id: f0095be0-2ff0-533f-8de6-afc0219b68e5
+  question_text: Which choice completes the text with the most logical transition?
+    Some members of the US Supreme Court have resisted calls to televise the court’s
+    oral arguments, concerned that the participants would be tempted to perform for
+    the cameras (and thus lower the quality of the discourse). _______ the justices
+    worry that most viewers would not even watch the full deliberations, only short
+    clips that could be misinterpreted and mischaracterized.
+  correct_option_label: B
+  options:
+  - label: A
+    text: However,
+  - label: B
+    text: Additionally,
+  - label: C
+    text: In comparison,
+  - label: D
+    text: For example,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The second concern about viewership habits adds to the first
+      concern about performance; 'Additionally' correctly signals additive logic.
+    explanation_full: 'The first sentence introduces a concern: justices fear that
+      televising oral arguments would lead participants to perform for cameras, lowering
+      discourse quality. The second sentence introduces a second, related concern:
+      justices also worry that viewers would only watch short clips, which could be
+      misinterpreted. Since both concerns are parallel and additive — not contrasting,
+      illustrative, or comparative — the correct transition is ''Additionally,'' which
+      signals addition. ''However'' implies contrast, ''In comparison'' suggests a
+      comparison between two different things, and ''For example'' implies illustration,
+      none of which fit the additive relationship here.'
+- question_number: 29
+  question_id: fd3821de-532c-549a-bf84-9f03cefac82c
+  question_text: Which choice completes the text with the most logical transition?
+    The more diverse and wide ranging an animal’s behaviors, the larger and more energy
+    demanding the animal’s brain tends to be. ______ from an evolutionary perspective,
+    animals that perform only basic actions should allocate fewer resources to growing
+    and maintaining brain tissue. The specialized subtypes of ants within colonies
+    provide an opportunity to explore this hypothesis.
+  correct_option_label: D
+  options:
+  - label: A
+    text: Subsequently,
+  - label: B
+    text: Besides,
+  - label: C
+    text: Nevertheless,
+  - label: D
+    text: Thus,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_transition
+    explanation_short: The correct transition 'Thus,' logically follows from the general
+      principle stated in the first sentence and introduces a consequence or inference
+      based on it.
+    explanation_full: 'The first sentence establishes a general biological principle:
+      greater behavioral diversity correlates with larger, more energy-demanding brains.
+      The second sentence draws a logical conclusion from this principle — that animals
+      with simpler behaviors should invest less in brain tissue. The transition ''Thus,''
+      correctly signals this inferential relationship. Option A (''Subsequently'')
+      implies temporal sequence, not logical consequence. Option B (''Besides'') adds
+      unrelated information. Option C (''Nevertheless'') introduces contrast, which
+      is inappropriate here since the second sentence supports, not contradicts, the
+      first.'
+- question_number: 30
+  question_id: 78fb3b21-145d-5276-b88d-1b0402956a5e
+  question_text: Which choice completes the text with the most logical transition?
+    A firefly uses specialized muscles to draw oxygen into its lower abdomen through
+    narrow tubes, triggering a chemical reaction whereby the oxygen combines with
+    chemicals in the firefly’s abdomen to produce a glow. _______ when the firefly
+    stops drawing in oxygen, the reaction—and the glow—cease.
+  correct_option_label: C
+  options:
+  - label: A
+    text: For instance,
+  - label: B
+    text: By contrast,
+  - label: C
+    text: Specifically,
+  - label: D
+    text: In conclusion,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct transition 'Specifically' introduces a more detailed
+      explanation of the mechanism described in the first sentence, which is logically
+      required to explain how the glow ceases when oxygen intake stops.
+    explanation_full: 'The first sentence describes the general process: oxygen intake
+      triggers a chemical reaction that produces glow. The second sentence explains
+      what happens when oxygen intake stops — the reaction and glow cease. This is
+      not a contrast, example, or conclusion; it is a specific elaboration of the
+      causal mechanism. ''Specifically'' correctly signals that the second sentence
+      provides a precise detail about the process introduced in the first. ''For instance''
+      would imply an example, but this is not an example — it''s the same mechanism
+      under a different condition. ''By contrast'' incorrectly implies opposition,
+      and ''In conclusion'' wrongly suggests finality or summary. Thus, ''Specifically''
+      is the only transition that maintains logical flow and accurately reflects the
+      relationship between the two sentences.'
+- question_number: 31
+  question_id: 6e6a6ad1-4bc7-52bb-b117-77fadb010aac
+  question_text: 'Which choice most effectively uses relevant information from the
+    notes to accomplish this goal? While researching a topic, a student has taken
+    the following notes: • NASA uses rovers, large remote vehicles with wheels, to
+    explore the surface of Mars. • NASA’s rovers can’t explore regions inaccessible
+    to wheeled vehicles. • Rovers are also heavy, making them difficult to land on
+    the planet’s surface. • Microprobes, robotic probes that weigh as little as 50
+    milligrams, could be deployed virtually anywhere on the surface of Mars. • Microprobes
+    have been proposed as an alternative to rovers.'
+  passage_text: The student wants to explain an advantage of microprobes.
+  correct_option_label: B
+  options:
+  - label: A
+    text: Despite being heavy, NASA’s rovers can land successfully on the surface
+      of Mars.
+  - label: B
+    text: Microprobes, which weigh as little as 50 milligrams, could explore areas
+      of Mars that are inaccessible to NASA’s heavy, wheeled rovers.
+  - label: C
+    text: NASA currently uses its rovers on Mars, but microprobes have been proposed
+      as an alternative.
+  - label: D
+    text: Though they are different sizes, both microprobes and rovers can be used
+      to explore the surface of Mars.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: notes_bullets
+    stem_type_key: synthesize_information
+    explanation_short: 'Option B synthesizes two key advantages from the notes: microprobes''
+      light weight (enabling deployment anywhere) and their ability to access areas
+      inaccessible to rovers.'
+    explanation_full: 'The goal is to explain an advantage of microprobes. Option
+      B combines two distinct advantages from the notes: (1) microprobes’ extremely
+      low weight (as little as 50 milligrams), which allows them to be deployed virtually
+      anywhere, and (2) their ability to access regions that are inaccessible to wheeled
+      rovers. This directly addresses the student’s goal by highlighting a functional
+      advantage over rovers. Option A contradicts the note that rovers are heavy and
+      difficult to land. Option C states a fact but does not explain any advantage.
+      Option D falsely implies both can explore equally well, ignoring the limitations
+      of rovers noted in the text.'
+- question_number: 32
+  question_id: add62d90-4cc3-5013-9521-5bfd143563aa
+  question_text: 'Which choice most effectively uses relevant information from the
+    notes to accomplish this goal? While researching a topic, a student has taken
+    the following notes: • Severo Ochoa discovered the enzyme PNPase in 1955. • PNPase
+    is involved in both the creation and degradation of mRNA. • Ochoa incorrectly
+    hypothesized that PNPase provides the genetic blueprints for mRNA. • The discovery
+    of PNPase proved critical to deciphering the human genetic code. • Deciphering
+    the genetic code has led to a better understanding of how genetic variations affect
+    human health.'
+  passage_text: The student wants to emphasize the significance of Ochoa’s discovery.
+  correct_option_label: A
+  options:
+  - label: A
+    text: Ochoa’s 1955 discovery of PNPase proved critical to deciphering the human
+      genetic code, leading to a better understanding of how genetic variations affect
+      human health.
+  - label: B
+    text: Ochoa first discovered PNPase, an enzyme that he hypothesized contained
+      the genetic blueprints for mRNA, in 1955.
+  - label: C
+    text: In 1955, Ochoa discovered the PNPase enzyme, which is involved in both the
+      creation and degradation of mRNA.
+  - label: D
+    text: Though his discovery of PNPase was critical to deciphering the human genetic
+      code, Ochoa incorrectly hypothesized that the enzyme was the source of mRNA’s
+      genetic blueprints.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: notes_bullets
+    stem_type_key: synthesize_information
+    explanation_short: Option A synthesizes the most significant downstream impact
+      of Ochoa’s discovery — its role in deciphering the genetic code and improving
+      understanding of human health — which directly fulfills the student’s goal.
+    explanation_full: 'The student’s goal is to emphasize the significance of Ochoa’s
+      discovery. Option A does this by connecting the discovery (PNPase) to its major
+      scientific consequence: helping decipher the human genetic code, which in turn
+      improved understanding of genetic variations and human health. This creates
+      a clear causal chain of impact. Options B and C focus on factual details without
+      highlighting broader significance. Option D includes the incorrect hypothesis,
+      which undermines the emphasis on significance by introducing an error. Only
+      Option A aligns with the goal by selecting and sequencing information to highlight
+      importance.'
+- question_number: 33
+  question_id: 7a69be6f-b226-5e8a-a422-7d159cf9dde3
+  question_text: 'Which choice most effectively uses relevant information from the
+    notes to accomplish this goal? While researching a topic, a student has taken
+    the following notes: • Cecilia Vicuña is a multidisciplinary artist. • In 1971,
+    her first solo art exhibition, Pinturas, poemas y explicaciones, was shown at
+    the Museo Nacional de Bellas Artes in Santiago, Chile. • Her poetry collection
+    Precario/Precarious was published in 1983 by Tanam Press. • Her poetry collection
+    Instan was published in 2002 by Kelsey St. Press. • She lives part time in Chile,
+    where she was born, and part time in New York.'
+  passage_text: The student wants to introduce the artist’s 1983 poetry collection.
+  correct_option_label: C
+  options:
+  - label: A
+    text: Before she published the books Precario/Precarious (1983) and Instan (2002),
+      Cecilia Vicuña exhibited visual art at the Museo Nacional de Bellas Artes in
+      Santiago, Chile.
+  - label: B
+    text: Cecilia Vicuña is a true multidisciplinary artist whose works include numerous
+      poetry collections and visual art exhibitions.
+  - label: C
+    text: Published in 1983 by Tanam Press, Precario/Precarious is a collection of
+      poetry by the multidisciplinary artist Cecilia Vicuña.
+  - label: D
+    text: In 1971, Cecilia Vicuña exhibited her first solo art exhibition, Pinturas,
+      poemas y explicaciones, in Chile, her country of birth.
+  annotation:
+    grammar_focus_key: synthesis_of_information
+    grammar_role_key: rhetorical_synth
+    stimulus_mode_key: notes_bullets
+    stem_type_key: choose_best_notes_synthesis
+    explanation_short: Option C directly introduces the 1983 poetry collection with
+      its title, publisher, and author identity — all relevant to the student's goal
+      — without adding extraneous or off-topic details.
+    explanation_full: The student’s goal is to introduce the 1983 poetry collection.
+      Option C fulfills this by naming the collection (Precario/Precarious), specifying
+      its publication year (1983), identifying the publisher (Tanam Press), and linking
+      it to Cecilia Vicuña as a multidisciplinary artist — all information present
+      in the notes. Option A incorrectly implies a temporal sequence (before publishing
+      books, she exhibited art) that isn’t required for introducing the collection.
+      Option B is too general and doesn’t mention the 1983 collection specifically.
+      Option D focuses on the 1971 exhibition and birthplace, which are irrelevant
+      to introducing the 1983 poetry book. Only Option C synthesizes exactly the needed
+      information without distraction.
+    needs_human_review: false

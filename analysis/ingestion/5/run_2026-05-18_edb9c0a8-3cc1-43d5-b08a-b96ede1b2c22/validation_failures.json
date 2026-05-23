@@ -1,0 +1,155 @@
+{
+  "job_id": "edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22",
+  "hashes": {
+    "master_json_hash": "07f9cf8ca75bf3640a6dc1d888c299084482941ce223dd783870d5896ecf21ad",
+    "reading_rules_hash": "0a052d1ecf9b88d08a2da5481f5b6513341307bfca3a9f679e25ba44737ec3da",
+    "grammar_rules_hash": "13544ef5dcbedc7b3eb4c63294806edeeb76d54568a443c374cc381c3ae72c3f",
+    "ontology_hash": "7d33028c88d00ea280c3597da8ec8a04d07e050d2bcfca16f157cbe719b32bb3"
+  },
+  "validation_errors": [
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 15,
+      "issue": "mismatch",
+      "llm_value": 16,
+      "ocr_value": 40,
+      "detail": "question_index 15: LLM extracted 16 but OCR text shows 40"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 16,
+      "issue": "mismatch",
+      "llm_value": 17,
+      "ocr_value": 30,
+      "detail": "question_index 16: LLM extracted 17 but OCR text shows 30"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 17,
+      "issue": "mismatch",
+      "llm_value": 18,
+      "ocr_value": 20,
+      "detail": "question_index 17: LLM extracted 18 but OCR text shows 20"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 18,
+      "issue": "mismatch",
+      "llm_value": 19,
+      "ocr_value": 16,
+      "detail": "question_index 18: LLM extracted 19 but OCR text shows 16"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 19,
+      "issue": "mismatch",
+      "llm_value": 20,
+      "ocr_value": 17,
+      "detail": "question_index 19: LLM extracted 20 but OCR text shows 17"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 20,
+      "issue": "mismatch",
+      "llm_value": 21,
+      "ocr_value": 18,
+      "detail": "question_index 20: LLM extracted 21 but OCR text shows 18"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 21,
+      "issue": "mismatch",
+      "llm_value": 22,
+      "ocr_value": 19,
+      "detail": "question_index 21: LLM extracted 22 but OCR text shows 19"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 22,
+      "issue": "mismatch",
+      "llm_value": 23,
+      "ocr_value": 21,
+      "detail": "question_index 22: LLM extracted 23 but OCR text shows 21"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 23,
+      "issue": "mismatch",
+      "llm_value": 24,
+      "ocr_value": 22,
+      "detail": "question_index 23: LLM extracted 24 but OCR text shows 22"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 24,
+      "issue": "mismatch",
+      "llm_value": 25,
+      "ocr_value": 23,
+      "detail": "question_index 24: LLM extracted 25 but OCR text shows 23"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 25,
+      "issue": "mismatch",
+      "llm_value": 26,
+      "ocr_value": 24,
+      "detail": "question_index 25: LLM extracted 26 but OCR text shows 24"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 26,
+      "issue": "mismatch",
+      "llm_value": 27,
+      "ocr_value": 25,
+      "detail": "question_index 26: LLM extracted 27 but OCR text shows 25"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 27,
+      "issue": "mismatch",
+      "llm_value": 28,
+      "ocr_value": 26,
+      "detail": "question_index 27: LLM extracted 28 but OCR text shows 26"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 28,
+      "issue": "mismatch",
+      "llm_value": 29,
+      "ocr_value": 27,
+      "detail": "question_index 28: LLM extracted 29 but OCR text shows 27"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 29,
+      "issue": "mismatch",
+      "llm_value": 30,
+      "ocr_value": 28,
+      "detail": "question_index 29: LLM extracted 30 but OCR text shows 28"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 30,
+      "issue": "mismatch",
+      "llm_value": 31,
+      "ocr_value": 29,
+      "detail": "question_index 30: LLM extracted 31 but OCR text shows 29"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 31,
+      "issue": "mismatch",
+      "llm_value": 32,
+      "ocr_value": 31,
+      "detail": "question_index 31: LLM extracted 32 but OCR text shows 31"
+    },
+    {
+      "step": "qnum_ocr_crosscheck",
+      "question_index": 32,
+      "issue": "mismatch",
+      "llm_value": 33,
+      "ocr_value": 32,
+      "detail": "question_index 32: LLM extracted 33 but OCR text shows 32"
+    }
+  ]
+}

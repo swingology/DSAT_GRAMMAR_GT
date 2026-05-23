@@ -1,5 +1,108 @@
 # Future Features
 
+## Prompt Caching for Pass 2 Annotation (Claude provider) `[PRIORITY: HIGH]`
+
+When the ingestion pipeline uses Claude (Anthropic) as the annotation provider,
+the static grammar/reading rules block should be marked with `cache_control` so
+it is only billed at full price on the first call per domain per module. All
+subsequent same-domain calls in the same job would hit the cache.
+
+### Token savings estimate — 33-question module
+
+| Domain | Questions | System prompt tokens | Without caching | With caching (10% rate on repeats) | Saved |
+|---|---|---|---|---|---|
+| Grammar | 16 | 10,300 | 164,800 | 10,300 + 15 × 1,030 = **25,750** | **139,050** |
+| Reading | 17 | 17,500 | 297,500 | 17,500 + 16 × 1,750 = **45,500** | **252,000** |
+| **Total** | **33** | — | **462,300** | **71,250** | **~391,000 (85%)** |
+
+These are system-prompt tokens only. The per-question user message (~1–2K tokens)
+is not cached and remains unchanged. At Claude Sonnet pricing ($3/MTok input,
+$0.30/MTok cache read), a 33-question module drops from ~$1.39 to ~$0.23 in
+annotation input cost.
+
+### Implementation
+
+In `build_annotate_prompt()` (`backend/app/prompts/annotate_prompt.py`), split
+the message into two parts and add a cache breakpoint after the static rules
+block:
+
+```python
+# system message with cache_control on the static rules block
+messages = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": rules_context,          # _grammar_context() or _reading_context()
+                "cache_control": {"type": "ephemeral"},
+            },
+            {
+                "type": "text",
+                "text": per_question_prompt,    # the variable part
+            },
+        ],
+    }
+]
+```
+
+The `cache_control` marker is silently ignored by non-Anthropic providers, so
+no provider-specific branching is needed.
+
+**Prerequisite:** Pass 2 must be routed to Claude (see "Pass 2 Annotation
+Efficiency Optimization → Provider Choice" below for the full rationale).
+Domain-sorting (lever #2 in that section) should also be applied so grammar and
+reading calls run in contiguous batches — this maximises cache hits within a job.
+
+---
+
+## Admin Dashboard — Ingestion Status Overview
+
+There is currently no admin API endpoint or dashboard view that surfaces the health of the full practice test ingestion pipeline. Assessment is only possible by querying the database directly with raw SQL. This feature would expose that data through a dedicated endpoint.
+
+### Why It Matters
+
+- The ingestion pipeline processes 16+ modules across 9 tests, each with its own job status, question count, and data-quality signals.
+- Without a dashboard view, identifying failed jobs, short-count modules, duplicate jobs, and null question numbers requires direct DB queries — not suitable for non-technical reviewers.
+- Post-ingest QA (question count vs. expected, annotation coverage, stimulus attachment rate) is currently manual.
+
+### Proposed Endpoint
+
+`GET /admin/ingestion/status`
+
+Returns a per-module summary row for every `question_jobs` entry tied to an official test asset, including:
+
+| Field | Description |
+|---|---|
+| `source_name` | PDF filename (`Test_N_digital_sec01_modM.pdf`) |
+| `job_id` | UUID of the ingestion job |
+| `status` | `approved`, `needs_review`, `failed` |
+| `question_count` | Questions linked to this job |
+| `expected_count` | Expected question count (configurable per module, default 33) |
+| `count_delta` | `question_count - expected_count` (negative = short) |
+| `with_correct_answer` | Questions with at least one `is_correct=TRUE` option |
+| `annotated` | Questions with a `latest_annotation_id` |
+| `with_stimulus` | Questions with at least one stimulus asset attached |
+| `null_qnum_count` | Questions missing `source_question_number` in annotation JSONB |
+| `duplicate_job` | `true` if multiple non-failed jobs exist for this source |
+| `ingested_at` | Job creation date |
+
+### Optional Dashboard Panel
+
+A read-only admin UI table (sortable by status, delta, test number) with color-coded rows:
+- Green: `approved`, count == expected
+- Yellow: `needs_review` or count within 1–2 of expected
+- Red: `failed` or count short by more than 2, or duplicate job detected
+
+### Implementation Notes
+
+- Query joins `question_jobs → question_assets → question_job_questions → questions → question_annotations → question_options → question_stimulus_assets`
+- Duplicate detection: group by `source_name`, flag if `COUNT(job_id) > 1` for non-failed jobs
+- Expected count per module could be stored in a config table or hardcoded as 33 (standard SAT module size)
+- Should support an optional `?test=4&module=1` filter for targeted polling
+
+
+
 ## OCR / Layout Provenance For Ingestion
 
 The ingestion pipeline can currently persist the final separated question structure, but it does not yet preserve page-level OCR/layout provenance. That provenance becomes important when extraction quality depends on where text appeared on the page, not just what text was read.
@@ -139,6 +242,8 @@ This does not replace levers #1/#3 — it stacks with them.
 
 **Recommendation:** route Pass 2 to **Claude with explicit prompt caching** on
 the rules block; keep the VLM for vision extraction and OCR.
+
+**Implementation details:** see [Prompt Caching for Pass 2 Annotation (Claude provider)](#prompt-caching-for-pass-2-annotation-claude-provider) above for the exact `cache_control` code change and a per-module token/cost savings table (~391K tokens saved, 85% reduction, ~$1.16/module).
 
 ## Supabase-Centered Ingestion Persistence
 

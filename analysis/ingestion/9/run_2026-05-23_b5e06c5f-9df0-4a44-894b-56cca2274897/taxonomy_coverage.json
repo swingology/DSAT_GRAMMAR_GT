@@ -1,0 +1,90 @@
+{
+  "job_id": "b5e06c5f-9df0-4a44-894b-56cca2274897",
+  "source_exam_code": "9",
+  "created_at": "2026-05-23T18:25:25.113072+00:00",
+  "hashes": {
+    "master_json_hash": "f64a66170b3768eb26744654fa2bf7ba5f2988636c26f9e3cc77eb68c3b2ac66",
+    "reading_rules_hash": "766353edc7b96a522f86385ee61409fe6508e81e7243ffcb9bdf2f6b84e54aa2",
+    "grammar_rules_hash": "ec1086ada5c366e16269664b51b8f69a1f4be0200a735226e1faa99d6874e6e7",
+    "ontology_hash": "bce757805ed03df6832feb1eb45fdf862c72e3c3cc87c4d329beb0b7c34d853f"
+  },
+  "question_count": 33,
+  "field_counts": {
+    "question_family_key": {
+      "craft_and_structure": 8,
+      "information_and_ideas": 15,
+      "conventions_grammar": 10
+    },
+    "grammar_role_key": {
+      "agreement": 2,
+      "expression_of_ideas": 3,
+      "punctuation": 4,
+      "verb_form": 1
+    },
+    "grammar_focus_key": {
+      "pronoun_antecedent_agreement": 1,
+      "logical_relationships": 1,
+      "subject_verb_agreement": 1,
+      "unnecessary_internal_punctuation": 2,
+      "punctuation_comma": 2,
+      "verb_tense_consistency": 1,
+      "transition_logic": 2
+    },
+    "skill_family_key": {
+      "words_in_context": 5,
+      "text_structure_and_purpose": 4,
+      "central_ideas_and_details": 9,
+      "command_of_evidence_textual": 3,
+      "inferences": 2,
+      "agreement": 1,
+      "Form, Structure, and Sense": 3,
+      "Boundaries": 4,
+      "expression_of_ideas": 2
+    },
+    "reading_focus_key": {
+      "contextual_meaning": 2,
+      "underlined_word_meaning": 1,
+      "precision_fit": 2,
+      "sentence_function": 3,
+      "overall_purpose": 1,
+      "supporting_detail": 7,
+      "character_or_author_detail": 1,
+      "central_idea": 1,
+      "evidence_illustrates_claim": 1,
+      "evidence_weakens_claim": 1,
+      "evidence_supports_claim": 1,
+      "causal_inference": 2
+    },
+    "reasoning_trap_key": {
+      "common_definition_trap": 3,
+      "plausible_synonym": 1,
+      "semantic_relatedness_without_precision": 1,
+      "wrong_scope": 3,
+      "wrong_action_verb": 1,
+      "topic_trap": 4,
+      "detail_trap": 3,
+      "topical_relevance_without_logical_connection": 3,
+      "overreach": 3,
+      "partial_match": 1
+    },
+    "stimulus_mode_key": {
+      "sentence_only": 14,
+      "passage_excerpt": 14,
+      "notes_summary": 5
+    },
+    "stem_type_key": {
+      "complete_the_text": 6,
+      "choose_word_in_context": 1,
+      "choose_sentence_function": 3,
+      "choose_main_purpose": 1,
+      "choose_detail": 3,
+      "choose_main_idea": 1,
+      "choose_best_illustration": 1,
+      "choose_best_weakener": 1,
+      "choose_best_support": 1,
+      "most_logically_completes": 2,
+      "choose_best_grammar_revision": 8,
+      "synthesize_information": 5
+    }
+  }
+}

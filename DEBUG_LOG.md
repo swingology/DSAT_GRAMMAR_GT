@@ -1,5 +1,372 @@
 # Debug Log
 
+## 2026-05-23 - Test 5 Ingestion Gap Pattern — Consistent Extraction Failure
+Report created by: Claude Sonnet 4.6
+Git branch: `generation_build`
+Git checkpoint: `6254837` — docs: add future topic taxonomy plan
+
+### Context
+
+Test 5 (both mod01 and mod02) has been ingested twice with the default model (`qwen3-vl:235b-instruct-cloud` via Ollama) and both times produced only ~19/18 questions instead of the expected 33. The PDF raw text is normal (32–34K chars, no truncation), ruling out extraction failure. The problem is that the LLM parser consistently skips the same question ranges.
+
+### Findings
+
+1. **High — Systematic question gap in both modules across two independent runs:**
+   - **mod01 extracted:** Q3, Q4, Q5, Q7, Q18–Q22, Q24–Q30, Q32, Q33 (19 questions)
+   - **mod01 missing:** Q1, Q2, Q6, Q8–Q17, Q23, Q31 (14 questions)
+   - **mod02 extracted:** Q3, Q4, Q5, Q7, Q8, Q19–Q25, Q27–Q29, Q31–Q33 (18 questions)
+   - **mod02 missing:** Q1, Q2, Q6, Q9–Q18, Q26, Q30 (15 questions)
+   - Both modules miss Q1–Q2 and Q6–Q17 consistently — a gap of roughly 14 questions in the early-to-middle range.
+   - The gap is **identical across both ingestion runs** for each module, confirming it is deterministic, not random LLM noise.
+
+2. **Medium — Suspected root cause — PDF structure in Q1–Q17 range:**
+   - Q1–Q2 and Q6–Q17 likely share a common layout feature (long reading passage, multi-question passage group, dense table, or non-standard question numbering) that `qwen3-vl` fails to parse into individual question objects.
+   - The raw text for those questions is present in `pass1_json.raw_text` (text length is normal) but the LLM extraction step does not output them as discrete question entries.
+   - To investigate: read `pass1_json.raw_text` directly and look at the Q1–Q17 region to confirm the text is present and identify the structural feature being skipped.
+
+### Models Used
+
+| Run | Pass 1 (extraction) | Pass 2 (annotation) |
+|---|---|---|
+| Run 1 (2026-05-20) | `qwen3-vl:235b-instruct-cloud` via Ollama | `qwen3-vl:235b-instruct-cloud` via Ollama |
+| Run 2 (2026-05-23) | `qwen3-vl:235b-instruct-cloud` via Ollama | `qwen3-vl:235b-instruct-cloud` via Ollama |
+
+Next step: retry Pass 1 extraction with `deepseek-v4-pro:cloud` to determine if the gap is model-specific or structural in the PDF.
+
+## 2026-05-23 - Admin Question Audit Log — Implementation
+Report created by: Claude Sonnet 4.6
+Git branch: `generation_build`
+Git checkpoint: `89d3526` — feat(generation): Phase 8 — self-study agent request layer
+
+### Gap
+
+No unified audit trail existed for admin mutations of questions and answers. `QuestionVersion` captured edit content but not the actor or a diff. `reviewer_admin_overrides` captured approve/reject verdicts but not field-level before/after state. Answer key changes, status transitions, and overlap decisions were untracked.
+
+### Implementation
+
+**New table:** `admin_question_audit_logs` (migration `027`)
+
+| Column | Purpose |
+|--------|---------|
+| `question_id` | Question affected |
+| `admin_token` | Admin actor |
+| `action` | `edit`, `approve`, `reject`, `confirm_overlap`, `clear_overlap` |
+| `fields_changed` | JSONB array of field names touched |
+| `before_jsonb` | Snapshot of relevant fields before the change |
+| `after_jsonb` | Snapshot of relevant fields after the change |
+| `change_notes` | Optional human note or rejection reason |
+| `question_version_id` | FK to new `QuestionVersion` created by edit actions |
+
+**New helper:** `_write_admin_audit()` in `admin.py` — called before every `db.commit()` in mutation endpoints.
+
+**Endpoints wired:**
+- `PATCH /admin/questions/{id}` — captures all edited fields + before/after + linked version
+- `POST /admin/questions/{id}/approve` — captures status transition `draft/rejected → active`
+- `POST /admin/questions/{id}/reject` — captures status transition + rejection reason
+- `POST /admin/questions/{id}/confirm-overlap` — captures overlap status + canonical question ID
+- `POST /admin/questions/{id}/clear-overlap` — captures overlap status cleared
+
+**Verification:** 85 tests pass (`test_admin_router.py`, `test_backend_regressions.py`).
+
+---
+
+## 2026-05-23 - Chart Data Correction via OCR Process with Crop — Test 4 Mod01 Q13
+Report created by: Claude Sonnet 4.6
+Git branch: `generation_build`
+Git checkpoint: `89d3526` — feat(generation): Phase 8 — self-study agent request layer
+
+### Issue
+
+Chart `structured_data_jsonb` for Test 4 · Sec 01 · Mod 01 · Q13 ("US States with the Greatest Number of Organic Farms in 2016") contained incorrect bar values. The original ingestion LLM read the y-axis gridlines correctly but misidentified which bar belonged to which state — likely due to low page-render resolution causing bar/label misalignment.
+
+- **Stimulus asset ID:** `8d234175-93f6-4dc2-8ffe-091a2ea931ff`
+- **Question ID:** `e22a6533-19c8-5b62-b511-b254be102401`
+- **Storage path:** `local_object_store/stimulus-assets/charts/e22a6533.../8d234175....json`
+
+### Values Before / After
+
+| State | Original (wrong) | Corrected |
+|-------|-----------------|-----------|
+| California | 2,700 | 2,800 |
+| Wisconsin | 1,300 | 1,300 ✅ |
+| New York | 700 | 1,000 |
+| Pennsylvania | 1,300 | 800 |
+| Iowa | 1,300 | 700 |
+| Washington | 700 | 600 |
+
+### Method
+
+1. Extracted page render `page_006.png` from `local_object_store/page-renders/official/4/...`
+2. Cropped and 3× upscaled the chart region using Pillow
+3. Submitted crop to `glm-ocr:latest` via Ollama with explicit chart-reading prompt
+4. Cross-checked GLM output against user visual inspection of the original PDF
+5. Patched `structured_data_jsonb` in DB and JSON file on disk
+
+### Root Cause
+
+Original ingestion OCR ran on the full page render at native resolution (1224×1584). Chart bars are narrow at that scale; the LLM assigned the same approximate gridline value (1,300) to three distinct states. Cropping + upscaling before GLM submission produced an accurate read.
+
+- **Fixed:** `structured_data_jsonb` in `question_stimulus_assets` and `local_object_store/stimulus-assets/charts/.../8d234175....json`
+
+---
+
+## 2026-05-23 - Ingestion Test Run (Test_9_digital_sec01_mod01) — Re-run / API Key Blocker
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `generation_build`
+Git checkpoint: `89d3526` — feat(generation): Phase 8 — self-study agent request layer
+
+### Summary
+
+Run aborted — `run.sh` returned `RESULT_JSON:{"error":"no job_id","response":"{\"detail\":\"Invalid admin API key\"}"}`.
+No job was submitted; no extraction or creation counts available.
+
+### Findings
+
+1. **High:** API key mismatch blocked job submission. The bundled `run.sh` hardcodes `X-API-Key: admin-test-key`, which matches `backend/.env` (`ADMIN_API_KEYS=admin-test-key`). However, the server on `:8000` (uvicorn pid 175680, started as `backend.app.main:app` from the project root rather than from `backend/`) loaded config without picking up `backend/.env`, so it fell back to the pydantic-settings default `admin-key-change-me`. Manual probing confirmed `admin-key-change-me` is accepted and `admin-test-key` is rejected, proving the server ran without the `.env`.
+
+   - **Root cause:** Server was launched from the project root directory (`uvicorn backend.app.main:app`), not from `backend/` (`uvicorn app.main:app`). pydantic-settings `.env` discovery is CWD-relative; starting from the wrong directory means `backend/.env` is not found.
+   - **Fix required (operational, not code):** Kill pid 175680 and restart the server from `backend/` with `uv run uvicorn app.main:app` so `backend/.env` is picked up, then re-run `run.sh`.
+
+---
+
+## 2026-05-23 - Ingestion Test Run (Test_9_digital_sec01_mod02)
+Report created by: Claude Sonnet 4.6
+Git branch: `generation_build`
+Git checkpoint: `89d3526` — feat(generation): Phase 8 — self-study agent request layer
+
+### Summary
+
+Job `9231d84b-596d-4715-85aa-c9e43bad6e44` — status: `needs_review`
+Extracted: 33 | Created: 33 | Option-label cascade (`got ['']`): **absent**
+
+### Findings
+
+Clean run. No blocking validation errors, no missing `options` or `correct_option_label` fields, no empty option labels. All 33 questions created successfully.
+
+---
+
+## 2026-05-23 - Ingestion Test Run (Test_9_digital_sec01_mod01)
+Report created by: Claude Sonnet 4.6
+Git branch: `generation_build`
+Git checkpoint: `89d3526` — feat(generation): Phase 8 — self-study agent request layer
+
+### Summary
+
+Job `b5e06c5f-9df0-4a44-894b-56cca2274897` — status: `needs_review`
+Extracted: 33 | Created: 33 | Option-label cascade (`got ['']`): **absent**
+
+### Findings
+
+1. **Medium:** Q33 (`expression_of_ideas`) is missing its `options` field in the annotation JSONB, though `correct_option_label` (`C`) is present and 4 option rows exist in `question_options`. Annotation JSONB did not capture the options snapshot — options are stored correctly in DB rows but the annotation key is absent.
+   - **To investigate:** Query `annotation_jsonb` for the Q33 question in job `b5e06c5f`. Check which annotation pass writes the `options` key and why it was skipped for the last question. Likely a pass2 truncation or off-by-one on the question list.
+
+2. **Medium:** 2 questions have `source_question_number = NULL` and are missing `correct_option_label`. These appear to be sub-items (possibly cross-text passage components) that were extracted without a top-level question number. `question_family_key` and `skill_family_key` are also absent, suggesting the annotation pass did not fully resolve them.
+   - **To investigate:** Pull `pass1_json` from job `b5e06c5f` and find the raw extracted entries with no question number. Check whether they were paired-passage cross-text sub-items that should have been merged with a parent question or skipped entirely.
+
+No blocking failures — all 33 questions were created and the job reached `needs_review`.
+
+---
+
+## 2026-05-23 - Generation Factory Status Review
+Report created by: Claude Sonnet 4.6
+Git branch: `generation_build`
+Git checkpoint: `89d3526` — feat(generation): Phase 8 — self-study agent request layer
+
+### Scope
+
+Full status review of the generation factory (Phases 0–10) and ingestion pipeline.
+
+### Generation Factory: Phases 0–10 — All Complete
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| 0 | Current-state alignment, non-destructive reject, rejected enum | Complete |
+| 1 | Batch generation contract, `GenerationBatch` model | Complete |
+| 2 | Quantity-aware runner, retry, batch counters | Complete |
+| 3 | Review swarm rubric, `llm_review_results` / `review_runs` tables | Complete |
+| 4 | Multi-model review runner (OpenAI/Claude/DeepSeek concurrent) | Complete |
+| 5 | Consensus gate, `consensus_verdicts` table | Complete |
+| 6 | Admin dashboard review queue endpoints | Complete |
+| 7 | Student retrieval API expansion | Complete |
+| 8 | Self-study agent request layer | Complete |
+| 9 | Generation quality analytics endpoints | Complete |
+| 10 | Controlled auto-release policy + audit log | Complete |
+
+All 9 bugs found in the May 21 Codex audit were remediated. 188 tests passing.
+
+### Open Items (process/documentation, not code)
+
+1. **Medium — Calibration gap:** The 50-question calibration batch required before Phase 5 threshold lock-in was never run or recorded. Auto-release is still disabled by config so this is not blocking production, but the decision to waive or actually run it has not been made.
+
+2. **Low — `TASKS_GENERATION.md` doc drift:** API Surface Summary omits several implemented analytics and auto-release endpoints. Phase 10 still has stale "Still open" text. Phase 8 is missing a completion summary paragraph.
+
+### Ingestion Side
+
+Ingestion pipeline is running. Test 5 (both modules) reached `needs_review` with OCR cross-check warnings (18 `qnum_ocr_crosscheck` mismatches on mod01 — non-blocking). The full 18-PDF batch has not been run yet.
+
+---
+
+## 2026-05-21 - Generation Phases 0-10 Code Gap Review
+Report created by: GPT-5 Codex
+Git branch: `generation_build`
+Git checkpoint: `89d3526`
+
+### Scope
+
+Reviewed the live generation Phase 0-10 implementation paths after the
+document-drift review: batch generation, source-example selection, self-study
+generation requests, review-swarm source loading, consensus/auto-release, admin
+approve/reject/regenerate, student retrieval, and Phase 9 analytics.
+
+### Findings
+
+1. **High:** Auto-release allowed-target matching is broken.
+   - `backend/app/review/auto_release.py::_annotation_dict` reads attributes
+     such as `grammar_focus_key` directly from `QuestionAnnotation`, but those
+     values live in `QuestionAnnotation.annotation_jsonb`. Configured allowed
+     targets therefore usually never match.
+
+2. **High:** Auto-release audit rows are only written for successful releases.
+   - `maybe_auto_release` returns early on failed gates and creates
+     `AutoReleaseAuditLog` only after every gate passes. This contradicts the
+     Phase 10 changelog claim that all gate outcomes are recorded.
+
+3. **High:** Self-study generation bypasses the batch request contract and
+   source-example selection.
+   - `_create_self_study_batch` creates minimal request JSON with only
+     focus/difficulty, skips `GenerationBatchRequest` validation, and does not
+     call source-example selection. Resulting jobs can enter the generation
+     prompt without required grammar/reading fields or official examples.
+
+4. **Medium:** `dry_run` release policy is not enforced at release/retrieval.
+   - Admin approval can activate generated questions from `dry_run` batches,
+     and student retrieval only filters `practice_status='active'`; no path
+     excludes active dry-run generated questions.
+
+5. **Medium:** Phase 9 batch analytics and self-study quality cooldown can use
+   stale denormalized counters for admin decisions.
+   - Generation increments `GenerationBatch.accepted_count` for clean pipeline
+     saves, while admin approve/reject changes `Question.practice_status`
+     without changing batch decision counters. Any analytics or quality gate
+     that treats those counters as admin decisions can misreport quality.
+
+6. **Medium:** Auto-selected official source examples do not implement the full
+   locked selection contract.
+   - `_select_source_question_ids_for_batch` lacks last-50 source dedupe,
+     request `stimulus_mode_key` hard filtering, and exam-code diversification.
+
+7. **Medium:** Review swarm reuses generator source examples.
+   - `_load_question_for_review` pulls `source_question_ids` from the original
+     generation request instead of selecting fresh same-target official examples
+     for review calibration.
+
+8. **Low:** Analytics token totals read the wrong JSON keys.
+   - LLM providers store token usage as `{"input": ..., "output": ...}`, while
+     analytics sums `input_tokens` / `output_tokens`, so totals can report zero.
+
+9. **Low:** `copy_risk_failures` overcounts all reject recommendations.
+   - Phase 9 analytics counts every `reject_recommended` consensus as a copy
+     risk failure, including low-realism or low-SAT-fidelity rejects.
+
+### Verification Before Fix
+
+Focused suite still passed despite the findings:
+`uv run pytest tests/test_auto_release.py tests/test_self_study.py tests/test_generate_batches.py tests/test_analytics.py -q`
+returned `121 passed, 1 warning`. The warning was an existing async mock warning
+in `tests/test_generate_batches.py::test_batch_reading_complete_request_creates_batch`.
+
+### Resolution
+
+All nine code findings in this section were remediated on 2026-05-21 and logged
+to `CHANGELOG.md` under "Generation Phases 0-10 Code Gap Remediation."
+
+Verification after fix:
+`uv run pytest tests/test_auto_release.py tests/test_self_study.py tests/test_generate_batches.py tests/test_analytics.py tests/test_backend_regressions.py -q`
+returned `188 passed, 1 warning`. The warning is the same pre-existing async mock
+warning in `tests/test_generate_batches.py::test_batch_reading_complete_request_creates_batch`.
+
+## 2026-05-21 - Generation Phases 0-10 Changelog/Task Drift Review
+Report created by: GPT-5 Codex
+Git branch: `generation_build`
+Git checkpoint: `89d3526`
+
+### Scope
+
+Compared `TASKS_GENERATION.md` against the latest generation-related entries in
+`CHANGELOG.md` for Phases 0-10. Follow-up code scan covered the implementation
+surfaces for the suspected gaps: admin analytics endpoints, review-run endpoint,
+auto-release logic/endpoints/config/tests, dashboard routes, and calibration
+references.
+
+### Findings
+
+1. **High:** 50-question calibration remains undocumented while thresholds and
+   Phase 10 auto-release are implemented.
+   - `TASKS_GENERATION.md` requires a 50-question calibration batch before Phase
+     5 threshold lock-in. The changelog records fixed Phase 5 thresholds and
+     Phase 10 auto-release plumbing, but no calibration result, calibration
+     batch ID, admin labels, threshold-selection evidence, or recalibration
+     decision record.
+   - Code check: `backend/app/config.py` still describes auto-release as
+     disabled by default until calibration data exists, and `rg` found only
+     prompt/test/config references to calibration, not a durable calibration
+     artifact. This is primarily a process/documentation gap unless a separate
+     calibration artifact exists outside the searched tree.
+
+2. **Medium:** `TASKS_GENERATION.md` has stale "Still open" text for Phase 10.
+   - The locked-decisions tail still says Phase 10 auto-release flag wiring and
+     audit-log shape remain open. The Phase 10 task body and changelog both say
+     they are complete.
+   - Code check: `backend/app/review/auto_release.py`,
+     `backend/app/review/consensus.py`, `backend/app/routers/admin.py`,
+     `backend/app/models/db.py`, migration
+     `backend/migrations/versions/026_phase10_auto_release_audit.py`, and
+     `backend/tests/test_auto_release.py` confirm the Phase 10 wiring exists.
+     This is doc drift unless code review later finds behavioral defects.
+
+3. **Medium:** `TASKS_GENERATION.md` API Surface Summary is stale.
+   - The summary omits implemented endpoints that appear in phase bodies and
+     changelog entries, including `GET /admin/questions/{question_id}/review-runs`,
+     `GET /admin/analytics/generation`, `GET /admin/analytics/review`,
+     `GET /admin/analytics/batches`, `GET /admin/analytics/trends`,
+     `GET /admin/analytics/export`, and the Phase 10 auto-release status,
+     enable/disable, and audit endpoints.
+   - Code check: those route decorators exist in `backend/app/routers/admin.py`;
+     tests exist in `backend/tests/test_analytics.py` and
+     `backend/tests/test_auto_release.py`. This is doc drift.
+
+4. **Low:** Phase 8 lacks the same task-doc completion summary style used by
+   nearby phases.
+   - Phase 8 checklist items are checked, and `CHANGELOG.md` has the
+     implementation and verification detail, but `TASKS_GENERATION.md` does not
+     include a `Status 2026-05-20` completion paragraph like Phases 6, 7, 9,
+     and 10.
+   - Code check: `backend/app/routers/student.py` contains the self-study
+     recommendation/generation-request/status path, and changelog verification
+     records `backend/tests/test_self_study.py`. This is consistency cleanup in
+     the task doc.
+
+5. **Low:** Phase 9 wording may overstate dashboard/UI completion.
+   - `TASKS_GENERATION.md` says "dashboard metrics" and "trend views"; the
+     changelog records five read-only admin analytics endpoints. If endpoint
+     delivery is the intended Phase 9 surface, the task doc should say so. If a
+     rendered dashboard page was intended, the changelog is missing that detail
+     and the implementation appears endpoint-only.
+   - Code check: `backend/app/routers/admin.py` contains the analytics
+     endpoints, and `backend/tests/test_analytics.py` covers them. A targeted
+     scan of `backend/app/routers/dashboard.py` did not show a dedicated
+     analytics dashboard page comparable to `/dashboard/review`.
+
+### Recommended Step-Through Order
+
+1. Decide whether the calibration gap requires a real 50-question run now, a
+   recorded waiver, or a task-doc downgrade because auto-release is still gated
+   off by config and allowed targets.
+2. Clean stale Phase 10 "Still open" text in `TASKS_GENERATION.md`.
+3. Refresh the API Surface Summary.
+4. Add a Phase 8 status paragraph to match neighboring completed phases.
+5. Clarify Phase 9 endpoint-only vs dashboard-UI language.
+
 ## 2026-05-20 - TASKS_INGESTION_REFACTOR Pre-Coding Review
 Report created by: GPT-5 Codex
 Git branch: `generation_build`

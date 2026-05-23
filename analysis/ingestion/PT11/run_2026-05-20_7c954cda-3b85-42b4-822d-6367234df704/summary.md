@@ -1,0 +1,13 @@
+# Ingestion Analysis 7c954cda-3b85-42b4-822d-6367234df704
+
+- source_exam_code: `PT11`
+- status: `needs_review`
+- question_count: `1`
+- validation_failure_count: `0`
+- amendment_candidate_count: `0`
+
+## Hashes
+- master_json_hash: `dc278681d08be74fcd7d4b66d74631fd60c78c63bc0a4fef96bddec4595a337a`
+- reading_rules_hash: `fb35cb32815a97fa4fb08573383ea1efe5de93b1e62f8ffbe16afbc3ef73373d`
+- grammar_rules_hash: `fe76c2847ce184a80f4ed22be344fd6a83b99834dac3b399be70d5b691195904`
+- ontology_hash: `6211582e7f4b01e7cd1d1075b4b4461a9bb71094c2d711ee8de1816c7cd5b6ba`

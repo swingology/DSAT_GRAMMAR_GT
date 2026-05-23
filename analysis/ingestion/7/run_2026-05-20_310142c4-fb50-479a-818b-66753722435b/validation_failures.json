@@ -1,0 +1,17 @@
+{
+  "job_id": "310142c4-fb50-479a-818b-66753722435b",
+  "hashes": {
+    "master_json_hash": "07f9cf8ca75bf3640a6dc1d888c299084482941ce223dd783870d5896ecf21ad",
+    "reading_rules_hash": "0a052d1ecf9b88d08a2da5481f5b6513341307bfca3a9f679e25ba44737ec3da",
+    "grammar_rules_hash": "13544ef5dcbedc7b3eb4c63294806edeeb76d54568a443c374cc381c3ae72c3f",
+    "ontology_hash": "7d33028c88d00ea280c3597da8ec8a04d07e050d2bcfca16f157cbe719b32bb3"
+  },
+  "validation_errors": [
+    {
+      "question_index": 13,
+      "step": "persisting",
+      "error": "(sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.StringDataRightTruncationError'>: value too long for type character varying(40)\n[SQL: INSERT INTO questions (id, content_origin, source_exam_code, source_subject_code, source_section_code, source_module_code, source_question_number, stimulus_mode_key, stem_type_key, current_question_text, current_passage_text, current_paired_passage_text, current_underlined_text, current_correct_option_label, current_explanation_text, practice_status, official_overlap_status, canonical_official_question_id, derived_from_question_id, is_admin_edited, annotation_stale, passage_group_id, metadata_managed_by_llm, latest_annotation_id, latest_version_id, created_at, updated_at) VALUES ($1::UUID, $2::content_origin_enum, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR, $7::INTEGER, $8::VARCHAR, $9::VARCHAR, $10::VARCHAR, $11::VARCHAR, $12::VARCHAR, $13::VARCHAR, $14::VARCHAR, $15::VARCHAR, $16::practice_status_enum, $17::overlap_status_enum, $18::UUID, $19::UUID, $20::BOOLEAN, $21::BOOLEAN, $22::UUID, $23::BOOLEAN, $24::UUID, $25::UUID, $26::TIMESTAMP WITH TIME ZONE, $27::TIMESTAMP WITH TIME ZONE)]\n[parameters: (UUID('55aada86-79c4-572a-9852-a3df014c626a'), 'official', '7', 'verbal', '01', '01', 14, 'passage_excerpt', 'identify_evidence_that_supports_conclusion', 'Which finding from the study, if true, would most directly support the researchers’ conclusion?', 'Almost all works of fiction contain references to the progression of time, including the time of day when events in a story take place. In a 2020 stu ... (396 characters truncated) ... s—that is, clock phrases, such as 7 a.m. or 2:30 p.m.—and implied ones, such as mentions of meals typically associated with a particular time of day.', None, None, 'B', 'Option B provides direct evidence that after 1880—when electric lighting became widespread—novels increasingly referenced activities occurring late at night, supporting the conclusion that human behavior shifted to include more nighttime activity.', 'active', 'none', None, None, False, False, None, True, None, None, datetime.datetime(2026, 5, 20, 1, 53, 58, 872894, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 5, 20, 1, 53, 58, 872894, tzinfo=datetime.timezone.utc))]\n(Background on this error at: https://sqlalche.me/e/20/dbapi)",
+      "source_question_number": 14
+    }
+  ]
+}

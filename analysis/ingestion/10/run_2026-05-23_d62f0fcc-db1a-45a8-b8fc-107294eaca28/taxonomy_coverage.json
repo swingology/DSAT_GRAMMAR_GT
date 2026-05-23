@@ -1,0 +1,104 @@
+{
+  "job_id": "d62f0fcc-db1a-45a8-b8fc-107294eaca28",
+  "source_exam_code": "10",
+  "created_at": "2026-05-23T16:04:46.113462+00:00",
+  "hashes": {
+    "master_json_hash": "f64a66170b3768eb26744654fa2bf7ba5f2988636c26f9e3cc77eb68c3b2ac66",
+    "reading_rules_hash": "766353edc7b96a522f86385ee61409fe6508e81e7243ffcb9bdf2f6b84e54aa2",
+    "grammar_rules_hash": "823e50504d28d8e45af078d285453616d2b8b0b9bec2a976dd78b2fcfd8ea9ca",
+    "ontology_hash": "bce757805ed03df6832feb1eb45fdf862c72e3c3cc87c4d329beb0b7c34d853f"
+  },
+  "question_count": 33,
+  "field_counts": {
+    "question_family_key": {
+      "craft_and_structure": 10,
+      "information_and_ideas": 10,
+      "conventions_grammar": 11,
+      "expression_of_ideas": 2
+    },
+    "grammar_role_key": {
+      "punctuation": 2,
+      "sentence_boundary": 2,
+      "modifier": 1,
+      "verb_form": 1,
+      "agreement": 2,
+      "expression_of_ideas": 5
+    },
+    "grammar_focus_key": {
+      "punctuation_comma": 2,
+      "comma_splice": 2,
+      "logical_predication": 1,
+      "verb_tense_consistency": 1,
+      "pronoun_antecedent_agreement": 1,
+      "subject_verb_agreement": 1,
+      "transition_logic": 3,
+      "logical_relationships": 2
+    },
+    "skill_family_key": {
+      "words_in_context": 5,
+      "central_ideas_and_details": 4,
+      "text_structure_and_purpose": 4,
+      "cross_text_connections": 1,
+      "command_of_evidence_textual": 3,
+      "command_of_evidence_quantitative": 1,
+      "inferences": 2,
+      "Boundaries": 4,
+      "Form, Structure, and Sense": 2,
+      "agreement": 2,
+      "expression_of_ideas": 3,
+      "rhetorical_synthesis": 2
+    },
+    "reading_focus_key": {
+      "contextual_meaning": 3,
+      "precision_fit": 2,
+      "central_idea": 1,
+      "structural_pattern": 1,
+      "sentence_function": 2,
+      "text2_response_to_text1": 1,
+      "supporting_detail": 2,
+      "character_or_author_detail": 1,
+      "overall_purpose": 1,
+      "evidence_illustrates_claim": 1,
+      "evidence_supports_claim": 2,
+      "data_supports_claim": 1,
+      "causal_inference": 2
+    },
+    "reasoning_trap_key": {
+      "common_definition_trap": 3,
+      "semantic_relatedness_without_precision": 1,
+      "plausible_synonym": 1,
+      "detail_trap": 3,
+      "wrong_scope": 4,
+      "reversed_attribution": 1,
+      "topic_trap": 1,
+      "topical_relevance_without_logical_connection": 3,
+      "data_context_mismatch": 1,
+      "overreach": 2,
+      "overgeneralization": 1
+    },
+    "stimulus_mode_key": {
+      "sentence_only": 17,
+      "passage_excerpt": 11,
+      "prose_paired": 1,
+      "prose_plus_graph": 1,
+      "notes_bullets": 3
+    },
+    "stem_type_key": {
+      "complete_the_text": 9,
+      "choose_main_idea": 1,
+      "choose_structure_description": 1,
+      "choose_sentence_function": 3,
+      "choose_text_relationship": 1,
+      "choose_detail": 2,
+      "choose_best_illustration": 1,
+      "choose_best_support": 2,
+      "choose_best_completion_from_data": 1,
+      "most_logically_completes": 2,
+      "choose_best_grammar_revision": 2,
+      "conform_to_standard_english": 4,
+      "choose_best_transition": 1,
+      "synthesize_information": 1,
+      "choose_best_notes_synthesis": 2
+    }
+  }
+}

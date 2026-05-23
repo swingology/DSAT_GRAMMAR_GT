@@ -1,0 +1,17 @@
+question_id: d36c4dc2-723b-4d57-b90f-6b923fb4a0ae
+question_text: What is X?
+correct_option_label: B
+options:
+- label: A
+  text: Wrong
+- label: B
+  text: Right
+- label: C
+  text: Wrong
+- label: D
+  text: Wrong
+annotation:
+  explanation_short: B is correct.
+  explanation_full: Long explanation
+  annotation_confidence: 0.85
+  needs_human_review: false

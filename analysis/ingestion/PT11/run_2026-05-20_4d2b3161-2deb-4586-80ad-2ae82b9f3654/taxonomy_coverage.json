@@ -1,0 +1,28 @@
+{
+  "job_id": "4d2b3161-2deb-4586-80ad-2ae82b9f3654",
+  "source_exam_code": "PT11",
+  "created_at": "2026-05-20T06:52:57.709033+00:00",
+  "hashes": {
+    "master_json_hash": "db829dc394d5a078dedd6c19e0ac5d996430cbfcc80342742b95a953c2a0936c",
+    "reading_rules_hash": "5746501eced57662c2517aed9938c722247856ea27c707ccfc5a8d16542ac83d",
+    "grammar_rules_hash": "0f3bd2b794118316f181b74aaf99c0f1a9576eba4ac7aa82079bc9e44d8da880",
+    "ontology_hash": "9dccf5cc13f0076e14de2b3dad51069ee783bf06e10f62ba28e3f4278c903b81"
+  },
+  "question_count": 1,
+  "field_counts": {
+    "question_family_key": {
+      "information_and_ideas": 1
+    },
+    "grammar_role_key": {},
+    "grammar_focus_key": {},
+    "skill_family_key": {
+      "command_of_evidence_textual": 1
+    },
+    "reading_focus_key": {
+      "evidence_supports_claim": 1
+    },
+    "reasoning_trap_key": {},
+    "stimulus_mode_key": {},
+    "stem_type_key": {}
+  }
+}

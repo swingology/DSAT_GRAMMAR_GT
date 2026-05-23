@@ -5,6 +5,157 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-23 — Admin Question Audit Log
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+### Added
+
+- New `admin_question_audit_logs` table (migration `027`) providing an append-only
+  audit trail for every admin mutation of a question or its answer key.
+- New `_write_admin_audit()` helper in `admin.py` called before every `db.commit()`
+  in mutation endpoints.
+- Audit wired into five endpoints: `PATCH /admin/questions/{id}` (edit),
+  `POST .../approve`, `POST .../reject`, `POST .../confirm-overlap`,
+  `POST .../clear-overlap`.
+- Each row stores: `admin_token`, `action`, `fields_changed` (JSONB array),
+  `before_jsonb`, `after_jsonb`, `change_notes`, and a FK to the new
+  `QuestionVersion` for edit actions.
+
+### Verification
+
+- `uv run pytest tests/test_admin_router.py tests/test_backend_regressions.py -q`
+  → `85 passed`.
+
+---
+
+## 2026-05-23 — Chart Data Correction via GLM OCR Crop (Test 4 Mod01 Q13)
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+### Fixed
+
+- `question_stimulus_assets.structured_data_jsonb` and `question_annotations.annotation_jsonb.graph_data`
+  for Test 4 · Sec 01 · Mod 01 · Q13 contained incorrect bar values. The original
+  ingestion LLM misidentified which bar belonged to which state at full page-render
+  resolution (1224×1584).
+- Corrected by cropping and 3× upscaling the chart region, then submitting the crop
+  to `glm-ocr:latest` via Ollama for a fresh read. GLM output cross-checked against
+  user visual inspection of the original PDF.
+- Corrected values: California 2800, Wisconsin 1300, New York 1000, Pennsylvania 800,
+  Iowa 700, Washington 600 (previously Pennsylvania/Wisconsin/Iowa were all 1300,
+  New York was 700).
+- JSON file on disk (`local_object_store/stimulus-assets/charts/.../8d234175....json`)
+  also patched to match.
+
+---
+
+## 2026-05-23 — Ingestion Test run.sh API Key Fix
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+### Fixed
+
+- `.claude/skills/ingestion-test/run.sh` hardcoded `KEY="admin-test-key"` which never
+  matched the backend default (`admin-key-change-me`), causing all ingestion test
+  submissions to return HTTP 401.
+- Changed to `KEY="${ADMIN_API_KEY:-admin-key-change-me}"` — falls back to the real
+  default and can be overridden via environment variable.
+
+---
+
+## 2026-05-21 — Generation Phases 0-10 Code Gap Remediation
+
+**Model:** GPT-5 Codex
+**Branch:** `generation_build`
+
+Fixed the code gaps recorded in `DEBUG_LOG.md` under "Generation Phases 0-10
+Code Gap Review."
+
+### Fixed
+
+- Auto-release allowed-target matching now reads `QuestionAnnotation.annotation_jsonb`
+  and infers grammar/reading domain from stored annotation keys.
+- Auto-release now writes `AutoReleaseAuditLog` rows for blocked gate outcomes
+  after a question is known, not only for successful releases.
+- Self-study generation now builds a strict `GenerationBatchRequest`, fills the
+  mandatory grammar/reading fields, selects official source examples, strips
+  batch-only `requested_count` from job requests, and keeps
+  `release_policy='admin_review_required'`.
+- Dry-run generated questions are blocked from manual admin approval and are
+  excluded from student recall even if a question is later marked active.
+- Batch analytics and self-study quality cooldown now derive accepted/rejected
+  counts from generated `Question.practice_status` via `QuestionJob`, avoiding
+  stale batch decision counters.
+- Review analytics and batch analytics now read provider token usage from the
+  current `{"input": ..., "output": ...}` keys, with legacy key fallback.
+- `copy_risk_failures` now counts only reject recommendations whose
+  `max_copy_risk` meets the configured copy-risk threshold.
+- Review swarm source examples are selected fresh from same-target official
+  questions instead of reusing the generator's original examples.
+- Auto-selected generation sources now hard-filter known stimulus-mode
+  mismatches, avoid recently used source IDs when enough alternatives exist,
+  and diversify across exam codes.
+
+### Verification
+
+- `uv run pytest tests/test_auto_release.py tests/test_self_study.py tests/test_generate_batches.py tests/test_analytics.py tests/test_backend_regressions.py -q`
+  → `188 passed, 1 warning`.
+
+---
+
+## 2026-05-21 — Phase 10: Controlled Auto-Release Policy
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+Implemented the Phase 10 controlled auto-release layer — opt-in, thresholded,
+auditable auto-activation of generated questions when all quality gates pass.
+
+### Added
+
+- `backend/app/review/auto_release.py` — `maybe_auto_release()` function
+  implementing 8 ordered gates: (1) global config flag, (2) runtime kill switch,
+  (3) batch `release_policy == 'auto_release_on_accept'`, (4) consensus verdict
+  `admin_review_ready`, (5) `high_disagreement_flag` false, (6) overlap status
+  `none`, (7) question annotation matches an entry in `GENERATION_AUTO_RELEASE_ALLOWED_TARGETS`,
+  (8) generator model has ≥ `GENERATION_AUTO_RELEASE_MIN_REVIEWS` admin-decided
+  questions with acceptance rate ≥ `GENERATION_AUTO_RELEASE_MIN_ACCEPT_RATE`. All
+  gate outcomes recorded in the audit row regardless of result.
+- `AutoReleaseAuditLog` ORM model in `backend/app/models/db.py` — immutable
+  append-only row per release attempt, capturing question, batch, review run,
+  consensus verdict, generator stats, release policy, and full `reasons_jsonb`.
+- Migration `backend/migrations/versions/026_phase10_auto_release_audit.py` —
+  creates `auto_release_audit_logs` table with indexes on `question_id` and
+  `released_at`.
+- `maybe_auto_release` wired into `backend/app/review/consensus.py` — called
+  automatically after each consensus verdict is written.
+- Config flags (all in `backend/app/config.py`):
+  - `GENERATION_AUTO_RELEASE_ENABLED=false` — master opt-in switch, off by default
+  - `GENERATION_AUTO_RELEASE_MIN_REVIEWS=3` — minimum admin-decided questions for generator
+  - `GENERATION_AUTO_RELEASE_MIN_ACCEPT_RATE=0.80` — minimum historical acceptance rate
+  - `GENERATION_AUTO_RELEASE_ALLOWED_TARGETS=""` — JSON array of annotation-key dicts,
+    empty = auto-release disabled for all targets
+- Admin endpoints in `backend/app/routers/admin.py`:
+  - `GET /admin/generation/auto-release/status` — reports `config_enabled`,
+    `runtime_disabled`, `effective_enabled`, threshold values, and parsed allowed targets
+  - `POST /admin/generation/auto-release/disable` — flips runtime kill switch without restart
+  - `POST /admin/generation/auto-release/enable` — re-enables after kill switch
+  - `GET /admin/generation/auto-release/audit` — paginated audit log with `days` filter
+- `backend/tests/test_auto_release.py` — 28 tests covering `_allowed_targets_list`
+  parsing, `_target_matches` matching logic, all gate failure paths in
+  `maybe_auto_release`, kill switch endpoints, and audit log endpoint shape/auth.
+
+### Verification
+
+- `uv run pytest tests/test_auto_release.py -v` → `28 passed`.
+- Full backend suite: `uv run pytest tests/ -q` → `747 passed, 2 skipped`.
+
+---
+
 ## 2026-05-20 — Phase 9: Generation Quality Analytics
 
 **Model:** Claude Sonnet 4.6

@@ -16,8 +16,10 @@ from app.models.db import (
     Question, QuestionAnnotation, QuestionVersion, QuestionOption,
     QuestionRelation, QuestionJob, QuestionAsset, LlmEvaluation, UserProgress,
     QuestionStimulusAsset, GenerationBatch, ReviewRun, LlmReviewResult,
-    ConsensusVerdict, ReviewerAdminOverride,
+    ConsensusVerdict, ReviewerAdminOverride, AutoReleaseAuditLog,
+    AdminQuestionAuditLog,
 )
+from app.config import get_settings
 from app.models.ontology import RELATION_TYPES
 from app.models.payload import (
     AdminEditRequest, EvaluationScoreRequest, GenerationBatchRequest,
@@ -261,6 +263,32 @@ async def _latest_review_results_for_admin_override(
     return result.scalars().all()
 
 
+async def _write_admin_audit(
+    *,
+    qid,
+    admin_token: str,
+    action: str,
+    before: dict | None,
+    after: dict | None,
+    fields_changed: list[str] | None = None,
+    change_notes: str | None = None,
+    question_version_id=None,
+    db,
+) -> None:
+    """Append one row to admin_question_audit_logs. Always call before db.commit()."""
+    db.add(AdminQuestionAuditLog(
+        id=uuid.uuid4(),
+        question_id=qid,
+        admin_token=admin_token,
+        action=action,
+        fields_changed=fields_changed,
+        before_jsonb=before,
+        after_jsonb=after,
+        change_notes=change_notes,
+        question_version_id=question_version_id,
+    ))
+
+
 async def _write_reviewer_admin_overrides(
     *,
     qid: UUID,
@@ -324,6 +352,35 @@ def _source_ids_for_candidate(
     if not source_ids and isinstance(question.generation_source_set, dict):
         source_ids = question.generation_source_set.get("source_question_ids") or []
     return [str(item) for item in source_ids]
+
+
+async def _latest_generation_batch_for_question(
+    qid: UUID,
+    db: AsyncSession,
+) -> GenerationBatch | None:
+    job_result = await db.execute(
+        select(QuestionJob)
+        .where(
+            QuestionJob.question_id == qid,
+            QuestionJob.job_type == "generate",
+        )
+        .order_by(QuestionJob.created_at.desc())
+        .limit(1)
+    )
+    job = job_result.scalars().first()
+    if not job or not job.generation_batch_id:
+        return None
+    return await db.get(GenerationBatch, job.generation_batch_id)
+
+
+def _review_token_expr(primary_key: str, legacy_key: str):
+    return cast(
+        func.coalesce(
+            LlmReviewResult.token_usage_jsonb[primary_key].astext,
+            LlmReviewResult.token_usage_jsonb[legacy_key].astext,
+        ),
+        Float,
+    )
 
 
 async def _serialize_generated_candidates(
@@ -1002,6 +1059,26 @@ async def edit_question(
     q.annotation_stale = True
     q.updated_at = now
 
+    audit_before = {
+        "question_text": q.current_question_text,
+        "passage_text": q.current_passage_text,
+        "correct_option_label": q.current_correct_option_label,
+        "explanation_text": q.current_explanation_text,
+        "practice_status": q.practice_status,
+    }
+    audit_after = {k: changes[k] for k in changes if k != "change_notes"}
+    await _write_admin_audit(
+        qid=qid,
+        admin_token=_auth,
+        action="edit",
+        before=audit_before,
+        after=audit_after,
+        fields_changed=list(audit_after.keys()),
+        change_notes=changes.get("change_notes"),
+        question_version_id=new_version.id,
+        db=db,
+    )
+
     await db.commit()
     return {"id": str(q.id), "version": new_version.version_number, "changes": list(changes.keys())}
 
@@ -1027,7 +1104,15 @@ async def approve_question(
             status_code=409,
             detail="Generated questions with unresolved official overlap cannot be approved",
         )
+    if q.content_origin == "generated":
+        generation_batch = await _latest_generation_batch_for_question(qid, db)
+        if generation_batch and generation_batch.release_policy == "dry_run":
+            raise HTTPException(
+                status_code=409,
+                detail="Dry-run generated questions cannot be approved",
+            )
 
+    prev_status = q.practice_status
     q.practice_status = "active"
     q.updated_at = datetime.now(timezone.utc)
     admin_decision_id, override_count = await _write_reviewer_admin_overrides(
@@ -1035,6 +1120,15 @@ async def approve_question(
         admin_verdict="accept",
         admin_token=_auth,
         admin_notes=None,
+        db=db,
+    )
+    await _write_admin_audit(
+        qid=qid,
+        admin_token=_auth,
+        action="approve",
+        before={"practice_status": prev_status},
+        after={"practice_status": "active"},
+        fields_changed=["practice_status"],
         db=db,
     )
     await db.commit()
@@ -1066,6 +1160,7 @@ async def reject_question(
         raise HTTPException(status_code=404, detail="Question not found")
 
     now = datetime.now(timezone.utc)
+    prev_status = q.practice_status
     q.practice_status = "rejected"
     q.rejection_reason = body.reason
     q.rejected_at = now
@@ -1076,6 +1171,16 @@ async def reject_question(
         admin_verdict="reject",
         admin_token=auth_token,
         admin_notes=body.reason,
+        db=db,
+    )
+    await _write_admin_audit(
+        qid=qid,
+        admin_token=auth_token,
+        action="reject",
+        before={"practice_status": prev_status},
+        after={"practice_status": "rejected", "rejection_reason": body.reason},
+        fields_changed=["practice_status", "rejection_reason"],
+        change_notes=body.reason,
         db=db,
     )
 
@@ -1180,11 +1285,22 @@ async def confirm_overlap(
     if len(official_question_ids) != 1:
         raise HTTPException(status_code=409, detail="Multiple official overlap candidates found; resolve manually")
 
+    prev_status = q.official_overlap_status
     q.official_overlap_status = "confirmed"
     q.canonical_official_question_id = relations[0].to_question_id
     for rel in relations:
         rel.is_human_confirmed = True
     q.updated_at = datetime.now(timezone.utc)
+    await _write_admin_audit(
+        qid=qid,
+        admin_token=_auth,
+        action="confirm_overlap",
+        before={"official_overlap_status": prev_status},
+        after={"official_overlap_status": "confirmed",
+               "canonical_official_question_id": str(relations[0].to_question_id)},
+        fields_changed=["official_overlap_status", "canonical_official_question_id"],
+        db=db,
+    )
     await db.commit()
     return {
         "id": str(q.id),
@@ -1203,9 +1319,19 @@ async def clear_overlap(
     q = await db.get(Question, qid)
     if not q:
         raise HTTPException(status_code=404, detail="Question not found")
+    prev_status = q.official_overlap_status
     q.official_overlap_status = "none"
     q.canonical_official_question_id = None
     q.updated_at = datetime.now(timezone.utc)
+    await _write_admin_audit(
+        qid=qid,
+        admin_token=_auth,
+        action="clear_overlap",
+        before={"official_overlap_status": prev_status},
+        after={"official_overlap_status": "none"},
+        fields_changed=["official_overlap_status"],
+        db=db,
+    )
     await db.commit()
     return {"id": str(q.id), "official_overlap_status": "none"}
 
@@ -1575,6 +1701,7 @@ async def generation_analytics(
 ):
     """Overall generation quality metrics for the admin dashboard."""
     cutoff = _days_cutoff(days)
+    settings = get_settings()
 
     # --- Question status counts ---
     status_rows = await db.execute(
@@ -1624,6 +1751,7 @@ async def generation_analytics(
         .where(
             Question.content_origin == "generated",
             ConsensusVerdict.consensus_verdict == "reject_recommended",
+            ConsensusVerdict.max_copy_risk >= settings.generation_max_copy_risk_score,
             ConsensusVerdict.created_at >= cutoff,
         )
     )
@@ -1801,10 +1929,10 @@ async def review_analytics(
             LlmReviewResult.provider_name,
             func.count().label("review_count"),
             func.sum(
-                cast(LlmReviewResult.token_usage_jsonb["input_tokens"].astext, Float)
+                _review_token_expr("input", "input_tokens")
             ).label("input_tokens"),
             func.sum(
-                cast(LlmReviewResult.token_usage_jsonb["output_tokens"].astext, Float)
+                _review_token_expr("output", "output_tokens")
             ).label("output_tokens"),
         )
         .where(
@@ -1845,13 +1973,26 @@ async def batch_analytics(
             func.count().label("batch_count"),
             func.sum(GenerationBatch.requested_count).label("total_requested"),
             func.sum(GenerationBatch.created_count).label("total_created"),
-            func.sum(GenerationBatch.accepted_count).label("total_accepted"),
-            func.sum(GenerationBatch.rejected_count).label("total_rejected"),
             func.sum(GenerationBatch.failed_count).label("total_failed"),
         )
         .where(GenerationBatch.created_at >= cutoff)
     )
     agg = agg_result.first()  # may be None when DB is empty
+
+    decision_result = await db.execute(
+        select(
+            func.sum(case((Question.practice_status == "active", 1), else_=0)).label("total_accepted"),
+            func.sum(case((Question.practice_status == "rejected", 1), else_=0)).label("total_rejected"),
+        )
+        .select_from(GenerationBatch)
+        .join(QuestionJob, QuestionJob.generation_batch_id == GenerationBatch.id)
+        .join(Question, Question.id == QuestionJob.question_id)
+        .where(
+            GenerationBatch.created_at >= cutoff,
+            Question.content_origin == "generated",
+        )
+    )
+    decided = decision_result.first()
 
     # --- Average review latency (ms) ---
     latency_result = await db.execute(
@@ -1873,8 +2014,8 @@ async def batch_analytics(
         batch_count=getattr(agg, "batch_count", None) or 0,
         total_requested=int(getattr(agg, "total_requested", None) or 0),
         total_created=int(getattr(agg, "total_created", None) or 0),
-        total_accepted=int(getattr(agg, "total_accepted", None) or 0),
-        total_rejected=int(getattr(agg, "total_rejected", None) or 0),
+        total_accepted=int(getattr(decided, "total_accepted", None) or 0),
+        total_rejected=int(getattr(decided, "total_rejected", None) or 0),
         total_failed=int(getattr(agg, "total_failed", None) or 0),
         avg_review_latency_ms=avg_review_latency_ms,
     )
@@ -1885,10 +2026,10 @@ async def batch_analytics(
             LlmReviewResult.provider_name,
             func.count().label("review_count"),
             func.sum(
-                cast(LlmReviewResult.token_usage_jsonb["input_tokens"].astext, Float)
+                _review_token_expr("input", "input_tokens")
             ).label("input_tokens"),
             func.sum(
-                cast(LlmReviewResult.token_usage_jsonb["output_tokens"].astext, Float)
+                _review_token_expr("output", "output_tokens")
             ).label("output_tokens"),
         )
         .where(
@@ -2019,4 +2160,100 @@ async def analytics_export(
         "exported_at": datetime.now(timezone.utc).isoformat(),
         "question_count": len(questions_export),
         "questions": questions_export,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Phase 10: Controlled auto-release kill switch and status
+# ---------------------------------------------------------------------------
+
+@router.get("/generation/auto-release/status")
+async def get_auto_release_status(_admin=Depends(admin_required)):
+    """Return current auto-release configuration and runtime state."""
+    from app.review import auto_release as ar
+    settings = get_settings()
+    return {
+        "config_enabled": settings.generation_auto_release_enabled,
+        "runtime_disabled": ar._auto_release_disabled,
+        "effective_enabled": settings.generation_auto_release_enabled and not ar._auto_release_disabled,
+        "min_reviews_required": settings.generation_auto_release_min_reviews,
+        "min_accept_rate": settings.generation_auto_release_min_accept_rate,
+        "allowed_targets_raw": settings.generation_auto_release_allowed_targets,
+    }
+
+
+@router.post("/generation/auto-release/disable")
+async def disable_auto_release(_admin=Depends(admin_required)):
+    """Runtime kill switch: immediately disable auto-release in this process.
+
+    Takes effect instantly without a restart. Set
+    GENERATION_AUTO_RELEASE_ENABLED=false in your environment file to
+    persist the change across restarts.
+    """
+    from app.review import auto_release as ar
+    ar._auto_release_disabled = True
+    return {
+        "status": "disabled",
+        "message": (
+            "Auto-release disabled for this process. "
+            "Set GENERATION_AUTO_RELEASE_ENABLED=false to persist across restarts."
+        ),
+    }
+
+
+@router.post("/generation/auto-release/enable")
+async def enable_auto_release(_admin=Depends(admin_required)):
+    """Re-enable auto-release after a runtime disable.
+
+    Note: the global config flag ``GENERATION_AUTO_RELEASE_ENABLED`` must
+    also be true for auto-release to actually fire.
+    """
+    from app.review import auto_release as ar
+    ar._auto_release_disabled = False
+    settings = get_settings()
+    return {
+        "status": "enabled",
+        "effective_enabled": settings.generation_auto_release_enabled,
+        "message": (
+            "Runtime override cleared. Auto-release will fire if "
+            "GENERATION_AUTO_RELEASE_ENABLED is also true."
+        ),
+    }
+
+
+@router.get("/generation/auto-release/audit")
+async def list_auto_release_audit(
+    days: int = Query(30, ge=1, le=365),
+    limit: int = Query(50, ge=1, le=500),
+    _admin=Depends(admin_required),
+    db: AsyncSession = Depends(get_db),
+):
+    """List recent auto-release events for auditing."""
+    cutoff = _days_cutoff(days)
+    result = await db.execute(
+        select(AutoReleaseAuditLog)
+        .where(AutoReleaseAuditLog.released_at >= cutoff)
+        .order_by(AutoReleaseAuditLog.released_at.desc())
+        .limit(limit)
+    )
+    rows = result.scalars().all()
+    return {
+        "days": days,
+        "count": len(rows),
+        "events": [
+            {
+                "id": str(r.id),
+                "question_id": str(r.question_id),
+                "generation_batch_id": str(r.generation_batch_id) if r.generation_batch_id else None,
+                "generator_provider_name": r.generator_provider_name,
+                "generator_model_name": r.generator_model_name,
+                "generator_accept_count": r.generator_accept_count,
+                "generator_total_count": r.generator_total_count,
+                "generator_accept_rate": r.generator_accept_rate,
+                "release_policy": r.release_policy,
+                "reasons_jsonb": r.reasons_jsonb,
+                "released_at": r.released_at.isoformat() if r.released_at else None,
+            }
+            for r in rows
+        ],
     }

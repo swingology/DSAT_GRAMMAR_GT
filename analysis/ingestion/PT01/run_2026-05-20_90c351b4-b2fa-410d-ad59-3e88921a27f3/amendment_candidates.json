@@ -1,0 +1,10 @@
+{
+  "job_id": "90c351b4-b2fa-410d-ad59-3e88921a27f3",
+  "hashes": {
+    "master_json_hash": "db829dc394d5a078dedd6c19e0ac5d996430cbfcc80342742b95a953c2a0936c",
+    "reading_rules_hash": "5746501eced57662c2517aed9938c722247856ea27c707ccfc5a8d16542ac83d",
+    "grammar_rules_hash": "0f3bd2b794118316f181b74aaf99c0f1a9576eba4ac7aa82079bc9e44d8da880",
+    "ontology_hash": "9dccf5cc13f0076e14de2b3dad51069ee783bf06e10f62ba28e3f4278c903b81"
+  },
+  "amendment_candidates": []
+}

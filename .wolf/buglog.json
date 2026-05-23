@@ -7,7 +7,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 4→5 lines (4 removed) | Also: 2. **High:** Hard-delete can still fail on incomin; - `delete_question` clears `canonical_official_que | Also: 3. **High:** Default API keys are live credentials; - `admin-key-change-me` and `student-key-change-me",
+      "fix": "Rewrote 4\u21925 lines (4 removed) | Also: 2. **High:** Hard-delete can still fail on incomin; - `delete_question` clears `canonical_official_que | Also: 3. **High:** Default API keys are live credentials; - `admin-key-change-me` and `student-key-change-me",
       "tags": [
         "auto-detected",
         "refactor",
@@ -23,7 +23,7 @@
       "error_message": "Significant refactor of ",
       "file": "docs/PRD/INGESTION_PRD.md",
       "root_cause": "17 lines replaced/restructured",
-      "fix": "Rewrote 36→58 lines (17 removed)",
+      "fix": "Rewrote 36\u219258 lines (17 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -39,7 +39,7 @@
       "error_message": "Significant refactor of ",
       "file": "docs/PRD/INGESTION_PRD.md",
       "root_cause": "23 lines replaced/restructured",
-      "fix": "Rewrote 52→67 lines (23 removed) | Also: # OCR Option A — DeepSeek OCR (cloud API); DEEPSEEK_API_KEY=your-deepseek-key         # leave",
+      "fix": "Rewrote 52\u219267 lines (23 removed) | Also: # OCR Option A \u2014 DeepSeek OCR (cloud API); DEEPSEEK_API_KEY=your-deepseek-key         # leave",
       "tags": [
         "auto-detected",
         "refactor",
@@ -55,7 +55,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/config.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 6→10 lines (2 removed)",
+      "fix": "Rewrote 6\u219210 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -71,7 +71,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 42→157 lines (2 removed) | Also: pass1_json={\"raw_text\": raw_text[:50000], \"pages\":; }}, | Also: if mime_type in IMAGE_MIME_TYPES:; raise HTTPException(",
+      "fix": "Rewrote 42\u2192157 lines (2 removed) | Also: pass1_json={\"raw_text\": raw_text[:50000], \"pages\":; }}, | Also: if mime_type in IMAGE_MIME_TYPES:; raise HTTPException(",
       "tags": [
         "auto-detected",
         "refactor",
@@ -86,7 +86,7 @@
       "timestamp": "2026-05-11T01:10:57.610Z",
       "error_message": "Missing await",
       "file": "DEBUG_LOG.md",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -103,7 +103,7 @@
       "error_message": "Wrong reference: 50000 should be source_metadata",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Used \"50000\" instead of \"source_metadata\"",
-      "fix": "Changed 50000 → source_metadata",
+      "fix": "Changed 50000 \u2192 source_metadata",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -119,7 +119,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 3→4 lines (3 removed) | Also: 10. **High:** Background pipeline tasks swallow ex; - `asyncio.create_task(_run_pipeline_with_session( | Also: 15. **Medium:** `detect_overlaps` receives `job.id; - The self-skip guard `if oq.id == question_id: co",
+      "fix": "Rewrote 3\u21924 lines (3 removed) | Also: 10. **High:** Background pipeline tasks swallow ex; - `asyncio.create_task(_run_pipeline_with_session( | Also: 15. **Medium:** `detect_overlaps` receives `job.id; - The self-skip guard `if oq.id == question_id: co",
       "tags": [
         "auto-detected",
         "refactor",
@@ -134,7 +134,7 @@
       "timestamp": "2026-05-11T01:35:01.751Z",
       "error_message": "Missing error handling in unknown",
       "file": "DEBUG_LOG.md",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -151,7 +151,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 7→9 lines (6 removed)",
+      "fix": "Rewrote 7\u21929 lines (6 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -167,7 +167,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/llm/anthropic_provider.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 43→88 lines (2 removed)",
+      "fix": "Rewrote 43\u219288 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -183,7 +183,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/llm/openai_provider.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 45→88 lines (2 removed)",
+      "fix": "Rewrote 45\u219288 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -199,7 +199,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 20→33 lines (2 removed)",
+      "fix": "Rewrote 20\u219233 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -230,7 +230,7 @@
       "timestamp": "2026-05-11T01:54:05.430Z",
       "error_message": "Missing await",
       "file": "backend/app/routers/ingest.py",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -263,7 +263,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 14→8 lines (6 removed)",
+      "fix": "Rewrote 14\u21928 lines (6 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -363,7 +363,7 @@
       "error_message": "Wrong reference: else should be flag_modified",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Used \"else\" instead of \"flag_modified\"",
-      "fix": "Changed else → flag_modified",
+      "fix": "Changed else \u2192 flag_modified",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -378,7 +378,7 @@
       "timestamp": "2026-05-11T08:39:17.898Z",
       "error_message": "Missing await",
       "file": "CHANGELOG.md",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -392,7 +392,7 @@
     {
       "id": "bug-025",
       "timestamp": "2026-05-11T00:00:00Z",
-      "error_message": "Validator blocks questions where VLM emits 'A)' as correct_option_label — 'A)' not in ('A','B','C','D')",
+      "error_message": "Validator blocks questions where VLM emits 'A)' as correct_option_label \u2014 'A)' not in ('A','B','C','D')",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "VLMs (granite3.2-vision, qwen-vl family) frequently output answer labels with trailing parentheses ('A)', 'B.') or lowercase ('a'). _normalize_extracted_questions passed labels through verbatim, causing every such question to fail the blocking validator check.",
       "fix": "Added _clean_option_label() helper and applied it in _normalize_extracted_questions to both correct_option_label and each option's label field. Strips trailing ')' and '.', uppercases.",
@@ -410,7 +410,7 @@
     {
       "id": "bug-026",
       "timestamp": "2026-05-11T00:00:00Z",
-      "error_message": "VLM (granite3.2-vision) outputs duplicate question rows — Q2-Q4 all identical to Q2",
+      "error_message": "VLM (granite3.2-vision) outputs duplicate question rows \u2014 Q2-Q4 all identical to Q2",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Small VLMs hallucinate repeated question objects in their JSON output. _normalize_extracted_questions had no deduplication, so all duplicates were persisted as separate Question rows.",
       "fix": "Added seen_texts set in _normalize_extracted_questions; questions with identical question_text (case-insensitive, stripped) are skipped after the first occurrence.",
@@ -428,7 +428,7 @@
     {
       "id": "bug-027",
       "timestamp": "2026-05-11T00:00:00Z",
-      "error_message": "OllamaProvider.complete_vision() times out on large/slow VLMs (qwen3-vl:8b, qwen2.5vl:7b) — httpx.ReadTimeout after 120s",
+      "error_message": "OllamaProvider.complete_vision() times out on large/slow VLMs (qwen3-vl:8b, qwen2.5vl:7b) \u2014 httpx.ReadTimeout after 120s",
       "file": "backend/app/llm/ollama_provider.py",
       "root_cause": "complete_vision used the same httpx.AsyncClient as complete (timeout=120s). VLM inference for OCR tasks can take 200-600s on local hardware, hitting the limit on every attempt.",
       "fix": "Added vision_client = httpx.AsyncClient(timeout=600s) on OllamaProvider. complete_vision now uses vision_client; complete still uses client (120s for fast text calls). Also updated close() to close both clients.",
@@ -449,7 +449,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 9→52 lines (6 removed) | Also: \"b64\": img[\"b64\"],; \"mime_type\": f\"image/{img.get('ext', 'png')}\",",
+      "fix": "Rewrote 9\u219252 lines (6 removed) | Also: \"b64\": img[\"b64\"],; \"mime_type\": f\"image/{img.get('ext', 'png')}\",",
       "tags": [
         "auto-detected",
         "refactor",
@@ -481,7 +481,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/config.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 10→13 lines (2 removed)",
+      "fix": "Rewrote 10\u219213 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -657,7 +657,7 @@
       "error_message": "Significant refactor of ",
       "file": "docker-compose.yml",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 10→12 lines (2 removed)",
+      "fix": "Rewrote 10\u219212 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -672,7 +672,7 @@
       "timestamp": "2026-05-15T19:43:10.030Z",
       "error_message": "Missing await",
       "file": "backend/app/routers/ingest.py",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -689,7 +689,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 11→21 lines (4 removed)",
+      "fix": "Rewrote 11\u219221 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -705,7 +705,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/benchmark_results/SUMMARY.md",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 7→10 lines (2 removed)",
+      "fix": "Rewrote 7\u219210 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -753,7 +753,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/run_ocr_benchmark.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 10→37 lines (2 removed)",
+      "fix": "Rewrote 10\u219237 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -769,7 +769,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/run_ocr_benchmark.py",
       "root_cause": "28 lines replaced/restructured",
-      "fix": "Rewrote 61→119 lines (28 removed) | Also: N                  <-- question number alone on a ; <question text...>",
+      "fix": "Rewrote 61\u2192119 lines (28 removed) | Also: N                  <-- question number alone on a ; <question text...>",
       "tags": [
         "auto-detected",
         "refactor",
@@ -785,7 +785,7 @@
       "error_message": "Significant refactor of ",
       "file": "CLAUDE.md",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 9→11 lines (2 removed)",
+      "fix": "Rewrote 9\u219211 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -817,7 +817,7 @@
       "error_message": "Wrong reference: crop_and_store should be match_stimulus_regions_for_question",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Used \"crop_and_store\" instead of \"match_stimulus_regions_for_question\"",
-      "fix": "Changed crop_and_store → match_stimulus_regions_for_question",
+      "fix": "Changed crop_and_store \u2192 match_stimulus_regions_for_question",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -832,7 +832,7 @@
       "timestamp": "2026-05-16T05:00:37.899Z",
       "error_message": "Missing await",
       "file": "backend/app/routers/ingest.py",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -848,7 +848,7 @@
       "timestamp": "2026-05-16T05:01:33.362Z",
       "error_message": "Missing await",
       "file": "backend/app/routers/admin.py",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -864,7 +864,7 @@
       "timestamp": "2026-05-16T05:16:24.655Z",
       "error_message": "Missing await",
       "file": "backend/app/routers/ingest.py",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -881,7 +881,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 22→42 lines (5 removed)",
+      "fix": "Rewrote 22\u219242 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -896,7 +896,7 @@
       "timestamp": "2026-05-16T05:17:42.505Z",
       "error_message": "Missing await",
       "file": "backend/app/routers/admin.py",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -913,7 +913,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/main.py",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 8→9 lines (3 removed)",
+      "fix": "Rewrote 8\u21929 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -945,7 +945,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "8 lines replaced/restructured",
-      "fix": "Rewrote 11→11 lines (8 removed)",
+      "fix": "Rewrote 11\u219211 lines (8 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -961,7 +961,7 @@
       "error_message": "Wrong reference: 255 should be 200",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Used \"255\" instead of \"200\"",
-      "fix": "Changed 255 → 200",
+      "fix": "Changed 255 \u2192 200",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -977,7 +977,7 @@
       "error_message": "Wrong reference: 255 should be 200",
       "file": "backend/tests/test_backend_regressions.py",
       "root_cause": "Used \"255\" instead of \"200\"",
-      "fix": "Changed 255 → 200",
+      "fix": "Changed 255 \u2192 200",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -990,7 +990,7 @@
     {
       "id": "bug-062",
       "timestamp": "2026-05-16T06:04:00.000Z",
-      "error_message": "source_name truncated to 255 but column is String(200) — DataError for 201-255 char filenames",
+      "error_message": "source_name truncated to 255 but column is String(200) \u2014 DataError for 201-255 char filenames",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "_sanitize_source_name()[:255] exceeds QuestionAsset.source_name column width of 200",
       "fix": "Changed [:255] to [:200]; updated regression test assertion from 255 to 200",
@@ -1006,9 +1006,9 @@
     {
       "id": "bug-063",
       "timestamp": "2026-05-16T06:04:00.000Z",
-      "error_message": "diagnostics_jsonb carries full page_images b64 blob for every question — massive DB bloat",
+      "error_message": "diagnostics_jsonb carries full page_images b64 blob for every question \u2014 massive DB bloat",
       "file": "backend/app/routers/ingest.py",
-      "root_cause": "_build_source_span() included '_page_images' from pass1_json in per-question diagnostics_jsonb; 33 questions × 14 pages = 462 copies",
+      "root_cause": "_build_source_span() included '_page_images' from pass1_json in per-question diagnostics_jsonb; 33 questions \u00d7 14 pages = 462 copies",
       "fix": "Removed 'page_images' key from QuestionSourceSpan.diagnostics_jsonb construction",
       "tags": [
         "db-bloat",
@@ -1022,7 +1022,7 @@
     {
       "id": "bug-064",
       "timestamp": "2026-05-16T06:04:00.000Z",
-      "error_message": "pass1_json.raw_text stored as [:50000] but Pass 1 LLM receives [:100000] — provenance gap for questions in chars 50K-100K",
+      "error_message": "pass1_json.raw_text stored as [:50000] but Pass 1 LLM receives [:100000] \u2014 provenance gap for questions in chars 50K-100K",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Three pass1_json construction sites used raw_text[:50000] / len > 50000 while build_extract_prompt uses [:100000]",
       "fix": "Raised stored slice and _truncated threshold from 50K to 100K at all three sites (lines 1857, 1989, 2417)",
@@ -1041,7 +1041,7 @@
       "timestamp": "2026-05-16T06:10:06.961Z",
       "error_message": "Missing error handling in def",
       "file": "DEBUG_LOG.md",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -1058,7 +1058,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 8→12 lines (3 removed) | Also: except Exception as e:; orch.fail(\"extracting\", \"llm_error\", str(e)) | Also: # Assign passage_group_id per distinct passage_tex; # passage are grouped correctly while standalone q",
+      "fix": "Rewrote 8\u219212 lines (3 removed) | Also: except Exception as e:; orch.fail(\"extracting\", \"llm_error\", str(e)) | Also: # Assign passage_group_id per distinct passage_tex; # passage are grouped correctly while standalone q",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1074,7 +1074,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 7→9 lines (4 removed) | Also: 6. **Medium:** Batch asset provenance links only t; - Relevant files: `backend/app/routers/ingest.py`,",
+      "fix": "Rewrote 7\u21929 lines (4 removed) | Also: 6. **Medium:** Batch asset provenance links only t; - Relevant files: `backend/app/routers/ingest.py`,",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1090,7 +1090,7 @@
       "error_message": "Wrong reference: base64 should be decoded",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Used \"base64\" instead of \"decoded\"",
-      "fix": "Changed base64 → decoded",
+      "fix": "Changed base64 \u2192 decoded",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1106,7 +1106,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 10→10 lines (5 removed)",
+      "fix": "Rewrote 10\u219210 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1138,7 +1138,7 @@
       "error_message": "Wrong reference: request_data should be k",
       "file": "backend/app/routers/generate.py",
       "root_cause": "Used \"request_data\" instead of \"k\"",
-      "fix": "Changed request_data → k",
+      "fix": "Changed request_data \u2192 k",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1170,7 +1170,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/student.py",
       "root_cause": "48 lines replaced/restructured",
-      "fix": "Rewrote 64→7 lines (48 removed)",
+      "fix": "Rewrote 64\u21927 lines (48 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1185,7 +1185,7 @@
       "timestamp": "2026-05-16T18:19:15.563Z",
       "error_message": "Missing await",
       "file": "backend/app/main.py",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -1201,7 +1201,7 @@
       "timestamp": "2026-05-16T18:21:48.377Z",
       "error_message": "Missing error handling in with",
       "file": "CHANGELOG.md",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -1217,7 +1217,7 @@
       "timestamp": "2026-05-16T18:22:19.305Z",
       "error_message": "Missing error handling in unknown",
       "file": "DEBUG_LOG.md",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -1234,7 +1234,7 @@
       "error_message": "reading_focus_key 'structural_pattern' is not allowed for skill_family_key 'text_structure_and_purpose' (Test 4 q6, q7 blocked)",
       "file": "rules_agent_dsat_reading_v2.md, backend/app/models/ontology.py",
       "root_cause": "reading_focus_key controlled vocabulary diverged between the LLM-facing rules doc and the code ontology. Rules doc says structural_pattern; ontology says text_structure. Annotate prompt injects both, validator checks the ontology, model trusts the rules doc. 3 of 7 reading families drift (text_structure_and_purpose, words_in_context, cross_text_connections)",
-      "fix": "Reconciled ontology.py to the rules doc (canonical). READING_FOCUS_BY_SKILL_FAMILY updated: text_structure_and_purpose now (overall_purpose, sentence_function, structural_pattern, author_stance) — dropped ontology-only text_structure/rhetorical_shift, added structural_pattern; words_in_context added figurative_language_meaning; cross_text_connections replaced with rules §7.7 set (text2_response_to_text1, both_texts_agree, texts_disagree, text2_qualifies_text1, text2_contradicts_text1, methodological_critique, expectation_violation). All 38 focus keys now appear verbatim in rules_agent_dsat_reading_v2.md. Verified no DB orphans — question_annotations uses only shared keys. Unblocks Test 4 q6/q7.",
+      "fix": "Reconciled ontology.py to the rules doc (canonical). READING_FOCUS_BY_SKILL_FAMILY updated: text_structure_and_purpose now (overall_purpose, sentence_function, structural_pattern, author_stance) \u2014 dropped ontology-only text_structure/rhetorical_shift, added structural_pattern; words_in_context added figurative_language_meaning; cross_text_connections replaced with rules \u00a77.7 set (text2_response_to_text1, both_texts_agree, texts_disagree, text2_qualifies_text1, text2_contradicts_text1, methodological_critique, expectation_violation). All 38 focus keys now appear verbatim in rules_agent_dsat_reading_v2.md. Verified no DB orphans \u2014 question_annotations uses only shared keys. Unblocks Test 4 q6/q7.",
       "tags": [
         "annotation",
         "ontology",
@@ -1273,7 +1273,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 20→35 lines (4 removed)",
+      "fix": "Rewrote 20\u219235 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1303,10 +1303,10 @@
     {
       "id": "bug-081",
       "timestamp": "2026-05-18T00:00:00Z",
-      "error_message": "Invalid student_failure_mode_key: <key> — grammar v7 §D.7 grammar-specific failure modes rejected by validator",
+      "error_message": "Invalid student_failure_mode_key: <key> \u2014 grammar v7 \u00a7D.7 grammar-specific failure modes rejected by validator",
       "file": "backend/app/models/ontology.py",
-      "root_cause": "STUDENT_FAILURE_MODE_KEYS lacked the 16 grammar v7 §D.7 grammar-specific failure modes plus tense_proximity_pull and reading v2 §19 polarity_blindness; student_failure_mode_key is mandatory on every distractor and validated at options.py:42-46, so any grammar ingest emitting these failed at the validating step (same desync class as q6/q7 reading_focus_key).",
-      "fix": "Added 17 grammar/§D.7 keys + polarity_blindness to STUDENT_FAILURE_MODE_KEYS (now 63 unique keys), reconciling ontology to the rules docs as canonical source.",
+      "root_cause": "STUDENT_FAILURE_MODE_KEYS lacked the 16 grammar v7 \u00a7D.7 grammar-specific failure modes plus tense_proximity_pull and reading v2 \u00a719 polarity_blindness; student_failure_mode_key is mandatory on every distractor and validated at options.py:42-46, so any grammar ingest emitting these failed at the validating step (same desync class as q6/q7 reading_focus_key).",
+      "fix": "Added 17 grammar/\u00a7D.7 keys + polarity_blindness to STUDENT_FAILURE_MODE_KEYS (now 63 unique keys), reconciling ontology to the rules docs as canonical source.",
       "tags": [
         "ontology",
         "controlled-vocabulary",
@@ -1327,7 +1327,7 @@
       "error_message": "Significant refactor of ",
       "file": "rules_agent_dsat_reading_v2.md",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 5→10 lines (3 removed) | Also: - `wrong_row_or_column` — quantitative; option use; - `all_measures_not_checked` — quantitative; optio",
+      "fix": "Rewrote 5\u219210 lines (3 removed) | Also: - `wrong_row_or_column` \u2014 quantitative; option use; - `all_measures_not_checked` \u2014 quantitative; optio",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1343,7 +1343,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 8→23 lines (4 removed)",
+      "fix": "Rewrote 8\u219223 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1356,10 +1356,10 @@
     {
       "id": "bug-082",
       "timestamp": "2026-05-18T00:00:00Z",
-      "error_message": "reasoning_trap_key was an unvalidated free-text field; reading_v2 §10 vocabulary not enforced and internally desynced from §12.1",
+      "error_message": "reasoning_trap_key was an unvalidated free-text field; reading_v2 \u00a710 vocabulary not enforced and internally desynced from \u00a712.1",
       "file": "backend/app/models/ontology.py",
-      "root_cause": "reasoning_trap_key (annotation.py) had no field_validator; reading_v2 §10 (reasoning trap keys) and §12.1 (distractor_type_key) overlapped ambiguously, and §10.1 contained duplicate keys (wrong_row_or_column/wrong_table_row_or_column etc.). As a consumed signal (generation target_reasoning_trap_key) it needs a controlled vocabulary.",
-      "fix": "Added REASONING_TRAP_KEYS (49 keys) to ontology after deduplicating reading_v2 §10 (3 merges). Added reasoning_trap_key field_validator to annotation.py, added the set to annotate_prompt.py allowed-keys block, and tightened reading_v2 §10 intro to separate §10 (reasoning_trap_key) from §12.1 (distractor_type_key).",
+      "root_cause": "reasoning_trap_key (annotation.py) had no field_validator; reading_v2 \u00a710 (reasoning trap keys) and \u00a712.1 (distractor_type_key) overlapped ambiguously, and \u00a710.1 contained duplicate keys (wrong_row_or_column/wrong_table_row_or_column etc.). As a consumed signal (generation target_reasoning_trap_key) it needs a controlled vocabulary.",
+      "fix": "Added REASONING_TRAP_KEYS (49 keys) to ontology after deduplicating reading_v2 \u00a710 (3 merges). Added reasoning_trap_key field_validator to annotation.py, added the set to annotate_prompt.py allowed-keys block, and tightened reading_v2 \u00a710 intro to separate \u00a710 (reasoning_trap_key) from \u00a712.1 (distractor_type_key).",
       "tags": [
         "ontology",
         "controlled-vocabulary",
@@ -1380,7 +1380,7 @@
       "error_message": "Significant refactor of ",
       "file": "scripts/gen_vocab.py",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 6→11 lines (5 removed) | Also: def render_doc_blocks(master: dict, domain: str) -; \"\"\"Return {marker_name: block_text} for every voca | Also: text, missing = _replace_doc_blocks(path.read_text; path.write_text(text)",
+      "fix": "Rewrote 6\u219211 lines (5 removed) | Also: def render_doc_blocks(master: dict, domain: str) -; \"\"\"Return {marker_name: block_text} for every voca | Also: text, missing = _replace_doc_blocks(path.read_text; path.write_text(text)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1396,7 +1396,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/models/options.py",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 20→26 lines (3 removed)",
+      "fix": "Rewrote 20\u219226 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1412,7 +1412,7 @@
       "error_message": "Significant refactor of ",
       "file": "vocabulary/master.json",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 13→7 lines (3 removed)",
+      "fix": "Rewrote 13\u21927 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1427,7 +1427,7 @@
       "timestamp": "2026-05-18T14:25:27.956Z",
       "error_message": "Missing error handling in unknown",
       "file": "DEBUG_LOG.md",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -1444,7 +1444,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/pipeline/amendments.py",
       "root_cause": "7 lines replaced/restructured",
-      "fix": "Rewrote 30→45 lines (7 removed) | Also: value = proposal.get(\"proposed_value\") or proposal; if not value:",
+      "fix": "Rewrote 30\u219245 lines (7 removed) | Also: value = proposal.get(\"proposed_value\") or proposal; if not value:",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1460,7 +1460,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 7→11 lines (3 removed)",
+      "fix": "Rewrote 7\u219211 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1475,7 +1475,7 @@
       "timestamp": "2026-05-18T17:33:46.092Z",
       "error_message": "Missing error handling in DB",
       "file": "DEBUG_LOG.md",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -1492,7 +1492,7 @@
       "error_message": "Significant refactor of ",
       "file": "DEBUG_LOG.md",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 8→25 lines (2 removed)",
+      "fix": "Rewrote 8\u219225 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1505,7 +1505,7 @@
     {
       "id": "bug-093",
       "timestamp": "2026-05-18T00:00:00.000Z",
-      "error_message": "reading_focus_key 'structural_pattern' is not allowed for skill_family_key 'text_structure_and_purpose' — q6/q7 dropped from job c9aeeb9d",
+      "error_message": "reading_focus_key 'structural_pattern' is not allowed for skill_family_key 'text_structure_and_purpose' \u2014 q6/q7 dropped from job c9aeeb9d",
       "file": "backend/app/models/ontology.py",
       "root_cause": "READING_FOCUS_BY_SKILL_FAMILY['text_structure_and_purpose'] omitted 'structural_pattern' until commit bbb6c51 (2026-05-18). Job c9aeeb9d was ingested 2026-05-17 under the old map, so validator.py:185 blocked the LLM-emitted focus key. The stored validation_errors_jsonb is a frozen snapshot from old code, not a live bug.",
       "fix": "Code already fixed in bbb6c51. Added regression tests test_validate_text_structure_accepts_structural_pattern and test_validate_rejects_focus_key_from_wrong_family in test_pipeline.py to lock the mapping. Stale stored errors require a fresh re-ingest (blocked by duplicate-checksum rejection).",
@@ -1526,7 +1526,7 @@
       "error_message": "Significant refactor of ",
       "file": "scripts/dev_reset_ingestion.sh",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 13→18 lines (3 removed)",
+      "fix": "Rewrote 13\u219218 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1558,7 +1558,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/pipeline/ingestion_analysis.py",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 15→24 lines (3 removed) | Also: elif isinstance(pass2.get(\"reasoning\"), dict) and ; proposals = [pass2[\"reasoning\"][\"amendment_proposa",
+      "fix": "Rewrote 15\u219224 lines (3 removed) | Also: elif isinstance(pass2.get(\"reasoning\"), dict) and ; proposals = [pass2[\"reasoning\"][\"amendment_proposa",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1590,7 +1590,7 @@
       "error_message": "Significant refactor of ",
       "file": "TASKS_OCR_IMAGE.md",
       "root_cause": "14 lines replaced/restructured",
-      "fix": "Rewrote 19→62 lines (14 removed) | Also: - [ ] Implement linking that inserts a `QuestionSt; the existing row when one already matches. | Also: - Class A: loads the page render, re-crops the kno; JSON via `crop_and_store`. | Also: ## Phase 3: Idempotent DB Linking; **Goal:** Write recovered stimulus data into the D | Also: question.; - `POST /admin/stimulus/backfill` — batch backfill | Also: - Should batch backfill also re-run layout detecti; Class B at scale), or stay per-question?",
+      "fix": "Rewrote 19\u219262 lines (14 removed) | Also: - [ ] Implement linking that inserts a `QuestionSt; the existing row when one already matches. | Also: - Class A: loads the page render, re-crops the kno; JSON via `crop_and_store`. | Also: ## Phase 3: Idempotent DB Linking; **Goal:** Write recovered stimulus data into the D | Also: question.; - `POST /admin/stimulus/backfill` \u2014 batch backfill | Also: - Should batch backfill also re-run layout detecti; Class B at scale), or stay per-question?",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1606,7 +1606,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/tests/test_amendment_review.py",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 26→51 lines (2 removed)",
+      "fix": "Rewrote 26\u219251 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1622,7 +1622,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/tests/test_amendment_capture.py",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 27→84 lines (4 removed)",
+      "fix": "Rewrote 27\u219284 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1638,7 +1638,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/tests/test_admin_router.py",
       "root_cause": "37 lines replaced/restructured",
-      "fix": "Rewrote 44→27 lines (37 removed)",
+      "fix": "Rewrote 44\u219227 lines (37 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1673,7 +1673,7 @@
       "error_message": "Significant refactor of ",
       "file": "TASKS_OCR_IMAGE.md",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 5→15 lines (3 removed)",
+      "fix": "Rewrote 5\u219215 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1688,7 +1688,7 @@
       "timestamp": "2026-05-18T19:20:17.376Z",
       "error_message": "Missing error handling in takes",
       "file": "TASKS_OCR_IMAGE.md",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -1705,7 +1705,7 @@
       "error_message": "Significant refactor of ",
       "file": "TASKS_OCR_IMAGE.md",
       "root_cause": "9 lines replaced/restructured",
-      "fix": "Rewrote 22→33 lines (9 removed) | Also: tagged Class A or Class B.; stimulus row not flagged, and a quantitative-missi | Also: - `GET /admin/stimulus/missing` — flag-scan report; - [ ] Add API tests for the missing-scan, single b | Also: - [ ] Add `scripts/stimulus_backfill.py` with `sca; `backfill QUESTION_ID` / `backfill --job JOB_ID` c | Also: - [ ] Tests: sentinel rows are excluded from downs; - [ ] Manual check: backfill a known chart questio | Also: question and visible to downstream consumers.; - [ ] The admin API and dev CLI both drive the ful",
+      "fix": "Rewrote 22\u219233 lines (9 removed) | Also: tagged Class A or Class B.; stimulus row not flagged, and a quantitative-missi | Also: - `GET /admin/stimulus/missing` \u2014 flag-scan report; - [ ] Add API tests for the missing-scan, single b | Also: - [ ] Add `scripts/stimulus_backfill.py` with `sca; `backfill QUESTION_ID` / `backfill --job JOB_ID` c | Also: - [ ] Tests: sentinel rows are excluded from downs; - [ ] Manual check: backfill a known chart questio | Also: question and visible to downstream consumers.; - [ ] The admin API and dev CLI both drive the ful",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1721,7 +1721,7 @@
       "error_message": "Significant refactor of ",
       "file": "TASKS_OCR_IMAGE.md",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 7→5 lines (2 removed) | Also: ## Phase 4: Admin API; **Goal:** Expose the backfill workflow through adm",
+      "fix": "Rewrote 7\u21925 lines (2 removed) | Also: ## Phase 4: Admin API; **Goal:** Expose the backfill workflow through adm",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1737,7 +1737,7 @@
       "error_message": "Significant refactor of ",
       "file": "TASKS_OCR_IMAGE.md",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 3→4 lines (3 removed) | Also: - [ ] Apply the `storage_path` fallback convention; → page render).",
+      "fix": "Rewrote 3\u21924 lines (3 removed) | Also: - [ ] Apply the `storage_path` fallback convention; \u2192 page render).",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1753,7 +1753,7 @@
       "error_message": "Significant refactor of ",
       "file": "TASKS_OCR_IMAGE.md",
       "root_cause": "10 lines replaced/restructured",
-      "fix": "Rewrote 13→27 lines (10 removed) | Also: `_build_stimulus_asset_rows`, and any shared crop/; public functions. | Also: **Goal:** Produce the list of questions that need ; direct queries, no historical reconstruction (see  | Also: re-typed inline. Add a test that an unconfirmed an; excluded by `is_live`.",
+      "fix": "Rewrote 13\u219227 lines (10 removed) | Also: `_build_stimulus_asset_rows`, and any shared crop/; public functions. | Also: **Goal:** Produce the list of questions that need ; direct queries, no historical reconstruction (see  | Also: re-typed inline. Add a test that an unconfirmed an; excluded by `is_live`.",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1803,7 +1803,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 22→33 lines (5 removed) | Also: # Try exact match first (fast path); anchor = stem[:40]",
+      "fix": "Rewrote 22\u219233 lines (5 removed) | Also: # Try exact match first (fast path); anchor = stem[:40]",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1819,7 +1819,7 @@
       "error_message": "Wrong operator: <= should be >=",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "Used \"<=\" instead of \">=\"",
-      "fix": "Changed operator <= → >=",
+      "fix": "Changed operator <= \u2192 >=",
       "tags": [
         "auto-detected",
         "operator-fix",
@@ -1832,7 +1832,7 @@
     {
       "id": "bug-113",
       "timestamp": "2026-05-18T14:45:00Z",
-      "error_message": "VLM-fused extraction drops all passage_text — 0/33 questions have current_passage_text",
+      "error_message": "VLM-fused extraction drops all passage_text \u2014 0/33 questions have current_passage_text",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "qwen3-vl ignores passage_text schema field and dumps passage content into question_text instead; pipeline had no fallback to split or recover passages from pymupdf raw_text",
       "fix": "Added _split_passage_from_question() (stem-opener regex split at sentence/blank boundaries) and _recover_passage_from_raw_text() (pymupdf fallback finding stem in raw text then extracting passage between question number and stem)",
@@ -1849,10 +1849,10 @@
     {
       "id": "bug-114",
       "timestamp": "2026-05-18T23:16:03.174407Z",
-      "error_message": "run.sh ingestion test fails on already-ingested PDF with no job_id — duplicate checksum error not handled",
+      "error_message": "run.sh ingestion test fails on already-ingested PDF with no job_id \u2014 duplicate checksum error not handled",
       "file": ".claude/skills/ingestion-test/run.sh",
       "root_cause": "The runner script only extracts job_id from the POST submit response; when the API returns 422/409 with duplicate checksum detail, it emits RESULT_JSON with error=no_job_id and exits. No code path to look up the existing job_id by checksum.",
-      "fix": "Not fixed yet — worked around by querying the database directly. Runner should detect the duplicate-checksum response and either retrieve the existing job_id or skip to the poll/collect phase.",
+      "fix": "Not fixed yet \u2014 worked around by querying the database directly. Runner should detect the duplicate-checksum response and either retrieve the existing job_id or skip to the poll/collect phase.",
       "tags": [
         "ingestion-test",
         "duplicate-checksum",
@@ -1868,7 +1868,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 13→17 lines (3 removed) | Also: last = 0; # Question numbers in a module are strictly increa",
+      "fix": "Rewrote 13\u219217 lines (3 removed) | Also: last = 0; # Question numbers in a module are strictly increa",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1884,7 +1884,7 @@
       "error_message": "Test 5 mod01: non-contiguous question numbers [1,2,6,8-17,20,23,31] with gaps at [3,4,5,7]; 14 qnum_ocr_crosscheck mismatches (LLM=31 vs OCR=16 at index 15)",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "LLM extraction skips question numbers 3-5 and 7 on Test 5 sec01, producing non-sequential numbers and crosscheck mismatches against OCR",
-      "fix": "Not fixed — job reached needs_review with all 16 questions created but flagged for review",
+      "fix": "Not fixed \u2014 job reached needs_review with all 16 questions created but flagged for review",
       "tags": [
         "ingestion",
         "validation",
@@ -1898,10 +1898,10 @@
     {
       "id": "bug-117",
       "timestamp": "2026-05-20T00:43:39.420257Z",
-      "error_message": "Test 5 mod02: blocking validation error — question_index 3 (source Q8) missing paired_passage_text for Cross-Text Connections question type",
+      "error_message": "Test 5 mod02: blocking validation error \u2014 question_index 3 (source Q8) missing paired_passage_text for Cross-Text Connections question type",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "VLM extraction did not populate paired_passage_text for a Cross-Text Connections question, triggering blocking validation error",
-      "fix": "Not fixed — job reached needs_review status",
+      "fix": "Not fixed \u2014 job reached needs_review status",
       "tags": [
         "ingestion",
         "validation",
@@ -1918,8 +1918,8 @@
       "timestamp": "2026-05-20T00:43:39.420269Z",
       "error_message": "Test 5 mod02: non-contiguous question numbers [1,2,6,8-18,26,30] with gaps at [3,4,5,7]; 16 qnum_ocr_crosscheck mismatches (LLM=30 vs OCR=50 at index 15)",
       "file": "backend/app/routers/ingest.py",
-      "root_cause": "Same pattern as mod01 — LLM skips question numbers 3-5 and 7; OCR crosscheck shows systematic mismatches (e.g. LLM=30 vs OCR=50)",
-      "fix": "Not fixed — job reached needs_review",
+      "root_cause": "Same pattern as mod01 \u2014 LLM skips question numbers 3-5 and 7; OCR crosscheck shows systematic mismatches (e.g. LLM=30 vs OCR=50)",
+      "fix": "Not fixed \u2014 job reached needs_review",
       "tags": [
         "ingestion",
         "validation",
@@ -1938,7 +1938,7 @@
       "error_message": "Significant refactor of ",
       "file": "backend/app/routers/ingest.py",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 11→13 lines (5 removed) | Also: seen_texts: set[str] = set(); for q in raw_questions:",
+      "fix": "Rewrote 11\u219213 lines (5 removed) | Also: seen_texts: set[str] = set(); for q in raw_questions:",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1967,7 +1967,7 @@
     {
       "id": "bug-121",
       "timestamp": "2026-05-20T01:55:00.000Z",
-      "error_message": "(asyncpg.exceptions.StringDataRightTruncationError) value too long for type character varying(40) — questions.stem_type_key INSERT",
+      "error_message": "(asyncpg.exceptions.StringDataRightTruncationError) value too long for type character varying(40) \u2014 questions.stem_type_key INSERT",
       "file": "backend/app/models/questions.py (questions.stem_type_key VARCHAR(40) column)",
       "root_cause": "stem_type_key controlled-vocabulary value 'identify_evidence_that_supports_conclusion' is 44 chars but questions.stem_type_key is VARCHAR(40). LLM emits the longer canonical key, so the INSERT fails and the question (Test_7 sec01 mod01 Q14) is dropped at the persisting step.",
       "fix": "Not fixed (test-and-log only). Suggested fix: widen stem_type_key column (VARCHAR(80) or TEXT) via Alembic migration, or shorten the controlled-vocabulary key. Audit vocabulary/master for any stem_type_key length > 40.",
@@ -1985,7 +1985,483 @@
       "status": "fixed",
       "fixed_by": "765bea0",
       "fixed_at": "2026-05-20T19:33:42.000Z",
-      "verification": "Test_7_digital_sec01_mod01 re-run job 01e44c3f-be54-4d14-8c17-b01eb9877156 — 33/33 extracted/created, zero persisting errors; migration 019 widened stem_type_key and stimulus_mode_key to VARCHAR(100)."
+      "verification": "Test_7_digital_sec01_mod01 re-run job 01e44c3f-be54-4d14-8c17-b01eb9877156 \u2014 33/33 extracted/created, zero persisting errors; migration 019 widened stem_type_key and stimulus_mode_key to VARCHAR(100)."
+    },
+    {
+      "id": "bug-122",
+      "timestamp": "2026-05-20T02:38:55.909Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 5\u21927 lines (4 removed) | Also: 1. **High:** Non-contiguous question numbers with ; - Job `21993eaf-0cc6-43c4-94b1-789d66dd267f` (Test | Also: 1. **High:** Mod01 \u2014 non-contiguous question numbe; - Job `245d37e6-3e5a-41fc-b5aa-1289c41804ca` (Test | Also: 4. **High:** Mod02 \u2014 non-contiguous question numbe; - Same job. Found question numbers [1, 2, 6, 8, 9, | Also: 1. **Medium:** 18 question-number/OCR crosscheck m; - Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22` reach",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-20T02:39:47.025Z"
+    },
+    {
+      "id": "bug-123",
+      "timestamp": "2026-05-20T06:20:15.891Z",
+      "error_message": "Significant refactor of ",
+      "file": "TASKS_GENERATION.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 9\u2192163 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T06:20:15.891Z"
+    },
+    {
+      "id": "bug-124",
+      "timestamp": "2026-05-20T06:44:15.619Z",
+      "error_message": "Significant refactor of ",
+      "file": "TASKS_GENERATION.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 19\u219249 lines (2 removed) | Also: - [ ] Create a rubric prompt for generated-questio; - [ ] Version the rubric with `rubric_version`. | Also: - `origin=official|generated|mixed`; - `exclude_seen` | Also: 1. Generation batch model and request validation.; 3. Review rubric and one-model review runner. | Also: - Exclude the generator's provider from the swarm; (self-grading bias).",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-20T06:45:49.512Z"
+    },
+    {
+      "id": "bug-125",
+      "timestamp": "2026-05-20T06:45:58.466Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "TASKS_GENERATION.md",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T06:45:58.466Z"
+    },
+    {
+      "id": "bug-126",
+      "timestamp": "2026-05-20T06:50:20.112Z",
+      "error_message": "Missing error handling in _generation_profile_payload",
+      "file": "backend/app/routers/generate.py",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T06:50:20.112Z"
+    },
+    {
+      "id": "bug-127",
+      "timestamp": "2026-05-20T06:51:08.903Z",
+      "error_message": "Missing error handling in test_admin_reject_not_found",
+      "file": "backend/tests/test_admin_router.py",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T06:51:08.903Z"
+    },
+    {
+      "id": "bug-128",
+      "timestamp": "2026-05-20T06:52:52.414Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/tests/test_backend_regressions.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 13\u219219 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T06:52:52.414Z"
+    },
+    {
+      "id": "bug-129",
+      "timestamp": "2026-05-20T12:26:33.812Z",
+      "error_message": "Missing error handling in def",
+      "file": "backend/app/routers/generate.py",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T12:26:33.812Z"
+    },
+    {
+      "id": "bug-130",
+      "timestamp": "2026-05-20T12:28:28.293Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/generate.py",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 15\u21927 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T12:28:28.293Z"
+    },
+    {
+      "id": "bug-131",
+      "timestamp": "2026-05-20T12:29:17.546Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/tests/test_generate_batches.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 11\u219216 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T12:29:17.546Z"
+    },
+    {
+      "id": "bug-132",
+      "timestamp": "2026-05-20T13:11:53.001Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/generate.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5\u21926 lines (2 removed) | Also: job.status = \"failed\"; return",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-20T13:12:08.141Z"
+    },
+    {
+      "id": "bug-133",
+      "timestamp": "2026-05-20T13:12:34.283Z",
+      "error_message": "Missing await",
+      "file": "backend/app/routers/generate.py",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call | Also: @router.post(\"/batches/{batch_id}/retry-failed\"); async def retry_failed_batch_jobs(",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-20T13:13:02.494Z"
+    },
+    {
+      "id": "bug-134",
+      "timestamp": "2026-05-20T13:16:57.696Z",
+      "error_message": "Significant refactor of ",
+      "file": "TASKS_GENERATION.md",
+      "root_cause": "16 lines replaced/restructured",
+      "fix": "Rewrote 36\u219246 lines (16 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T13:16:57.696Z"
+    },
+    {
+      "id": "bug-135",
+      "timestamp": "2026-05-20T18:23:05.852Z",
+      "error_message": "Significant refactor of ",
+      "file": "TASKS_GENERATION.md",
+      "root_cause": "21 lines replaced/restructured",
+      "fix": "Rewrote 43\u219247 lines (21 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T18:23:05.852Z"
+    },
+    {
+      "id": "bug-136",
+      "timestamp": "2026-05-20T18:28:56.464Z",
+      "error_message": "Missing await",
+      "file": "backend/app/routers/admin.py",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T18:28:56.464Z"
+    },
+    {
+      "id": "bug-137",
+      "timestamp": "2026-05-20T18:29:26.628Z",
+      "error_message": "Missing await",
+      "file": "backend/app/routers/generate.py",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T18:29:26.628Z"
+    },
+    {
+      "id": "bug-138",
+      "timestamp": "2026-05-20T19:18:46.707Z",
+      "error_message": "Significant refactor of ",
+      "file": "TASKS_GENERATION.md",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 36\u219241 lines (10 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T19:18:46.707Z"
+    },
+    {
+      "id": "bug-139",
+      "timestamp": "2026-05-20T19:54:37.469Z",
+      "error_message": "Function not marked async",
+      "file": "CHANGELOG.md",
+      "root_cause": "Function uses await but wasn't declared async",
+      "fix": "Added async modifier",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-20T19:54:37.469Z"
+    },
+    {
+      "id": "bug-140",
+      "timestamp": "2026-05-21T01:19:33.725Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/student.py",
+      "root_cause": "20 lines replaced/restructured",
+      "fix": "Rewrote 93\u2192239 lines (20 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-21T01:19:33.725Z"
+    },
+    {
+      "id": "bug-141",
+      "timestamp": "2026-05-21T01:21:40.566Z",
+      "error_message": "Missing await",
+      "file": "backend/tests/test_student_retrieval.py",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-21T01:21:40.566Z"
+    },
+    {
+      "id": "bug-142",
+      "timestamp": "2026-05-21T01:24:24.201Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/tests/test_student_retrieval.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 24\u219236 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-21T01:24:24.201Z"
+    },
+    {
+      "id": "bug-143",
+      "timestamp": "2026-05-21T01:25:39.248Z",
+      "error_message": "Significant refactor of ",
+      "file": "TASKS_GENERATION.md",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 32\u219240 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-21T01:25:39.248Z"
+    },
+    {
+      "id": "bug-144",
+      "timestamp": "2026-05-21T03:37:07.642Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/student.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 20\u219235 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-21T03:37:07.642Z"
+    },
+    {
+      "id": "bug-145",
+      "timestamp": "2026-05-21T04:58:21.144Z",
+      "error_message": "Missing await",
+      "file": "backend/app/routers/admin.py",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-21T04:58:21.144Z"
+    },
+    {
+      "id": "bug-146",
+      "timestamp": "2026-05-21T05:02:32.130Z",
+      "error_message": "Significant refactor of ",
+      "file": "TASKS_GENERATION.md",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 27\u219231 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-21T05:02:32.130Z"
+    },
+    {
+      "id": "bug-147",
+      "timestamp": "2026-05-21T05:56:55.571Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/routers/admin.py",
+      "root_cause": "Had \"/admin/generation/auto-release/status\"",
+      "fix": "Changed to \"/generation/auto-release/status\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-21T05:57:06.117Z"
+    },
+    {
+      "id": "bug-148",
+      "timestamp": "2026-05-21T10:55:03.787Z",
+      "error_message": "Significant refactor of ",
+      "file": "TASKS_GENERATION.md",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 16\u219225 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-21T10:55:03.787Z"
+    },
+    {
+      "id": "bug-149",
+      "timestamp": "2026-05-23T18:26:27.469Z",
+      "error_message": "Incorrect value in code",
+      "file": ".claude/skills/ingestion-test/run.sh",
+      "root_cause": "Had \"admin-test-key\"",
+      "fix": "Changed to \"${ADMIN_API_KEY:-admin-key-change-me}\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-23T18:26:27.469Z"
+    },
+    {
+      "id": "bug-150",
+      "timestamp": "2026-05-23T18:28:14Z",
+      "error_message": "ingestion-test run.sh: KEY='admin-test-key' does not match backend default, causing 401 on all submissions",
+      "file": ".claude/skills/ingestion-test/run.sh",
+      "root_cause": "Script hardcoded a test key that never matched the real default (admin-key-change-me)",
+      "fix": "Changed to KEY=\"${ADMIN_API_KEY:-admin-key-change-me}\" \u2014 falls back to real default, overridable via env",
+      "tags": [
+        "ingestion-test",
+        "api-key",
+        "config"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-23T18:28:14Z"
+    },
+    {
+      "id": "bug-151",
+      "timestamp": "2026-05-23T18:30:00.000Z",
+      "error_message": "Invalid admin API key — run.sh returned no job_id when submitting Test_9_digital_sec01_mod01",
+      "file": ".claude/skills/ingestion-test/run.sh",
+      "root_cause": "Server on :8000 (pid 175680) was started from project root as backend.app.main:app instead of from backend/ as app.main:app. pydantic-settings CWD-relative .env discovery means backend/.env is not loaded, so ADMIN_API_KEYS falls back to default admin-key-change-me. run.sh hardcodes admin-test-key from backend/.env, causing 403 on every ingest submission.",
+      "fix": "Operational fix only: kill the misstarted server and restart from backend/ directory with: cd backend && uv run uvicorn app.main:app. Confirmed: admin-key-change-me accepted by live server; admin-test-key is not.",
+      "tags": ["api-key", "server-config", "env", "ingestion", "run.sh"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-23T18:30:00.000Z"
     }
   ]
 }

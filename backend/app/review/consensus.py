@@ -360,4 +360,15 @@ async def save_consensus(
     )
     db.add(verdict)
     await db.commit()
+    await db.refresh(verdict)
+
+    # Phase 10: attempt auto-release if the batch policy requests it.
+    # Import deferred to avoid circular imports at module load time.
+    try:
+        from app.review.auto_release import maybe_auto_release
+        from app.config import get_settings
+        await maybe_auto_release(question_id, verdict, db, get_settings())
+    except Exception:
+        logger.exception("Auto-release check failed for question %s — skipping", question_id)
+
     return verdict

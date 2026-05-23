@@ -136,12 +136,35 @@ async def _load_question_for_review(
     if job and job.generation_request_jsonb:
         generation_request = job.generation_request_jsonb
 
-    # Load source examples
+    # Load fresh source examples. Reviewers should judge against the official
+    # target space, not the exact examples that seeded generation.
     source_examples = []
     source_ids = []
-    if generation_request:
+    if isinstance(generation_request, dict):
+        try:
+            from app.models.payload import GenerationBatchRequest
+            from app.routers.generate import (
+                _domain_for_batch,
+                _select_source_question_ids_for_batch,
+            )
+
+            review_request = dict(generation_request)
+            review_request["requested_count"] = 1
+            batch_request = GenerationBatchRequest.model_validate(review_request)
+            domain = _domain_for_batch(batch_request)
+            selections = await _select_source_question_ids_for_batch(
+                db,
+                batch_request,
+                domain,
+                [],
+            )
+            source_ids = selections[0] if selections else []
+        except Exception:
+            logger.exception("Failed to select fresh review source examples for question %s", question_id)
+
+    if not source_ids and generation_request:
         source_ids = generation_request.get("source_question_ids", [])
-    if not source_ids and question.generation_source_set:
+    if not source_ids and isinstance(question.generation_source_set, dict):
         source_ids = question.generation_source_set.get("source_question_ids", [])
 
     if source_ids:

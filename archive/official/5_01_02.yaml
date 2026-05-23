@@ -1,0 +1,644 @@
+exam_code: '5'
+section_code: '01'
+module_code: '02'
+questions:
+- question_number: 3
+  question_id: 1f913291-068b-5c25-a2f6-305a0c95184a
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: According to a team of neuroeconomists from the University of Zurich,
+    ease of decision making may be linked to communication between two brain regions,
+    the prefrontal cortex and the parietal cortex. Individuals tend to be more decisive
+    if the information flow between the regions is intensified, whereas they make
+    choices more slowly when information flow is _______.
+  correct_option_label: A
+  options:
+  - label: A
+    text: reduced
+  - label: B
+    text: evaluated
+  - label: C
+    text: determined
+  - label: D
+    text: acquired
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The sentence contrasts intensified information flow (leading
+      to decisiveness) with its opposite — reduced flow (leading to slower choices).
+      'Reduced' is the only option that logically completes this contrast.
+    explanation_full: 'The passage sets up a clear contrast: intensified information
+      flow → more decisive; therefore, the blank must describe the opposite condition
+      — diminished or reduced flow — which leads to slower choices. Option A (''reduced'')
+      directly opposes ''intensified'' and fits the causal logic. Option B (''evaluated'')
+      is irrelevant to flow intensity. Option C (''determined'') misattributes agency
+      to the flow itself. Option D (''acquired'') implies gaining something, which
+      contradicts the context of decreased speed. Only ''reduced'' maintains both
+      logical coherence and precision in describing the inverse relationship between
+      flow intensity and decision speed.'
+- question_number: 4
+  question_id: bef9d4f3-4a0f-51bb-9d9f-284c281f385e
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: 'The War of 1812 has _______ place in historical memory in Britain,
+    partly because it is overshadowed by the much larger concurrent conflict against
+    Napoleonic France and partly because it essentially maintained the geopolitical
+    status quo for Britain: the country neither gained nor lost significant territory
+    or position as a result of its participation in the war.'
+  correct_option_label: A
+  options:
+  - label: A
+    text: a tenuous
+  - label: B
+    text: an enduring
+  - label: C
+    text: a contentious
+  - label: D
+    text: a conspicuous
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct answer must reflect that the War of 1812 holds
+      an insignificant or weak position in British historical memory due to being
+      overshadowed and having no major consequences. 'Tenuous' means weak or insubstantial,
+      which fits this context.
+    explanation_full: The passage explains that the War of 1812 is not prominently
+      remembered in Britain because it was overshadowed by the Napoleonic Wars and
+      had no significant territorial or geopolitical impact. The blank requires a
+      word describing the nature of its place in historical memory — one that conveys
+      insignificance or weakness. Option A, 'a tenuous,' correctly captures this meaning.
+      'Enduring' (B) implies lasting importance, which contradicts the passage. 'Contentious'
+      (C) suggests controversy, which is not mentioned. 'Conspicuous' (D) implies
+      visibility or prominence, which directly opposes the idea of being overshadowed.
+      Thus, 'tenuous' is the only logically and precisely fitting choice.
+    needs_human_review: false
+- question_number: 5
+  question_id: 044684fe-5d5a-554e-807e-7128c2856157
+  question_text: Which choice completes the text with the most logical and precise
+    word or phrase?
+  passage_text: Claims about the original significance of Minoan bull-leaping rituals—depicted
+    in paintings and sculptures from the second millennium BCE—are difficult to successfully
+    _______. We know so little about the people archaeologists call the Minoans that
+    assertions about what bull-leaping meant to them will almost inevitably rely on
+    significant speculation and guesswork.
+  correct_option_label: C
+  options:
+  - label: A
+    text: imagine
+  - label: B
+    text: summarize
+  - label: C
+    text: defend
+  - label: D
+    text: adjust
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct answer is 'defend' because the passage explains
+      that claims about Minoan rituals are hard to substantiate due to lack of evidence,
+      making 'defend' the only option that fits the context of supporting or justifying
+      a claim under evidentiary constraint.
+    explanation_full: The sentence states that claims about the meaning of Minoan
+      bull-leaping rituals are 'difficult to successfully _______' because we know
+      so little about the Minoans. The correct word must logically complete the idea
+      that such claims cannot be adequately supported or justified. 'Defend' is the
+      only option that conveys the act of providing justification or support for a
+      claim — which aligns with the passage’s emphasis on the speculative nature of
+      these assertions. 'Imagine' and 'adjust' are irrelevant to the argumentative
+      context; 'summarize' misrepresents the function required (the passage isn’t
+      asking to condense information but to justify it). Thus, 'defend' is both logically
+      necessary and contextually precise.
+- question_number: 7
+  question_id: eb46dd87-d01b-570d-9a05-f01ed13b08bb
+  question_text: Which choice best describes the function of the underlined sentence
+    in the text as a whole?
+  correct_option_label: B
+  options:
+  - label: A
+    text: It explains a discrepancy between what has been observed in study settings
+      and what has been observed in real-world settings that the text goes on to assert
+      is attributable to the studies not using real-world data.
+  - label: B
+    text: It identifies a conflict between research findings and recent events that
+      the text goes on to suggest is a consequence of a complicating factor in the
+      data used to generate those findings.
+  - label: C
+    text: It presents a long-standing divergence in research findings that the text
+      goes on to say is due to different groups of researchers using data that derive
+      from different electoral circumstances.
+  - label: D
+    text: It describes a recent exception to a general pattern in research findings
+      that the text goes on to explain is a result of researchers underestimating
+      the significance of inconsistencies in the data they’ve analyzed.
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: passage_excerpt
+    stem_type_key: choose_sentence_function
+    explanation_short: The underlined sentence introduces a conflict between research
+      findings and recent events, which the passage then attributes to a complicating
+      factor in the data. Option B correctly identifies this function.
+    explanation_full: 'The underlined sentence sets up a tension between what research
+      has found and what recent real-world events suggest. The passage then explains
+      that this discrepancy arises due to a flaw or complication in the data used
+      to generate the research findings. Option B accurately captures this rhetorical
+      function: identifying a conflict and signaling that the text will explain its
+      cause. The other options misrepresent either the nature of the discrepancy (e.g.,
+      long-standing divergence, recent exception) or the explanation provided (e.g.,
+      electoral circumstances, underestimated inconsistencies).'
+- question_number: 8
+  question_id: 659c8a71-d966-508b-a88d-06703b905652
+  question_text: Based on the texts, how would the author of Text 2 most likely respond
+    to the overall argument presented in Text 1?
+  passage_text: "Text 1 \nGraphic novels are increasingly popular in \nbookstores\
+    \ and libraries, but they shouldn’t be \nclassified as literature. By definition,\
+    \ literature tells a \nstory or conveys meaning through language only; \ngraphic\
+    \ novels tell stories through illustrations and \nuse language only sparingly,\
+    \ in captions and \ndialogue. Graphic novels are experienced as series of \nimages\
+    \ and not as language, making them more \nsimilar to film than to literature.\
+    \ \nText 2 \nGraphic novels present their stories through both \nlanguage and\
+    \ images. Without captions and dialogue, \nreaders would be unable to understand\
+    \ what is \ndepicted in the illustrations: the story results from \nthe interaction\
+    \ of text and image. Moreover, Alison \nBechdel’s Fun Home and many other graphic\
+    \ novels \nfeature text that is as beautifully written as the prose \nfound in\
+    \ many standard novels. Therefore, graphic \nnovels qualify as literary texts."
+  correct_option_label: A
+  options:
+  - label: A
+    text: By asserting that language plays a more important role in graphic novels
+      than the author of Text 1 recognizes
+  - label: B
+    text: By acknowledging that the author of Text 1 has identified a flaw that is
+      common to all graphic novels
+  - label: C
+    text: By suggesting that the story lines of certain graphic novels are more difficult
+      to understand than the author of Text 1 claims
+  - label: D
+    text: By agreeing with the author of Text 1 that most graphic novels aren’t as
+      well crafted as most literary works are
+  annotation:
+    grammar_focus_key: null
+    grammar_role_key: null
+    stimulus_mode_key: prose_paired
+    stem_type_key: choose_text_relationship
+    explanation_short: Text 2 directly challenges Text 1’s claim that graphic novels
+      rely primarily on images and use language sparingly by arguing that language
+      is essential to understanding the story and can be as literary as prose.
+    explanation_full: 'Text 1 argues that graphic novels should not be classified
+      as literature because they rely primarily on images and use language only sparingly.
+      Text 2 counters this by asserting that language is indispensable to understanding
+      graphic novels — without captions and dialogue, the illustrations would be incomprehensible.
+      Furthermore, Text 2 cites examples like Alison Bechdel’s Fun Home to show that
+      the language in graphic novels can be as literary as that in standard novels.
+      Option A correctly captures this response: Text 2 asserts that language plays
+      a more important role than Text 1 recognizes. The other options misrepresent
+      Text 2’s position: B falsely claims Text 2 agrees with Text 1’s flaw identification;
+      C introduces an unsupported claim about difficulty of understanding; D falsely
+      attributes agreement on quality to Text 2, which never makes such a comparison.'
+- question_number: 19
+  question_id: fb829350-02f2-5c4e-b1b2-41ee8560a43c
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: When a harpsichord’s keys are pressed, the strings inside the _______
+    are plucked, not struck.
+  correct_option_label: B
+  options:
+  - label: A
+    text: 'instrument:'
+  - label: B
+    text: instrument
+  - label: C
+    text: instrument—
+  - label: D
+    text: instrument,
+  annotation:
+    grammar_focus_key: unnecessary_internal_punctuation
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: conform_to_standard_english
+    explanation_short: The blank is part of a noun phrase and requires no punctuation.
+      Option B, 'instrument', is correct because no punctuation is needed between
+      the preposition 'inside' and its complement 'the instrument'.
+    explanation_full: 'The sentence reads: ''When a harpsichord’s keys are pressed,
+      the strings inside the _______ are plucked, not struck.'' The blank follows
+      the preposition ''inside'' and precedes the verb ''are plucked''. This structure
+      forms a prepositional phrase (''inside the instrument'') acting as an adverbial
+      modifier. No punctuation is required within this syntactic unit. Inserting a
+      colon (A), dash (C), or comma (D) breaks the required syntactic unity of the
+      preposition-complement relationship. Only option B, ''instrument'', maintains
+      grammatical correctness without unnecessary internal punctuation.'
+- question_number: 20
+  question_id: 416b778d-3b3a-5bed-a0f7-29012c613aa5
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: When they were first introduced to western Europe from Byzantium in
+    the eleventh century, table forks were met with much resistance. The Bishop of
+    Ostia, St. Peter Damian, condemned the eating utensils because he considered _______
+    dangerous and unnecessary luxury items.
+  correct_option_label: A
+  options:
+  - label: A
+    text: them
+  - label: B
+    text: this
+  - label: C
+    text: that
+  - label: D
+    text: it
+  annotation:
+    grammar_focus_key: pronoun_antecedent_agreement
+    grammar_role_key: pronoun
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The pronoun 'them' correctly refers to the plural noun 'eating
+      utensils' mentioned earlier in the sentence.
+    explanation_full: The blank requires a pronoun that agrees in number with its
+      antecedent, which is 'eating utensils' — a plural noun. Option A, 'them', is
+      the correct plural pronoun. Options B ('this'), C ('that'), and D ('it') are
+      singular and do not agree with the plural antecedent. This is a subject-verb
+      agreement error in the broader sense of pronoun-antecedent agreement.
+- question_number: 21
+  question_id: 9d8da347-c2a4-5653-a881-56d0569428c5
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: Julia Alvarez’s 1994 novel In the Time of the Butterflies, a fictionalized
+    account of the lives of the Mirabal _______ can serve as a starting point for
+    those wanting to explore how the rule of dictator Rafael Trujillo has been represented
+    in Dominican American literature.
+  correct_option_label: D
+  options:
+  - label: A
+    text: sisters, and
+  - label: B
+    text: sisters and
+  - label: C
+    text: sisters,
+  - label: D
+    text: sisters
+  annotation:
+    grammar_focus_key: unnecessary_internal_punctuation
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The phrase 'the Mirabal sisters' is a complete noun phrase;
+      no additional conjunction or punctuation is needed to complete the sentence
+      grammatically.
+    explanation_full: 'The sentence is structured as a single independent clause with
+      a compound appositive: ''Julia Alvarez’s 1994 novel... a fictionalized account...''
+      The blank follows ''the Mirabal,'' which is part of the noun phrase ''the Mirabal
+      sisters.'' Since no further elements are being added to the list or clause,
+      no comma or conjunction is required. Option D, ''sisters,'' correctly completes
+      the noun phrase without introducing unnecessary punctuation or conjunctions.
+      Options A and B incorrectly add ''and,'' implying an incomplete list. Option
+      C adds a comma, which would incorrectly separate the subject from its modifier
+      or create a fragment if followed by nothing.'
+- question_number: 22
+  question_id: 64071f3e-f74c-5c4d-b22e-f68e4e308a1b
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: The vessel took six days to _______ it’s as heavy as two thousand
+    blue whales when fully loaded.
+  correct_option_label: C
+  options:
+  - label: A
+    text: dislodge in part due to its sheer size,
+  - label: B
+    text: 'dislodge, in part due to its sheer size:'
+  - label: C
+    text: dislodge, in part due to its sheer size,
+  - label: D
+    text: dislodge, in part, due to its sheer size
+  annotation:
+    grammar_focus_key: punctuation_comma
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: Option C correctly uses a comma to separate the introductory
+      phrase 'in part due to its sheer size' from the main clause, maintaining grammatical
+      clarity and standard punctuation conventions.
+    explanation_full: The correct answer is C because it properly punctuates the sentence
+      by using a comma after the introductory phrase 'in part due to its sheer size.'
+      This comma separates the modifying phrase from the main clause, which is required
+      for clarity and adherence to Standard English conventions. Option A lacks necessary
+      punctuation, creating a run-on effect. Option B incorrectly uses a colon, which
+      is inappropriate here since no list, explanation, or quotation follows. Option
+      D inserts an unnecessary comma after 'in part,' which disrupts the flow of the
+      modifying phrase and is not required by grammar rules.
+- question_number: 23
+  question_id: ddf59683-d0c9-50ed-b893-108206fa0a8f
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: Fans of the film Moana (2016) may not know that the deep and humorous
+    voice behind the _______ belongs to comedian, actor, and musician Jemaine Clement.
+    The versatile performer has appeared in everything from television commercials
+    to action movies, but voice acting, specifically, has become a notable part of
+    his career.
+  correct_option_label: A
+  options:
+  - label: A
+    text: character Tamatoa the crab
+  - label: B
+    text: character Tamatoa the crab,
+  - label: C
+    text: 'character: Tamatoa the crab,'
+  - label: D
+    text: character, Tamatoa the crab
+  annotation:
+    grammar_focus_key: appositive_punctuation
+    grammar_role_key: punctuation
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The phrase 'character Tamatoa the crab' is appositive and does
+      not require internal punctuation because it directly identifies the noun 'voice'
+      without interruption.
+    explanation_full: The blank refers to the character whose voice is being described
+      — 'Tamatoa the crab'. This is an appositive phrase that renames or specifies
+      the noun 'voice'. In Standard English, when an appositive directly follows the
+      noun it modifies without interrupting the sentence flow, no comma is required.
+      Option A correctly omits punctuation. Option B incorrectly adds a comma after
+      'crab', which would imply an unnecessary pause. Option C incorrectly uses a
+      colon, which is inappropriate for introducing an appositive in this context.
+      Option D incorrectly inserts a comma before 'Tamatoa', which breaks the syntactic
+      unit 'voice behind the character Tamatoa the crab'.
+- question_number: 24
+  question_id: bc99dee5-be14-570f-a796-1eff6e69a8ff
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: 'In her 1983 book The Managed Heart: Commercialization of Human Feeling,
+    sociologist Arlie Russell Hochschild first explored at length her conception of
+    a “sociology of emotions”—the idea that the various cultural and ideological frameworks
+    a person has internalized (class, gender, political affiliation, etc.) _______
+    each emotional reaction that person has within a situation.'
+  correct_option_label: C
+  options:
+  - label: A
+    text: underlies
+  - label: B
+    text: is underlying
+  - label: C
+    text: underlie
+  - label: D
+    text: has been underlying
+  annotation:
+    grammar_focus_key: subject_verb_agreement
+    grammar_role_key: agreement
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The subject 'frameworks' is plural, so the verb must be plural
+      'underlie'.
+    explanation_full: The subject of the clause is 'the various cultural and ideological
+      frameworks', which is plural. Therefore, the verb must agree in number and take
+      the plural form 'underlie'. Option A ('underlies') is singular and incorrect.
+      Option B ('is underlying') uses an unnecessary progressive form. Option D ('has
+      been underlying') incorrectly uses present perfect continuous tense where simple
+      present is required for a general truth or established concept. Only option
+      C ('underlie') correctly matches the plural subject and expresses the general
+      principle described.
+- question_number: 25
+  question_id: 64915a33-4b32-5418-ad75-7bdefa108a01
+  question_text: Which choice completes the text so that it conforms to the conventions
+    of Standard English?
+  passage_text: American abstract artist Richard _______ his installations to make
+    passersby keenly aware of how one’s movements are affected by the physical features
+    of one’s environment, assembles large-scale steel plates into sculptures that
+    dominate the outdoor spaces they occupy.
+  correct_option_label: D
+  options:
+  - label: A
+    text: Serra is intending
+  - label: B
+    text: Serra, intends
+  - label: C
+    text: Serra, intending
+  - label: D
+    text: Serra intends
+  annotation:
+    grammar_focus_key: verb_tense_consistency
+    grammar_role_key: verb_form
+    stimulus_mode_key: sentence_only
+    stem_type_key: choose_best_grammar_revision
+    explanation_short: The correct option provides a finite verb in the third-person
+      singular form that agrees with the subject 'Richard Serra' and correctly connects
+      the two independent clauses without creating a comma splice or fragment.
+    explanation_full: 'The sentence contains two independent clauses: (1) ''American
+      abstract artist Richard [blank] his installations...'' and (2) ''assembles large-scale
+      steel plates...''. The correct grammatical structure requires a finite verb
+      for the first clause that agrees with the singular subject ''Richard Serra''.
+      Option D, ''Serra intends'', provides the correct simple present tense verb
+      form. Option A (''is intending'') uses the present continuous, which is unnecessarily
+      wordy and does not match the simple present tense of the second clause. Option
+      B (''Serra, intends'') incorrectly inserts a comma between subject and verb,
+      creating an ungrammatical interruption. Option C (''Serra, intending'') creates
+      a participial phrase that leaves the first clause without a main verb, resulting
+      in a sentence fragment. Only option D produces a grammatically complete and
+      correctly punctuated sentence.'
+- question_number: 27
+  question_id: 4f073e10-8df0-50b0-ac21-10138391829e
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: In 2014, Nestor Gomez won his first-ever storytelling competition,
+    relating a tale about his life as a Guatemalan immigrant living in Chicago. _______
+    in 2017, Gomez created the show 80 Minutes Around the World as a platform for
+    others to share stories about their immigration experiences.
+  correct_option_label: C
+  options:
+  - label: A
+    text: Instead,
+  - label: B
+    text: For example,
+  - label: C
+    text: Later,
+  - label: D
+    text: In other words,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: 'The correct transition ''Later,'' indicates a chronological
+      sequence between two events in Gomez’s life: winning a competition in 2014 and
+      creating a show in 2017.'
+    explanation_full: 'The passage presents two events in chronological order: Gomez
+      winning a storytelling competition in 2014 and creating a show in 2017. The
+      transition ''Later,'' correctly signals that the second event occurred after
+      the first. ''Instead,'' suggests contrast, which is not present. ''For example,''
+      implies illustration, but no example is being provided. ''In other words,''
+      suggests rephrasing, which is also incorrect. Therefore, ''Later,'' is the only
+      logically appropriate transition.'
+- question_number: 28
+  question_id: a9c00bdb-fbd1-5872-9916-9da81035b16a
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: To guarantee the validity of experimental results, scientists rely
+    on precise, unchanging standards of measurement. _______ metrologists (scientists
+    who study measurement) developed the SI, or International System of Units. The
+    SI’s units of measurement are based on unchanging values in nature, such as the
+    mass of an electron or the speed of light.
+  correct_option_label: D
+  options:
+  - label: A
+    text: In contrast,
+  - label: B
+    text: Regardless,
+  - label: C
+    text: In addition,
+  - label: D
+    text: For this reason,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: The correct transition 'For this reason' logically connects
+      the need for precise standards to the development of the SI system by metrologists.
+    explanation_full: 'The first sentence establishes that scientists require precise,
+      unchanging standards to ensure valid experimental results. The second sentence
+      introduces the development of the SI system by metrologists. The correct transition
+      ''For this reason'' indicates that the development of the SI system was a direct
+      response to the need for such standards. The other options do not establish
+      this causal relationship: ''In contrast'' suggests opposition, ''Regardless''
+      implies irrelevance, and ''In addition'' adds information without indicating
+      causation.'
+- question_number: 29
+  question_id: a303501c-e49e-551d-860e-3de7a799cf53
+  question_text: Which choice completes the text with the most logical transition?
+  passage_text: In retrospect, one of the lessons of the 2003 Human Genome Project
+    is that a gene is affected by many factors, not the least of which is its interactions
+    with the protein products of other genes. _______ rather than just focusing on
+    the human genome, efforts to better understand gene mutations related to disease
+    have begun to consider the human proteome, the complete set of proteins expressed
+    by human genes.
+  correct_option_label: D
+  options:
+  - label: A
+    text: In other words,
+  - label: B
+    text: That said,
+  - label: C
+    text: For example,
+  - label: D
+    text: Accordingly,
+  annotation:
+    grammar_focus_key: transition_logic
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: sentence_only
+    stem_type_key: complete_the_text
+    explanation_short: 'The correct transition ''Accordingly'' signals a logical consequence:
+      because genes are affected by protein interactions (lesson from the Genome Project),
+      research has shifted to include the proteome.'
+    explanation_full: The first sentence states a lesson learned from the Human Genome
+      Project — that genes are influenced by interactions with proteins from other
+      genes. The second sentence describes a resulting shift in research focus toward
+      the proteome. The transition 'Accordingly' correctly signals this cause-effect
+      relationship. Option A ('In other words') suggests restatement, but the second
+      sentence introduces a new development, not a rephrasing. Option B ('That said')
+      signals contrast, which is inappropriate here since the second sentence follows
+      logically from the first. Option C ('For example') implies illustration, but
+      the second sentence is not an example of the first — it’s a consequence. Only
+      'Accordingly' accurately reflects the logical progression from insight to action.
+- question_number: 31
+  question_id: 02a358c6-2223-57c6-9aae-355220195d92
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: The student wants to emphasize the mass of Sirius A.
+  correct_option_label: D
+  options:
+  - label: A
+    text: The mass of stars, like Proxima Centauri, can be described in units called
+      solar masses.
+  - label: B
+    text: In astronomy, the mass of stars can be described in units called solar masses,
+      and one solar mass is roughly equal to the mass of the Sun.
+  - label: C
+    text: The Sun is more massive than Proxima Centauri, which has a mass of 0.122
+      solar masses.
+  - label: D
+    text: With a mass of 2.063 solar masses, Sirius A is more massive than the Sun.
+  annotation:
+    grammar_focus_key: logical_relationships
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: notes_bullets
+    stem_type_key: choose_best_notes_synthesis
+    explanation_short: Option D directly states Sirius A’s mass (2.063 solar masses)
+      and compares it to the Sun, which emphasizes its mass as requested.
+    explanation_full: The prompt asks to emphasize the mass of Sirius A. Option D
+      explicitly provides Sirius A’s mass (2.063 solar masses) and contextualizes
+      it by comparing it to the Sun, making the emphasis clear and direct. Options
+      A and B are general statements about solar masses without mentioning Sirius
+      A. Option C discusses Proxima Centauri, not Sirius A. Only D fulfills the synthesis
+      goal with relevant data from the notes.
+- question_number: 32
+  question_id: 0e34c3c7-ce94-5858-bbb9-0a88c5dba441
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: The student wants to contrast first-class levers and second-class
+    levers.
+  correct_option_label: D
+  options:
+  - label: A
+    text: In levers, the effort is the force applied to the lever; the load, in contrast,
+      is the force that the lever exerts on another object.
+  - label: B
+    text: In first-class and second-class levers, the fulcrum and the load are in
+      different locations.
+  - label: C
+    text: First-class levers are simple machines consisting of a rigid beam and a
+      fulcrum, but then again, the same is true of second-class levers.
+  - label: D
+    text: In first-class levers, the fulcrum is located between the effort and the
+      load, but in second-class levers, the load is located between the effort and
+      the fulcrum.
+  annotation:
+    grammar_focus_key: logical_relationships
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: notes_bullets
+    stem_type_key: choose_best_notes_synthesis
+    explanation_short: Option D directly contrasts the spatial arrangement of fulcrum,
+      effort, and load in first-class versus second-class levers, which is the precise
+      goal stated in the prompt.
+    explanation_full: 'The prompt asks for a sentence that most effectively uses information
+      from the notes to contrast first-class and second-class levers. Option D explicitly
+      states the key structural difference: in first-class levers, the fulcrum is
+      between effort and load; in second-class levers, the load is between effort
+      and fulcrum. This directly fulfills the rhetorical goal. Option A defines terms
+      but does not contrast lever classes. Option B mentions different locations but
+      fails to specify what those locations are or how they differ. Option C notes
+      a similarity (both have beam and fulcrum) rather than a contrast. Only D provides
+      the required comparative structure with precise mechanical distinctions.'
+- question_number: 33
+  question_id: 0067f561-93a2-5d8a-9a59-3a258981338c
+  question_text: Which choice most effectively uses relevant information from the
+    notes to accomplish this goal?
+  passage_text: The student wants to emphasize a similarity between P waves and S
+    waves.
+  correct_option_label: A
+  options:
+  - label: A
+    text: P waves and S waves both travel beneath Earth’s surface, causing the ground
+      to move.
+  - label: B
+    text: P waves travel away from an earthquake’s starting point at a higher rate
+      of speed than do S waves.
+  - label: C
+    text: Spreading out from the focus of an earthquake, P waves move the ground backward
+      and forward.
+  - label: D
+    text: Although P waves and S waves start at the same point, they behave very differently.
+  annotation:
+    grammar_focus_key: logical_relationships
+    grammar_role_key: expression_of_ideas
+    stimulus_mode_key: notes_bullets
+    stem_type_key: choose_best_notes_synthesis
+    explanation_short: Option A correctly identifies a shared characteristic — both
+      wave types travel beneath Earth’s surface and cause ground movement — directly
+      supporting the goal of emphasizing similarity.
+    explanation_full: The student’s goal is to highlight a similarity between P waves
+      and S waves. Option A states that both types travel beneath Earth’s surface
+      and cause the ground to move, which is a direct, factual similarity. Option
+      B highlights a difference (speed), Option C focuses only on P waves, and Option
+      D vaguely notes different behavior without specifying any similarity. Only Option
+      A fulfills the synthesis goal by identifying a common trait.

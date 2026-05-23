@@ -1,0 +1,127 @@
+{
+  "job_id": "f9d91b1d-71c2-418d-8c2f-b986afbed01e",
+  "hashes": {
+    "master_json_hash": "f64a66170b3768eb26744654fa2bf7ba5f2988636c26f9e3cc77eb68c3b2ac66",
+    "reading_rules_hash": "766353edc7b96a522f86385ee61409fe6508e81e7243ffcb9bdf2f6b84e54aa2",
+    "grammar_rules_hash": "ec1086ada5c366e16269664b51b8f69a1f4be0200a735226e1faa99d6874e6e7",
+    "ontology_hash": "bce757805ed03df6832feb1eb45fdf862c72e3c3cc87c4d329beb0b7c34d853f"
+  },
+  "amendment_candidates": [
+    {
+      "source_question_number": 23,
+      "q_data": {
+        "source_exam_code": "10",
+        "source_subject_code": "verbal",
+        "source_section_code": "01",
+        "source_module_code": "02",
+        "source_question_number": 23,
+        "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+        "skill_family_key": null,
+        "grammar_role_key": null
+      },
+      "amendment_proposal": {
+        "affected_doc": "grammar_v7",
+        "affected_vocab": [
+          "grammar_focus_key",
+          "grammar_role_key",
+          "answer_mechanism_key",
+          "solver_pattern_key",
+          "distractor_type_key"
+        ],
+        "proposed_value": {
+          "grammar_focus_key": "colon_usage",
+          "grammar_role_key": "introduce_list",
+          "answer_mechanism_key": "punctuation_rule_application",
+          "solver_pattern_key": "identify_sentence_boundaries",
+          "distractor_type_keys": [
+            "sentence_fragment",
+            "missing_punctuation",
+            "incorrect_semicolon_usage"
+          ]
+        },
+        "parent_key": null,
+        "definition": "Colon usage to introduce a list after a complete sentence. Distractors include fragment (period), missing punctuation (run-on), and incorrect semicolon.",
+        "current_best_fit": "No exact match in current grammar_v7 taxonomy for these specific punctuation roles.",
+        "why_current_rules_are_insufficient": "The existing grammar taxonomy may lack granular keys for colon introduction and the specific distractor patterns observed in this official item.",
+        "official_evidence": "Official SAT question PT10, RW Module 2, #23, testing colon before a list.",
+        "rule_doc_patch": "Add 'colon_usage' to grammar_focus_key, 'introduce_list' to grammar_role_key, 'punctuation_rule_application' to answer_mechanism_key, 'identify_sentence_boundaries' to solver_pattern_key, and the three distractor_type_keys to the grammar distractor list.",
+        "master_json_patch": "Include these keys in the grammar_v7 taxonomy under Standard English Conventions."
+      }
+    },
+    {
+      "source_question_number": 25,
+      "q_data": {
+        "source_exam_code": "10",
+        "source_subject_code": "verbal",
+        "source_section_code": "01",
+        "source_module_code": "02",
+        "source_question_number": 25,
+        "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+        "skill_family_key": null,
+        "grammar_role_key": null
+      },
+      "amendment_proposal": {
+        "affected_doc": "grammar_v7",
+        "affected_vocab": "distractor_type_key",
+        "proposed_value": "incorrect_punctuation",
+        "parent_key": null,
+        "definition": "The option uses incorrect punctuation for the given context, such as a comma splice, run-on, or missing colon.",
+        "current_best_fit": "None; reading distractor keys do not apply.",
+        "why_current_rules_are_insufficient": "The current distractor_type_key list is only for reading domains. Grammar questions require keys that describe punctuation errors.",
+        "official_evidence": "This official question from PT10 has distractors that are punctuation errors.",
+        "rule_doc_patch": "Add to grammar_v7 taxonomy a set of distractor_type_keys for SEC questions.",
+        "master_json_patch": "Add 'incorrect_punctuation' to the allowed distractor_type_key values for grammar domain."
+      }
+    },
+    {
+      "source_question_number": 30,
+      "q_data": {
+        "source_exam_code": "10",
+        "source_subject_code": "verbal",
+        "source_section_code": "01",
+        "source_module_code": "02",
+        "source_question_number": 30,
+        "question_text": "Which choice completes the text with the most logical transition?",
+        "skill_family_key": null,
+        "grammar_role_key": null
+      },
+      "amendment_proposal": {
+        "affected_doc": "grammar_v7",
+        "affected_vocab": "transition_subtype_key",
+        "proposed_value": "trend",
+        "parent_key": "transition_logic",
+        "definition": "Indicates a gradual change or increasing tendency over time (e.g., increasingly, more and more).",
+        "current_best_fit": "none",
+        "why_current_rules_are_insufficient": "The existing taxonomy does not include a transition subtype for temporal trends, which is needed for this official item.",
+        "official_evidence": "The correct answer 'Increasingly' signals a trend, not a contrast, addition, or cause.",
+        "rule_doc_patch": "Add 'trend' to the list of transition_subtype_key values.",
+        "master_json_patch": "Add 'trend' to the allowed values for transition_subtype_key."
+      }
+    },
+    {
+      "source_question_number": 33,
+      "q_data": {
+        "source_exam_code": "10",
+        "source_subject_code": "verbal",
+        "source_section_code": "01",
+        "source_module_code": "02",
+        "source_question_number": 33,
+        "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+        "skill_family_key": null,
+        "grammar_role_key": null
+      },
+      "amendment_proposal": {
+        "affected_doc": "grammar_v7",
+        "affected_vocab": "grammar_focus_key",
+        "proposed_value": "similarity_emphasis",
+        "parent_key": "rhetorical_synthesis",
+        "definition": "The correct answer selects notes that highlight a shared characteristic between two subjects, as specified by the goal.",
+        "current_best_fit": "No existing grammar_focus_key for rhetorical synthesis goal types.",
+        "why_current_rules_are_insufficient": "The grammar_v7 taxonomy is not provided; the reading_v2 taxonomy does not cover Expression of Ideas skills. A new focus key is needed to capture goal-oriented note synthesis.",
+        "official_evidence": "Official SAT Practice Test 10, Question 33: goal is to emphasize a similarity; correct answer uses size comparison.",
+        "rule_doc_patch": "Add 'similarity_emphasis' to grammar_focus_key under rhetorical_synthesis.",
+        "master_json_patch": "Include 'similarity_emphasis' in the allowed values for grammar_focus_key when skill_family_key is 'rhetorical_synthesis'."
+      }
+    }
+  ]
+}

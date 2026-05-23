@@ -344,6 +344,11 @@ def _matches_batch_target(
         return True
 
     ann = _annotation_payload(annotation)
+    requested_stimulus = body.stimulus_mode_key
+    source_stimulus = ann.get("stimulus_mode_key") or getattr(question, "stimulus_mode_key", None)
+    if requested_stimulus and source_stimulus and source_stimulus != requested_stimulus:
+        return False
+
     if domain == "grammar":
         return (
             ann.get("grammar_role_key") == body.target_grammar_role_key
@@ -370,6 +375,35 @@ def _difficulty_sort_key(
     return (difficulty_penalty, exam, number)
 
 
+async def _recent_generation_source_ids(
+    db: AsyncSession,
+    *,
+    limit: int = 50,
+) -> set[uuid.UUID]:
+    """Return official source IDs used by recent generated questions."""
+    result = await db.execute(
+        select(Question.generation_source_set)
+        .where(Question.content_origin == "generated")
+        .order_by(Question.created_at.desc())
+        .limit(limit)
+    )
+    recent_ids: set[uuid.UUID] = set()
+    for row in result.all():
+        payload = None
+        try:
+            payload = row[0]
+        except (TypeError, KeyError, IndexError):
+            payload = getattr(row, "generation_source_set", None)
+        if not isinstance(payload, dict):
+            continue
+        for raw_id in payload.get("source_question_ids") or []:
+            try:
+                recent_ids.add(uuid.UUID(str(raw_id)))
+            except (TypeError, ValueError):
+                continue
+    return recent_ids
+
+
 def _rotate_source_ids(
     candidates: list[Question],
     *,
@@ -383,10 +417,28 @@ def _rotate_source_ids(
     selections: list[list[str]] = []
     for job_index in range(requested_count):
         start = job_index % len(candidates)
-        selected = [
+        ordered = [
             candidates[(start + offset) % len(candidates)]
-            for offset in range(take_count)
+            for offset in range(len(candidates))
         ]
+        selected: list[Question] = []
+        seen_exams: set[str] = set()
+        for candidate in ordered:
+            exam = getattr(candidate, "source_exam_code", None) or ""
+            if exam in seen_exams:
+                continue
+            selected.append(candidate)
+            seen_exams.add(exam)
+            if len(selected) == take_count:
+                break
+        if len(selected) < take_count:
+            selected_ids = {q.id for q in selected}
+            for candidate in ordered:
+                if candidate.id in selected_ids:
+                    continue
+                selected.append(candidate)
+                if len(selected) == take_count:
+                    break
         selections.append([str(q.id) for q in selected])
     return selections
 
@@ -433,14 +485,20 @@ async def _select_source_question_ids_for_batch(
             if _matches_batch_target(q, annotations.get(q.id), body, domain, exact=False)
         ]
 
-    candidates = sorted(
-        candidates,
-        key=lambda q: _difficulty_sort_key(q, annotations.get(q.id), body),
-    )
     source_count = (
         _GRAMMAR_SOURCE_EXAMPLE_COUNT
         if domain == "grammar"
         else _READING_SOURCE_EXAMPLE_COUNT
+    )
+    recent_source_ids = await _recent_generation_source_ids(db)
+    if recent_source_ids:
+        non_recent = [q for q in candidates if q.id not in recent_source_ids]
+        if len(non_recent) >= source_count:
+            candidates = non_recent
+
+    candidates = sorted(
+        candidates,
+        key=lambda q: _difficulty_sort_key(q, annotations.get(q.id), body),
     )
     return _rotate_source_ids(
         candidates,

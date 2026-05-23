@@ -56,8 +56,8 @@
       "value": "rhetorical_synth",
       "field": "grammar_role_key",
       "first_seen": "2026-05-18T20:53:39.423606+00:00",
-      "last_seen": "2026-05-18T20:53:39.423606+00:00",
-      "occurrences": 1,
+      "last_seen": "2026-05-23T18:24:46.156193+00:00",
+      "occurrences": 2,
       "job_ids": [],
       "contexts": []
     },
@@ -66,8 +66,8 @@
       "value": "synthesis_from_notes",
       "field": "grammar_focus_key",
       "first_seen": "2026-05-18T20:53:39.423862+00:00",
-      "last_seen": "2026-05-18T20:53:39.423862+00:00",
-      "occurrences": 1,
+      "last_seen": "2026-05-23T17:59:35.294354+00:00",
+      "occurrences": 2,
       "job_ids": [],
       "contexts": []
     },
@@ -88,6 +88,266 @@
       "first_seen": "2026-05-20T01:53:59.880312+00:00",
       "last_seen": "2026-05-20T01:54:00.358310+00:00",
       "occurrences": 4,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "STEM_TYPE_KEYS",
+      "value": "choose_logical_transition",
+      "field": "stem_type_key",
+      "first_seen": "2026-05-23T16:31:53.641023+00:00",
+      "last_seen": "2026-05-23T16:31:53.641023+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "synthesis_from_notes",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T17:59:35.294034+00:00",
+      "last_seen": "2026-05-23T17:59:35.294034+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "synthesis_of_information",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T18:24:46.156535+00:00",
+      "last_seen": "2026-05-23T18:24:46.156535+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "word_choice",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:17.650048+00:00",
+      "last_seen": "2026-05-23T19:46:17.650048+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "precision",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T19:46:17.650517+00:00",
+      "last_seen": "2026-05-23T19:46:17.650517+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "verb",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:17.668674+00:00",
+      "last_seen": "2026-05-23T19:46:17.668674+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "word_choice",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T19:46:17.669075+00:00",
+      "last_seen": "2026-05-23T19:46:17.692635+00:00",
+      "occurrences": 2,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "adjective",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:17.692142+00:00",
+      "last_seen": "2026-05-23T19:46:17.692142+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "QUESTION_FAMILY_KEYS",
+      "value": "standard_english_conventions",
+      "field": "question_family_key",
+      "first_seen": "2026-05-23T19:46:18.326922+00:00",
+      "last_seen": "2026-05-23T19:46:18.864730+00:00",
+      "occurrences": 8,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "subject_pronoun",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:18.327279+00:00",
+      "last_seen": "2026-05-23T19:46:18.327279+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "direct_question",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:18.394702+00:00",
+      "last_seen": "2026-05-23T19:46:18.394702+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "subject_aux_inversion_and_punctuation",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T19:46:18.395068+00:00",
+      "last_seen": "2026-05-23T19:46:18.395068+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "time_clause_verb",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:18.466312+00:00",
+      "last_seen": "2026-05-23T19:46:18.466312+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "verb_tense",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T19:46:18.466663+00:00",
+      "last_seen": "2026-05-23T19:46:18.541856+00:00",
+      "occurrences": 2,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "main_verb",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:18.541472+00:00",
+      "last_seen": "2026-05-23T19:46:18.541472+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "verb_number_agreement",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:18.617019+00:00",
+      "last_seen": "2026-05-23T19:46:18.617019+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "introduce_list",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:18.694025+00:00",
+      "last_seen": "2026-05-23T19:46:18.694025+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "colon_usage",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T19:46:18.694422+00:00",
+      "last_seen": "2026-05-23T19:46:18.694422+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "subject_verb_agreement",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:18.779418+00:00",
+      "last_seen": "2026-05-23T19:46:18.779418+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "colon_introducing_explanation",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T19:46:18.865201+00:00",
+      "last_seen": "2026-05-23T19:46:18.865201+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "synthesize_notes",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:19.419864+00:00",
+      "last_seen": "2026-05-23T19:46:19.419864+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "rhetorical_synthesis",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T19:46:19.420342+00:00",
+      "last_seen": "2026-05-23T19:46:19.420342+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "goal_emphasis",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:19.524624+00:00",
+      "last_seen": "2026-05-23T19:46:19.524624+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "synthesize_information",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T19:46:19.525135+00:00",
+      "last_seen": "2026-05-23T19:46:19.525135+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "rhetorical_synthesis",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T19:46:19.628420+00:00",
+      "last_seen": "2026-05-23T19:46:19.628420+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_FOCUS_BY_ROLE",
+      "value": "similarity_emphasis",
+      "field": "grammar_focus_key",
+      "first_seen": "2026-05-23T19:46:19.628923+00:00",
+      "last_seen": "2026-05-23T19:46:19.628923+00:00",
+      "occurrences": 1,
       "job_ids": [],
       "contexts": []
     }
