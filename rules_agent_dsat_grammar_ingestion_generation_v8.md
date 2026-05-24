@@ -1816,13 +1816,206 @@ Classify with `syntactic_trap_key: "long_distance_dependency"` and
 
 Mass noun with plural article or vice versa.
 
+**Sub-pattern — Fewer/Less and Number/Amount Quantifier Mismatch**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence in which a quantifier must be chosen that matches the
+countability class of the head noun: a countable plural noun requires "fewer,"
+"many," or "a number of," while an uncountable (mass) noun requires "less,"
+"much," or "an amount of." The blank sits at the quantifier position. The trap
+is that the sentence places a nearby noun of the opposite countability class in
+a prepositional modifier, pulling students toward the wrong quantifier. Common
+mass-noun traps include *information, equipment, research, advice, furniture,
+knowledge, progress,* and *data* (treated as singular mass in Standard English).
+
+Distractors: "less" before a countable plural (sounds natural in casual speech
+but is ungrammatical in formal writing), "many" before a mass noun (students
+overgeneralize from nearby countable nouns), and "amount of" before a countable
+plural (students confuse the number/amount distinction).
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Plural Inflection on a Mass Noun**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence whose head noun is a mass noun that students frequently
+mistake for a countable noun (*informations, equipments, researches, advices,
+furnitures*). The blank is at the noun itself or at the verb that must agree
+with it. If the noun position is blanked, the distractors include the
+pluralized form of the mass noun; if the verb position is blanked, the
+distractors include a plural verb triggered by treating the mass noun as
+plural. The core trap is that many English mass nouns have countable cognates
+in other languages, and students carry over the plural morphology.
+
+Distractors: plural form of the mass noun (e.g., "informations"), singular
+indefinite article before a mass noun ("an advice"), and a plural verb after a
+mass subject ("The research show..." instead of "shows").
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Collective or "-s-Ending" Noun Takes a Singular Verb**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence whose subject is a collective noun (*committee, team,
+group, audience, family*) or an "-s"-ending noun that is semantically singular
+(*news, mathematics, physics, economics, gymnastics, measles*). The blank is
+the verb position. The trap is twofold: the collective noun feels plural
+because it denotes multiple members, and the "-s" ending on academic-discipline
+nouns looks like a plural inflection. In Standard American English, these nouns
+take a singular verb. Distractors exploit both misperceptions.
+
+Distractors: plural verb after a collective noun (agrees with the implied
+members, not the grammatical unit), plural verb after an "-s"-ending singular
+noun (the suffix mimics a plural marker), and a quantifier that assumes the
+noun is countable ("many news" instead of "much news").
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
 ### `determiners_articles`
 
 Article where none is needed, or omitted required article.
 
+**Sub-pattern — Definite Article Before a First-Mentioned or Generic Noun**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence that introduces a noun for the first time in the discourse
+or uses it in a generic sense (e.g., "The researchers studied ___ effect of
+sleep on memory"). The blank sits at the determiner position before the noun.
+The correct answer is either the indefinite article "an" (first mention of a
+singular countable noun) or no article (generic plural or mass noun). The trap
+is that students over-apply "the" because the noun is important or specific in
+context, but specificity in meaning is not the same as uniqueness in the
+discourse — the definite article requires prior mention, a superlative, or an
+ordinally identified referent.
+
+Distractors: "the" before a first-mentioned singular count noun (sounds
+specific but violates the given-new principle), no article before a singular
+count noun (students confuse generic and specific omission), and "a" before an
+uncountable noun (students default to an article whenever a noun follows).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Missing Indefinite Article Before a Singular Count Noun**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence in which a singular count noun in subject or object
+position is preceded by a modifying adjective but has no article (e.g., "She
+became ___ respected researcher in the field"). The blank sits at the
+determiner position. The correct answer is the indefinite article ("a" or
+"an"). The trap is that students skip the article when an adjective intervenes
+between the article slot and the noun, or when the noun is an abstract role
+(*researcher, scientist, leader*) that feels "generic enough" to omit the
+article. In Standard English, every singular count noun requires a determiner.
+
+Distractors: no article (students treat the adjective as a determiner
+substitute), "the" (students assume a specific reference even though the noun
+has not been previously mentioned), and a demonstrative ("this" or "that")
+that over-specifies the reference.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Demonstrative-Determiner Agreement With a Distant Noun**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence where a demonstrative determiner ("this," "that," "these,"
+"those") must agree in number with its head noun, but a prepositional phrase
+intervenes containing a noun of the opposite number (e.g., "This ___ of
+measurements was taken" or "Those ___ of equipment is obsolete"). The blank is
+at the head-noun position. The correct answer is the noun whose number matches
+the demonstrative. The trap is that students' attention lands on the
+intervening noun (which has the opposite number) and they reverse the agreement
+direction, choosing a head noun whose number conflicts with the demonstrative.
+
+Distractors: a plural head noun after "this" (pulled by the plural noun in the
+intervening phrase), a singular head noun after "those" (pulled by a singular
+intervening noun), and an uncountable noun after "these" (students treat mass
+nouns as plural).
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
 ### `affirmative_agreement`
 
 `so` / `neither` / `nor` responses with inverted auxiliary matching.
+
+**Sub-pattern — Wrong Auxiliary in So/Neither Agreement**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a two-sentence context in which the first sentence uses a specific
+auxiliary or modal (*can, will, has, is, did*), and the second sentence
+expresses agreement with "so" or "neither/nor" followed by a blank for the
+auxiliary and then a new subject (e.g., "Marisol can solve differential
+equations, and so ___ her brother"). The correct answer is the same auxiliary
+or modal used in the first clause, inflected to agree with the *new* subject.
+The trap is that students reach for a default "do/does/did" regardless of the
+original verb form, or they select the auxiliary that matches the original
+subject's number rather than the new subject's number.
+
+Distractors: "does" when the original uses "can" (students default to
+do/does/did), "do" when the new subject is singular (agreement with the
+original plural subject instead of the new singular one), and "is" when the
+original clause uses a lexical verb in present perfect (students confuse the
+auxiliary role of "has").
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Polarity Mismatch in So/Neither Response**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence pair where the first clause is negative and the agreement
+clause must use "neither/nor" (not "so"), or the first clause is affirmative and
+the agreement clause must use "so" (not "neither"). The blank sits at the
+agreement word position (e.g., "The committee members did not support the
+amendment, and ___ did the chair"). The correct answer is "neither" (or "nor").
+The trap is that students reverse the polarity — using "so" after a negative
+statement or "neither" after an affirmative one — because they attend to the
+overall semantic agreement (both parties agree in sentiment) rather than the
+syntactic polarity of the trigger clause.
+
+Distractors: "so" after a negative clause (students focus on shared sentiment,
+not clause polarity), "neither" after an affirmative clause (the mirror error),
+and "also" or "too" without inversion (students avoid the inversion requirement
+entirely, producing a non-Standard-English structure).
+
+Classify with `syntactic_trap_key: "scope_of_negation"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Omitted Subject-Auxiliary Inversion After So/Neither**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence in which "so" or "neither" introduces an agreement clause
+and the blank requires inverted word order (auxiliary before subject) rather
+than the standard SVO order (e.g., "The researchers welcomed the new protocol,
+and so ___ the laboratory technicians"). The correct answer is a verb phrase
+with inverted order ("did the laboratory technicians"); distractors present
+non-inverted order ("the laboratory technicians did"). The trap is that
+students expect normal subject-verb order and fail to recognize that "so" and
+"neither" as sentence-initial adverbs trigger subject-auxiliary inversion in
+Standard English. This pattern also appears with "nor" after a negative clause.
+
+Distractors: non-inverted order (students default to SVO even after "so" or
+"neither"), a double-negative auxiliary after "neither" (e.g., "neither don't
+I" — students stack negation), and subject pronouns instead of subject nouns
+that obscure the inversion (students accept "so did they" but reject "so did
+the technicians" because the longer subject makes inversion feel unnatural).
+
+Classify with `syntactic_trap_key: "garden_path"` and
+`student_failure_mode_key: "grammar_fit_only"`.
 
 ### `voice_active_passive`
 
