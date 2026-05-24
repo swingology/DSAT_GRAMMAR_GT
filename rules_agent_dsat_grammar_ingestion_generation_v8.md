@@ -809,6 +809,66 @@ Insert a comma or dash at one of these five positions:
 Correct option: no punctuation at the target boundary.
 Wrong options: comma, dash, or colon at the forbidden location.
 
+**Sub-pattern — Punctuation Between Subject and Verb**
+
+(PT8 M2 Q23: "the porous rocks of the hills around Hot Springs ___ collect")
+
+Construct a sentence in which a long or topically heavy subject (a noun head
+trailed by prepositional phrases, a participial modifier, or an embedded
+identifier) sits immediately before the main verb, and place the blank at the
+subject–verb boundary. The correct option has no punctuation there because
+nothing separates a subject from its verb in Standard English, even when the
+subject is lengthy enough that a reader feels a pause. The trap relies on the
+illusion that a long subject "earns" a comma the way a long introductory
+phrase does.
+
+Distractors: a comma at the boundary, a dash at the boundary, and a colon at
+the boundary — each presenting a different "rhythmic" rationale (pause,
+emphasis, list-style introduction) for inserting a mark where none is allowed.
+
+Classify with `syntactic_trap_key: "interruption_breaks_subject_verb"` and
+`student_failure_mode_key: "internal_unit_punctuation_insertion"`.
+
+**Sub-pattern — Punctuation Between Verb and Its Complement or Object**
+
+(PT11 M2 Q21: "the part of a compound that determines the compound's color is called ___ the chromophore")
+
+Construct a sentence in which a linking verb plus its subject complement, or a
+transitive verb plus its direct object, forms a single required syntactic
+unit; place the blank between the verb and the complement/object. The correct
+option has no punctuation at that boundary because verb-and-complement (or
+verb-and-object) is an integrated unit. The trap exploits the temptation to
+"introduce" the complement with a comma, dash, or colon, treating the
+complement as if it were a parenthetical definition or list item.
+
+Distractors: a comma before the complement (most natural-sounding distractor),
+a dash before the complement (emphasis play), and a colon before the
+complement (mis-reads the boundary as an explanatory list).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "internal_unit_punctuation_insertion"`.
+
+**Sub-pattern — Punctuation Inside a Noun Phrase (Title/Role + Name or Modifier + Noun)**
+
+(PT7 M2 Q21: "Her portrait of novelist Zadie ___ is displayed")
+
+Construct a noun phrase in which a common-noun premodifier (a professional
+title, role label, category word, or descriptive modifier) sits immediately
+before its restrictive identifier — typically a proper name, a specific
+technical term, or another uniquely-identifying noun. Place the blank inside
+that noun phrase. The correct option has no punctuation inside the noun phrase
+because the modifier and the identifier together form one referring
+expression. The trap relies on students misreading the identifier as a
+nonrestrictive appositive that "deserves" commas, when in fact the identifier
+is restrictive and the noun phrase is one unit.
+
+Distractors: a comma between the modifier and the identifier (false
+nonrestrictive reading), a dash at the same boundary (emphasis play), and a
+colon at the same boundary (mis-reads the identifier as an explanatory item).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "restrictive_appositive_comma_insertion"`.
+
 ### `end_punctuation_question_statement`
 
 **Variant A — indirect question embedded in declarative:**
