@@ -860,6 +860,74 @@ subtype vocabulary. Choose distractor transitions from different relationship
 families (contrast, causal, additive, etc.) so each wrong option tests a
 distinct confusion.
 
+**Sub-pattern — Causal Result After Mechanism Description**
+
+(PT1 M2 Q28: "These spatulae temporarily bond with the atoms of whatever they touch")
+
+Write a first sentence that names a mechanism, structure, or process, and a
+second sentence that states the observable outcome that follows from it. The
+blank sits at the head of the outcome sentence and must signal a
+cause-to-effect relationship (`as a result`, `consequently`, `hence`,
+`accordingly`). The trap is that the two sentences share topic and lexical
+field, which makes additive or exemplifying transitions feel locally plausible
+even though only causation accounts for why the second sentence is true.
+
+Distractors: at least one exemplifying word (`for example`, `for instance`)
+that treats the outcome as one of many cases, one contrast word (`however`,
+`in contrast`) that wrongly opposes the two sentences, and one
+temporal/additive word (`meanwhile`, `similarly`, `previously`) that ignores
+the causal direction.
+
+Classify with `syntactic_trap_key: "none"`,
+`transition_subtype_key: "result_consequence"`, and
+`student_failure_mode_key: "transition_assumption"`.
+
+**Sub-pattern — Converse Pairing of Parallel Cases**
+
+(PT1 M1 Q30: "Domesticated dogs, _______ can see, hear, and smell by the end of two weeks")
+
+Build two sentences (or two clauses straddling the blank) that describe two
+named entities, groups, or systems on the same measurable dimension, where
+each entity sits at the opposite end of that dimension. The blank must signal
+the converse relationship — not refutation of a claim, but a side-by-side
+opposite (`by contrast`, `conversely`, `on the other hand`). The trap is
+surface parallelism: the matched syntax and shared topic make additive or
+similarity transitions feel right even though the substantive content is
+opposed.
+
+Distractors: a similarity word (`similarly`, `likewise`, `in addition`) that
+collapses the contrast, an exemplifying word (`for example`, `for instance`)
+that recasts the second case as a sub-case of the first, and a
+restatement word (`in other words`, `in summary`) that wrongly treats the two
+cases as the same point rephrased.
+
+Classify with `syntactic_trap_key: "none"`,
+`transition_subtype_key: "converse_opposite"`, and
+`student_failure_mode_key: "transition_wrong_direction"`.
+
+**Sub-pattern — Expectation Reversal After a Setup**
+
+(PT11 M2 Q28: "jorō spiders are gentle giants")
+
+Construct a first sentence that establishes an expectation — a hypothesis the
+researchers held, a prediction the model implies, an assumption the reader
+would default to — and a second sentence that reports a finding that defeats
+that expectation. The blank takes a refutation or alternative transition
+(`however`, `still`, `instead`, `nevertheless`, `though`). The trap is that
+the setup sentence often reads as a positive forward-moving claim, so a
+causal or confirming transition feels natural until the reader notices the
+second sentence overturns rather than extends the setup.
+
+Distractors: a causal/confirming word (`therefore`, `accordingly`, `indeed`)
+that treats the finding as following from the setup, an exemplifying word
+(`for example`, `for instance`) that treats the finding as an illustration
+rather than a contradiction, and an additive word (`furthermore`, `in
+addition`) that ignores the reversal.
+
+Classify with `syntactic_trap_key: "none"`,
+`transition_subtype_key: "contrast_refutation"`, and
+`student_failure_mode_key: "transition_wrong_direction"`.
+
 ### `choose_best_notes_synthesis`
 
 Provide 3–5 bullet-note facts covering a research study, historical figure,
