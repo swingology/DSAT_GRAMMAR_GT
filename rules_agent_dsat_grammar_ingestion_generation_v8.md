@@ -2225,6 +2225,72 @@ the stem without changing the underlying claim.
 Wrong options are factually compatible but emphasize the wrong actor, quantity,
 contrast, time period, or implication.
 
+**Sub-pattern — Distance or Quantity Foregrounding via Modifier Placement**
+
+(PT8 M1 Q30: "The sixty-two-mile-long Philadelphia and Lancaster Turnpike connected")
+
+Construct a notes-synthesis prompt whose goal explicitly asks the student to
+emphasize a measurable quantity — distance, area, population, or duration. Place
+the blank where the quantity modifier must attach to the subject noun phrase so
+that it becomes the sentence's focal descriptor. The correct option front-loads
+the quantity ("sixty-two-mile-long") and pairs it with the entity endpoints;
+distractors either bury the quantity in a subordinate clause, omit it entirely,
+or foreground a different attribute (historical primacy, construction date)
+instead. The trap is that students who process content holistically may select a
+factually accurate sentence that never actually foregrounds what the stem asks
+them to emphasize.
+
+Distractors: a wrong-scope option that highlights historical primacy or
+chronological status instead of quantity, a partial-purpose option that mentions
+the entity but omits the requested quantity, and a scope-shift option that
+focuses on dates or categories rather than measurement.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "notes_synthesis_wrong_goal"`.
+
+**Sub-pattern — Main-Clause vs. Subordinate-Clause Emphasis Shift**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence where the stem asks the student to emphasize one fact, and
+the answer choices vary which clause is main and which is subordinate. The
+correct option places the emphasized information in the main clause and
+subordinates the supporting detail; distractors reverse this hierarchy, placing
+the emphasized fact in a dependent clause introduced by "although," "while," or
+"despite," while the less important fact occupies the main clause. All options
+are grammatically correct and factually true, but only the one whose clause
+hierarchy matches the stem's emphasis goal is correct. The trap is that students
+who check only factual accuracy — not rhetorical emphasis — miss the structural
+cue.
+
+Distractors: a reversed-emphasis option that subordinates the requested fact,
+a balanced-coordination option that gives equal weight to both facts, and a
+scope-shift option that emphasizes a tangential detail not requested by the stem.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "notes_synthesis_wrong_goal"`.
+
+**Sub-pattern — Actor vs. Recipient Emphasis via Voice and Structure**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a passage or notes-synthesis prompt where the stem asks the student to
+emphasize what a specific actor did. The correct option uses active voice with
+the actor as subject; distractors include a passive-voice version that promotes
+the recipient to subject, a cleft or existential construction that buries the
+actor, and a nominalization that turns the action into an abstract noun phrase.
+All four options convey the same underlying facts, but only the active-voice
+option centers the actor as the stem requires. The trap is that passive
+constructions sound "formal" and therefore correct to students who conflate
+register with emphasis.
+
+Distractors: a passive-voice option that promotes the recipient, a
+nominalization option that turns the action into an abstract noun, and a
+cleft/existential option that obscures agency.
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
 ### `data_interpretation_claims`
 
 Use a short table, graph, or data description with a sentence that must
@@ -2233,6 +2299,71 @@ right variable, group, direction, and constraint.
 
 Wrong options cite real values while using the wrong comparison, wrong group,
 wrong time window, or wrong proportional/absolute interpretation.
+
+**Sub-pattern — Classification Logic Synthesis from Structured Notes**
+
+(PT6 M2 Q33: "Having the potential to damage national security if disclosed, most routine diplomatic correspondence is classified as Confidential")
+
+Construct a notes-synthesis prompt whose goal asks the student to apply a
+classification or conditional rule from the notes to a specific case. The
+correct option must combine two facts — the rule ("information causing 'damage'
+is Confidential") and the case ("routine diplomatic correspondence causes damage
+but not serious damage") — to produce a single sentence that identifies the
+correct category. Distractors reverse the causal attribution (the government
+classifies *as* Confidential rather than *because it is* Confidential), describe
+the system without applying it, or broaden the scope to include irrelevant
+details. The trap is that reversed-attribution options sound authoritative
+because they use vocabulary directly from the notes.
+
+Distractors: a reversed-attribution option that swaps the subject and predicate
+of the classification rule, a partial-purpose option that restates the general
+principle without specifying which category applies, and a scope-extension
+option that introduces an irrelevant detail from the notes.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "notes_synthesis_wrong_goal"`.
+
+**Sub-pattern — Proportional vs. Absolute Claim from Data**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a passage or data set where values increase in absolute terms but
+decrease or remain flat in proportional (per-capita, percentage, rate) terms —
+or vice versa. The stem asks which claim the data best supports. The correct
+option frames the claim in the proportional dimension; distractors state the
+absolute trend (which is technically true but answers the wrong question), claim
+a causal mechanism the data does not support, or conflate the two dimensions.
+The trap is that students who read only the directional trend (up or down)
+without checking whether the unit is absolute or proportional will select the
+absolute-trend distractor.
+
+Distractors: an absolute-trend option that is directionally true but addresses
+the wrong unit, a causal-claim option that overreaches beyond the data, and a
+scope-blend option that mixes absolute and proportional language ambiguously.
+
+Classify with `syntactic_trap_key: "presupposition_trap"` and
+`student_failure_mode_key: "overreading"`.
+
+**Sub-pattern — Reversed Attribution in Data-Backed Claims**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence or synthesis prompt where a relationship between two
+variables is described, and the correct option must preserve the direction of
+the relationship (X predicts Y, not Y predicts X). Distractors reverse the
+independent and dependent variables, present a correlational statement as
+causal, or swap the compared groups. All distractors use vocabulary and values
+drawn directly from the source material, making them feel substantiated. The
+trap is that the reversed-attribution distractor is nearly identical to the
+correct answer except for which variable is the subject and which is the
+outcome.
+
+Distractors: a reversed-direction option that swaps cause and effect, a
+correlation-as-causation option that overstates the relationship, and a
+wrong-group option that attributes the finding to the wrong population.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "scope_blindness"`.
 
 ### `conjunction_usage`
 
@@ -2293,6 +2424,74 @@ Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "
 Construct a sentence with a verb-preposition or adjective-preposition collocation where the correct preposition is idiomatic: `composed of`, `differ from`, `responsible for`, `interested in`, `capable of`, `independent of`, `account for`, `result in`, `consistent with`, `conducive to`.
 
 Wrong options substitute near-correct prepositions that are grammatically viable but idiomatically non-standard ("composed in," "differ with," "responsible to," "account on").
+
+**Sub-pattern — Noun-Preposition Collocation with Internal Punctuation Distractors**
+
+(PT4 M2 Q20: "explored themes of healing, self-discovery, and memory")
+
+Construct a sentence where a noun-preposition collocation (`themes of`, `evidence
+of`, `capacity for`) is followed by a list of noun phrases. The blank sits at the
+preposition, and the correct option supplies the idiomatic preposition alone
+(without punctuation). Distractors append a comma, dash, or colon after the
+preposition, exploiting the student's instinct to punctuate before a list. The
+trap is twofold: students must know the correct preposition *and* resist the urge
+to insert internal punctuation that breaks the prepositional phrase's syntactic
+unit. This sub-pattern combines a preposition-idiom test with the
+unnecessary-internal-punctuation rule.
+
+Distractors: the correct preposition plus a comma (`of,`), the correct
+preposition plus a dash (`of—`), and the correct preposition plus a colon (`of:`)
+— all inserting punctuation that violates the rule against breaking a syntactic
+unit.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "internal_unit_punctuation_insertion"`.
+
+**Sub-pattern — Verb-Preposition Collocation Swap**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence where the blank follows a verb that requires a specific
+preposition (`result in`, `account for`, `differ from`, `conducive to`). All
+four answer choices are prepositions. The correct option is the only one that
+forms the idiomatic collocation; distractors substitute near-synonymous
+prepositions drawn from related but different verb-preposition pairs (`result
+from`, `account to`, `differ with`, `conducive for`). The trap is that the
+wrong prepositions are grammatically possible in isolation and often appear in
+other collocations, so students who rely on "sounds right" without knowing the
+specific pairing will be drawn to a plausible but incorrect option.
+
+Distractors: a preposition from a superficially similar collocation (e.g., "from"
+when "in" is required), a preposition that forms a real but different idiom
+with the same verb (e.g., "differ with" vs. "differ from"), and a preposition
+that is common in general usage but wrong for this verb (e.g., "on" for
+"result").
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "preposition_idiom_error"`.
+
+**Sub-pattern — Adjective-Preposition Collocation Distractors**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence where the blank follows an adjective that requires a
+specific preposition (`capable of`, `interested in`, `consistent with`,
+`independent of`). All four answer choices are prepositions. The correct option
+completes the idiomatic adjective-preposition unit; distractors offer
+prepositions that pair with other adjectives in the same semantic field (`capable
+for`, `interested about`, `consistent to`, `independent from`). The trap is
+that the wrong prepositions feel plausible because they collocate with nearby
+adjectives the student may substitute mentally, and ESL students in particular
+may transfer collocations from their first language.
+
+Distractors: a preposition that pairs with a semantically related adjective (e.g.,
+"for" from "responsible for" when "of" from "capable of" is required), a
+preposition that is common in the general semantic domain (e.g., "about" for
+"interested about" instead of "in"), and a preposition that follows a different
+but phonologically similar adjective.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "preposition_idiom_error"`.
 
 Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "preposition_idiom"`.
 
