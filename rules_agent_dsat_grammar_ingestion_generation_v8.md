@@ -731,17 +731,69 @@ contraction.
 Use a noun phrase that renames an adjacent noun. Test comma vs no comma for
 essential vs nonessential appositive.
 
-**Sub-pattern A — restrictive appositive:**
-When an appositive uniquely identifies its antecedent, no punctuation
-surrounds it. Example: "the chemical compound aluminum oxide" — no commas.
+**Sub-pattern — Title/Role Noun Before a Proper Name (Restrictive)**
 
-**Sub-pattern B — title/role noun before proper name:**
-When a professional title immediately precedes a proper name as a restrictive
-identifier, no comma separates them. Example: "plant cell biologist Yuree Lee."
+(PT1 M2 Q27: "plant cell ___ showed that lipid molecules")
 
-**Sub-pattern C — coordinated restrictive appositive:**
-Two restrictive appositives joined by "and" take no surrounding punctuation.
-Example: "the writer and scholar James Baldwin."
+Construct a sentence in which a professional title, occupational label, or
+role noun (`biologist`, `critic`, `mathematician`, `artist`) sits immediately
+before a proper name that uniquely identifies the referent. Place the blank
+at the title-and-name boundary. The correct option has no comma there because
+the proper name is restrictive — it specifies which biologist/critic/etc. —
+and the title-plus-name combination is a single referring expression. The
+trap exploits the surface resemblance to a nonrestrictive appositive, where
+commas would be required.
+
+Distractors: a comma between the title and the name (false nonrestrictive
+reading), a comma after the name (asymmetric bracketing as if name were
+parenthetical), and paired commas around the name (full nonrestrictive
+treatment of an essential identifier).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "title_name_comma_insertion"`.
+
+**Sub-pattern — Restrictive Identifying Noun Phrase Without a Title**
+
+(PT4 M2 Q22: "the isotope carbon-13 (13C) to identify chemical signatures")
+
+Construct a sentence in which a category noun (`compound`, `isotope`,
+`species`, `novel`, `term`) is immediately followed by a uniquely-identifying
+expression — a technical name, a chemical formula, a title in italics, a
+parenthetical abbreviation, or a coordinated descriptor. Place the blank at
+the category-and-identifier boundary. The correct option has no comma there
+because the identifier is restrictive: without it, the reader cannot tell
+which compound/isotope/etc. is meant. The trap relies on the visual weight
+of the identifier (parentheses, italics, hyphenated form) making it look
+like a parenthetical insertion.
+
+Distractors: a comma before the identifier, a comma after the identifier
+(asymmetric punctuation), and paired commas wrapping the identifier as if
+it were nonrestrictive.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "restrictive_appositive_comma_insertion"`.
+
+**Sub-pattern — Nonrestrictive Appositive Set Off by Paired Commas (or Matching Dash)**
+
+(PT4 M1 Q25: "species ___ both native and nonnative ___ contribute to the wetland")
+
+Construct a sentence in which a noun is followed by a supplementary noun
+phrase that adds information but is not required to identify the noun —
+typically because the noun is already definite (proper name, definite
+description, prior antecedent). Place the blank at one or both ends of that
+supplementary phrase. The correct option brackets the appositive symmetrically
+with paired commas (or, when the surrounding sentence already uses em dashes
+for another set-off element, paired dashes that match the existing register).
+The trap is asymmetric punctuation: one comma but not the other, or a comma
+paired with a semicolon/dash, which breaks the bracketing rule even though
+each half looks locally acceptable.
+
+Distractors: a missing leading or trailing comma (asymmetric bracketing), a
+semicolon substituted for one of the commas (mis-promotes the appositive to
+clause status), and no punctuation at the boundary (run-together appositive).
+
+Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
+`student_failure_mode_key: "internal_unit_punctuation_insertion"`.
 
 Distractor pattern for restrictive sub-patterns:
 
