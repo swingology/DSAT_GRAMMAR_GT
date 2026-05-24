@@ -19,7 +19,7 @@ V8 = Path("rules_agent_dsat_grammar_ingestion_generation_v8.md")
 CITATION_RE = re.compile(r'\(PT(\d{1,2}) M(\d) Q(\d{1,2}): "[^"]+"\)')
 NO_EVIDENCE_RE = re.compile(r"\[NO PT EVIDENCE — source: [^\]]+\]")
 SUBPATTERN_RE = re.compile(r"^\*\*Sub-pattern — ([^*]+)\*\*", re.MULTILINE)
-FOCUS_HEADER_RE = re.compile(r"^### `([a-z_]+)`\s*$", re.MULTILINE)
+FOCUS_HEADER_RE = re.compile(r"^### `([a-z_]+)`(?:\s*/\s*`[a-z_]+`)?(?:\s*\([^)]+\))?\s*$", re.MULTILINE)
 
 
 def main() -> int:

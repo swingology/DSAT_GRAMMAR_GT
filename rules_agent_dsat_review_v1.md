@@ -7,7 +7,7 @@ This rubric defines the scoring dimensions, anchor bands, verdict logic, and str
 **Version:** v1
 
 **Companion rules:**
-- Grammar v7 (`rules_agent_dsat_grammar_ingestion_generation_v7.md`) is loaded **always** as the prose style canon for all DSAT writing.
+- Grammar v8 (`rules_agent_dsat_grammar_ingestion_generation_v8.md`) is loaded **always** as the prose style canon for all DSAT writing.
 - Reading v2 (`rules_agent_dsat_reading_v2.md`) is loaded **additively** when the candidate is a reading question.
 
 These companion rules provide the classification taxonomy, distractor construction heuristics, and difficulty calibration benchmarks that reviewers use to evaluate taxonomy match and fidelity.

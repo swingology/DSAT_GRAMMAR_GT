@@ -5,6 +5,24 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-24 — Grammar Rules v8 sub-pattern expansion
+
+**Model:** Claude Opus 4.7 (Subagent-Driven Development)
+
+### Added
+- **v8 grammar rules file** (`rules_agent_dsat_grammar_ingestion_generation_v8.md`) — Created from v7 with §B.3.0 sub-pattern policy preamble, tier table, and PT-cited sub-patterns for every grammar_focus_key across D.2.1–D.2.8
+- **126 sub-patterns across 44 focus keys** — Tier A (≥5 PT examples): 3 PT-cited each. Tier B (1–4 PT): ≥1 PT-cited + web-only. Tier C (0 PT): all web-only with `[NO PT EVIDENCE]` markers
+- **§B.3.0 preamble** — Hard cap 3 per key, citation format, anti-rigidity clause, evidence tier policy
+- **Sub-pattern extraction/validation tooling** (`scripts/v8/`) — `extract_focus_examples.py`, `compute_tier_table.py`, `validate_v8_citations.py`
+- **Per-focus-key draft records** (`analysis/v8/subpattern_drafts/`) — 44 markdown files
+- **Updated companion references** — `RULES_ANATOMY.md` and `rules_agent_dsat_review_v1.md` now point at v8
+
+### Changed
+- **Validator regex** (`scripts/v8/validate_v8_citations.py`) — Fixed to handle compound headers (`modifier_placement / dangling_modifier`) and parenthetical suffixes
+- **v7 frozen as audit trail** — `rules_agent_dsat_grammar_ingestion_generation_v7.md` no longer edited
+
+---
+
 ## 2026-05-23 — Write in user highlight feature
 
 **Model:** Antigravity (Agent)

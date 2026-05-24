@@ -1,7 +1,11 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-24T05:07:40.979Z
-> Files: 763 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-24T14:55:36.485Z
+> Files: 800 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../../../../tmp/
+
+- `v8-subpatterns-handoff-2026-05-24.md` — Handoff — DSAT Grammar Rules v7 → v8 Sub-Pattern Expansion (~2967 tok)
 
 ## ../.agents/skills/generation-test/
 
@@ -30,8 +34,8 @@
 - `.gitignore` — Git ignore rules (~36 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~40513 tok)
-- `CLAUDE.md` — OpenWolf (~274 tok)
+- `CHANGELOG.md` — CHANGELOG (~41073 tok)
+- `CLAUDE.md` — OpenWolf (~378 tok)
 - `DEBUG_LOG.md` — Debug Log (~43658 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
@@ -47,9 +51,11 @@
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark dir for OCR/LLM benchmark runners + HTMX dashboard (~600 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark Directory (~830 tok)
 - `Reading_v1_rules_report.md` — Reading_v1 Rules Impact Report (~4265 tok)
-- `rules_agent_dsat_grammar_ingestion_generation_v7.md` — rules_agent_dsat_grammar_ingestion_generetion_v7.md (~36396 tok)
+- `rules_agent_dsat_grammar_ingestion_generation_v7.md` — v7 frozen as audit trail (~36396 tok)
+- `rules_agent_dsat_grammar_ingestion_generation_v8.md` — v8 production rules with PT-cited sub-patterns (~72518 tok)
 - `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~30080 tok)
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
+- `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
@@ -121,6 +127,36 @@
 
 ## analysis/calibration/
 
+
+## analysis/v8/subpattern_drafts/
+
+- `adjective_adverb_distinction.md` — adjective_adverb_distinction — Sub-pattern Drafts (Tier C, 0 PT examples) (~658 tok)
+- `affirmative_agreement.md` — affirmative_agreement — Sub-pattern Drafts (Tier C, 0 PT examples) (~937 tok)
+- `apostrophe_use.md` — apostrophe_use — Sub-pattern Drafts (Tier C, 0 PT examples) (~864 tok)
+- `commonly_confused_words.md` — commonly_confused_words — Sub-pattern Drafts (Tier C, 0 PT examples) (~1094 tok)
+- `comparative_structures.md` — comparative_structures — Sub-pattern Drafts (Tier C, 0 PT examples) (~1027 tok)
+- `conjunction_usage.md` — conjunction_usage — Sub-pattern Drafts (Tier C, 0 PT examples) (~888 tok)
+- `data_interpretation_claims.md` — data_interpretation_claims — Sub-pattern Drafts (Tier B, 1 PT example) (~896 tok)
+- `determiners_articles.md` — determiners_articles — Sub-pattern Drafts (Tier C, 0 PT examples) (~857 tok)
+- `elliptical_constructions.md` — elliptical_constructions — Sub-pattern Drafts (Tier C, 0 PT examples) (~905 tok)
+- `emphasis_meaning_shifts.md` — emphasis_meaning_shifts — Sub-pattern Drafts (Tier B, 1 PT example) (~902 tok)
+- `hyphen_usage.md` — hyphen_usage — Sub-pattern Drafts (Tier C, 0 PT examples) (~896 tok)
+- `illogical_comparison.md` — illogical_comparison — Sub-pattern Drafts (Tier C, 0 PT examples) (~678 tok)
+- `modifier_placement.md` — modifier_placement — Sub-pattern Drafts (Tier C, 0 PT examples) (~1002 tok)
+- `negation.md` — negation — Sub-pattern Drafts (Tier C, 0 PT examples) (~617 tok)
+- `noun_countability.md` — noun_countability — Sub-pattern Drafts (Tier C, 0 PT examples) (~820 tok)
+- `parallel_structure.md` — parallel_structure — Sub-pattern Drafts (Tier C, 0 PT examples) (~864 tok)
+- `possessive_contraction.md` — possessive_contraction — Sub-pattern Drafts (Tier B, 2 PT examples) (~756 tok)
+- `precision_word_choice.md` — precision_word_choice — Sub-pattern Drafts (Tier B, 2 PT examples) (~812 tok)
+- `preposition_idiom.md` — preposition_idiom — Sub-pattern Drafts (Tier B, 1 PT example) (~921 tok)
+- `pronoun_case.md` — pronoun_case — Sub-pattern Drafts (Tier B, 1 PT example) (~732 tok)
+- `pronoun_clarity.md` — pronoun_clarity — Sub-pattern Drafts (Tier C, 0 PT examples) (~930 tok)
+- `quotation_punctuation.md` — quotation_punctuation — Sub-pattern Drafts (Tier C, 0 PT examples) (~925 tok)
+- `redundancy_concision.md` — redundancy_concision — Sub-pattern Drafts (Tier C, 0 PT examples) (~880 tok)
+- `register_style_consistency.md` — register_style_consistency — Sub-pattern Drafts (Tier B, 2 PT examples) (~852 tok)
+- `relative_pronouns.md` — relative_pronouns — Sub-pattern Drafts (Tier B, 1 PT example) (~847 tok)
+- `verb_form.md` — verb_form — Sub-pattern Drafts (Tier B, 3 PT examples) (~725 tok)
+- `voice_active_passive.md` — voice_active_passive — Sub-pattern Drafts (Tier C, 0 PT examples) (~606 tok)
 
 ## backend/
 
@@ -1054,6 +1090,16 @@
 
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~10510 tok)
 
+## docs/agents/
+
+- `domain.md` — Domain Docs (~316 tok)
+- `issue-tracker.md` — Issue tracker: Local Markdown (~210 tok)
+- `triage-labels.md` — Triage Labels (~262 tok)
+
+## docs/superpowers/plans/
+
+- `2026-05-23-grammar-rules-v7-to-v8-subpatterns.md` — Grammar Rules v7 → v8 Sub-Pattern Expansion Implementation Plan (~7452 tok)
+
 ## local_object_store/stimulus-assets/charts/e22a6533-19c8-5b62-b511-b254be102401/
 
 - `8d234175-93f6-4dc2-8ffe-091a2ea931ff.json` (~352 tok)
@@ -1067,6 +1113,12 @@
 - `export_review.py` — Export ingested questions to a markdown review file with tables and passages. (~1399 tok)
 - `gen_vocab.py` — Controlled-vocabulary source-of-truth tooling. (~6018 tok)
 - `reannotate_official_v7.py` — fetch_official_question_ids, submit_reannotate, poll_job, main (~2059 tok)
+
+## scripts/v8/
+
+- `compute_tier_table.py` — Tier each grammar_focus_key by PT evidence count. (~744 tok)
+- `extract_focus_examples.py` — Extract official-classification examples per grammar_focus_key. (~388 tok)
+- `validate_v8_citations.py` — Validate sub-pattern citation format in v8 markdown. (~745 tok)
 
 ## vocabulary/
 
