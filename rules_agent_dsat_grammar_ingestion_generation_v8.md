@@ -755,6 +755,77 @@ Classify with `syntactic_trap_key: "none"` and
 Start with a participial phrase whose logical subject is not the grammatical
 subject.
 
+**Sub-pattern — Possessive Noun After Introductory Participial Phrase**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence that opens with a participial phrase describing a person
+("Known for her innovative choreography," "Trained in classical violin," "Born
+into a family of artists"), then place the blank immediately after the comma
+where the subject must appear. The correct option uses the bare noun ("the
+choreographer Twyla Tharp," "the violinist Midori"), while the most plausible
+distractor uses the possessive form ("the choreographer's reputation," "Midori's
+performances") — an abstract noun derived from the person. The possessive creates
+a dangling modifier because an abstract noun like "reputation" cannot be the one
+who was "known for her choreography." The trap exploits the fact that the
+possessive sounds natural in context and the student must recognize that the
+modifier demands a person as its subject, not a person's attribute.
+
+Distractors: a possessive noun whose head cannot logically perform the action in
+the participial phrase, a passive construction that relegates the logical agent
+to a prepositional phrase, and a pronoun ("it") with no antecedent that matches
+the modifier's agent.
+
+Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
+
+**Sub-pattern — Misplaced Modifier Separated From Its Head Noun**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence in which a restrictive modifier (an adjective phrase,
+participial modifier, or relative clause) is separated from the noun it should
+describe by intervening material, causing it to attach to the nearest noun
+instead. Place the blank at the modifier position or at the noun-phrase
+boundary. The correct option repositions the modifier next to its intended head
+noun; distractors either keep the modifier in its current misplaced position or
+move it to a different wrong noun. The trap is that the misplaced version often
+reads fluently because the modifier's new nearest noun is a plausible (but
+incorrect) target, and students must parse the sentence's logical meaning
+rather than rely on surface proximity.
+
+Distractors: the modifier placed next to the nearest (wrong) noun, the modifier
+kept in its original misplaced position, and a passive rewrite that obscures the
+original agent but does not fix the misattachment.
+
+Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
+`student_failure_mode_key: "modifier_hitchhike"`.
+
+**Sub-pattern — Dangling Participial Phrase With Passive-Voice Main Clause**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence that opens with a participial phrase whose implied agent is
+a person or active entity, then follows the comma with a passive-voice main
+clause that does not name that agent as the subject ("Having studied the
+specimen for months, the results were published by the team"). The blank sits at
+the beginning of the main clause where the subject must appear. The correct
+option supplies the active-voice construction with the logical agent as subject
+("the team published the results"); distractors preserve the passive construction
+with an abstract noun or non-agent subject, or restructure without resolving the
+dangling modifier. The trap is that passive voice sounds formal and plausible,
+masking the logical mismatch between the participial phrase's agent and the main
+clause's grammatical subject.
+
+Distractors: the passive construction preserving the dangling modifier ("the
+results were published"), an inverted paraphrase where the participial phrase's
+agent appears in a prepositional phrase ("by the team") but not as the subject,
+and a gerund-subject version ("studying" as subject) that creates a different
+dangling reference.
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
 ### `punctuation_comma`
 
 Create a compound sentence with or without a coordinating conjunction. Test
@@ -1387,6 +1458,78 @@ but logically incompatible.
 
 Create a comparison where the things being compared are not grammatically
 parallel.
+
+**Sub-pattern — Possessive-vs-Bare Noun Mismatch in Comparisons**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a comparison sentence in which one compared element is introduced with
+a possessive noun ("Anya's cooking," "Jimmy's restaurant," "the novels of Jane
+Austen") and the second element is a bare proper noun or common noun without the
+corresponding possessive marker ("Nia," "Bob," "Charlotte Bronte"). The blank
+sits at or near the second compared element. The correct option inserts the
+possessive apostrophe ("Nia's"), adds the demonstrative pronoun ("those of
+Charlotte Bronte"), or supplies a helper verb ("Bob does"); distractors preserve
+the bare noun, producing an illogical comparison between a possessive attribute
+and a person. The trap is that in casual speech "Jimmy's restaurant has more
+customers than Bob" sounds natural, but it illogically compares "customers" to a
+person rather than to "Bob's customers."
+
+Distractors: the bare proper noun without possessive or demonstrative (compares
+attribute to person), a helper verb attached to the wrong element ("those of"
+with a singular antecedent), and a restructured sentence that fixes the
+possessive mismatch but introduces a new grammatical error.
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "illogical_comparison_blindness"`.
+
+**Sub-pattern — Missing Demonstrative Pronoun ("that of" / "those of")**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a comparison sentence in which the first element names an attribute of
+a person, place, or thing ("the size of Alaska," "the revenue of the company,"
+"the speed of a cheetah") and the second element names the person, place, or
+thing itself ("Texas," "its rival," "any land mammal"). The blank sits at the
+point where the demonstrative pronoun must be inserted. The correct option
+inserts "that of" (singular) or "those of" (plural) before the second compared
+element; distractors omit the demonstrative pronoun entirely, insert the wrong
+number ("that of" for a plural antecedent or "those of" for a singular
+antecedent), or restructure in a way that preserves the category mismatch. The
+trap exploits the fact that the sentence reads fluently without the demonstrative
+pronoun, and students must recognize that "the size of Alaska is twice Texas"
+illogically compares a size to a state.
+
+Distractors: omission of the demonstrative pronoun (bare comparison of attribute
+to entity), the singular "that of" where a plural "those of" is required (or
+vice versa), and a restructuring that paraphrases the comparison but keeps the
+two compared elements in different logical categories.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "illogical_comparison_blindness"`.
+
+**Sub-pattern — Individual-vs-Category Comparison Without "Other"**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence that compares an individual member to the category that
+includes it, omitting "other" or "else" ("A cheetah is faster than any land
+mammal," "Shakespeare has sold more books than anyone"). The blank sits at the
+comparison word or immediately after the compared element. The correct option
+inserts "other" before the category noun or "else" after an indefinite pronoun;
+distractors omit the qualifier (creating a logical impossibility — a cheetah
+cannot be faster than itself), replace "other" with a comparative intensifier,
+or restructure in a way that still omits the exclusion. The trap is that "faster
+than any land mammal" sounds emphatic and natural but is logically incoherent
+because the cheetah itself is a land mammal.
+
+Distractors: the bare category noun without "other" (the cheetah is compared
+against a group it belongs to), "any one" or "every" as a pseudo-qualifier that
+does not exclude the individual, and a restructured comparison that changes the
+word order but retains the logical error.
+
+Classify with `syntactic_trap_key: "scope_of_negation"` and
+`student_failure_mode_key: "overreading"`.
 
 ### `unnecessary_internal_punctuation`
 
@@ -2750,7 +2893,53 @@ Construct a sentence comparing a noun directly to an action, process, or dissimi
 Correct option: inserts "that of" or restructures so both compared items are the same grammatical and logical category.
 Wrong options: preserve the illogical pairing in different surface wordings.
 
-Classification: `grammar_role_key: "modifier"`, `grammar_focus_key: "illogical_comparison"`.
+**Sub-pattern — Person-vs-Work Comparison**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence that compares a creative work or attribute of a person to
+the person's bare name ("the novels of Jane Austen are more widely read than
+Charlotte Bronte," "the paintings of Frida Kahlo are more influential than Diego
+Rivera"). The blank sits at the point where the second compared element appears.
+The correct option inserts "those of" (for plural works) or "that of" (for a
+singular attribute) before the bare name, or uses the possessive form
+("Charlotte Bronte's"); distractors keep the bare proper noun, which illogically
+compares novels to a person. The trap exploits the fact that full names of
+artists and authors are commonly used metonymically in casual speech, so the
+illogical comparison sounds natural.
+
+Distractors: the bare proper noun without possessive or demonstrative (compares
+a work to a person), a possessive noun that still produces a category mismatch
+("the novels of Jane Austen" compared to "Charlotte Bronte's reputation"), and
+a restructuring that paraphrases the sentence but retains the person-vs-work
+comparison in a different form.
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "illogical_comparison_blindness"`.
+
+**Sub-pattern — Attribute-vs-Entity Comparison With Intervening Phrases**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence in which an attribute of one entity is compared to a
+different entity entirely, with long prepositional phrases or nonrestrictive
+clauses separating the two compared elements ("the mass of its tiny body is
+smaller than humans, who have comparatively enormous frames"). The blank sits at
+the second compared element. The correct option inserts "that of" before "humans"
+or restructures to compare mass to mass ("the mass of its body is smaller than
+that of a human"); distractors preserve the bare comparison of mass to people,
+or add a helper verb that still compares an attribute to an entity. The trap
+relies on the intervening descriptive material, which masks the category mismatch
+by making the sentence sound complete and fluent.
+
+Distractors: the bare noun comparison without "that of" (attribute compared to
+entity), a helper verb ("humans do") that fails to resolve the category mismatch
+because the verb describes human action rather than human mass, and a
+restructuring that adds a prepositional phrase to the second element but
+compares a different attribute than the first.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "illogical_comparison_blindness"`.
 
 ### `adjective_adverb_distinction`
 
@@ -2759,6 +2948,52 @@ Classification: `grammar_role_key: "modifier"`, `grammar_focus_key: "illogical_c
 **Variant B — action verb:** Use an action verb followed by a manner blank. Correct option: adverb. Wrong options: adjective, comparative adjective, noun phrase.
 
 Classification: `grammar_role_key: "modifier"`, `grammar_focus_key: "adjective_adverb_distinction"`.
+
+**Sub-pattern — Linking-Verb Sense Word Requires Adjective**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence in which a linking or sense verb (feel, smell, taste, look,
+sound, appear, seem, remain, become) connects the subject to a blank that
+describes the subject's state or quality, not the manner of the verb's action.
+The correct option supplies an adjective ("feels bad," "smells sweet," "tastes
+sour," "looks calm"). The trap exploits the fact that adding "-ly" to form an
+adverb sounds more formal or "correct" to many students ("feels badly," "smells
+sweetly," "tastes sourly"), when in fact the adverb form is almost always wrong
+after a linking verb because it describes how the action of sensing is performed
+rather than the subject's state. The only case where the adverb is correct is
+when the verb describes an actual sensory action ("the dog smells carefully"),
+and the SAT never tests this rare reading on the adjective/adverb distinction.
+
+Distractors: the -ly adverb form after the linking verb ("badly" for "feels
+badly"), the comparative adverb ("more sweetly"), and a past participle used as
+a subject complement that creates a different meaning or tense error.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "adverb_adjective_confusion"`.
+
+**Sub-pattern — Action-Verb Manner Blank Requires Adverb**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence in which an action verb (run, speak, work, examine, drive,
+perform) is followed by a blank that modifies the verb, describing how the
+action is performed. The correct option supplies an adverb ("spoke fluently,"
+"examined the specimen carefully," "drove recklessly"). The trap exploits the
+fact that many adjectives sound natural after common action verbs in casual
+speech ("she drove careful," "he spoke fluent"), and students must recognize that
+an adjective after an action verb is grammatically wrong because it has no noun
+to modify. This sub-pattern pairs especially well with verbs that also function
+as linking verbs in other contexts (e.g., "look" — "she looked carefully" vs.
+"she looked calm"), testing whether the student can identify the verb's function
+in the specific sentence.
+
+Distractors: the adjective form after the action verb ("careful" instead of
+"carefully"), the comparative adjective ("more careful"), and a noun phrase that
+replaces the manner adverb with a prepositional phrase or object.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "adverb_adjective_confusion"`.
 
 ### `commonly_confused_words`
 
