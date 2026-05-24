@@ -1,0 +1,70 @@
+# parallel_structure — Sub-pattern Drafts (Tier C, 0 PT examples)
+
+**Sub-pattern — Correlative Conjunction Parallelism**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence with a correlative conjunction pair (both/and, either/or,
+neither/nor, not only/but also, whether/or) where the blank sits in the element
+following the second half of the pair. The correct answer supplies a form that
+matches the grammatical structure of the element after the first half (e.g., if
+the first element is a gerund phrase, the second must also be a gerund phrase).
+The trap is that mismatched forms ("not only singing but also to dance") sound
+plausible in casual reading because the conjunction pair itself signals a
+connection, masking the structural asymmetry.
+
+Distractors: a non-parallel form that shifts part of speech or clause type across
+the pair (gerund after first half, infinitive after second), a form that matches
+the sentence's overall tense but not the parallel slot, and a form that adds an
+unnecessary subject pronoun, breaking the shared-subject structure.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "parallel_shape_bias"`.
+
+---
+
+**Sub-pattern — Mid-List Form Shift**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence with a three-item list (connected by commas and a final
+"and") where the first two items share one grammatical form and the third breaks
+the pattern (e.g., "supervising staff, managing budgets, and to report to senior
+management"). The blank sits at the third item. The correct answer supplies a
+form matching the first two items. The trap is that the first two items lull the
+reader into a rhythm and the break comes at the end, where attention has already
+drifted; the non-parallel form sounds acceptable because it conveys the right
+meaning even though it violates parallel structure.
+
+Distractors: the non-parallel form that matches surface meaning but breaks
+parallelism (infinitive after two gerunds, noun phrase after two verb phrases,
+adjective after two adverbs), a form that partially matches by sharing one
+feature (same tense but different voice, or same part of speech but different
+number), and a form that introduces a new subject, turning the third item into
+an independent clause.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "parallel_shape_bias"`.
+
+---
+
+**Sub-pattern — Comparison Parallelism Across As or Than**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence in which two elements are compared with "as…as" or
+"more…than" and the blank sits on one side of the comparison. The correct answer
+supplies a form that is grammatically parallel to the element on the other side
+(e.g., "better to read than to watch" rather than "better to read than watching").
+The trap is that the comparative construction makes the two halves feel
+connected, and shifting form (infinitive to gerund, noun phrase to clause) does
+not break the sentence's surface sense — it only breaks the structural
+parallelism.
+
+Distractors: a non-parallel form that shifts part of speech or clause type across
+the comparison boundary, a form that substitutes a pronoun or demonstrative for
+the parallel structure ("that" or "those" without the needed preposition), and a
+form that adds unnecessary words that obscure the parallel relationship.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "parallel_shape_bias"`.

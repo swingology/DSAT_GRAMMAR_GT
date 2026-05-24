@@ -1312,6 +1312,71 @@ Classify with `syntactic_trap_key: "none"` and
 Create a list or correlative construction where one element breaks form
 symmetry.
 
+**Sub-pattern — Correlative Conjunction Parallelism**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence with a correlative conjunction pair (both/and, either/or,
+neither/nor, not only/but also, whether/or) where the blank sits in the element
+following the second half of the pair. The correct answer supplies a form that
+matches the grammatical structure of the element after the first half (e.g., if
+the first element is a gerund phrase, the second must also be a gerund phrase).
+The trap is that mismatched forms ("not only singing but also to dance") sound
+plausible in casual reading because the conjunction pair itself signals a
+connection, masking the structural asymmetry.
+
+Distractors: a non-parallel form that shifts part of speech or clause type across
+the pair (gerund after first half, infinitive after second), a form that matches
+the sentence's overall tense but not the parallel slot, and a form that adds an
+unnecessary subject pronoun, breaking the shared-subject structure.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "parallel_shape_bias"`.
+
+**Sub-pattern — Mid-List Form Shift**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence with a three-item list (connected by commas and a final
+"and") where the first two items share one grammatical form and the third breaks
+the pattern (e.g., "supervising staff, managing budgets, and to report to senior
+management"). The blank sits at the third item. The correct answer supplies a
+form matching the first two items. The trap is that the first two items lull the
+reader into a rhythm and the break comes at the end, where attention has already
+drifted; the non-parallel form sounds acceptable because it conveys the right
+meaning even though it violates parallel structure.
+
+Distractors: the non-parallel form that matches surface meaning but breaks
+parallelism (infinitive after two gerunds, noun phrase after two verb phrases,
+adjective after two adverbs), a form that partially matches by sharing one
+feature (same tense but different voice, or same part of speech but different
+number), and a form that introduces a new subject, turning the third item into
+an independent clause.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "parallel_shape_bias"`.
+
+**Sub-pattern — Comparison Parallelism Across As or Than**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence in which two elements are compared with "as…as" or
+"more…than" and the blank sits on one side of the comparison. The correct answer
+supplies a form that is grammatically parallel to the element on the other side
+(e.g., "better to read than to watch" rather than "better to read than watching").
+The trap is that the comparative construction makes the two halves feel
+connected, and shifting form (infinitive to gerund, noun phrase to clause) does
+not break the sentence's surface sense — it only breaks the structural
+parallelism.
+
+Distractors: a non-parallel form that shifts part of speech or clause type across
+the comparison boundary, a form that substitutes a pronoun or demonstrative for
+the parallel structure ("that" or "those" without the needed preposition), and a
+form that adds unnecessary words that obscure the parallel relationship.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "parallel_shape_bias"`.
+
 ### `pronoun_case`
 
 Use a compound subject or object where pronoun case is tested.
@@ -2690,6 +2755,72 @@ relationships.
 Wrong options repeat a noun or idea already present, add a redundant modifier,
 or delete a necessary qualifier while becoming shorter.
 
+**Sub-pattern — Redundant Pairing**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence containing an adjacent word pair where the second word restates
+the meaning already expressed by the first (e.g., "end result," "advance forward,"
+"repeat again," "each and every," "reason is because"). The blank sits at the
+redundant word. The correct answer deletes the redundant word or replaces the
+pair with a single word. The trap is that the redundant word sounds emphatic or
+formal rather than unnecessary — students accept "advance forward" because
+"forward" seems to add directional precision, when in fact "advance" already
+includes the forward direction.
+
+Distractors: the redundant word retained (sounds more emphatic or specific but
+adds no meaning), a synonym that also restates the first word in a different way
+(e.g., "final result" instead of "end result" — still redundant), and a shorter
+option that deletes the redundant word but also removes a necessary qualifier
+or contrast word, making it too concise.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "longer_answer_bias"`.
+
+**Sub-pattern — Nominalization Wordiness**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence where a verb has been turned into a noun phrase preceded by a
+weak verb ("make a decision," "carry out an investigation," "give an explanation
+of"). The blank sits at the nominalized construction. The correct answer replaces
+the nominalized phrase with the direct verb form ("decide," "investigate,"
+"explain"). The trap is that the nominalized version sounds more formal or
+academic, so students assume it must be the correct choice, when in fact the
+DSAT rewards concision and the direct verb preserves all meaning in fewer words.
+
+Distractors: the nominalized phrase retained (sounds formal but is wordy), an
+even longer nominalization that adds unnecessary prepositional phrases ("make a
+decision about the matter of"), and a shorter option that replaces the
+nominalization with a verb but also deletes a necessary adverb or qualifier
+("quickly decided" becomes just "decided"), losing precision along with the
+wordiness.
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "formal_word_bias"`.
+
+**Sub-pattern — Shorter Option Deletes Required Qualifier**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence where several options express the same core idea with different
+amounts of wording, and the shortest option removes a qualifier, contrast word, or
+logical connector that is essential to the sentence's meaning (e.g., the shortest
+drops "however" from a contrast sentence, or removes "only" from a restrictive
+clause). The correct answer is the most concise option that still preserves the
+required qualifier. The trap is the student's instinct to always pick the shortest
+answer on concision questions, which leads to deleting a word that carries
+irreplaceable logical content.
+
+Distractors: the shortest option that deletes the essential qualifier (passes the
+concision test but changes the meaning), the original wordy option that retains the
+qualifier but also includes redundant phrasing (preserves meaning but is not
+concise), and a mid-length option that retains the qualifier but adds unnecessary
+synonyms or padding.
+
+Classify with `syntactic_trap_key: "scope_of_negation"` and
+`student_failure_mode_key: "underreading"`.
+
 ### `precision_word_choice`
 
 Create a context where several real words share a broad semantic field but only
@@ -3065,6 +3196,73 @@ and syntax.
 Wrong options are grammatically possible but signal the wrong relation, leave a
 correlative pair incomplete, or create a clause-type mismatch.
 
+**Sub-pattern — Double Conjunction Error**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence where a subordinating conjunction and a coordinating
+conjunction both appear for the same logical relationship (e.g., "Although she
+studied hard, but she still struggled"). The blank sits at one of the conjunction
+positions. The correct answer removes one conjunction — either keep the
+subordinating conjunction with no comma-plus-FANBOYS, or replace the subordinating
+conjunction with a comma-plus-FANBOYS. The trap is that both words individually
+signal the same logical relationship (contrast), so students assume adding both
+strengthens the connection, when in fact the double conjunction creates a
+grammatical error.
+
+Distractors: retaining both conjunctions (sounds emphatic but is ungrammatical),
+replacing the subordinating conjunction with a different subordinating conjunction
+that preserves the redundancy (e.g., "Even though…but"), and removing the comma
+between the clauses without removing either conjunction (creates a run-on rather
+than fixing the double-conjunction error).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "transition_wrong_direction"`.
+
+**Sub-pattern — Wrong Logical Relation Conjunction**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence where the blank is a conjunction or transitional adverb and
+the surrounding context signals a specific logical relationship (cause, contrast,
+concession, condition) that the correct answer must match. Distractors supply
+conjunctions that are grammatically possible but signal the wrong relationship
+(e.g., "therefore" in a contrast sentence, "however" in a cause-and-effect
+sentence). The trap is that each distractor conjunction is a real, common
+transition word — the student must determine which logical relationship the
+sentence requires, not merely which word sounds formal or plausible.
+
+Distractors: a conjunction signaling the opposite relationship (contrast for
+cause, addition for concession), a conjunction that is vague or neutral and
+fails to specify the relationship, and a conjunction that is grammatically
+correct in isolation but creates a comma splice or fragment in the given
+sentence structure.
+
+Classify with `syntactic_trap_key: "presupposition_trap"` and
+`student_failure_mode_key: "transition_wrong_direction"`.
+
+**Sub-pattern — Correlative Pair Mismatch**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence where a correlative conjunction pair appears with an
+incorrect or incomplete second half (e.g., "neither…or" instead of "neither…nor",
+"both…as well as" instead of "both…and", "not only…but" without "also"). The
+blank sits at the second half of the pair. The correct answer supplies the
+canonical partner. The trap is that the imposter pair sounds familiar ("both…as
+well as" is common in speech; "neither…or" feels natural by analogy with
+"either…or") and students do not verify that both halves form a recognized
+correlative pair.
+
+Distractors: the common but incorrect pairing ("neither…or," "both…as well as,"
+"not only…but" without "also"), a coordinating conjunction that works
+syntactically but does not complete the correlative pair ("neither…and"), and a
+restructured version that removes the correlative pair entirely and uses a simple
+conjunction, losing the emphasis the correlative pair provides.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "idiom_memory_pull"`.
+
 ### `elliptical_constructions`
 
 Use a comparison or parallel structure where repeated words are omitted
@@ -3073,6 +3271,73 @@ The correct option preserves the omitted material's role without ambiguity.
 
 Wrong options omit too much, omit from only one side of a comparison, or create
 an elliptical phrase whose missing words would not match the prior structure.
+
+**Sub-pattern — Pronoun Case After Than or As**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a comparison using "than" or "as" where the blank is a pronoun that
+completes an elliptical clause (e.g., "She is taller than ______"). The correct
+answer supplies the subjective-case pronoun ("I," "he," "she," "they") because
+the omitted verb makes it the subject of the elliptical clause ("than I am"). The
+trap is that the objective case ("me," "him," "her," "them") sounds natural in
+casual speech and appears plausible because students fail to mentally supply the
+omitted verb to test which case the pronoun must satisfy.
+
+Distractors: objective-case pronoun (sounds natural in conversation but is
+grammatically incorrect in the elliptical construction), reflexive pronoun
+("myself," "himself" — adds false precision without satisfying the syntactic
+slot), and possessive pronoun ("mine," "hers" — changes the comparison from
+subject-to-subject to subject-to-possession).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
+**Sub-pattern — Ambiguous Ellipsis After Than**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence with a "than" comparison where omitting the verb creates two
+grammatically valid but logically distinct readings (e.g., "John likes Mary more
+than Paul" — either John likes Mary more than Paul likes Mary, or John likes Mary
+more than John likes Paul). The blank sits where a disambiguating verb or
+pronoun should appear. The correct answer supplies the form that matches the
+intended comparison. The trap is that both readings are grammatically possible, so
+students accept the ambiguous version because it "sounds fine" without noticing
+that the omission makes the sentence logically unclear.
+
+Distractors: the ambiguous bare form with no disambiguating verb (both readings
+are possible, so the student picks it by default), a verb that resolves the
+ambiguity toward the wrong reading (correct grammar but wrong meaning), and a
+restructured version that preserves the comparison but introduces an unnecessary
+preposition or shifts the clause order.
+
+Classify with `syntactic_trap_key: "pronoun_ambiguity"` and
+`student_failure_mode_key: "underreading"`.
+
+**Sub-pattern — Missing "That of / Those of" in Possessive Comparison**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence that compares a quality attributed to one entity with a
+different entity directly rather than with the same quality of that entity
+(e.g., "The population of China is larger than India" — should be "larger than
+that of India" or "larger than India's"). The blank sits at the point where
+"that of" or "those of" is needed. The correct answer inserts the demonstrative
+pronoun plus preposition to restore logical parallelism. The trap is that the
+sentence reads fluently without the demonstrative — the reader's mind
+automatically supplies the missing comparison point — so the omission feels
+natural even though it compares a population to a country rather than a
+population to a population.
+
+Distractors: the bare noun without the demonstrative (reads smoothly but makes
+an illogical comparison), a possessive form that partially fixes the comparison
+but changes the sentence structure unnecessarily, and a version that substitutes
+"like" or "similar to" for "than," changing the comparison from inequality to
+similarity.
+
+Classify with `syntactic_trap_key: "pronoun_ambiguity"` and
+`student_failure_mode_key: "illogical_comparison_blindness"`.
 
 ### `comparative_structures`
 
@@ -3200,6 +3465,82 @@ Write a passage where the meaning distinction is essential to the sentence. Wron
 Do NOT use homophone possession pairs (its/it's, whose/who's) — those belong to `possessive_contraction`.
 
 Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "commonly_confused_words"`.
+
+**Sub-pattern — Affect/Effect and Imply/Infer Reversal**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence where the blank requires one member of a commonly reversed
+verb-noun pair ("affect" the verb vs. "effect" the noun, or "imply" the
+speaker-action vs. "infer" the listener-action). The correct answer supplies the
+word whose part of speech and meaning match the syntactic slot. The trap is that
+both words share strong phonological similarity and semantic proximity — "affect"
+and "effect" both relate to causation, "imply" and "infer" both relate to
+conveying meaning — so the wrong member sounds plausible in the sentence until the
+student checks whether the slot requires a verb or a noun, a speaker-action or a
+listener-action.
+
+Distractors: the reversed member of the pair ("effect" where "affect" is needed,
+or "infer" where "imply" is needed — sounds nearly identical and occupies the same
+semantic field), a third word from the same semantic field that is grammatically
+correct but semantically wrong (e.g., "produce" where "affect" is needed), and a
+more formal synonym that changes the sentence's register without fitting the
+precise meaning (e.g., "insinuate" where "imply" is needed).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
+**Sub-pattern — Near-Homophone Confusion (Principal/Principle, Stationary/Stationery)**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence where the blank requires one member of a near-homophone pair
+whose members differ by a single letter or vowel swap ("principal" vs.
+"principle," "stationary" vs. "stationery," "complement" vs. "compliment,"
+"discreet" vs. "discrete"). The correct answer supplies the word whose meaning
+fits the sentence context. The trap is that both words sound identical or nearly
+identical in speech and differ by only one letter in writing, so students who
+process by sound rather than by meaning cannot distinguish them. The sentence
+context must be specific enough that only one member of the pair fits — but the
+other member has a plausible "sounds-right" reading.
+
+Distractors: the near-homophone partner ("principle" where "principal" is needed,
+"stationery" where "stationary" is needed — passes the "sounds right" test), a
+word from an adjacent semantic field that is spelled differently but has a similar
+meaning component (e.g., "rule" where "principle" is needed, but "rule" is not a
+member of the tested pair), and a more common word that loosely fits the context
+but is not the precise member of the confused pair (e.g., "main" where
+"principal" is needed).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
+**Sub-pattern — Elicit/Illicit and Complement/Compliment Context Trap**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence where the blank requires one member of a confused pair whose
+members share a root or phonological form but differ in meaning and grammatical
+function ("elicit" a verb meaning "draw out" vs. "illicit" an adjective meaning
+"illegal"; "complement" a noun/verb meaning "completes" vs. "compliment" a
+noun/verb meaning "praise"; "allusion" a noun meaning "reference" vs. "illusion"
+a noun meaning "false perception"). The correct answer supplies the word whose
+meaning and part of speech fit the sentence context. The trap is that the sentence
+context does not strongly rule out the wrong member — "illicit response" could
+seem to mean "drawing out a response" if the student confuses the two words, and
+"compliment the design" could seem like "completing the design" if the student
+blurs the distinction.
+
+Distractors: the wrong member of the pair (occupies the same syntactic slot and
+shares a phonological form — "illicit" where "elicit" is needed, "compliment"
+where "complement" is needed), a synonym of the wrong member that is
+grammatically correct but semantically off (e.g., "illegal" where "elicit" is
+needed, changes the sentence meaning entirely), and a more generic word that
+weakens the sentence without being outright wrong (e.g., "draw" where "elicit" is
+needed — correct meaning but less precise).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
 
 ### `preposition_idiom`
 
