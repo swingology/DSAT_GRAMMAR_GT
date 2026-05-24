@@ -494,22 +494,54 @@ Manhattan Review, PrepMaven, UWorld, and TestPrepKart may be used as cross-refer
 Use a singular collective, abstract, or inverted subject. Insert a plural
 prepositional object or appositive between subject and verb.
 
-**Secondary trap patterns:**
-- *Inversion* — place the verb before the subject ("Among the central findings
-  **is/are** the claim that…"). Distractors exploit the plural noun immediately
-  preceding the verb.
-- *Collective noun + atypical predicate* — subject is a collective ("the
-  committee," "the data set") paired with a predicate that takes a bare
-  infinitive or participle, so number marking is less salient.
-- *Neither/nor compound* — "Neither the director nor the producers **was/were**
-  informed." Distractors use the nearer-noun agreement heuristic incorrectly.
-- *Stacked relative clauses* — two relative clauses are nested on the same noun
-  phrase: "a toxin [that is deadly to nematodes] [that **come/comes** in contact
-  with it]." The second *that* agrees with the distant plural antecedent
-  ("nematodes"), not with the singular noun ("toxin") immediately preceding the
-  blank. Classify with `syntactic_trap_key: "long_distance_dependency"`.
-  Distractors offer singular verbs that agree with the nearer singular noun.
-  `student_failure_mode_key: "nearest_noun_reflex"`.
+**Sub-pattern — Intervening Phrase Between Subject and Verb**
+
+(PT10 M2 Q24: "Mathematician Grigori Perelman, sometimes in conjunction with mathematicians")
+
+Construct a singular subject and separate it from the verb with a prepositional
+phrase or appositive containing one or more plural attractor nouns. The blank
+sits at the verb slot, far enough from the head noun that the reader's working
+memory latches onto the nearer plural. The genuine subject must still control
+number.
+
+Distractors: offer plural verb forms that agree with the most recent plural
+noun inside the intervening phrase, plus a tense-mismatched plural form.
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
+
+**Sub-pattern — Gerund or Nominalization as Singular Subject**
+
+(PT5 M1 Q22: "Using copyrighted songs without permission")
+
+Construct an `-ing` gerund phrase or an abstract nominalization
+("her writing," "the frog's range") as the subject. The gerund head looks
+verb-like and often governs a plural object inside the phrase, tempting the
+reader to read the whole subject as plural. The required verb is singular.
+
+Distractors: plural verb forms (and a non-finite distractor such as a
+participle) that match the embedded plural object inside the gerund phrase.
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
+
+**Sub-pattern — Relative Pronoun with Quantifier-Partitive Antecedent**
+
+(PT9 M2 Q21: "biomedical scientists—many of whom")
+
+Construct a plural noun followed by a partitive or quantifier phrase ("many of
+whom," "each one of which," "one of those that") that introduces a relative
+clause; the blank is the verb inside that relative clause. The verb must agree
+with the plural antecedent of the relative pronoun, not with the singular
+quantifier word ("one," "each," "many") that sits immediately before the
+pronoun.
+
+Distractors: singular verb forms that agree with the nearer quantifier word,
+plus one form that agrees with an unrelated singular noun earlier in the
+sentence.
+
+Classify with `syntactic_trap_key: "long_distance_dependency"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
 
 ### `pronoun_antecedent_agreement`
 
