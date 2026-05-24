@@ -932,6 +932,66 @@ Use a clause that is either essential or nonessential. Test `that` vs
 Create a sentence where an independent clause is followed by an explanation,
 list, or elaboration.
 
+**Sub-pattern — Colon Introducing an Explanatory IC After an Independent Clause**
+
+(PT6 M2 Q25: "goats are notoriously indiscriminate: they will devour all kinds of shrubs")
+
+Construct a first independent clause whose final noun or adjective invites
+expansion (a category label like `indiscriminate`, `notorious`, `unusual`, or
+a hedged claim that demands a "because"-style follow-up), and place the blank
+at the boundary just before a second IC that explains, justifies, or
+illustrates the first. The correct option is a colon, which licenses the
+left-to-right "promise-and-payoff" relation between two ICs without naming the
+logical link. The trap is that the second IC reads as if a coordinating
+conjunction or comma alone could carry the relation; students reach for the
+softer mark and produce a splice.
+
+Distractors: comma alone (canonical splice between two ICs), comma plus
+coordinating conjunction (binds the clauses but redundantly *names* a relation
+the colon would leave implicit), and no punctuation (fused run-on).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "comma_fix_illusion"`.
+
+**Sub-pattern — Colon Introducing an Elaborating Clause After a Topically Open IC**
+
+(PT1 M1 Q24: "in the opposite direction of Earth's magnetic field when searching for food:")
+
+Construct an IC whose final phrase ends on a topically charged noun
+(`food`, `prey`, `safety`, `survival`) that leaves the reader with an
+unanswered "why" or "how," then attach a second IC that supplies the answer.
+Place the blank at the boundary. The correct option is a colon. The trap is
+that subordinator-led distractors (`while`, `because`, `since`) feel
+explanatory in their own right and bait students into treating the boundary
+as a subordinate-clause attachment rather than a clause-to-clause hand-off
+between two grammatically equal ICs.
+
+Distractors: a comma (canonical splice), a subordinator like `while` or
+`because` (which would demote the second clause to a fragment dependent on the
+first), and no punctuation (fused boundary).
+
+Classify with `syntactic_trap_key: "early_clause_anchor"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Colon Introducing a Contrastive or Result IC**
+
+(PT9 M1 Q24: "emerged:")
+
+Construct an IC whose verb (`emerged`, `revealed`, `resulted`, `proved`)
+projects an upshot the reader expects to be stated next, and follow it with a
+second IC that delivers that upshot (often a surprising or contrastive
+finding). Place the blank at the boundary. The correct option is a colon,
+which performs the result/contrast hand-off with maximal economy. The trap is
+that the boundary "feels" like a list-introducer or a coordination, and any of
+the comma/conjunction distractors produces a punctuation error (splice, fused
+run-on, or incomplete coordination).
+
+Distractors: comma alone (splice), bare coordinating conjunction with no
+comma (fused boundary), and no punctuation (run-on).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "comma_fix_illusion"`.
+
 ### `conjunctive_adverb_usage`
 
 Join two independent clauses with a conjunctive adverb.
