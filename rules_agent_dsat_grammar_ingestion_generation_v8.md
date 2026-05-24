@@ -2,9 +2,11 @@
 
 ## Purpose
 
-This is the consolidated v7 production rule file for the DSAT grammar
-ingestion and generation agent. It extends v6 with taxonomy corrections and
-additions derived from a cross-referenced audit against College Board official
+This is the consolidated v8 production rule file for the DSAT grammar
+ingestion and generation agent. It extends v7 with PT-cited sub-patterns
+across all production grammar_focus_keys, layered on the v7 taxonomy
+(unchanged). v7 itself extends v6 with taxonomy corrections and additions
+derived from a cross-referenced audit against College Board official
 documentation, Khan Academy, The Critical Reader, PrepScholar, Test Innovators,
 Albert.io, and released practice tests PT1–PT11.
 
