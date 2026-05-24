@@ -904,17 +904,70 @@ Correct option: produces one or more complete, correctly bounded sentences.
 Wrong options: create a fragment, comma splice, fused sentence, or boundary that
 breaks an essential modifier from its clause.
 
-**Sub-pattern — appositive-comma illusion masking a sentence boundary:**
-Use a first sentence ending in a noun phrase, followed by a second sentence that
-begins with a capitalized appositive-like noun phrase and then continues into a
-main clause. The tempting distractor attaches the second sentence with a comma
-because the opening noun phrase appears to rename the prior noun, but the
-following main clause makes the comma choice a comma splice. The correct option
-uses a period or another valid sentence boundary. Classify with
-`grammar_focus_key: "sentence_boundary"` or `"comma_splice"` depending on
-the final error, keep `syntactic_trap_key` at the closest approved broad key
-or `"none"`, and use `student_failure_mode_key: "comma_fix_illusion"` with a
-review note naming this subpattern.
+**Sub-pattern — Period Between Two Fully Independent Clauses**
+
+(PT8 M2 Q21: "plastic-bag consumption decreased by up to ninety ___ taxes are subject to what economists call the 'rebound effect'")
+
+Build two independent clauses on a shared topic where the second clause begins
+with a noun phrase that could be misread as a continuation of the first
+(`Geological structures…`, `Taxes are subject to…`, `These results
+suggest…`). Place the blank at the boundary. The correct option supplies a
+period (and capitalization on the second clause) — or, where the choice set
+allows, a semicolon. The trap is topical continuity: because both clauses
+elaborate the same idea, a comma or no punctuation feels like internal
+phrasing rather than a clause break.
+
+Distractors: a bare comma (comma splice), no punctuation (fused/run-on), and a
+comma plus a conjunctive adverb (`however,` `therefore,`) without the required
+heavier mark before it.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "comma_fix_illusion"`. Note
+`boundary_subpattern: "period_between_independent_clauses"` in review_notes.
+
+**Sub-pattern — Subordinating Conjunction Repairs a Fused Boundary**
+
+(PT6 M1 Q25: "A ray diagram reveals how this ___ the hole's small size restricts light to a single ray")
+
+Construct two clauses whose logical relation is causal, concessive, or
+temporal (`because`, `although`, `while`, `since`, `when`) and place the blank
+at the boundary so that the correct answer is the subordinating conjunction
+that demotes one clause to a dependent role, resolving the fused boundary in
+one move. The trap is that punctuation-only options (comma, semicolon, em
+dash) all look "clean" but leave both clauses independent and either splice
+them or stack them without showing the logical relation the passage requires.
+
+Distractors: a comma alone (comma splice that also drops the logical
+relation), a semicolon (joins as equals but ignores subordination cue), and a
+coordinating conjunction (`and`, `but`) that flattens the causal/concessive
+relation to mere addition or contrast.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "punctuation_intimidation"`. Note
+`boundary_subpattern: "subordinator_resolves_fused_clauses"` in review_notes.
+
+**Sub-pattern — Declarative vs. Interrogative Boundary**
+
+(PT1 M2 Q22: "_______ Michel was determined to find out")
+
+Set up a passage that poses or implies a question (`Michel wondered ___`,
+`The team set out to ask ___`, `What are X, and how ___`) and place the blank
+at the boundary between an embedded interrogative and a following declarative
+frame. The correct option keeps the embedded question in declarative
+word order (no subject-aux inversion, no question mark) because it is
+syntactically a noun-clause complement, not a direct question. The trap is the
+question-word lexical cue (`how`, `whether`, `what`), which pulls students
+toward inverted order and a terminal question mark.
+
+Distractors: subject-auxiliary inversion (`how do these plants grow?`) that
+turns an embedded clause into a direct question, a terminal question mark on
+what should be a declarative period, and a comma that leaves the embedded
+clause dangling without a finite boundary.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "declarative_question_confusion"`. Note
+`boundary_subpattern: "embedded_interrogative_declarative_frame"` in
+review_notes.
 
 ### `sentence_fragment`
 
