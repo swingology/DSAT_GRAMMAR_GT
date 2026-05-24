@@ -1005,6 +1005,73 @@ Negation placed where scope ambiguity creates multiple interpretations.
 
 Subject-predicate incompatibility.
 
+**Sub-pattern — Participial-Phrase Opener Demands a Logically Compatible Subject**
+
+(PT6 M2 Q21: "Woven from recycled yarn and hand tufted [...] _______ so lush")
+
+Open the sentence with a participial phrase that describes a *physical
+property or process* (woven, painted, built, carved). The blank sits at the
+matrix-clause subject. Only the option whose head noun can plausibly *be the
+thing that was woven / painted / built* satisfies logical predication; options
+that name the artist, the artist's biography, or an event built around the
+artist create a dangling modifier even when the resulting sentence is
+grammatical. The test is semantic, not syntactic: ask whether the participle
+could literally have been applied to the candidate subject.
+
+Distractors: an inverted construction in which the artist creates the artifact
+(grammatical but mis-attaches the modifier); a biographical paraphrase
+("X is an Argentine textile artist whose tapestries are...") that buries the
+true subject one clause deeper; a temporal "when"-clause that swaps the modifier
+out for a different relationship.
+
+Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
+`student_failure_mode_key: "modifier_hitchhike"`.
+
+**Sub-pattern — Consequence-Marking Participle Where Finite Verb Misaligns**
+
+(PT1 M2 Q21: "snow and ice cover, _______ the monkeys to hunt for marine animals")
+
+Construct a sentence whose first clause names a cause (a condition, a finding,
+an event) and end it with a comma followed by a blank that introduces the
+downstream consequence. Only the present participle ("forcing," "leading,"
+"prompting") attaches as a non-finite consequence-marking modifier of the
+prior clause; a finite present-tense verb creates a comma splice, a past-tense
+verb breaks tense alignment with the cause clause, and an infinitive
+mis-asserts the action as a separate purpose. The subject of the consequence
+participle must remain the same logical entity ("the snow," "the cover") that
+brought the consequence about. Also exemplified by PT10 M1 Q22.
+
+Distractors: a finite present-tense form ("forces") that produces a comma
+splice; a finite past-tense form ("forced") that drifts the tense and re-anchors
+the clause; an infinitive ("to force") that recodes consequence as purpose.
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "nonfinite_for_finite"`.
+
+**Sub-pattern — Real Agent Must Be the Grammatical Subject of the Reporting Verb**
+
+(PT11 M2 Q25: "electrograms show that [...] the most highly skilled soccer players have")
+
+Build a sentence whose first phrase names an instrument, recording, study, or
+data source ("recordings of electrical activity in the brain"), then place the
+blank where the matrix clause must begin. Only the option whose subject is the
+true logical agent of the reporting verb ("electrograms show," "the study
+finds") makes predication coherent; distractor options nominalize the responses
+or push the players themselves into the subject slot, leaving the introductory
+phrase without a logical predicate. The trap is that several distractors
+preserve all the content words but attach them to a subject that cannot
+*perform* the verb's action. Also exemplified by PT11 M2 Q24 (the subject
+must logically *lack thermal energy*, not abstractly *explain its inability*).
+
+Distractors: a paraphrase in which the human participants are the subject of
+"have," leaving the recordings stranded; a nominalized subject ("responses
+show," "the lack of thermal energy explains") that turns the active observation
+into an abstract claim; a passive or "captured-in" construction that demotes
+the true agent into a modifier.
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
 ### `quotation_punctuation`
 
 Comma placement with quotation marks.
