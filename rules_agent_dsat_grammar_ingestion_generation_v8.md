@@ -1148,6 +1148,72 @@ Subordinate clause presented as a complete sentence.
 
 Two independent clauses joined with only a comma.
 
+**Sub-pattern — Comma plus Coordinating Conjunction Repairs the Splice**
+
+(PT7 M1 Q22: "Leibniz wheel calculators were popular in the first half of the twentieth century ___ these ingenious devices were eventually replaced by electronic calculators")
+
+Construct two independent clauses on a single topic whose relation is
+adversative or additive (`but`, `and`, `so`, `yet`) and place the blank at the
+boundary. The correct option supplies a comma followed by a coordinating
+conjunction (FANBOYS), the canonical SAT fix that both binds the clauses and
+names their logical relation in one move. The trap is the topical fluency of
+the prose: students leave a bare comma (the canonical splice) or, equally
+seductively, drop punctuation entirely on the assumption that a conjunction
+alone licenses the join.
+
+Distractors: a bare comma (the canonical splice), no punctuation (fused/run-on
+sentence), and a bare coordinating conjunction with no comma (still a fused
+boundary, since the comma is required before FANBOYS joining two ICs).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "comma_fix_illusion"`. Note
+`comma_splice_subpattern: "comma_plus_FANBOYS_repair"` in review_notes.
+
+**Sub-pattern — Semicolon Upgrade Repairs the Splice (No Conjunction Available)**
+
+(PT4 M1 Q23: "Watt sewed strips of blankets together to craft a 10-by-13-inch sampler ___ in 2014, she arranged folded blankets into two large stacks")
+
+Construct two independent clauses linked by parallel temporal or structural
+markers (`in 2004 … in 2014`, `first … later`, `on one side … on the other`)
+where no coordinating conjunction is present in the choice set. Place the
+blank at the boundary. The correct option supplies a semicolon, the
+conjunction-free repair for two equal-rank ICs. The trap is that the parallel
+time/structure cue feels like internal phrasing rather than a clause break, so
+students try a comma alone or a comma plus a redundant adverbial.
+
+Distractors: a bare comma (canonical splice), a comma plus a stray adverbial
+that does not change the boundary status (`sampler, later,`), and a comma
+relocated to the wrong side of the parallel marker.
+
+Classify with `syntactic_trap_key: "early_clause_anchor"` and
+`student_failure_mode_key: "comma_fix_illusion"`. Note
+`comma_splice_subpattern: "semicolon_upgrade_no_conjunction"` in review_notes.
+
+**Sub-pattern — Demote One IC to a Participial/Non-Finite Modifier**
+
+(PT9 M1 Q25: "This hypothesis ___ that certain trees, such as P. sylvestris, survived with little visible pollen output")
+
+Construct a sentence whose subject is followed by a finite-verb slot and then
+a `that`-clause complement (`This hypothesis ___ that …`, `These results
+___ that …`, `The proposal ___ that …`). The choice set offers competing
+verb forms, including finite tenses (`suggested`, `suggests`, `has suggested`)
+and a participial form (`suggesting`). The correct option is the
+participial/non-finite form, which demotes what would otherwise be a second
+finite predicate to a modifying phrase attached to the subject noun — leaving
+exactly one main clause and dissolving the splice at the verb-form layer
+rather than the punctuation layer. The trap is that every finite option reads
+locally as a verb the sentence needs, so students never recognize that a
+finite choice would create two ICs separated only by an upstream comma.
+
+Distractors: any finite tense (`suggests`, `suggested`, `has suggested`) that
+turns the noun phrase into a second independent clause, producing a splice
+with the preceding comma; subject-verb-agreement variants among the finite
+options absorb the secondary error budget.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`. Note
+`comma_splice_subpattern: "non_finite_verb_demotion_repair"` in review_notes.
+
 ### `run_on_sentence`
 
 Two independent clauses fused with no punctuation or conjunction.
