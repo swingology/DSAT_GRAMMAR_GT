@@ -1042,14 +1042,72 @@ Classify with `syntactic_trap_key: "none"` and
 
 ### `end_punctuation_question_statement`
 
-**Variant A — indirect question embedded in declarative:**
-Use a main clause like "The researchers wondered / asked / considered"
-followed by a subordinate question clause. Correct: period. Wrong options:
-question mark, comma with no end mark.
+Construct a sentence whose end punctuation must be chosen on the basis of
+sentence type — declarative versus interrogative — even though a WH-word
+(`how`, `why`, `which`, `what`) appears inside the clause. The blank is the
+end of the sentence; the correct option pairs the right punctuation with the
+right (declarative) word order.
 
-**Variant B — coordinated direct questions:**
-Use two question clauses joined by "or" or "and." Correct: single question
-mark. Wrong options: period, comma, question mark after each clause.
+**Sub-pattern — Indirect Question After Verb of Cognition**
+
+(PT6 M1 Q22: "Researchers Amit Kumar and Nicholas Epley investigated how ___")
+
+Open with a verb of cognition or inquiry (`investigated`, `wondered`,
+`considered`, `examined`, `asked`) that takes a WH-headed complement
+(`how X happens`, `why X matters`, `which X applies`). The blank closes the
+sentence inside that embedded clause. Because the matrix sentence is
+declarative, the embedded clause must keep normal subject–verb order
+(`people perceive`, not `do people perceive`) and end in a period. The trap is
+the WH-word at the head of the embedded clause, which superficially mimics a
+direct question.
+
+Distractors: a question mark with subject-auxiliary inversion (full direct-
+question form), a question mark with declarative word order (correct order,
+wrong mark), and subject-auxiliary inversion with a period (wrong order, right
+mark).
+
+Classify with `syntactic_trap_key: "presupposition_trap"` and
+`student_failure_mode_key: "declarative_question_confusion"`.
+
+**Sub-pattern — Embedded WH-Clause Inside a Gerund or Participial Phrase**
+
+(PT11 M1 Q19: "scanning a search results page and evaluating what you see before deciding which link ___")
+
+Build a sentence whose blank closes an embedded WH-clause that is itself the
+object of a gerund or participle (`deciding which link you should choose`,
+`predicting how the system will respond`). The full matrix sentence is
+declarative — typically a definition or generalization (`Click restraint is
+the practice of …`) — so the sentence must end with a period, and the
+embedded clause must keep declarative word order. The trap is the deeply
+embedded WH-word plus a modal (`should`, `will`, `can`) that primes the
+reader for a direct question.
+
+Distractors: subject-auxiliary inversion with a period (right mark, wrong
+order), declarative word order with a question mark (right order, wrong mark),
+and subject-auxiliary inversion with a question mark (both wrong).
+
+Classify with `syntactic_trap_key: "presupposition_trap"` and
+`student_failure_mode_key: "declarative_question_confusion"`.
+
+**Sub-pattern — "Which Is Why" Declarative Despite WH-Marker**
+
+(PT11 M2 Q19: "The clashing notes can echo a long way across the mountains, which is why ___")
+
+Construct a sentence whose final clause is a non-restrictive `which is why`
+(or `which is how`, `which is when`) tail attached to a declarative main
+clause. The blank closes the `which is why` clause with a full predicate
+(`ganga has been used as a communication method`). Because `which is why` is a
+relative-clause connector — not a question stem — the whole sentence remains
+declarative and must end in a period, with normal subject–verb order in the
+tail. The trap is the WH-word `why` sitting visibly at the front of the tail
+clause.
+
+Distractors: declarative order with a question mark (right order, wrong mark),
+subject-auxiliary inversion with a period (wrong order, right mark), and
+inversion with a question mark (both wrong, full direct-question form).
+
+Classify with `syntactic_trap_key: "presupposition_trap"` and
+`student_failure_mode_key: "declarative_question_confusion"`.
 
 ### `finite_verb_in_relative_clause`
 
