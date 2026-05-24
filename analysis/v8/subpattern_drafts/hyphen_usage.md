@@ -1,0 +1,70 @@
+# hyphen_usage — Sub-pattern Drafts (Tier C, 0 PT examples)
+
+**Sub-pattern — Compound Adjective in Predicative Position (Hyphen Must Be Removed)**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence in which a compound adjective appears after a linking verb
+in predicative position (e.g., "The results of the study were well ___ known" or
+"The performance was first ___ rate"). The blank sits at the hyphen boundary
+within the compound modifier. The correct option has no hyphen because compound
+adjectives are hyphenated only before the noun they modify; after a linking verb,
+the modifier is predicative and the hyphen is removed. The trap exploits
+positional inertia — students see *well-known* hyphenated elsewhere and assume
+the hyphen is permanent regardless of position.
+
+Distractors: the hyphenated form in predicative position (*well-known* after a
+linking verb), the unhyphenated form in attributive position (*well known
+scientist* before the noun), and a fused compound (*wellknown*) that does not
+exist in standard English.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "internal_unit_punctuation_insertion"`.
+
+---
+
+**Sub-pattern — *-ly* Adverb in a Compound Modifier (Hyphen Must Not Appear)**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence in which an *-ly* adverb modifies a following adjective
+before a noun (e.g., "a ___ changing landscape" or "the ___ researched report").
+The blank sits at the hyphen boundary. The correct option has no hyphen because
+adverbs ending in *-ly* already unambiguously modify the next word, making the
+hyphen redundant and incorrect (*rapidly changing*, not *rapidly-changing*). The
+trap is that students generalize the "hyphenate compound modifiers" rule without
+the *-ly* exception and insert a hyphen where it is grammatically forbidden.
+
+Distractors: the hyphenated *-ly* compound (*rapidly-changing*), an
+unhyphenated non-*-ly* compound (*well known scientist* before the noun — wrong
+because *well* is not an *-ly* adverb and does need a hyphen in attributive
+position), and a comma inserted between adverb and adjective (*rapidly, changing*
+landscape), which breaks the compound entirely.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+---
+
+**Sub-pattern — Suspended Hyphen in a Coordinated Compound Series**
+
+[NO PT EVIDENCE — source: Albert.io]
+
+Construct a sentence in which two compound adjectives share a base element and
+must be coordinated with a suspended hyphen (e.g., "first- and ___ class
+passengers" or "long- and ___ term effects"). The blank sits at the hyphen in
+the second compound. The correct option repeats the hyphen before the shared
+base (*first- and second-class*), or, in a more advanced variant, omits the
+second hyphen when the base is already stated (*first- and second-class
+passengers*). The trap is that students either drop both hyphens (*first and
+second class*) or hyphenate both compounds fully without suspending (*first-class
+and second-class*), failing to recognize the suspended-hyphen convention.
+
+Distractors: no hyphens at all (*first and second class* before the noun), full
+hyphenation without suspension (*first-class and second-class* — redundant but
+not wrong, though it fails to match the suspended form tested), and a hyphen
+only on the first compound without the coordinating hyphen on the second
+(*first- and second class* — missing the suspended hyphen on *second-*).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`.

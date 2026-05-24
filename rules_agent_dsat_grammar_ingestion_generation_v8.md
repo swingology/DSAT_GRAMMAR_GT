@@ -972,6 +972,70 @@ review_notes.
 Use a plural possessive or a possessive pronoun that looks like a
 contraction.
 
+**Sub-pattern — Possessive Pronoun vs. Contraction Homophone (its/it's, their/they're, whose/who's)**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence in which a possessive pronoun and its contraction
+homophone both fit the surrounding syntax if the reader skips the expansion test
+(e.g., "The organism lost ___ ability to regenerate" or "___ unclear why the
+experiment failed"). The blank sits at the possessive-vs-contraction boundary.
+The correct option is the possessive pronoun without an apostrophe (*its*,
+*their*, *whose*) when the word shows ownership, or the contraction (*it's*,
+*they're*, *who's*) when it expands to "it is," "they are," or "who is." The
+trap exploits the auditory overlap — students hear *its* and *it's* as
+identical in speech and default to the apostrophe form because it "looks more
+complete."
+
+Distractors: the contraction form where possession is required (*it's* for
+*its*), the possessive form where a contraction is required (*its* for *it's*),
+and a third homophone from the set (*there* for *their/they're*, *your* for
+*you're*) that introduces an additional error type.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "common_idiom_pull"`.
+
+**Sub-pattern — Four-Way Possessive/Plural/Contraction Distinction**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence in which the same base noun can appear in four
+morphological forms — plain plural, singular possessive, plural possessive, or
+contraction — and context narrows the choice to exactly one (e.g., "The ___
+findings were published last year," where the blank must be *researchers'*). The
+correct option is determined by two checks: (1) is the noun singular or plural
+(use verb agreement or a quantifier to signal), and (2) does the following noun
+show possession (look for a noun that "belongs to" the blanked word). The trap is
+that all four options look plausible on a quick read; the student must slow
+down and run both checks rather than matching sound.
+
+Distractors: the plain plural without an apostrophe (*researchers*, when the
+next noun is possessed), the singular possessive with *'s* (*researcher's*,
+when the antecedent is plural), and the contraction form (*researchers're*, a
+non-word that exploits the apostrophe-reflex).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Irregular Plural Possessive With *'s***
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence with an irregular plural noun (*children*, *women*, *men*,
+*people*, *geese*) followed by a possessed noun (e.g., "The ___ playground was
+renovated over the summer"). The blank sits at the possessive form. The correct
+option adds *'s* because the plural does not end in *s* (*children's*). The trap
+is that students apply the regular-plural rule — "just add an apostrophe after
+the *s*" — to a noun that is plural but has no *s* to put the apostrophe after,
+producing *children'* or omitting the apostrophe entirely (*children*).
+
+Distractors: the apostrophe-only form on a noun that lacks a trailing *s*
+(*children'*), the bare plural with no possessive marker (*children*), and the
+singular possessive (*child's*) when the context clearly requires a plural.
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
 ### `appositive_punctuation`
 
 Use a noun phrase that renames an adjacent noun. Test comma vs no comma for
@@ -1448,6 +1512,71 @@ Classify with `syntactic_trap_key: "none"` and
 ### `hyphen_usage`
 
 Use a compound modifier before a noun where hyphenation is required.
+
+**Sub-pattern — Compound Adjective in Predicative Position (Hyphen Must Be Removed)**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence in which a compound adjective appears after a linking verb
+in predicative position (e.g., "The results of the study were well ___ known" or
+"The performance was first ___ rate"). The blank sits at the hyphen boundary
+within the compound modifier. The correct option has no hyphen because compound
+adjectives are hyphenated only before the noun they modify; after a linking verb,
+the modifier is predicative and the hyphen is removed. The trap exploits
+positional inertia — students see *well-known* hyphenated elsewhere and assume
+the hyphen is permanent regardless of position.
+
+Distractors: the hyphenated form in predicative position (*well-known* after a
+linking verb), the unhyphenated form in attributive position (*well known
+scientist* before the noun), and a fused compound (*wellknown*) that does not
+exist in standard English.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "internal_unit_punctuation_insertion"`.
+
+**Sub-pattern — *-ly* Adverb in a Compound Modifier (Hyphen Must Not Appear)**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence in which an *-ly* adverb modifies a following adjective
+before a noun (e.g., "a ___ changing landscape" or "the ___ researched report").
+The blank sits at the hyphen boundary. The correct option has no hyphen because
+adverbs ending in *-ly* already unambiguously modify the next word, making the
+hyphen redundant and incorrect (*rapidly changing*, not *rapidly-changing*). The
+trap is that students generalize the "hyphenate compound modifiers" rule without
+the *-ly* exception and insert a hyphen where it is grammatically forbidden.
+
+Distractors: the hyphenated *-ly* compound (*rapidly-changing*), an
+unhyphenated non-*-ly* compound (*well known scientist* before the noun — wrong
+because *well* is not an *-ly* adverb and does need a hyphen in attributive
+position), and a comma inserted between adverb and adjective (*rapidly, changing*
+landscape), which breaks the compound entirely.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Suspended Hyphen in a Coordinated Compound Series**
+
+[NO PT EVIDENCE — source: Albert.io]
+
+Construct a sentence in which two compound adjectives share a base element and
+must be coordinated with a suspended hyphen (e.g., "first- and ___ class
+passengers" or "long- and ___ term effects"). The blank sits at the hyphen in
+the second compound. The correct option repeats the hyphen before the shared
+base (*first- and second-class*), or, in a more advanced variant, omits the
+second hyphen when the base is already stated (*first- and second-class
+passengers*). The trap is that students either drop both hyphens (*first and
+second class*) or hyphenate both compounds fully without suspending (*first-class
+and second-class*), failing to recognize the suspended-hyphen convention.
+
+Distractors: no hyphens at all (*first and second class* before the noun), full
+hyphenation without suspension (*first-class and second-class* — redundant but
+not wrong, though it fails to match the suspended form tested), and a hyphen
+only on the first compound without the coordinating hyphen on the second
+(*first- and second class* — missing the suspended hyphen on *second-*).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`.
 
 ### `logical_predication`
 
@@ -2401,6 +2530,72 @@ Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
 ### `quotation_punctuation`
 
 Comma placement with quotation marks.
+
+**Sub-pattern — Comma and Period Inside Closing Quotation Marks (American Convention)**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence that ends with a direct quotation followed by a period or
+comma attribution (e.g., "The author writes, 'This discovery ___'" or "She called
+the result 'surprising ___' and continued her analysis"). The blank sits at the
+punctuation boundary between the closing quotation mark and the sentence-level
+punctuation. The correct option places the period or comma inside the closing
+quotation mark, following Standard American English convention. The trap exploits
+the logical intuition that punctuation should sit outside the quotation if it
+belongs to the surrounding sentence — British convention allows this, but the
+SAT follows American convention unconditionally.
+
+Distractors: the period or comma placed outside the closing quotation mark
+(British convention, wrong on the SAT), no comma before the opening quotation
+mark when a verb of speaking introduces the quote, and a semicolon or colon
+placed inside the closing quotation mark (these always go outside).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "punctuation_intimidation"`.
+
+**Sub-pattern — Colon vs. Comma Before a Full-Sentence Quotation**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence in which a complete independent clause precedes a direct
+quotation, and the blank sits at the punctuation mark introducing the quotation
+(e.g., "The governor was clear about one thing___ 'The budget must be
+balanced.'"). The correct option is a colon because the introductory clause is a
+complete sentence and the quotation is a formal amplification. The trap is that
+students reach for a comma — which is also valid after verbs of speaking — but
+a comma after a non-speaking verb (*stated, emphasized, insisted*) in a full
+declarative sentence is less conventional than a colon; meanwhile, a colon after
+an incomplete thought (*The governor announced: "..."*) is always wrong.
+
+Distractors: a comma after an incomplete introductory clause (*announced,*
+instead of *announced:*), a colon after a fragment rather than a complete
+independent clause, and no punctuation before the quotation at all (run-in
+without attribution).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "internal_unit_punctuation_insertion"`.
+
+**Sub-pattern — Integrated Short Quotation Without Introductory Comma**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence in which a short word or phrase is quoted and woven into
+the surrounding syntax without an introductory verb of speaking (e.g., "The
+researchers described the phenomenon as '___ unprecedented' in the field" or
+"She argued that the policy was '___ counterproductive' from the start"). The
+blank sits at the punctuation before the quotation. The correct option is no
+comma — a short, integrated quotation needs no introductory punctuation. The
+trap is that students insert a comma before every quotation mark, treating all
+quotations as if they were introduced by a verb of speaking, when in fact only
+full-sentence quotations after attribution verbs need introductory commas.
+
+Distractors: a comma before the integrated quotation (students over-apply the
+"comma before quote" rule), a colon before a short integrated phrase (students
+treat any quotation as requiring formal introduction), and a period splitting the
+quotation into a separate sentence (students break the integration).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "punctuation_intimidation"`.
 
 ### `transition_logic`
 
