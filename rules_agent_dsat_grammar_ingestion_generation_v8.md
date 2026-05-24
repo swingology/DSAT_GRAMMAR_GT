@@ -1518,6 +1518,65 @@ Classify with `syntactic_trap_key: "none"` and
 
 Two independent clauses fused with no punctuation or conjunction.
 
+**Sub-pattern — Fused Boundary Repaired by Period (Sentence Break)**
+
+(PT1 M2 Q24: "adjustments. Prior")
+
+Construct two independent clauses that share topical continuity (a definition
+plus an upstream-time contrast, a claim plus a justification) so that a
+careless reader hears them as one breath, and place the blank at the boundary.
+The correct option is a period (full sentence break), which is the only legal
+repair when no coordinating conjunction is available and a semicolon is not in
+the choice set. The trap is the smooth topical flow: students leave the
+boundary unpunctuated (`adjustments prior`), drop in a bare comma, or insert a
+coordinator (`adjustments and prior`) that fails to bind two ICs.
+
+Distractors: no punctuation at all (the canonical fused run-on), comma alone
+(canonical comma splice), and bare coordinating conjunction with no comma
+(still a fused boundary, since `and` alone cannot join two ICs).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "comma_fix_illusion"`.
+
+**Sub-pattern — Coordinating Conjunction Without Required Comma Between Two ICs**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct two independent clauses whose logical relation invites a FANBOYS
+coordinator (`and`, `but`, `so`, `yet`) and design the choice set so that one
+distractor supplies the conjunction but omits the comma required before it.
+The correct option restores the comma-plus-conjunction pair. The trap is the
+half-rule reflex: students remember that FANBOYS can join two ICs but forget
+that the comma is mandatory when both flanks are independent, so a bare
+coordinator looks "almost right" and the sentence reads as a run-on.
+
+Distractors: bare coordinator with no comma (fused run-on disguised by the
+conjunction), comma without coordinator (canonical splice), and conjunctive
+adverb without semicolon (different rule misapplied to the same boundary).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Long Compound-Complex Sentence Missing a Legal IC Boundary**
+
+[NO PT EVIDENCE — source: Khan Academy SAT R&W course]
+
+Construct a sentence whose first stretch reads as a polished subordinate-plus-
+main clause unit, then continues into a second independent clause without any
+period, semicolon, colon, or comma-plus-FANBOYS at the IC boundary. Place the
+blank at the second-IC boundary. The correct option supplies a legal boundary
+mark (period or semicolon). The trap is rhetorical polish: the sentence
+*sounds* fluent because subordinators, parallel phrases, and verb-tense
+consistency mask the missing boundary, so students accept the bare or
+comma-only join as legitimate.
+
+Distractors: bare comma (splice), no punctuation (fused run-on), and a
+relative-pronoun substitution (`which`, `that`) that would demote the second
+IC to a fragment while still leaving a punctuation error.
+
+Classify with `syntactic_trap_key: "long_distance_dependency"` and
+`student_failure_mode_key: "surface_similarity_bias"`.
+
 ### `noun_countability`
 
 Mass noun with plural article or vice versa.
