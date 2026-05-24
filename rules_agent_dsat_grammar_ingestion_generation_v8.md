@@ -1132,6 +1132,70 @@ focus when the tested expression is not a standalone transition word covered by
 Wrong options signal the wrong relationship, reverse cause and effect, overstate
 certainty, or connect two ideas that the passage keeps separate.
 
+**Sub-pattern — Infinitive of Purpose After an Action Verb**
+
+(PT9 M2 Q20: "uses poetry rather than prose _______ the true story")
+
+Construct a main clause whose verb names a deliberate action ("uses," "designed,"
+"created," "wrote"), then place the blank where a downstream phrase must express
+the *purpose* for which the action was undertaken. Only the bare-infinitive
+("to tell," "to forge") encodes the purpose relationship; a finite verb would
+turn the second clause into an independent claim, and a participle would shift
+the relationship to manner or simultaneity. See B.5 (`purpose_action`) for the
+related transition family. Also exemplified by PT4 M2 Q24 ("a contest [...] to
+forge").
+
+Distractors: a finite present or past form that creates a comma splice or
+falsely asserts the action as a separate event; a bare gerund/participle that
+recasts the relationship as accompaniment; a coordinated "and + -ing" form that
+turns purpose into a second action.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "nonfinite_for_finite"`. The
+`transition_subtype_key` for the correct option is `purpose_action`.
+
+**Sub-pattern — Active Subject Preserves Causal Agency After a Causal Cue**
+
+(PT11 M1 Q23: "the titles allow the listener to approach each piece free from expectations")
+
+After a prior clause has named an *agent* and an *intended effect*, place the
+blank at a continuation slot where one option makes the true agent the
+grammatical subject of an active verb while distractor options bury the agent
+in a "by"-phrase, a possessive ("the bioswales' mitigation"), or a
+nominalization ("the mitigation of..."). All four options can be parsed, but
+only the active-subject version preserves the causal relationship that the
+prior sentence sets up. Also exemplified by PT4 M2 Q25 ("the bioswales have
+mitigated [...] flooding").
+
+Distractors: a passive construction that demotes the agent to an oblique
+phrase; a nominalized-subject version that turns the action into an abstract
+state; a possessive-headed paraphrase that obscures who is doing what.
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Finite Verb Required to Anchor a Compound Subject**
+
+(PT8 M2 Q22: "His energetic gestures [...] and his habit of barreling [...] _______ transform")
+
+Build a sentence with a long compound subject (two parallel noun phrases joined
+by "and") whose verb sits at the blank. The reader is tempted to extend the
+nominal-modifier chain ("helping," "that helped," "to help") that ran through
+the second conjunct, but the sentence still needs a *finite* verb to predicate
+the compound subject; only the finite past form ("helped") closes the clause.
+Also exemplified by PT7 M1 Q25, where only the option that supplies the
+sentence's true subject and a finite predicate ("the Alaska Centennial
+Commission sponsored a contest") completes the participial-phrase opener
+coherently.
+
+Distractors: a participle ("helping") that continues the modifier chain
+without ever predicating; a relative clause ("that helped") that buries the
+predication; an infinitive ("to help") that re-reads the relationship as
+purpose.
+
+Classify with `syntactic_trap_key: "long_distance_dependency"` and
+`student_failure_mode_key: "nonfinite_for_finite"`.
+
 ### `emphasis_meaning_shifts`
 
 Create a sentence where word order, modifier placement, or phrase choice changes
