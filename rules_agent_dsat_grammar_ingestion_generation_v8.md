@@ -694,6 +694,62 @@ Correct option: the only verb form that can serve the required syntactic role.
 Wrong options: participle, infinitive, inflected form after a modal, or a verb
 form that leaves the sentence without a finite main predicate.
 
+**Sub-pattern — Infinitive After Enable-plus-Object**
+
+(PT11 M2 Q20: "enables cartographers like Karachi Cartography founder Namra Khalid ___ maps")
+
+Construct a sentence with a causative verb that takes an object plus an
+infinitive complement (`enables`, `allows`, `permits`, `requires`). The blank
+sits after the object noun phrase and must be filled by a `to`-infinitive. The
+trap is that bare infinitive, gerund (`-ing`), and past participle distractors
+all look grammatically admissible in isolation, but only the full infinitive
+satisfies the syntactic frame set by the governing verb.
+
+Distractors: bare infinitive (lacks the required `to` marker), gerund/-ing form
+(wrong complement type after this verb class), and past participle (implies
+passive or completed action, not purpose or capability).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "nonfinite_for_finite"`.
+
+**Sub-pattern — Infinitive Complement After Decision Verb**
+
+(PT7 M2 Q19: "the Olympic committee once decided ___ tug-of-war as an official Olympic event!")
+
+Construct a sentence where a decision, intention, or plan verb (`decided`,
+`chose`, `planned`, `hoped`) precedes the blank and must be followed by a
+`to`-infinitive complement. The trap is that bare infinitive, gerund, and past
+participle distractors are all plausible surface forms that students may select
+by matching tense or by assuming the complement can be any non-finite form.
+
+Distractors: past tense (matches surrounding past-tense narrative but cannot
+serve as complement), gerund/-ing form (wrong complement type after decision
+verbs), and bare infinitive (missing the `to` marker that the verb class
+requires).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "nonfinite_for_finite"`.
+
+**Sub-pattern — Past Participle as Sentence-Initial Modifier**
+
+(PT6 M1 Q19: "_______ by businessman William A.G. Brown, the saloon was known")
+
+Construct a sentence that opens with a blank followed by `by [agent]`, requiring
+a past participle that modifies the subject of the main clause in passive voice.
+The correct form is a past participle (`Created`, `Founded`, `Developed`). The
+trap is that present participle (`Creating`, `Founding`), present tense
+(`Creates`, `Founds`), and bare infinitive (`Create`, `Found`) distractors all
+seem to connect to the subject noun, but only the past participle establishes
+the correct passive-modifier relationship.
+
+Distractors: present tense active verb (agrees with subject number but violates
+the participial structure), present participle (implies active ongoing action
+rather than completed passive origin), and bare infinitive (cannot function as
+a participial modifier without an auxiliary).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "nonfinite_for_finite"`.
+
 ### `modifier_placement` / `dangling_modifier`
 
 Start with a participial phrase whose logical subject is not the grammatical
@@ -1062,6 +1118,63 @@ symmetry.
 
 Use a compound subject or object where pronoun case is tested.
 
+**Sub-pattern — Possessive Pronoun vs. Homophonous Contraction**
+
+(PT1 M1 Q21: "Watson and Crick... _______ findings were based on a famous X-ray image")
+
+Construct a sentence where a blank before a noun requires a possessive determiner,
+and distractors include the homophonous contraction (`their` vs `they're`, `its`
+vs `it's`, `whose` vs `who's`). The correct option is always the possessive
+pronoun without an apostrophe. The trap is that the contraction form sounds
+identical in speech and carries an apostrophe that students overgeneralize as a
+possessive marker.
+
+Distractors: the homophonous contraction (`they're`, `it's`, `who's`) which
+expands to a subject-verb pair that cannot modify a noun, a singular possessive
+pronoun (`its`) that fails number agreement with a plural antecedent, and a
+singular possessive contraction (`it's`) that fails on both number and
+part-of-speech grounds.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
+**Sub-pattern — Pronoun Case in Compound Subject or Object**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence with a compound subject (`___ and I`) or compound object
+(`between ___ and me`) where the blank holds a pronoun that must match the case
+governed by the verb or preposition. The correct answer is the subjective-case
+pronoun (`I`, `he`, `she`, `they`) in a compound subject or the objective-case
+pronoun (`me`, `him`, `her`, `them`) in a compound object. The trap is that the
+subjective case sounds formal and is overgeneralized to object positions
+("between you and I"), while the objective case sounds informal and is
+overgeneralized to subject positions ("me and Dave walked home").
+
+Distractors: objective-case pronoun in a subject position (`Dave and me walked
+home`), subjective-case pronoun in an object position (`invited Sandhya and I`),
+and a reflexive pronoun that cannot serve the syntactic role (`myself and Dave`).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
+**Sub-pattern — Who vs. Whom in Object Position**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence where a relative clause or question requires `whom`
+(objective case) as the object of a verb or preposition, but the subject-case
+`who` is offered as a distractor. The correct answer is `whom`; the trap is that
+`who` sounds natural as a clause-initial word, and students rarely apply the
+substitution test (`he` → `who`, `him` → `whom`).
+
+Distractors: `who` (subjective case, incorrectly used for object position),
+`whose` (possessive form, wrong case entirely), and `whomever` (overgeneralized
+objective form used where the pronoun is the subject of its own clause).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
 ### `pronoun_clarity`
 
 Create a sentence with multiple possible antecedents for a pronoun.
@@ -1069,6 +1182,65 @@ Create a sentence with multiple possible antecedents for a pronoun.
 ### `possessive_contraction`
 
 Use a context where `it's` vs `its` or `who's` vs `whose` is tested.
+
+**Sub-pattern — Plural Possessive with Irregular Plural Noun**
+
+(PT4 M1 Q19: "professional authors who are paid to write other _______ but whose names")
+
+Construct a sentence where a plural noun that does not end in `s` (`people`,
+`children`, `women`, `men`) must take a possessive apostrophe-`s` to modify a
+following noun. The correct form is the irregular-plural possessive (`people's`,
+`children's`). The trap is distractors offer the base plural without apostrophe
+(`peoples stories`), a regular-plural possessive form that treats the irregular
+noun as if it ends in `s` (`peoples'`), or a double possessive that marks both
+the owner and the possessed noun (`people's story's`).
+
+Distractors: base plural without possessive apostrophe (omits ownership
+entirely), regular-plural possessive that misapplies the `s'` pattern to an
+irregular noun, and double possessive that apostrophizes both the owner noun and
+the possessed noun.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
+**Sub-pattern — Plural Noun Misidentified as Possessive**
+
+(PT5 M1 Q23: "When you place your _______ the pitch will shift as your hands move through the air")
+
+Construct a sentence where a plural noun serves as the object of a verb or
+preposition and no possessive relationship exists, but distractors add
+apostrophes that turn the plural into a possessive form. The correct option is
+the bare plural with no apostrophe (`hands`, `antennas`). The trap is that
+students overgeneralize the apostrophe rule and insert possessive markers on
+nouns that are merely plural, not possessive.
+
+Distractors: singular possessive with apostrophe-`s` (`hand's`), plural
+possessive with apostrophe after `s` (`hands'`), and double possessive marking
+both nouns (`hands' ... antennas'`).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
+**Sub-pattern — Possessive Pronoun vs. Contraction Homophone**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence where a blank before a noun requires a possessive pronoun
+(`its`, `their`, `your`, `whose`) and the most plausible distractor is the
+homophonous contraction (`it's` = it is, `they're` = they are, `you're` = you
+are, `who's` = who is). The correct option is always the possessive form without
+an apostrophe. The trap is that the apostrophe in the contraction mimics the
+apostrophe students associate with noun possessives, and the two forms sound
+identical in speech.
+
+Distractors: the contraction form that expands to a subject-verb pair but cannot
+modify a noun (`it's`, `they're`), a singular possessive pronoun that fails
+number agreement with a plural antecedent (`its` for a plural referent), and a
+demonstrative or article form that cannot serve a possessive function (`that`,
+`the`).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
 
 ### `hyphen_usage`
 
