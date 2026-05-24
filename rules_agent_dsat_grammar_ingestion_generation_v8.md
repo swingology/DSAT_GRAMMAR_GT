@@ -983,6 +983,69 @@ Distractor pattern for restrictive sub-patterns:
 Use a clause that is either essential or nonessential. Test `that` vs
 `which` or comma placement.
 
+**Sub-pattern — Restrictive Relative Clause With "That" After a Specific Noun**
+
+(PT4 M2 Q21: "a book packaging company that specializes in the creation and promotion of stories")
+
+Construct a sentence in which a singular noun (`company`, `system`, `program`) is
+immediately followed by a blank and then a restrictive relative clause that
+defines or limits the noun. The correct option inserts `that` with no comma; the
+clause is essential to identifying which noun the sentence refers to, so no
+comma is permitted. The trap is that students either insert a comma before the
+noun (creating a false nonrestrictive appositive), omit the relative pronoun
+entirely (producing a fused clause with no connector), or add a comma before
+`that` (treating a restrictive clause as nonrestrictive).
+
+Distractors: bare noun with comma before it (creates a false nonrestrictive
+boundary), bare noun without any connector (leaves the clause grammatically
+unanchored), and comma-plus-"that" (illegitimately opens a nonrestrictive clause
+with "that," which Standard English reserves for "which").
+
+Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
+`student_failure_mode_key: "restrictive_appositive_comma_insertion"`.
+
+**Sub-pattern — "Which" in a Nonrestrictive Clause After a Comma**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence whose main IC ends with a comma, then place the blank at
+the start of a nonrestrictive relative clause that adds supplementary
+information about the preceding noun. The correct option is `which`; distractors
+include `that` (Standard English does not use "that" to introduce a
+nonrestrictive clause after a comma), a bare participle that drops the
+relative pronoun entirely, and a comma-plus-"that" combo that mis-punctuates a
+restrictive construction. The key distinction is that the clause is
+nonessential — removing it does not change the reference — so the comma-plus-
+"which" pattern is correct.
+
+Distractors: `that` (cannot introduce a nonrestrictive clause), bare verb form
+(produces a fused or ungrammatical clause), and comma-plus-"that" (violates the
+comma/that rule for nonrestrictive clauses).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "punctuation_intimidation"`.
+
+**Sub-pattern — Omitted Relative Pronoun in Contact Clause**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence with a subject–verb gap where the relative pronoun can be
+grammatically omitted because it functions as the object of the embedded clause
+(e.g., "the book ___ the author published" where the pronoun is the object of
+"published"). The correct option is the blank with no word inserted (the contact
+clause is grammatical), but the test offers `that`, `which`, and comma-plus-
+`which` as distractors. The trap is that students feel the gap "must" be filled,
+even though object-relative pronouns are optional in English. Inversely, a
+variant can test whether students wrongly omit a subject-relative pronoun that
+*cannot* be dropped.
+
+Distractors: `that` (grammatically fine but unnecessary), `which` (adds a
+relative pronoun where none is required), and comma-plus-"which" (introduces
+an incorrect nonrestrictive boundary).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
 ### `colon_dash_use`
 
 Create a sentence where an independent clause is followed by an explanation,
@@ -1947,6 +2010,66 @@ sentence. Do not use commonly confused pair items here; those belong to
 Wrong options are grammatically viable and topic-related but too broad, too
 strong, too weak, or mismatched to the noun/verb they modify.
 
+**Sub-pattern — Vague Pronoun vs. Specific Name in Rhetorical Synthesis**
+
+(PT5 M1 Q31: "The real author of Adam Bede was Mary Ann Evans, who published the novel using the pseudonym George Eliot")
+
+Construct a notes-synthesis prompt whose stated goal requires the student to
+identify a specific person, entity, or value by name. The correct option names
+the entity explicitly; distractors use vague pronominal references ("a woman,"
+"someone," "they") or paraphrase around the name without actually stating it.
+The trap is that vague options feel like they address the goal ("identifies the
+author") while omitting the precise detail the goal demands (the actual name).
+Students who prefer a fluent-sounding sentence over an exact one fall for the
+vague option.
+
+Distractors: partial-purpose option that restates context without naming the
+target, a vague-pronoun option that gestures at the answer without specifying,
+and an over-scope option that adds unsupported claims.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "notes_synthesis_content_omission"`.
+
+**Sub-pattern — Qualified Generalization vs. Overstatement in Notes Synthesis**
+
+(PT6 M1 Q33: "Although most materials used in dhow replicas are traditional, some modern materials are used")
+
+Construct a notes-synthesis prompt whose goal asks for a generalization about a
+topic where the notes include both a dominant pattern and a qualifier (e.g.,
+"most X are Y" plus "some X are Z"). The correct option preserves the qualifier
+("Although most…, some…"); distractors either drop the qualifier (pure
+generalization), focus on a single detail, or shift scope to a different topic.
+The trap is that the unqualified generalization sounds more confident and
+"academic," but it overstates what the notes actually support.
+
+Distractors: unqualified generalization that drops the qualifier, a narrow-
+focus option that highlights one detail rather than generalizing, and a wrong-
+scope option that discusses a related but irrelevant aspect.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "notes_synthesis_wrong_goal"`.
+
+**Sub-pattern — Exact Word Selection in a Semantic Field**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence with a blank where four real words share a broad semantic
+field but only one carries the precise denotation, connotation, or selectional
+fit the context requires (e.g., "exacerbated" vs. "worsened" vs. "increased" vs.
+"heightened" before "tensions"). The passage context narrows the choice to one
+word whose exact shade of meaning matches the noun or verb it modifies. The
+trap is that near-synonyms are all grammatically viable and feel "close enough,"
+but only one is precise. This sub-pattern is for word-precision items in
+grammar-land, not for commonly-confused-word pairs (which belong in
+`commonly_confused_words`).
+
+Distractors: a near-synonym that is too broad or neutral, a near-synonym that
+is too strong or extreme, and a near-synonym whose connotation clashes with the
+surrounding register or tone.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
 ### `register_style_consistency`
 
 Use a formal academic sentence or passage with a blank where only one option
@@ -1956,6 +2079,68 @@ option should be natural in College Board explanatory prose.
 Wrong options include conversational phrasing, inflated pseudo-academic diction,
 technical diction from the wrong field, or a tone shift that clashes with the
 surrounding passage.
+
+**Sub-pattern — Active Voice Over Passive in Sentence Completion**
+
+(PT6 M2 Q20: "One of the few African American global explorers during the turn of the 20th century, _______")
+
+Construct a sentence that opens with an introductory appositive or participial
+phrase identifying a person, then place the blank where the main clause must
+begin. The correct option supplies the proper noun as subject followed by an
+active-voice predicate; distractors include a passive-voice variant, a cleft or
+inverted construction, and a syntactically correct but stylistically indirect
+rearrangement. All distractors are grammatically permissible but violate the
+register and directness expected in Standard English explanatory prose. The trap
+is that passive and inverted options "sound formal" to students who equate
+complexity with correctness.
+
+Distractors: passive-voice option ("were made by"), inverted emphasis option
+placing temporal bounds first ("1891 and 1909 were the years between which…"),
+and a redundant cleft construction ("was where…").
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "register_confusion"`.
+
+**Sub-pattern — Appropriate Generalization Level in Rhetorical Synthesis**
+
+(PT8 M1 Q33: "Researchers have used statistical methods to address questions of authorship within the field of music")
+
+Construct a notes-synthesis prompt whose goal asks for a generalization about
+the *type* or *kind* of study, approach, or phenomenon, not for a specific
+finding or numerical result. The correct option generalizes at the right level
+("statistical methods to address questions of authorship in music"); distractors
+either over-specify by quoting a narrow finding, overreach by making a claim the
+notes do not support, or shift scope to a different aspect. The trap is that
+over-specific options feel "more accurate" because they include exact details,
+but they fail the stated goal of generalizing.
+
+Distractors: overreach option that states a definitive conclusion beyond the
+data, over-specific option that quotes a particular finding or percentage, and
+a scope-shift option that discusses the wrong aspect of the notes.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "notes_synthesis_wrong_goal"`.
+
+**Sub-pattern — Formal Register vs. Casual or Inflated Diction**
+
+[NO PT EVIDENCE — source: College Board]
+
+Construct an academic passage with a blank at a word or phrase choice where one
+option matches the register (formal, measured, objective), one option is too
+casual or colloquial ("a whole lot of," "kind of," "really big"), one option is
+overly inflated or pseudo-academic ("utilize" for "use," "facilitate" for
+"help"), and one option introduces a tone shift that clashes with surrounding
+prose. The trap is that students who favor formality select the inflated option
+(the "utilize" trap), while students who process literally may choose the casual
+option if it seems clear enough. Only the option that matches the established
+register is correct.
+
+Distractors: casual/colloquial option (wrong register), inflated/pseudo-academic
+option (wrong register in the other direction), and a tone-shift option that
+breaks consistency with the surrounding passage.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "formal_word_bias"`.
 
 ### `logical_relationships`
 
