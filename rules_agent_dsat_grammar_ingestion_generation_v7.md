@@ -406,6 +406,13 @@ prepositional object or appositive between subject and verb.
   infinitive or participle, so number marking is less salient.
 - *Neither/nor compound* — "Neither the director nor the producers **was/were**
   informed." Distractors use the nearer-noun agreement heuristic incorrectly.
+- *Stacked relative clauses* — two relative clauses are nested on the same noun
+  phrase: "a toxin [that is deadly to nematodes] [that **come/comes** in contact
+  with it]." The second *that* agrees with the distant plural antecedent
+  ("nematodes"), not with the singular noun ("toxin") immediately preceding the
+  blank. Classify with `syntactic_trap_key: "long_distance_dependency"`.
+  Distractors offer singular verbs that agree with the nearer singular noun.
+  `student_failure_mode_key: "nearest_noun_reflex"`.
 
 ### `pronoun_antecedent_agreement`
 

@@ -538,6 +538,7 @@ drawn only from §12.1.
 - `detail_trap` — uses a real fact from the passage but misses the main idea
 - `topic_trap` — names the correct topic but not the author's point about it
 - `overreach` — adds an idea the author never claimed; goes beyond what the text supports
+  - *Implied claim elevated to purpose* — distractor promotes a supporting fact or piece of evidence to the status of the passage's primary purpose or main claim; the promoted element is real and present in the text but functions as support, not as the point; distinct from `partial_purpose` (which misidentifies a supporting *rhetorical move*) — this misidentifies a supporting *fact or reason* as the central assertion
 - `contradiction` — states the opposite of what the text says or implies
 - `absolute_language` — uses "always," "never," "all," "none" — the SAT rarely places absolute claims in correct answers
 - `outside_knowledge` — true in the real world but not stated or implied by the passage
@@ -566,6 +567,12 @@ drawn only from §12.1.
 - `wrong_action_verb` — content description is accurate but the rhetorical verb is wrong (e.g., "to challenge" vs. "to describe")
 - `overstated_position` — author presents balanced information; option claims the author argues or advocates
 - `partial_purpose` — captures a supporting move (provide an example) but not the overall purpose (argue that X)
+- `scope_error` — option introduces a subject, time frame, population, or domain that the passage does not address; the distractor is plausible because its topic is adjacent to the passage's topic, but its scope is invented or extended beyond what the text covers
+  - *Invented temporal scope* — distractor adds a time reference ("today," "currently," "in earlier decades") not present in the passage; most tempting when the passage's own time frame is explicit and the added reference sounds like a natural complement (e.g., passage covers the late 1800s; distractor claims the purpose is to compare with the present)
+  - *Invented geographic or audience scope* — distractor extends the passage's subject to a population or place the passage mentions only as context (e.g., passage explains a city's demographics to explain a local trend; distractor claims the purpose involves that population as an audience or market)
+  - *Invented comparative purpose* — distractor frames the passage's purpose as comparing X with Y, but the passage only describes or explains X; Y appears as a data point or contrast for scale, not as a co-subject of equal focus (e.g., passage describes El Paso's newspaper output; distractor says "to compare El Paso's newspapers with San Antonio's"); distinct from `relationship_fabrication` which invents causation — this invents a *comparison frame*
+  - *Agent scope shift* — distractor attributes the passage's purpose to a different actor than the one the passage focuses on; the second actor either does not appear in the passage or is mentioned only in passing (e.g., passage explains what researchers discovered; distractor says the purpose is to explain what policymakers or students should do); most tempting when the passage's topic has obvious real-world stakeholders who are never actually mentioned
+- `relationship_fabrication` — option implies a causal, influential, or directional relationship between two elements the passage mentions separately but never connects; the passage may contrast or compare them (different quantities, different roles) but makes no claim about one affecting the other; most common in main-purpose and sentence-function items where the passage juxtaposes two subjects for scale or context rather than to establish causation or influence
 - `reversed_attribution` — facts from Text 1 attributed to Text 2 or vice versa — most common Cross-Text trap
 - `extreme_language` — uses "always," "never," "completely," "impossible" — signals incorrect option in Cross-Text
 - `textual_mimicry` — uses vocabulary directly from the passage but distorts the meaning or relationship

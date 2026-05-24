@@ -1,5 +1,68 @@
 # Rules Update Feature Task List
 
+## RULES_ANALYSIS
+
+**Session: 2026-05-23 — Manual taxonomy edits and overlap findings**
+
+During a live analysis session (PT5 M2 questions), several new patterns were
+added directly to `rules_agent_dsat_reading_v2.md` outside the amendment
+workflow. The following overlaps and rigidity risks were identified and should
+be resolved before the next ingestion run.
+
+### Patterns added this session
+
+- `scope_error` — definition added to section 10.2 with four sub-patterns:
+  invented temporal scope, invented geographic/audience scope, invented
+  comparative purpose, agent scope shift
+- `relationship_fabrication` — new key added to section 10.2
+- `overreach > implied claim elevated to purpose` — sub-pattern added to 10.1
+- `embedded_question_structure` — new focus key added to grammar v7 section 6.8
+- `stacked relative clauses` — sub-pattern added to grammar v7 B.3
+  under `subject_verb_agreement`
+
+### Known overlaps requiring consolidation
+
+1. **`invented comparative purpose` vs `relationship_fabrication`** — both
+   describe a distractor that invents a connection between two passage elements;
+   the "comparison frame" vs "causation" distinction is too fine for reliable
+   annotation or generation use.
+
+2. **`invented geographic/audience scope` vs `agent scope shift`** — both
+   extend the passage subject to an unstated stakeholder; when the audience IS
+   an agent (policymakers, students) the two sub-patterns are identical.
+
+3. **`overreach > implied claim elevated to purpose` vs `partial_purpose`** —
+   the supporting-fact vs supporting-rhetorical-move distinction is unlikely to
+   be applied consistently by annotators or the generation agent.
+
+4. **`scope_error` (10.2) vs `scope_extension` (10.1)** — two keys covering
+   nearly the same territory split across domain sections with no disambiguation
+   rule.
+
+### Recommended consolidation (not yet applied)
+
+- Merge `invented comparative purpose` into `relationship_fabrication` as a
+  sub-pattern, or add a disambiguation rule between them.
+- Merge `invented geographic/audience scope` and `agent scope shift` into a
+  single sub-pattern: *invented audience/agent scope*.
+- Merge `overreach > implied claim elevated to purpose` into `partial_purpose`
+  definition; remove the separate sub-pattern.
+- Add a cross-reference note between `scope_error` (10.2) and `scope_extension`
+  (10.1) clarifying which applies in which domain context.
+- Sub-patterns should be annotation/QA notes only — not exposed as distinct
+  `option_error_focus_key` values in generation profiles, to avoid forcing
+  mechanical distractor diversity.
+
+### Risk
+
+These overlaps were added manually, bypassing the amendment workflow. They are
+not yet reflected in `vocabulary/master.json` or `vocabulary/candidates.json`.
+The consistency scanner (`check_vocab_consistency.py --all`) will not catch
+them until the keys are promoted. Recommend running a dry-run amendment review
+before the next official ingestion batch.
+
+---
+
 ## Goal
 
 Build an approval-gated rules update workflow where official ingestion analysis

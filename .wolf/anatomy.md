@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-24T02:17:42.014Z
-> Files: 762 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-24T05:07:40.979Z
+> Files: 763 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.agents/skills/generation-test/
 
@@ -47,16 +47,17 @@
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark dir for OCR/LLM benchmark runners + HTMX dashboard (~600 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark Directory (~830 tok)
 - `Reading_v1_rules_report.md` — Reading_v1 Rules Impact Report (~4265 tok)
-- `rules_agent_dsat_grammar_ingestion_generation_v7.md` — rules_agent_dsat_grammar_ingestion_generetion_v7.md (~27429 tok)
-- `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~24022 tok)
+- `rules_agent_dsat_grammar_ingestion_generation_v7.md` — rules_agent_dsat_grammar_ingestion_generetion_v7.md (~36396 tok)
+- `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~30080 tok)
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
 - `TASKS_OCR.md` — OCR Integration — Phased Task Plan (~7143 tok)
-- `TASKS_RULES_UPDATE_FEATURE.md` — Rules Update Feature Task List (~3740 tok)
+- `TASKS_RULES_UPDATE_FEATURE.md` — Rules Update Feature Task List (~4483 tok)
 - `TODOS.md` — TODOS (~379 tok)
+- `TRAPS_EXAMPLES.md` — TRAPS_EXAMPLES.md (~780 tok)
 - `vdb_comparison.md` — Vector DB Ground Truth Comparison (~1567 tok)
 
 ## .claude/
