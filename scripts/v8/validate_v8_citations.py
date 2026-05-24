@@ -26,23 +26,32 @@ def main() -> int:
     text = V8.read_text()
 
     errors: list[str] = []
-    sections = FOCUS_HEADER_RE.split(text)
+    # Restrict the scan to §B.3 only. Focus keys are repeated in B.4, D.2, etc.,
+    # but sub-patterns live only in B.3 by design.
+    B3_RE = re.compile(r"^## B\.3 Passage Construction Rules.*?(?=^## B\.4 )",
+                       re.MULTILINE | re.DOTALL)
+    b3_match = B3_RE.search(text)
+    b3_text = b3_match.group(0) if b3_match else text
+    sections = FOCUS_HEADER_RE.split(b3_text)
     counts: dict[str, int] = defaultdict(int)
     for i in range(1, len(sections), 2):
         focus = sections[i]
         body = sections[i + 1] if i + 1 < len(sections) else ""
         subpatterns = SUBPATTERN_RE.findall(body)
-        counts[focus] = len(subpatterns)
-        if len(subpatterns) > 3:
-            errors.append(f"{focus}: {len(subpatterns)} sub-patterns (cap is 3)")
+        counts[focus] += len(subpatterns)
+        if counts[focus] > 3:
+            errors.append(f"{focus}: {counts[focus]} sub-patterns (cap is 3)")
+        # re.split with a capturing group yields [pre, name1, body1, name2, body2, ...]
+        # Skip the pre-region and the name-regions; only check the body regions.
         sp_regions = re.split(SUBPATTERN_RE, body)
-        for region in sp_regions[1:]:
+        for idx, name in enumerate(subpatterns):
+            region = sp_regions[2 + idx * 2] if (2 + idx * 2) < len(sp_regions) else ""
             if not CITATION_RE.search(region) and not NO_EVIDENCE_RE.search(region):
                 errors.append(
-                    f"{focus}: sub-pattern missing citation or NO PT EVIDENCE marker"
+                    f"{focus} / {name.strip()}: missing citation or NO PT EVIDENCE marker"
                 )
 
-    print(f"Scanned {sum(counts.values())} sub-patterns across {len(counts)} focus keys")
+    print(f"Scanned {sum(counts.values())} sub-patterns across {len([k for k, v in counts.items() if v > 0])} focus keys (in §B.3)")
     if errors:
         for e in errors:
             print(f"  ERROR: {e}")
