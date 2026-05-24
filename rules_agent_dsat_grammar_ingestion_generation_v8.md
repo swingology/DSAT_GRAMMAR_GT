@@ -558,14 +558,69 @@ Target verb describes a character's action or the text's pattern. Correct
 option: simple present. Wrong options: simple past, present perfect, past
 perfect. Classify with `passage_tense_register_key: "literary_present"`.
 
-**Secondary trap patterns:**
-- *Scientific-present interrupted by historical narrative* — passage mixes
-  present-tense scientific generalization with a past-tense anecdote; the blank
-  straddles the boundary. Distractors import the anecdote's past tense into the
-  general claim.
-- *Past-perfect time shift* — two sequenced past events require past perfect for
-  the earlier one ("By the time X occurred, Y **had established/established**
-  the pattern"). Distractors offer simple past, conflating temporal ordering.
+**Sub-pattern — Past Perfect for the Earlier of Two Past Events**
+
+(PT11 M1 Q20: "By 2023, she ___ one of the most celebrated musicians in Latin America")
+
+Open with an explicit later-past reference point (`By 2023`, `By the end of the
+1990s`, `By the time the expedition arrived`) and a participial or adverbial
+tail that names a still-earlier accomplishment (`having released six studio
+albums`). The blank holds the verb describing the earlier action, which must be
+past perfect (`had become`, `had grown`) because it was already complete at the
+later past anchor. The trap is that the surrounding clause is already in the
+past, so simple past feels safe — but simple past collapses the two-stage
+timeline the passage explicitly sets up.
+
+Distractors: simple past (`became`) that ignores the prior-completion
+requirement, future-in-past (`would become`) that mistakes the anchor for a
+prediction, and present perfect (`has become`) that wrongly bridges to the
+present.
+
+Classify with `syntactic_trap_key: "temporal_sequence_ambiguity"`,
+`student_failure_mode_key: "chronological_assumption"`, and
+`passage_tense_register_key: "historical_past"`.
+
+**Sub-pattern — Simple Past Anchored by Explicit Historical Date**
+
+(PT7 M2 Q20: "In 1613, a prop cannon ___ during a performance and ignited the Globe's thatched roof")
+
+Open the sentence (or the immediately preceding sentence) with a concrete
+historical year, decade, or dated event (`In 1613`, `In 1929`, `During the
+1930s`, `In January 2023`). The blank must be filled with simple past
+(`misfired`, `used`, `swept`, `published`) because the date locks the action to
+a single completed moment in history. The trap is that the surrounding passage
+may also contain present-tense framing of the institution or finding (`is a
+reconstruction of`, `is associated with`), tempting a present or present-
+perfect form.
+
+Distractors: present perfect (`has misfired`) that wrongly leaves the event
+open-ended, simple present (`misfires`) that pulls from the framing tense, and
+a nonfinite participle (`misfiring`) that leaves the clause without a finite
+predicate.
+
+Classify with `syntactic_trap_key: "none"`,
+`student_failure_mode_key: "tense_proximity_pull"`, and
+`passage_tense_register_key: "historical_past"`.
+
+**Sub-pattern — Tense Shift to Present Triggered by "Today" / "Now"**
+
+(PT1 M2 Q23: "Today, Paik ___ widely regarded as a pioneer of video art")
+
+Set up a past-tense biographical or historical sentence (`In 1963, X
+exhibited…`) and then open the target sentence with an explicit present-time
+adverbial (`Today`, `Now`, `In the present day`, `Currently`). The blank must
+take simple present (`is`, `remains`, `stands`) because the adverbial overrides
+the surrounding narrative past with a generalization about the present moment.
+The trap is the lexical pull of the prior past-tense sentence and any nearby
+past references (`his early career`, `the 1960s movement`).
+
+Distractors: simple past (`was`) carried over from the prior sentence, past
+perfect (`had been`) that mis-treats the present claim as prior to another
+past, and a nonfinite form (`being`) that leaves no finite main verb.
+
+Classify with `syntactic_trap_key: "none"`,
+`student_failure_mode_key: "tense_proximity_pull"`, and
+`passage_tense_register_key: "mixed_with_explicit_shift"`.
 
 ### `verb_form`
 
