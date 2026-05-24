@@ -1379,6 +1379,71 @@ review_notes.
 
 Subordinate clause presented as a complete sentence.
 
+**Sub-pattern — Blank Must Supply a Finite IC Before a Trailing Participial Phrase**
+
+(PT1 M1 Q28: "Upon recovering two years later, ___ forcing an angered Richard from the royal court")
+
+Construct an introductory subordinator-led phrase (`Upon …`, `After …`,
+`Despite …`) followed by a blank and then a trailing participial modifier
+(`forcing …`, `marking …`, `driving …`). The correct option is a full IC
+(subject + finite verb) that the participial phrase can attach to. The trap is
+distractor options recast the same content as noun phrases (`the reign of
+Henry resumed,`) or cleft constructions (`it was Henry who resumed his
+reign,`) that lack a finite predicate at the surface boundary, leaving the
+trailing participial dangling on a fragment.
+
+Distractors: noun phrase masquerading as a clause (lacks finite verb), passive
+or cleft restructuring that hides the absence of a finite predicate, and an
+expletive-fronted clause whose finite verb is too distant to anchor the
+participial.
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "nonfinite_for_finite"`.
+
+**Sub-pattern — Blank Must Supply a Complete IC Before a Colon-Introduced List**
+
+(PT1 M2 Q26: "commercial plastics have two associated problems:")
+
+Construct a sentence whose post-blank material begins with a colon and a list
+or explanation, requiring the pre-colon material to be a stand-alone IC (the
+canonical SAT colon rule). The correct option is a full IC ending on a count
+noun or category label that the colon-list expands. The trap is distractor
+options provide pseudo-clauses (existential `there are …`, possessive-fronted
+`commercial plastics' two associated problems are that`, or passive
+restructurings) that either lack a finite predicate or end in a complementizer
+that cannot license a colon.
+
+Distractors: existential `there are X` followed by a colon (creates an awkward
+or fragmentary frame for the list), passive or possessive-fronted noun phrase
+that fails to close an IC, and a `that`-complement form that demands a
+following clause rather than a list.
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
+**Sub-pattern — Blank Must Supply a Noun-Phrase Subject for a Downstream Finite Verb**
+
+(PT4 M1 Q24: "Julian's 1935 synthesis of the alkaloid physostigmine")
+
+Construct a sentence whose post-blank material continues with a finite verb
+(`led to …`, `inspired …`, `produced …`) that demands a single noun-phrase
+subject. The correct option is a noun phrase (often a nominalization:
+`Julian's 1935 synthesis of …`) that feeds the downstream verb cleanly. The
+trap is distractor options provide complete ICs (`Julian synthesized the
+alkaloid physostigmine in 1935; it`, `the alkaloid physostigmine was
+synthesized by Julian in 1935 and`) that, when combined with the downstream
+verb, produce either a fragment (no subject for the downstream verb) or a
+run-on (two ICs fused at the boundary).
+
+Distractors: full IC ending in semicolon-plus-pronoun (creates a run-on with
+the downstream verb), full IC ending in `and` (parallel-coordination
+distractor that strands the downstream verb without a subject), and full IC
+ending in `which` (relative-clause distractor that breaks the downstream
+predicate's subject requirement).
+
+Classify with `syntactic_trap_key: "early_clause_anchor"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
 ### `comma_splice`
 
 Two independent clauses joined with only a comma.
