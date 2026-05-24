@@ -1,0 +1,74 @@
+# pronoun_clarity — Sub-pattern Drafts (Tier C, 0 PT examples)
+
+**Sub-pattern — Vague Demonstrative "This/That" Without Noun Follow-Up**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence in which a demonstrative pronoun ("this," "that," "these,"
+"those") stands alone and refers to an entire preceding clause, idea, or situation
+rather than to a single specific noun. The blank sits at the demonstrative
+position (e.g., "The economy recovered quickly, and ______ surprised many
+analysts"). The correct answer replaces the bare demonstrative with a
+demonstrative-plus-noun phrase ("this recovery") or a specific noun phrase ("the
+recovery"). The trap is that bare "this" or "that" feels natural in speech and
+students accept it as grammatically sufficient, but on the DSAT a lone
+demonstrative that refers to a whole clause rather than a single noun is flagged
+as vague.
+
+Distractors: bare "this" with no noun follow-up (sounds natural in speech but
+leaves the antecedent vague), "which" treated as a relative pronoun referring to
+the entire clause (creates a comma splice or non-restrictive clause that mis-attaches),
+and "it" whose antecedent is the entire preceding idea rather than a single noun
+(generic pronoun with no specific referent).
+
+Classify with `syntactic_trap_key: "pronoun_ambiguity"` and
+`student_failure_mode_key: "pronoun_anchor_error"`.
+
+---
+
+**Sub-pattern — Dual-Gender or Same-Gender Antecedent Ambiguity**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence containing two same-gender nouns (two women, two men, two
+plural groups) followed by a pronoun that could grammatically refer to either
+(e.g., "When Nel and Katie got back from the movie, they took her dog for a walk"
+— "her" could be Nel's or Katie's). The blank sits at the ambiguous pronoun.
+The correct answer replaces the pronoun with the specific noun that resolves the
+ambiguity. The trap is that both antecedents are equally plausible
+syntactically, so the pronoun appears to "work" even though no reader can
+determine which noun it modifies.
+
+Distractors: the ambiguous pronoun that matches both antecedents in number and
+gender (grammatically consistent but referentially unclear), a pronoun that
+matches the nearer antecedent only (nearest-noun reflex), and a reflexive pronoun
+("herself") that falsely appears more precise but still leaves the referent
+ambiguous.
+
+Classify with `syntactic_trap_key: "pronoun_ambiguity"` and
+`student_failure_mode_key: "pronoun_anchor_error"`.
+
+---
+
+**Sub-pattern — Remote or Implied Antecedent**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence in which the pronoun's antecedent is separated by two or more
+intervening clauses, or the antecedent is an entire clause or event that is never
+named by a single noun (e.g., "The committee voted to delay the project, which
+frustrated the engineers" — "which" refers to the delay-event, not "project").
+The blank sits at the pronoun position. The correct answer supplies a concrete
+noun phrase that names the event or idea the pronoun was meant to capture. The
+trap is that the sentence reads fluently on first pass because the reader infers
+the antecedent from context, but the pronoun has no explicit single-noun referent
+in the sentence.
+
+Distractors: a relative "which" that attaches to the nearest noun rather than the
+whole-clause idea (grammatically valid but semantically wrong), a pronoun that
+agrees in number with a nearer but incorrect noun (nearest-noun reflex), and a
+restructured version that preserves the vague pronoun in a different position
+(the ambiguity survives the rewrite).
+
+Classify with `syntactic_trap_key: "pronoun_ambiguity"` and
+`student_failure_mode_key: "underreading"`.

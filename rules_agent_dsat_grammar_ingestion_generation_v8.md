@@ -1242,6 +1242,75 @@ Classify with `syntactic_trap_key: "none"` and
 
 Create a sentence with multiple possible antecedents for a pronoun.
 
+**Sub-pattern — Vague Demonstrative "This/That" Without Noun Follow-Up**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence in which a demonstrative pronoun ("this," "that," "these,"
+"those") stands alone and refers to an entire preceding clause, idea, or situation
+rather than to a single specific noun. The blank sits at the demonstrative
+position (e.g., "The economy recovered quickly, and ______ surprised many
+analysts"). The correct answer replaces the bare demonstrative with a
+demonstrative-plus-noun phrase ("this recovery") or a specific noun phrase ("the
+recovery"). The trap is that bare "this" or "that" feels natural in speech and
+students accept it as grammatically sufficient, but on the DSAT a lone
+demonstrative that refers to a whole clause rather than a single noun is flagged
+as vague.
+
+Distractors: bare "this" with no noun follow-up (sounds natural in speech but
+leaves the antecedent vague), "which" treated as a relative pronoun referring to
+the entire clause (creates a comma splice or non-restrictive clause that mis-attaches),
+and "it" whose antecedent is the entire preceding idea rather than a single noun
+(generic pronoun with no specific referent).
+
+Classify with `syntactic_trap_key: "pronoun_ambiguity"` and
+`student_failure_mode_key: "pronoun_anchor_error"`.
+
+**Sub-pattern — Dual-Gender or Same-Gender Antecedent Ambiguity**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence containing two same-gender nouns (two women, two men, two
+plural groups) followed by a pronoun that could grammatically refer to either
+(e.g., "When Nel and Katie got back from the movie, they took her dog for a walk"
+— "her" could be Nel's or Katie's). The blank sits at the ambiguous pronoun.
+The correct answer replaces the pronoun with the specific noun that resolves the
+ambiguity. The trap is that both antecedents are equally plausible
+syntactically, so the pronoun appears to "work" even though no reader can
+determine which noun it modifies.
+
+Distractors: the ambiguous pronoun that matches both antecedents in number and
+gender (grammatically consistent but referentially unclear), a pronoun that
+matches the nearer antecedent only (nearest-noun reflex), and a reflexive pronoun
+("herself") that falsely appears more precise but still leaves the referent
+ambiguous.
+
+Classify with `syntactic_trap_key: "pronoun_ambiguity"` and
+`student_failure_mode_key: "pronoun_anchor_error"`.
+
+**Sub-pattern — Remote or Implied Antecedent**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence in which the pronoun's antecedent is separated by two or more
+intervening clauses, or the antecedent is an entire clause or event that is never
+named by a single noun (e.g., "The committee voted to delay the project, which
+frustrated the engineers" — "which" refers to the delay-event, not "project").
+The blank sits at the pronoun position. The correct answer supplies a concrete
+noun phrase that names the event or idea the pronoun was meant to capture. The
+trap is that the sentence reads fluently on first pass because the reader infers
+the antecedent from context, but the pronoun has no explicit single-noun referent
+in the sentence.
+
+Distractors: a relative "which" that attaches to the nearest noun rather than the
+whole-clause idea (grammatically valid but semantically wrong), a pronoun that
+agrees in number with a nearer but incorrect noun (nearest-noun reflex), and a
+restructured version that preserves the vague pronoun in a different position
+(the ambiguity survives the rewrite).
+
+Classify with `syntactic_trap_key: "pronoun_ambiguity"` and
+`student_failure_mode_key: "underreading"`.
+
 ### `possessive_contraction`
 
 Use a context where `it's` vs `its` or `who's` vs `whose` is tested.
@@ -2021,9 +2090,99 @@ Classify with `syntactic_trap_key: "garden_path"` and
 
 Active/passive voice creates ambiguity or inconsistency.
 
+**Sub-pattern — Passive Obscures Agent and Creates Wordiness**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence in which a passive construction ("was determined by the
+committee," "were implemented by the researchers") is grammatically correct but
+can be replaced by a shorter, clearer active construction ("the committee
+determined," "the researchers implemented"). The blank sits at the verb phrase
+position. The correct answer is the active-voice version that preserves the
+original meaning while eliminating the "by"-agent phrase. The trap is twofold:
+students assume passive voice is always acceptable in formal writing (it is
+grammatically valid), and the passive version sounds suitably academic, so the
+active alternative feels too "plain."
+
+Distractors: the passive construction unchanged (grammatically correct but
+wordier), a passive construction with the agent deleted entirely (creates a
+truncated passive that hides who performed the action), and an active-voice
+version that assigns the verb to the wrong noun (the nearest noun instead of the
+logical agent).
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "formal_word_bias"`.
+
+**Sub-pattern — Passive Auxiliary Tense Mismatch**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence whose surrounding clauses establish a specific time frame
+(e.g., simple past narration or present-perfect recent action), and place a blank
+at the auxiliary position of a passive verb. The correct answer uses the passive
+auxiliary that matches the established tense ("was established" in a past-tense
+passage, "has been established" in a present-perfect context). The trap is that
+distractors offer passive auxiliaries in a different tense — students focus on the
+"be + past participle" frame and accept any auxiliary that yields a well-formed
+passive, ignoring whether the tense is consistent with the passage.
+
+Distractors: present-perfect passive ("has been") in a past-tense context
+(students accept "has been" because it sounds formal), past-perfect passive
+("had been") in a simple-past context (students over-correct to past-perfect),
+and future passive ("will be") when the passage describes a completed past action.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "tense_proximity_pull"`.
+
 ### `negation`
 
 Negation placed where scope ambiguity creates multiple interpretations.
+
+**Sub-pattern — Litotes Misinterpreted as Exact Positive**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct a sentence containing a litotes — a negation paired with a
+negative-prefixed adjective or adverb ("not uncommon," "not insignificant,"
+"not unlikely," "not unreasonable"). The blank sits at the litotes phrase
+position. The correct answer preserves the litotes, which conveys a hedged,
+understated affirmative. The trap is that students cancel the two negatives
+mechanically and select an answer that replaces the litotes with the direct
+positive ("common," "significant," "likely," "reasonable"), thereby overstating
+the author's meaning. Litotes is always weaker than its direct positive:
+"not uncommon" ≈ "somewhat common," not "common."
+
+Distractors: the direct positive adjective ("common" for "not uncommon") —
+overstates the claim, a reversal that inverts the litotes into a double-negative
+affirmative of the wrong polarity, and a stronger qualifier than the original
+("frequent" or "very common" for "not uncommon") that amplifies the hedged
+meaning.
+
+Classify with `syntactic_trap_key: "scope_of_negation"` and
+`student_failure_mode_key: "overreading"`.
+
+**Sub-pattern — Negation Scoped Over a Quantifier**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence in which "not" modifies a quantifier rather than the verb
+("not all," "not every," "not always"), producing a partial-negation meaning.
+The blank sits at the "not + quantifier" position. The correct answer preserves
+the partial negation ("not all students," "not every attempt"). The trap is that
+students treat the negation as scoping over the entire clause and select an
+answer that replaces "not all" with "none," "not every" with "no," or "not
+always" with "never" — turning a partial negation into a total negation that
+overstates the sentence's meaning.
+
+Distractors: total-negation equivalent ("none" for "not all," "never" for "not
+always") — students collapse partial negation to total negation, a bare positive
+without negation ("all students" — students drop the negation entirely), and a
+repositioned negation that attaches to the verb instead of the quantifier ("All
+students did not pass" — students shift the scope of negation, changing the
+meaning from "some passed" to "none passed").
+
+Classify with `syntactic_trap_key: "scope_of_negation"` and
+`student_failure_mode_key: "scope_blindness"`.
 
 ### `logical_predication`
 

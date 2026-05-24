@@ -1,0 +1,47 @@
+# voice_active_passive — Sub-pattern Drafts (Tier C, 0 PT examples)
+
+**Sub-pattern — Passive Obscures Agent and Creates Wordiness**
+
+[NO PT EVIDENCE — source: PrepScholar]
+
+Construct a sentence in which a passive construction ("was determined by the
+committee," "were implemented by the researchers") is grammatically correct but
+can be replaced by a shorter, clearer active construction ("the committee
+determined," "the researchers implemented"). The blank sits at the verb phrase
+position. The correct answer is the active-voice version that preserves the
+original meaning while eliminating the "by"-agent phrase. The trap is twofold:
+students assume passive voice is always acceptable in formal writing (it is
+grammatically valid), and the passive version sounds suitably academic, so the
+active alternative feels too "plain."
+
+Distractors: the passive construction unchanged (grammatically correct but
+wordier), a passive construction with the agent deleted entirely (creates a
+truncated passive that hides who performed the action), and an active-voice
+version that assigns the verb to the wrong noun (the nearest noun instead of the
+logical agent).
+
+Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
+`student_failure_mode_key: "formal_word_bias"`.
+
+---
+
+**Sub-pattern — Passive Auxiliary Tense Mismatch**
+
+[NO PT EVIDENCE — source: Khan Academy]
+
+Construct a sentence whose surrounding clauses establish a specific time frame
+(e.g., simple past narration or present-perfect recent action), and place a blank
+at the auxiliary position of a passive verb. The correct answer uses the passive
+auxiliary that matches the established tense ("was established" in a past-tense
+passage, "has been established" in a present-perfect context). The trap is that
+distractors offer passive auxiliaries in a different tense — students focus on the
+"be + past participle" frame and accept any auxiliary that yields a well-formed
+passive, ignoring whether the tense is consistent with the passage.
+
+Distractors: present-perfect passive ("has been") in a past-tense context
+(students accept "has been" because it sounds formal), past-perfect passive
+("had been") in a simple-past context (students over-correct to past-perfect),
+and future passive ("will be") when the passage describes a completed past action.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "tense_proximity_pull"`.
