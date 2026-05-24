@@ -1,5 +1,5 @@
 from typing import Optional, Dict, List, Protocol, runtime_checkable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -9,6 +9,8 @@ class LLMResponse:
     provider: str
     latency_ms: int = 0
     token_usage: Optional[Dict[str, int]] = None
+    # Cache-specific usage (Anthropic: cache_creation / cache_read; Ollama: not reported)
+    cache_token_usage: Dict[str, int] = field(default_factory=dict)
     error: Optional[str] = None
 
 
@@ -29,6 +31,31 @@ class LLMProvider(Protocol):
         temperature: float = 0.2,
     ) -> LLMResponse:
         ...
+
+    async def complete_cached(
+        self,
+        system_static: str,
+        system_dynamic: str,
+        user: str,
+        model: Optional[str] = None,
+        max_tokens: int = 4096,
+        temperature: float = 0.2,
+    ) -> LLMResponse:
+        """Variant of complete() that separates the cacheable static rules block
+        from the per-call dynamic instructions.
+
+        Providers implement this differently:
+          - Anthropic: system=[{static, cache_control:ephemeral}, {dynamic}]
+          - Ollama: concatenate + set num_keep to lock static prefix in KV cache
+          - Others: fall back to complete(system_static+system_dynamic, user)
+        """
+        return await self.complete(
+            system=system_static + "\n\n" + system_dynamic,
+            user=user,
+            model=model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
 
     async def complete_vision(
         self,

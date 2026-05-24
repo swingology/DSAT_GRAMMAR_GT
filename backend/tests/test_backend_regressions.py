@@ -124,14 +124,18 @@ async def test_run_pipeline_keeps_official_questions_in_draft(monkeypatch):
         complete=AsyncMock(
             side_effect=[
                 SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        ),
+        complete_cached=AsyncMock(
+            side_effect=[
                 SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
             ]
-        )
+        ),
     )
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
     monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
@@ -190,14 +194,18 @@ async def test_run_pipeline_auto_activates_official_questions_when_testing_flag_
         complete=AsyncMock(
             side_effect=[
                 SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        ),
+        complete_cached=AsyncMock(
+            side_effect=[
                 SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
             ]
-        )
+        ),
     )
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
     monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(
@@ -266,15 +274,19 @@ async def test_run_pipeline_persists_overlap_after_question_creation(monkeypatch
         complete=AsyncMock(
             side_effect=[
                 SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        ),
+        complete_cached=AsyncMock(
+            side_effect=[
                 SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
             ]
-        )
+        ),
     )
     persist_overlap_relations = AsyncMock()
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
     monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
@@ -327,7 +339,7 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
     }
     responses = iter([generated, annotated])
     provider = SimpleNamespace(
-        complete=AsyncMock(
+        complete_cached=AsyncMock(
             side_effect=[
                 SimpleNamespace(raw_text="generate", provider="anthropic", model="m1", latency_ms=10),
                 SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
@@ -336,8 +348,8 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
     )
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
-    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive"))
@@ -406,7 +418,7 @@ async def test_generate_pipeline_flattens_nested_question_payload(monkeypatch):
     }
     responses = iter([generated, annotated])
     provider = SimpleNamespace(
-        complete=AsyncMock(
+        complete_cached=AsyncMock(
             side_effect=[
                 SimpleNamespace(raw_text="generate", provider="anthropic", model="m1", latency_ms=10),
                 SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
@@ -416,8 +428,8 @@ async def test_generate_pipeline_flattens_nested_question_payload(monkeypatch):
     validated_payloads = []
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
-    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda payload, **_kwargs: validated_payloads.append(payload) or [])
     monkeypatch.setattr(generate_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive"))
@@ -471,7 +483,7 @@ async def test_generate_pipeline_marks_overlap_candidates_for_review(monkeypatch
     }
     responses = iter([generated, annotated])
     provider = SimpleNamespace(
-        complete=AsyncMock(
+        complete_cached=AsyncMock(
             side_effect=[
                 SimpleNamespace(raw_text="generate", provider="anthropic", model="m1", latency_ms=10),
                 SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
@@ -482,8 +494,8 @@ async def test_generate_pipeline_marks_overlap_candidates_for_review(monkeypatch
     persist_overlap_relations = AsyncMock()
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
-    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(return_value=overlaps))
@@ -654,14 +666,18 @@ async def test_run_pipeline_persists_reading_domain_question(monkeypatch):
         complete=AsyncMock(
             side_effect=[
                 SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        ),
+        complete_cached=AsyncMock(
+            side_effect=[
                 SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
             ]
-        )
+        ),
     )
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
     monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_args, **_kwargs: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
 
@@ -1292,14 +1308,14 @@ async def test_reannotate_updates_current_explanation_text():
     db.get_map[(Question, question_id)] = question
 
     provider = SimpleNamespace(
-        complete=AsyncMock(
+        complete_cached=AsyncMock(
             return_value=SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10)
         )
     )
 
     monkeypatch = pytest.MonkeyPatch()
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr("app.parsers.json_parser.extract_json_from_text", lambda *_: {
         "explanation_short": "Fresh explanation",
         "explanation_full": "Fresh full explanation",
@@ -1506,14 +1522,18 @@ async def test_run_pipeline_reassigns_pass1_json_with_created_ids(monkeypatch):
         complete=AsyncMock(
             side_effect=[
                 SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        ),
+        complete_cached=AsyncMock(
+            side_effect=[
                 SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
             ]
-        )
+        ),
     )
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
     monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("sys", "usr"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("sys", "usr"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "usr"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(

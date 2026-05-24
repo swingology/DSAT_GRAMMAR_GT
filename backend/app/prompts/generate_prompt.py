@@ -154,3 +154,31 @@ def build_generate_prompt(generation_request: dict, source_examples: list = None
     if rules_context:
         system = f"{system}\n\n{rules_context}"
     return system, user
+
+
+def build_generate_prompt_parts(
+    generation_request: dict,
+    source_examples: list = None,
+) -> tuple[str, str, str]:
+    """Return (system_static, system_dynamic, user) for prompt-cached generation calls.
+
+    system_static  — grammar v7 + reading v2 generation sections; mark with cache_control
+                     on Anthropic or use as num_keep prefix on Ollama. Domain-filtered
+                     when the request clearly targets one domain.
+    system_dynamic — GENERATE_SYSTEM_PROMPT base instructions; brief and stable.
+    user           — the generation request JSON + optional source examples; fresh each call.
+    """
+    domain = _infer_generation_domain(generation_request)
+    system_static = _load_generation_rule_context(domain)
+    system_dynamic = GENERATE_SYSTEM_PROMPT
+
+    user_parts = [f"Generation request:\n{json.dumps(generation_request, indent=2)}"]
+    if source_examples:
+        user_parts.append(
+            "\nStored official questions are serving as the foundational source for generation. "
+            "Use these examples to calibrate DSAT style, taxonomy, passage architecture, "
+            "distractor construction, and difficulty. Do not copy passages, stems, or options.\n"
+            f"{json.dumps(source_examples, indent=2)}"
+        )
+    user = "\n".join(user_parts)
+    return system_static, system_dynamic, user

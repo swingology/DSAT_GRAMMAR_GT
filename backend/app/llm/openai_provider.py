@@ -54,6 +54,26 @@ class OpenAIProvider:
             token_usage=token_usage,
         )
 
+    async def complete_cached(
+        self,
+        system_static: str,
+        system_dynamic: str,
+        user: str,
+        model: Optional[str] = None,
+        max_tokens: int = 4096,
+        temperature: float = 0.2,
+    ) -> LLMResponse:
+        """OpenAI automatically caches stable prompt prefixes >= 1024 tokens.
+        Concatenate static + dynamic and send as a normal request — no API change needed.
+        """
+        return await self.complete(
+            system=system_static + "\n\n" + system_dynamic,
+            user=user,
+            model=model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
+
     @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
     async def complete_vision(
         self,

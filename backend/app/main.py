@@ -12,6 +12,7 @@ from app.routers import health, questions, student, admin, ingest, generate, use
 logger = logging.getLogger(__name__)
 
 _INSECURE_DEFAULTS = {"admin-key-change-me", "student-key-change-me"}
+_INSECURE_JWT_SECRET = "change-me-in-production"
 
 
 def _check_insecure_keys(settings) -> None:
@@ -25,6 +26,16 @@ def _check_insecure_keys(settings) -> None:
         logger.warning(
             "SECURITY WARNING: Default API keys are active. "
             "Set ADMIN_API_KEYS and STUDENT_API_KEYS environment variables before deploying."
+        )
+    if settings.jwt_secret_key == _INSECURE_JWT_SECRET:
+        if settings.env == "production":
+            raise RuntimeError(
+                "SECURITY: Default JWT secret key is active in production. "
+                "Set JWT_SECRET_KEY environment variable."
+            )
+        logger.warning(
+            "SECURITY WARNING: Default JWT secret key is active. "
+            "Set JWT_SECRET_KEY environment variable before deploying."
         )
     if settings.env == "production" and "*" in settings.cors_origins_list:
         raise RuntimeError(

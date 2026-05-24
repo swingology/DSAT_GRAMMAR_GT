@@ -13,7 +13,7 @@ from uuid import UUID
 
 from app.config import get_settings
 from app.database import get_db
-from app.auth import student_required, admin_or_student_required
+from app.auth import student_required, admin_or_student_required, student_jwt_required, admin_or_student_jwt_required
 from app.models.db import (
     Question, User, UserProgress, QuestionAnnotation, QuestionOption,
     GenerationBatch, QuestionJob,
@@ -312,6 +312,7 @@ async def student_recall(
             content_origin=q.content_origin,
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
+            passage_tokens=ann_data.get("passage_tokens"),
             practice_status=q.practice_status,
             grammar_role_key=ann_data.get("grammar_role_key"),
             grammar_focus_key=ann_data.get("grammar_focus_key"),
@@ -960,7 +961,7 @@ async def _create_self_study_batch(
             status="pending",
             provider_name=provider_name,
             model_name=model_name,
-            prompt_version="v3.0",
+            prompt_version="v7.0",
             rules_version=settings.rules_version,
             generation_batch_id=batch_id,
             generation_request_jsonb=job_request,
@@ -1047,6 +1048,7 @@ async def _fetch_pool_questions(
             content_origin=q.content_origin,
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
+            passage_tokens=ann_data.get("passage_tokens"),
             practice_status=q.practice_status,
             grammar_role_key=ann_data.get("grammar_role_key"),
             grammar_focus_key=ann_data.get("grammar_focus_key"),

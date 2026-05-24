@@ -156,8 +156,8 @@
       "value": "word_choice",
       "field": "grammar_focus_key",
       "first_seen": "2026-05-23T19:46:17.669075+00:00",
-      "last_seen": "2026-05-23T19:46:17.692635+00:00",
-      "occurrences": 2,
+      "last_seen": "2026-05-23T23:26:13.267528+00:00",
+      "occurrences": 3,
       "job_ids": [],
       "contexts": []
     },
@@ -347,6 +347,16 @@
       "field": "grammar_focus_key",
       "first_seen": "2026-05-23T19:46:19.628923+00:00",
       "last_seen": "2026-05-23T19:46:19.628923+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "GRAMMAR_ROLE_KEYS",
+      "value": "precision",
+      "field": "grammar_role_key",
+      "first_seen": "2026-05-23T23:26:13.266853+00:00",
+      "last_seen": "2026-05-23T23:26:13.266853+00:00",
       "occurrences": 1,
       "job_ids": [],
       "contexts": []

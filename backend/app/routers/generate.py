@@ -168,12 +168,54 @@ def _without_none_values(payload: dict) -> dict:
     return {key: value for key, value in payload.items() if value is not None}
 
 
+def _clean_option_label(label: object | None) -> str:
+    """Normalize model-emitted labels like 'A)', 'A.', or 'a' to 'A'."""
+    if label is None:
+        return ""
+    return str(label).strip().rstrip(").").upper()
+
+
+def _normalize_generated_options(options: object) -> object:
+    if not isinstance(options, list):
+        return options
+
+    normalized: list[object] = []
+    for opt in options:
+        if not isinstance(opt, dict):
+            normalized.append(opt)
+            continue
+
+        option = dict(opt)
+        raw_label = (
+            option.get("label")
+            or option.get("option_label")
+            or option.get("letter")
+            or option.get("choice_label")
+        )
+        raw_text = (
+            option.get("text")
+            or option.get("option_text")
+            or option.get("answer_text")
+            or option.get("choice_text")
+        )
+        option["label"] = _clean_option_label(raw_label)
+        option["text"] = raw_text or ""
+        normalized.append(option)
+
+    if len(normalized) == 4 and all(
+        isinstance(opt, dict) and not opt.get("label")
+        for opt in normalized
+    ):
+        for idx, opt in enumerate(normalized):
+            opt["label"] = "ABCD"[idx]
+
+    return normalized
+
+
 def _normalize_generated_question(data: dict) -> dict:
     """Flatten generated-question payloads that wrap fields under question."""
     flat = dict(data)
     question = data.get("question")
-    if not isinstance(question, dict):
-        return flat
 
     field_aliases = {
         "question_text": ("question_text", "prompt_text", "stem_text", "stem"),
@@ -187,10 +229,17 @@ def _normalize_generated_question(data: dict) -> dict:
         if flat.get(target) is not None:
             continue
         for alias in aliases:
-            value = question.get(alias)
+            value = flat.get(alias)
+            if value is None and isinstance(question, dict):
+                value = question.get(alias)
             if value is not None:
                 flat[target] = value
                 break
+
+    if "correct_option_label" in flat:
+        flat["correct_option_label"] = _clean_option_label(flat.get("correct_option_label"))
+    if "options" in flat:
+        flat["options"] = _normalize_generated_options(flat.get("options"))
     return flat
 
 
@@ -509,8 +558,8 @@ async def _select_source_question_ids_for_batch(
 
 async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_data: dict) -> str:
     from app.llm.factory import get_provider
-    from app.prompts.generate_prompt import build_generate_prompt
-    from app.prompts.annotate_prompt import build_annotate_prompt
+    from app.prompts.generate_prompt import build_generate_prompt_parts
+    from app.prompts.annotate_prompt import build_annotate_prompt_parts
 
     settings = get_settings()
     try:
@@ -521,7 +570,9 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
             default_model=job.model_name,
         )
         source_examples = await _load_official_source_examples(db, request_data.get("source_question_ids"))
-        system, user = build_generate_prompt(generation_request=request_data, source_examples=source_examples)
+        gen_static, gen_dynamic, gen_user = build_generate_prompt_parts(
+            generation_request=request_data, source_examples=source_examples
+        )
     except Exception as exc:
         logger.error("Generate setup failed (job %s): %s", job.id, exc)
         return await _mark_job_failed(job, db, step="generating_setup", exc=exc)
@@ -531,7 +582,10 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     _last_err: Exception | None = None
     for _attempt in range(3):
         try:
-            result = await provider.complete(system=system, user=user, max_tokens=8192, temperature=0.7)
+            result = await provider.complete_cached(
+                system_static=gen_static, system_dynamic=gen_dynamic,
+                user=gen_user, max_tokens=8192, temperature=0.7,
+            )
             generated = _normalize_generated_question(
                 extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
             )
@@ -557,7 +611,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
 
     # Annotate — 3-attempt retry on malformed JSON
     try:
-        system, user = build_annotate_prompt(generated)
+        ann_static, ann_dynamic, ann_user = build_annotate_prompt_parts(generated)
     except Exception as exc:
         logger.error("Generate annotation prompt failed (job %s): %s", job.id, exc)
         return await _mark_job_failed(job, db, step="annotating_setup", exc=exc)
@@ -565,7 +619,10 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     _last_err = None
     for _attempt in range(3):
         try:
-            result = await provider.complete(system=system, user=user, max_tokens=8192)
+            result = await provider.complete_cached(
+                system_static=ann_static, system_dynamic=ann_dynamic,
+                user=ann_user, max_tokens=8192,
+            )
             annotate_json = normalize_annotation(
                 extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
             )
@@ -628,6 +685,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
 
     # Persist inside a savepoint so a DB error only rolls back this question,
     # leaving the session valid for the status update that follows.
+    job_id_for_log = job.id
     try:
         async with db.begin_nested():
             correct_label = generated.get("correct_option_label", "")
@@ -665,6 +723,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
                 explanation_text=annotate_json.get("explanation_short"),
                 created_at=now,
             ))
+            await db.flush()
 
             generation_profile = _generation_profile_payload(generated, annotate_json, request_data)
             db.add(QuestionAnnotation(
@@ -713,10 +772,11 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
             )
             await db.commit()
     except Exception as _persist_err:
-        logger.error("Generate persist failed (job %s): %s", job.id, _persist_err)
+        logger.error("Generate persist failed (job %s): %s", job_id_for_log, _persist_err)
         await _rollback_if_possible(db)
+        refreshed_job = await db.get(QuestionJob, job_id_for_log)
         return await _mark_job_failed(
-            job,
+            refreshed_job or job,
             db,
             step="persisting",
             exc=_persist_err,
@@ -901,7 +961,7 @@ async def generate_questions(
         status="extracting",
         provider_name=body.provider_name or settings.default_annotation_provider,
         model_name=body.model_name or settings.default_annotation_model,
-        prompt_version="v3.0",
+        prompt_version="v7.0",
         rules_version=settings.rules_version,
         created_at=now,
         updated_at=now,
@@ -950,7 +1010,7 @@ async def generate_compare(
             status="extracting",
             provider_name=provider_name,
             model_name=model_name,
-            prompt_version="v3.0",
+            prompt_version="v7.0",
             rules_version=settings.rules_version,
             comparison_group_id=comparison_group,
             created_at=now,
@@ -1268,7 +1328,7 @@ async def create_generation_batch(
             status="pending",
             provider_name=provider_name,
             model_name=model_name,
-            prompt_version="v3.0",
+            prompt_version="v7.0",
             rules_version=settings.rules_version,
             generation_batch_id=batch.id,
             generation_request_jsonb=per_job_request,

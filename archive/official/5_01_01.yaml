@@ -28,18 +28,17 @@ questions:
     grammar_role_key: null
     stimulus_mode_key: passage_excerpt
     stem_type_key: choose_word_in_context
-    explanation_short: In context, 'trace' refers to any visible evidence or sign
-      of the group's passage, which Fox-Foot deliberately avoids leaving.
+    explanation_short: In context, 'trace' refers to any visible sign or evidence
+      of the group's passage, which aligns with option A.
     explanation_full: 'The passage describes Fox-Foot taking precautions to avoid
-      detection while traveling: he forbids building fires, making landings, or leaving
-      any ''trace'' of their passing. The word ''trace'' here functions as a noun
-      meaning a visible mark, sign, or indication — i.e., evidence — of their presence
-      or movement. Option A, ''Evidence,'' correctly captures this contextual meaning.
-      Option B (''Blemish'') implies a flaw or imperfection, which is irrelevant.
-      Option C (''Amount'') misinterprets the word as quantitative, which doesn''t
-      fit the context. Option D (''Sketch'') suggests a drawing or outline, which
-      is unrelated to the idea of leaving behind signs of passage. Thus, ''Evidence''
-      is the best contextual fit.'
+      detection: no fire, no landing, and no trace of their passing. The word ''trace''
+      here functions as a noun meaning a visible sign or indication — i.e., evidence
+      — that they were there. Option A (''Evidence'') captures this meaning precisely.
+      Option B (''Blemish'') implies a flaw or imperfection, which is unrelated. Option
+      C (''Amount'') suggests quantity, which doesn''t fit the context of leaving
+      behind signs. Option D (''Sketch'') implies a drawing or outline, which is not
+      relevant to physical evidence of movement. Thus, ''Evidence'' is the best contextual
+      meaning.'
 - question_number: 2
   question_id: 872dd430-1539-5d28-9d6b-e9f4c7f714d4
   question_text: Which choice completes the text with the most logical and precise
@@ -64,16 +63,16 @@ questions:
     stimulus_mode_key: sentence_only
     stem_type_key: complete_the_text
     explanation_short: The sentence explains that noses are often missing because
-      they are delicate and protrude, making them easy to break — thus, 'fragile'
-      is the most logical and precise fit.
-    explanation_full: 'The passage provides context: noses are frequently broken off
-      ancient sculptures because they are delicate and stick out. The correct word
-      must reflect this physical vulnerability. ''Fragile'' directly conveys susceptibility
-      to damage, aligning with ''delicate'' and ''easy to break.'' ''Recognizable''
-      refers to identification, not physical durability. ''Common'' describes frequency,
-      not structural weakness. ''Sophisticated'' implies complexity or refinement,
-      which is irrelevant to the physical fragility described. Thus, ''fragile'' is
-      both logically and precisely correct.'
+      they are delicate and protrude, making them easy to break — this supports 'fragile'
+      as the most logical and precise word.
+    explanation_full: 'The passage provides context: noses are frequently missing
+      from ancient sculptures because they are delicate and stick out, which makes
+      them vulnerable to damage. The word ''fragile'' directly aligns with this explanation
+      — it means easily broken or damaged, which matches the physical description
+      given. ''Recognizable'' and ''common'' are irrelevant to the reason for breakage;
+      ''sophisticated'' implies complexity or refinement, which does not fit the context
+      of physical vulnerability. Thus, ''fragile'' is both logically necessary and
+      precisely descriptive in this context.'
 - question_number: 3
   question_id: 1dc063f7-a354-501d-bc47-db3f0d78b4d6
   question_text: Which choice completes the text with the most logical and precise
@@ -98,18 +97,18 @@ questions:
     grammar_role_key: null
     stimulus_mode_key: sentence_only
     stem_type_key: complete_the_text
-    explanation_short: The context indicates that the corona shows signs before a
-      flare occurs, so the correct word must mean 'about to happen.' 'Impending' fits
-      this meaning precisely.
-    explanation_full: The passage describes how the Sun's corona gives an 'advance
-      indication' of solar flares — meaning it signals that a flare is coming. The
-      blank appears in the phrase 'where the flare is _______', which requires a word
-      indicating future occurrence. Option B, 'impending', means about to happen,
-      making it the most logical and precise fit. Option A ('antecedent') refers to
-      something that came before, which contradicts the forward-looking nature of
-      the signal. Option C ('innocuous') means harmless, which is irrelevant to timing.
-      Option D ('perpetual') means never-ending, which doesn't match the temporary,
-      event-based nature of solar flares.
+    explanation_short: The correct word must indicate that the flare is about to happen,
+      as the sentence describes a precursor signal (increased brightness) that occurs
+      before the flare.
+    explanation_full: The passage states that increased brightness in the corona 'precedes'
+      a solar flare, meaning it happens before the flare occurs. The blank requires
+      a word that conveys the idea of something即将发生 (about to happen). 'Impending'
+      means about to occur, which fits the context perfectly. 'Antecedent' refers
+      to something that comes before in time or order but is not typically used to
+      describe future events. 'Innocuous' means harmless, which is irrelevant to the
+      timing of the flare. 'Perpetual' means never-ending, which contradicts the temporary
+      nature of flares and their precursors. Thus, 'impending' is the most logical
+      and precise choice.
 - question_number: 4
   question_id: 5fc5014d-06bb-52d4-92bf-44e752f3aaf4
   question_text: Which choice completes the text with the most logical and precise
@@ -135,18 +134,19 @@ questions:
     stimulus_mode_key: sentence_only
     stem_type_key: complete_the_text
     explanation_short: The correct answer is 'exploited' because the researchers used
-      the known phenomenon (magnetic field alteration under stress) as a tool to achieve
-      their goal. The other options do not fit the context of applying a scientific
-      property for practical measurement.
-    explanation_full: The passage describes how engineers demonstrated a method to
-      assess pipe integrity non-invasively by using the fact that metals’ magnetic
-      fields change under stress. The verb needed must convey that they actively used
-      or took advantage of this property. 'Exploited' fits this meaning precisely
-      — it implies leveraging a natural phenomenon for a practical purpose. 'Hypothesized'
-      suggests proposing an idea, which doesn’t match the action described. 'Discounted'
-      means to dismiss, which contradicts the passage. 'Redefined' implies changing
-      the definition, which is not what occurred. Therefore, 'exploited' is the most
-      logical and precise choice.
+      the known tendency of magnetic fields to change under stress as a tool to assess
+      pipe integrity remotely. The other options do not fit the context of applying
+      a scientific phenomenon for practical use.
+    explanation_full: The passage describes how engineers developed a method to assess
+      underground pipes by measuring changes in magnetic fields caused by stress.
+      The verb needed must convey that they made practical use of this physical phenomenon.
+      'Exploited' correctly implies leveraging a natural property for a specific purpose.
+      'Hypothesized' suggests proposing an idea without testing it — but the passage
+      says they demonstrated it. 'Discounted' means to disregard, which contradicts
+      the action described. 'Redefined' implies changing the meaning or scope of the
+      phenomenon, which is not what occurred. Only 'exploited' captures the sense
+      of applied utilization required by the context.
+    needs_human_review: false
 - question_number: 5
   question_id: 2ca5f16e-746e-51dc-b316-04e33b262305
   question_text: Which choice completes the text with the most logical and precise
@@ -173,16 +173,15 @@ questions:
     stem_type_key: complete_the_text
     explanation_short: The correct answer 'ameliorate' means to make something bad
       or unsatisfactory better — which fits the context of improving the unrepresentative
-      subject pool problem.
-    explanation_full: 'The passage describes a problem in behavioral psychology research:
-      using unrepresentative subject pools (college students). The sentence then states
-      that to address this issue, researchers must recruit more diverse subjects.
-      The blank requires a verb meaning ''to improve'' or ''to make better.'' Option
-      B, ''ameliorate,'' is the only choice that accurately conveys this meaning.
-      ''Sanction'' implies approval or punishment; ''rationalize'' means to justify
-      or make logical; ''postulate'' means to assume or propose as a basis — none
-      of these fit the context of correcting a methodological flaw.'
-    needs_human_review: false
+      sampling issue in behavioral psychology studies.
+    explanation_full: 'The passage describes a problem: behavioral psychology studies
+      often use unrepresentative subject pools (college students). The blank requires
+      a verb that expresses the goal of addressing or improving this problem. ''Ameliorate''
+      is the only option that directly means ''to make something bad or unsatisfactory
+      better.'' ''Sanction'' implies approval or punishment, which doesn''t fit. ''Rationalize''
+      suggests justifying or making logical, not fixing. ''Postulate'' means to assume
+      or propose, which doesn’t address the need for corrective action. Thus, ''ameliorate''
+      is both logically and precisely correct.'
 - question_number: 7
   question_id: b2ac97a9-fbdd-521c-8a41-d6c4a787192b
   question_text: Which choice best states the main purpose of the text?
@@ -215,14 +214,14 @@ questions:
     explanation_short: The passage highlights the flourishing of Spanish-language
       newspapers in Texas, especially in El Paso, and explains why El Paso was particularly
       fertile ground for such journalism.
-    explanation_full: 'The passage begins by stating that Spanish-language newspapers
-      flourished across Texas in the late 1800s, then focuses on El Paso as the standout
-      city, producing more such newspapers than any other. It concludes by explaining
-      that El Paso’s location and demographic makeup made its success unsurprising.
-      Option B correctly captures both the factual claim (thriving newspapers, especially
-      in El Paso) and the explanatory purpose (why this happened). The other options
-      misrepresent the scope or intent: A implies comparison without evidence; C invents
-      influence between cities; D introduces popularity in Mexico, which is not mentioned.'
+    explanation_full: The passage begins by stating that Spanish-language newspapers
+      flourished across Texas in the late 1800s, then provides specific numbers for
+      San Antonio and El Paso to show that El Paso led the state in newspaper production.
+      It concludes by explaining that El Paso’s location and demographics made its
+      success unsurprising. Option B correctly captures both the factual claim (thriving
+      newspapers, especially in El Paso) and the explanatory purpose (why El Paso
+      was exceptional). The other options introduce comparisons, influences, or popularity
+      in Mexico — none of which are discussed in the passage.
 - question_number: 18
   question_id: 8df14c13-21d2-51b7-9c6e-f94f965a6a2c
   question_text: Which choice most logically completes the text?
@@ -254,21 +253,23 @@ questions:
     grammar_role_key: null
     stimulus_mode_key: passage_excerpt
     stem_type_key: most_logically_completes
-    explanation_short: 'The passage presents evidence that the appendix is linked
-      to higher concentrations of lymphoid tissue (immune-related) and has persisted
-      across lineages, suggesting it serves a beneficial function. Option B directly
-      connects this evidence to a plausible hypothesis: preservation due to immune
-      benefit.'
-    explanation_full: 'The passage describes research findings: (1) the appendix has
-      emerged independently in multiple lineages, (2) it has not disappeared once
-      emerged, and (3) species with the appendix have higher concentrations of lymphoid
-      tissue in the cecum, which supports immune responses. The word ''Therefore''
-      signals that the blank should complete a logical inference based on these findings.
-      The most direct inference is that the appendix is preserved because it provides
-      an immune benefit — which is exactly what option B states. Options A, C, and
-      D introduce unsupported ideas: disappearance from nonmammals (A), future emergence
-      (C), or past vs. current concentration levels (D), none of which are supported
-      by the passage''s evidence.'
+    explanation_short: The passage presents evidence that the appendix is preserved
+      in lineages where it appears and correlates with higher lymphoid tissue (immune
+      support). The hypothesis must logically follow from this evidence — that the
+      appendix is preserved because it benefits the immune system.
+    explanation_full: 'The passage describes a scientific investigation into the appendix’s
+      evolutionary persistence and its correlation with immune-related tissue. The
+      key findings are: (1) the appendix has emerged independently multiple times,
+      (2) once present, it does not disappear in those lineages, and (3) species with
+      the appendix have higher concentrations of lymphoid tissue in the cecum, which
+      supports immune responses. The word ''Therefore'' signals that the blank requires
+      a conclusion or hypothesis directly supported by these findings. Option B correctly
+      infers that the appendix is preserved because it benefits the immune system
+      — a logical inference from the observed correlation and evolutionary persistence.
+      Option A contradicts the passage (it says the appendix hasn’t disappeared).
+      Option C predicts future emergence, which is unsupported. Option D misattributes
+      temporal change not mentioned in the passage. Thus, B is the only option that
+      follows logically from the evidence presented.'
 - question_number: 19
   question_id: f151e70c-acbd-5d60-a3f7-741034ab07c1
   question_text: Which choice most logically completes the text?
@@ -306,22 +307,22 @@ questions:
     explanation_short: The passage contrasts universalist ethics with Aztec ethics,
       which evaluate actions based on social role and community contribution. Option
       A correctly infers that Aztecs would reject judging morality by standards independent
-      of social circumstances — directly opposing the universalist view introduced
+      of social circumstances — directly opposing the universalist view described
       at the start.
     explanation_full: 'The passage begins by describing a universalist ethical position
       — that moral goodness is determined by the action itself, regardless of context.
-      It then introduces Aztec philosophy as presenting a contrasting view: morality
-      is evaluated based on alignment with social role and community benefit. The
-      blank requires a logical conclusion from this contrast. Option A states that
-      Aztecs would dispute the idea that morality can be assessed by standards independent
-      of social circumstances — which directly opposes the universalist claim and
-      aligns with the Aztec contextual framework. Option B misattributes the focus
-      to outsiders evaluating insiders, which is not discussed. Option C introduces
-      a false distinction between ''community contribution'' and ''behaviors regarded
-      as good in all contexts,'' which the passage does not support. Option D incorrectly
-      implies moral equivalence across roles unless outcomes differ, which contradicts
-      the emphasis on role-specific evaluation. Thus, A is the only option that logically
-      follows from the passage''s contrast and structure.'
+      It then introduces Aztec philosophy as expressing a contrasting view: morality
+      is evaluated relative to the individual’s social role and contribution to the
+      community. The blank requires a logical inference from this contrast. Option
+      A correctly captures the implication: if Aztec ethics are context-dependent,
+      they would dispute the idea that morality can be assessed by standards independent
+      of social circumstances — precisely the universalist position introduced at
+      the outset. Options B, C, and D introduce ideas not supported by the passage:
+      B misattributes the focus to outsiders evaluating insiders; C introduces a false
+      distinction between ''community contribution'' and ''behaviors regarded as good
+      in all contexts''; D invents a comparison of outcomes across social roles not
+      mentioned in the passage. Only A follows directly from the contrast established
+      in the text.'
 - question_number: 21
   question_id: 51479bc7-011d-5228-8b66-55e82577b9a1
   question_text: Which choice completes the text so that it conforms to the conventions
@@ -346,18 +347,17 @@ questions:
     stimulus_mode_key: sentence_only
     stem_type_key: choose_best_grammar_revision
     explanation_short: The correct verb form is 'used' because the sentence describes
-      a completed past action that occurred after another past event ('invented').
-      The simple past tense is required for parallelism and chronological clarity.
-    explanation_full: 'The sentence describes two past events: Land''s invention of
-      the polarizing filter in 1929, followed by his use of that technology a decade
-      later to invent the instant camera. Since both actions are completed and occur
-      in sequence, the simple past tense ''used'' is grammatically correct. Option
-      B (''to have used'') incorrectly implies a perfect infinitive, which is not
-      appropriate here. Option C (''to use'') suggests purpose or intention but does
-      not function as the main verb. Option D (''using'') creates a participial phrase
-      that cannot serve as the main verb of the clause. Therefore, ''used'' is the
-      only option that conforms to Standard English conventions for verb tense and
-      structure.'
+      a past event and requires simple past tense to match the surrounding context.
+    explanation_full: The sentence describes a historical event — Land's invention
+      of the Polaroid camera — which occurred in the past. The surrounding context
+      uses past tense verbs ('invented', 'was featured'), so the blank must also use
+      the simple past tense 'used'. Option B ('to have used') is an infinitive perfect
+      form, which is not appropriate for a main clause describing a completed past
+      action. Option C ('to use') is an infinitive, which cannot serve as the main
+      verb in this independent clause. Option D ('using') is a present participle,
+      which would create a dangling modifier or incomplete clause. Only option A correctly
+      completes the sentence with a finite past-tense verb that agrees with the subject
+      and context.
 - question_number: 22
   question_id: 3e84cbb5-c059-5eda-be15-77327fc53324
   question_text: Which choice completes the text so that it conforms to the conventions
@@ -387,8 +387,10 @@ questions:
     explanation_full: The subject of the sentence is the gerund phrase 'Using one
       of these noncopyrighted songs', which functions as a singular noun. Therefore,
       the verb must agree in number and take the singular form 'ensures'. Option A
-      ('are ensuring') is plural and progressive; B ('have ensured') is plural perfect;
-      C ('ensure') is plural present; D ('ensures') is singular present — correct.
+      ('are ensuring') is plural and incorrect. Option B ('have ensured') is plural
+      perfect tense and does not match the present-tense context. Option C ('ensure')
+      is plural and fails subject-verb agreement. Only option D ('ensures') correctly
+      matches the singular subject with a singular verb form.
 - question_number: 24
   question_id: cbc0cd01-78e5-5a01-b3d5-c485be67d6e8
   question_text: Which choice completes the text so that it conforms to the conventions
@@ -413,13 +415,11 @@ questions:
     stimulus_mode_key: sentence_only
     stem_type_key: choose_best_grammar_revision
     explanation_short: The subject 'references' is plural, so the verb must be plural
-      'represent' to agree in number.
+      'represent' to agree.
     explanation_full: The subject of the sentence is 'Such iconic references,' which
-      is plural. The verb must therefore agree with a plural subject. Option D, 'represent,'
-      is the correct plural form. Options A ('represents'), B ('has represented'),
-      and C ('was representing') are singular or incorrectly tense for the context.
-      The sentence describes a general truth about the content of the video, not a
-      past or ongoing action, making simple present tense appropriate.
+      is plural. The verb must therefore also be plural to maintain subject-verb agreement.
+      Option D, 'represent,' is the only plural form among the choices. Options A,
+      B, and C are singular or incorrectly conjugated for the plural subject.
 - question_number: 25
   question_id: 036927ad-91ad-55bc-82e5-ca27b7234941
   question_text: Which choice completes the text so that it conforms to the conventions
@@ -429,7 +429,7 @@ questions:
     gained fresh attention in the 1990s when art historians discovered that the painting—which
     depicts a solitary young woman sketching—was actually the work of little-known
     French portrait _______ Marie-Denise Villers (1774–1821).
-  correct_option_label: D
+  correct_option_label: A
   options:
   - label: A
     text: artist—
@@ -444,19 +444,21 @@ questions:
     grammar_role_key: punctuation
     stimulus_mode_key: sentence_only
     stem_type_key: choose_best_grammar_revision
-    explanation_short: The correct punctuation is a comma because 'Marie-Denise Villers
-      (1774–1821)' is an appositive phrase that renames or identifies the noun 'portrait
-      artist'. In Standard English, nonrestrictive appositives are set off by commas.
-    explanation_full: 'The sentence introduces the subject ''little-known French portrait
-      artist'' and then provides additional identifying information: ''Marie-Denise
-      Villers (1774–1821)''. This is a nonrestrictive appositive — it adds extra detail
-      but is not essential to identify the noun. According to Standard English conventions,
-      nonrestrictive appositives must be set off by commas. Option D correctly inserts
-      a comma before the appositive. Option A uses an em dash, which is too strong
-      for this context; option B omits punctuation entirely, creating a fused structure;
-      option C uses a colon, which is inappropriate for introducing an appositive.
-      Only the comma properly signals the parenthetical nature of the appositive without
-      disrupting the grammatical flow.'
+    explanation_short: The dash is required to set off the appositive phrase 'Marie-Denise
+      Villers (1774–1821)' which provides additional identifying information about
+      the 'portrait artist'.
+    explanation_full: The correct punctuation is a dash because the phrase 'Marie-Denise
+      Villers (1774–1821)' is an appositive that adds nonessential, explanatory information
+      about the preceding noun 'portrait artist'. In Standard English, such appositives
+      are typically set off with dashes or commas. However, since the sentence already
+      contains em-dashes elsewhere (around 'which depicts a solitary young woman sketching'),
+      using another em-dash maintains stylistic consistency and avoids comma overload.
+      The comma (option D) would be acceptable in isolation but creates a run-on effect
+      with the existing dashes. The colon (option C) is incorrect because no list,
+      explanation, or quotation follows. The absence of punctuation (option B) fails
+      to separate the appositive from the main clause, violating standard punctuation
+      rules.
+    needs_human_review: false
 - question_number: 26
   question_id: d1444473-b448-5eb8-8bb5-80a3b5f858d6
   question_text: Which choice completes the text so that it conforms to the conventions
@@ -477,24 +479,25 @@ questions:
   - label: D
     text: 'described: from hair to grass to sculptures'
   annotation:
-    grammar_focus_key: appositive_punctuation
+    grammar_focus_key: unnecessary_internal_punctuation
     grammar_role_key: punctuation
     stimulus_mode_key: sentence_only
     stem_type_key: choose_best_grammar_revision
     explanation_short: The phrase 'from hair to grass to sculptures' is a nonrestrictive
-      appositive that modifies 'the items they described'. It should be set off by
-      commas, not dashes or colons, because it is not essential to the sentence's
-      meaning and does not introduce a list or explanation.
+      appositive that modifies 'the items they described.' It does not require internal
+      punctuation or a dash before it because it is essential to the meaning of the
+      sentence. Option A correctly omits any unnecessary punctuation.
     explanation_full: The correct answer is A because the phrase 'from hair to grass
-      to sculptures' functions as a nonrestrictive appositive that adds descriptive
-      detail about 'the items they described'. In Standard English, nonrestrictive
-      appositives are set off by commas. Option B incorrectly uses a dash at the end,
-      which would imply an abrupt break or emphasis not warranted here. Option C incorrectly
-      places a dash before the phrase and a comma after, which disrupts the syntactic
-      flow and misrepresents the appositive’s function. Option D incorrectly uses
-      a colon, which is reserved for introducing lists, explanations, or quotations
-      — none of which apply here. Only option A correctly uses commas to set off the
-      nonrestrictive appositive, conforming to Standard English conventions.
+      to sculptures' functions as a nonrestrictive appositive that clarifies what
+      'the items they described' refers to. In Standard English, such appositives
+      do not require internal punctuation or a preceding dash when they are essential
+      to the meaning of the noun they modify. Option B incorrectly adds a dash after
+      'described,' which breaks the syntactic unit between verb and object. Option
+      C incorrectly places a dash before the appositive and a comma after it, violating
+      the rule against inserting punctuation inside required syntactic units (verb–object).
+      Option D incorrectly uses a colon, which would imply an explanation or list
+      that follows, but here the phrase is simply descriptive. Only option A maintains
+      grammatical integrity by omitting unnecessary punctuation.
 - question_number: 27
   question_id: 34a76c61-fbb2-5965-8c86-c78c92060c0d
   question_text: Which choice completes the text with the most logical transition?
@@ -523,10 +526,9 @@ questions:
       flame during reduction firing causes the vessel to take on a black hue. The
       transition ''As a result'' correctly signals this cause-effect relationship.
       Option A (''On the contrary'') suggests contrast, which is illogical here. Option
-      B (''For example'') introduces an illustration, but no example is being provided.
-      Option C (''Previously'') indicates temporal sequence, but the blank follows
-      the description of the process, not precedes it. Only D establishes the required
-      logical connection between action and outcome.'
+      B (''For example'') implies illustration, but no example is being provided.
+      Option C (''Previously'') indicates temporal sequence, which does not fit the
+      causal logic of the sentence.'
 - question_number: 28
   question_id: 7d2600ac-dbfa-5c7b-afa0-d59d51c9f0e6
   question_text: Which choice completes the text with the most logical transition?
@@ -556,8 +558,9 @@ questions:
       which signals that despite the exaggeration, his contributions were real and
       significant. The word 'though' correctly introduces this contrast. Option A
       ('therefore') implies causation, which is incorrect. Option B ('in the second
-      place') suggests enumeration, which is irrelevant. Option C ('in other words')
-      implies restatement, which contradicts the contrastive logic of the passage.
+      place') suggests a list or sequence, which doesn't fit. Option C ('in other
+      words') indicates restatement, but the second sentence adds new information,
+      not a rephrasing.
 - question_number: 29
   question_id: 6ab4d6b3-71db-58ce-b96c-9912df82ce34
   question_text: Which choice completes the text with the most logical transition?
@@ -611,18 +614,19 @@ questions:
     grammar_focus_key: transition_logic
     grammar_role_key: expression_of_ideas
     stimulus_mode_key: sentence_only
-    stem_type_key: choose_best_transition
+    stem_type_key: complete_the_text
     explanation_short: The correct transition 'However,' signals a contrast between
-      the appearance of the turtle shell (external) and the common misconception about
-      its biological classification (exoskeleton vs. endoskeleton).
-    explanation_full: 'The first sentence describes the turtle shell as appearing
-      external, like armor. The second sentence introduces a correction: despite this
-      appearance, the shell is not an exoskeleton but an endoskeleton. This requires
-      a contrastive transition. ''However'' correctly signals this contrast. ''That
-      being said'' implies concession after agreement, which doesn''t fit. ''For instance''
-      suggests an example, which is incorrect here. ''Hence'' indicates consequence,
-      which is also inappropriate because the second sentence contradicts rather than
-      follows from the first.'
+      the appearance of the turtle shell (external) and the reality (internal bone
+      structure), which directly contradicts the common misconception.
+    explanation_full: 'The sentence begins by describing the turtle shell as appearing
+      external, like armor. The blank introduces a contrasting idea: that despite
+      this appearance, the shell is actually an internal structure (endoskeleton).
+      The word ''However'' correctly signals this contrast. Option A (''That being
+      said'') suggests concession, not contradiction. Option C (''For instance'')
+      introduces an example, which is illogical here. Option D (''Hence'') implies
+      causation, but no cause-effect relationship exists — the misconception does
+      not follow from the description of appearance; rather, it contradicts the biological
+      reality.'
 - question_number: 32
   question_id: 4b983d28-f53b-5b88-b1e5-91f58859952e
   question_text: Which choice most effectively uses relevant information from the
@@ -661,10 +665,9 @@ questions:
       at room temperature, energy stops flowing and can be stored in the battery.''
       This directly synthesizes two key notes: (1) salt solidifies at room temperature,
       and (2) in solid state, energy stops flowing and is stored. Options A, B, and
-      D mention related facts but do not explain the causal mechanism linking salt’s
-      physical state to energy storage. Option A describes composition; B describes
-      retrieval; D gives performance data — none address the ‘how’ of storage as required.'
-    needs_human_review: false
+      D describe features of the battery but do not explain the causal mechanism by
+      which salt enables storage. Only C connects the physical state change of salt
+      to the functional outcome of energy storage.'
 - question_number: 33
   question_id: af74fd9a-6cbc-5176-b767-826b3fc99c2c
   question_text: Which choice most effectively uses relevant information from the
@@ -697,13 +700,12 @@ questions:
     stimulus_mode_key: notes_bullets
     stem_type_key: synthesize_information
     explanation_short: Option D correctly synthesizes the definition of 'threatened'
-      with the specific status of the California red-legged frog to accurately state
-      its FWS classification.
+      with the specific status of the California red-legged frog from the notes.
     explanation_full: The notes define 'threatened' as a species 'likely to soon become
       endangered.' The final note states that the California red-legged frog is 'likely
       to soon become endangered, according to the FWS.' Therefore, the frog is classified
-      as 'threatened.' Option D directly combines these two pieces of information
-      to state the correct classification. Option A is too general and does not specify
-      the frog's category. Option B identifies the frog as being on the list but does
-      not state its classification. Option C incorrectly classifies the frog as 'endangered,'
-      which contradicts the note stating it is 'likely to soon become endangered.'
+      as 'threatened.' Option D directly combines these two pieces of information.
+      Option A is too general and does not specify the frog's category. Option B identifies
+      the frog as 'at-risk' but does not state its classification. Option C incorrectly
+      assigns the frog to the 'endangered' category, which contradicts the note stating
+      it is 'likely to soon become endangered.'

@@ -97,7 +97,7 @@ Blocking validation errors → `needs_review` status. All others → `approved` 
 | `deepseek_ocr_model` | `deepseek-ai/DeepSeek-OCR-2` | Model for DeepSeek two-step path |
 | `vision_max_images` | `10` | Max page images sent to VLM |
 | `default_annotation_provider` | `ollama` | Provider for Pass 1 + Pass 2 when OCR is bypassed |
-| `default_annotation_model` | `qwen3-vl:235b-instruct-cloud` | Model for Pass 1 + Pass 2 when OCR is bypassed |
+| `default_annotation_model` | `deepseek-v4-pro:cloud` | Model for Pass 1 + Pass 2 when OCR is bypassed and for generation when a request omits `model_name` |
 
 ## Job State Machine
 

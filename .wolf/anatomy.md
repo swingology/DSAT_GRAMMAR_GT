@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-23T20:08:31.926Z
-> Files: 752 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-24T02:17:42.014Z
+> Files: 762 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../.agents/skills/generation-test/
 
@@ -9,6 +9,7 @@
 
 ## ../.claude/plans/
 
+- `foamy-watching-zephyr.md` — Student Auth System — Implementation Plan (~2359 tok)
 - `generic-rolling-parnas.md` — Crop / Layout Provenance Implementation Plan (~3582 tok)
 - `squishy-giggling-dolphin.md` — Plan: Separate Passage Text from Question Text in Extraction Pipeline (~1307 tok)
 - `steady-moseying-music.md` — Phase 3: Review Swarm Rubric — Implementation Plan (~4357 tok)
@@ -29,14 +30,15 @@
 - `.gitignore` — Git ignore rules (~36 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~39291 tok)
+- `CHANGELOG.md` — CHANGELOG (~40513 tok)
 - `CLAUDE.md` — OpenWolf (~274 tok)
 - `DEBUG_LOG.md` — Debug Log (~43658 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
-- `FUTURE_FEATURES.md` — Future Features (~6662 tok)
+- `FUTURE_FEATURES.md` — Future Features (~8540 tok)
 - `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
+- `INCONSISTENT_KEYS_LIST.md` — Inconsistent Taxonomy Keys in Official Question Annotations (~1473 tok)
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~7592 tok)
 - `INGESTION_README.md` — DSAT Backend — Ingestion Pipeline (~6616 tok)
 - `kimi_4q_comparison_report.md` — DSAT Question Generation Comparison Report (~2222 tok)
@@ -99,6 +101,11 @@
 - `project.local.yml` — This file allows you to locally override settings in project.yml for development purposes. (~115 tok)
 - `project.yml` — the name by which the project can be referenced within Serena (~2252 tok)
 
+## TESTS/DATA_SRC/2024-2025 Tests Answers/
+
+- `DSAT_Comma_Rules.md` — DSAT — Complete Comma Grammar Rules, Distractors & Traps (~5662 tok)
+- `TEST5_ENG_Explanations.md` — BBPT #5 — ENG Section 1 Explanations (~1424 tok)
+
 ## _deprecated/
 
 - `rules_agent_dsat_grammar_ingestion_generation_v2.md` — rules_agent_v2.md — DSAT Grammar Ingestion and Generation Rules (~20398 tok)
@@ -111,13 +118,16 @@
 - `rules_agent_dsat_reading_v1_1.md` — rules_agent_dsat_reading_v1_1.md (~7878 tok)
 - `rules_agent_dsat_reading_v1.md` — rules_agent_dsat_reading_v1.md (~11267 tok)
 
+## analysis/calibration/
+
+
 ## backend/
 
 - `.envrc` — Override the global VIRTUAL_ENV so uv uses the project-local .venv (~28 tok)
 - `.gitignore` — Git ignore rules (~12 tok)
 - `.python-version` (~2 tok)
 - `alembic.ini` — A generic, single database configuration. (~1327 tok)
-- `pyproject.toml` — Python project configuration (~217 tok)
+- `pyproject.toml` — DSAT question corpus ingestion, annotation, generation, and practice API (~220 tok)
 - `run_ocr_benchmark.py` — Standalone OCR benchmark runner. (~8522 tok)
 - `test_ocr_live.py` — load_image_as_b64, test_ollama, test_anthropic, test_openai (~2654 tok)
 
@@ -908,26 +918,26 @@
 
 ## backend/app/
 
-- `auth.py` — admin_required, student_required, admin_or_student_required (~348 tok)
-- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~1899 tok)
-- `main.py` — lifespan (~1371 tok)
+- `auth.py` — --- Password hashing ------------------------------------------------------- (~2644 tok)
+- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~1938 tok)
+- `main.py` — lifespan (~1514 tok)
 
 ## backend/app/llm/
 
-- `anthropic_provider.py` — AnthropicProvider: complete, complete_vision (~819 tok)
-- `base.py` — class: complete, complete_vision (~282 tok)
+- `anthropic_provider.py` — AnthropicProvider: complete, complete_cached, complete_vision (~1751 tok)
+- `base.py` — class: complete, complete_cached, complete_vision (~586 tok)
 - `factory.py` — Keyed by (provider_name, api_key, base_url, default_model) so identical configs share one instance. (~609 tok)
-- `ollama_provider.py` — OllamaProvider: complete, complete_vision, close (~1130 tok)
-- `openai_provider.py` — OpenAIProvider: complete, complete_vision (~837 tok)
+- `ollama_provider.py` — OllamaProvider: complete, complete_cached, complete_vision, close (~2043 tok)
+- `openai_provider.py` — OpenAIProvider: complete, complete_cached, complete_vision (~1270 tok)
 - `retry.py` — Retry wrapper for LLM provider calls with exponential backoff. (~843 tok)
 
 ## backend/app/models/
 
 - `annotation.py` — Pass 2 Pydantic schema — Question annotation output. (~1452 tok)
-- `db.py` — Declares QuestionJob (~8653 tok)
+- `db.py` — Declares QuestionJob (~8762 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5620 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~6690 tok)
+- `payload.py` — HTTP request/response models. (~6897 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -947,8 +957,9 @@
 
 ## backend/app/prompts/
 
-- `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~3480 tok)
+- `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~4989 tok)
 - `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~1186 tok)
+- `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~2309 tok)
 - `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
 - `review_prompt.py` — Review prompt — composes rubric + grammar canon + optional reading rules + question context. (~2278 tok)
 - `stimulus_prompt.py` — Vision prompt for annotating cropped stimulus regions (tables, charts, figures). (~543 tok)
@@ -964,9 +975,10 @@
 
 - `admin.py` — API: 7 endpoints (~24627 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
-- `generate.py` (~14311 tok)
-- `ingest.py` (~35824 tok)
-- `student.py` — API: 2 endpoints (~11164 tok)
+- `generate.py` (~15354 tok)
+- `ingest.py` (~35920 tok)
+- `student_auth.py` — API: 5 endpoints (~1826 tok)
+- `student.py` — API: 1 endpoints (~13753 tok)
 
 ## backend/app/storage/
 
@@ -1000,6 +1012,7 @@
 - `025_phase8_self_study.py` — Phase 8: add denormalized target columns to user_progress. (~570 tok)
 - `026_phase10_auto_release_audit.py` — Phase 10: auto_release_audit_logs table for controlled auto-release audit trail. (~678 tok)
 - `027_admin_question_audit_log.py` — Admin question audit log table. (~518 tok)
+- `028_student_auth.py` — Student auth — add email, password_hash, role, is_active, refresh_token columns. (~350 tok)
 
 ## backend/tests/
 
@@ -1011,19 +1024,19 @@
 - `test_amendments.py` — Tests for approval-gated rules amendment schemas. (~1165 tok)
 - `test_analytics.py` — Phase 9: Generation Quality Analytics endpoint tests. (~2351 tok)
 - `test_auto_release.py` — Phase 10: Controlled auto-release tests. (~3253 tok)
-- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~18720 tok)
+- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~19416 tok)
 - `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~601 tok)
 - `test_consensus.py` — Phase 5 (consensus gate) — deterministic verdict computation tests. (~4251 tok)
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
 - `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)
 - `test_generate_batches.py` — Phase 1 (generation factory) — batch endpoint, request validation, (~5374 tok)
 - `test_generate_router.py` — test_generate_questions_valid_body, test_generate_compare_valid_body, test_generate_run_invalid_uuid (~1404 tok)
-- `test_generate_runner.py` — Phase 2 (generation factory) — runner, failure classification, batch (~3805 tok)
+- `test_generate_runner.py` — Phase 2 (generation factory) — runner, failure classification, batch (~7607 tok)
 - `test_ingest_router.py` — test_resolve_provider_and_model_uses_default_ollama_model, test_resolve_provider_and_model_respects_ (~8845 tok)
 - `test_ingestion_analysis.py` — Tests for ingestion analysis reports and re-appraisal creation. (~1792 tok)
 - `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
 - `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~2181 tok)
-- `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~10248 tok)
+- `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~10512 tok)
 - `test_review_parser.py` — Tests for the review JSON parser and validator. (~2144 tok)
 - `test_review_prompt.py` — Tests for the review prompt composer. (~2061 tok)
 - `test_review_runner.py` — Phase 4 (review swarm runner) — runner, provider config, concurrency, (~5834 tok)
@@ -1031,6 +1044,10 @@
 - `test_student_retrieval.py` — Phase 7 — Student Retrieval API Expansion tests. (~4606 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~510 tok)
 - `test_vocab_sync.py` — Tests for the controlled-vocabulary source-of-truth system. (~925 tok)
+
+## docs/
+
+- `c4_ingestion.md` — C4 Diagram — DSAT Ingestion Pipeline (~1772 tok)
 
 ## docs/PRD/
 
@@ -1043,10 +1060,12 @@
 ## scripts/
 
 - `amendments.py` — Local development CLI for approval-gated rule amendments. (~1235 tok)
+- `build_calibration_set.py` — normalize_skill_family, classify_question, select_calibration_candidates, best_from (~6612 tok)
 - `dev_reset_ingestion.sh` — dev_reset_ingestion.sh (~902 tok)
 - `dev_reset_ingestion.sql` — DEV-ONLY: TRUNCATEs all question_* tables + llm_evaluations (CASCADE clears user_progress), keeps users; clears the duplicate-checksum guard so PDFs can be re-ingested. (~625 tok)
 - `export_review.py` — Export ingested questions to a markdown review file with tables and passages. (~1399 tok)
 - `gen_vocab.py` — Controlled-vocabulary source-of-truth tooling. (~6018 tok)
+- `reannotate_official_v7.py` — fetch_official_question_ids, submit_reannotate, poll_job, main (~2059 tok)
 
 ## vocabulary/
 

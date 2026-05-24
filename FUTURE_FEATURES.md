@@ -1,6 +1,6 @@
 # Future Features
 
-## Prompt Caching for Pass 2 Annotation (Claude provider) `[PRIORITY: HIGH]`
+## Prompt Caching for Pass 2 Annotation (Claude + Ollama) `[DONE — 2026-05-23]`
 
 When the ingestion pipeline uses Claude (Anthropic) as the annotation provider,
 the static grammar/reading rules block should be marked with `cache_control` so
@@ -458,6 +458,188 @@ CREATE INDEX idx_topic_fine_broad ON topic_fine_vocabulary(topic_broad);
 ```
 
 This enables the admin UI to: browse topics by broad category, deactivate low-quality topics, see usage counts to identify coverage gaps, and one-click add topics to generation seed lists.
+
+## Admin Taxonomy Key Management — Grow, Prune, and Remap Classification Keys
+
+The question bank accumulates classification drift over time: ingestion runs at
+different rules versions produce `grammar_focus_key` and `skill_family_key`
+values that are inconsistent in casing, naming, or scope (see
+`INCONSISTENT_KEYS_LIST.md` for the current inventory). There is no tooling to
+correct, extend, or retire keys without writing raw SQL or re-annotating entire
+modules. This feature gives admins a first-class interface for managing the
+taxonomy vocabulary on both official (ground-truth) and generated questions.
+
+### The Problem
+
+Annotation JSONB fields (`grammar_focus_key`, `skill_family_key`,
+`reading_focus_key`, `difficulty_overall`, etc.) in `question_annotations` act
+as the ground truth that drives generation prompts, review rubric scoring,
+dashboard filters, and student retrieval. When these fields drift — through
+rules-file version bumps, ingestion model changes, or typos — every downstream
+consumer silently degrades.
+
+Concrete examples from the current DB:
+- `verb_tense` (2 rows) should be `verb_tense_consistency`
+- `word_choice` (2 rows) should be `precision_word_choice`
+- `command_of_evidence_textual` (41 rows) should be `command_of_evidence`
+- `expression_of_ideas` (63 rows in SEC) should be `Expression of Ideas`
+- `synthesis_of_information` (2 rows as a grammar_focus_key) should be removed
+
+### Proposed Feature: Admin Taxonomy Console
+
+#### 1. Key Registry
+
+A `taxonomy_key_registry` table tracks every approved key in the system,
+serving as the single source of truth that replaces the current pattern of
+hardcoded Python sets.
+
+```sql
+CREATE TABLE taxonomy_key_registry (
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    field_name   VARCHAR(60) NOT NULL,   -- 'grammar_focus_key', 'skill_family_key', etc.
+    key_value    VARCHAR(100) NOT NULL,
+    canonical    BOOLEAN NOT NULL DEFAULT true,  -- false = deprecated alias
+    maps_to      VARCHAR(100),           -- if deprecated, the canonical replacement
+    rules_version VARCHAR(20),           -- which rules file introduced this key
+    domain       VARCHAR(60),            -- 'Standard English Conventions', 'Craft and Structure', etc.
+    notes        TEXT,
+    created_at   TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (field_name, key_value)
+);
+```
+
+The registry is seeded from `vocabulary/master.json` and the D.2/D.8 sections
+of the grammar rules file. `gen_vocab.py` gains a `--sync-registry` flag that
+writes any new approved keys and marks removed keys as deprecated.
+
+#### 2. Key Remapping (Bulk Edit)
+
+Admin endpoint: `POST /admin/taxonomy/remap`
+
+```json
+{
+  "field_name": "grammar_focus_key",
+  "from_value": "verb_tense",
+  "to_value": "verb_tense_consistency",
+  "scope": "official",          // "official" | "generated" | "all"
+  "dry_run": true               // preview affected rows before committing
+}
+```
+
+- `dry_run: true` returns count + sample question IDs without writing
+- `dry_run: false` executes a `jsonb_set` UPDATE against `annotation_jsonb`
+  on all matching `question_annotations` rows, scoped by `content_origin`
+- Every remap is logged to `admin_question_audit_logs` with `before` / `after`
+  snapshots
+- Sets `annotation_stale = false` on affected questions (remapping is a
+  metadata correction, not a stale signal)
+
+Batch remapping: accept an array of `{ from_value, to_value }` pairs to fix
+multiple aliases in one transaction.
+
+#### 3. Key Pruning (Deprecation)
+
+Admin endpoint: `POST /admin/taxonomy/deprecate`
+
+```json
+{
+  "field_name": "grammar_focus_key",
+  "key_value": "synthesis_of_information",
+  "action": "null_out",          // "null_out" | "remap" | "flag_for_review"
+  "remap_to": null
+}
+```
+
+- `null_out`: sets the field to `null` in JSONB (used when the key is a
+  misrouted value that belongs on a different field)
+- `remap` with `remap_to`: equivalent to the remap endpoint above
+- `flag_for_review`: sets `annotation_stale = true` on affected questions so
+  they appear in the admin review queue without changing the value yet
+
+The registry marks the key as `canonical: false` after deprecation so the
+ingestion validator rejects future use.
+
+#### 4. Key Addition (Taxonomy Extension)
+
+Admin endpoint: `POST /admin/taxonomy/keys`
+
+```json
+{
+  "field_name": "grammar_focus_key",
+  "key_value": "subjunctive_mood",
+  "domain": "Standard English Conventions",
+  "rules_version": "rules_agent_v8.0",
+  "notes": "Promoted from D.2.9 pending; rare (~1 per official book)"
+}
+```
+
+Adding a key to the registry:
+- Does not automatically update any existing annotations
+- Makes the key available in generation request validation
+- Syncs back to `vocabulary/master.json` via the admin export endpoint
+  (`GET /admin/taxonomy/export`) so the Python constants stay in sync
+
+The registry is checked by the ingestion pipeline validator before each
+annotation save, replacing the current hardcoded `VALID_GRAMMAR_FOCUS_KEYS`
+set in `build_calibration_set.py` and inline validators.
+
+#### 5. Admin Dashboard UI Panel
+
+A read-only taxonomy browser with inline edit actions, accessible from the
+existing admin dashboard:
+
+| View | Columns | Actions |
+|---|---|---|
+| Key list | `field_name`, `key_value`, `canonical`, `domain`, `usage_count` | Remap, Deprecate, Add |
+| Drift report | Lists non-canonical values currently in DB with row counts | Bulk remap all, individual fix |
+| Change log | Timestamp, admin, field, from, to, affected rows | Revert (re-remap back) |
+
+The drift report is produced by comparing `annotation_jsonb` values against the
+registry — the same logic currently in `build_calibration_set.py` — and runs
+on demand or nightly.
+
+#### 6. Scope Controls
+
+Every mutating action accepts a `scope` parameter:
+
+- `"official"` — only touches rows where `questions.content_origin = 'official'`;
+  safe for ground-truth corrections
+- `"generated"` — only touches `content_origin = 'generated'`; safe for
+  post-generation cleanup before approval
+- `"all"` — requires an explicit `confirm: true` flag in the request body;
+  intended for casing normalization that should apply universally
+
+#### 7. Ingestion Pipeline Integration
+
+After this feature lands, the ingestion pipeline validator should:
+
+1. Fetch approved keys from the registry (or a cached snapshot) rather than
+   a hardcoded set
+2. Warn (not fail) when a generated annotation uses a deprecated alias and
+   auto-remap it to the canonical value before saving
+3. Surface unapproved keys as `annotation_stale = true` rather than silently
+   accepting them
+
+### Implementation Order
+
+1. `taxonomy_key_registry` table + `gen_vocab.py --sync-registry` seeding
+2. `POST /admin/taxonomy/remap` with dry-run and audit log
+3. Drift report endpoint + dashboard panel
+4. `POST /admin/taxonomy/deprecate` and `POST /admin/taxonomy/keys`
+5. Ingestion validator refactor to query registry instead of hardcoded sets
+6. Scheduled nightly drift scan that flags new non-canonical values
+
+### Relationship to Other Features
+
+- **Granular Academic Topic Taxonomy** — the `topic_fine_vocabulary` table
+  proposed there is a subset of this pattern; the registry can absorb it
+- **INCONSISTENT_KEYS_LIST.md** — the existing 13 non-standard `grammar_focus_key`
+  values and 76 casing-inconsistent `skill_family_key` values are the first
+  batch of remaps this feature would execute
+- **Calibration set** — `build_calibration_set.py` currently reimplements the
+  valid-key check; that logic should move into the registry API
+
+---
 
 ## Student Vocabulary Capture From Question Text
 

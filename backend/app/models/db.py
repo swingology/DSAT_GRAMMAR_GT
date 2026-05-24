@@ -475,7 +475,13 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(100), unique=True, index=True, nullable=False)
+    email = Column(String(255), unique=True, nullable=True, index=True)
+    password_hash = Column(String(255), nullable=True)
+    role = Column(String(20), nullable=False, default="student")
+    is_active = Column(Boolean, nullable=False, default=True)
     user_token = Column(UUID(as_uuid=True), unique=True, nullable=False, default=uuid.uuid4)
+    refresh_token = Column(String(500), nullable=True)
+    refresh_token_expires = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
     progress_records = relationship("UserProgress", back_populates="user")

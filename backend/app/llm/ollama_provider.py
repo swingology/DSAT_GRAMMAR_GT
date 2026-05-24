@@ -76,6 +76,60 @@ class OllamaProvider:
         )
 
     @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
+    async def complete_cached(
+        self,
+        system_static: str,
+        system_dynamic: str,
+        user: str,
+        model: Optional[str] = None,
+        max_tokens: int = 4096,
+        temperature: float = 0.2,
+    ) -> LLMResponse:
+        """Annotate with KV-cache prefix locking for the static rules block.
+
+        Ollama automatically reuses the KV cache when the same prefix appears in
+        consecutive requests to the same loaded model. We concatenate static + dynamic
+        so the system string is identical across all same-domain calls within a job,
+        then set num_keep to tell Ollama how many leading tokens to protect from
+        eviction if the context window overflows.
+
+        num_keep is approximated as len(system_static) // 3 tokens (conservative
+        3-chars-per-token estimate for English academic prose).
+        """
+        model = model or self.default_model
+        combined_system = system_static + "\n\n" + system_dynamic
+        # Keep at least the static prefix in KV cache on context overflow
+        num_keep = max(len(system_static) // 3, 512)
+        start = time.time()
+        payload = {
+            "model": model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "messages": [
+                {"role": "system", "content": combined_system},
+                {"role": "user", "content": user},
+            ],
+            "options": {"num_keep": num_keep},
+        }
+        response = await self.client.post("/v1/chat/completions", json=payload)
+        latency_ms = int((time.time() - start) * 1000)
+        raise_for_status_with_usage(response, provider="ollama", model=model)
+        data = response.json()
+        raw_text = _extract_content(data["choices"][0]["message"])
+        usage = data.get("usage", {})
+        token_usage = {
+            "input": usage.get("prompt_tokens", 0),
+            "output": usage.get("completion_tokens", 0),
+        }
+        return LLMResponse(
+            raw_text=raw_text,
+            model=model,
+            provider="ollama",
+            latency_ms=latency_ms,
+            token_usage=token_usage,
+        )
+
+    @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
     async def complete_vision(
         self,
         system: str,

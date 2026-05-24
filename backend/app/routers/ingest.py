@@ -1512,7 +1512,7 @@ def _build_ocr_chain(resolved: str, settings) -> list[str]:
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     from app.llm.factory import get_provider
     from app.prompts.extract_prompt import build_extract_prompt
-    from app.prompts.annotate_prompt import build_annotate_prompt, enforce_nullability, _detect_domain
+    from app.prompts.annotate_prompt import build_annotate_prompt_parts, enforce_nullability, _detect_domain
 
     settings = get_settings()
     provider = get_provider(
@@ -2020,14 +2020,18 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
     async def _annotate_one(idx: int) -> tuple[int, dict | None, Exception | None, dict | None]:
         """Annotate a single question with retry. Returns (idx, annotate_json, last_err, meta)."""
+        from app.prompts.annotate_prompt import build_annotate_prompt_parts
         q_data = questions_data[idx]
         prompt_q_data = {**q_data, "content_origin": job.content_origin}
-        system, user = build_annotate_prompt(prompt_q_data)
+        sys_static, sys_dynamic, user = build_annotate_prompt_parts(prompt_q_data)
         last_err: Exception | None = None
         for attempt in range(3):
             try:
                 async with _annot_semaphore:
-                    result = await provider.complete(system=system, user=user, max_tokens=8192)
+                    result = await provider.complete_cached(
+                        system_static=sys_static, system_dynamic=sys_dynamic,
+                        user=user, max_tokens=8192,
+                    )
                 parsed = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
                 if not parsed:
                     raise ValueError("LLM returned empty or un-parseable annotation JSON")
@@ -2404,7 +2408,7 @@ async def ingest_official_pdf(
         status="parsing",
         provider_name=provider_name,
         model_name=model_name,
-        prompt_version="v3.0",
+        prompt_version="v7.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
         pass1_json={
@@ -2541,7 +2545,7 @@ async def ingest_unofficial_file(
         status="parsing",
         provider_name=provider_name,
         model_name=model_name,
-        prompt_version="v3.0",
+        prompt_version="v7.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
         pass1_json={"raw_text": raw_text[:100000], "_truncated": len(raw_text) > 100000, "_page_images": page_images, "_page_texts": [{"page_number": p["page_number"], "text": p.get("text", "")} for p in pdf_result["pages"]] if pdf_result else [], "_ocr_strategy": ocr_strategy},
@@ -2603,7 +2607,7 @@ async def ingest_text(
         status="parsing",
         provider_name=provider_name,
         model_name=model_name,
-        prompt_version="v3.0",
+        prompt_version="v7.0",
         rules_version=settings.rules_version,
         pass1_json={"raw_text": text, "source_metadata": source_metadata},
         created_at=now,
@@ -2622,7 +2626,7 @@ async def ingest_text(
 async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     """Reannotation pipeline — skips extraction and goes straight to annotation."""
     from app.llm.factory import get_provider
-    from app.prompts.annotate_prompt import build_annotate_prompt
+    from app.prompts.annotate_prompt import build_annotate_prompt_parts
     from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 
     settings = get_settings()
@@ -2641,9 +2645,13 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     await db.commit()
 
     from app.prompts.annotate_prompt import enforce_nullability, _detect_domain
-    system, user = build_annotate_prompt({**extract_json, "content_origin": job.content_origin})
+    sys_static, sys_dynamic, user = build_annotate_prompt_parts(
+        {**extract_json, "content_origin": job.content_origin}
+    )
     try:
-        result = await provider.complete(system=system, user=user, max_tokens=8192)
+        result = await provider.complete_cached(
+            system_static=sys_static, system_dynamic=sys_dynamic, user=user, max_tokens=8192,
+        )
         annotate_json = normalize_annotation(
             extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
         )
@@ -2839,7 +2847,7 @@ async def reannotate_question(
         status="annotating",
         provider_name=body.provider_name,
         model_name=body.model_name,
-        prompt_version="v3.0",
+        prompt_version="v7.0",
         rules_version=settings.rules_version,
         pass1_json=synthesized_pass1,
         question_id=qid,
@@ -2973,7 +2981,7 @@ async def ingest_benchmark_ocr(
             status="parsing",
             provider_name=prov,
             model_name=model,
-            prompt_version="v3.0",
+            prompt_version="v7.0",
             rules_version=settings.rules_version,
             raw_asset_id=asset_id,
             comparison_group_id=comparison_group_id,

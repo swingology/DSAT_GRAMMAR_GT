@@ -458,15 +458,31 @@ def _make_mock_job(**overrides):
     return SimpleNamespace(**defaults)
 
 
-def _make_mock_provider(responses: list) -> SimpleNamespace:
-    """Create a mock provider that returns canned LLM responses."""
+def _make_mock_provider(extract_responses: list, annotate_responses: list = None) -> SimpleNamespace:
+    """Create a mock provider that returns canned LLM responses.
+
+    extract_responses: raw_text values for provider.complete (Pass 1 extraction).
+    annotate_responses: raw_text values for provider.complete_cached (Pass 2 annotation).
+    For backward compatibility, if a single list is passed, the first item goes to
+    complete (extraction) and the rest go to complete_cached (annotation).
+    """
+    if annotate_responses is None:
+        # Legacy call: split first item off as extraction, rest as annotation
+        annotate_responses = extract_responses[1:]
+        extract_responses = extract_responses[:1]
     return SimpleNamespace(
         complete=AsyncMock(
             side_effect=[
                 SimpleNamespace(raw_text=r, provider="anthropic", model="m1", latency_ms=10)
-                for r in responses
+                for r in extract_responses
             ]
-        )
+        ),
+        complete_cached=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text=r, provider="anthropic", model="m1", latency_ms=10)
+                for r in annotate_responses
+            ]
+        ),
     )
 
 
@@ -566,7 +582,7 @@ class TestMultiQuestionPipeline:
 
         monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
         monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
-        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
         monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
@@ -613,7 +629,7 @@ class TestMultiQuestionPipeline:
 
         monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
         monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
-        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
         monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
@@ -665,7 +681,7 @@ class TestMultiQuestionPipeline:
 
         monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
         monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
-        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
         monkeypatch.setattr(ingest_router, "extract_json_from_text", mock_extract_json)
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
@@ -707,7 +723,7 @@ class TestMultiQuestionPipeline:
 
         monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
         monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
-        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_: ("system", "user"))
+        monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
         monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [{"severity": "blocking", "field": "question_text", "message": "Missing"}])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(

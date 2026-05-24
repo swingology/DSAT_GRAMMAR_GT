@@ -83,6 +83,29 @@ def test_batch_counter_field_unknown_status():
     assert _batch_counter_field("retrying") is None
 
 
+def test_normalize_generated_question_normalizes_option_aliases():
+    from app.routers.generate import _normalize_generated_question
+
+    normalized = _normalize_generated_question({
+        "question_text": "Which choice best completes the text?",
+        "correct_option_label": "a)",
+        "options": [
+            {"option_label": "A)", "option_text": "Correct answer"},
+            {"option_label": "B.", "option_text": "Wrong answer"},
+            {"letter": "c", "answer_text": "Another wrong answer"},
+            {"choice_label": "D", "choice_text": "Final wrong answer"},
+        ],
+    })
+
+    assert normalized["correct_option_label"] == "A"
+    assert normalized["options"] == [
+        {"option_label": "A)", "option_text": "Correct answer", "label": "A", "text": "Correct answer"},
+        {"option_label": "B.", "option_text": "Wrong answer", "label": "B", "text": "Wrong answer"},
+        {"letter": "c", "answer_text": "Another wrong answer", "label": "C", "text": "Another wrong answer"},
+        {"choice_label": "D", "choice_text": "Final wrong answer", "label": "D", "text": "Final wrong answer"},
+    ]
+
+
 # ---------------------------------------------------------------------------
 # _run_generate_pipeline — failure status classification
 # ---------------------------------------------------------------------------
@@ -158,7 +181,7 @@ async def test_pipeline_returns_failed_permanent_for_json_parse_failure():
 
     with patch("app.llm.factory.get_provider") as mock_get:
         provider = AsyncMock()
-        provider.complete.side_effect = ValueError("invalid json")
+        provider.complete_cached.side_effect = ValueError("invalid json")
         mock_get.return_value = provider
 
         result = await _run_generate_pipeline(
@@ -178,7 +201,7 @@ async def test_pipeline_returns_failed_transient_for_network_error():
 
     with patch("app.llm.factory.get_provider") as mock_get:
         provider = AsyncMock()
-        provider.complete.side_effect = ConnectionError("network down")
+        provider.complete_cached.side_effect = ConnectionError("network down")
         mock_get.return_value = provider
 
         result = await _run_generate_pipeline(
@@ -208,14 +231,14 @@ async def test_pipeline_returns_failed_permanent_for_blocking_validation(monkeyp
     }
     responses = iter([generated, annotated])
     provider = AsyncMock()
-    provider.complete.side_effect = [
+    provider.complete_cached.side_effect = [
         SimpleNamespace(raw_text="generate", provider="ollama", model="m", latency_ms=1),
         SimpleNamespace(raw_text="annotate", provider="ollama", model="m", latency_ms=1),
     ]
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
-    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
     monkeypatch.setattr(
         generate_router,
@@ -280,14 +303,14 @@ async def test_pipeline_settles_overlap_exception(monkeypatch):
     }
     responses = iter([generated, annotated])
     provider = AsyncMock()
-    provider.complete.side_effect = [
+    provider.complete_cached.side_effect = [
         SimpleNamespace(raw_text="generate", provider="ollama", model="m", latency_ms=1),
         SimpleNamespace(raw_text="annotate", provider="ollama", model="m", latency_ms=1),
     ]
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
-    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(side_effect=ConnectionError("network down")))
@@ -324,7 +347,7 @@ async def test_pipeline_auto_runs_review_after_clean_save(monkeypatch):
     }
     responses = iter([generated, annotated])
     provider = AsyncMock()
-    provider.complete.side_effect = [
+    provider.complete_cached.side_effect = [
         SimpleNamespace(raw_text="generate", provider="ollama", model="m", latency_ms=1),
         SimpleNamespace(raw_text="annotate", provider="ollama", model="m", latency_ms=1),
     ]
@@ -334,8 +357,8 @@ async def test_pipeline_auto_runs_review_after_clean_save(monkeypatch):
         review_calls.append((question_id, generation_batch_id))
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
-    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr("app.storage.yaml_export.export_generated_question", lambda **_kwargs: None)
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
@@ -375,15 +398,15 @@ async def test_pipeline_skip_review_suppresses_auto_review(monkeypatch):
     }
     responses = iter([generated, annotated])
     provider = AsyncMock()
-    provider.complete.side_effect = [
+    provider.complete_cached.side_effect = [
         SimpleNamespace(raw_text="generate", provider="ollama", model="m", latency_ms=1),
         SimpleNamespace(raw_text="annotate", provider="ollama", model="m", latency_ms=1),
     ]
     mock_auto_review = AsyncMock()
 
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
-    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt", lambda *_args, **_kwargs: ("system", "user"))
-    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt", lambda *_args, **_kwargs: ("system", "user"))
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr("app.storage.yaml_export.export_generated_question", lambda **_kwargs: None)
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
@@ -404,6 +427,72 @@ async def test_pipeline_skip_review_suppresses_auto_review(monkeypatch):
 
     assert result == "approved"
     mock_auto_review.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_pipeline_flushes_question_version_before_annotation(monkeypatch):
+    from app.routers import generate as generate_router
+
+    class _OrderingSession(_FakePipelineSession):
+        def __init__(self):
+            super().__init__()
+            self.added_types = []
+            self.flush_snapshots = []
+
+        def add(self, obj):
+            self.added_types.append(type(obj).__name__)
+
+        async def flush(self):
+            self.flush_snapshots.append(list(self.added_types))
+
+    job = _make_job()
+    db = _OrderingSession()
+    generated = {
+        "question_text": "Generated question",
+        "correct_option_label": "A",
+        "options": [
+            {"label": "A", "text": "Correct"},
+            {"label": "B", "text": "Wrong"},
+            {"label": "C", "text": "Wrong"},
+            {"label": "D", "text": "Wrong"},
+        ],
+    }
+    annotated = {
+        "explanation_short": "Ok",
+        "explanation_full": "Ok",
+        "annotation_confidence": 0.9,
+        "needs_human_review": False,
+    }
+    responses = iter([generated, annotated])
+    provider = AsyncMock()
+    provider.complete_cached.side_effect = [
+        SimpleNamespace(raw_text="generate", provider="ollama", model="m", latency_ms=1),
+        SimpleNamespace(raw_text="annotate", provider="ollama", model="m", latency_ms=1),
+    ]
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.generate_prompt.build_generate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr("app.storage.yaml_export.export_generated_question", lambda **_kwargs: None)
+    monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
+    monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(return_value=[]))
+
+    result = await generate_router._run_generate_pipeline(
+        job,
+        db,
+        {
+            "source_question_ids": [],
+            "provider_name": "ollama",
+            "model_name": "x",
+            "skip_review": True,
+        },
+    )
+
+    assert result == "approved"
+    assert db.flush_snapshots[0] == ["Question", "QuestionVersion"]
+    assert "QuestionAnnotation" in db.flush_snapshots[1]
+    assert db.added_types.index("QuestionVersion") < db.added_types.index("QuestionAnnotation")
 
 
 # ---------------------------------------------------------------------------

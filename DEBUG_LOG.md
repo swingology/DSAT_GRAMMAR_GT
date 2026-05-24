@@ -1,5 +1,18 @@
 # Debug Log
 
+## 2026-05-23 - Ingestion Test Run (Test_5_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `generation_build`
+Git checkpoint: `784bfa9` — chore: commit remaining generation repo state
+
+### Findings
+
+1. **High — Prerequisite failure: duplicate checksum rejected by server before job creation:**
+   - The runner submitted `Test_5_digital_sec01_mod01` and received HTTP 422 `{"detail":"This file has already been ingested (duplicate checksum)."}`.
+   - No `job_id` was returned; the pipeline never started. `RESULT_JSON: {"error":"no job_id", ...}`.
+   - This module has been ingested in at least two prior runs (see 2026-05-23 gap-pattern entry above). The duplicate guard is working correctly — this is expected behaviour, not a new pipeline defect.
+   - **Action required to re-test:** delete or soft-delete the existing ingestion record for this checksum, or use an admin endpoint to force-reingest if one exists.
+
 ## 2026-05-23 - Test 5 Ingestion Gap Pattern — Consistent Extraction Failure
 Report created by: Claude Sonnet 4.6
 Git branch: `generation_build`

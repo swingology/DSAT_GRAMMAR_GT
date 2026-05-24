@@ -5,6 +5,104 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-23 — Write in user highlight feature
+
+**Model:** Antigravity (Agent)
+
+### Added
+- **`passage_tokens` generation requirement** (`rules_agent_dsat_grammar_ingestion_generation_v7.md`) — Added instruction to mandate `passage_tokens` tokenized array generation in the `classification` output schema, allowing the UI to highlight word-level grammar elements dynamically.
+- **`passage_tokens` payload** (`backend/app/models/payload.py`) — Added `passage_tokens` list field to `StudentQuestionResponse`.
+- **UI Highlight Support** (`htmx-grammar-app/templates/app_container.html` & `app.py`) — Updated the Flask testbed `get_context()` to flatten `latest_annotation` from the API so tokenized text and grammar metadata map to the Jinja templates. Added Jinja logic in `app_container.html` to parse and highlight specific `passage_tokens` tags visually when grammar keys are clicked. Added a demo token array to the hardcoded testbed fallback question.
+
+---
+
+## 2026-05-23 — Prompt Caching (Anthropic + Ollama) and Rules Version Upgrade
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `generation_build`
+
+### Added
+
+- **`build_annotate_prompt_parts()`** (`backend/app/prompts/annotate_prompt.py`) — new
+  function that returns `(system_static, system_dynamic, user)` separating the large
+  static rules block from the per-call dynamic instructions. `system_static` is the
+  grammar v7 (~37K chars) or reading v2 (~40K chars) rules context. `system_dynamic`
+  is the routing rules, allowed-key constraints, and `content_origin` marker (~6K chars).
+
+- **`build_generate_prompt_parts()`** (`backend/app/prompts/generate_prompt.py`) — same
+  split for the generation pipeline. `system_static` is the domain-filtered generation
+  sections from grammar v7 + reading v2 (~80K chars). `system_dynamic` is the concise
+  `GENERATE_SYSTEM_PROMPT` base (~1.3K chars).
+
+- **`_SYSTEM_INSTRUCTIONS_TEMPLATE`** (`annotate_prompt.py`) — instructions-only system
+  prompt template (identical routing rules, nullability enforcement, difficulty calibration,
+  amendment proposal spec) that references rules "provided above" rather than embedding
+  them inline. Used by `build_annotate_prompt_parts()`.
+
+- **`AnthropicProvider.complete_cached()`** — sends system as a list of two content
+  blocks: `[{text: system_static, cache_control: {type: ephemeral}}, {text: system_dynamic}]`.
+  Anthropic caches everything up to and including the first block across calls within a
+  5-minute window. `LLMResponse.cache_token_usage` now captures `cache_creation` and
+  `cache_read` token counts from `response.usage`.
+
+  **Token savings per 33-question module at Claude Sonnet pricing ($3/MTok input, $0.30/MTok cache read):**
+  | Domain | Without caching | With caching | Saved |
+  |---|---|---|---|
+  | Grammar (16 Q) | 164,800 tokens | ~25,750 tokens | ~139,050 (84%) |
+  | Reading (17 Q) | 297,500 tokens | ~45,500 tokens | ~252,000 (85%) |
+  | **Total** | **462,300** | **~71,250** | **~391,000 (85%)** |
+
+- **`OllamaProvider.complete_cached()`** — concatenates `system_static + system_dynamic`
+  (same string as before for deterministic KV prefix matching) and adds
+  `options.num_keep = max(len(system_static) // 3, 512)` to protect the static rules
+  prefix from eviction if the context window overflows. Ollama automatically reuses KV
+  cache when the same prefix appears in consecutive requests to the same loaded model.
+
+- **`OpenAIProvider.complete_cached()`** — concatenates static + dynamic and delegates to
+  `complete()`. OpenAI automatically caches stable prefixes ≥ 1024 tokens; no API change
+  required.
+
+- **`LLMResponse.cache_token_usage`** (`backend/app/llm/base.py`) — new `dict` field
+  (default `{}`) on `LLMResponse` for provider-reported cache hit/creation counts.
+  `cache_token_usage: {cache_creation: int, cache_read: int}` on Anthropic; empty on others.
+
+- **`scripts/reannotate_official_v7.py`** — bulk re-annotation script that calls
+  `POST /ingest/reannotate/{question_id}` for every `content_origin='official'` question
+  (currently 569), polling each job to completion and writing a summary to
+  `analysis/calibration/reannotation_report.json`. Accepts `--dry-run`, `--limit N`,
+  `--provider`, `--model`, `--base-url`, `--api-key` flags.
+
+### Changed
+
+- **`config.py` `rules_version`** — corrected from `"rules_agent_dsat_grammar_ingestion_generation_v3"`
+  to `"rules_agent_dsat_grammar_ingestion_generation_v7"`. This field is the metadata label
+  stamped on every `question_annotations.rules_version` row. The annotation *prompt*
+  (`annotate_prompt.py`) was already loading v7 grammar and v2 reading rules; only the
+  label was stale, but the original 569 official question ingestion runs were also done
+  before `annotate_prompt.py` pointed at v7, causing the taxonomy inconsistencies
+  catalogued in `INCONSISTENT_KEYS_LIST.md`.
+
+- **`prompt_version`** — all hardcoded `"v3.0"` values updated to `"v7.0"` across
+  `ingest.py` (4 sites), `generate.py` (3 sites), and `student.py` (1 site). Jobs
+  created from this point forward are correctly stamped.
+
+- **All annotation call sites** in `ingest.py` (`_annotate_one` in `_run_pipeline` and
+  `_run_reannotate_pipeline`) and `generate.py` (`_run_generate_pipeline`, both the
+  generation pass and the post-generation annotation pass) now call
+  `provider.complete_cached()` instead of `provider.complete()`.
+
+- **`_run_reannotate_pipeline`** import updated from `build_annotate_prompt` to
+  `build_annotate_prompt_parts`; `_run_pipeline` main import similarly updated.
+
+### Verification
+
+- `uv run pytest tests/ -q` → **751 passed, 2 skipped** (0 failures).
+- All provider mocks in `test_backend_regressions.py`, `test_pipeline.py`, and
+  `test_generate_runner.py` updated to mock `complete_cached` for annotation/generation
+  calls and keep `complete` only for Pass 1 extraction calls.
+
+---
+
 ## 2026-05-23 — Admin Question Audit Log
 
 **Model:** Claude Sonnet 4.6

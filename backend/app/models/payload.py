@@ -10,6 +10,7 @@ class StudentQuestionResponse(BaseModel):
     content_origin: str
     current_question_text: str
     current_passage_text: Optional[str] = None
+    passage_tokens: Optional[List[dict]] = None
     practice_status: str
     grammar_role_key: Optional[str] = None
     grammar_focus_key: Optional[str] = None
@@ -502,10 +503,45 @@ class UserCreate(BaseModel):
 class UserResponse(BaseModel):
     id: int
     username: str
+    email: Optional[str] = None
+    role: str = "student"
     user_token: str
     created_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
+
+
+# --- Student auth payloads -------------------------------------------------
+
+
+class StudentSignup(BaseModel):
+    username: str = Field(min_length=3, max_length=100)
+    email: str = Field(pattern=r"^[^@]+@[^@]+\.[^@]+$")
+    password: str = Field(min_length=8, max_length=128)
+
+
+class StudentLogin(BaseModel):
+    email: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    expires_in: int  # seconds
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
+class StudentMeResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    role: str
+    created_at: datetime
 
 
 # --- Phase 8: Self-study agent request layer ---------------------------------

@@ -2,6 +2,8 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| session | Prompt caching: build_annotate_prompt_parts + build_generate_prompt_parts split rules (static) from instructions (dynamic). Anthropic uses cache_control:ephemeral on static block; Ollama sets num_keep; OpenAI concatenates (auto-caches). 751/751 tests pass. | llm/{base,anthropic,ollama,openai}_provider.py, prompts/{annotate,generate}_prompt.py, routers/{ingest,generate}.py, tests/ | success | ~4k |
+| session | v3→v7 rules_version fix: config.py rules_version updated to v7; prompt_version "v3.0"→"v7.0" in ingest.py/generate.py/student.py (8 sites); scripts/reannotate_official_v7.py written for bulk re-annotation of 569 official questions via /reannotate endpoint | backend/app/config.py, backend/app/routers/ingest.py, backend/app/routers/generate.py, backend/app/routers/student.py, scripts/reannotate_official_v7.py | success | ~2k |
 | 18:30 | Ingestion test for Test_9_digital_sec01_mod01 — BLOCKED: run.sh returned "Invalid admin API key"; server on :8000 (pid 175680) started from project root without backend/.env, using default key admin-key-change-me instead of admin-test-key; logged bug-151 | DEBUG_LOG.md, .wolf/buglog.json | blocked (env/config issue, no job submitted) | ~1k |
 | 03:47 | Phase 8 self-study agent verified fully implemented; wrote 39 tests covering _weakness_score, _compute_weakness_targets, cap helpers, all three study endpoints; 39/39 pass; checked off TASKS_GENERATION.md Phase 8 checkboxes. | backend/tests/test_self_study.py, TASKS_GENERATION.md | success | ~2k |
 | 06:17 | Phase 2 generation runner implemented: _is_transient_error, _batch_counter_field, _run_generate_pipeline returns str, _update_batch_counters, _run_batch_job, _finalize_batch_status, _run_batch_pipeline, retry endpoint POST /generate/batches/{id}/retry-failed, generation_job_max_retries config. 21 new tests, 522 total pass. | backend/app/routers/generate.py, backend/app/config.py, backend/tests/test_generate_runner.py, TASKS_GENERATION.md, CHANGELOG.md | success | ~4k |
@@ -1495,3 +1497,187 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 13:26 | Edited backend/app/config.py | 2→2 lines | ~33 |
+| 13:27 | Session end: 1 writes across 1 files (config.py) | 2 reads | ~3418 tok |
+| 13:27 | ingestion-test run for Test_5_digital_sec01_mod01 — duplicate checksum, no job created | DEBUG_LOG.md | logged prereq failure | ~200 |
+| 13:28 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:39 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:39 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:40 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:40 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:40 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:40 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:41 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:41 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:41 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:41 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:42 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:42 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:42 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:42 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:43 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:43 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:43 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:43 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:44 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:44 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:44 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:44 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:44 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:45 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+| 13:45 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~47076 tok |
+
+## Session: 2026-05-23 13:50
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-23 14:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-23 15:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:26 | Created scripts/build_calibration_set.py | — | ~5697 |
+| 15:29 | Edited scripts/build_calibration_set.py | modified select_calibration_candidates() | ~1619 |
+| 15:29 | Edited scripts/build_calibration_set.py | 3→3 lines | ~59 |
+
+## Session: 2026-05-23 15:29
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:29 | Edited scripts/build_calibration_set.py | 3→5 lines | ~107 |
+| 15:29 | Edited scripts/build_calibration_set.py | 5→5 lines | ~135 |
+| 15:29 | Built calibration classification set from 569 official questions in DB | scripts/build_calibration_set.py, analysis/calibration/ | 40-question set selected (20 grammar, 20 reading); official_classifications.json (3.1MB all questions), calibration_set.json (224KB selected set), calibration_report.md | ~3k |
+| 15:30 | Session end: 2 writes across 1 files (build_calibration_set.py) | 0 reads | ~242 tok |
+| 15:30 | Session end: 2 writes across 1 files (build_calibration_set.py) | 0 reads | ~242 tok |
+| 15:31 | Session end: 2 writes across 1 files (build_calibration_set.py) | 2 reads | ~242 tok |
+| 15:33 | Created INCONSISTENT_KEYS_LIST.md | — | ~1571 |
+| 15:34 | Session end: 3 writes across 2 files (build_calibration_set.py, INCONSISTENT_KEYS_LIST.md) | 2 reads | ~1925 tok |
+| 15:35 | Edited FUTURE_FEATURES.md | expanded (+182 lines) | ~2016 |
+| 15:35 | Added Admin Taxonomy Key Management feature to FUTURE_FEATURES.md | FUTURE_FEATURES.md | Feature covers key registry table, remap/prune/add endpoints, drift report, scope controls (official/generated/all), ingestion pipeline integration | ~1k |
+| 15:35 | Session end: 4 writes across 3 files (build_calibration_set.py, INCONSISTENT_KEYS_LIST.md, FUTURE_FEATURES.md) | 3 reads | ~10747 tok |
+
+## Session: 2026-05-23 15:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:40 | Edited backend/app/config.py | "rules_agent_dsat_grammar_" → "rules_agent_dsat_grammar_" | ~22 |
+| 15:40 | Edited backend/app/routers/ingest.py | 4→4 lines | ~40 |
+
+## Session: 2026-05-23 15:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:41 | Created scripts/reannotate_official_v7.py | — | ~1812 |
+| 15:42 | Session end: 1 writes across 1 files (reannotate_official_v7.py) | 0 reads | ~1812 tok |
+| 15:47 | Edited backend/app/llm/base.py | modified complete() | ~586 |
+| 15:48 | Edited backend/app/llm/anthropic_provider.py | modified __init__() | ~1224 |
+| 15:48 | Edited backend/app/llm/ollama_provider.py | modified complete_cached() | ~663 |
+| 15:48 | Session end: 4 writes across 4 files (reannotate_official_v7.py, base.py, anthropic_provider.py, ollama_provider.py) | 10 reads | ~65800 tok |
+| 15:48 | Edited backend/app/prompts/annotate_prompt.py | modified Ideas() | ~866 |
+| 15:48 | Edited backend/app/prompts/annotate_prompt.py | modified build_annotate_prompt_parts() | ~480 |
+| 15:49 | Edited backend/app/prompts/generate_prompt.py | modified build_generate_prompt() | ~641 |
+| 15:49 | Edited backend/app/routers/ingest.py | modified _annotate_one() | ~233 |
+| 15:49 | Edited backend/app/routers/ingest.py | 22→26 lines | ~288 |
+| 15:49 | Edited backend/app/routers/generate.py | modified _run_generate_pipeline() | ~833 |
+| 15:50 | Edited backend/app/routers/ingest.py | inline fix | ~31 |
+| 15:53 | Edited backend/tests/test_backend_regressions.py | 20→24 lines | ~388 |
+| 15:53 | Edited backend/tests/test_backend_regressions.py | 26→30 lines | ~383 |
+| 15:53 | Edited backend/tests/test_backend_regressions.py | 18→22 lines | ~408 |
+| 15:53 | Edited backend/tests/test_backend_regressions.py | 18→18 lines | ~348 |
+| 15:53 | Edited backend/tests/test_backend_regressions.py | 17→17 lines | ~346 |
+| 15:53 | Edited backend/tests/test_backend_regressions.py | 20→20 lines | ~414 |
+| 15:54 | Edited backend/tests/test_backend_regressions.py | 9→9 lines | ~131 |
+| 15:54 | Edited backend/tests/test_backend_regressions.py | 14→18 lines | ~322 |
+| 15:54 | Edited backend/tests/test_backend_regressions.py | 12→16 lines | ~210 |
+| 15:54 | Edited backend/tests/test_pipeline.py | modified _make_mock_provider() | ~341 |
+| 15:54 | Edited backend/tests/test_pipeline.py | "app.prompts.annotate_prom" → "app.prompts.annotate_prom" | ~39 |
+| 15:54 | Edited backend/tests/test_generate_runner.py | 11→11 lines | ~127 |
+| 15:54 | Edited backend/tests/test_generate_runner.py | 11→11 lines | ~128 |
+| 15:55 | Edited backend/tests/test_generate_runner.py | 27→27 lines | ~389 |
+| 15:55 | Edited backend/tests/test_generate_runner.py | 13→13 lines | ~288 |
+| 15:55 | Edited backend/tests/test_generate_runner.py | modified fake_auto_review() | ~270 |
+| 15:55 | Edited backend/tests/test_generate_runner.py | 12→12 lines | ~236 |
+| 15:57 | Edited backend/app/llm/openai_provider.py | modified complete_cached() | ~224 |
+| 15:57 | Edited FUTURE_FEATURES.md | "[PRIORITY: HIGH]" → "[DONE — 2026-05-23]" | ~22 |
+| 15:58 | Session end: 30 writes across 13 files (reannotate_official_v7.py, base.py, anthropic_provider.py, ollama_provider.py, annotate_prompt.py) | 15 reads | ~111693 tok |
+| 15:59 | Edited CHANGELOG.md | modified that() | ~1316 |
+| 15:59 | Session end: 31 writes across 14 files (reannotate_official_v7.py, base.py, anthropic_provider.py, ollama_provider.py, annotate_prompt.py) | 16 reads | ~152394 tok |
+| 16:02 | Session end: 31 writes across 14 files (reannotate_official_v7.py, base.py, anthropic_provider.py, ollama_provider.py, annotate_prompt.py) | 16 reads | ~152394 tok |
+
+## Session: 2026-05-23 16:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:06 | Edited scripts/reannotate_official_v7.py | 4→4 lines | ~32 |
+| 16:09 | Session end: 1 writes across 1 files (reannotate_official_v7.py) | 1 reads | ~1844 tok |
+| 16:10 | Session end: 1 writes across 1 files (reannotate_official_v7.py) | 1 reads | ~1844 tok |
+| 16:11 | Session end: 1 writes across 1 files (reannotate_official_v7.py) | 1 reads | ~1844 tok |
+| 16:11 | Session end: 1 writes across 1 files (reannotate_official_v7.py) | 1 reads | ~1844 tok |
+| 16:16 | Session end: 1 writes across 1 files (reannotate_official_v7.py) | 1 reads | ~1844 tok |
+| 16:16 | Session end: 1 writes across 1 files (reannotate_official_v7.py) | 1 reads | ~1844 tok |
+| 16:18 | Created TESTS/DATA_SRC/2024-2025 Tests Answers/TEST5_ENG_Explanations.md | — | ~1519 |
+| 16:18 | Session end: 2 writes across 2 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md) | 1 reads | ~3471 tok |
+| 16:20 | Session end: 2 writes across 2 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md) | 1 reads | ~3471 tok |
+| 16:21 | Session end: 2 writes across 2 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md) | 1 reads | ~3471 tok |
+| 16:23 | Session end: 2 writes across 2 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md) | 1 reads | ~3471 tok |
+| 16:24 | Session end: 2 writes across 2 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md) | 1 reads | ~3471 tok |
+| 16:26 | Session end: 2 writes across 2 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md) | 1 reads | ~3471 tok |
+| 16:28 | Session end: 2 writes across 2 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md) | 1 reads | ~3471 tok |
+| 16:33 | Edited scripts/reannotate_official_v7.py | modified fetch_official_question_ids() | ~351 |
+| 16:33 | Edited scripts/reannotate_official_v7.py | 2→3 lines | ~98 |
+| 16:33 | Edited scripts/reannotate_official_v7.py | 3→3 lines | ~37 |
+| 16:33 | Session end: 5 writes across 2 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md) | 1 reads | ~3956 tok |
+| 16:37 | Created TESTS/DATA_SRC/2024-2025 Tests Answers/DSAT_Comma_Rules.md | — | ~3916 |
+| 16:37 | Session end: 6 writes across 3 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md, DSAT_Comma_Rules.md) | 1 reads | ~8152 tok |
+| 16:49 | Edited TESTS/DATA_SRC/2024-2025 Tests Answers/DSAT_Comma_Rules.md | modified Coordinate() | ~1680 |
+| 16:49 | Edited TESTS/DATA_SRC/2024-2025 Tests Answers/DSAT_Comma_Rules.md | expanded (+7 lines) | ~499 |
+| 16:49 | Edited TESTS/DATA_SRC/2024-2025 Tests Answers/DSAT_Comma_Rules.md | expanded (+23 lines) | ~441 |
+| 16:50 | Session end: 9 writes across 3 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md, DSAT_Comma_Rules.md) | 4 reads | ~42060 tok |
+| 16:57 | Session end: 9 writes across 3 files (reannotate_official_v7.py, TEST5_ENG_Explanations.md, DSAT_Comma_Rules.md) | 4 reads | ~42060 tok |
+
+## Session: 2026-05-24 17:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:48 | Created ../.claude/plans/foamy-watching-zephyr.md | — | ~2517 |
+| 17:53 | Edited backend/pyproject.toml | 2→4 lines | ~23 |
+| 17:53 | Edited backend/app/config.py | 3→8 lines | ~74 |
+| 17:53 | Edited backend/app/main.py | modified _check_insecure_keys() | ~355 |
+| 17:53 | Created backend/migrations/versions/028_student_auth.py | — | ~350 |
+| 17:53 | Edited backend/app/models/db.py | modified User() | ~228 |
+| 17:53 | Edited backend/app/models/payload.py | modified UserCreate() | ~281 |
+| 17:54 | Created backend/app/auth.py | — | ~2644 |
+| 17:54 | Created backend/app/routers/student_auth.py | — | ~1826 |
+| 17:54 | Edited backend/app/routers/student.py | 3→3 lines | ~53 |
+
+## Session: 2026-05-24 17:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-24 18:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-24 18:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-24 18:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:17 | Created docs/c4_ingestion.md | — | ~1891 |
+| 19:17 | Session end: 1 writes across 1 files (c4_ingestion.md) | 0 reads | ~2026 tok |
+| 19:19 | Session end: 1 writes across 1 files (c4_ingestion.md) | 0 reads | ~2026 tok |
+| 20:19 | Session end: 1 writes across 1 files (c4_ingestion.md) | 0 reads | ~2026 tok |
+| 20:20 | Session end: 1 writes across 1 files (c4_ingestion.md) | 0 reads | ~2026 tok |
+| 20:21 | Session end: 1 writes across 1 files (c4_ingestion.md) | 0 reads | ~2026 tok |
+| 20:22 | Session end: 1 writes across 1 files (c4_ingestion.md) | 0 reads | ~2026 tok |

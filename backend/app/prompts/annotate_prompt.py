@@ -166,6 +166,62 @@ def _detect_domain(q_data: dict) -> str:
     return "unknown"
 
 
+# Instructions-only template: rules reference is provided as a SEPARATE cached block.
+# Used by build_annotate_prompt_parts() for prompt-cached calls.
+_SYSTEM_INSTRUCTIONS_TEMPLATE = """You are a DSAT question annotation specialist. Annotate the given question using the rules reference provided above.
+
+=== HARD ROUTING RULES (override anything in the rules reference) ===
+
+1. DOMAIN SPLIT — determined by what cognitive skill the correct answer requires:
+   • Standard English Conventions (SEC) / Expression of Ideas (grammar-adjacent):
+     - grammar_focus_key: required, non-null
+     - grammar_role_key: required, non-null
+     - Use grammar_v7 taxonomy keys only
+   • Information and Ideas / Craft and Structure (reading):
+     - grammar_focus_key: MUST be null
+     - grammar_role_key: MUST be null
+     - Use reading_v2 taxonomy keys only
+
+2. complete_the_text DISAMBIGUATION:
+   • If the blank tests a TRANSITION WORD or CONJUNCTION → SEC domain
+     stem_type_key = "complete_the_text", skill_family = "expression_of_ideas"
+   • If the blank tests VOCABULARY / WORD CHOICE and there is a passage → Reading domain
+     stem_type_key = "choose_words_in_context", skill_family = "words_in_context"
+   • If the blank tests VOCABULARY and stimulus_mode = sentence_only → SEC domain
+     stem_type_key = "complete_the_text", skill_family = "expression_of_ideas"
+
+3. NULLABILITY ENFORCEMENT:
+   • difficulty_grammar: null for reading-domain questions
+   • difficulty_reading: null for grammar-domain questions
+   • syntactic_trap_key: null for reading-domain questions unless explicitly applicable
+
+4. DIFFICULTY CALIBRATION — do not default everything to "medium":
+   • low: straightforward rule application, no trap
+   • medium: one plausible trap, moderate passage complexity
+   • high: multiple traps, complex syntax, subtle distinction
+   • very_high: expert-level, rare construction, or cross-passage inference
+
+5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
+
+6. CONTROLLED VOCABULARY: stimulus_mode_key, stem_type_key, and reading_focus_key
+   must be drawn verbatim from the allowed-values list below. Output is rejected
+   if any of these keys is not an exact match.
+
+7. AMENDMENT PROPOSALS:
+   • Current content_origin: {content_origin}
+   • Use existing approved keys for actual annotation. Never put proposed keys in
+     production annotation fields.
+   • If content_origin is "official" and no existing rule/key fits the official
+     item, you may emit reasoning.amendment_proposal.
+   • If content_origin is not "official", reasoning.amendment_proposal MUST be
+     null or omitted.
+   • A proposal must include affected_doc, affected_vocab, proposed_value,
+     parent_key when applicable, definition, current_best_fit,
+     why_current_rules_are_insufficient, official_evidence, rule_doc_patch, and
+     master_json_patch.
+
+{allowed_keys}"""
+
 _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the given question using the rules reference below.
 
 === HARD ROUTING RULES (override anything in the rules reference) ===
@@ -289,6 +345,43 @@ def enforce_nullability(annotation: dict, domain: str) -> dict:
     if "classification" in result and isinstance(result["classification"], dict):
         result["classification"] = _patch(result["classification"])
     return result
+
+
+def build_annotate_prompt_parts(
+    q_data: dict | None = None,
+    **kwargs,
+) -> tuple[str, str, str]:
+    """Return (system_static, system_dynamic, user) for prompt-cached annotation calls.
+
+    system_static  — the grammar v7 or reading v2 rules block; mark with cache_control
+                     on Anthropic or use as num_keep prefix on Ollama (~10-17K tokens,
+                     identical for all questions of the same domain in a job).
+    system_dynamic — routing rules + allowed keys + content_origin; fresh each call
+                     (~500-700 tokens, changes when content_origin differs).
+    user           — per-question JSON; always fresh.
+    """
+    if q_data is None:
+        q_data = kwargs.pop("extract_json", None) or {}
+    content_origin = kwargs.pop("content_origin", None) or q_data.get("content_origin") or "unknown"
+
+    domain = _detect_domain(q_data)
+    if domain == "grammar":
+        system_static = _grammar_context()
+    elif domain == "reading":
+        system_static = _reading_context()
+    else:
+        g = _extract_between(_read_file(_GRAMMAR_FILE), "# PART D", "# PART E")
+        r = _reading_context()
+        system_static = (
+            f"Grammar v7 RULES REFERENCE:\n=== GRAMMAR v7: TAXONOMY (Part D) ===\n{g}\n\n{r}"
+        )
+
+    system_dynamic = _SYSTEM_INSTRUCTIONS_TEMPLATE.format(
+        allowed_keys=_ALLOWED_KEYS_BLOCK,
+        content_origin=content_origin,
+    )
+    user = f"Annotate the following extracted question:\n\n{json.dumps(q_data, indent=2)}"
+    return system_static, system_dynamic, user
 
 
 def build_annotate_prompt(q_data: dict | None = None, rules_file_path: str = "", **kwargs) -> tuple[str, str]:

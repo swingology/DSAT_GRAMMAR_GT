@@ -172,6 +172,11 @@ Every item must produce these five top-level sections:
   "grammar_role_key": "agreement",
   "grammar_focus_key": "subject_verb_agreement",
   "secondary_grammar_focus_keys": [],
+  "passage_tokens": [
+    {"word": "The", "tags": []},
+    {"word": "researcher,", "tags": ["subject_verb_agreement", "nearest_noun_attraction"]},
+    {"word": "who", "tags": []}
+  ],
   "transition_subtype_key": null,
   "syntactic_trap_key": "nearest_noun_attraction",
   "evidence_scope_key": "sentence",
@@ -659,6 +664,18 @@ Correct option: produces one or more complete, correctly bounded sentences.
 Wrong options: create a fragment, comma splice, fused sentence, or boundary that
 breaks an essential modifier from its clause.
 
+**Sub-pattern — appositive-comma illusion masking a sentence boundary:**
+Use a first sentence ending in a noun phrase, followed by a second sentence that
+begins with a capitalized appositive-like noun phrase and then continues into a
+main clause. The tempting distractor attaches the second sentence with a comma
+because the opening noun phrase appears to rename the prior noun, but the
+following main clause makes the comma choice a comma splice. The correct option
+uses a period or another valid sentence boundary. Classify with
+`grammar_focus_key: "sentence_boundary"` or `"comma_splice"` depending on
+the final error, keep `syntactic_trap_key` at the closest approved broad key
+or `"none"`, and use `student_failure_mode_key: "comma_fix_illusion"` with a
+review note naming this subpattern.
+
 ### `sentence_fragment`
 
 Subordinate clause presented as a complete sentence.
@@ -1037,6 +1054,7 @@ Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "
 | 1 | Complete clause attached with only a comma | `punctuation_style_bias` |
 | 2 | Clause boundary omitted entirely | `grammar_fit_only` |
 | 3 | Period or semicolon inserted where the following material is not independent | `formal_register_match` |
+| 4 | Appositive-looking phrase attached with comma, but following main clause creates comma splice | `comma_fix_illusion` |
 
 ### `sentence_fragment`
 
@@ -1053,6 +1071,7 @@ Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "
 | 1 | Two independent clauses joined by comma alone | `punctuation_style_bias` |
 | 2 | Comma plus conjunctive adverb without semicolon or period | `formal_register_match` |
 | 3 | Comma before a transition that cannot coordinate clauses | `grammar_fit_only` |
+| 4 | Appositive-comma illusion where the comma appears to introduce a renaming phrase but actually joins two clauses | `comma_fix_illusion` |
 
 ### `run_on_sentence`
 

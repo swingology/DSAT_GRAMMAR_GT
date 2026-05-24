@@ -38,6 +38,9 @@
 - `_persist_single_question` now accepts an optional `provider` parameter for stimulus annotation; call sites that don't pass it receive no-op annotation (provider defaults to None).
 - YAML export `_build_question_record()` strips `_`-prefixed keys from `stimulus_assets` entries before writing — the pipeline adds `_layout_label` and `_crop_path` as internal metadata that should not appear in the archive.
 
+- `config.py` `rules_version` field is the metadata label stamped onto every `question_annotations.rules_version`. It was still `"v3"` long after `annotate_prompt.py` switched to loading v7 rules — so the annotation *content* was v7-quality but the label said v3. When upgrading the rules file, update `config.py:rules_version` **and** all `prompt_version="vN.0"` hardcodes in routers (ingest.py, generate.py, student.py) atomically.
+- `scripts/reannotate_official_v7.py` — bulk re-annotation script that calls `/ingest/reannotate/{question_id}` for every `content_origin='official'` question; run it after fixing config.py to backfill v7 labels onto the 569 official questions.
+
 ## Do-Not-Repeat
 
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
