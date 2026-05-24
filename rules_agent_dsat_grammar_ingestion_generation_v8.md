@@ -374,6 +374,119 @@ Run all 25 checks from B.13 before emitting output.
 
 ---
 
+## B.3.0 Sub-Pattern Policy and Evidence Tiers
+
+### B.3.0.1 What sub-patterns are
+
+Sub-patterns are *attested trap variants* observed in official DSAT practice
+tests or documented in verified prep sources (College Board, Khan Academy,
+The Critical Reader, PrepScholar, Albert.io, Test Innovators). They are
+documentary, not classificatory: every sub-pattern resolves to the parent
+`grammar_focus_key` and an existing `syntactic_trap_key` from D.5. Sub-patterns
+do not create new keys.
+
+### B.3.0.2 Sub-patterns are not rails
+
+Sub-patterns are examples of variation, not an exhaustive menu. **Generators
+MAY produce items that match no listed sub-pattern** as long as the canonical
+construction for the focus key is honored, distractors target distinct failure
+modes, and B.13 validation passes. Annotators MAY classify items that match no
+listed sub-pattern; the sub-pattern field is descriptive, not required.
+
+### B.3.0.3 Citation format
+
+Every sub-pattern carries either:
+
+1. A PT citation: `(PT{exam} M{module} Q{number}: "short quote")`
+   Example: `(PT7 M2 Q14: "a toxin that is deadly to nematodes that comes in contact with it")`
+2. A web-source marker: `[NO PT EVIDENCE — source: <name>]` when no calibration-set example exists.
+
+### B.3.0.4 Hard cap
+
+Maximum 3 sub-patterns per `grammar_focus_key`. Adding a fourth requires
+demoting one. Use the v7→v8 generation log to track demotions.
+
+### B.3.0.5 Evidence tiers
+
+Each focus key is assigned a tier in §B.3.0.6 based on PT example count in
+`analysis/calibration/official_classifications.json` as of the v8 cut.
+
+| Tier | PT examples | Sub-pattern policy |
+|---|---|---|
+| A | ≥5 | All 3 sub-patterns PT-cited |
+| B | 1–4 | At least 1 PT-cited; remainder may be web-only |
+| C | 0 | All web-only with `[NO PT EVIDENCE]` markers |
+
+Tier C sub-patterns should be re-promoted to Tier B/A as new PT examples are
+classified. Re-tiering does not require a version bump; it can be done as a
+patch.
+
+### B.3.0.6 Tier table (as of v8 cut, 2026-05-23)
+
+| Focus key | Tier | PT examples |
+|---|---|---|
+| `transition_logic` | A | 60 |
+| `subject_verb_agreement` | A | 23 |
+| `logical_relationships` | A | 22 |
+| `verb_tense_consistency` | A | 17 |
+| `punctuation_comma` | A | 12 |
+| `unnecessary_internal_punctuation` | A | 9 |
+| `appositive_punctuation` | A | 8 |
+| `sentence_boundary` | A | 8 |
+| `pronoun_antecedent_agreement` | A | 7 |
+| `logical_predication` | A | 6 |
+| `comma_splice` | A | 5 |
+| `end_punctuation_question_statement` | A | 5 |
+| `semicolon_use` | A | 5 |
+| `conjunctive_adverb_usage` | B | 4 |
+| `colon_dash_use` | B | 3 |
+| `sentence_fragment` | B | 3 |
+| `verb_form` | B | 3 |
+| `possessive_contraction` | B | 2 |
+| `precision_word_choice` | B | 2 |
+| `register_style_consistency` | B | 2 |
+| `data_interpretation_claims` | B | 1 |
+| `emphasis_meaning_shifts` | B | 1 |
+| `preposition_idiom` | B | 1 |
+| `pronoun_case` | B | 1 |
+| `relative_pronouns` | B | 1 |
+| `run_on_sentence` | B | 1 |
+| `adjective_adverb_distinction` | C | 0 |
+| `affirmative_agreement` | C | 0 |
+| `apostrophe_use` | C | 0 |
+| `commonly_confused_words` | C | 0 |
+| `comparative_structures` | C | 0 |
+| `conjunction_usage` | C | 0 |
+| `determiners_articles` | C | 0 |
+| `elliptical_constructions` | C | 0 |
+| `hyphen_usage` | C | 0 |
+| `illogical_comparison` | C | 0 |
+| `modifier_placement` | C | 0 |
+| `negation` | C | 0 |
+| `noun_countability` | C | 0 |
+| `parallel_structure` | C | 0 |
+| `pronoun_clarity` | C | 0 |
+| `quotation_punctuation` | C | 0 |
+| `redundancy_concision` | C | 0 |
+| `voice_active_passive` | C | 0 |
+
+### B.3.0.7 Web source allowlist
+
+Sub-patterns marked `[NO PT EVIDENCE]` must cite a source from this allowlist:
+
+| Source | Use for |
+|---|---|
+| College Board (collegeboard.org, Bluebook docs) | Authoritative sub-pattern naming |
+| Khan Academy SAT R&W course | Skill family taxonomy, sub-pattern names |
+| The Critical Reader (Erica Meltzer) | Trap mechanism descriptions |
+| PrepScholar | Sub-pattern frequency and examples |
+| Albert.io | Distractor pattern catalogs |
+| Test Innovators | DSAT-specific item structure |
+
+Manhattan Review, PrepMaven, UWorld, and TestPrepKart may be used as cross-reference but should not be the sole source.
+
+---
+
 ## B.3 Passage Construction Rules by Grammar Focus
 
 ### `subject_verb_agreement`
