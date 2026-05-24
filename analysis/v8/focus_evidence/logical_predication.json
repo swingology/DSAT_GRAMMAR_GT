@@ -1,0 +1,548 @@
+[
+  {
+    "question_id": "219b0741-4f45-5bf9-bdbf-a348262b73e7",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In winter, the diets of Japanese macaques, also known as snow monkeys, are influenced more by food availability than by food preference. Although the monkeys prefer to eat vegetation and land-dwelling invertebrates, those food sources may become unavailable because of extensive snow and ice cover, _______ the monkeys to hunt for marine animals in any streams that have not frozen over.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_predication",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "biology",
+      "topic_fine": "animal behavior",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests the student's ability to recognize the correct grammatical construction for showing consequence via a participial phrase. The trap lies in selecting verb forms that create comma splices or imply incorrect agency or tense. The correct answer must logically follow from the cause stated in the prior clause without introducing grammatical errors."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_predication",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct form is 'forcing' because it functions as a present participle modifying the entire preceding clause, showing the result of the unavailability of preferred food sources.",
+      "full": "The sentence describes a cause-effect relationship: because preferred food sources become unavailable, this results in the monkeys being compelled to hunt elsewhere. The correct grammatical structure requires a participial phrase ('forcing...') to show this consequence. Option A ('forces') creates a comma splice by joining two independent clauses with only a comma. Option B ('to force') incorrectly implies intention rather than consequence. Option D ('forced') creates a tense mismatch and suggests the action was completed in the past, which contradicts the ongoing conditional nature of the sentence. Only 'forcing' correctly modifies the main clause and maintains grammatical agreement and logical flow."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "forces",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": "comma_fix_illusion",
+        "why_wrong": "Creates a comma splice: two independent clauses joined by a comma without a coordinating conjunction. The correct structure requires a participial phrase to show consequence, not a finite verb creating a new clause.",
+        "why_plausible": "Appears grammatically plausible at first glance; subject 'those food sources' could agree with singular verb 'forces' if misread as the subject of a new clause."
+      },
+      {
+        "label": "B",
+        "text": "to force",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "logical_predication",
+        "student_failure_mode": "logical_predication_blindness",
+        "why_wrong": "Implies intentional action by the food sources, which is illogical. The sentence requires a result (the monkeys are compelled), not an intended purpose. 'To force' does not function as a modifier of the preceding clause.",
+        "why_plausible": "Infinitive 'to force' suggests purpose or intention, which might seem reasonable given the context of animal behavior adaptation."
+      },
+      {
+        "label": "C",
+        "text": "forcing",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly functions as a present participle modifying the entire preceding clause, indicating the natural consequence of the food source unavailability."
+      },
+      {
+        "label": "D",
+        "text": "forced",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Creates a tense inconsistency. The sentence describes a recurring seasonal phenomenon using simple present tense ('are influenced', 'prefer'). 'Forced' implies a one-time past event, which contradicts the generalization. Also fails to function as a modifier of the clause.",
+        "why_plausible": "Past tense 'forced' may seem appropriate due to proximity to past-tense verbs like 'become' and 'may become', though these are modal constructions describing general conditions."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "2c9fca7b-aa35-5f39-8f5a-2a6da28e75f5",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In winter, the diets of Japanese macaques, also known as snow monkeys, are influenced more by food availability than by food preference. Although the monkeys prefer to eat vegetation and land-dwelling invertebrates, those food sources may become unavailable because of extensive snow and ice cover, _______ the monkeys to hunt for marine animals in any streams that have not frozen over.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_predication",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "garden_path",
+      "topic_broad": "science",
+      "topic_fine": "zoology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing logical predication through modifier usage. The correct answer must show the consequence of the preceding clause without creating a run-on or tense error. 'Forcing' is the only grammatically correct and logically coherent option."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_predication",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct form is 'forcing' because it functions as a present participle modifying the entire preceding clause, showing the result of the snow and ice cover.",
+      "full": "The sentence describes a cause-effect relationship: snow and ice cover make food sources unavailable, which results in the monkeys being forced to hunt elsewhere. The phrase 'forcing the monkeys to hunt...' is a participial phrase that modifies the main clause and shows the consequence. Option A ('forces') would create a comma splice. Option B ('to force') incorrectly implies intention or purpose rather than consequence. Option D ('forced') creates a tense mismatch and suggests the action was completed in the past, which contradicts the ongoing condition described. Only 'forcing' correctly links the cause (snow/ice) with its effect (hunting behavior)."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "forces",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": "internal_unit_punctuation_insertion",
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a comma. The second clause lacks a subject.",
+        "why_plausible": "Appears to agree with the plural subject 'cover' and maintains the present tense."
+      },
+      {
+        "label": "B",
+        "text": "to force",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "logical_predication",
+        "student_failure_mode": "transition_wrong_direction",
+        "why_wrong": "Incorrectly implies intention or purpose rather than consequence. The snow doesn't intend to force the monkeys; it's a natural result.",
+        "why_plausible": "Infinitive phrases can express purpose, which seems reasonable in context."
+      },
+      {
+        "label": "C",
+        "text": "forcing",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly functions as a present participle modifying the entire preceding clause to show consequence."
+      },
+      {
+        "label": "D",
+        "text": "forced",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": "past_tense_for_literary_present",
+        "why_wrong": "Creates a tense mismatch. The passage describes general behavioral patterns in the present, not a completed past action.",
+        "why_plausible": "Past tense might seem appropriate if students misinterpret the context as describing a specific past event."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "6081e3c1-96a9-5a0d-b3c8-bb1c1072ca6a",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 24,
+    "question_text": "Most of the ice found on Earth is ice Ih, distinguished by a crystalline structure in which molecules form a hexagonal pattern. Amorphous ice, on the other hand, constitutes most of the ice in the ultrafrigid environment of outer space. Defined by a disorganized molecular structure, b l a n k Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_predication",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "modifier_attachment_ambiguity",
+      "topic_broad": "science",
+      "topic_fine": "materials science",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests whether the student can identify a grammatically complete and logically coherent continuation of a sentence beginning with a participial phrase. The correct answer must maintain subject-verb agreement and ensure the modifier logically attaches to the intended noun. This falls under Standard English Conventions, specifically modifier logic and logical predication."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_predication",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option B correctly completes the sentence with a grammatically complete and logically coherent clause that maintains subject-verb agreement and proper modifier placement.",
+      "full": "The sentence begins with a participial phrase 'Defined by a disorganized molecular structure,' which modifies 'amorphous ice.' The correct continuation must logically connect to this subject and provide a complete thought. Option B \u2014 'amorphous ice lacks the thermal energy to form the crystals found in ice Ih' \u2014 correctly continues the sentence with a main clause whose subject ('amorphous ice') matches the implied subject of the introductory phrase. It also avoids redundancy and maintains logical flow. Options A, C, and D either introduce unnecessary repetition, create awkward or illogical constructions, or misattribute agency (e.g., implying ice Ih possesses thermal energy rather than lacking it)."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "ice Ih contains crystals, whereas amorphous ice, which lacks the thermal energy to form them, does not.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "redundancy_concision",
+        "student_failure_mode": null,
+        "why_wrong": "Redundant and unnecessarily wordy; repeats 'crystals' and introduces an awkward contrast structure that distracts from the focus on amorphous ice.",
+        "why_plausible": "Repeats information already stated about ice Ih\u2019s crystalline structure, creating surface familiarity."
+      },
+      {
+        "label": "B",
+        "text": "amorphous ice lacks the thermal energy to form the crystals found in ice Ih.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Directly completes the sentence with a grammatically complete clause that logically follows the introductory phrase."
+      },
+      {
+        "label": "C",
+        "text": "the lack of thermal energy in amorphous ice explains its inability to form the crystals found in ice Ih.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "redundancy_concision",
+        "student_failure_mode": null,
+        "why_wrong": "Wordy and indirect; uses passive construction ('explains its inability') that adds unnecessary complexity and obscures the direct subject-verb relationship.",
+        "why_plausible": "Uses vocabulary from the passage and presents a plausible causal explanation."
+      },
+      {
+        "label": "D",
+        "text": "ice Ih differs from amorphous ice in that it possesses the thermal energy to form crystals.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "logical_predication",
+        "student_failure_mode": null,
+        "why_wrong": "Misattributes thermal energy to ice Ih, which contradicts the context that amorphous ice lacks it due to ultrafrigid conditions. Also creates a logical inconsistency by implying ice Ih's crystalline structure is due to possessing thermal energy, when the passage implies it's inherent to its molecular arrangement.",
+        "why_plausible": "Focuses on the contrast between ice types, which aligns with the passage\u2019s structure."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "54075a8d-5eb0-576d-9d27-c6cfdbbc2189",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Recordings of electrical activity in the brain, b l a n k increased activity in brain areas associated with suppressing motor functions.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_predication",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "garden_path",
+      "topic_broad": "science",
+      "topic_fine": "neuroscience",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests logical predication \u2014 whether the subject and verb form a coherent, meaningful unit. The correct option (A) ensures that 'electrograms' is the subject performing the action of 'showing,' which aligns with the introductory phrase. The distractors introduce illogical or ambiguous subject-verb relationships. The garden-path trap arises because the sentence begins with a prepositional phrase that could mislead students into selecting options that place the wrong noun as the subject."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_predication",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option A correctly places the subject 'electrograms' at the beginning and maintains grammatical agreement and logical predication throughout the clause.",
+      "full": "The correct answer is A because it begins with the subject 'electrograms,' which logically connects to the introductory phrase 'Recordings of electrical activity in the brain.' The structure 'electrograms show that...' is grammatically sound and preserves the intended meaning. Option B incorrectly places the subject after a participial phrase, creating a misplaced modifier. Option C misattributes agency by making 'responses' the subject of 'show,' which distorts the causal relationship. Option D creates an illogical construction by implying that soccer players are 'captured in electrograms,' which is semantically incoherent. Only A maintains proper subject-verb agreement, logical predication, and syntactic clarity."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "electrograms show that while responding to hypothetical match scenarios, the most highly skilled soccer players have",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Uses vocabulary from the passage ('electrograms', 'soccer players') and maintains a clear subject-verb-object structure."
+      },
+      {
+        "label": "B",
+        "text": "the most highly skilled soccer players responding to hypothetical match scenarios have electrograms that show",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "modifier_attachment_ambiguity",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a dangling modifier: 'responding to hypothetical match scenarios' incorrectly modifies 'soccer players' rather than 'electrograms,' distorting the intended meaning.",
+        "why_plausible": "Mentions the same subjects (soccer players, electrograms) and appears to describe a plausible scientific observation."
+      },
+      {
+        "label": "C",
+        "text": "responses to hypothetical match scenarios show that the most highly skilled soccer players have electrograms with",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "illogical_comparison",
+        "student_failure_mode": null,
+        "why_wrong": "Assigns agency incorrectly: 'responses' cannot 'show' anything; only recordings (electrograms) can show data. This violates logical predication.",
+        "why_plausible": "Uses key terms from the passage and constructs a grammatically complete sentence."
+      },
+      {
+        "label": "D",
+        "text": "hypothetical match scenario responses show that the most highly skilled soccer players captured in electrograms have",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "illogical_comparison",
+        "student_failure_mode": null,
+        "why_wrong": "Implies that soccer players are physically 'captured in electrograms,' which is semantically absurd. Violates logical predication by misassigning the object of capture.",
+        "why_plausible": "Includes relevant vocabulary and attempts to link soccer players to electrograms."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "2c997084-645c-56d8-b60e-f39d7456d5d5",
+    "source_exam_code": "6",
+    "source_module_code": "02",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Woven from recycled yarn and hand tufted using a carpet weaving technique passed down by the artist\u2019s Turkish grandmother, _______ so lush and tactilely inviting that you are tempted to reach out and touch them.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_predication",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "garden_path",
+      "topic_broad": "arts",
+      "topic_fine": "textile art",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests whether the student can identify the correct subject that logically follows the participial phrase. The trap lies in options that appear plausible but violate logical predication or create dangling modifiers. This requires understanding how participial phrases modify subjects and ensuring grammatical agreement."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_predication",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option A correctly completes the sentence with a subject-verb structure that agrees with the participial phrase at the beginning. The other options create grammatical errors such as dangling modifiers or redundant constructions.",
+      "full": "The opening participial phrase 'Woven from recycled yarn and hand tufted...' modifies the subject of the main clause. Option A provides a grammatically correct subject ('the topological tapestries') and verb ('are') that logically connect to the modifier. Option B creates a dangling modifier because 'Alexandra Kehayoglou' is not what was woven. Option C introduces redundancy and awkwardness with 'makes them' after already stating she creates them. Option D incorrectly uses 'whose' to refer to inanimate objects (tapestries) in a way that implies possession rather than description, and the structure is unnecessarily wordy. Only Option A maintains grammatical agreement and logical modification."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "the topological tapestries of Argentine textile artist Alexandra Kehayoglou are",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically well-formed and stylistically appropriate; matches the participial phrase with a logical subject."
+      },
+      {
+        "label": "B",
+        "text": "the Argentine textile artist Alexandra Kehayoglou creates topological tapestries that are",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "dangling_modifier",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a dangling modifier: 'Woven from recycled yarn...' cannot logically modify 'Alexandra Kehayoglou' \u2014 she is not what was woven.",
+        "why_plausible": "Includes relevant vocabulary (artist, tapestries) and appears to describe the creation process."
+      },
+      {
+        "label": "C",
+        "text": "when she creates her topological tapestries, Argentine textile artist Alexandra Kehayoglou makes them",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "redundancy",
+        "student_failure_mode": null,
+        "why_wrong": "Redundant construction: 'creates... makes them' is repetitive and awkward. Also creates a comma splice with the introductory clause.",
+        "why_plausible": "Describes the artist\u2019s action and includes relevant details about the tapestries."
+      },
+      {
+        "label": "D",
+        "text": "Alexandra Kehayoglou is an Argentine textile artist whose topological tapestries are",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "awkward_structure",
+        "student_failure_mode": null,
+        "why_wrong": "Unnecessarily wordy and structurally awkward. The use of 'whose' to refer to tapestries is grammatically acceptable but stylistically weak here; the participial phrase does not logically modify the entire clause introduced by 'whose'.",
+        "why_plausible": "Includes all relevant nouns and appears to provide background information about the artist."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "5ee4ae6d-e255-5562-989c-0632d5f7661d",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Featuring jagged peaks of black ink surrounded by hazy swirls of blue and green paint, Zhang Daqian\u2019s 1983 painting Panorama of Mount Lu is inspired by the tradition of qingl\u00fc shanshui, a type of Chinese landscape painting _______ by the use of blue and green hues to depict ethereal, otherworldly landscapes.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_predication",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nominalization_obscures_subject",
+      "topic_broad": "art history",
+      "topic_fine": "Chinese painting tradition",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing the correct use of a past participle as a modifier. The correct answer must form a reduced relative clause modifying 'painting.' All distractors incorrectly introduce finite verb forms that break the modifier structure. The syntactic trap arises because the nominal subject ('a type of Chinese landscape painting') may obscure the need for a nonfinite modifier rather than a full verb."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_predication",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct form 'characterized' functions as a past participle modifying 'painting,' forming a reduced relative clause without a helping verb. The other options introduce unnecessary or incorrect verb forms.",
+      "full": "The blank modifies the noun phrase 'a type of Chinese landscape painting.' In Standard English, this requires a past participle ('characterized') to form a reduced relative clause: 'a type... characterized by...'. Option A ('has been characterized') introduces an auxiliary verb that turns the phrase into a passive verb construction, which breaks the modifier structure. Option B ('will be characterized') adds future tense, which is illogical for describing a defining characteristic. Option D ('is characterized') also creates a full passive verb, making the sentence grammatically incoherent. Only option C correctly uses the past participle to modify the noun without introducing a finite verb."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "has been characterized",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": "internal_unit_punctuation_insertion",
+        "why_wrong": "Introduces a finite verb construction ('has been characterized') where a nonfinite past participle modifier is required. This breaks the reduced relative clause structure needed to modify 'painting.'",
+        "why_plausible": "Uses the correct past participle 'characterized' but adds auxiliary verbs that turn it into a full passive verb, which is grammatically inappropriate in this modifying position."
+      },
+      {
+        "label": "B",
+        "text": "will be characterized",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Imposes future tense on a descriptive characteristic of a historical art tradition, which is illogical. Also turns the modifier into a finite verb, breaking the sentence structure.",
+        "why_plausible": "Uses the correct past participle 'characterized' but adds future tense auxiliaries, creating a grammatically complete but contextually inappropriate verb form."
+      },
+      {
+        "label": "C",
+        "text": "characterized",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses the past participle as a modifier to describe the painting tradition without introducing a finite verb."
+      },
+      {
+        "label": "D",
+        "text": "is characterized",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": "internal_unit_punctuation_insertion",
+        "why_wrong": "Turns the modifier into a full passive verb ('is characterized'), which cannot function as a descriptor of 'painting' in this context. The sentence would require restructuring to accommodate this verb form.",
+        "why_plausible": "Uses the correct past participle 'characterized' but adds the linking verb 'is,' creating a passive voice construction that is grammatically incompatible with the modifying role."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

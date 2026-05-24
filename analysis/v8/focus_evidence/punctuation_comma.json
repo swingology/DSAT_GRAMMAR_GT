@@ -1,0 +1,1100 @@
+[
+  {
+    "question_id": "d365dda0-7abf-52e0-9a9e-d28057413bf1",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The Alvarez theory, developed in 1980 by physicist Luis Walter Alvarez and his geologist son Walter Alvarez, maintained that the secondary effects of an asteroid impact caused many dinosaurs and other animals to die _______ it left unexplored the question of whether unrelated volcanic activity might have also contributed to the mass extinctions.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "geology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing comma usage before a coordinating conjunction joining two independent clauses. The correct answer requires applying the rule that a comma must precede 'but' in this context. The distractors test common student errors: omitting the comma (A, C) or misplacing it (D)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "A comma is required before the coordinating conjunction 'but' when joining two independent clauses.",
+      "full": "The sentence contains two independent clauses: (1) 'the secondary effects of an asteroid impact caused many dinosaurs and other animals to die' and (2) 'it left unexplored the question of whether unrelated volcanic activity might have also contributed to the mass extinctions.' These clauses are joined by the coordinating conjunction 'but,' which requires a comma before it to conform to Standard English punctuation rules. Option B correctly inserts the comma before 'but.' Options A and C omit the necessary comma, creating a run-on sentence. Option D incorrectly places a comma after 'out' without the conjunction, which breaks the grammatical structure."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "out but",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Omits the required comma before the coordinating conjunction 'but,' creating a run-on sentence.",
+        "why_plausible": "Students may think the sentence flows naturally without a comma, especially if they read it quickly."
+      },
+      {
+        "label": "B",
+        "text": "out, but",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the rule requiring a comma before a coordinating conjunction joining two independent clauses."
+      },
+      {
+        "label": "C",
+        "text": "out",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Omits both the conjunction and the required comma, leaving the second clause unconnected and creating a sentence fragment.",
+        "why_plausible": "Students may think the second clause is not independent or that the sentence should end after 'die.'"
+      },
+      {
+        "label": "D",
+        "text": "out,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a comma after 'out' without a coordinating conjunction, breaking the grammatical structure and creating an unnecessary internal punctuation error.",
+        "why_plausible": "Students may overapply comma rules and insert one where it's not needed, thinking any pause requires a comma."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "562a035b-2278-5223-89f1-2d845cdb9b8d",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The Alvarez theory, developed in 1980 by physicist Luis Walter Alvarez and his geologist son Walter Alvarez, maintained that the secondary effects of an asteroid impact caused many dinosaurs and other animals to die _______ it left unexplored the question of whether unrelated volcanic activity might have also contributed to the mass extinctions.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "geology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing comma usage before a coordinating conjunction joining two independent clauses. The correct answer requires applying a fundamental punctuation rule. No reading comprehension or inference is involved."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "A comma is required before the coordinating conjunction 'but' when joining two independent clauses.",
+      "full": "The sentence contains two independent clauses: (1) 'The Alvarez theory...caused many dinosaurs and other animals to die' and (2) 'it left unexplored the question...'. These clauses are joined by the coordinating conjunction 'but', which requires a comma before it to conform to Standard English punctuation rules. Option B correctly inserts the comma before 'but'. Options A and C omit the necessary comma, creating a run-on sentence. Option D incorrectly places a comma after 'out' without the conjunction, leaving the second clause grammatically disconnected."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "out but",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by joining two independent clauses with only a coordinating conjunction without a preceding comma.",
+        "why_plausible": "Students may omit the comma because they perceive the sentence as flowing naturally without it, especially if they don't recognize both clauses as independent."
+      },
+      {
+        "label": "B",
+        "text": "out, but",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly applies the rule requiring a comma before a coordinating conjunction joining two independent clauses."
+      },
+      {
+        "label": "C",
+        "text": "out",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Omits the coordinating conjunction 'but', leaving the second clause without proper connection to the first, resulting in a grammatically incomplete structure.",
+        "why_plausible": "Students may think removing the conjunction entirely avoids the punctuation issue, not realizing it creates a grammatical fragment."
+      },
+      {
+        "label": "D",
+        "text": "out,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Places a comma after 'out' without a following coordinating conjunction, creating an unnecessary internal punctuation break that disrupts the syntactic unit between verb and object.",
+        "why_plausible": "Students may insert a comma after 'out' thinking it separates ideas, not recognizing that the comma must precede the coordinating conjunction to join independent clauses."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "abca1aa4-053e-5a1f-a0d1-507489e75c4e",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Along with carbon dioxide concentration and temperature, light intensity affects the chemical reaction rate of _______ as light intensity increases, so does the rate at which the reactants (water and carbon dioxide) are converted into their products (glucose and oxygen).",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "biology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing comma usage after an introductory phrase. The correct answer requires applying a basic punctuation rule. All distractors are grammatically plausible on first read but violate standard comma rules for introductory elements."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "A comma is required to separate the introductory phrase from the main clause.",
+      "full": "The phrase 'Along with carbon dioxide concentration and temperature, light intensity affects the chemical reaction rate of photosynthesis' is an introductory element. In Standard English, a comma must follow such introductory phrases when they precede the main clause. Option B correctly inserts a comma after 'photosynthesis', separating the introductory phrase from the independent clause that follows. Options A, C, and D fail to provide the necessary punctuation, resulting in a run-on or improperly structured sentence."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "photosynthesis and",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Inserting 'and' creates a fused sentence without proper punctuation between the introductory phrase and the main clause. It also incorrectly implies coordination rather than separation.",
+        "why_plausible": "The conjunction 'and' creates a grammatical continuation that may appear to connect the two clauses smoothly without a comma."
+      },
+      {
+        "label": "B",
+        "text": "photosynthesis,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the comma rule for introductory phrases, creating a properly punctuated sentence."
+      },
+      {
+        "label": "C",
+        "text": "photosynthesis:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_type",
+        "student_failure_mode": null,
+        "why_wrong": "A colon is inappropriate here because the following clause is not an explanation, list, or elaboration directly introduced by the preceding phrase. Only a comma is grammatically correct.",
+        "why_plausible": "Some students may confuse colons with commas, thinking a colon could introduce the following clause."
+      },
+      {
+        "label": "D",
+        "text": "photosynthesis",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Omitting the comma creates a run-on sentence by failing to separate the introductory phrase from the main clause, violating Standard English punctuation conventions.",
+        "why_plausible": "Students may omit punctuation if they perceive the sentence as flowing naturally without it."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "5a7fc8f9-a43f-5877-bfd7-6cba3174a9d8",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In rural Minnesota, ecologist Leroy Walston conducted a study to determine whether seeding solar panel fields with wildflowers could bolster pollinator populations in nearby food crops. Walston\u2019s findings indicate that\u2014assuming solar panel installers\u2019 b l a n k practice has the potential to increase the number of native bees in crops near solar fields throughout the Midwest by up to 20 percent.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "ecology",
+      "answer_mechanism_key": "punctuation_rule_application",
+      "solver_pattern_key": "identify_interrupting_element_then_apply_comma_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a Standard English Conventions question testing punctuation around an interrupting phrase. The correct answer requires applying the rule that nonrestrictive or parenthetical elements should be set off with commas. All distractors test alternative punctuation marks (dash, colon, none), making this a medium-difficulty item due to plausible alternatives and syntactic complexity."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'cooperation, this' correctly uses a comma to separate the introductory clause from the main clause, conforming to standard punctuation rules for nonrestrictive appositives or parenthetical elements.",
+      "full": "The sentence contains an interrupting clause: 'assuming solar panel installers\u2019 cooperation' \u2014 which is a parenthetical element modifying the main clause. In Standard English, such interruptions are typically set off with commas. Option A ('cooperation, this') correctly places a comma after 'cooperation' to separate the interrupting phrase from the main clause. Option B (em dash) and C (colon) are too heavy for this syntactic role; they imply stronger breaks or explanations not required here. Option D (no punctuation) creates a run-on structure by failing to separate the modifier from the main clause. The correct answer maintains grammatical clarity and adheres to conventional punctuation norms."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "cooperation, this",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies comma to set off the interrupting phrase 'assuming solar panel installers\u2019 cooperation'."
+      },
+      {
+        "label": "B",
+        "text": "cooperation\u2014this",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Em dash is inappropriate for this syntactic role; it implies a stronger break than needed and violates standard comma usage for parenthetical elements.",
+        "why_plausible": "Em dashes can sometimes set off interrupting phrases, but they are too strong here and disrupt the flow unnecessarily."
+      },
+      {
+        "label": "C",
+        "text": "cooperation: this",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_for_explanation",
+        "student_failure_mode": null,
+        "why_wrong": "Colon is incorrect because the following clause is not an explanation or list introduced by the preceding phrase; it continues the main clause.",
+        "why_plausible": "Colon might seem appropriate if the phrase were introducing an explanation, but it does not function that way here."
+      },
+      {
+        "label": "D",
+        "text": "cooperation this",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by failing to separate the interrupting phrase from the main clause, violating Standard English punctuation rules.",
+        "why_plausible": "Some students may omit punctuation if the sentence reads fluently without it, especially under time pressure."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "feef927a-b1c8-509c-bb6b-3b7ba8120a64",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 23,
+    "question_text": "Key-value pairs are an important aspect of JavaScript Object Notation (JSON), an electronic file format for storing and transmitting data. Keys function as labels, while values contain the actual information. In a JSON file storing data about fire belly b l a n k instance, you could encounter a key such as \u201cspecies\u201d with the associated value of \u201cCynops orientalis.\u201d Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "technology",
+      "topic_fine": "data formats",
+      "answer_mechanism_key": "punctuation_application",
+      "solver_pattern_key": "identify_clause_boundary_and_apply_punctuation_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This question tests punctuation within a single sentence, specifically the use of a comma before a dependent clause introduced by 'for'. It falls under Standard English Conventions because it requires applying a grammatical rule about sentence structure and punctuation. The correct answer is determined by identifying the boundary between the independent clause and the dependent clause and applying the appropriate punctuation rule."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct punctuation is a comma because the phrase 'for' introduces a dependent clause that explains or elaborates on the preceding independent clause. A comma is required before a coordinating conjunction joining two independent clauses, but here 'for' functions as a subordinating conjunction introducing a dependent clause, so no comma is needed after it \u2014 however, in this context, the comma separates the main clause from the explanatory phrase introduced by 'for', which is standard usage.",
+      "full": "The sentence begins with an independent clause: 'In a JSON file storing data about fire belly newts.' The word 'for' introduces a dependent clause that provides additional explanation or justification for the preceding statement. In Standard English, when a dependent clause follows an independent clause and is introduced by a subordinating conjunction like 'for', a comma is typically used to separate the clauses for clarity. Option B ('newts, for') correctly uses a comma to separate the independent clause from the dependent clause introduced by 'for'. Options A, C, and D use incorrect punctuation: A uses no comma (run-on), C uses a colon (which would require a complete thought after it), and D uses a semicolon (which should join two independent clauses). Thus, B is the only option that conforms to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "newts. For",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Using a period creates a sentence fragment after 'For', violating Standard English conventions. The correct punctuation is a comma to connect the dependent clause introduced by 'for'.",
+        "why_plausible": "The period creates a complete sentence, which might seem correct at first glance, but it results in a run-on when followed by 'For' starting a new sentence without proper capitalization or connection."
+      },
+      {
+        "label": "B",
+        "text": "newts, for",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the rule for using a comma before a dependent clause introduced by 'for'."
+      },
+      {
+        "label": "C",
+        "text": "newts: for",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_colon_usage",
+        "student_failure_mode": null,
+        "why_wrong": "A colon is incorrectly used here because the phrase following it is not a complete sentence or a list. The correct punctuation is a comma to introduce the dependent clause.",
+        "why_plausible": "The colon might seem appropriate as it can introduce an explanation, but it requires a complete thought after it, which 'for you could encounter...' is not."
+      },
+      {
+        "label": "D",
+        "text": "newts; for",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_semicolon_usage",
+        "student_failure_mode": null,
+        "why_wrong": "A semicolon is incorrectly used here because it should join two independent clauses, but the clause after 'for' is dependent. The correct punctuation is a comma.",
+        "why_plausible": "The semicolon might be chosen if the student thinks 'for' introduces an independent clause, but it does not; 'for you could encounter...' is a dependent clause."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "590c68f6-cce4-529e-9d9b-c6db6f585a89",
+    "source_exam_code": "6",
+    "source_module_code": "02",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Using natural debris, such as dried _______ such as plastic bags; and more traditional art supplies, such as tree glue, Ghanaian artist Ed Franklin Gavua creates his striking Yiiiiikakaii African masks, which he hopes can help viewers rethink how waste is used in their communities.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing comma usage to separate items in a list and set off a nonrestrictive appositive phrase. The correct answer requires applying standard comma rules for lists and modifiers, making it a punctuation-focused item under grammar."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct punctuation separates items in a list with commas, and the final item is preceded by 'and', not a semicolon.",
+      "full": "The sentence lists two categories of materials: 'natural debris' and 'more traditional art supplies'. Within 'natural debris', there are two examples: 'dried leaves' and 'man-made trash'. The phrase 'such as plastic bags' modifies 'man-made trash', so it should be set off with a comma. The entire list of examples within 'natural debris' should be separated by commas, with the final item before 'and' also using a comma. Option C correctly uses commas to separate 'leaves' and 'man-made trash,' and places a comma after 'man-made trash' to set off the modifying phrase. Options A and D incorrectly use colons or semicolons where commas are required. Option B incorrectly uses a semicolon to separate items in a list that should be joined by commas."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "leaves, man-made trash:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A colon cannot be used to separate items in a list when followed by 'and more traditional art supplies'; it creates an illogical break.",
+        "why_plausible": "Uses commas to separate list items, which is partially correct, but ends with a colon, which is inappropriate here."
+      },
+      {
+        "label": "B",
+        "text": "leaves; man-made trash,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Semicolons are not used to separate items in a simple list; commas are required. Also, the comma after 'man-made trash' is correct, but the semicolon before it is wrong.",
+        "why_plausible": "Uses a semicolon to separate list items, which might seem appropriate for complex lists, but here the items are simple and should be separated by commas."
+      },
+      {
+        "label": "C",
+        "text": "leaves, man-made trash,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses commas to separate list items and set off the modifying phrase 'such as plastic bags'."
+      },
+      {
+        "label": "D",
+        "text": "leaves; man-made trash;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Semicolons are not appropriate for separating items in a simple list. Additionally, ending with a semicolon before 'and more traditional art supplies' creates a grammatical error.",
+        "why_plausible": "Uses semicolons, which might seem appropriate for separating complex list items, but here the items are simple and should be separated by commas."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "5ddebb9a-eeff-5ee3-99bb-d79fdbe3edd6",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Increasing the heat on an uncovered boiling pot of water does not increase the temperature of the water. What increases is the rate at which the water turns to _______ a pressure cooker pot, though, an airtight seal traps the vapor in the pot, creating pressure that allows the temperature of the water to increase past its boiling point.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": null,
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": null,
+      "stem_type_key": "choose_grammatically_correct_form",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests punctuation conventions specifically regarding the use of commas after introductory prepositional phrases. The correct answer requires recognizing that 'With a pressure cooker pot' is an introductory element that must be set off by a comma. This falls under Standard English Conventions, not Expression of Ideas, because it is purely about grammatical correctness rather than rhetorical effectiveness or transition logic."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option uses a comma to separate the introductory phrase 'With a pressure cooker pot' from the main clause, conforming to standard punctuation rules for introductory elements.",
+      "full": "The phrase 'With a pressure cooker pot' functions as an introductory prepositional phrase modifying the main clause that follows. According to Standard English conventions, such introductory phrases should be followed by a comma to separate them from the main clause. Option C correctly inserts this comma after 'vapor', making the sentence grammatically correct. Option A incorrectly uses a period, creating a sentence fragment. Option B omits necessary punctuation, resulting in a run-on or fused sentence. Option D adds an unnecessary conjunction ('and') that disrupts the grammatical structure and meaning."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "vapor. With",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a sentence fragment; 'With a pressure cooker pot' cannot stand alone as a complete sentence and must be connected to the following clause with appropriate punctuation.",
+        "why_plausible": "The period creates a complete sentence ending at 'vapor,' which may seem acceptable to students who don't recognize the need to connect the next clause."
+      },
+      {
+        "label": "B",
+        "text": "vapor with",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to separate the introductory phrase from the main clause, creating a run-on sentence that violates Standard English punctuation rules.",
+        "why_plausible": "Omits punctuation entirely, which may seem natural to students who read quickly and don't notice the need for separation between the introductory phrase and main clause."
+      },
+      {
+        "label": "C",
+        "text": "vapor, with",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the rule for comma usage after introductory prepositional phrases, making the sentence grammatically sound."
+      },
+      {
+        "label": "D",
+        "text": "vapor and with",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_conjunction",
+        "student_failure_mode": null,
+        "why_wrong": "Introduces an unnecessary conjunction that disrupts the grammatical structure; 'and' is not needed to connect the introductory phrase to the main clause.",
+        "why_plausible": "Adds 'and' which might seem logical to students trying to connect ideas, especially if they misread the relationship between clauses."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "cf421cbe-7dff-51e4-a7c9-894bab129d55",
+    "source_exam_code": "7",
+    "source_module_code": "02",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Digital artist Jung (Lulu) Chen primarily uses a suite of software tools to create illustrations for children\u2019s books. To manifest the warm and welcoming atmospheres that are a signature of her _______ she occasionally relies on more traditional art techniques, such as painting with watercolors.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "digital illustration",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests comma usage around a parenthetical element ('though'), which falls under Standard English Conventions. The correct answer requires recognizing that no additional punctuation follows the interrupter, making this a straightforward punctuation rule application."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct choice is 'work, though' because it correctly punctuates the parenthetical interruption without adding unnecessary punctuation at the end.",
+      "full": "The phrase 'though' functions as a parenthetical interrupter in this sentence. According to Standard English conventions, a parenthetical element set off by commas should not be followed by additional punctuation like a semicolon or extra comma unless required by the larger sentence structure. Option B \u2014 'work, though' \u2014 correctly places a comma before 'though' to set off the interrupter and omits any trailing punctuation, preserving grammatical correctness. Option A adds an unnecessary comma after 'though', Option C incorrectly uses a semicolon before 'though' and adds an extra comma after, and Option D incorrectly uses a semicolon after 'though'."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "work, though,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Adds an extra comma after 'though', violating the rule that parenthetical elements do not require trailing punctuation unless dictated by sentence structure.",
+        "why_plausible": "Appears to follow comma rules but adds an unnecessary trailing comma after 'though'."
+      },
+      {
+        "label": "B",
+        "text": "work, though",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly punctuates the parenthetical 'though' with a single comma before and no trailing punctuation."
+      },
+      {
+        "label": "C",
+        "text": "work; though,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_choice",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly uses a semicolon before 'though' and adds an unnecessary comma after, violating both comma and semicolon conventions for parenthetical elements.",
+        "why_plausible": "May seem plausible if student confuses semicolon use with comma use for interrupters."
+      },
+      {
+        "label": "D",
+        "text": "work, though;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_choice",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly adds a semicolon after 'though', which is not required and disrupts the flow of the sentence according to Standard English punctuation rules.",
+        "why_plausible": "May seem plausible if student believes a semicolon is needed to close the interrupter."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "bf609072-9821-5582-b262-30c5a1035f72",
+    "source_exam_code": "7",
+    "source_module_code": "02",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Chondrites are stony meteorites that are undifferentiated\u2014that is, their contents have not melted and separated into distinct layers. They are hardly _______ many chondrites experience aqueous alteration as a result of exposure to fluids, as well as fracturing, veining, and localized melting due to collisions with other objects.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "geology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests punctuation conventions specifically regarding the use of commas with concessive clauses introduced by 'though.' The correct answer requires recognizing that no additional punctuation beyond the comma is needed after 'though' in this context. The distractors test common misapplications of semicolons and extra commas, which are frequent student errors."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct choice uses a comma followed by 'though' to introduce a contrastive clause without requiring additional punctuation.",
+      "full": "The sentence presents a contrast: chondrites are described as 'hardly pristine,' yet many undergo alteration processes. The word 'though' introduces a concessive clause that contrasts with the main clause. In Standard English, when 'though' is used as a subordinating conjunction at the beginning of a dependent clause following an independent clause, it is preceded by a comma and does not require a semicolon or additional comma. Option A correctly uses 'pristine, though' to link the clauses grammatically and logically. Option B incorrectly adds a semicolon after 'though,' which is unnecessary and disrupts the flow. Option C incorrectly uses a semicolon before 'though,' which is inappropriate for introducing a subordinate clause. Option D incorrectly adds a comma after 'though,' which creates an unnecessary pause and violates standard punctuation rules for concessive clauses."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "pristine, though",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically correct and follows standard punctuation rules for concessive clauses."
+      },
+      {
+        "label": "B",
+        "text": "pristine, though;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly adds a semicolon after 'though,' which is unnecessary and disrupts the grammatical structure of the sentence.",
+        "why_plausible": "Students may over-punctuate, thinking a semicolon is needed after 'though' to separate clauses."
+      },
+      {
+        "label": "C",
+        "text": "pristine; though",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_clause_boundary",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly uses a semicolon before 'though,' which is inappropriate for introducing a subordinate clause. A comma should be used instead.",
+        "why_plausible": "Students may mistakenly believe a semicolon is required to join two independent clauses, but 'though' introduces a dependent clause."
+      },
+      {
+        "label": "D",
+        "text": "pristine, though,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly adds a comma after 'though,' creating an unnecessary pause and violating standard punctuation rules for concessive clauses.",
+        "why_plausible": "Students may add an extra comma after 'though' thinking it's needed for clarity or emphasis."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "15d228a0-526c-567e-a5fb-a4f8c5134f71",
+    "source_exam_code": "7",
+    "source_module_code": "02",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "That the geographic center of North America lay in the state of North Dakota was conceded by all _______ establishing its precise coordinates proved more divisive.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": null,
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": null,
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing comma usage to separate independent clauses with an implied coordinating conjunction. The correct answer requires recognizing the compound sentence structure and applying the appropriate punctuation rule."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "A comma is required to separate two independent clauses joined by a coordinating conjunction (implied 'but').",
+      "full": "The sentence contains two independent clauses: 'That the geographic center of North America lay in the state of North Dakota was conceded by all' and 'establishing its precise coordinates proved more divisive.' Although the coordinating conjunction 'but' is omitted, the contrastive relationship between the clauses requires a comma to separate them. Option B correctly inserts a comma, conforming to Standard English punctuation rules for compound sentences."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "involved:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A colon cannot be used to join two independent clauses without a coordinating conjunction. This creates a run-on sentence.",
+        "why_plausible": "A colon might seem appropriate if the second clause were explaining or introducing something, but here it's a contrasting independent clause."
+      },
+      {
+        "label": "B",
+        "text": "involved,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the comma rule for separating independent clauses with an implied coordinating conjunction."
+      },
+      {
+        "label": "C",
+        "text": "involved",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by failing to separate two independent clauses with appropriate punctuation.",
+        "why_plausible": "Students might omit punctuation if they don't recognize the need to separate the two independent clauses."
+      },
+      {
+        "label": "D",
+        "text": "involved;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "While a semicolon can join independent clauses, it's not the best choice here because the clauses are closely related and would typically be joined with a comma and coordinating conjunction (implied 'but').",
+        "why_plausible": "A semicolon might seem appropriate for joining independent clauses, but it's not needed here since there's no coordinating conjunction and the clauses are short."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "918c204a-b961-55b3-af98-708cf8091990",
+    "source_exam_code": "9",
+    "source_module_code": "02",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Sociologist Todd Gitlin co-opted the term \u201crecombinant,\u201d normally used in reference to genetic engineering, to describe serialized television shows of the 1980s. Gitlin\u2019s use of the term referenced TV studios\u2019 practice of repackaging successful narrative formulas as new _______ even shows that varied only slightly from other shows still attracted sizeable audiences.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "language",
+      "topic_fine": "punctuation",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a punctuation question testing correct comma usage around a nonrestrictive phrase. The correct answer requires setting off 'in that era' with commas. Grammar role is punctuation; focus is comma mechanics. No reading-domain reasoning involved."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option D correctly uses a comma to set off the parenthetical phrase 'in that era' while maintaining grammatical flow with the rest of the sentence.",
+      "full": "The phrase 'in that era' is nonrestrictive and provides additional context about when the shows were produced. It should be set off by commas. Option D places a comma before and after 'in that era,' which is grammatically correct. Option A lacks the necessary trailing comma. Option B incorrectly uses a semicolon and an extra comma. Option C omits the leading comma, leaving the phrase unbounded. Only D conforms to Standard English punctuation rules for nonrestrictive elements."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "content, in that era",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "missing_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to close the nonrestrictive phrase with a comma, violating Standard English punctuation rules.",
+        "why_plausible": "Includes a comma before 'in that era' but omits the trailing comma, making it appear almost correct at first glance."
+      },
+      {
+        "label": "B",
+        "text": "content; in that era,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_type",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly uses a semicolon to separate a nonrestrictive phrase, which disrupts sentence structure and violates punctuation conventions.",
+        "why_plausible": "Uses a semicolon, which may seem appropriate for separating clauses, but misapplies it here where a comma is required."
+      },
+      {
+        "label": "C",
+        "text": "content in that era,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "missing_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Lacks the opening comma to set off the nonrestrictive phrase 'in that era', resulting in incorrect punctuation.",
+        "why_plausible": "Includes a trailing comma, which may suggest correctness, but omits the leading comma needed to enclose the phrase."
+      },
+      {
+        "label": "D",
+        "text": "content, in that era,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly sets off the nonrestrictive phrase with commas on both sides, conforming to Standard English conventions."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "f44346de-1dd5-59a6-90ac-2ecf54335b1e",
+    "source_exam_code": "9",
+    "source_module_code": "02",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "With the development of new technologies that use natural resources more efficiently, the overall consumption of those resources might be expected to decrease. Economists have observed that improvements in efficiency often correlate negatively with resource _______ efficiency gains, lowering the cost of use, may increase demand to the extent that resource consumption ultimately rises.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "punctuation_comma",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "economics",
+      "topic_fine": "resource consumption",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests comma usage to separate an introductory phrase from the main clause and proper punctuation following a subordinate conjunction ('though'). It falls under Standard English Conventions, specifically punctuation mechanics, and requires identifying the correct placement of commas to maintain grammatical integrity without over-punctuating. The correct answer (D) avoids inserting unnecessary punctuation after 'though', which would incorrectly treat it as a conjunctive adverb requiring a semicolon or comma splice."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "punctuation_comma",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option uses a comma to separate the introductory phrase from the main clause, and no punctuation is needed after 'though' because it introduces a dependent clause that flows naturally into the main clause without requiring a stronger break.",
+      "full": "The sentence contains an introductory phrase followed by a main clause. The word 'though' introduces a concessive clause that modifies the main clause. In Standard English, when 'though' is used as a subordinating conjunction at the end of a clause, it does not require a semicolon or additional comma after it \u2014 only a comma before the introductory phrase if it precedes the main clause. Option D correctly uses a comma before 'though' and no punctuation after it, preserving grammatical flow and adhering to standard punctuation rules for subordinate clauses introduced by 'though'. Options A, B, and C incorrectly insert unnecessary punctuation (extra comma or semicolon) that disrupts the syntactic unit or misapplies punctuation rules for conjunctive adverbs or independent clauses."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "conservation, though,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": "comma_fix_illusion",
+        "why_wrong": "Inserts an unnecessary comma after 'though', which breaks the syntactic unit between the subordinate clause and the main clause. 'Though' functions as a subordinating conjunction here, not a conjunctive adverb, and does not require post-comma punctuation.",
+        "why_plausible": "Students may mistakenly believe that 'though' requires a comma after it when used at the end of a clause, similar to how conjunctive adverbs like 'however' are punctuated."
+      },
+      {
+        "label": "B",
+        "text": "conservation; though",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": "inflected_after_modal",
+        "why_wrong": "Uses a semicolon before 'though', which incorrectly treats the following clause as independent. The clause after 'though' is dependent and cannot stand alone, making the semicolon inappropriate and creating a run-on structure.",
+        "why_plausible": "Students may confuse 'though' with conjunctive adverbs like 'however' or 'therefore', which can follow a semicolon when joining two independent clauses. They may incorrectly assume 'though' also requires a semicolon."
+      },
+      {
+        "label": "C",
+        "text": "conservation, though;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": "internal_unit_punctuation_insertion",
+        "why_wrong": "Adds an unnecessary semicolon after 'though', which incorrectly separates the dependent clause from the main clause. No punctuation is required after 'though' in this context, as it introduces a subordinate clause that flows directly into the main clause.",
+        "why_plausible": "Students may attempt to over-punctuate by adding both a comma before and after 'though', mimicking the punctuation pattern of parenthetical phrases or nonrestrictive elements."
+      },
+      {
+        "label": "D",
+        "text": "conservation, though",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the rule that a comma is used to separate an introductory phrase from the main clause, and no additional punctuation is needed after 'though' when it introduces a dependent clause."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

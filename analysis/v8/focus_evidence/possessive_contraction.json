@@ -1,0 +1,188 @@
+[
+  {
+    "question_id": "19aba02b-7d62-5c4c-9d6a-f9c08f964f2e",
+    "source_exam_code": "4",
+    "source_module_code": "01",
+    "source_question_number": 19,
+    "question_text": "Literary agents estimate that more than half of all nonfiction books credited to a celebrity or other public figure are in fact written by ghostwriters, professional authors who are paid to write other _______ but whose names never appear on book covers. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "possessive_contraction",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "grammar",
+      "topic_fine": "possessives",
+      "answer_mechanism_key": "grammar_rule_application",
+      "solver_pattern_key": "apply_possessive_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a grammar question testing possessive form. The correct answer requires applying the rule for plural possessives: add apostrophe + s to the plural noun 'people' to form 'people\u2019s', then use the plural noun 'stories' to match. All distractors violate standard possessive conventions."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "possessive_contraction",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'other people\u2019s stories' correctly uses the plural possessive form to refer to multiple individuals\u2019 narratives.",
+      "full": "The blank requires a noun phrase that refers to the narratives or accounts belonging to multiple individuals (celebrities/public figures). The correct form is 'people\u2019s stories': 'people' is already plural, and adding an apostrophe + s ('people\u2019s') makes it possessive. 'Stories' is plural to match the plural antecedent 'people'. Option B incorrectly treats 'peoples' as a plural noun (which would imply distinct ethnic groups) and adds an unnecessary second possessive. Option C omits the possessive marker entirely. Option D incorrectly applies possessive to both 'people' and 'story', creating a double possessive that is ungrammatical in this context."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "people\u2019s stories",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": ""
+      },
+      {
+        "label": "B",
+        "text": "peoples story\u2019s",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "grammatical_error",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly uses 'peoples' (plural of 'people' only when referring to distinct ethnic groups) and adds an unnecessary possessive to 'story', creating a double possessive.",
+        "why_plausible": "Uses 'peoples' which may be misread as plural, and includes possessive markers, creating surface plausibility."
+      },
+      {
+        "label": "C",
+        "text": "peoples stories",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "grammatical_error",
+        "student_failure_mode": null,
+        "why_wrong": "Omits the required possessive marker; 'peoples' is incorrect here (should be 'people'), and no apostrophe indicates ownership.",
+        "why_plausible": "Uses plural nouns without possessive markers, which may seem acceptable in casual usage."
+      },
+      {
+        "label": "D",
+        "text": "people\u2019s story\u2019s",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "grammatical_error",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a double possessive by incorrectly adding possessive to both 'people' and 'story'; should be 'people\u2019s stories' (plural possessive + plural noun).",
+        "why_plausible": "Includes possessive markers on both words, which may appear more 'correct' to students over-applying rules."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "ef8d6f85-3038-4d30-8b1d-c6a4dd1c48a0",
+    "source_exam_code": "5",
+    "source_module_code": "01",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text with the most logical transition?",
+    "passage_text": "What makes the theremin a unique musical instrument? You play it without touching it. When you place your _______ the pitch will shift as your hands move through the air.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "possessive_contraction",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "medium",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "music",
+      "topic_fine": "musical_instruments",
+      "answer_mechanism_key": "grammar_rule_application",
+      "solver_pattern_key": "identify_subject_object_relationship",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a grammar-focused question testing correct use of plural nouns versus possessive forms. The stem asks for the 'most logical transition,' but the actual test is grammatical correctness \u2014 specifically, avoiding incorrect possessive apostrophes. Therefore, it falls under Standard English Conventions, not Reading. The correct answer requires recognizing that no possession is intended, so no apostrophe is needed."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "possessive_contraction",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option uses the plural noun 'hands' without possessive marking, which is grammatically required in this context to refer to the player's hands moving through the air.",
+      "full": "The sentence describes the action of placing one\u2019s hands near the theremin\u2019s antennas to control pitch. The word 'hands' must be plural (not singular) because the context implies both hands are used, and no possessive form ('hand\u2019s', 'hands\u2019') is needed \u2014 the phrase is not indicating ownership but rather the physical location of the hands. Option B correctly uses 'hands' (plural) and 'antennas' (plural), with no unnecessary apostrophes. Options A, C, and D incorrectly use possessive apostrophes, which distort the meaning or create grammatical errors."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "hand\u2019s between the two antenna\u2019s,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_possessive_form",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly uses singular 'hand\u2019s' and plural possessive 'antenna\u2019s'; neither is grammatically appropriate \u2014 no possession is indicated.",
+        "why_plausible": "Students often overgeneralize apostrophe rules and add them to plural nouns, especially when they resemble possessives."
+      },
+      {
+        "label": "B",
+        "text": "hands between the two antennas,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses plural nouns without possessive markers, matching the non-possessive context of the sentence."
+      },
+      {
+        "label": "C",
+        "text": "hands\u2019 between the two antennas\u2019,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_possessive_form",
+        "student_failure_mode": null,
+        "why_wrong": "Adds unnecessary possessive apostrophes to both 'hands' and 'antennas'; no ownership is implied in the context.",
+        "why_plausible": "Appears plausible due to familiarity with possessive forms like 'students\u2019 books'; students may misapply this to nouns not indicating possession."
+      },
+      {
+        "label": "D",
+        "text": "hands\u2019 between the two antennas,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_possessive_form",
+        "student_failure_mode": null,
+        "why_wrong": "Unnecessary possessive on 'hands'; the context does not require indicating ownership \u2014 'your hands' already establishes possession.",
+        "why_plausible": "Similar to C, but only applies the possessive to 'hands'; students may think 'hands\u2019' indicates the hands belong to the player, ignoring that the sentence already implies possession via 'your'."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

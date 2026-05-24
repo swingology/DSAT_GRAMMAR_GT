@@ -1,0 +1,2064 @@
+[
+  {
+    "question_id": "1f2db57b-7146-5154-be19-af150b7eb3c1",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The classic children\u2019s board game Chutes and Ladders is a version of an ancient Nepalese game, Paramapada Sopanapata. In both games, players encounter \u201cgood\u201d or \u201cbad\u201d spaces while traveling along a path; landing on one of the good spaces _______ a player to skip ahead and arrive closer to the end goal.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "subject_verb_agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a straightforward subject-verb agreement question. The subject is a singular gerund phrase, requiring a singular verb. All distractors are plural forms, making them clearly incorrect upon basic grammatical analysis."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'landing on one of the good spaces' is singular, so the verb must be singular: 'allows'.",
+      "full": "The subject of the clause is 'landing on one of the good spaces,' which is a gerund phrase acting as a singular subject. Therefore, the verb must agree in number and take the singular form 'allows.' Option B ('are allowing') is plural and progressive, which does not match the singular subject. Option C ('have allowed') is plural perfect tense, also incorrect. Option D ('allow') is plural present tense, which fails subject-verb agreement. Only option A correctly matches the singular subject with the singular verb form."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "allows",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": ""
+      },
+      {
+        "label": "B",
+        "text": "are allowing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect because 'are allowing' is plural, but the subject 'landing on one of the good spaces' is singular.",
+        "why_plausible": "Uses present progressive, which may seem plausible for describing ongoing action in games."
+      },
+      {
+        "label": "C",
+        "text": "have allowed",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect because 'have allowed' is plural and does not agree with the singular subject.",
+        "why_plausible": "Present perfect tense might seem appropriate for describing a rule that has been in effect."
+      },
+      {
+        "label": "D",
+        "text": "allow",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect because 'allow' is plural, while the subject is singular.",
+        "why_plausible": "Simple present tense is correct for general rules, but this form is plural and doesn't match the singular subject."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "612b6e1d-114b-5bc7-81b4-7b297af205b2",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "When writing The Other Black Girl (2021), novelist Zakiya Dalila Harris drew on her own experiences working at a publishing office. The award-winning book is Harris\u2019s first novel, but her writing _______ honored before. At the age of twelve, she entered a contest to have a story published in American Girl magazine\u2014and won.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "literature",
+      "topic_fine": "author biography",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a subject-verb agreement question testing singular subject 'her writing' requiring singular verb form. The correct answer 'has been' matches both number and tense logic. Distractors include plural verbs that fail agreement and one option that misapplies tense without addressing agreement."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'her writing' is singular and requires a singular verb. The present perfect tense 'has been' correctly indicates an action completed before the present time.",
+      "full": "The subject of the sentence is 'her writing,' which is singular. Therefore, the verb must also be singular. Option C, 'has been,' is the correct singular present perfect form. Option A ('were') and D ('are') are plural and do not agree with the singular subject. Option B ('have been') is also plural and incorrect. The present perfect tense is appropriate because the honor occurred at an unspecified time before now, as evidenced by the context of her winning a contest at age twelve."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "were",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "The subject 'her writing' is singular, so it requires a singular verb. 'Were' is plural and does not agree with the subject.",
+        "why_plausible": "Students may incorrectly treat 'writing' as plural due to its association with multiple writings or confuse it with collective nouns that can take plural verbs."
+      },
+      {
+        "label": "B",
+        "text": "have been",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "'Have been' is plural and does not agree with the singular subject 'her writing'.",
+        "why_plausible": "Students may mistakenly apply plural verb forms to uncountable nouns like 'writing' or confuse it with plural subjects such as 'writings'."
+      },
+      {
+        "label": "C",
+        "text": "has been",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the singular subject 'her writing' with the singular present perfect verb 'has been', indicating a past action with present relevance."
+      },
+      {
+        "label": "D",
+        "text": "are",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "'Are' is plural and does not agree with the singular subject 'her writing'.",
+        "why_plausible": "Students may incorrectly assume 'writing' is plural or confuse it with plural nouns ending in -ing."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "66c5f3f4-0431-5935-ae74-d8e10fa131af",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 27,
+    "question_text": "The ghazal, a poetic form originating in seventh\u2011century Arabic poetry, has an intricate structure. The twentieth\u2011century Kashmiri American poet Agha Shahid Ali explains that each one of a ghazal\u2019s couplets, while adhering to the patterns of rhyme (qafia) and refrain (radif) established in the poem\u2019s opening lines (matla), _______ thematically and logically autonomous, resulting in a poem with \u201ca stringently formal disunity.\u201d Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "agreement",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nearest_noun_attraction",
+      "topic_broad": "literature",
+      "topic_fine": "poetic forms",
+      "answer_mechanism_key": "subject_verb_agreement",
+      "solver_pattern_key": "identify_subject_then_match_verb",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a Standard English Conventions question testing subject-verb agreement. The correct answer requires recognizing that the true subject is the plural 'couplets', not the singular 'each one'. The distractors include plausible but incorrect verb forms based on misidentifying the subject."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'each one of a ghazal\u2019s couplets' is singular, requiring the singular verb 'is'. However, the correct answer is 'are' because the phrase 'each one of' is followed by a plural noun ('couplets'), and in this construction, the verb agrees with the plural noun.",
+      "full": "Although 'each one' appears singular, when followed by a prepositional phrase with a plural noun ('of a ghazal\u2019s couplets'), the true subject is the plural noun. Therefore, the verb must agree with 'couplets', not 'each one'. The correct verb form is 'are'. This is a common agreement trap where students are misled by the proximity of 'each one' and choose 'is' (option A) instead of the grammatically correct 'are' (option D)."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "is",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "The true subject is 'couplets', which is plural, so the verb must be 'are', not 'is'.",
+        "why_plausible": "Students may be misled by the proximity of 'each one' and assume the subject is singular."
+      },
+      {
+        "label": "B",
+        "text": "were",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": null,
+        "why_wrong": "The passage is in present tense, describing a current poetic structure, so 'were' is incorrect.",
+        "why_plausible": "Students might incorrectly assume past tense is required due to historical context."
+      },
+      {
+        "label": "C",
+        "text": "have been",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": null,
+        "why_wrong": "The simple present 'are' is correct for describing a current, enduring characteristic of the ghazal form.",
+        "why_plausible": "Students might think the present perfect is needed to indicate ongoing relevance."
+      },
+      {
+        "label": "D",
+        "text": "are",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the plural subject 'couplets' with the plural verb 'are'."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:agreement"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "d63fe2da-aa71-51fb-a6b5-5f689fd791e7",
+    "source_exam_code": "10",
+    "source_module_code": "02",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Former First Lady of the United States Eleanor Roosevelt and Indian activist and educator Hansa Mehta were instrumental in drafting the United Nations\u2019 Universal Declaration of Human Rights, a document that ______ the basic freedoms to which all people are entitled.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "standard_english_conventions",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "low",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "history",
+      "topic_fine": "human rights",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The correct answer is 'outlines' because it is the only singular verb form that agrees with the singular subject 'a document'. The other options are plural ('have outlined', 'were outlining', 'outline') or use incorrect tenses, making them grammatically incorrect in this context."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'a document' is singular, so the verb must be singular 'outlines'.",
+      "full": "The relative clause 'that ______ the basic freedoms' modifies the singular noun 'a document'. Therefore, the verb must agree in number with the singular antecedent. 'Outlines' is the only singular present tense verb form among the options. 'Have outlined' and 'were outlining' are plural and also use incorrect tenses; 'outline' is plural."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "have outlined",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_disagreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject of the verb is 'a document', which is singular, so the plural 'have outlined' is incorrect. Additionally, the present perfect tense is not appropriate for stating a general fact about the document.",
+        "why_plausible": "Students might mistakenly think the verb should agree with the plural compound subject 'Eleanor Roosevelt and Hansa Mehta' rather than the singular 'a document'."
+      },
+      {
+        "label": "B",
+        "text": "were outlining",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_disagreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject is singular 'a document', so 'were outlining' is incorrect. The past continuous tense is also inappropriate for describing the document's content.",
+        "why_plausible": "Similar to A, students may be misled by the plural compound subject. 'Were outlining' is plural and past continuous."
+      },
+      {
+        "label": "C",
+        "text": "outlines",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "It is the correct singular verb form."
+      },
+      {
+        "label": "D",
+        "text": "outline",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_disagreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject 'a document' is singular, so the plural 'outline' is incorrect.",
+        "why_plausible": "Students may think the verb should be plural to match the compound subject, or they may not recognize that 'outline' is plural."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "e42cec3f-00e0-5eb1-ba23-70a8e2d87b00",
+    "source_exam_code": "10",
+    "source_module_code": "02",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Mathematician Grigori Perelman, sometimes in conjunction with mathematicians Richard S. Hamilton and Shing-Tung Yau, _______ credited with proving the Poincar\u00e9 conjecture. Having built on Hamilton\u2019s previous work to solve the proof, Perelman has insisted that Hamilton receive credit. Yau later found and closed gaps in Perelman\u2019s proof, persuading some mathematicians that he deserves credit as well.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "agreement",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "mathematics",
+      "answer_mechanism_key": "rule_application",
+      "solver_pattern_key": "identify_subject_and_verb",
+      "evidence_scope_key": null,
+      "classification_rationale": "The correct option 'is' agrees with the singular subject 'Mathematician Grigori Perelman'. The intervening phrase 'sometimes in conjunction with...' creates a common subject-verb agreement trap, making plural options plausible."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The singular subject 'Mathematician Grigori Perelman' requires the singular verb 'is'.",
+      "full": "The subject of the sentence is 'Mathematician Grigori Perelman', which is singular. The phrase 'sometimes in conjunction with mathematicians Richard S. Hamilton and Shing-Tung Yau' is a parenthetical modifier and does not change the number of the subject. Therefore, the verb must agree with the singular subject, making 'is' the only correct choice. Options A, B, and C are plural or progressive forms that do not agree with the singular subject."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "are",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement_error",
+        "student_failure_mode": null,
+        "why_wrong": "The true subject is singular ('Mathematician Grigori Perelman'), so the plural verb 'are' does not agree.",
+        "why_plausible": "The plural nouns 'mathematicians' and 'Hamilton and Yau' may mislead students into thinking the subject is plural."
+      },
+      {
+        "label": "B",
+        "text": "have been",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement_error",
+        "student_failure_mode": null,
+        "why_wrong": "The singular subject requires 'has been', not 'have been'.",
+        "why_plausible": "The plural auxiliary 'have' may seem to match the nearby plural nouns."
+      },
+      {
+        "label": "C",
+        "text": "are being",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement_error",
+        "student_failure_mode": null,
+        "why_wrong": "The singular subject requires 'is being', not 'are being'.",
+        "why_plausible": "The present progressive 'are being' might seem appropriate for an ongoing action, and the plural 'are' echoes the nearby plural nouns."
+      },
+      {
+        "label": "D",
+        "text": "is",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "The singular verb 'is' correctly agrees with the singular subject 'Mathematician Grigori Perelman'."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:agreement"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "28bb1817-296c-53c4-9026-c6ca0230a49f",
+    "source_exam_code": "11",
+    "source_module_code": "01",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The rough frog is a species of amphibian native to Australia. Currently, the frog\u2019s range b l a n k parts of northern New South Wales and southeastern Queensland.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "biology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a straightforward subject-verb agreement question testing singular subject with present-tense verb. No syntactic traps or complex structures are present. The correct answer requires basic grammar knowledge without inference or contextual interpretation."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'range' is singular and the sentence describes a current fact, requiring simple present tense.",
+      "full": "The subject of the sentence is 'the frog\u2019s range,' which is singular. The adverb 'Currently' indicates that the statement refers to a present, ongoing condition. Therefore, the verb must be in the simple present tense and agree with the singular subject. Option A, 'includes,' correctly matches both the subject-verb agreement and the present-tense context. Option B ('included') is past tense and contradicts 'Currently.' Option C ('will have included') is future perfect, inappropriate for a current state. Option D ('had included') is past perfect, also inconsistent with the present context."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "includes",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically correct and matches the singular subject and present context."
+      },
+      {
+        "label": "B",
+        "text": "included",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": null,
+        "why_wrong": "Contradicts the adverb 'Currently,' which requires present tense. Subject-verb agreement is correct, but tense is wrong.",
+        "why_plausible": "Past tense verbs are common in narrative contexts; students may misread 'Currently' or assume historical range data."
+      },
+      {
+        "label": "C",
+        "text": "will have included",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": null,
+        "why_wrong": "Future perfect tense implies completion before a future time, which contradicts the present context indicated by 'Currently.'",
+        "why_plausible": "Students may overcomplicate the tense, thinking the range will expand in the future."
+      },
+      {
+        "label": "D",
+        "text": "had included",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": null,
+        "why_wrong": "Past perfect tense refers to an action completed before another past action, which is inconsistent with the present context.",
+        "why_plausible": "Students may confuse this with past perfect usage when describing prior conditions, ignoring 'Currently.'"
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "14ad23d8-d1d8-5588-9946-e3df7b05f4a6",
+    "source_exam_code": "11",
+    "source_module_code": "01",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Artist Yto Barrada\u2019s exhibition Ways to Baffle the Wind incorporates sculptures, textiles, and films. Barrada\u2019s pieces, utilizing elements as disparate as plant-dyed fabrics, wire crab traps filled with stones, and cotton balls dangling above a fan, b l a n k the ways humans attempt to organize and regulate nature.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "visual_art",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing subject-verb agreement. The plural subject 'Barrada\u2019s pieces' requires a plural verb form. All distractors are grammatically incorrect for this subject: B uses a singular auxiliary verb, C uses a singular present-tense verb, and D uses a nonfinite form. The correct answer is straightforward and requires no inference or passage analysis."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'Barrada\u2019s pieces' is plural; the verb must be in base form to agree with the plural subject in present tense.",
+      "full": "The subject of the sentence is 'Barrada\u2019s pieces,' which is plural. The correct verb form must agree with this plural subject. Option A, 'explore,' is the base form of the verb used for plural subjects in the simple present tense. Option B ('has explored') is singular and past perfect, which does not match the plural subject or the present-tense context established by the surrounding sentences. Option C ('explores') is singular present tense and thus incorrect for a plural subject. Option D ('exploring') is a participle and cannot serve as the main verb of the clause without an auxiliary verb. Therefore, 'explore' is the only grammatically correct choice."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "explore",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically correct and matches the plural subject."
+      },
+      {
+        "label": "B",
+        "text": "has explored",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect subject-verb agreement: 'has explored' is singular, but the subject 'pieces' is plural.",
+        "why_plausible": "Uses a verb form that appears in academic writing but incorrectly applies singular auxiliary to plural subject."
+      },
+      {
+        "label": "C",
+        "text": "explores",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect subject-verb agreement: 'explores' is singular present tense, but the subject 'pieces' is plural.",
+        "why_plausible": "Appears plausible because it is a common verb form, but fails to agree with the plural subject."
+      },
+      {
+        "label": "D",
+        "text": "exploring",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect verb form: 'exploring' is a participle and cannot serve as the main verb without an auxiliary verb like 'are'.",
+        "why_plausible": "May seem plausible due to its participial form, which can appear in complex sentences, but lacks an auxiliary verb to function as the main verb."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "a31918d5-72d6-5420-9637-6508039f02fa",
+    "source_exam_code": "4",
+    "source_module_code": "01",
+    "source_question_number": 22,
+    "question_text": "In many of her landscape paintings from the 1970s and 1980s, Lebanese American artist Etel Adnan worked to capture the essence of California\u2019s fog-shrouded Mount Tamalpais region through abstraction, using splotches of color to represent the area\u2019s features. Interestingly, the triangle representing the mountain itself _______ among the few defined figures in her paintings. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "agreement",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "medium",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "art",
+      "topic_fine": "painting",
+      "answer_mechanism_key": "grammar_rule_application",
+      "solver_pattern_key": "identify_subject_then_match_verb",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This question tests subject-verb agreement. The subject 'the triangle' is singular, requiring a singular verb. The correct answer is 'is'. All distractors are plural or incorrect tense forms, making them grammatically invalid. The trap lies in the proximity of the plural noun 'figures', which may mislead students into choosing a plural verb (A or C)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'the triangle' is singular, so the verb must be singular: 'is'.",
+      "full": "The subject of the sentence is 'the triangle', which is singular. The verb must agree with this singular subject. Option D, 'is', is the correct singular present-tense form. Options A ('are'), B ('have been'), and C ('were') are plural or incorrect tense forms and do not agree with the singular subject."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "are",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject 'the triangle' is singular; 'are' is plural and does not agree with the subject.",
+        "why_plausible": "The plural noun 'figures' appears nearby, which may lead students to incorrectly choose a plural verb."
+      },
+      {
+        "label": "B",
+        "text": "have been",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject 'the triangle' is singular; 'have been' is plural and incorrect tense for the context.",
+        "why_plausible": "Students may overcomplicate the sentence and choose a perfect tense form, ignoring subject-verb agreement."
+      },
+      {
+        "label": "C",
+        "text": "were",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject 'the triangle' is singular; 'were' is plural and past tense, which does not match the present-tense context.",
+        "why_plausible": "The plural noun 'figures' and past tense context may mislead students into selecting 'were'."
+      },
+      {
+        "label": "D",
+        "text": "is",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly matches the singular subject 'the triangle' with the singular present-tense verb 'is'."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:agreement"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "2fcfb106-4560-4159-bd62-8a024b0c3686",
+    "source_exam_code": "4",
+    "source_module_code": "02",
+    "source_question_number": 19,
+    "question_text": "In his groundbreaking book Bengali Harlem and the Lost Histories of South Asian America, Vivek Bald uses newspaper articles, census records, ships\u2019 logs, and memoirs to tell the _______ who made New York City their home in the early twentieth century. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "literature",
+      "topic_fine": "historical narrative",
+      "answer_mechanism_key": "grammar_rule_application",
+      "solver_pattern_key": "identify_subject_object_agreement_and_possessive_form",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This question tests agreement between the verb 'tell' and its object, requiring the plural form 'stories' to match the plural referent implied by multiple sources and multiple immigrants. The distractors introduce possessive errors or singular-plural mismatches, making this a medium-difficulty grammar question focused on agreement."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct answer is 'stories of the South Asian immigrants' because it correctly uses the plural noun 'stories' to match the plural subject implied by multiple sources and multiple immigrants, and avoids incorrect possessive forms.",
+      "full": "The sentence describes Vivek Bald using multiple historical sources (newspaper articles, census records, ships\u2019 logs, memoirs) to tell multiple narratives \u2014 hence, the plural 'stories' is required. Option A incorrectly uses the singular possessive 'story\u2019s', which does not agree with the plural context. Option B adds an unnecessary possessive on 'immigrants\u2019', creating a double possessive error. Option D incorrectly makes both 'stories' and 'immigrant' possessive, which is grammatically invalid in this context. Only option C correctly uses the plural noun 'stories' without any possessive markers, matching the plural referent and adhering to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "story\u2019s of the South Asian immigrants",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_possessive_form",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly uses singular possessive 'story\u2019s' when plural 'stories' is required to match multiple immigrants and multiple sources.",
+        "why_plausible": "Uses the word 'story' which fits the context of narrative, but incorrectly applies singular possessive form."
+      },
+      {
+        "label": "B",
+        "text": "story\u2019s of the South Asian immigrants\u2019",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "double_possessive_error",
+        "student_failure_mode": null,
+        "why_wrong": "Adds unnecessary possessive on 'immigrants\u2019', creating a grammatical error; also uses singular 'story\u2019s' instead of plural 'stories'.",
+        "why_plausible": "Attempts to use plural 'immigrants' but incorrectly adds possessive marker, creating a double possessive."
+      },
+      {
+        "label": "C",
+        "text": "stories of the South Asian immigrants",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses plural 'stories' to match multiple immigrants and multiple sources, with no unnecessary possessives."
+      },
+      {
+        "label": "D",
+        "text": "stories\u2019 of the South Asian immigrant\u2019s",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_possessive_form",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly applies possessive to both 'stories\u2019' and 'immigrant\u2019s', violating Standard English conventions for noun usage in this context.",
+        "why_plausible": "Uses plural 'stories' but incorrectly adds possessive, and singularizes 'immigrant\u2019s', creating multiple errors."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "b48ce877-6dae-4c07-a7e2-63a6ad8b76a6",
+    "source_exam_code": "5",
+    "source_module_code": "01",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "L\u00ea L\u01b0\u01a1 ng Minh became the thirteenth secretary-general of the Association of Southeast Asian Nations (ASEAN) in January 2013, making _______ the first time the organization would appoint a Vietnamese leader.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "pronoun agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests agreement between a demonstrative pronoun and its antecedent noun phrase ('the first time'), which is a core grammar rule under Standard English Conventions. The stem explicitly asks for conformity to Standard English, confirming the domain."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The blank requires a singular demonstrative pronoun to agree with 'the first time,' which is singular. 'This' is the only singular option that correctly refers to the singular noun phrase.",
+      "full": "The sentence structure requires a singular demonstrative pronoun to refer to 'the first time,' which is a singular noun phrase. Option C, 'this,' is singular and agrees grammatically with the singular subject. Options A ('these') and B ('those') are plural and do not agree with the singular noun. Option D ('some') is quantifier-like and does not function as a demonstrative pronoun in this context. Therefore, 'this' is the only grammatically correct choice that conforms to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "these",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect because 'these' is plural and does not agree with the singular noun phrase 'the first time.'",
+        "why_plausible": "Uses a demonstrative pronoun that appears in the same semantic field as the correct answer."
+      },
+      {
+        "label": "B",
+        "text": "those",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect because 'those' is plural and does not agree with the singular noun phrase 'the first time.'",
+        "why_plausible": "Uses a demonstrative pronoun that appears in the same semantic field as the correct answer."
+      },
+      {
+        "label": "C",
+        "text": "this",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically required to agree with the singular noun phrase 'the first time.'"
+      },
+      {
+        "label": "D",
+        "text": "some",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect because 'some' is not a demonstrative pronoun and cannot substitute for 'this' in this syntactic position. It also fails to establish the required singular agreement.",
+        "why_plausible": "Appears to be a quantifier that could modify a noun, creating surface plausibility."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "3e84cbb5-c059-5eda-be15-77327fc53324",
+    "source_exam_code": "5",
+    "source_module_code": "01",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "An online content creator who uses copyrighted songs without permission risks being demonetized (prohibited from including paid advertisements in content). The best way to avoid demonetization is to choose music from the public domain. Using one of these noncopyrighted songs _______ a creator won\u2019t lose advertising revenue.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "subject_verb_agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests subject-verb agreement with a gerund subject, which students often misidentify as plural. The correct answer requires recognizing that 'Using...' is a singular subject requiring a singular verb."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'Using one of these noncopyrighted songs' is singular, so the verb must be singular: 'ensures'.",
+      "full": "The subject of the sentence is the gerund phrase 'Using one of these noncopyrighted songs', which functions as a singular noun. Therefore, the verb must agree in number and take the singular form 'ensures'. Option A ('are ensuring') is plural and incorrect. Option B ('have ensured') is plural perfect tense and does not match the present-tense context. Option C ('ensure') is plural and fails subject-verb agreement. Only option D ('ensures') correctly matches the singular subject with a singular verb form."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "are ensuring",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject is singular (gerund phrase), so the verb must be singular. 'Are ensuring' is plural and violates subject-verb agreement.",
+        "why_plausible": "Students may incorrectly treat the gerund phrase 'Using one of these noncopyrighted songs' as plural and select the plural verb 'are ensuring'."
+      },
+      {
+        "label": "B",
+        "text": "have ensured",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "'Have ensured' is plural and in the wrong tense. The sentence states a general truth and requires simple present tense with a singular verb.",
+        "why_plausible": "Students may confuse the present perfect tense with the simple present needed for general truths, or misidentify the subject as plural."
+      },
+      {
+        "label": "C",
+        "text": "ensure",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject is singular, so the verb must be singular. 'Ensure' is plural and violates subject-verb agreement.",
+        "why_plausible": "Students may fail to recognize the gerund phrase as singular and select the base form 'ensure', which is plural in this context."
+      },
+      {
+        "label": "D",
+        "text": "ensures",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the singular gerund subject with the singular verb form 'ensures'."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "cbc0cd01-78e5-5a01-b3d5-c485be67d6e8",
+    "source_exam_code": "5",
+    "source_module_code": "01",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In the music video for the song \u201cWe Didn\u2019t Start the Fire\u201d by Billy Joel, the singer lists 118 political and cultural references. Such iconic references, cited in rapid and frenetic procession by the musician, who is seated impassively at a dinner table, _______ key moments and personalities of the twentieth century.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "music",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a straightforward subject-verb agreement question. The plural subject 'references' requires a plural verb. All distractors are grammatically incorrect for this subject. No complex syntax or trap is present."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'references' is plural, so the verb must be plural 'represent' to agree.",
+      "full": "The subject of the sentence is 'Such iconic references,' which is plural. The verb must therefore also be plural to maintain subject-verb agreement. Option D, 'represent,' is the only plural form among the choices. Options A, B, and C are singular or incorrectly conjugated for the plural subject."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "represents",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "nearest_noun_reflex",
+        "why_wrong": "The subject 'references' is plural; 'represents' is singular and does not agree with the subject.",
+        "why_plausible": "Students may misidentify the subject as singular due to the intervening phrase 'cited in rapid and frenetic procession by the musician, who is seated impassively at a dinner table.'"
+      },
+      {
+        "label": "B",
+        "text": "has represented",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Incorrect verb form and tense. 'Has represented' is singular and in present perfect, which does not match the plural subject or the narrative context.",
+        "why_plausible": "May seem plausible because the passage uses past tense verbs ('lists', 'is seated'), but the subject 'references' is plural and the context describes a general feature of the video, requiring simple present."
+      },
+      {
+        "label": "C",
+        "text": "was representing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Incorrect verb form and tense. 'Was representing' is singular and in past continuous, which does not agree with the plural subject 'references'.",
+        "why_plausible": "Might be selected if the student focuses on the past-tense context of the surrounding verbs without recognizing the need for subject-verb agreement with the plural subject."
+      },
+      {
+        "label": "D",
+        "text": "represent",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the plural subject 'references' with the plural verb 'represent' in simple present tense, consistent with describing the enduring content of the music video."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "1b7f1233-c464-586a-80eb-4a0ef8d47e97",
+    "source_exam_code": "6",
+    "source_module_code": "01",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "\u201cHe was just the man for such a place, and it was just the place for such a man.\u201d This line is from Frederick Douglass\u2019s autobiography Narrative of the Life of Frederick Douglass (1845). It\u2019s an example of antimetabole, a writing technique that _______ emphasis by repeating a statement in a reversed order.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "subject_verb_agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a straightforward subject-verb agreement question. The singular subject 'a writing technique' requires the singular verb 'creates.' All distractors are grammatically incorrect due to number disagreement or inappropriate tense for a general description."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'a writing technique' is singular, so the verb must be singular: 'creates'.",
+      "full": "The subject of the clause is 'a writing technique,' which is singular. Therefore, the verb must agree in number and take the singular form 'creates.' Option A ('create') is plural and does not agree with the singular subject. Option B ('are creating') is plural and uses present continuous tense, which is inappropriate for stating a general characteristic. Option C ('have created') is plural and uses present perfect, which implies completion and does not fit the context of describing a general function. Only option D ('creates') correctly agrees with the singular subject and uses simple present tense to describe a general truth or function."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "create",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject 'a writing technique' is singular, so the verb must be singular. 'Create' is plural and does not agree.",
+        "why_plausible": "Students may incorrectly treat 'technique' as plural or confuse it with collective nouns that sometimes take plural verbs."
+      },
+      {
+        "label": "B",
+        "text": "are creating",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": null,
+        "why_wrong": "Present continuous 'are creating' is incorrect because the sentence describes a general function, not an ongoing action. Also, 'are' does not agree with the singular subject.",
+        "why_plausible": "Students may mistakenly use present continuous to describe ongoing actions, even when describing general truths."
+      },
+      {
+        "label": "C",
+        "text": "have created",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": null,
+        "why_wrong": "Present perfect 'have created' implies completed action with present relevance, which is inappropriate for describing a general function. Also, 'have' does not agree with the singular subject.",
+        "why_plausible": "Students may confuse present perfect with simple present when describing general characteristics."
+      },
+      {
+        "label": "D",
+        "text": "creates",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the singular subject with the singular verb in simple present tense to describe a general function."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "50bca783-4826-5b0a-bc57-2361dc7237bf",
+    "source_exam_code": "6",
+    "source_module_code": "01",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In a painting titled \u201cThe Milkmaid\u201d by Johannes Vermeer, the artist prominently features a bread basket, milk pitcher, and bowl. Such quotidian objects, depicted in exquisite detail by Vermeer, a painter celebrated for his naturalism, _______ the daily minutiae of a seventeenth-century Dutch household.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "art history",
+      "topic_fine": "Dutch Golden Age painting",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a straightforward subject-verb agreement question. The plural subject 'Such quotidian objects' requires a plural verb. All distractors are grammatically incorrect due to number or tense mismatch. No reading comprehension or inference is required."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'Such quotidian objects' is plural, requiring the plural verb form 'reveal'.",
+      "full": "The subject of the sentence is 'Such quotidian objects', which is plural. The verb must agree with this plural subject. Option D, 'reveal', is the correct plural present tense form. Option A ('was revealing') is past continuous and does not agree in number. Option B ('has revealed') is singular present perfect and does not agree in number. Option C ('reveals') is singular present tense and also fails subject-verb agreement. Only option D correctly matches the plural subject with a plural verb."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "was revealing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect subject-verb agreement: 'was revealing' is singular past continuous, but the subject 'objects' is plural.",
+        "why_plausible": "Student may be misled by the past-tense context of the painting's creation and choose a past-tense verb form."
+      },
+      {
+        "label": "B",
+        "text": "has revealed",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect subject-verb agreement: 'has revealed' is singular present perfect, but the subject 'objects' is plural.",
+        "why_plausible": "Student may incorrectly assume that since the painting still exists today, the present perfect tense is appropriate."
+      },
+      {
+        "label": "C",
+        "text": "reveals",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect subject-verb agreement: 'reveals' is singular present tense, but the subject 'objects' is plural.",
+        "why_plausible": "Student may misidentify the subject as singular (perhaps focusing on 'Vermeer' or 'painting') and choose the singular verb form."
+      },
+      {
+        "label": "D",
+        "text": "reveal",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly matches the plural subject 'objects' with the plural verb form 'reveal'."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "ff00bd29-3a98-5532-9113-cce0b1a10f95",
+    "source_exam_code": "6",
+    "source_module_code": "02",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "A species of Byropsis algae produces toxins to avoid being eaten by predators. However, in some cases, the toxins the organism uses to protect itself from predation actually _______ its attractiveness to predators. The Hawaiian sea slug, for example, not only tolerates Byropsis toxins but actually uses them for protection in the same way the algae does.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "biology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests subject-verb agreement. The subject 'toxins' is plural, requiring the plural verb form 'increase.' All other options violate subject-verb agreement or introduce inappropriate tense shifts."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'toxins' is plural and requires a plural verb form. 'Increase' is the correct base form for plural subjects in present tense.",
+      "full": "The subject of the clause is 'the toxins,' which is plural. In Standard English, a plural subject requires a plural verb form. The correct verb form is 'increase' (option B). Option A ('is increasing') incorrectly uses a singular auxiliary verb with a plural subject. Option C ('increases') is singular and does not agree with the plural subject. Option D ('has increased') is past perfect and changes the tense unnecessarily; the context is general present tense describing a biological phenomenon."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "is increasing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly pairs singular auxiliary 'is' with plural subject 'toxins.'",
+        "why_plausible": "Uses present continuous tense, which may seem appropriate for ongoing biological processes."
+      },
+      {
+        "label": "B",
+        "text": "increase",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly matches plural subject 'toxins' with plural verb form 'increase.'"
+      },
+      {
+        "label": "C",
+        "text": "increases",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Uses singular verb 'increases' with plural subject 'toxins.'",
+        "why_plausible": "May be selected if student misidentifies 'toxins' as singular or confuses with third-person singular form."
+      },
+      {
+        "label": "D",
+        "text": "has increased",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": null,
+        "why_wrong": "Introduces unnecessary past perfect tense; context describes general biological fact requiring present tense.",
+        "why_plausible": "Past perfect may seem appropriate if student misreads context as referring to completed action."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "cca9eb41-1794-5549-981c-032733e21c05",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "One of the earliest known maps is a Babylonian clay tablet thought to be almost 4,500 years old. The map _______ the area of a plot of land, shows a river valley, and includes the cardinal directions.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "subject_verb_agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests subject-verb agreement. The subject 'The map' is singular, requiring a singular verb form. All distractors are plural verb forms, making them grammatically incorrect. The correct option is straightforward and requires no complex inference or passage context."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'The map' is singular, so the verb must be in singular form: 'describes'.",
+      "full": "The subject of the sentence is 'The map', which is singular. The verb must agree with this singular subject. Option A, 'describes', is the correct singular present tense form. Option B, 'describe', is plural and does not agree with the singular subject. Option C, 'have described', is plural perfect tense and also does not agree. Option D, 'are describing', is plural progressive and incorrect for the same reason. The correct answer is A."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "describes",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": ""
+      },
+      {
+        "label": "B",
+        "text": "describe",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "The subject 'The map' is singular, so the verb must be singular ('describes'), not plural ('describe').",
+        "why_plausible": "Students may incorrectly assume the verb should be plural because the sentence lists multiple actions (shows, includes)."
+      },
+      {
+        "label": "C",
+        "text": "have described",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "'Have described' is plural and does not agree with the singular subject 'The map'.",
+        "why_plausible": "Students may think the perfect tense is needed to indicate completed action, but the context is descriptive, not historical event."
+      },
+      {
+        "label": "D",
+        "text": "are describing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "'Are describing' is plural and does not agree with the singular subject 'The map'.",
+        "why_plausible": "Students may confuse the progressive form with the simple present, especially if they misread the subject as plural."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "db3a06f9-2131-5aa2-ba5d-3d1744ba01cd",
+    "source_exam_code": "7",
+    "source_module_code": "02",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "When a given industry\u2014water and electricity are two well-known examples\u2014carries high infrastructural start-up costs and other barriers that discourage competition, _______ of just one or two suppliers per municipality. Such industries are known as natural monopolies.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nearest_noun_attraction",
+      "topic_broad": "grammar",
+      "topic_fine": "subject_verb_agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests subject-verb agreement with a singular subject ('industry') requiring a singular verb ('consists'). The distractors introduce plural pronouns or mismatched verb forms. The syntactic trap arises from the proximity of plural nouns ('examples') which may mislead students into selecting plural pronouns. The correct answer also requires pronoun-antecedent agreement ('this' referring to 'industry')."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option 'this often consists' agrees with the singular subject 'industry' and maintains grammatical consistency with the surrounding sentence structure.",
+      "full": "The subject of the sentence is 'a given industry,' which is singular. The verb must therefore agree in number. Option D, 'this often consists,' correctly uses the singular pronoun 'this' (referring back to 'industry') and the singular verb form 'consists.' Options A and B use plural pronouns ('these,' 'they'), which do not agree with the singular subject. Option C uses 'it,' which could refer to 'industry,' but 'it often consists' is grammatically acceptable only if the object phrase 'of just one or two suppliers' were rephrased \u2014 however, the phrase 'consists of' is idiomatic and correct, making D the only fully grammatical and contextually appropriate choice."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "these often consist",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Uses plural pronoun 'these' and plural verb 'consist' for singular subject 'industry'.",
+        "why_plausible": "The plural noun 'examples' appears nearby, creating a misleading attraction toward plural pronouns like 'these'."
+      },
+      {
+        "label": "B",
+        "text": "they often consist",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Uses plural pronoun 'they' and plural verb 'consist' for singular subject 'industry'.",
+        "why_plausible": "The plural noun 'examples' appears nearby, creating a misleading attraction toward plural pronouns like 'they'."
+      },
+      {
+        "label": "C",
+        "text": "it often consists",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "pronoun_antecedent_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "'It' is ambiguous; while it could refer to 'industry', the phrase 'it often consists of' is less precise than 'this often consists of' which directly links back to the subject. Also, 'this' better signals the referent in context.",
+        "why_plausible": "Uses singular pronoun 'it' which matches the singular subject 'industry', making it grammatically plausible at first glance."
+      },
+      {
+        "label": "D",
+        "text": "this often consists",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses singular pronoun 'this' to refer to 'industry' and singular verb 'consists' to maintain subject-verb agreement."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "a97b66bf-26d2-5b19-9f5b-1e0ef44839dd",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "When writing The Other Black Girl (2021), novelist Zakiya Dalila Harris drew on her own experiences working at a publishing office. The award-winning book is Harris\u2019s first novel, but her writing _______ honored before. At the age of twelve, she entered a contest to have a story published in American Girl magazine\u2014and won.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "subject_verb_agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests subject-verb agreement with a singular subject ('her writing'). The correct answer must be singular and match the tense context. All distractors are plural forms, creating a clear grammatical error that students may overlook if they misidentify the subject as plural."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'her writing' is singular and requires a singular verb form. 'Has been' correctly agrees with the singular subject and matches the past perfect context implied by 'before.'",
+      "full": "The sentence requires a verb that agrees with the singular subject 'her writing.' Options A ('were') and D ('are') are plural forms and do not agree with the singular subject. Option B ('have been') is also plural and incorrect for the same reason. Option C ('has been') is the correct singular present perfect form, which appropriately conveys that the honor occurred prior to the main narrative time frame. The phrase 'before' signals a completed action relative to the present or another past event, making the present perfect tense appropriate."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "were",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "The subject 'her writing' is singular, so the verb must be singular. 'Were' is plural and does not agree with the subject.",
+        "why_plausible": "Students may misidentify 'writing' as plural due to its -ing form and choose 'were' to match a perceived plural subject."
+      },
+      {
+        "label": "B",
+        "text": "have been",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "The subject 'her writing' is singular, so the verb must be singular. 'Have been' is plural and does not agree with the subject.",
+        "why_plausible": "Students may confuse 'her writing' with a plural noun phrase and select 'have been' as the plural present perfect form."
+      },
+      {
+        "label": "C",
+        "text": "has been",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly agrees with the singular subject 'her writing' and uses the appropriate present perfect tense to indicate an action completed before the current reference point."
+      },
+      {
+        "label": "D",
+        "text": "are",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "The subject 'her writing' is singular, so the verb must be singular. 'Are' is plural and does not agree with the subject.",
+        "why_plausible": "Students may misread 'her writing' as plural and choose 'are' to match a perceived plural subject."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "ba56b4da-dd54-5c8e-84c1-071315c82f6f",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Increased gender diversity is revitalizing the field of economics, according to Harvard\u2019s Claudia Goldin. The trailblazing accomplishments of Goldin, winner of the 2023 Nobel Prize in Economics for her work on women in the labor force, _______ to the value of scholars of diverse backgrounds in spurring research into previously unexplored, but vitally important, topics.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "academic writing",
+      "topic_fine": "grammar",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a straightforward subject-verb agreement question. The plural subject 'accomplishments' requires the plural verb 'attest'. All distractors are grammatically incorrect: A is singular, B and C use inappropriate tense/aspect forms. No reading comprehension or inference is required."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'accomplishments' is plural and requires the plural verb form 'attest'.",
+      "full": "The subject of the sentence is 'The trailblazing accomplishments', which is plural. Therefore, the verb must agree in number and take the plural form 'attest'. Option D is correct. Option A ('attests') is singular and does not agree with the plural subject. Option B ('has attested') incorrectly uses present perfect tense where simple present is required to describe a general truth or current state. Option C ('is attesting') uses present continuous, which is inappropriate for stating a factual observation about accomplishments."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "attests",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "nearest_noun_reflex",
+        "why_wrong": "The subject 'accomplishments' is plural and requires a plural verb. 'Attests' is singular and does not agree.",
+        "why_plausible": "Students may be misled by the proximity of 'Goldin' (singular) to the verb, ignoring the true plural subject 'accomplishments'."
+      },
+      {
+        "label": "B",
+        "text": "has attested",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "The sentence describes a current, ongoing value of accomplishments, not a completed action. Simple present 'attest' is required.",
+        "why_plausible": "Students may assume the accomplishments occurred in the past and thus require present perfect tense."
+      },
+      {
+        "label": "C",
+        "text": "is attesting",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_form",
+        "student_failure_mode": "nonfinite_for_finite",
+        "why_wrong": "Present continuous 'is attesting' implies an action happening right now, which is inappropriate for stating a general truth about the value of accomplishments.",
+        "why_plausible": "Students may interpret 'attesting' as an active, ongoing process rather than a static fact."
+      },
+      {
+        "label": "D",
+        "text": "attest",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the plural subject 'accomplishments' with the plural verb form 'attest'."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "52c9c19e-40a1-5d1c-843d-56939b32c80b",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "English poet and Shakespeare contemporary John Donne\u2019s _______ much admired during his lifetime (1572\u20131631) and in the decades that followed, had, at the time of their enthusiastic rediscovery by the early twentieth-century modernists, been essentially gathering dust for the intervening 250 years.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing subject-verb agreement within a complex sentence structure. The correct answer must provide a finite verb that agrees with the plural subject 'works'. All distractors fail this requirement either by omitting the verb, inserting incorrect punctuation, or using an inappropriate verb tense."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option 'works were' creates a grammatically complete clause with subject-verb agreement. The other options introduce punctuation or verb forms that break sentence structure or agreement.",
+      "full": "The sentence requires a subject ('works') and a finite verb ('were') to form a grammatical clause that fits syntactically between the possessive noun phrase 'John Donne\u2019s' and the participial phrase 'much admired...'. Option A provides the correct subject-verb pair without unnecessary punctuation. Option B incorrectly inserts a comma before 'were', creating a comma splice. Option C leaves the verb missing, resulting in a sentence fragment. Option D uses an incorrect past perfect tense that does not agree with the surrounding context and introduces an illogical temporal relationship."
+    },
+    "options": [],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "700fe56e-ad2e-5bb7-aac7-6841e208354b",
+    "source_exam_code": "9",
+    "source_module_code": "01",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English? The classic children\u2019s board game Chutes and Ladders is a version of an ancient Nepalese game, Paramapada Sopanapata. In both games, players encounter \u201cgood\u201d or \u201cbad\u201d spaces while traveling along a path; landing on one of the good spaces _______ a player to skip ahead and arrive closer to the end goal.",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "subject_verb_agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests subject-verb agreement with a gerund subject. The correct answer requires selecting the singular verb form 'allows' to match the singular subject 'landing on one of the good spaces.' This is a core Standard English Conventions skill under the 'Form, Structure, and Sense' family."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'landing on one of the good spaces' is singular, so the verb must be singular: 'allows'.",
+      "full": "The subject of the clause is 'landing on one of the good spaces,' which is a gerund phrase acting as a singular subject. Therefore, the verb must agree in number and take the singular form 'allows.' Option B ('are allowing') is plural and progressive, which does not match the singular subject. Option C ('have allowed') is plural perfect tense, also incorrect. Option D ('allow') is plural present tense, which fails subject-verb agreement. Only option A correctly matches the singular subject with the singular verb 'allows.'"
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "allows",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically correct and matches the singular subject."
+      },
+      {
+        "label": "B",
+        "text": "are allowing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Subject 'landing on one of the good spaces' is singular, but 'are allowing' is plural. Incorrect subject-verb agreement.",
+        "why_plausible": "Uses a present progressive form that might seem natural for describing ongoing action, but fails to agree with the singular subject."
+      },
+      {
+        "label": "C",
+        "text": "have allowed",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Subject 'landing on one of the good spaces' is singular, but 'have allowed' is plural. Incorrect subject-verb agreement.",
+        "why_plausible": "Present perfect tense may seem appropriate for describing a rule that has always applied, but fails to agree with the singular subject."
+      },
+      {
+        "label": "D",
+        "text": "allow",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Subject 'landing on one of the good spaces' is singular, but 'allow' is plural. Incorrect subject-verb agreement.",
+        "why_plausible": "Simple present tense is correct for general rules, but this form is plural and does not agree with the singular subject."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "a2aa2c2c-c515-575f-89d8-749d7d3690fd",
+    "source_exam_code": "9",
+    "source_module_code": "01",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English? Researchers studying the \u201cterra-cotta army,\u201d the thousands of life-size statues of warriors found interred near the tomb of Emperor Qin Shi Huang of China, were shocked to realize that the shape of each statue\u2019s ears, like the shape of each person\u2019s ears, _______ unique.",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nearest_noun_attraction",
+      "topic_broad": "grammar",
+      "topic_fine": "subject_verb_agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a subject-verb agreement question where the singular subject 'the shape' is separated from the verb by a long modifying phrase, creating a syntactic trap. Students may be misled by the plural nouns 'statues' or 'ears' nearby. The correct answer requires recognizing that 'shape' is the true subject and must take a singular verb."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'the shape' is singular, so the verb must be 'is'.",
+      "full": "The subject of the sentence is 'the shape of each statue\u2019s ears', which is singular. The phrase 'like the shape of each person\u2019s ears' is a comparison and does not change the number of the subject. Therefore, the correct verb form is the singular 'is'. Option A ('are') incorrectly treats the subject as plural. Option C ('were') uses past tense unnecessarily and mismatches the present-tense context. Option D ('have been') introduces an incorrect perfect aspect and also fails to agree with the singular subject."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "are",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "The true subject is 'the shape', which is singular and requires 'is', not 'are'.",
+        "why_plausible": "The word 'ears' appears nearby and is plural, leading students to incorrectly choose 'are'."
+      },
+      {
+        "label": "B",
+        "text": "is",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly agrees with the singular subject 'the shape'."
+      },
+      {
+        "label": "C",
+        "text": "were",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": null,
+        "why_wrong": "The description of the statues\u2019 uniqueness is a general fact, not a past event. Present tense 'is' is required.",
+        "why_plausible": "The passage discusses researchers who were shocked in the past, which may lead students to choose past tense."
+      },
+      {
+        "label": "D",
+        "text": "have been",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_form",
+        "student_failure_mode": null,
+        "why_wrong": "No past action affecting present state is implied. Simple present 'is' is appropriate for stating a general truth.",
+        "why_plausible": "Students may think the statues\u2019 uniqueness is a result of past events and choose perfect tense."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "0912e444-2caf-597f-b656-45bec98015b4",
+    "source_exam_code": "9",
+    "source_module_code": "02",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Interest in mechanotransduction, the mechanism by which cells sense and convert mechanical stimuli into biochemical signals, is expanding because of innovative work by biomedical scientists\u2014many of whom, like neuroscience and biophysics expert Elba Serrano, _______ this mechanism to better understand how the body\u2019s neurological and biomechanical systems interact.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "subject_verb_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nearest_noun_attraction",
+      "topic_broad": "science",
+      "topic_fine": "biomedical science",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests subject-verb agreement. The subject 'many of whom' is plural, requiring the plural verb form 'study.' All other options violate subject-verb agreement or tense consistency. The stem explicitly asks for conformity to Standard English conventions, placing it in the SEC domain."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_verb_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'many of whom' is plural, requiring the base form 'study' to agree with it in present tense.",
+      "full": "The phrase 'many of whom' refers to 'biomedical scientists,' which is plural. Therefore, the verb must be in its base form 'study' to maintain subject-verb agreement in the present tense. Option A ('is studying') uses singular form; B ('has studied') is past perfect and does not match the ongoing context; D ('studies') is third-person singular and incorrect for a plural subject. Only C ('study') correctly agrees with the plural subject."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "is studying",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Uses singular verb 'is studying' with plural subject 'many of whom'; violates subject-verb agreement.",
+        "why_plausible": "Students may be misled by the proximity of the singular noun 'Elba Serrano' and incorrectly apply singular verb agreement."
+      },
+      {
+        "label": "B",
+        "text": "has studied",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": null,
+        "why_wrong": "Uses past perfect tense 'has studied,' which implies completion and does not match the ongoing context established by 'is expanding.'",
+        "why_plausible": "May seem plausible if student assumes the action is completed rather than ongoing."
+      },
+      {
+        "label": "C",
+        "text": "study",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the plural subject 'many of whom' with the base form verb 'study' in present tense."
+      },
+      {
+        "label": "D",
+        "text": "studies",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Uses third-person singular 'studies' with plural subject 'many of whom'; violates subject-verb agreement.",
+        "why_plausible": "Students may default to third-person singular form due to familiarity with singular subjects in everyday usage."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

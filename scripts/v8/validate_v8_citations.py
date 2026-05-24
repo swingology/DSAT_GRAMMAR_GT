@@ -1,0 +1,55 @@
+"""Validate sub-pattern citation format in v8 markdown.
+
+Citation format spec:
+  (PT{exam} M{module} Q{number}: "short quote")
+  e.g. (PT7 M2 Q14: "a toxin that is deadly to nematodes that comes...")
+
+Also accepts:
+  [NO PT EVIDENCE — source: <web source name>]
+
+Counts sub-patterns per focus key and fails if any focus key has > 3.
+"""
+import re
+import sys
+from collections import defaultdict
+from pathlib import Path
+
+V8 = Path("rules_agent_dsat_grammar_ingestion_generation_v8.md")
+
+CITATION_RE = re.compile(r'\(PT(\d{1,2}) M(\d) Q(\d{1,2}): "[^"]+"\)')
+NO_EVIDENCE_RE = re.compile(r"\[NO PT EVIDENCE — source: [^\]]+\]")
+SUBPATTERN_RE = re.compile(r"^\*\*Sub-pattern — ([^*]+)\*\*", re.MULTILINE)
+FOCUS_HEADER_RE = re.compile(r"^### `([a-z_]+)`\s*$", re.MULTILINE)
+
+
+def main() -> int:
+    text = V8.read_text()
+
+    errors: list[str] = []
+    sections = FOCUS_HEADER_RE.split(text)
+    counts: dict[str, int] = defaultdict(int)
+    for i in range(1, len(sections), 2):
+        focus = sections[i]
+        body = sections[i + 1] if i + 1 < len(sections) else ""
+        subpatterns = SUBPATTERN_RE.findall(body)
+        counts[focus] = len(subpatterns)
+        if len(subpatterns) > 3:
+            errors.append(f"{focus}: {len(subpatterns)} sub-patterns (cap is 3)")
+        sp_regions = re.split(SUBPATTERN_RE, body)
+        for region in sp_regions[1:]:
+            if not CITATION_RE.search(region) and not NO_EVIDENCE_RE.search(region):
+                errors.append(
+                    f"{focus}: sub-pattern missing citation or NO PT EVIDENCE marker"
+                )
+
+    print(f"Scanned {sum(counts.values())} sub-patterns across {len(counts)} focus keys")
+    if errors:
+        for e in errors:
+            print(f"  ERROR: {e}")
+        return 1
+    print("All sub-patterns have valid citations or NO PT EVIDENCE markers.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

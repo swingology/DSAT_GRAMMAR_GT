@@ -1,0 +1,190 @@
+[
+  {
+    "question_id": "21008afb-ca3e-5781-9fd8-610cf993c46f",
+    "source_exam_code": "10",
+    "source_module_code": "02",
+    "source_question_number": 4,
+    "question_text": "Which choice completes the text with the most logical and precise word or phrase?",
+    "passage_text": "Proposals to raise the age at which retirees begin receiving government transfers of funds are generally discussed in terms of the effects on transfer recipients, but Andria Smythe has argued that delaying such transfers could _______ wealth creation among working adults by lengthening the period in which they are providing financial support to their nonworking parents.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "word_choice",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": "medium",
+      "distractor_strength": "medium",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "social policy",
+      "topic_fine": "retirement policy",
+      "answer_mechanism_key": "contextual_substitution",
+      "solver_pattern_key": "substitute_and_test",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "The correct word must indicate a negative effect on wealth creation caused by prolonged financial support. 'Stymie' means to hinder, which fits. 'Compound' could be misread as 'increase' but would contradict the logic. 'Disparage' and 'outstrip' are semantically inappropriate."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "word_choice",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence indicates that delaying transfers would hinder wealth creation because working adults would have to support their parents longer. 'Stymie' means to hinder or obstruct, fitting the context.",
+      "full": "The passage presents Andria Smythe's argument that raising the retirement age for government transfers would have a negative effect on wealth creation among working adults. The reason given is that working adults would have to provide financial support to their nonworking parents for a longer period. Therefore, the blank requires a word that means 'hinder' or 'obstruct.' 'Stymie' means to prevent or hinder the progress of something, making it the most logical and precise choice. 'Compound' would suggest an increase or intensification, which contradicts the negative effect described. 'Disparage' means to belittle, which does not logically apply to wealth creation. 'Outstrip' means to surpass, which also does not fit the context of hindrance."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "stymie",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "It means to obstruct or hinder, which matches the negative effect described."
+      },
+      {
+        "label": "B",
+        "text": "compound",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "semantic_imprecision",
+        "student_failure_mode": null,
+        "why_wrong": "The sentence indicates a negative effect on wealth creation; 'compound' would suggest an increase, contradicting the logic.",
+        "why_plausible": "It can mean to intensify or increase, which might seem to fit if one misreads the sentence as describing a positive effect."
+      },
+      {
+        "label": "C",
+        "text": "disparage",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "semantic_imprecision",
+        "student_failure_mode": null,
+        "why_wrong": "Disparage means to speak of in a belittling way; it cannot be used with 'wealth creation' in this context.",
+        "why_plausible": "It is a negative verb, but it does not logically apply to wealth creation."
+      },
+      {
+        "label": "D",
+        "text": "outstrip",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "semantic_imprecision",
+        "student_failure_mode": null,
+        "why_wrong": "The sentence requires a word indicating hindrance, not surpassing.",
+        "why_plausible": "It suggests exceeding or surpassing, which might be misapplied to wealth creation."
+      }
+    ],
+    "quality_flags": [
+      "non_standard_grammar_focus_key:word_choice",
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "1f4441ef-0b1d-53cb-9177-e43ac876a09b",
+    "source_exam_code": "10",
+    "source_module_code": "02",
+    "source_question_number": 5,
+    "question_text": "Which choice completes the text with the most logical and precise word or phrase?",
+    "passage_text": "Political blogs with conspicuous ideological alignments became an integral component of US media in the early 2000s. While some commentators lauded this development, asserting that such blogs had a welcome transparency missing from traditional news, less _______ observers countered that such blogs tended to ideological extremes that exacerbated political polarization to problematic levels.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "word_choice",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": "medium",
+      "distractor_strength": "medium",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "social_science",
+      "topic_fine": "media_polarization",
+      "answer_mechanism_key": "contextual_substitution",
+      "solver_pattern_key": "substitute_and_test",
+      "evidence_scope_key": null,
+      "classification_rationale": "The sentence contrasts 'lauded' with 'less _______ observers countered,' so the blank requires a word meaning optimistic or positive. 'Sanguine' means cheerfully optimistic, fitting the contrast. The other options do not convey the required positive outlook: 'recalcitrant' means stubbornly uncooperative, 'misanthropic' means disliking humanity, and 'earnest' means serious, which does not directly contrast with 'lauded'."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "word_choice",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "'Sanguine' means cheerfully optimistic, contrasting with the critical view of the 'less sanguine' observers.",
+      "full": "The sentence sets up a contrast between commentators who 'lauded' the blogs and 'less _______ observers' who 'countered' that the blogs worsened polarization. The blank requires a word meaning optimistic or positive to complete the contrast. 'Sanguine' means cheerfully optimistic, making it the most logical and precise choice. 'Recalcitrant' means stubbornly uncooperative, 'misanthropic' means disliking humanity, and 'earnest' means serious; none of these convey the required positive outlook that would be 'less' in the critical observers."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "sanguine",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Fits the contrast with 'lauded' and conveys optimism."
+      },
+      {
+        "label": "B",
+        "text": "recalcitrant",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "semantic_imprecision",
+        "student_failure_mode": null,
+        "why_wrong": "Means stubbornly uncooperative, not the opposite of optimistic; does not fit the contrast with 'lauded'.",
+        "why_plausible": "Describes a negative trait that could apply to stubborn observers."
+      },
+      {
+        "label": "C",
+        "text": "misanthropic",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "semantic_imprecision",
+        "student_failure_mode": null,
+        "why_wrong": "Means disliking humanity, which is too extreme and not the required contrast to optimism about blogs.",
+        "why_plausible": "Suggests a negative view of people, which could align with critical observers."
+      },
+      {
+        "label": "D",
+        "text": "earnest",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "plausible_synonym",
+        "student_failure_mode": null,
+        "why_wrong": "Does not convey optimism; 'less earnest' would mean less serious, which does not logically contrast with 'lauded' the development.",
+        "why_plausible": "Can mean serious or sincere, which might seem like a trait that could be 'less' in critical observers."
+      }
+    ],
+    "quality_flags": [
+      "non_standard_grammar_focus_key:word_choice",
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

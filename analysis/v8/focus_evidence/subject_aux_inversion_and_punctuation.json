@@ -1,0 +1,95 @@
+[
+  {
+    "question_id": "f8fe6a7d-a4ad-5fa4-a2bd-65f2235d2523",
+    "source_exam_code": "10",
+    "source_module_code": "02",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Luc\u00eda Michel of the University of Chile observed that alkaline soils contain an insoluble form of iron that blueberry plants cannot absorb, thus inhibiting blueberry growth. If these plants were grown in alkaline soil alongside grasses that aid in iron solubilization, _______ Michel was determined to find out.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "sentence_boundaries",
+      "grammar_focus_key": "subject_aux_inversion_and_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "agriculture",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests the formation of a direct question within a sentence, requiring subject-auxiliary inversion and a question mark. Option B is a plausible distractor because it uses the word order of an indirect question, which students often mistakenly apply to direct questions."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "subject_aux_inversion_and_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The blank requires a direct question (subject-auxiliary inversion and question mark) to serve as the object of 'find out,' correctly ending the sentence and allowing the following statement to stand as a separate sentence.",
+      "full": "The passage sets up a conditional clause ('If these plants were grown...') and then needs a main clause that poses the question Michel wanted to answer. A direct question ('could the blueberries thrive?') is grammatically required here because it is the thing she was determined to find out. The question mark properly terminates the interrogative sentence, and the subsequent 'Michel was determined to find out' begins a new sentence. Option D uses correct subject-auxiliary inversion ('could the blueberries') and the necessary question mark. Option B uses declarative word order without a question mark, creating a run-on sentence. Option A has inversion but no question mark, leaving the sentence improperly punctuated. Option C has a question mark but no inversion, which is ungrammatical for a direct question."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "could the blueberries thrive.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "missing_question_mark",
+        "student_failure_mode": null,
+        "why_wrong": "Lacks the required question mark to end the interrogative sentence, resulting in a run-on with the following statement.",
+        "why_plausible": "Uses correct subject-auxiliary inversion for a question."
+      },
+      {
+        "label": "B",
+        "text": "the blueberries could thrive.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_clause_structure",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence because the blank is a direct question, not an indirect one; a question mark and inversion are required.",
+        "why_plausible": "Uses standard declarative word order, which is familiar and often used in indirect questions."
+      },
+      {
+        "label": "C",
+        "text": "the blueberries could thrive?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_word_order_with_question_mark",
+        "student_failure_mode": null,
+        "why_wrong": "Uses declarative word order instead of the required subject-auxiliary inversion for a direct question.",
+        "why_plausible": "Includes a question mark, signaling an interrogative."
+      },
+      {
+        "label": "D",
+        "text": "could the blueberries thrive?",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly forms a direct question with inversion and a question mark."
+      }
+    ],
+    "quality_flags": [
+      "non_standard_grammar_focus_key:subject_aux_inversion_and_punctuation"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

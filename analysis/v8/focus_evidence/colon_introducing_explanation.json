@@ -1,0 +1,95 @@
+[
+  {
+    "question_id": "b483a17f-93cc-5227-8ada-19bf5e5727e6",
+    "source_exam_code": "10",
+    "source_module_code": "02",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Researchers studying magnetosensation have determined why some soil-dwelling roundworms in the Southern Hemisphere move in the opposite direction of Earth\u2019s magnetic field when searching for _______ in the Northern Hemisphere, the magnetic field points down, into the ground, but in the Southern Hemisphere, it points up, toward the surface and away from worms\u2019 food sources.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "standard_english_conventions",
+      "grammar_focus_key": "colon_introducing_explanation",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "low",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "biology",
+      "answer_mechanism_key": "punctuation_rule_application",
+      "solver_pattern_key": "identify_clause_boundaries",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "The question tests the use of a colon to introduce an explanation after an independent clause. The correct answer is A because a colon is required; the other options create punctuation errors."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "colon_introducing_explanation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "A colon is needed to introduce the explanation that follows.",
+      "full": "The clause before the blank is an independent clause. A colon is used after an independent clause to introduce an explanation, list, or quotation. Here, the colon introduces the explanation of why the roundworms move in the opposite direction. Option B (comma) would create a comma splice. Option C ('food while') would create a fragment. Option D (no punctuation) would create a run-on sentence."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "food:",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "A colon is the correct punctuation to introduce an explanation."
+      },
+      {
+        "label": "B",
+        "text": "food,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A comma after 'food' would create a comma splice, joining two independent clauses without a conjunction.",
+        "why_plausible": "A comma is often used to separate clauses, and students may think a comma is sufficient."
+      },
+      {
+        "label": "C",
+        "text": "food while",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Using 'food while' creates a fragment because the clause after 'while' is not a complete thought.",
+        "why_plausible": "The word 'while' might seem to connect the clauses, but the structure is incomplete."
+      },
+      {
+        "label": "D",
+        "text": "food",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Without punctuation, the sentence becomes a run-on, with two independent clauses improperly joined.",
+        "why_plausible": "Students might think no punctuation is needed."
+      }
+    ],
+    "quality_flags": [
+      "non_standard_grammar_focus_key:colon_introducing_explanation"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

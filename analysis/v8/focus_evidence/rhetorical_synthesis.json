@@ -1,0 +1,96 @@
+[
+  {
+    "question_id": "56e76d8e-0bad-5a72-a8ab-74f0cabe807b",
+    "source_exam_code": "10",
+    "source_module_code": "02",
+    "source_question_number": 31,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes:\n\n\u2022 Shaun Tan is an Australian author.\n\u2022 In 2008, he published Tales from Outer Suburbia, a book of fifteen short stories.\n\u2022 The stories describe surreal events occurring in otherwise ordinary suburban neighborhoods.\n\u2022 In 2018, he published Tales from the Inner City, a book of twenty-five short stories.\n\u2022 The stories describe surreal events occurring in otherwise ordinary urban settings.\n\nThe student wants to emphasize a similarity between the two books by Shaun Tan.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "rhetorical_synthesis",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "low",
+      "stem_type_key": "synthesize_information",
+      "stimulus_mode_key": "notes_bullets",
+      "syntactic_trap_key": null,
+      "topic_broad": "literature",
+      "topic_fine": "Shaun Tan books",
+      "answer_mechanism_key": "note_synthesis",
+      "solver_pattern_key": "identify_goal_then_match_notes",
+      "evidence_scope_key": null,
+      "classification_rationale": "The question requires selecting the option that best synthesizes notes to emphasize a similarity. This is a Rhetorical Synthesis task within Expression of Ideas. The correct answer directly combines the relevant shared detail; distractors provide contrasting or irrelevant information."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "rhetorical_synthesis",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option D directly states the shared characteristic of surreal events in ordinary places, fulfilling the goal of emphasizing a similarity.",
+      "full": "The student's goal is to emphasize a similarity between the two books. The notes indicate that both books contain stories describing surreal events in otherwise ordinary settings\u2014suburban for Outer Suburbia and urban for Inner City. Option D accurately synthesizes this commonality. Option A contrasts the number of stories, Option B lists publication years without noting similarity, and Option C highlights a difference in setting, all failing to meet the goal."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Shaun Tan\u2019s book Tales from Outer Suburbia, which describes surreal events occurring in otherwise ordinary places, contains fewer short stories than Tales from the Inner City does.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "irrelevant_detail",
+        "student_failure_mode": null,
+        "why_wrong": "Highlights a difference (number of stories) rather than a similarity, failing the goal.",
+        "why_plausible": "Mentions both books and a true detail (story count)."
+      },
+      {
+        "label": "B",
+        "text": "Tales from Outer Suburbia was published in 2008, and Tales from the Inner City was published in 2018.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "irrelevant_detail",
+        "student_failure_mode": null,
+        "why_wrong": "Provides factual information but does not address any similarity between the books.",
+        "why_plausible": "States true publication years for both books."
+      },
+      {
+        "label": "C",
+        "text": "Unlike Tales from the Inner City, Shaun Tan\u2019s book Tales from Outer Suburbia is set in suburban neighborhoods.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "irrelevant_detail",
+        "student_failure_mode": null,
+        "why_wrong": "Emphasizes a difference, not a similarity, contradicting the stated goal.",
+        "why_plausible": "Accurately notes a setting difference between the books."
+      },
+      {
+        "label": "D",
+        "text": "Shaun Tan\u2019s books Tales from Outer Suburbia and Tales from the Inner City both describe surreal events occurring in otherwise ordinary places.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Directly combines the shared surreal-events-in-ordinary-places detail from both notes."
+      }
+    ],
+    "quality_flags": [
+      "non_standard_grammar_focus_key:rhetorical_synthesis",
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  }
+]

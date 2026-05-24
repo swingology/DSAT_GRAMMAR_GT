@@ -1,0 +1,95 @@
+[
+  {
+    "question_id": "b634bdc1-aa9d-4650-8356-3d593def96bd",
+    "source_exam_code": "4",
+    "source_module_code": "02",
+    "source_question_number": 20,
+    "question_text": "In her two major series \u201cMemory Test\u201d and \u201cAutobiography,\u201d painter Howardena Pindell explored themes _______ healing, self-discovery, and memory by cutting and sewing back together pieces of canvas and inserting personal artifacts, such as postcards, into some of the paintings. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "preposition_idiom",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "arts",
+      "topic_fine": "visual_art",
+      "answer_mechanism_key": "grammar_rule_application",
+      "solver_pattern_key": "identify_prepositional_idiom",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a grammar question testing prepositional idiom usage ('themes of'). No reading comprehension or inference is required. The correct answer applies a straightforward rule: no punctuation follows the preposition 'of' in this construction. Distractors introduce unnecessary punctuation that breaks the syntactic unit."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "preposition_idiom",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'themes of healing, self-discovery, and memory' is a standard prepositional phrase; no punctuation is needed after 'of'.",
+      "full": "The correct answer is 'of' because it forms the idiomatic prepositional phrase 'themes of [noun phrases]'. The list following 'of' \u2014 'healing, self-discovery, and memory' \u2014 is internally punctuated with commas, but no additional punctuation (comma, dash, or colon) is required after 'of'. Inserting any punctuation would incorrectly interrupt the syntactic unit 'themes of healing, self-discovery, and memory', violating the rule against unnecessary internal punctuation."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "of",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically correct and forms the standard phrase 'themes of'."
+      },
+      {
+        "label": "B",
+        "text": "of,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts an unnecessary comma inside the prepositional phrase 'themes of healing...', breaking the syntactic unit. This violates the rule against unnecessary internal punctuation.",
+        "why_plausible": "Student may over-punctuate, thinking a comma is needed before listing items."
+      },
+      {
+        "label": "C",
+        "text": "of\u2014",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts an unnecessary dash inside the prepositional phrase 'themes of healing...', breaking the syntactic unit. This violates the rule against unnecessary internal punctuation.",
+        "why_plausible": "Student may misread the structure and think a dash is needed for emphasis or interruption."
+      },
+      {
+        "label": "D",
+        "text": "of:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts an unnecessary colon inside the prepositional phrase 'themes of healing...', breaking the syntactic unit. This violates the rule against unnecessary internal punctuation.",
+        "why_plausible": "Student may think a colon is needed to introduce the list of themes."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

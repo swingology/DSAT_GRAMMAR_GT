@@ -1,0 +1,275 @@
+[
+  {
+    "question_id": "7bd40be1-5e0e-5650-9705-82872a4f7a6d",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "A popular suite of mapping and spatial analysis software, ArcGIS enables cartographers like Karachi Cartography founder Namra Khalid b l a n k maps by analyzing and arranging raw geospatial data.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_form",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "technology",
+      "topic_fine": "geographic information systems",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb form. The verb 'enables' requires an infinitive complement, making 'to create' the only grammatically correct option. The other options are incorrect forms for this syntactic context."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_form",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The verb 'enables' requires an infinitive complement to express purpose or result. 'To create' is the grammatically correct form to complete the sentence.",
+      "full": "The verb 'enables' is followed by an object ('cartographers') and then requires an infinitive phrase to indicate what the object is enabled to do. The correct structure is 'enables [someone] to [do something].' Option B, 'to create,' correctly completes this construction. Option A ('create') lacks the required infinitive marker. Option C ('creating') uses a gerund, which does not fit after 'enables.' Option D ('created') is past tense and does not express the intended purpose or capability."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "create",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "The verb 'enables' requires the full infinitive 'to create', not the bare infinitive 'create'.",
+        "why_plausible": "Students may incorrectly assume that after 'enables', a bare infinitive (without 'to') is acceptable, as in some other verb constructions."
+      },
+      {
+        "label": "B",
+        "text": "to create",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly follows the grammatical rule that 'enables' must be followed by 'to + verb'."
+      },
+      {
+        "label": "C",
+        "text": "creating",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "'Creating' is a gerund and cannot follow 'enables' in this context; the correct form is the infinitive 'to create'.",
+        "why_plausible": "Students may confuse the use of gerunds after verbs, but 'enables' does not take a gerund complement."
+      },
+      {
+        "label": "D",
+        "text": "created",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "'Created' is past tense and does not express the intended purpose or capability; the correct form is 'to create'.",
+        "why_plausible": "Students might mistakenly think the past tense is needed to match the subject's action, but 'enables' expresses current capability, requiring the infinitive."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "39bef7db-0c39-4470-a9b5-007f1eb616e0",
+    "source_exam_code": "6",
+    "source_module_code": "01",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The Boston Saloon was one of the most popular African American\u2013owned establishments in nineteenth-century Nevada. _______ by businessman William A.G. Brown, the saloon was known to offer elegant accommodations and an inclusive environment.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_form",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "nineteenth-century establishments",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing verb form in a participial phrase. The correct answer must be a past participle to modify 'the saloon' in passive voice. All distractors are incorrect verb forms that do not fulfill this grammatical role. The stem explicitly asks for conformity to Standard English, placing it in the Standard English Conventions domain."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_form",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct choice is 'Created' because it functions as a past participle modifying 'the saloon,' indicating passive voice and completing the participial phrase correctly.",
+      "full": "The sentence requires a past participle to introduce a participial phrase that modifies 'the saloon.' The phrase 'Created by businessman William A.G. Brown' describes how the saloon came into existence \u2014 passively, by the action of Brown. Option A, 'Created,' is the correct past participle form. Option B ('Creates') is present tense and active, which does not fit the context. Option C ('Creating') is a present participle, implying ongoing action, which contradicts the historical context. Option D ('Create') is the base form and cannot function as a modifier here without auxiliary verbs. Thus, only 'Created' conforms to Standard English conventions for this construction."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Created",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically fits as a past participle modifying 'the saloon' in passive voice."
+      },
+      {
+        "label": "B",
+        "text": "Creates",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_verb_form",
+        "student_failure_mode": null,
+        "why_wrong": "Uses present tense active voice instead of past participle needed for passive participial phrase.",
+        "why_plausible": "Appears to agree with singular subject 'saloon' but ignores the passive participial structure required."
+      },
+      {
+        "label": "C",
+        "text": "Creating",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_verb_form",
+        "student_failure_mode": null,
+        "why_wrong": "Implies active, ongoing creation rather than completed, passive origin; misuses verb form for participial modifier.",
+        "why_plausible": "Present participle may seem plausible for describing ongoing action, but contradicts historical context and passive structure."
+      },
+      {
+        "label": "D",
+        "text": "Create",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_verb_form",
+        "student_failure_mode": null,
+        "why_wrong": "Cannot function as a participial modifier without auxiliary verb; violates Standard English conventions for this construction.",
+        "why_plausible": "Base form may be selected by students who confuse infinitives or fail to recognize participial requirement."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "90bc1e98-0022-5721-9d5e-6951847db30d",
+    "source_exam_code": "7",
+    "source_module_code": "02",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Nowadays, tug-of-war is usually seen as an informal game one might play at a picnic or in gym class. Surprisingly, the Olympic committee once decided _______ tug-of-war as an official Olympic event! Nations competed in the event at the Olympic Games from 1900 to 1920.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_form",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nonfinite_for_finite",
+      "topic_broad": "general",
+      "topic_fine": "grammar",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb form. The verb 'decided' must be followed by an infinitive ('to include'), making this a clear verb_form / verb_form case. The syntactic trap involves students selecting nonfinite forms (gerund or bare infinitive) instead of the required infinitive."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_form",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The verb 'decided' requires an infinitive complement ('to include') to express the action taken. Other forms are grammatically incorrect in this context.",
+      "full": "The verb 'decided' is followed by an infinitive when expressing what was decided to be done. The correct form is 'to include'. Option A ('included') is past tense and cannot follow 'decided' without a helping verb. Option B ('including') is a participle and cannot function as the main verb complement. Option C ('include') is base form and does not match the required infinitive structure after 'decided'. Only option D correctly completes the sentence with the infinitive 'to include'."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "included",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Past tense 'included' cannot follow 'decided' without a helping verb; requires infinitive 'to include'.",
+        "why_plausible": "Students may incorrectly assume past tense is needed after 'decided'."
+      },
+      {
+        "label": "B",
+        "text": "including",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "'Including' is a participle and cannot serve as the complement of 'decided'; requires infinitive 'to include'.",
+        "why_plausible": "Students may confuse gerund form with required infinitive after 'decided'."
+      },
+      {
+        "label": "C",
+        "text": "include",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Bare infinitive 'include' is grammatically incorrect after 'decided'; requires 'to include'.",
+        "why_plausible": "Students may select bare infinitive 'include' thinking it's sufficient after 'decided'."
+      },
+      {
+        "label": "D",
+        "text": "to include",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correct infinitive form required after 'decided'."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

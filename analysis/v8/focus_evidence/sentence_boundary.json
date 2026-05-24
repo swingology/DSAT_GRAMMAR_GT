@@ -1,0 +1,734 @@
+[
+  {
+    "question_id": "92356f57-c95b-5e58-865d-b372ff0e4602",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Luc\u00eda Michel of the University of Chile observed that alkaline soils contain an insoluble form of iron that blueberry plants cannot absorb, thus inhibiting blueberry growth. If these plants were grown in alkaline soil alongside grasses that aid in iron solubilization, _______ Michel was determined to find out.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_boundary",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "botany",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar-focused item testing whether the student can distinguish between declarative and interrogative sentence structures. The correct answer must maintain the declarative tone required by the surrounding context. All distractors introduce interrogative features (inversion or question mark) that violate standard sentence structure rules."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_boundary",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence is declarative and requires a statement, not a question. Option B correctly forms a complete declarative clause that fits grammatically and logically within the sentence structure.",
+      "full": "The sentence begins with a conditional clause ('If these plants were grown...') and continues with a main clause that must be declarative because it describes what Michel was determined to find out \u2014 a fact or outcome, not a direct question. Option A and D incorrectly use inverted word order typical of direct questions, which is inappropriate here. Option C ends with a question mark, turning the entire sentence into an interrogative, which contradicts the declarative context established by 'Michel was determined to find out.' Only option B provides a grammatically correct, non-interrogative clause that completes the sentence as a statement."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "could the blueberries thrive.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_sentence_structure",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "Incorrectly uses subject-auxiliary inversion typical of direct questions, making the clause ungrammatical in this declarative context.",
+        "why_plausible": "Uses correct subject and verb but applies question inversion, which may seem plausible to students who misread the sentence as interrogative."
+      },
+      {
+        "label": "B",
+        "text": "the blueberries could thrive.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Grammatically correct declarative clause that matches the syntactic and semantic requirements of the sentence."
+      },
+      {
+        "label": "C",
+        "text": "the blueberries could thrive?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_end_punctuation",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "Ends with a question mark, turning the clause into an interrogative when the context requires a declarative statement.",
+        "why_plausible": "Contains the correct subject and verb order but incorrectly ends with a question mark, which may confuse students unfamiliar with indirect vs. direct questions."
+      },
+      {
+        "label": "D",
+        "text": "could the blueberries thrive?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_sentence_structure_and_punctuation",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "Uses incorrect subject-verb inversion and ends with a question mark, violating both sentence structure and end-punctuation conventions for declarative statements.",
+        "why_plausible": "Combines both errors \u2014 subject-auxiliary inversion and question mark \u2014 which may appear plausible to students who misinterpret the sentence as a direct question."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "c2820ed4-6b81-5968-bed7-f603fe5f571f",
+    "source_exam_code": "4",
+    "source_module_code": "01",
+    "source_question_number": 21,
+    "question_text": "After a spate of illnesses as a child, Wilma Rudolph was told she might never walk again. Defying all odds, Rudolph didn\u2019t just walk, she _______ the 1960 Summer Olympics in Rome, she won both the 100- and 200-meter dashes and clinched first place for her team in the 4 \u00d7100-meter relay, becoming the first US woman to win three gold medals in a single Olympics. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_boundary",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "biography",
+      "topic_fine": "athletic achievement",
+      "answer_mechanism_key": "punctuation_rule_application",
+      "solver_pattern_key": "identify_independent_clauses_then_apply_punctuation_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a Standard English Conventions question testing sentence boundary punctuation. The correct answer requires separating two independent clauses with a period. Options A, B, and C incorrectly use dashes or commas, which create run-ons or comma splices. The stem explicitly asks for conformity to Standard English, confirming the grammar domain."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_boundary",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option uses a period to separate two independent clauses, which is required for grammatical correctness.",
+      "full": "The sentence contains two independent clauses: 'Rudolph didn\u2019t just walk, she ran\u2014fast' and 'During the 1960 Summer Olympics in Rome, she won both the 100- and 200-meter dashes...'. These clauses must be separated by a period (or semicolon or conjunction), not a comma or dash. Option D correctly uses a period to end the first clause and begin the second with a capital letter, conforming to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "ran\u2014fast\u2014during",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by joining two independent clauses with a dash instead of proper punctuation.",
+        "why_plausible": "The em dashes are used for emphasis and might seem appropriate for dramatic effect."
+      },
+      {
+        "label": "B",
+        "text": "ran\u2014fast during",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to separate two independent clauses, creating a comma splice if read as one sentence.",
+        "why_plausible": "The lack of punctuation after 'fast' may appear acceptable in informal writing."
+      },
+      {
+        "label": "C",
+        "text": "ran\u2014fast, during",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Uses a comma to join two independent clauses, resulting in a comma splice.",
+        "why_plausible": "The comma after 'fast' may seem to provide a natural pause before continuing the sentence."
+      },
+      {
+        "label": "D",
+        "text": "ran\u2014fast. During",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly separates two independent clauses with a period and capitalizes the next sentence."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "8c62cad6-f3f0-4af1-a87f-683b1dca180f",
+    "source_exam_code": "4",
+    "source_module_code": "02",
+    "source_question_number": 23,
+    "question_text": "In 2010, archaeologist Noel Hidalgo Tan was visiting the twelfth-century temple of Angkor Wat in Cambodia when he noticed markings of red paint on the temple _______ the help of digital imaging techniques, he discovered the markings to be part of an elaborate mural containing over 200 paintings. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_boundary",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "garden_path",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests whether the student recognizes that two independent clauses require proper separation \u2014 either with a period, semicolon, or coordinating conjunction with a comma. The correct answer uses a period to create two complete sentences, which is the most appropriate choice given the context and length of the clauses."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_boundary",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence contains two independent clauses. Option D correctly uses a period and capital 'With' to separate them, forming two grammatically complete sentences.",
+      "full": "The original sentence presents two independent clauses: (1) 'In 2010, archaeologist Noel Hidalgo Tan was visiting the twelfth-century temple of Angkor Wat in Cambodia when he noticed markings of red paint on the temple walls' and (2) 'he discovered the markings to be part of an elaborate mural containing over 200 paintings.' These two clauses cannot be joined by a comma alone (option A), nor can they be fused without punctuation (option B). Option C adds an illogical conjunction 'so with'. Only option D correctly separates the clauses with a period and begins the second clause with a capital letter, conforming to Standard English conventions for sentence boundaries."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "walls, with",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "This creates a comma splice \u2014 joining two independent clauses with only a comma, which violates Standard English conventions.",
+        "why_plausible": "The comma appears to connect the two ideas smoothly, creating a false sense of grammatical correctness."
+      },
+      {
+        "label": "B",
+        "text": "walls with",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "This creates a run-on sentence by fusing two independent clauses without any punctuation or conjunction.",
+        "why_plausible": "Omitting punctuation may seem acceptable in informal writing, especially since the clauses are related."
+      },
+      {
+        "label": "C",
+        "text": "walls so with",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "illogical_conjunction",
+        "student_failure_mode": null,
+        "why_wrong": "'So with' is not a valid conjunction structure; it creates an illogical and ungrammatical connection between the clauses.",
+        "why_plausible": "The word 'so' suggests a causal relationship, which might seem logical given the discovery context."
+      },
+      {
+        "label": "D",
+        "text": "walls. With",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly separates the two independent clauses with a period and capitalizes the next word, following Standard English conventions."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "c57d15b4-8b1c-40db-962e-41763e56e891",
+    "source_exam_code": "4",
+    "source_module_code": "02",
+    "source_question_number": 26,
+    "question_text": "A study published by Rice University geoscientist Ming Tang in 2019 offers a new explanation for the origin of Earth\u2019s _______ structures called arcs, towering ridges that form when a dense oceanic plate subducts under a less dense continental plate, melts in the mantle below, and then rises and bursts through the continental crust above. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_boundary",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "geology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests the correct separation of two independent clauses. The first clause ends with 'continents', and the second begins with 'Geological structures'. Only a period followed by capitalization correctly separates them as two distinct sentences. This is a sentence boundary issue, not punctuation mechanics alone."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_boundary",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option uses a period to end the first independent clause and capitalizes 'Geological' to begin the next sentence, which is grammatically required.",
+      "full": "The sentence contains two independent clauses: (1) 'A study... offers a new explanation for the origin of Earth\u2019s continents.' and (2) 'Geological structures called arcs...'. These must be separated by a period and capitalized appropriately. Option D correctly punctuates with a period and capitalizes 'Geological', making it a complete and grammatically correct sentence. Options A, B, and C incorrectly attempt to join the clauses with no punctuation, a colon, or a semicolon \u2014 none of which are appropriate here because the second clause is not an explanation, list, or closely related fragment of the first."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "continents geological",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by joining two independent clauses without proper punctuation.",
+        "why_plausible": "Appears fluent on first read; student may overlook the need to separate two independent clauses."
+      },
+      {
+        "label": "B",
+        "text": "continents: geological",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_colon_usage",
+        "student_failure_mode": null,
+        "why_wrong": "Colon incorrectly used between two independent clauses where no explanatory relationship exists.",
+        "why_plausible": "Student may confuse colon usage for introducing a definition or elaboration, but the second clause is not an explanation of the first."
+      },
+      {
+        "label": "C",
+        "text": "continents; geological",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_semicolon_usage",
+        "student_failure_mode": null,
+        "why_wrong": "Semicolon incorrectly joins two independent clauses that do not share a close logical or syntactic relationship.",
+        "why_plausible": "Semicolons are sometimes misapplied to join independent clauses without conjunctions, but here the clauses are not closely related enough to justify a semicolon."
+      },
+      {
+        "label": "D",
+        "text": "continents. Geological",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly separates two independent clauses with a period and capitalizes the next sentence."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "e71a5d1e-157b-519d-abbd-566df0c48858",
+    "source_exam_code": "6",
+    "source_module_code": "01",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Consider the mechanics of the pinhole camera: light passes through a small hole, resulting in a focused projected image. A ray diagram reveals how this _______ the hole\u2019s small size restricts light to a single ray, all light passing through the hole can only arrive at a single destination, eliminating diffraction and ensuring a clear image.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_boundary",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": null,
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": null,
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing sentence boundary management. The correct answer resolves a run-on structure by using a subordinating conjunction ('because') to properly join an independent clause with a dependent clause. The distractors introduce punctuation errors (run-on, comma splice, incorrect colon usage) that violate sentence boundary rules. Per HARD ROUTING RULE 1, grammar_role_key and grammar_focus_key are required and non-null for SEC domain questions."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_boundary",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option 'works because' creates a grammatically complete sentence without introducing a run-on or comma splice. The other options create punctuation errors or sentence fragments.",
+      "full": "The sentence requires a conjunction to link the main clause 'A ray diagram reveals how this works' with the explanatory clause 'the hole\u2019s small size restricts light...'. Option A, 'works because', correctly uses 'because' as a subordinating conjunction to introduce the reason, forming a complex sentence. Option B incorrectly uses a period to separate two clauses that should be joined, creating a run-on. Option C inserts a comma splice by joining two independent clauses with only a comma. Option D uses a colon incorrectly \u2014 colons must follow independent clauses and introduce lists, explanations, or quotations, not subordinate clauses introduced by 'it\u2019s because'."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "works because",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically correct and maintains sentence flow."
+      },
+      {
+        "label": "B",
+        "text": "works. Because",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a sentence fragment: 'Because the hole\u2019s small size restricts...' is not a complete sentence on its own.",
+        "why_plausible": "Appears to separate ideas clearly with a period, but creates a fragment after 'Because'."
+      },
+      {
+        "label": "C",
+        "text": "works, it\u2019s because",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Comma splice: 'A ray diagram reveals how this works' and 'it\u2019s because the hole\u2019s small size restricts...' are both independent clauses; they cannot be joined by a comma alone.",
+        "why_plausible": "Uses a comma to join two independent clauses, a common student error."
+      },
+      {
+        "label": "D",
+        "text": "works: it\u2019s because",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_colon_usage",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect colon usage: colons must follow independent clauses and introduce elements that explain or list what precedes. 'it\u2019s because' is a dependent clause and cannot follow a colon in this context.",
+        "why_plausible": "Colon appears to introduce an explanation, but 'it\u2019s because' is not a list, quotation, or standalone explanation."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "5f3f818c-b02d-4d91-8276-994a5b3a9899",
+    "source_exam_code": "6",
+    "source_module_code": "02",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In forecasting weather events, meteorologists sometimes discuss the role of atmospheric rivers. What are atmospheric rivers, and how _______ Part of the water cycle, atmospheric rivers are narrow channels of moisture moving through the atmosphere. In certain conditions, these \u201crivers\u201d can release some of their moisture as precipitation.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_boundary",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": null,
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": null,
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar-focused question testing sentence boundary conventions: specifically, whether the embedded clause maintains interrogative form (subject-auxiliary inversion) and appropriate end punctuation (question mark). The correct answer requires recognizing that both parts of the compound sentence are direct questions, thus demanding inversion and a question mark. This falls under Standard English Conventions, not Expression of Ideas, because the decision is purely grammatical and structural, not rhetorical or transitional."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_boundary",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence is a direct question embedded in a compound structure; it requires a question mark and subject-auxiliary inversion.",
+      "full": "The stem asks for completion conforming to Standard English conventions. The phrase 'What are atmospheric rivers, and how _______' is a compound interrogative \u2014 both clauses are questions. The second clause must maintain subject-auxiliary inversion ('do they') and end with a question mark to match the first clause's interrogative form. Option C correctly uses 'do they affect our weather?' with proper inversion and punctuation. Option A lacks the required question mark. Option B incorrectly uses declarative word order and period. Option D uses correct word order but incorrectly ends with a question mark after a declarative structure, which violates Standard English punctuation rules for embedded or compound questions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "do they affect our weather.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_end_punctuation",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "Fails to use a question mark, violating Standard English convention for direct questions. The sentence is an interrogative and must end with a question mark, not a period.",
+        "why_plausible": "Uses correct subject-auxiliary inversion ('do they'), making it grammatically plausible at first glance."
+      },
+      {
+        "label": "B",
+        "text": "they do affect our weather.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_word_order",
+        "student_failure_mode": "nonfinite_for_finite",
+        "why_wrong": "Uses declarative word order ('they do') instead of interrogative inversion ('do they'). Also incorrectly ends with a period. Both errors violate Standard English conventions for direct questions.",
+        "why_plausible": "Grammatically well-formed as a declarative sentence; subject-verb agreement is correct."
+      },
+      {
+        "label": "C",
+        "text": "do they affect our weather?",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses subject-auxiliary inversion and ends with a question mark, matching the interrogative structure of the first clause."
+      },
+      {
+        "label": "D",
+        "text": "they do affect our weather?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_word_order_with_correct_punctuation",
+        "student_failure_mode": "nonfinite_for_finite",
+        "why_wrong": "Uses declarative word order ('they do') instead of interrogative inversion ('do they'). While it ends with a question mark, the internal structure violates Standard English conventions for forming direct questions.",
+        "why_plausible": "Ends with a question mark, which may mislead students into thinking it\u2019s correct if they overlook word order."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "951c2117-b143-5626-9588-e9e1e59be058",
+    "source_exam_code": "8",
+    "source_module_code": "02",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "After the United Kingdom began rolling out taxes equivalent to a few cents on single-use plastic grocery bags in 2011, plastic-bag consumption decreased by up to ninety _______ taxes are subject to what economists call the \u201crebound effect\u201d: as the change became normalized, plastic-bag use started to creep back up.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_boundary",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "economics",
+      "topic_fine": "environmental policy",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests the ability to recognize and properly punctuate the boundary between two independent clauses. The correct answer requires a period to separate the clauses, which is a core Standard English Conventions skill."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_boundary",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence contains two independent clauses. The correct punctuation is a period to separate them, followed by a capital 'S' to start the new sentence.",
+      "full": "The first clause ends with 'ninety percent' and the second begins with 'taxes are subject...'. These are two complete thoughts that must be separated by a period. Option C correctly uses a period and capitalizes 'Such' to begin the new sentence. Option A incorrectly uses a comma splice. Option B incorrectly joins the clauses with 'and', creating a run-on. Option D omits necessary punctuation, creating a fused sentence."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "percent, such",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a comma.",
+        "why_plausible": "The comma creates a grammatically plausible connection between the two clauses at first glance."
+      },
+      {
+        "label": "B",
+        "text": "percent and such",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by joining two independent clauses with only a coordinating conjunction without a preceding comma.",
+        "why_plausible": "The conjunction 'and' seems to logically connect the two ideas about plastic bag usage."
+      },
+      {
+        "label": "C",
+        "text": "percent. Such",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly separates the two independent clauses with appropriate punctuation and capitalization."
+      },
+      {
+        "label": "D",
+        "text": "percent such",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "fused_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a fused sentence by joining two independent clauses without any punctuation or conjunction.",
+        "why_plausible": "The lack of punctuation might seem acceptable in informal writing."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "e5edfb3c-0435-53b0-b0af-19f896aad16f",
+    "source_exam_code": "8",
+    "source_module_code": "02",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Over twenty years ago, in a landmark experiment in the psychology of choice, professor Sheena Iyengar set up a jam-tasting booth at a grocery store. The number of jams available for tasting ______ some shoppers had twenty-four different options, others only six. Interestingly, the shoppers with fewer jams to choose from purchased more jam.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_boundary",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "psychology",
+      "topic_fine": "consumer behavior",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests proper sentence boundary construction between two independent clauses. The correct answer requires recognizing that 'while' functions as a coordinating conjunction here and must be preceded by a comma to avoid a comma splice or run-on. The distractors test common punctuation errors students make when joining independent clauses."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_boundary",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct choice uses a comma followed by 'while' to properly connect two independent clauses and show contrast.",
+      "full": "The sentence contains two independent clauses: 'The number of jams available for tasting varied' and 'some shoppers had twenty-four different options, others only six.' These clauses must be joined correctly. Option C, 'varied, while', uses a comma before the coordinating conjunction 'while' to link the two independent clauses, which is grammatically correct. Option A (colon) incorrectly implies elaboration or list structure. Option B (comma alone) creates a comma splice. Option D (no punctuation) creates a run-on sentence. Only option C conforms to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "varied:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A colon cannot join two independent clauses unless the second clause explains or illustrates the first. Here, the second clause contrasts with the first, making a colon inappropriate.",
+        "why_plausible": "Students may think a colon is appropriate to introduce an explanation or example after the first clause."
+      },
+      {
+        "label": "B",
+        "text": "varied,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "This creates a comma splice \u2014 two independent clauses joined only by a comma, which is grammatically incorrect in Standard English.",
+        "why_plausible": "Students often use commas to separate clauses based on rhythm or pause rather than grammatical rules."
+      },
+      {
+        "label": "C",
+        "text": "varied, while",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses a comma before the coordinating conjunction 'while' to join two independent clauses showing contrast."
+      },
+      {
+        "label": "D",
+        "text": "varied while",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "This creates a run-on sentence \u2014 two independent clauses joined without proper punctuation. A comma is required before 'while' when it connects two independent clauses.",
+        "why_plausible": "Students may omit the comma before 'while' thinking it's unnecessary since 'while' is a conjunction."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

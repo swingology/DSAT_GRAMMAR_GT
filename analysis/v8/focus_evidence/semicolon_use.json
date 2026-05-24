@@ -1,0 +1,461 @@
+[
+  {
+    "question_id": "a8155739-ffc8-5dbc-b091-b35b4c5c42a5",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In ancient Greece, an Epicurean was a follower of Epicurus, a philosopher whose beliefs revolved around the pursuit of pleasure. Epicurus defined pleasure as \u201cthe absence of pain in the body and of trouble in the _______ that all life\u2019s virtues derived from this absence.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "semicolon_use",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "humanities",
+      "topic_fine": "philosophy",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a punctuation question testing the correct use of a semicolon to join two independent clauses. The stem explicitly asks for conformity to Standard English conventions, placing it in the SEC domain. The correct answer requires recognizing that both clauses are independent and thus require a semicolon rather than a comma, colon, or period."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "semicolon_use",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct punctuation is a semicolon because it separates two independent clauses: the definition of pleasure and the claim about virtues deriving from it. A comma or colon would be grammatically incorrect here; a period would create a sentence fragment.",
+      "full": "The sentence contains two independent clauses joined by a coordinating conjunction implied by the structure. The first clause ends with 'soul' and the second begins with 'that all life\u2019s virtues derived from this absence.' These are both complete thoughts. A semicolon is required to join them without a coordinating conjunction. Option A uses a comma splice, which is incorrect. Option B uses a colon, which is inappropriate because the second clause does not explain or introduce the first. Option D uses a period and capital letter, which creates a sentence fragment since 'that all life\u2019s virtues derived from this absence' is not a complete sentence on its own. Only option C correctly uses a semicolon to join the two independent clauses."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "soul,\u201d positing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "This creates a comma splice \u2014 two independent clauses joined by only a comma, which is grammatically incorrect in Standard English.",
+        "why_plausible": "Students often incorrectly use commas to join independent clauses, especially when the clauses are short or closely related."
+      },
+      {
+        "label": "B",
+        "text": "soul\u201d: positing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_colon_usage",
+        "student_failure_mode": null,
+        "why_wrong": "A colon cannot be used to join two independent clauses unless the second clause explains or introduces the first, which is not the case here.",
+        "why_plausible": "Students may confuse colons with semicolons, especially when the second clause seems to follow logically from the first."
+      },
+      {
+        "label": "C",
+        "text": "soul\u201d; positing",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses a semicolon to join two independent clauses without a coordinating conjunction."
+      },
+      {
+        "label": "D",
+        "text": "soul.\u201d Positing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "This creates a sentence fragment because 'that all life\u2019s virtues derived from this absence' is not a complete sentence on its own \u2014 it lacks a subject and verb that can stand independently.",
+        "why_plausible": "Students may think ending the first clause with a period is acceptable, especially if they misread the second clause as independent."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "4c39f494-13c7-5273-9cfe-76b494f9ed65",
+    "source_exam_code": "6",
+    "source_module_code": "02",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Physical materials can be classified by how much light passes through them. Clear glass, which is classified as transparent, allows all (or almost all) light to pass _______ wax paper, which is classified as translucent, allows only some light to pass through.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "semicolon_use",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "materials",
+      "answer_mechanism_key": "punctuation_application",
+      "solver_pattern_key": "identify_independent_clauses_then_apply_punctuation_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This question tests the correct use of a semicolon to separate two independent clauses. The stem explicitly asks for conformity to Standard English conventions, placing it in the SEC domain. The correct answer requires identifying clause boundaries and applying the appropriate punctuation rule. The distractors include common errors such as comma splices and redundant conjunctions, making this a medium-difficulty item due to plausible traps."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "semicolon_use",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "A semicolon correctly separates two independent clauses in a compound sentence.",
+      "full": "The sentence contains two independent clauses: 'Clear glass, which is classified as transparent, allows all (or almost all) light to pass' and 'wax paper, which is classified as translucent, allows only some light to pass through.' These clauses are grammatically complete and must be joined by a semicolon or a coordinating conjunction with a comma. Option C, 'through;', provides the correct punctuation to join them without introducing a conjunction. Option A incorrectly uses a comma splice. Option B omits necessary punctuation. Option D adds an unnecessary conjunction ('and') that creates redundancy and disrupts the parallel structure."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "through,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a comma. A semicolon or a coordinating conjunction with a comma is required.",
+        "why_plausible": "Students often incorrectly use commas to join independent clauses, especially when the clauses are long or contain internal punctuation like appositives."
+      },
+      {
+        "label": "B",
+        "text": "through",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "missing_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to provide any punctuation between two independent clauses, creating a run-on sentence.",
+        "why_plausible": "Students may omit punctuation if they perceive the clauses as closely related or if they are rushing."
+      },
+      {
+        "label": "C",
+        "text": "through;",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly applies the semicolon rule for joining independent clauses."
+      },
+      {
+        "label": "D",
+        "text": "through and",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "redundant_conjunction",
+        "student_failure_mode": null,
+        "why_wrong": "Adds an unnecessary coordinating conjunction 'and' after the semicolon, which is redundant and disrupts the clean separation of independent clauses.",
+        "why_plausible": "Students may add 'and' to avoid a perceived error, not realizing that a semicolon alone is sufficient and adding 'and' creates redundancy."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "915ea71f-8cac-577d-993c-67f4e6b2c3a8",
+    "source_exam_code": "7",
+    "source_module_code": "02",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "As the fourteenth US librarian of Congress, Carla Hayden has many responsibilities. These include overseeing the Library of Congress\u2019s collections, which boast more than 162 million _______ the US Copyright Office, which registers copyright claims and advises Congress on copyright law; and appointing the US poet laureate.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "semicolon_use",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "punctuation",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a punctuation question testing the correct use of a semicolon to join two independent clauses within a compound sentence. The correct answer requires recognizing that 'managing the US Copyright Office...' is an independent clause and must be separated from the preceding clause with a semicolon, not a comma or period."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "semicolon_use",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option uses a semicolon to separate two independent clauses in a compound sentence, maintaining grammatical correctness.",
+      "full": "The sentence lists three responsibilities: (1) overseeing collections, (2) managing the Copyright Office, and (3) appointing the poet laureate. The phrase 'managing the US Copyright Office' is an independent clause because it contains a subject ('managing' as gerund subject implied by context) and predicate. A semicolon is required to join two independent clauses without a coordinating conjunction. Option C correctly uses a semicolon. Option A lacks punctuation, creating a run-on. Option B uses a comma splice. Option D incorrectly uses a period, breaking the list structure."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "items managing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by joining two independent clauses without proper punctuation.",
+        "why_plausible": "The phrase flows smoothly without punctuation, making it seem acceptable on first read."
+      },
+      {
+        "label": "B",
+        "text": "items, managing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Uses a comma to join two independent clauses, creating a comma splice.",
+        "why_plausible": "Commas are commonly used to separate items in a list, leading students to assume it's appropriate here."
+      },
+      {
+        "label": "C",
+        "text": "items; managing",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses a semicolon to separate two independent clauses, maintaining grammatical integrity."
+      },
+      {
+        "label": "D",
+        "text": "items. Managing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Breaks the list structure by ending the sentence prematurely, leaving 'Managing...' as a fragment.",
+        "why_plausible": "Periods are used to end sentences, so students may think this correctly separates ideas."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "681bbe8b-edac-540f-b342-2c2f59cb5510",
+    "source_exam_code": "8",
+    "source_module_code": "02",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Nigerian author Buchi Emecheta\u2019s celebrated literary oeuvre includes The Joys of Motherhood, a novel about the changing roles of women in 1950s ______ a television play about the private struggles of a newlywed couple in Nigeria; and Head Above Water, her autobiography.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "semicolon_use",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "comma_splice",
+      "topic_broad": "literature",
+      "topic_fine": "nigerian_author",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a punctuation question testing the correct use of a semicolon to separate two independent clauses. The correct answer eliminates the comma splice error present in option A and avoids the inappropriate colon in option C. Option D fails to include the required comma after the title, making it grammatically incomplete. The syntactic trap is the comma splice, which is a common student error."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "semicolon_use",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct punctuation is a semicolon because it separates two independent clauses within a compound sentence. The comma in option A is incorrect because it creates a comma splice. The colon in option C is incorrect because it does not introduce a list or explanation. The missing comma after 'Marriage' in option D makes the sentence grammatically incomplete.",
+      "full": "The sentence lists three works by Buchi Emecheta: (1) The Joys of Motherhood, (2) a television play titled Lagos; A Kind of Marriage, and (3) Head Above Water. The blank appears between the description of the first work and the second. The phrase following the blank \u2014 'a television play about the private struggles of a newlywed couple in Nigeria' \u2014 is an appositive describing the title 'Lagos; A Kind of Marriage'. However, the structure requires a semicolon to separate the two independent clauses: 'The Joys of Motherhood, a novel about...' and 'a television play about...'. Option B correctly uses a semicolon to join these two independent clauses. Option A incorrectly uses a comma, creating a comma splice. Option C incorrectly uses a colon, which would only be appropriate if introducing a list or explanation. Option D omits the necessary comma after 'Marriage', leaving the sentence structurally incomplete and grammatically incorrect."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Lagos, A Kind of Marriage,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a comma, violating Standard English conventions.",
+        "why_plausible": "The comma is commonly used to separate items in a list, and students may mistakenly apply it here as if listing titles."
+      },
+      {
+        "label": "B",
+        "text": "Lagos; A Kind of Marriage,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses a semicolon to separate two independent clauses, conforming to Standard English conventions."
+      },
+      {
+        "label": "C",
+        "text": "Lagos, A Kind of Marriage:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "colon_dash_use",
+        "student_failure_mode": null,
+        "why_wrong": "A colon is inappropriate here because it does not introduce a list, explanation, or quotation. It incorrectly signals a relationship that doesn't exist.",
+        "why_plausible": "Students may think a colon is needed to introduce the next item in the list, especially since it follows a title."
+      },
+      {
+        "label": "D",
+        "text": "Lagos; A Kind of Marriage",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Omits the required comma after 'Marriage', which is necessary to separate the appositive from the rest of the sentence, making it grammatically incomplete.",
+        "why_plausible": "Students may believe that no comma is needed after the title, especially if they misread the sentence structure."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "3079b171-c743-5f40-a6ba-db81646d3f96",
+    "source_exam_code": "8",
+    "source_module_code": "02",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Jetties\u2014long, narrow structures that extend from a landmass into the water\u2014are often constructed to protect coastlines from erosion. Jetties can sometimes have the opposite _______ obstructing the natural flow of sand along the shore can lead to increased erosion in some areas.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "semicolon_use",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "coastal engineering",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests the correct use of a semicolon before a conjunctive adverb ('though') connecting two independent clauses. Although 'though' is used here as a conjunctive adverb, the second clause is actually dependent (starting with a gerund), so no comma follows 'though.' This is a punctuation convention question requiring knowledge of semicolon mechanics and conjunctive adverb usage."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "semicolon_use",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct punctuation is a semicolon because it separates two independent clauses. The word 'though' introduces a contrast and should follow the semicolon without additional punctuation.",
+      "full": "The sentence contains two independent clauses: 'Jetties can sometimes have the opposite effect' and 'obstructing the natural flow of sand along the shore can lead to increased erosion in some areas.' These clauses are joined by the transitional word 'though,' which signals contrast. In Standard English, when two independent clauses are joined by a conjunctive adverb like 'though,' a semicolon must precede the adverb and a comma must follow it \u2014 unless the clause following the adverb is very short or the rhythm permits omission. However, in this case, the second clause is not short, and omitting the comma after 'though' would create a run-on. But option C ('effect; though') correctly uses the semicolon to separate the clauses and omits the comma after 'though' because the clause following it is not an independent clause \u2014 it begins with a gerund phrase ('obstructing...'), making it dependent. Therefore, no comma is needed after 'though.' Option A incorrectly adds a semicolon after 'though,' creating a fragment. Option B lacks the necessary semicolon before 'though.' Option D adds an unnecessary comma after 'though,' which breaks the grammatical structure. Thus, C is correct."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "effect, though;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Adds an unnecessary semicolon after 'though,' which breaks the sentence structure. The clause after 'though' is not independent, so no semicolon is needed there.",
+        "why_plausible": "Uses familiar punctuation marks (comma and semicolon) and includes the transition word 'though,' which students may associate with comma usage."
+      },
+      {
+        "label": "B",
+        "text": "effect, though",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a comma. A semicolon is required before 'though' to properly separate the clauses.",
+        "why_plausible": "Appears fluent on first read; many students mistakenly believe commas alone can join independent clauses."
+      },
+      {
+        "label": "C",
+        "text": "effect; though",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses a semicolon to separate the independent clause from the dependent clause introduced by 'though.'"
+      },
+      {
+        "label": "D",
+        "text": "effect, though,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Adds an unnecessary comma after 'though,' which disrupts the grammatical structure. No comma is needed after 'though' because the following clause is dependent.",
+        "why_plausible": "Includes both a comma before and after 'though,' mimicking common comma usage patterns around transitions."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

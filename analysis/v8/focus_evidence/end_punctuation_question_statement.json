@@ -1,0 +1,459 @@
+[
+  {
+    "question_id": "e6729be4-0d95-56df-b190-90ae48000f16",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 27,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In 1943, in the midst of World War II, mathematics professor Grace Hopper was recruited by the US military to help the war effort by solving complex equations. Hopper\u2019s subsequent career would involve more than just _______ as a pioneering computer programmer, Hopper would help usher in the digital age.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "end_punctuation_question_statement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "women in STEM",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a punctuation question testing correct sentence boundary separation between two independent clauses joined by a transitional adverb. The correct answer requires a period after the first clause and a comma after 'Though', which aligns with Standard English conventions for such constructions. The distractors all violate these rules by using incorrect punctuation marks or omitting necessary punctuation."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "end_punctuation_question_statement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option uses a period to end the first independent clause and a comma after 'Though' to introduce the contrasting dependent clause, conforming to standard punctuation rules for compound sentences with transitional adverbs.",
+      "full": "The sentence contains two independent clauses separated by a transitional adverb ('Though'). According to Standard English conventions, an independent clause must be followed by a period, semicolon, or coordinating conjunction. Since 'Though' is a subordinating conjunction introducing a dependent clause, the first clause must end with a period. The word 'Though' at the beginning of the second clause requires a comma after it when used as a transitional adverb. Option C correctly punctuates the sentence: 'equations. Though,' \u2014 ending the first clause with a period and using a comma after 'Though'. Options A and B incorrectly use commas or colons to separate independent clauses, creating run-ons or comma splices. Option D omits necessary punctuation entirely, resulting in a fused sentence."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "equations, though:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a comma; the colon is also misused as it does not introduce a list, explanation, or quotation.",
+        "why_plausible": "Uses familiar punctuation (comma and colon) that appear elsewhere in the passage, creating surface familiarity."
+      },
+      {
+        "label": "B",
+        "text": "equations, though,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by failing to separate the two independent clauses properly; the comma after 'though' is correct, but the comma before it is not sufficient to separate the clauses.",
+        "why_plausible": "Includes both comma and 'though', which are present in the correct structure, but places them incorrectly."
+      },
+      {
+        "label": "C",
+        "text": "equations. Though,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly separates the two independent clauses with a period and properly punctuates the transitional adverb 'Though' with a comma."
+      },
+      {
+        "label": "D",
+        "text": "equations though",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by joining two independent clauses without any punctuation or conjunction.",
+        "why_plausible": "Omits punctuation entirely, which may seem acceptable to students who overlook sentence boundaries."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "7d55cbbd-473b-5c5c-b4f6-076d26eebc61",
+    "source_exam_code": "11",
+    "source_module_code": "01",
+    "source_question_number": 19,
+    "question_text": "When using a search engine, many people click just the first one or two results. Click restraint is the practice of scanning a search results page and evaluating what you see before deciding which link b l a n k Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "end_punctuation_question_statement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "declarative_question_confusion",
+      "topic_broad": "digital literacy",
+      "topic_fine": "search behavior",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing end punctuation for indirect questions. The correct answer requires recognizing that the clause 'which link you should choose' is embedded within a declarative sentence and thus must end with a period, not a question mark. The syntactic trap involves students misreading the embedded clause as a direct question and applying incorrect punctuation or word order."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "end_punctuation_question_statement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence is declarative and does not contain a direct question, so it must end with a period. Option D correctly uses 'you should choose.' without inverting subject-verb order.",
+      "full": "The sentence fragment 'Click restraint is the practice of scanning a search results page and evaluating what you see before deciding which link ______' is part of a larger declarative sentence. The blank is embedded within an indirect question ('which link you should choose'), not a direct one. In Standard English, indirect questions do not require subject-verb inversion or a question mark. Option D, 'you should choose.', correctly maintains declarative word order and ends with a period. Option B incorrectly adds a question mark, while options A and C incorrectly invert the subject and verb ('should you choose') as if forming a direct question."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "should you choose.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly inverts subject-verb order for an indirect question. The sentence is declarative and should maintain normal word order ('you should').",
+        "why_plausible": "Students may confuse this with a direct question structure and apply subject-verb inversion ('should you') even though the sentence is declarative."
+      },
+      {
+        "label": "B",
+        "text": "you should choose?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "declarative_question_confusion",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly uses a question mark for an indirect question embedded in a declarative sentence. The entire sentence is not interrogative.",
+        "why_plausible": "Appears grammatically correct at first glance; students may overlook that the sentence contains an indirect question and mistakenly add a question mark."
+      },
+      {
+        "label": "C",
+        "text": "should you choose?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "declarative_question_confusion",
+        "student_failure_mode": null,
+        "why_wrong": "Double error: incorrectly inverts subject-verb order AND adds a question mark to an indirect question within a declarative sentence.",
+        "why_plausible": "Combines two common errors: subject-verb inversion and incorrect end punctuation, making it appear like a complete direct question."
+      },
+      {
+        "label": "D",
+        "text": "you should choose.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly maintains declarative word order and ends with appropriate punctuation for an indirect question."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "ae0e39ae-bb40-5687-ba07-e1bc4c6d2787",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 19,
+    "question_text": "Ganga is a folk singing tradition that originated in the Dinaric Alps in southern Europe. Ganga singers sing different melodies at the same time. The clashing notes can echo a long way across the mountains, which is why b l a n k Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "end_punctuation_question_statement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "declarative_question_confusion",
+      "topic_broad": "culture",
+      "topic_fine": "music traditions",
+      "answer_mechanism_key": "punctuation_and_structure",
+      "solver_pattern_key": "identify_sentence_type_then_apply_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a Standard English Conventions question testing end punctuation based on sentence type. The sentence is declarative despite the phrase 'which is why,' so it must end with a period. The correct answer also maintains subject-verb agreement. The distractors test common student errors: using a question mark with an indirect question (A), inverted word order for declarative sentences (C, D), and combining both errors (D)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "end_punctuation_question_statement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence is declarative and requires a period, not a question mark. Option B correctly uses a period and maintains subject-verb agreement.",
+      "full": "The sentence fragment 'which is why' introduces a dependent clause that must be completed with a main clause ending in a period because the entire sentence is declarative. Although the phrase 'which is why' may suggest a question, the structure is explanatory, not interrogative. Option A incorrectly ends with a question mark. Options C and D use inverted word order ('has ganga') which is incorrect for a declarative sentence and also introduce unnecessary auxiliary verb inversion. Only option B provides correct subject-verb agreement ('ganga has') and proper end punctuation (period)."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "ganga has been used as a communication method?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_end_punctuation",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "The sentence is declarative, not interrogative; it should end with a period, not a question mark.",
+        "why_plausible": "The phrase 'which is why' may mislead students into thinking the sentence is interrogative."
+      },
+      {
+        "label": "B",
+        "text": "ganga has been used as a communication method.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correct subject-verb agreement and proper end punctuation for a declarative sentence."
+      },
+      {
+        "label": "C",
+        "text": "has ganga been used as a communication method.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "inverted_word_order",
+        "student_failure_mode": "nonfinite_for_finite",
+        "why_wrong": "Inverted word order ('has ganga') is incorrect for a declarative sentence; subject should precede verb.",
+        "why_plausible": "Students may confuse this with question structure due to the phrase 'which is why'."
+      },
+      {
+        "label": "D",
+        "text": "has ganga been used as a communication method?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "inverted_word_order_and_incorrect_punctuation",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "Incorrectly uses question structure (inverted word order) and question mark in a declarative sentence.",
+        "why_plausible": "Combines two common errors: inverted word order and incorrect end punctuation."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "88065810-8f0a-5beb-9a37-dbcf8245c12f",
+    "source_exam_code": "6",
+    "source_module_code": "01",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Researchers Amit Kumar and Nicholas Epley investigated how _______ In a series of experiments conducted in 2022, they found that people performing small acts of kindness underestimated the positive effect their actions had on others.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "end_punctuation_question_statement",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": null,
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": null,
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing end punctuation and sentence structure. The stem explicitly asks for conformity to Standard English, and the correct answer requires recognizing that an embedded clause following 'investigated how' must be declarative, not interrogative. The grammar focus is on end punctuation and sentence boundary rules."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "end_punctuation_question_statement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence is declarative, not interrogative, so it must end with a period. Option D correctly uses a declarative structure without inversion or question mark.",
+      "full": "The sentence begins with 'Researchers... investigated how...' which introduces a subordinate clause that functions as the object of the verb 'investigated.' This requires a declarative structure: subject + verb, not inverted word order. Options A and B incorrectly use subject-auxiliary inversion (do people), which is reserved for direct questions. Option C omits the auxiliary verb but still ends with a question mark, making it grammatically incorrect for a declarative clause. Only Option D provides the correct declarative form ('people perceive...') with appropriate end punctuation (period)."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "do people perceive acts of kindness.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_sentence_structure",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "Incorrectly uses subject-auxiliary inversion ('do people') in a declarative subordinate clause; should be 'people perceive'.",
+        "why_plausible": "Students may confuse the embedded clause with a direct question and apply subject-auxiliary inversion."
+      },
+      {
+        "label": "B",
+        "text": "do people perceive acts of kindness?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_sentence_structure",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "Uses both subject-auxiliary inversion and a question mark in a declarative context; violates both sentence structure and end punctuation rules.",
+        "why_plausible": "Appears like a direct question due to inversion and question mark, which students may misapply to indirect clauses."
+      },
+      {
+        "label": "C",
+        "text": "people perceive acts of kindness?",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_end_punctuation",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "Correct subject-verb structure but incorrectly ends with a question mark in a declarative clause.",
+        "why_plausible": "Has correct subject-verb order ('people perceive'), which may seem right to students who overlook punctuation."
+      },
+      {
+        "label": "D",
+        "text": "people perceive acts of kindness.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically correct declarative structure with appropriate end punctuation."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "9c7ffc9d-e8aa-5d6b-8768-1215aca53277",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In 1943, in the midst of World War II, mathematics professor Grace Hopper was recruited by the US military to help the war effort by solving complex equations. Hopper\u2019s subsequent career would involve more than just _______ as a pioneering computer programmer, Hopper would help usher in the digital age.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "end_punctuation_question_statement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "garden_path",
+      "topic_broad": "history",
+      "topic_fine": "women_in_science",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests punctuation mechanics at the boundary between two independent clauses joined by a contrastive conjunctive adverb. The primary rule tested is correct end punctuation (period) for the first clause, followed by comma usage after the conjunctive adverb 'though'. Although 'though' can function as a subordinating conjunction, here it introduces a contrasting independent clause, requiring a period before and a comma after. This fits the `end_punctuation_question_statement` focus key because the punctuation decision hinges on whether the clause is declarative (requiring a period) rather than interrogative (which would require a question mark)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "end_punctuation_question_statement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option uses a period to end the first independent clause and a comma after 'Though' to introduce the contrasting dependent clause, conforming to standard punctuation rules for compound sentences with contrastive conjunctions.",
+      "full": "The sentence contains two independent clauses joined by the contrastive conjunction 'though'. The first clause \u2014 'Hopper\u2019s subsequent career would involve more than just equations' \u2014 is complete and must be ended with a period. The second clause \u2014 'Though, as a pioneering computer programmer, Hopper would help usher in the digital age' \u2014 begins with a conjunctive adverb ('though') and requires a comma after it to separate it from the main clause. Option C correctly uses a period followed by 'Though,' which properly punctuates the sentence according to Standard English conventions. Options A and B incorrectly use a comma splice or misplace the comma after 'though', while Option D omits necessary punctuation entirely."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "equations, though:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_combination",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a comma; also misuses a colon after 'though', which does not introduce a list or explanation.",
+        "why_plausible": "Uses a comma splice, which is common in informal writing and may appear fluent on first reading."
+      },
+      {
+        "label": "B",
+        "text": "equations, though,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_combination",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to end the first independent clause with a period; the comma after 'though' is misplaced because it follows an incomplete clause.",
+        "why_plausible": "Includes a comma after 'though', which is correct in some contexts, but fails to end the first clause properly."
+      },
+      {
+        "label": "C",
+        "text": "equations. Though,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly ends the first clause with a period and introduces the contrasting clause with a comma after 'Though'."
+      },
+      {
+        "label": "D",
+        "text": "equations though",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "missing_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Omits all necessary punctuation between two independent clauses, creating a run-on sentence.",
+        "why_plausible": "Appears fluent at first glance; students may overlook the need for punctuation between independent clauses."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

@@ -1,0 +1,93 @@
+[
+  {
+    "question_id": "2ce2d661-55d2-485a-b03b-7349bd63093a",
+    "source_exam_code": "4",
+    "source_module_code": "02",
+    "source_question_number": 21,
+    "question_text": "Both Sona Charaipotra, an Indian American, and Dhonielle Clayton, an African American, grew up frustrated by the lack of diverse characters in books for young people. In 2011, these two writers joined forces to found CAKE Literary, a book packaging _______ specializes in the creation and promotion of stories told from diverse perspectives for children and young adults. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "relative_pronouns",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nonrestrictive_appositive_comma_insertion",
+      "topic_broad": "literature",
+      "topic_fine": "diverse representation",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests the correct use of a relative pronoun to introduce a restrictive clause modifying a noun. The blank requires 'that' to connect the noun 'company' with its defining clause. This falls under the modifier category because the clause modifies the noun, and specifically under relative pronouns as the mechanism for introducing the clause. No punctuation is needed because the clause is restrictive."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "relative_pronouns",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct choice provides a relative clause introduced by 'that' to modify 'company' without unnecessary punctuation.",
+      "full": "The phrase 'a book packaging company' is the noun being modified by the relative clause 'specializes in the creation and promotion...'. The relative pronoun 'that' is required to introduce this restrictive clause. No comma should precede 'that' because the clause is essential to the meaning \u2014 it defines which company is being discussed. Option A incorrectly adds a comma before 'company', creating a nonrestrictive appositive where none is intended. Option C omits the necessary relative pronoun, leaving the sentence grammatically incomplete. Option D incorrectly inserts a comma before 'that', which would make the clause nonrestrictive \u2014 but since the clause is restrictive (essential to identifying the company), no comma is allowed."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "company,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": "restrictive_appositive_comma_insertion",
+        "why_wrong": "Inserts a comma before 'company', incorrectly treating the following clause as nonrestrictive. The clause is essential to define which company is meant.",
+        "why_plausible": "Students often insert commas around clauses they perceive as parenthetical, even when the clause is restrictive."
+      },
+      {
+        "label": "B",
+        "text": "company that",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly introduces the restrictive relative clause with 'that' and omits unnecessary punctuation."
+      },
+      {
+        "label": "C",
+        "text": "company",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "missing_relative_pronoun",
+        "student_failure_mode": "nonfinite_for_finite",
+        "why_wrong": "Omits the required relative pronoun 'that', leaving the sentence grammatically incomplete \u2014 'company specializes' lacks a subject-verb connector.",
+        "why_plausible": "May seem acceptable if the student overlooks the need for a connector between the noun and the verb 'specializes'."
+      },
+      {
+        "label": "D",
+        "text": "company, that",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": "restrictive_appositive_comma_insertion",
+        "why_wrong": "Adds an unnecessary comma before 'that', which would make the clause nonrestrictive \u2014 but since the clause defines the specific company, no comma is allowed.",
+        "why_plausible": "Students may incorrectly assume that a comma is needed before 'that' to separate the noun from the clause, especially if they confuse restrictive and nonrestrictive clauses."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

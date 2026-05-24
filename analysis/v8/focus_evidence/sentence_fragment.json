@@ -1,0 +1,275 @@
+[
+  {
+    "question_id": "52742deb-b6f3-510a-b556-a8537a010641",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 28,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In 1453, English King Henry VI became unfit to rule after falling gravely ill. As a result, Parliament appointed Richard, Third Duke of York, who had a strong claim to the English throne, to rule as Lord Protector. Upon recovering two years later, _______ forcing an angered Richard from the royal court and precipitating a series of battles later known as the Wars of the Roses.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_fragment",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "medieval england",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing sentence boundary knowledge. The blank must be filled with a complete clause that can stand alone or connect properly to the following participial phrase. Option A is the only one that provides a complete subject-verb structure. Options B and C are noun phrases lacking finite verbs, creating fragments. Option D, while grammatically valid, introduces unnecessary complexity and shifts focus away from the historical narrative. The question tests the student's ability to recognize complete sentences versus fragments in context."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_fragment",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option A correctly forms a complete sentence with a subject ('Henry') and verb ('resumed') that logically connects to the participial phrase 'forcing...'. The other options create grammatical errors or awkward constructions.",
+      "full": "The correct answer is A: 'Henry resumed his reign,' because it provides a grammatically complete independent clause with a clear subject-verb-object structure that logically connects to the participial phrase 'forcing an angered Richard from the royal court...' Options B and C create noun phrases without finite verbs, making them sentence fragments. Option D is grammatically correct but unnecessarily wordy and changes the focus of the sentence by introducing 'it was...who' construction, which is not required for clarity or correctness in this context. The passage requires a direct, concise statement that maintains narrative flow and grammatical integrity."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Henry resumed his reign,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically complete with subject and verb, directly continues the narrative."
+      },
+      {
+        "label": "B",
+        "text": "the reign of Henry resumed,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a noun phrase without a finite verb, resulting in a sentence fragment. Cannot stand alone or properly connect to the participial phrase.",
+        "why_plausible": "Uses vocabulary from the passage and refers to the same event (reign resuming)."
+      },
+      {
+        "label": "C",
+        "text": "Henry\u2019s reign resumed,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a noun phrase without a finite verb, resulting in a sentence fragment. Lacks a clear subject performing the action.",
+        "why_plausible": "Uses possessive form consistent with historical context and refers to the same event."
+      },
+      {
+        "label": "D",
+        "text": "it was Henry who resumed his reign,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "redundancy_concision",
+        "student_failure_mode": null,
+        "why_wrong": "Unnecessarily wordy and changes the focus of the sentence by using cleft construction ('it was...who'), which is not required for clarity or correctness in this context. Violates concision principle.",
+        "why_plausible": "Grammatically correct and conveys the same basic meaning as option A."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "f8e18d37-e549-5118-8e87-d19f2db77af8",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Despite being cheap, versatile, and easy to produce, _______ they are made from nonrenewable petroleum, and most do not biodegrade in landfills.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_fragment",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "environmental science",
+      "answer_mechanism_key": "grammar_rule_application",
+      "solver_pattern_key": "identify_sentence_boundary_error",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This question tests sentence boundary conventions. The correct answer must form a complete independent clause before the colon to introduce the list of problems. Options A, B, and C fail to create a grammatically complete introductory clause, making them incorrect under Standard English conventions."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_fragment",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option D correctly introduces the two problems with a grammatically complete clause and appropriate punctuation. The other options create sentence fragments or awkward constructions.",
+      "full": "The correct answer is D: 'commercial plastics have two associated problems:' because it forms a complete independent clause that properly introduces the list of problems following the colon. Option A creates a comma splice by joining two independent clauses with only a comma. Option B is grammatically acceptable but lacks a subject-verb agreement structure that clearly assigns ownership of the problems to commercial plastics. Option C is awkwardly constructed and places emphasis on the wrong element, making the sentence unclear. Only option D provides a clear, grammatically correct, and stylistically appropriate introduction to the listed problems."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "there are two problems associated with commercial plastics:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a comma; lacks proper subject-verb connection to 'commercial plastics'.",
+        "why_plausible": "Uses familiar phrasing 'there are' which is common in academic writing."
+      },
+      {
+        "label": "B",
+        "text": "two problems are associated with commercial plastics:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Lacks clear subject-verb agreement structure assigning ownership of problems to commercial plastics; creates an awkward construction when combined with the rest of the sentence.",
+        "why_plausible": "Grammatically acceptable structure that could work in isolation."
+      },
+      {
+        "label": "C",
+        "text": "commercial plastics\u2019 two associated problems are that",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Creates an awkward, unnatural construction that doesn't properly introduce the list of problems; 'are that' is grammatically incorrect in this context.",
+        "why_plausible": "Attempts to assign problems directly to commercial plastics using possessive form."
+      },
+      {
+        "label": "D",
+        "text": "commercial plastics have two associated problems:",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Clear, direct statement that properly introduces the list of problems with correct grammar."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "bea44e83-337e-5cd2-a75a-22ac165855c7",
+    "source_exam_code": "4",
+    "source_module_code": "01",
+    "source_question_number": 24,
+    "question_text": "African American Percy Julian was a scientist and entrepreneur whose work helped people around the world to see. Named in 1999 as one of the greatest achievements by a US chemist in the past hundred years, _______ led to the first mass-produced treatment for glaucoma. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "sentence_fragment",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "chemistry",
+      "answer_mechanism_key": "evidence_location",
+      "solver_pattern_key": "locate_claim_then_match_evidence",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "The question tests the ability to identify a complete subject that properly connects to the verb 'led' without creating a fragment or run-on. The correct answer must be a noun phrase that can serve as the subject of the sentence. This falls under Standard English Conventions, specifically sentence boundary management."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "sentence_fragment",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option C provides a grammatically correct noun phrase that serves as the subject of the sentence, agreeing with the verb 'led' and maintaining proper sentence structure.",
+      "full": "The sentence requires a subject that can logically connect to the verb 'led' and refer back to the achievement mentioned in the previous clause. Option C, 'Julian\u2019s 1935 synthesis of the alkaloid physostigmine,' is a noun phrase that functions as the subject and correctly links to the predicate 'led to the first mass-produced treatment for glaucoma.' Options A and B create comma splices or run-on structures. Option D introduces passive voice and an illogical connection with 'and,' which fails to establish the necessary subject-verb relationship."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Julian synthesized the alkaloid physostigmine in 1935; it",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with a semicolon without proper conjunction or punctuation adjustment.",
+        "why_plausible": "Uses correct names and dates from the passage and appears to continue the narrative logically."
+      },
+      {
+        "label": "B",
+        "text": "in 1935 Julian synthesized the alkaloid physostigmine, which",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Results in a run-on sentence because the introductory phrase lacks a main verb that can stand alone as a subject for 'led.'",
+        "why_plausible": "Includes relevant details (date, compound name) and uses a relative pronoun that seems to connect ideas."
+      },
+      {
+        "label": "C",
+        "text": "Julian\u2019s 1935 synthesis of the alkaloid physostigmine",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Provides a clear, grammatically complete noun phrase that serves as the subject of the sentence and directly refers to the achievement mentioned earlier."
+      },
+      {
+        "label": "D",
+        "text": "the alkaloid physostigmine was synthesized by Julian in 1935 and",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by using 'and' to improperly link two independent clauses without appropriate punctuation or conjunction structure.",
+        "why_plausible": "Contains accurate factual information and uses active/passive voice appropriately."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

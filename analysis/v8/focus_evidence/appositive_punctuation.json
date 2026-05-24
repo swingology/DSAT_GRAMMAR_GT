@@ -1,0 +1,732 @@
+[
+  {
+    "question_id": "9d1564f1-80b6-59a6-b7c8-36608b1b4301",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 22,
+    "question_text": "In 1937, Chinese American screen actor Anna May Wong, who had portrayed numerous villains and secondary characters but never a heroine, finally got a starring role in Paramount Pictures\u2019 Daughter of Shanghai, a film that _______ \u201cexpanded the range of possibilities for Asian images on screen.\u201d Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "appositive_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "interruption_breaks_subject_verb",
+      "topic_broad": "language",
+      "topic_fine": "punctuation",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing punctuation of a restrictive appositive. The correct answer requires no commas because the appositive is essential to identifying the source of the quote. All wrong options insert commas that break the subject-verb unit or falsely imply the appositive is removable."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "appositive_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'critic Stina Chyn claims' is a nonrestrictive appositive that does not require commas because it is essential to identifying the source of the quote. Adding commas would incorrectly suggest it is parenthetical and removable.",
+      "full": "The correct answer is C: 'critic Stina Chyn claims'. This option correctly punctuates the sentence by omitting unnecessary commas around the appositive 'critic Stina Chyn'. The phrase identifies who is making the claim and is integral to the meaning \u2014 removing it would leave the sentence ambiguous about the source of the quotation. Therefore, no commas are needed. Option A incorrectly adds a comma after 'critic', which breaks the subject-verb connection. Option B adds both an opening and closing comma, turning the appositive into a restrictive clause that can be removed without changing meaning \u2014 which is false here. Option D adds a comma after 'Chyn', which interrupts the subject-verb unit ('Stina Chyn claims'). All three distractors violate the rule that restrictive appositives (those necessary for identification) should not be set off by commas."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "critic, Stina Chyn, claims",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Adds an unnecessary comma after 'critic', breaking the subject-verb unit 'Stina Chyn claims'. The appositive is restrictive and essential to identifying the critic.",
+        "why_plausible": "Students often over-punctuate appositives with commas, especially when names are involved, thinking they are always parenthetical."
+      },
+      {
+        "label": "B",
+        "text": "critic, Stina Chyn, claims,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts commas around the entire appositive, wrongly treating it as nonrestrictive. Also adds an extra comma after 'claims', which is incorrect end punctuation before the closing quotation mark.",
+        "why_plausible": "Appears to follow a common pattern of setting off names with commas, mimicking how titles are sometimes punctuated in formal writing."
+      },
+      {
+        "label": "C",
+        "text": "critic Stina Chyn claims",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly omits commas around the restrictive appositive, preserving the subject-verb unit and maintaining grammatical integrity."
+      },
+      {
+        "label": "D",
+        "text": "critic Stina Chyn, claims,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a comma between the subject 'Stina Chyn' and the verb 'claims', violating the rule against internal punctuation within a required syntactic unit (subject\u2013verb).",
+        "why_plausible": "May appear correct to students who think only the name needs to be set off, not realizing that inserting a comma between subject and verb is always incorrect."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "7ffb48b1-1198-57af-bec0-7db37329ea47",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 27,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Stomata, tiny pore structures in a leaf that absorb gases needed for plant growth, open when guard cells surrounding each pore swell with water. In a pivotal 2007 article, plant cell _______ showed that lipid molecules called phosphatidylinositol phosphates are responsible for signaling guard cells to open stomata.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "appositive_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests correct punctuation of a restrictive appositive. The name 'Yuree Lee' is essential to identify the specific biologist, so no commas are allowed. All distractors incorrectly insert commas, making them nonrestrictive. This is a low-difficulty item because the rule is straightforward and the context clearly indicates the appositive is restrictive."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "appositive_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'plant cell biologist Yuree Lee' is a compound noun phrase where 'Yuree Lee' is an appositive identifying the biologist; no commas are required because the appositive is restrictive and essential to the meaning.",
+      "full": "In this sentence, 'plant cell biologist Yuree Lee' functions as a single noun phrase. The name 'Yuree Lee' is not parenthetical or nonrestrictive \u2014 it is essential to identify which plant cell biologist is being referenced. Therefore, no commas should surround the name. Option C correctly omits both commas. Option A incorrectly adds a comma before the name, suggesting a pause or apposition that isn't grammatically warranted. Option B incorrectly adds a comma after the name, which would be appropriate only if the phrase were nonrestrictive (e.g., 'the biologist, Yuree Lee,'). Option D adds both commas, turning the appositive into a nonrestrictive element, which changes the meaning and violates standard punctuation rules for restrictive appositives."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "biologist, Yuree Lee",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts an unnecessary comma before the name, incorrectly treating the appositive as nonrestrictive.",
+        "why_plausible": "Students often over-punctuate names following titles, inserting a comma even when the appositive is restrictive."
+      },
+      {
+        "label": "B",
+        "text": "biologist Yuree Lee,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Adds an unnecessary comma after the name, which would only be correct if the appositive were nonrestrictive and followed by additional information.",
+        "why_plausible": "Students may mistakenly add a trailing comma, thinking it's required after a name in a title phrase."
+      },
+      {
+        "label": "C",
+        "text": "biologist Yuree Lee",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly punctuates the restrictive appositive without any commas, conforming to Standard English conventions."
+      },
+      {
+        "label": "D",
+        "text": "biologist, Yuree Lee,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Adds both commas, incorrectly treating the appositive as nonrestrictive, which alters the meaning and violates punctuation rules.",
+        "why_plausible": "Students may think both commas are needed to set off the name, failing to recognize that the appositive is restrictive."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "95432726-4a1f-570a-8f04-cd773081ee89",
+    "source_exam_code": "4",
+    "source_module_code": "01",
+    "source_question_number": 25,
+    "question_text": "The Arctic-Alpine Botanic Garden in Norway and the Jardim Bot\u00e2nico of Rio de Janeiro in Brazil are two of many botanical gardens around the world dedicated to growing diverse plant _______ fostering scientific research; and educating the public about plant conservation. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "appositive_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "botany",
+      "answer_mechanism_key": "punctuation_rule_application",
+      "solver_pattern_key": "identify_appositive_then_apply_comma_rules",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a grammar question testing proper punctuation of a nonrestrictive appositive within a compound predicate. The correct answer requires recognizing both the appositive structure and the need for commas to set it off, while also understanding that semicolons separate the main items in the compound predicate. All distractors test common punctuation errors around appositives and list separators."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "appositive_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'both native and nonnative' is a nonrestrictive appositive that requires commas to set it off. The sentence contains a compound predicate with items separated by semicolons, so the comma after 'nonnative' correctly separates the appositive from the next item in the list.",
+      "full": "The correct answer is A because it properly punctuates the nonrestrictive appositive 'both native and nonnative' with commas on both sides. The sentence structure includes a compound predicate: (1) growing diverse plant species, (2) fostering scientific research, and (3) educating the public. These three items are joined by semicolons because they contain internal commas. The phrase 'both native and nonnative' modifies 'species' and is nonrestrictive \u2014 meaning it adds extra information but is not essential to the meaning of the sentence. Nonrestrictive elements must be set off by commas. Option B incorrectly uses a semicolon after 'nonnative,' which would improperly separate the appositive from the rest of the sentence. Option C misplaces the semicolon before the appositive and omits the necessary comma after it. Option D omits both commas, leaving the appositive unmarked and violating standard punctuation rules."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "species, both native and nonnative,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": ""
+      },
+      {
+        "label": "B",
+        "text": "species, both native and nonnative;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly places a semicolon after the appositive, which breaks the grammatical unit and fails to properly set off the nonrestrictive element with a closing comma.",
+        "why_plausible": "Uses a semicolon, which appears elsewhere in the sentence, creating false familiarity."
+      },
+      {
+        "label": "C",
+        "text": "species; both native and nonnative,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Places an unnecessary semicolon before the appositive, which disrupts the subject-verb-object unit, and omits the required comma after 'nonnative' to close the appositive.",
+        "why_plausible": "Uses a semicolon at the beginning, matching the compound predicate structure, but misapplies it to the appositive."
+      },
+      {
+        "label": "D",
+        "text": "species both native and nonnative,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "missing_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to set off the nonrestrictive appositive 'both native and nonnative' with commas, violating standard punctuation rules for nonessential modifiers.",
+        "why_plausible": "Omits commas around the appositive, which may seem acceptable if the student doesn't recognize it as nonrestrictive."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "9bf1a406-fe63-419b-a159-20790c2c2b88",
+    "source_exam_code": "4",
+    "source_module_code": "02",
+    "source_question_number": 22,
+    "question_text": "A study led by scientist Rebecca Kirby at the University of Wisconsin\u2013Madison found that black bears that eat human food before hibernation have increased levels of a rare carbon isotope, _______ due to the higher 13C levels in corn and cane sugar. Bears with these elevated levels were also found to have much shorter hibernation periods on average. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "appositive_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests correct punctuation of a restrictive appositive. The phrase 'carbon-13 (13C)' is essential to identifying the isotope and must not be set off by commas. This falls under Standard English Conventions, specifically punctuation mechanics for appositives."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "appositive_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'carbon-13 (13C)' is a parenthetical appositive that should not be set off by commas because it is restrictive and essential to the meaning. Option B correctly omits surrounding commas.",
+      "full": "The phrase 'carbon-13 (13C)' functions as an appositive that immediately follows and defines the term 'a rare carbon isotope.' In Standard English, when an appositive is restrictive \u2014 meaning it is necessary to identify or clarify the noun it modifies \u2014 no commas are used. Here, the parenthetical '(13C)' is not additional information but rather an integral part of identifying which isotope is meant. Therefore, no commas should surround the entire phrase. Option B, 'carbon-13 (13C)', correctly presents the appositive without unnecessary punctuation. Options A and C incorrectly insert commas before or after the phrase, while D adds a trailing comma that disrupts sentence flow and violates punctuation rules for restrictive appositives."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "carbon-13, (13C)",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Adds an unnecessary comma before the appositive, incorrectly treating it as nonrestrictive when it is essential to identifying the isotope.",
+        "why_plausible": "Students often mistakenly add commas around appositives, even when they are restrictive, because they resemble nonrestrictive elements."
+      },
+      {
+        "label": "B",
+        "text": "carbon-13 (13C)",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the rule for restrictive appositives: no commas are needed when the appositive is essential to the noun\u2019s identification."
+      },
+      {
+        "label": "C",
+        "text": "carbon-13, (13C),",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Adds both leading and trailing commas, incorrectly framing the appositive as nonrestrictive when it is essential to the meaning.",
+        "why_plausible": "Some students overapply comma rules and add them around any parenthetical element, regardless of whether it is restrictive or nonrestrictive."
+      },
+      {
+        "label": "D",
+        "text": "carbon-13 (13C),",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Adds an unnecessary trailing comma after the appositive, disrupting the syntactic unit and violating punctuation rules for restrictive appositives.",
+        "why_plausible": "Students may incorrectly assume that a comma is needed after the appositive to separate it from the following clause, especially if they misread the sentence structure."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "036927ad-91ad-55bc-82e5-ca27b7234941",
+    "source_exam_code": "5",
+    "source_module_code": "01",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Long attributed to Jacques-Louis David, the preeminent Neoclassical painter of his day, the 1801 painting Marie Jos\u00e9phine Charlotte du Val d\u2019Ognes gained fresh attention in the 1990s when art historians discovered that the painting\u2014which depicts a solitary young woman sketching\u2014was actually the work of little-known French portrait _______ Marie-Denise Villers (1774\u20131821).",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Punctuation",
+      "grammar_focus_key": "appositive_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "art history",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a punctuation question testing the correct use of dashes to set off an appositive. The presence of existing em-dashes in the sentence makes the dash the stylistically consistent and grammatically correct choice. Other options introduce punctuation errors or fail to properly separate the appositive."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "appositive_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The dash is required to set off the appositive phrase 'Marie-Denise Villers (1774\u20131821)' which provides additional identifying information about the 'portrait artist'.",
+      "full": "The correct punctuation is a dash because the phrase 'Marie-Denise Villers (1774\u20131821)' is an appositive that adds nonessential, explanatory information about the preceding noun 'portrait artist'. In Standard English, such appositives are typically set off with dashes or commas. However, since the sentence already contains em-dashes elsewhere (around 'which depicts a solitary young woman sketching'), using another em-dash maintains stylistic consistency and avoids comma overload. The comma (option D) would be acceptable in isolation but creates a run-on effect with the existing dashes. The colon (option C) is incorrect because no list, explanation, or quotation follows. The absence of punctuation (option B) fails to separate the appositive from the main clause, violating standard punctuation rules."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "artist\u2014",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Maintains stylistic consistency with existing em-dashes in the sentence."
+      },
+      {
+        "label": "B",
+        "text": "artist",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to separate the appositive 'Marie-Denise Villers (1774\u20131821)' from the main clause, creating a run-on structure.",
+        "why_plausible": "Appears simpler and less cluttered at first glance."
+      },
+      {
+        "label": "C",
+        "text": "artist:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_punctuation_type",
+        "student_failure_mode": null,
+        "why_wrong": "Colons introduce lists, explanations, or quotations \u2014 none of which follow here. The appositive is not a standalone element requiring a colon.",
+        "why_plausible": "Colon might seem appropriate for introducing additional information."
+      },
+      {
+        "label": "D",
+        "text": "artist,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_overuse",
+        "student_failure_mode": null,
+        "why_wrong": "While commas can set off appositives, their use here would create excessive punctuation with the existing em-dashes, leading to a confusing and stylistically inconsistent structure.",
+        "why_plausible": "Commas are commonly used to set off appositives, making this option seem reasonable."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "e1473f8b-34a4-5339-9985-88bcfaf40779",
+    "source_exam_code": "6",
+    "source_module_code": "01",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Jamaican British artist Willard Wigan is known for his remarkable _______ so small that they are best viewed through a microscope, Wigan\u2019s sculptures are made from tiny natural materials, such as spiderweb strands.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "appositive_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "sculpture",
+      "answer_mechanism_key": "punctuation_correction",
+      "solver_pattern_key": "identify_appositive_then_apply_comma_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a grammar question testing correct punctuation around an appositive phrase. The correct answer requires inserting a comma to separate the appositive 'creations' from the main clause, which is a core Standard English Conventions skill. The distractors test common student errors: omitting punctuation (A), using a period to create a fragment (C), and using a conjunction that doesn't resolve the comma splice (D)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "appositive_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option B correctly uses a comma to separate the appositive phrase 'creations' from the main clause, avoiding a run-on sentence and maintaining grammatical clarity.",
+      "full": "The sentence contains an appositive phrase \u2014 'creations' \u2014 that renames or clarifies 'microsculptures'. In Standard English, nonrestrictive appositives (which add extra information but are not essential to the meaning) must be set off by commas. Option B correctly inserts a comma after 'microsculptures' to introduce the appositive 'creations', which then flows into the rest of the sentence without creating a run-on. Option A lacks necessary punctuation, creating a fused sentence. Option C incorrectly uses a period, breaking the sentence into two fragments where one is incomplete. Option D uses 'and', which creates a compound noun phrase but fails to resolve the comma splice that follows; the comma after 'creations' remains ungrammatical. Only option B satisfies both the appositive punctuation rule and avoids sentence boundary errors."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "microsculptures creations",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": "internal_unit_punctuation_insertion",
+        "why_wrong": "Fails to punctuate the appositive phrase 'creations', creating a fused sentence. No comma separates the appositive from the main clause, violating Standard English conventions.",
+        "why_plausible": "The words 'microsculptures' and 'creations' are semantically related and appear together in the context of the artist's work, making this option feel fluent on first read."
+      },
+      {
+        "label": "B",
+        "text": "microsculptures, creations",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly punctuates the appositive phrase with a comma, allowing the sentence to flow grammatically and logically."
+      },
+      {
+        "label": "C",
+        "text": "microsculptures. Creations",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": "declarative_question_confusion",
+        "why_wrong": "Creates a sentence fragment. 'Creations so small that they are best viewed through a microscope' is not a complete sentence \u2014 it lacks a finite verb and cannot stand alone after a period.",
+        "why_plausible": "Uses a period to break the sentence, which might seem like a way to fix the comma splice \u2014 but creates a sentence fragment ('Creations so small...') that lacks a subject-verb pair."
+      },
+      {
+        "label": "D",
+        "text": "microsculptures and creations",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": "comma_fix_illusion",
+        "why_wrong": "Creates a comma splice. The comma after 'creations' still incorrectly joins two independent clauses without a coordinating conjunction or proper punctuation.",
+        "why_plausible": "Uses 'and' to connect the nouns, which seems logical for listing two things \u2014 but fails to resolve the comma splice that follows, leaving the sentence grammatically incorrect."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "8b6cf952-2f30-59e8-9a0b-19b9a60289d2",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Recently unearthed Neronian tools in France dating to 54,000 years ago and attributed to Homo sapiens may provide evidence that interactions between Neanderthals and modern humans occurred 10,000 years earlier than was previously _______ finding that, if true, would overturn current theories about H. sapiens migration during the Upper Paleolithic.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "appositive_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_grammatically_correct_form",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "punctuation",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing punctuation of nonrestrictive appositives. The correct answer requires inserting a comma to properly set off the appositive phrase. All distractors represent common student errors: using a semicolon (A), period (B), or no punctuation (C) where a comma is required."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "appositive_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option uses a comma to separate the main clause from the appositive phrase 'finding that...'.",
+      "full": "The sentence contains an appositive phrase ('finding that, if true, would overturn...') that renames or explains the noun phrase 'evidence'. In Standard English, nonrestrictive appositives must be set off by commas. Option D correctly inserts a comma after 'supposed' to introduce the appositive. Option A uses a semicolon, which incorrectly separates a dependent clause from its modifier. Option B uses a period, creating a sentence fragment. Option C omits punctuation entirely, resulting in a run-on structure."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "supposed; a",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_choice",
+        "student_failure_mode": null,
+        "why_wrong": "A semicolon cannot introduce an appositive phrase; it incorrectly separates the main clause from its modifying element.",
+        "why_plausible": "Students may confuse semicolons with commas when separating clauses or phrases."
+      },
+      {
+        "label": "B",
+        "text": "supposed. A",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Using a period creates a sentence fragment; 'A finding that...' cannot stand alone as a complete sentence.",
+        "why_plausible": "Students may think the sentence should end after 'supposed' because it seems complete."
+      },
+      {
+        "label": "C",
+        "text": "supposed a",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Omitting punctuation creates a run-on sentence; the appositive phrase must be set off by a comma.",
+        "why_plausible": "Students may omit punctuation if they don't recognize the need for separation between clauses."
+      },
+      {
+        "label": "D",
+        "text": "supposed, a",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses a comma to introduce the nonrestrictive appositive phrase."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "7fe5ca6d-85ba-5a89-a462-18cf5d62c6d2",
+    "source_exam_code": "9",
+    "source_module_code": "01",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English? Stomata, tiny pore structures in a leaf that absorb gases needed for plant growth, open when guard cells surrounding each pore swell with water. In a pivotal 2007 article, plant cell _______ showed that lipid molecules called phosphatidylinositol phosphates are responsible for signaling guard cells to open stomata.",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "appositive_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "botany",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a punctuation question testing the correct use of commas with restrictive appositives. The correct option avoids inserting unnecessary internal punctuation within the subject-verb unit. The distractors test common student errors involving comma overuse around names and titles."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "appositive_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'plant cell biologist Yuree Lee' is an appositive that renames the subject and does not require commas because it is restrictive \u2014 it specifies which biologist is being referred to. Commas would incorrectly suggest nonrestrictive information.",
+      "full": "The correct answer is C: 'biologist Yuree Lee'. The phrase functions as a restrictive appositive \u2014 it identifies the specific biologist (Yuree Lee) who conducted the research. In Standard English, restrictive appositives do not take commas. Options A and D incorrectly insert commas around the name, treating it as nonrestrictive. Option B incorrectly places a comma only after the name, breaking the syntactic unit. The correct construction maintains the subject-verb agreement without interrupting the required syntactic unit (subject + verb)."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "biologist, Yuree Lee",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": "restrictive_appositive_comma_insertion",
+        "why_wrong": "Inserts an unnecessary comma after 'biologist', breaking the restrictive appositive and creating a syntactic interruption between subject and verb.",
+        "why_plausible": "Students often incorrectly add commas around names, thinking they are always set off like nonrestrictive appositives."
+      },
+      {
+        "label": "B",
+        "text": "biologist Yuree Lee,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": "title_name_comma_insertion",
+        "why_wrong": "Adds an unnecessary comma after the name, incorrectly suggesting the appositive is nonrestrictive and interrupting the subject-verb unit.",
+        "why_plausible": "Students may think the comma after the name is needed to separate the subject from the verb, especially if they misread the sentence structure."
+      },
+      {
+        "label": "C",
+        "text": "biologist Yuree Lee",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly presents the restrictive appositive without commas, preserving the subject-verb unit and conforming to Standard English conventions."
+      },
+      {
+        "label": "D",
+        "text": "biologist, Yuree Lee,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": "restrictive_appositive_comma_insertion",
+        "why_wrong": "Inserts unnecessary commas before and after the name, incorrectly treating the restrictive appositive as nonrestrictive and breaking the syntactic unit.",
+        "why_plausible": "Students may overapply comma rules, thinking all names must be set off by commas regardless of whether the appositive is restrictive or nonrestrictive."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

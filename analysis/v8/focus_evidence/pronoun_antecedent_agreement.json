@@ -1,0 +1,648 @@
+[
+  {
+    "question_id": "c9c45c7a-23ef-5361-9631-f44fb5027abe",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Public-awareness campaigns about the need to reduce single-use plastics can be successful, says researcher Kim Borg of Monash University in Australia, when these campaigns give consumers a choice: for example, Japan achieved a 40 percent reduction in plastic-bag use after cashiers were instructed to ask customers whether _______ wanted a bag.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Agreement",
+      "grammar_focus_key": "pronoun_antecedent_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "pronoun agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests pronoun-antecedent agreement, a core grammar rule. The correct answer must match the plural antecedent 'customers'. All distractors are grammatically plausible but fail on agreement: 'one' is singular impersonal, 'you' shifts person, and 'it' is object/animal reference. This is a straightforward application of agreement rules with no syntactic complexity."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "pronoun_antecedent_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The pronoun 'they' correctly refers to the plural antecedent 'customers'.",
+      "full": "The sentence requires a pronoun that agrees with the plural noun 'customers'. Option A, 'they', is the correct plural pronoun. Option B, 'one', is singular and impersonal, which does not match the plural context. Option C, 'you', shifts the subject from third-person plural to second-person, creating a mismatch. Option D, 'it', is singular and typically refers to objects or animals, not people. Therefore, 'they' is the only option that maintains subject-pronoun agreement and conforms to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "they",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically correct and matches the plural antecedent 'customers'."
+      },
+      {
+        "label": "B",
+        "text": "one",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "pronoun_case",
+        "student_failure_mode": null,
+        "why_wrong": "Does not agree in number with the plural antecedent 'customers'.",
+        "why_plausible": "May seem acceptable as an impersonal pronoun, but fails to agree with plural 'customers'."
+      },
+      {
+        "label": "C",
+        "text": "you",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "pronoun_case",
+        "student_failure_mode": null,
+        "why_wrong": "Shifts the subject from 'customers' (third-person plural) to 'you' (second-person), violating agreement.",
+        "why_plausible": "Appears in similar contexts in everyday speech, but shifts from third-person plural to second-person."
+      },
+      {
+        "label": "D",
+        "text": "it",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "pronoun_case",
+        "student_failure_mode": null,
+        "why_wrong": "Refers to inanimate objects or animals, not plural human subjects like 'customers'.",
+        "why_plausible": "Sometimes used informally for groups, but grammatically incorrect for human plural antecedents."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "9aa4ed3c-d6fb-529d-ad6b-7add0f4b2ed1",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Scientists believe that, unlike most other species of barnacle, turtle barnacles (Chelonibia testudinari) can dissolve the cement-like secretions they use to attach _______ to a sea turtle shell, enabling the barnacles to move short distances across the shell\u2019s surface.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "agreement",
+      "grammar_focus_key": "pronoun_antecedent_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "marine biology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests pronoun-antecedent agreement in a reflexive construction. The plural subject 'turtle barnacles' requires the plural reflexive pronoun 'themselves'. Although 'pronoun_clarity' might apply if ambiguity were present, the primary issue here is agreement between the plural antecedent and the required plural reflexive form. Therefore, 'pronoun_antecedent_agreement' is the most specific and accurate label per disambiguation rule 7."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "pronoun_antecedent_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'turtle barnacles' is plural, so the reflexive pronoun must also be plural: 'themselves'.",
+      "full": "The subject of the clause is 'turtle barnacles', which is plural. The verb 'attach' requires a reflexive pronoun as its object because the barnacles are performing the action on themselves. The correct reflexive pronoun for a plural subject is 'themselves'. Option A ('it') and D ('itself') are singular and do not agree with the plural subject. Option C ('them') is an object pronoun, not reflexive, and does not correctly reflect that the barnacles are attaching themselves. Only option B ('themselves') satisfies both agreement and reflexive usage requirements."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "it",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "The subject 'turtle barnacles' is plural; 'it' is singular and does not agree.",
+        "why_plausible": "Students may default to 'it' as a generic singular pronoun without considering the plural subject."
+      },
+      {
+        "label": "B",
+        "text": "themselves",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the plural subject with the appropriate reflexive pronoun."
+      },
+      {
+        "label": "C",
+        "text": "them",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "pronoun_case",
+        "student_failure_mode": "nonfinite_for_finite",
+        "why_wrong": "The verb 'attach' requires a reflexive pronoun when the subject and object are the same entity. 'Them' is not reflexive.",
+        "why_plausible": "'Them' is a common object pronoun and may seem acceptable after 'attach'."
+      },
+      {
+        "label": "D",
+        "text": "itself",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "The subject 'turtle barnacles' is plural; 'itself' is singular and does not agree.",
+        "why_plausible": "Students may recognize the need for a reflexive pronoun but fail to match number with the plural subject."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:agreement"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "a0cb2042-c469-5ce8-ac4e-5b26f6022533",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In Marisol\u2019s 1968 sculpture Mi Mama y Yo, gone are the types of pop culture references that made the Parisian-born Venezuelan American artist a star at the height of the pop art movement. In _______ place is a far more personal subject: a sculptural depiction of the artist as a young girl with her mother.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "agreement",
+      "grammar_focus_key": "pronoun_antecedent_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nearest_noun_attraction",
+      "topic_broad": "grammar",
+      "topic_fine": "pronoun agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests pronoun-antecedent agreement in a possessive context. Although 'types' is plural, the phrase 'the types of pop culture references' functions as a singular unit referring to a collective concept, requiring the singular possessive pronoun 'its'. The distractors test confusion between possessive and contracted forms (its/it's) and number agreement (their)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "pronoun_antecedent_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct pronoun must agree with the singular antecedent 'the types of pop culture references' and function possessively. 'Its' is the only option that satisfies both grammatical requirements.",
+      "full": "The blank requires a possessive pronoun modifying 'place'. The antecedent is 'the types of pop culture references', which is plural in form but treated as singular because it refers to a collective concept or category \u2014 the entire set of references. Therefore, the singular possessive pronoun 'its' is required. Option B ('they\u2019re') is a contraction of 'they are' and does not function possessively. Option C ('their') is plural and does not agree with the singular antecedent. Option D ('it\u2019s') is a contraction of 'it is' and also fails to provide the required possessive form. Only 'its' correctly fulfills both agreement and possession requirements."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "its",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "N/A",
+        "why_plausible": "None \u2014 this is the correct answer."
+      },
+      {
+        "label": "B",
+        "text": "they\u2019re",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "possessive_contraction",
+        "student_failure_mode": null,
+        "why_wrong": "'They\u2019re' is a contraction of 'they are' and cannot function as a possessive pronoun. It does not agree with the singular antecedent 'the types of pop culture references' even if misread as plural.",
+        "why_plausible": "Students may confuse 'they\u2019re' with its homophone 'their' due to similar pronunciation and frequent usage in informal contexts."
+      },
+      {
+        "label": "C",
+        "text": "their",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "'Their' is plural and does not agree with the singular antecedent 'the types of pop culture references', which refers to a collective concept rather than individual items.",
+        "why_plausible": "The word 'types' immediately precedes the blank and is plural, tempting students to select the plural pronoun 'their' despite the singular conceptual meaning of the phrase."
+      },
+      {
+        "label": "D",
+        "text": "it\u2019s",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "possessive_contraction",
+        "student_failure_mode": null,
+        "why_wrong": "'It\u2019s' is a contraction of 'it is' and cannot serve as a possessive pronoun. The sentence requires a possessive form to modify 'place'.",
+        "why_plausible": "Students often confuse 'its' and 'it\u2019s' because they sound identical and 'it\u2019s' is more frequently used in spoken language."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:agreement"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "6a4de090-c6a9-53c5-ba3d-ac2a51925ed8",
+    "source_exam_code": "10",
+    "source_module_code": "02",
+    "source_question_number": 18,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Public-awareness campaigns about the need to reduce single-use plastics can be successful, says researcher Kim Borg of Monash University in Australia, when these campaigns give consumers a choice: for example, Japan achieved a 40 percent reduction in plastic-bag use after cashiers were instructed to ask customers whether _______ wanted a bag.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "standard_english_conventions",
+      "grammar_focus_key": "pronoun_antecedent_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "low",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "environment",
+      "topic_fine": "plastic reduction",
+      "answer_mechanism_key": "agreement_check",
+      "solver_pattern_key": "identify_antecedent_and_match_number",
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests pronoun-antecedent agreement. The antecedent 'customers' is plural, requiring plural 'they'. The other options are singular or wrong person."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "pronoun_antecedent_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The pronoun must agree with the plural antecedent 'customers', so 'they' is correct.",
+      "full": "The blank requires a pronoun referring to 'customers', which is plural. 'They' is the plural pronoun; 'one' is singular and impersonal; 'you' is second person; 'it' is singular and neuter. Only 'they' agrees in number."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "they",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": null
+      },
+      {
+        "label": "B",
+        "text": "one",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "number_agreement_error",
+        "student_failure_mode": null,
+        "why_wrong": "Singular 'one' does not match plural antecedent 'customers'.",
+        "why_plausible": "'One' can be used as an impersonal pronoun, but it does not agree with the plural 'customers'."
+      },
+      {
+        "label": "C",
+        "text": "you",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "person_shift_error",
+        "student_failure_mode": null,
+        "why_wrong": "Second person 'you' does not refer to third-person 'customers'.",
+        "why_plausible": "'You' might be used in direct speech, but the sentence is reporting what cashiers asked customers, not addressing the reader."
+      },
+      {
+        "label": "D",
+        "text": "it",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "number_agreement_error",
+        "student_failure_mode": null,
+        "why_wrong": "Singular 'it' does not agree with plural 'customers'.",
+        "why_plausible": "'It' is a pronoun, but it is singular and neuter, not matching plural 'customers'."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "8ab18959-a32a-5c0a-bc8a-797642603ef4",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Eighteen letters written by Louisa May Alcott, author of the popular novel Little Women (1868), can be found at the New York Historical Society. _______ letters demonstrate Alcott\u2019s keen business sense in her interactions with publishers.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "pronoun_antecedent_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "pronoun agreement",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing pronoun-antecedent agreement. The plural noun 'letters' requires a plural demonstrative pronoun. All distractors are singular, making them clearly incorrect on basic agreement rules. No reading comprehension or inference is required."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "pronoun_antecedent_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct choice must agree in number with the plural noun 'letters' and serve as a demonstrative pronoun introducing the clause.",
+      "full": "The sentence refers to 'Eighteen letters,' which is plural. The blank requires a demonstrative pronoun that agrees in number with 'letters.' Option D, 'These,' is plural and correctly introduces the clause describing the letters. Options A ('One'), B ('That'), and C ('This') are singular and do not agree with the plural subject. This is a subject-verb agreement issue involving demonstrative pronouns and antecedent agreement."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "One",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "The antecedent 'letters' is plural; 'One' is singular and does not agree.",
+        "why_plausible": "Students may select 'One' if they misread the subject as singular or confuse it with a general reference."
+      },
+      {
+        "label": "B",
+        "text": "That",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "The antecedent 'letters' is plural; 'That' is singular and does not agree.",
+        "why_plausible": "'That' is commonly used as a demonstrative, and students may overlook its singular form."
+      },
+      {
+        "label": "C",
+        "text": "This",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "The antecedent 'letters' is plural; 'This' is singular and does not agree.",
+        "why_plausible": "Students may choose 'This' due to its proximity to the subject or familiarity in context."
+      },
+      {
+        "label": "D",
+        "text": "These",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly agrees in number with the plural noun 'letters' and functions as a demonstrative pronoun."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "d587dcbc-a6fb-5e49-9522-b7f08bae2f31",
+    "source_exam_code": "9",
+    "source_module_code": "01",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English? In 1930, Japanese American artist Chiura Obata depicted the natural beauty of Yosemite National Park in two memorable woodcuts: Evening at Carl Inn and Lake Basin in the High Sierra. In 2019, _______ exhibited alongside 150 of Obata\u2019s other works in a single-artist show at the Smithsonian American Art Museum.",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "agreement",
+      "grammar_focus_key": "pronoun_antecedent_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "visual arts",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a pronoun-antecedent agreement question requiring the student to identify the plural antecedent 'two memorable woodcuts' and select the corresponding plural pronoun and verb form. The distractors include singular forms (A, C) and an imprecise plural (D), testing both agreement and clarity."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "pronoun_antecedent_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The pronoun must agree with the plural antecedent 'two memorable woodcuts'.",
+      "full": "The blank refers to 'two memorable woodcuts' \u2014 a plural noun phrase \u2014 which requires a plural pronoun and verb. Option B, 'they were', correctly uses the plural subject pronoun 'they' and plural verb 'were' to match the plural antecedent. Option A ('it was') and C ('this was') use singular pronouns and verbs, which do not agree with the plural subject. Option D ('some were') is grammatically possible but semantically imprecise \u2014 'some' does not clearly refer back to the two named woodcuts, making it less precise than 'they'."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "it was",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "Uses singular pronoun 'it' and verb 'was' for plural antecedent 'two memorable woodcuts'.",
+        "why_plausible": "Students may misread the antecedent as singular because the two woodcuts are presented as a unit or because 'woodcuts' is plural but preceded by 'two memorable' which can obscure the plural subject."
+      },
+      {
+        "label": "B",
+        "text": "they were",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the plural antecedent 'two memorable woodcuts' with plural pronoun 'they' and verb 'were'."
+      },
+      {
+        "label": "C",
+        "text": "this was",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": "plural_pronoun_for_clause_antecedent",
+        "why_wrong": "Uses singular demonstrative 'this' and verb 'was' for plural antecedent 'two memorable woodcuts'.",
+        "why_plausible": "May seem plausible if students interpret 'this' as referring to the entire artistic output or the concept of depicting Yosemite, rather than the specific plural noun phrase."
+      },
+      {
+        "label": "D",
+        "text": "some were",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "pronoun_clarity",
+        "student_failure_mode": "pronoun_anchor_error",
+        "why_wrong": "Lacks clarity \u2014 'some' does not specifically refer back to the two named woodcuts, making it ambiguous and less precise than 'they'.",
+        "why_plausible": "Grammatically correct plural form; students may think 'some' could refer to 'some of the woodcuts' including the two mentioned, especially since 150 other works are also mentioned."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty",
+      "inconsistent_skill_family_casing:agreement"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "a9aa2b9f-44c4-59eb-9c88-086453c4315f",
+    "source_exam_code": "9",
+    "source_module_code": "02",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "British scientists James Watson and Francis Crick won the Nobel Prize in part for their 1953 paper announcing the double helix structure of DNA, but it is misleading to say that Watson and Crick discovered the double helix. _______ findings were based on a famous X-ray image of DNA fibers, \u201cPhoto 51,\u201d developed by X-ray crystallographer Rosalind Franklin and her graduate student Raymond Gosling.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "agreement",
+      "grammar_focus_key": "pronoun_antecedent_agreement",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "biology history",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a straightforward pronoun-antecedent agreement question requiring a plural possessive pronoun to match the plural compound subject 'Watson and Crick.' The distractors include a contraction and singular forms, making them easily identifiable as incorrect for students who recognize the need for agreement."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "pronoun_antecedent_agreement",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The blank requires a possessive pronoun modifying 'findings' that refers to Watson and Crick (plural). 'Their' is correct; 'They\u2019re' is a contraction, 'It\u2019s' and 'Its' are singular.",
+      "full": "The sentence requires a possessive pronoun to modify the noun 'findings.' The subject of the preceding clause is 'Watson and Crick,' a plural compound subject. Therefore, the correct pronoun must be plural and possessive: 'Their.' Option A ('They\u2019re') is a contraction of 'they are,' which is not possessive. Options B ('It\u2019s') and D ('Its') are singular forms and do not agree with the plural antecedent. Only option C correctly provides the plural possessive form needed to refer to Watson and Crick."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "They\u2019re",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "grammar_fit_only",
+        "student_failure_mode": null,
+        "why_wrong": "Is a contraction of 'they are,' not a possessive pronoun. Does not agree in form or function with the required possessive modifier for 'findings.'",
+        "why_plausible": "Sounds like 'their' and is commonly confused with it in informal writing."
+      },
+      {
+        "label": "B",
+        "text": "It\u2019s",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "grammar_fit_only",
+        "student_failure_mode": null,
+        "why_wrong": "Is singular, but the antecedent 'Watson and Crick' is plural. Incorrect number agreement.",
+        "why_plausible": "Fits grammatically in the sentence structure and sounds natural to some listeners."
+      },
+      {
+        "label": "C",
+        "text": "Their",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly agrees in number and case with the plural antecedent 'Watson and Crick' and functions as a possessive modifier for 'findings.'"
+      },
+      {
+        "label": "D",
+        "text": "Its",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "grammar_fit_only",
+        "student_failure_mode": null,
+        "why_wrong": "Is singular, but the antecedent 'Watson and Crick' is plural. Incorrect number agreement.",
+        "why_plausible": "Grammatically fits the sentence structure and is a possessive form."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:agreement"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

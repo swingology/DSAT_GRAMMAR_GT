@@ -1,0 +1,2010 @@
+[
+  {
+    "question_id": "9f850adb-dd98-5d34-9af9-4a809a19d0ef",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 32,
+    "question_text": "While researching a topic, a student has taken the following notes: \u2022 Jon Ching is a Los Angeles-based painter. \u2022 He uses the term \u201cflauna\u201d to describe the plant-animal hybrids that he depicts in his surreal paintings. \u2022 \u201cFlauna\u201d is a combination of the words \u201cflora\u201d and \u201cfauna.\u201d \u2022 His painting Nectar depicts a parrot with leaves for feathers. \u2022 His painting Primaveral depicts a snow leopard whose fur sprouts flowers. The student wants to provide an explanation and example of \u201cflauna.\u201d Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_summary",
+      "syntactic_trap_key": null,
+      "topic_broad": "art",
+      "topic_fine": "contemporary_art",
+      "answer_mechanism_key": "synthesis_goal_match",
+      "solver_pattern_key": "identify_rhetorical_goal_then_select_comprehensive_option",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This is a rhetorical synthesis question requiring the student to combine definition and example from discrete notes into a single coherent sentence. The correct answer must fulfill both parts of the stated goal. Grammar role is expression_of_ideas because the focus is on rhetorical effectiveness, not grammar mechanics.",
+      "skill_family_key_canonical": "rhetorical_synthesis"
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option B provides both the definition (combination of flora and fauna) and a specific example (parrot with leaves for feathers), fulfilling the student\u2019s dual goal.",
+      "full": "The student\u2019s goal is to explain what 'flauna' means and provide an example. Option B does this by first defining 'flauna' as a blend of 'flora' and 'fauna,' then immediately offering a concrete example \u2014 a parrot with leaves for feathers \u2014 which directly illustrates the concept. The other options either omit the example (A, C) or fail to define the term clearly while burying the example in a less direct structure (D)."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "The term \u201cflauna,\u201d used by Los Angeles-based painter Jon Ching, is a combination of the words \u201cflora\u201d and \u201cfauna.\u201d",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "It fails to include any example, violating the explicit requirement to provide both explanation and example.",
+        "why_plausible": "It correctly defines 'flauna' using the notes, satisfying part of the goal."
+      },
+      {
+        "label": "B",
+        "text": "Jon Ching uses the term \u201cflauna,\u201d a combination of the words \u201cflora\u201d and \u201cfauna,\u201d to describe the subjects of his surreal paintings: plant-animal hybrids such as a parrot with leaves for feathers.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "It integrates both the definition and a vivid example from the notes into one clear, grammatically sound sentence."
+      },
+      {
+        "label": "C",
+        "text": "Jon Ching, who created Nectar, refers to the subjects of his paintings as \u201cflauna.\u201d",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "It neither explains what 'flauna' means nor provides a descriptive example of it; it merely states its usage without elaboration.",
+        "why_plausible": "It mentions the term and one painting, creating surface relevance."
+      },
+      {
+        "label": "D",
+        "text": "The subjects of Nectar and Primaveral are types of \u201cflauna,\u201d a term that the paintings\u2019 creator, Jon Ching, uses when describing his surreal artworks.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "It implies the meaning of 'flauna' through context but never explicitly defines it, failing the 'explanation' component of the goal. Also, it doesn\u2019t specify what makes those subjects examples of 'flauna'.",
+        "why_plausible": "It references two paintings and the term, suggesting comprehensiveness."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "06421d60-3c19-5c9f-82e0-5a48f40d6dc6",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 33,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 In the midst of the US Civil War, Susie Taylor escaped slavery and fled to Union-army-occupied St. Simons Island off the Georgia coast. \u2022 She began working for an all-Black army regiment as a nurse and teacher. \u2022 In 1902, she published a book about the time she spent with the regiment. \u2022 Her book was the only Civil War memoir to be published by a Black woman. \u2022 It is still available to readers in print and online. The student wants to emphasize the uniqueness of Taylor\u2019s accomplishment.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_summary",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "civil_war_biography",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a rhetorical synthesis question requiring selection of the option that best fulfills the stated goal (emphasize uniqueness). The correct answer must isolate the singular fact from the notes that distinguishes Taylor\u2019s accomplishment. Grammar rules apply because the task involves evaluating logical relationships between content and rhetorical purpose, not just reading comprehension.",
+      "skill_family_key_canonical": "rhetorical_synthesis"
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option D directly states that Taylor\u2019s memoir was unique \u2014 the only one published by a Black woman during the Civil War \u2014 which aligns with the student\u2019s goal to emphasize uniqueness.",
+      "full": "The student\u2019s goal is to emphasize the uniqueness of Taylor\u2019s accomplishment. Option D explicitly states that her book was 'the only Civil War memoir to be published by a Black woman,' which directly fulfills this rhetorical purpose. Options A, B, and C describe factual events in Taylor\u2019s life but do not highlight uniqueness: A and B focus on her escape and work, which were shared by many formerly enslaved people; C mentions availability, which is not unique. Only D isolates the singular achievement that distinguishes Taylor from others."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Taylor fled to St. Simons Island, which was then occupied by the Union army, for whom she began working.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": "scope_role_confusion",
+        "why_wrong": "Describes her actions but does not emphasize uniqueness \u2014 many formerly enslaved people fled to Union lines and worked for the army.",
+        "why_plausible": "Mentions Taylor\u2019s escape and employment, which are key facts from the notes and relevant to her story."
+      },
+      {
+        "label": "B",
+        "text": "After escaping slavery, Taylor began working for an all-Black army regiment as a nurse and teacher.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": "scope_role_confusion",
+        "why_wrong": "Fails to highlight uniqueness \u2014 serving as a nurse or teacher in a Black regiment was not exclusive to Taylor.",
+        "why_plausible": "Accurately summarizes part of Taylor\u2019s post-escape activities mentioned in the notes."
+      },
+      {
+        "label": "C",
+        "text": "The book Taylor wrote about the time she spent with the regiment is still available to readers in print and online.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_scope",
+        "student_failure_mode": "scope_role_confusion",
+        "why_wrong": "Availability is not unique \u2014 many historical texts are accessible today; does not address the goal of emphasizing Taylor\u2019s singular accomplishment.",
+        "why_plausible": "References the book\u2019s availability, which is mentioned in the notes and may seem relevant."
+      },
+      {
+        "label": "D",
+        "text": "Taylor was the only Black woman to publish a Civil War memoir.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Directly states the unique fact from the notes: Taylor\u2019s memoir was the only one by a Black woman during the Civil War."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "2d73ddd1-6049-5423-b012-115e90bcc8c6",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 32,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 Gaspar Enriquez is an artist. \u2022 He specializes in portraits of Mexican Americans. \u2022 A portrait is an artistic representation of a person. \u2022 Enriquez completed a painting of the sculptor Luis Jimenez in 2003. \u2022 He completed a drawing of the writer Rudolfo Anaya in 2016. The student wants to emphasize a difference between the two portraits.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_bullets",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "portraiture",
+      "answer_mechanism_key": "evidence_matching",
+      "solver_pattern_key": "locate_goal_then_match_content",
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a rhetorical synthesis question requiring selection of the option that best accomplishes a stated goal using provided notes. It tests logical relationships and precision in conveying intended emphasis \u2014 core Expression of Ideas skills. Grammar role is expression_of_ideas because the focus is on rhetorical effectiveness, not grammatical correctness. Grammar focus is logical_relationships because the correct answer must reflect the contrastive relationship the student intends to highlight."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option C highlights the difference in medium (painting vs. drawing) and year (2003 vs. 2016), directly addressing the student\u2019s goal to emphasize a difference between the two portraits.",
+      "full": "The student\u2019s goal is to emphasize a difference between the two portraits. Option C explicitly contrasts the medium (painting for Jimenez, drawing for Anaya) and the years they were completed (2003 vs. 2016), which are both factual differences drawn directly from the notes. Option A incorrectly states both were completed in the early 2000s (Anaya\u2019s was in 2016). Option B combines the subjects but does not highlight any difference. Option D provides background on the subjects but ignores the portraits entirely. Only Option C fulfills the synthesis goal with accurate, relevant details."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "The portraits, or artistic representations, of Luis Jimenez and Rudolfo Anaya were both completed by Enriquez in the early 2000s.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "factually_inaccurate",
+        "student_failure_mode": null,
+        "why_wrong": "It falsely claims both portraits were completed in the early 2000s; Anaya\u2019s portrait was completed in 2016, contradicting the notes. Also fails to highlight any difference as required.",
+        "why_plausible": "It correctly identifies both subjects and the artist, and mentions the term 'portraits' from the notes, creating surface familiarity."
+      },
+      {
+        "label": "B",
+        "text": "Enriquez has completed portraits of numerous Mexican Americans, including sculptor Luis Jimenez and writer Rudolfo Anaya.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "overgeneralization",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to emphasize any difference between the two portraits; instead, it groups them together under a general category, ignoring the student\u2019s specific goal.",
+        "why_plausible": "Uses key terms from the notes ('portraits,' 'Mexican Americans,' 'Luis Jimenez,' 'Rudolfo Anaya') and accurately describes Enriquez\u2019s specialization."
+      },
+      {
+        "label": "C",
+        "text": "While both are by Enriquez, the 2003 portrait of Luis Jimenez is a painting, and the 2016 portrait of Rudolfo Anaya is a drawing.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Directly addresses the student\u2019s goal by contrasting medium and year, using precise data from the notes."
+      },
+      {
+        "label": "D",
+        "text": "Luis Jimenez was a Mexican American sculptor, and Rudolfo Anaya was a Mexican American writer.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "off_topic",
+        "student_failure_mode": null,
+        "why_wrong": "Completely ignores the portraits and the student\u2019s goal to emphasize a difference between them. Focuses only on the subjects\u2019 identities, not their artistic representations.",
+        "why_plausible": "Accurately describes the professions of both individuals, using vocabulary directly from the notes."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "d7e23bde-6e72-5f61-bb13-e0c57f8bae1b",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 33,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 The Gullah are a group of African Americans who have lived in parts of the southeastern United States since the 18th century. \u2022 Gullah culture is influenced by West African and Central African traditions. \u2022 Louise Miller Cohen is a Gullah historian, storyteller, and preservationist. \u2022 She founded the Gullah Museum of Hilton Head Island, South Carolina, in 2003. \u2022 Vermelle Rodrigues is a Gullah historian, artist, and preservationist. \u2022 She founded the Gullah Museum of Georgetown, South Carolina, in 2003. The student wants to emphasize the duration and purpose of Cohen\u2019s and Rodrigues\u2019s work.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_bullets",
+      "syntactic_trap_key": "none",
+      "topic_broad": "culture",
+      "topic_fine": "Gullah heritage",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a rhetorical synthesis question requiring the student to select the option that best fulfills a stated communicative goal (emphasize duration and purpose) using information from bulleted notes. It falls under Expression of Ideas because it tests the ability to synthesize content for rhetorical effect, not grammar rules. The correct answer must include both temporal marker ('Since 2003') and purpose ('preserve Gullah culture')."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option C directly references the founding year (2003) and explicitly states the purpose (preserving Gullah culture), aligning with the student's goal to emphasize duration and purpose.",
+      "full": "The student\u2019s goal is to emphasize both the duration (since 2003) and the purpose (preservation of Gullah culture) of Cohen\u2019s and Rodrigues\u2019s work. Option C is the only choice that includes both elements: it specifies 'Since 2003' (duration) and 'have worked to preserve Gullah culture' (purpose). Option A mentions museums but not the founders or their purpose. Option B names the individuals and their cultural focus but omits the founding year. Option D discusses Gullah origins and influences but does not mention Cohen or Rodrigues at all. Thus, Option C is the only one that fulfills the synthesis goal using the provided notes."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "At the Gullah Museums in Hilton Head Island and Georgetown, South Carolina, visitors can learn more about the Gullah people who have lived in the region for centuries.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "content_omission",
+        "student_failure_mode": "notes_synthesis_content_omission",
+        "why_wrong": "Fails to name Cohen or Rodrigues, omits the founding year (2003), and does not state their purpose (preservation). Focuses on visitor experience rather than the founders\u2019 work.",
+        "why_plausible": "Mentions the museums and Gullah people, which are central to the notes."
+      },
+      {
+        "label": "B",
+        "text": "Louise Miller Cohen and Vermelle Rodrigues have worked to preserve the culture of the Gullah people, who have lived in the United States since the 18th century.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_match",
+        "student_failure_mode": "notes_synthesis_content_omission",
+        "why_wrong": "Omits the key temporal element 'Since 2003,' which is required to emphasize duration. Instead, it references the 18th century, which describes Gullah history, not the founders\u2019 work.",
+        "why_plausible": "Names both founders and correctly identifies their purpose (preservation)."
+      },
+      {
+        "label": "C",
+        "text": "Since 2003, Louise Miller Cohen and Vermelle Rodrigues have worked to preserve Gullah culture through their museums.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Directly synthesizes the founding year (2003) and purpose (preservation) from the notes."
+      },
+      {
+        "label": "D",
+        "text": "Influenced by the traditions of West and Central Africa, Gullah culture developed in parts of the southeastern United States in the 18th century.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_topic",
+        "student_failure_mode": "notes_synthesis_wrong_goal",
+        "why_wrong": "Does not mention Cohen or Rodrigues at all. Discusses cultural origins rather than the founders\u2019 work, ignoring both duration and purpose requirements.",
+        "why_plausible": "Uses vocabulary from the notes (West/Central Africa, 18th century, southeastern U.S.)."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "d5ec9a7a-0587-5880-96bc-8b4539557494",
+    "source_exam_code": "11",
+    "source_module_code": "01",
+    "source_question_number": 23,
+    "question_text": "The musical scores of Japanese composer Hiroyuki Sawano are famous for their mysterious titles. Laden with emojis and seemingly meaningless words, and driven largely by Sawano\u2019s \u201cpersonal feeling and mood,\u201d b l a n k Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "music composition",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests the student\u2019s ability to select the most logical and rhetorically effective completion of a sentence. While grammatical correctness is required, the primary focus is on ensuring the completed sentence conveys the intended causal relationship clearly and concisely \u2014 aligning with Expression of Ideas under Standard English Conventions. The correct answer (B) establishes a direct subject-verb-object structure that best reflects the author\u2019s intent: the titles are the cause, and the listener\u2019s unburdened approach is the effect."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option B correctly completes the sentence with a grammatically sound and logically clear structure. The subject 'the titles' directly governs the verb 'allow,' creating a direct causal relationship: the titles enable the listener to approach each piece free from expectations.",
+      "full": "The original sentence fragment ends with 'b l a n k', indicating a missing clause. Option B, 'the titles allow the listener to approach each piece free from expectations,' provides a grammatically correct and semantically coherent completion. It maintains subject-verb agreement ('titles allow'), uses active voice for clarity, and preserves the intended meaning: that the titles themselves are the mechanism enabling the listener's unburdened experience. Options A, C, and D introduce structural awkwardness or passive constructions that obscure the agent (the titles) or create illogical emphasis. For example, Option A incorrectly implies the listener is the agent of freedom from expectations rather than the recipient of the titles\u2019 effect. Option C uses passive voice ('can be approached by the listener'), which weakens the causal link. Option D creates an unnatural noun phrase ('the listener\u2019s approach... can be free') that disrupts flow and clarity. Only Option B conforms fully to Standard English conventions in both grammar and rhetorical effectiveness."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "the listener can approach each piece free from expectations because of the titles.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "logical_relationships",
+        "student_failure_mode": null,
+        "why_wrong": "Reverses the causal logic: implies the listener actively chooses to approach pieces without expectations, rather than being enabled by the titles. This misattributes agency and weakens the intended meaning.",
+        "why_plausible": "Uses familiar vocabulary from the passage and presents a plausible scenario about listener experience."
+      },
+      {
+        "label": "B",
+        "text": "the titles allow the listener to approach each piece free from expectations.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Clearly states the causal relationship between the titles and the listener\u2019s experience using active voice and direct syntax."
+      },
+      {
+        "label": "C",
+        "text": "each piece can be approached by the listener free from expectations because of the titles.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "logical_relationships",
+        "student_failure_mode": null,
+        "why_wrong": "Uses passive voice ('can be approached by the listener'), which obscures the agent (the titles) and makes the sentence less direct and rhetorically weaker. Also shifts focus away from the titles as the enabling force.",
+        "why_plausible": "Retains key terms from the passage and describes a similar outcome."
+      },
+      {
+        "label": "D",
+        "text": "the listener\u2019s approach to each piece because of the titles can be free from expectations.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "logical_relationships",
+        "student_failure_mode": null,
+        "why_wrong": "Creates an unnecessarily convoluted noun phrase ('the listener\u2019s approach... can be free') that disrupts sentence flow and clarity. Fails to establish a clean subject-verb relationship and buries the causal agent within a modifier.",
+        "why_plausible": "Includes all relevant elements (listener, titles, expectations) and attempts to maintain the causal link."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "ce806993-50c6-551b-8237-b08a995bbfa0",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 31,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 In a 2020 study, researchers in California investigated how many potential nesting sites female wood ducks visited during the nesting season. \u2022 The researchers placed nest boxes throughout the survey area and tagged 138 female wood ducks with radio frequency ID trackers. \u2022 These trackers recorded how many nest boxes each duck visited. \u2022 67 ducks (48.5%) visited only one nest box. \u2022 18 ducks (13.0%) visited 10 or more nest boxes. \u2022 Younger ducks were more likely to visit multiple nest boxes. The student wants to present the methods used in the 2020 study.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_summary",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "ecology",
+      "answer_mechanism_key": "synthesis_goal_match",
+      "solver_pattern_key": "identify_rhetorical_goal_then_select_method_summary",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This is a grammar-adjacent Expression of Ideas question requiring synthesis of notes to fulfill a specific rhetorical goal (presenting methods). The correct answer must match the goal precisely; distractors either report results (A, B) or invent methods (D). Grammar role is expression_of_ideas because the focus is on rhetorical purpose and logical alignment with the goal, not grammatical form."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option C accurately summarizes the methodology described in the notes: tagging ducks with trackers and recording visits to nest boxes.",
+      "full": "The student\u2019s goal is to present the methods used in the 2020 study. Option C directly synthesizes the key methodological elements from the notes \u2014 tagging 138 female wood ducks with radio frequency ID trackers and recording how many nest boxes each visited. Options A and B report findings rather than methods. Option D describes an alternative method not mentioned in the notes. Only C fulfills the rhetorical goal of summarizing the study\u2019s methods."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "By recording how many nest boxes each duck visited, the researchers discovered that only a relatively small percentage (13.0%) of the ducks visited 10 or more nest boxes.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_purpose",
+        "student_failure_mode": "notes_synthesis_wrong_goal",
+        "why_wrong": "Reports a finding (percentage of ducks visiting 10+ boxes), not the method used to obtain it. Fails to fulfill the goal of presenting methods.",
+        "why_plausible": "Mentions the same subject (nest box visits) and includes a statistic from the notes, creating surface relevance."
+      },
+      {
+        "label": "B",
+        "text": "After tracking how many nest boxes the 138 wood ducks visited, the researchers found that the younger ducks tended to visit more nest boxes than the older ducks.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_purpose",
+        "student_failure_mode": "notes_synthesis_wrong_goal",
+        "why_wrong": "Describes a result (younger ducks visited more boxes) rather than the method used to collect data. Does not align with the goal of presenting methods.",
+        "why_plausible": "Includes the sample size (138 ducks) and references age-related behavior mentioned in the notes, making it seem methodologically relevant."
+      },
+      {
+        "label": "C",
+        "text": "The researchers tagged 138 female wood ducks with radio frequency ID trackers and recorded how many nest boxes each duck visited during the nesting season.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Directly synthesizes the two key methodological steps from the notes: tagging ducks and recording nest box visits."
+      },
+      {
+        "label": "D",
+        "text": "The researchers investigated each nesting site for signs that it had been visited by the female wood ducks.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "invented_method",
+        "student_failure_mode": "notes_synthesis_content_omission",
+        "why_wrong": "Describes a manual inspection method not mentioned in the notes. The actual method involved electronic tracking via RFID tags, not physical site investigation.",
+        "why_plausible": "Relates to the general topic of nest box visits and sounds like a plausible research method."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "de97e59a-7961-5aef-a64e-a7ca4a89b0a6",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 33,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 Modularity of mind is the notion that the mind is at least partly composed of innate neural structures (modules) that perform fast, necessary tasks. \u2022 1983: cognitive scientist Jerry A. Fodor hypothesized that low-level cognitive systems (e.g., perception, language) are modular. \u2022 In Fodorian modularity, high-level systems (e.g., reasoning) are not modular. \u2022 2003: cognitive scientist Peter Carruthers proposed the massive modularity hypothesis (MMH). \u2022 MMH expands modularity to include all cognitive systems. The student wants to compare Fodor\u2019s hypothesis with Carruthers\u2019s.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "Rhetorical Synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_summary",
+      "syntactic_trap_key": null,
+      "topic_broad": "cognitive_science",
+      "topic_fine": "modularity_of_mind",
+      "answer_mechanism_key": "notes_synthesis",
+      "solver_pattern_key": "identify_goal_then_match_content",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This is an Expression of Ideas question requiring synthesis of bulleted notes to fulfill a rhetorical goal (comparison). The correct answer must accurately reflect the content of the notes without adding or distorting information. Option A does this by contrasting the scope of each theory. Distractors introduce inaccuracies: B misattributes chronology and intent, C misstates the point of disagreement, D invents a disagreement about definition rather than scope. The grammar focus is on logical relationships \u2014 ensuring the comparison is accurate and not misleading."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option A correctly contrasts Fodorian modularity (limited to some systems) with MMH (expansive, including all systems), directly addressing the student's goal to compare the two theories using only information from the notes.",
+      "full": "The student\u2019s goal is to compare Fodor\u2019s hypothesis with Carruthers\u2019s. Option A accurately captures the core difference: Fodorian modularity applies to some but not all cognitive systems, while MMH is more expansive and includes all. This matches the notes exactly. Option B incorrectly states that Carruthers included all systems 'following Fodor\u2019s 1983 hypothesis,' which misattributes the origin and implies continuity rather than contrast. Option C misrepresents the scope \u2014 both agree on low-level systems; the disagreement is about high-level systems. Option D falsely claims Carruthers disagreed with Fodor\u2019s definition of modularity as innate structures, when in fact both accept that premise \u2014 their disagreement is about scope, not definition."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "In considering some but not all cognitive systems modular, Fodorian modularity is not as expansive in its definition of modularity as MMH is.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Uses key terms from the notes ('Fodorian modularity', 'MMH', 'expansive') and correctly frames the comparison."
+      },
+      {
+        "label": "B",
+        "text": "Following Fodor\u2019s 1983 hypothesis, Carruthers proposed that modularity of mind includes all cognitive systems.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_action_verb",
+        "student_failure_mode": null,
+        "why_wrong": "Implies Carruthers built upon Fodor\u2019s work, which contradicts the notes \u2014 Carruthers expanded modularity beyond Fodor\u2019s scope, not following his hypothesis. Mischaracterizes the relationship as sequential rather than contrasting.",
+        "why_plausible": "Mentions both theorists and the correct year for Carruthers, creating surface credibility."
+      },
+      {
+        "label": "C",
+        "text": "The hypotheses of Fodor and Carruthers differ in whether they consider low-level cognitive systems, such as perception and language, modular.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "contradiction",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly states that the disagreement is about low-level systems \u2014 the notes say both agree low-level systems are modular; the disagreement is about high-level systems.",
+        "why_plausible": "References specific systems mentioned in the notes (perception, language), making it seem grounded."
+      },
+      {
+        "label": "D",
+        "text": "In 2003, Carruthers proposed the massive modularity hypothesis, disagreeing with Fodor\u2019s earlier hypothesis that the mind is composed of innate neural structures.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "contradiction",
+        "student_failure_mode": null,
+        "why_wrong": "Falsely claims Carruthers disagreed with Fodor\u2019s definition of modularity as innate structures \u2014 the notes state both accept this definition; their disagreement is about scope, not definition.",
+        "why_plausible": "Includes correct dates and names, and uses the term 'disagreeing' which fits the comparison goal."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "ec91fb13-2eef-4715-866e-c6244ebc79c5",
+    "source_exam_code": "4",
+    "source_module_code": "02",
+    "source_question_number": 24,
+    "question_text": "Working from an earlier discovery of Charpentier\u2019s, chemists Emmanuelle Charpentier and Jennifer Doudna\u2014winners of the 2020 Nobel Prize in Chemistry\u2014re-created and then reprogrammed the so-called \u201cgenetic scissors\u201d of a species of DNA-cleaving bacteria _______ a tool that is revolutionizing the field of gene technology. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "biotechnology",
+      "answer_mechanism_key": "purpose_expression",
+      "solver_pattern_key": "identify_infinitive_for_purpose",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This question tests the correct use of the infinitive to express purpose, which falls under Expression of Ideas in Standard English Conventions. The stem explicitly asks for conformity to Standard English, confirming the grammar domain. The blank requires a logical relationship (purpose), not a grammatical agreement or punctuation rule, making 'logical_relationships' the appropriate focus key."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The infinitive 'to forge' correctly expresses purpose \u2014 the scientists re-created and reprogrammed the genetic scissors in order to create a revolutionary tool.",
+      "full": "The sentence describes an action (re-creating and reprogramming) undertaken with a specific goal: to produce a tool that is revolutionizing gene technology. The infinitive phrase 'to forge' functions as an adverbial of purpose, explaining why the action was performed. Option B ('forging') creates a participial phrase that incorrectly suggests simultaneous action rather than purpose. Option C ('forged') creates a past-tense verb that breaks the sentence structure by implying a second independent clause without proper conjunction. Option D ('and forging') creates a compound predicate that illogically pairs a finite verb ('re-created') with a non-finite form ('forging'), violating parallelism and grammatical coordination. Only 'to forge' correctly conveys the intended purpose."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "to forge",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically well-formed and semantically precise; correctly expresses the purpose of the scientists\u2019 actions."
+      },
+      {
+        "label": "B",
+        "text": "forging",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "local_semantic_role_mismatch",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a participial phrase suggesting the scientists were simultaneously forging a tool while re-creating and reprogramming, which contradicts the intended meaning of purpose.",
+        "why_plausible": "Appears grammatically plausible as a participle modifying the subject; common error when students confuse purpose with concurrent action."
+      },
+      {
+        "label": "C",
+        "text": "forged",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_verb_form",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by adding a second finite verb without a coordinating conjunction or proper punctuation, violating sentence boundary rules.",
+        "why_plausible": "Past tense verb appears to continue the sequence of actions; students may misread the sentence as requiring a second main verb."
+      },
+      {
+        "label": "D",
+        "text": "and forging",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "parallel_structure_violation",
+        "student_failure_mode": null,
+        "why_wrong": "Violates parallel structure: 're-created' (finite past tense) cannot be coordinated with 'forging' (non-finite present participle) without restructuring the sentence.",
+        "why_plausible": "Attempts to create a compound predicate with 'and', which is a common strategy for joining verbs; students may overlook the mismatch between finite and non-finite forms."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "4eab742c-7ad6-4666-9ed1-260d49fdd7e4",
+    "source_exam_code": "4",
+    "source_module_code": "02",
+    "source_question_number": 25,
+    "question_text": "In 2016, engineer Vanessa Galvez oversaw the installation of 164 bioswales, vegetated channels designed to absorb and divert stormwater, along the streets of Queens, New York. By reducing the runoff flowing into city sewers, _______ Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "garden_path",
+      "topic_broad": "environmental engineering",
+      "topic_fine": "stormwater management",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests whether the student can select the option that maintains logical coherence and rhetorical effectiveness after an introductory participial phrase. While all options are grammatically possible, only B preserves the intended causal logic by making 'bioswales' the active subject performing the mitigation, aligning with the introductory phrase's implication of agency. This is primarily a test of expression of ideas \u2014 specifically logical relationships \u2014 rather than pure syntax or punctuation."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option B correctly uses active voice with a clear subject ('the bioswales') and verb ('have mitigated'), maintaining grammatical agreement and logical flow from the introductory phrase.",
+      "full": "The introductory phrase 'By reducing the runoff flowing into city sewers' sets up a cause-effect relationship that requires a subject capable of performing the action described. Option B correctly identifies 'the bioswales' as the agent performing the mitigation, using active voice and proper subject-verb agreement ('bioswales have mitigated'). Options A and C use passive constructions that obscure agency and create awkward nominalizations. Option D, while grammatically correct, places the focus on the effects rather than the agent (bioswales), which disrupts the logical connection established by the introductory phrase. The correct answer must maintain clarity, concision, and logical subject-verb alignment with the preceding clause."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "the mitigation of both street flooding and the resulting pollution of nearby waterways has been achieved by bioswales.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "passive_voice_obscures_agent",
+        "student_failure_mode": null,
+        "why_wrong": "Uses passive voice and nominalization ('mitigation...has been achieved'), which obscures the agent (bioswales) and weakens the logical connection to the introductory phrase about reducing runoff.",
+        "why_plausible": "Grammatically correct and uses appropriate vocabulary; sounds formal and academic."
+      },
+      {
+        "label": "B",
+        "text": "the bioswales have mitigated both street flooding and the resulting pollution of nearby waterways.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Clear subject ('bioswales'), active verb ('have mitigated'), and direct continuation of the causal logic from the introductory phrase."
+      },
+      {
+        "label": "C",
+        "text": "the bioswales\u2019 mitigation of both street flooding and the resulting pollution of nearby waterways has been achieved.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nominalization_weakens_clarity",
+        "student_failure_mode": null,
+        "why_wrong": "Overly nominalized structure ('mitigation...has been achieved') creates unnecessary abstraction and weakens the direct causal link implied by the introductory phrase. Also unnecessarily passive.",
+        "why_plausible": "Uses possessive form to link bioswales to mitigation; grammatically valid and sounds technical."
+      },
+      {
+        "label": "D",
+        "text": "both street flooding and the resulting pollution of nearby waterways have been mitigated by bioswales.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "passive_voice_disrupts_flow",
+        "student_failure_mode": null,
+        "why_wrong": "Places the focus on the effects (flooding and pollution) rather than the agent (bioswales), disrupting the logical flow from the introductory phrase which implies bioswales as the active agent reducing runoff.",
+        "why_plausible": "Grammatically correct and clearly states the outcome; uses passive voice appropriately in some contexts."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "9ef66938-3e47-59b8-b8e7-68ce5f379752",
+    "source_exam_code": "6",
+    "source_module_code": "01",
+    "source_question_number": 32,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 Elizabeth Catlett\u2019s sculpture Recognition (1970) shows two African American figures with rounded, indistinct features. \u2022 The figures reach out to each other in a pose that symbolizes a close, supportive relationship. \u2022 Her sculpture Students Aspire (1978) shows two African American figures with sharply defined features. \u2022 The figures hold an equal sign above their heads with one hand and embrace each other with the other hand. \u2022 This pose symbolizes their support for each other in the pursuit of equality. The student wants to emphasize a similarity between the two sculptures.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_summary",
+      "syntactic_trap_key": null,
+      "topic_broad": "art",
+      "topic_fine": "sculpture analysis",
+      "answer_mechanism_key": "synthesis",
+      "solver_pattern_key": "identify_common_theme",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This is a rhetorical synthesis question requiring the student to identify a common theme across two sets of notes. The correct answer must reflect the student\u2019s stated goal \u2014 emphasizing similarity \u2014 not factual detail or contrast. Grammar role is expression_of_ideas because it tests logical coherence and rhetorical purpose, not syntax or punctuation."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option B correctly identifies the shared symbolic theme \u2014 supportive relationships \u2014 across both sculptures, directly addressing the student's goal.",
+      "full": "The student\u2019s goal is to emphasize a similarity between the two sculptures. Option B synthesizes key details from both notes: both sculptures depict African American figures in poses that symbolize supportive relationships. Option A focuses only on Students Aspire. Option C provides only chronological data, not thematic similarity. Option D highlights differences in physical features, which contradicts the goal. Only B fulfills the synthesis requirement by identifying a common symbolic purpose."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Catlett\u2019s Students Aspire depicts two figures supporting each other in the pursuit of equality.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "Only addresses one sculpture (Students Aspire), ignoring Recognition. Fails to synthesize across both notes as required by the goal.",
+        "why_plausible": "Mentions 'supporting each other' and 'pursuit of equality,' which are accurate for Students Aspire and align with the goal of highlighting support."
+      },
+      {
+        "label": "B",
+        "text": "Recognition and Students Aspire both show African American figures in poses that symbolize supportive relationships.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Accurately combines key symbolic elements from both sculptures \u2014 supportive relationships \u2014 fulfilling the synthesis goal."
+      },
+      {
+        "label": "C",
+        "text": "Catlett completed Recognition in 1970 and Students Aspire in 1978.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_scope",
+        "student_failure_mode": null,
+        "why_wrong": "Provides only temporal data, not thematic similarity. Irrelevant to the goal of emphasizing symbolic connection.",
+        "why_plausible": "Uses real dates from the notes, creating surface familiarity."
+      },
+      {
+        "label": "D",
+        "text": "The figures in Recognition have features that are rounded and indistinct, while the figures in Students Aspire have sharply defined features.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "contrast_instead_of_similarity",
+        "student_failure_mode": null,
+        "why_wrong": "Highlights a difference rather than a similarity, directly contradicting the student\u2019s goal.",
+        "why_plausible": "Accurately describes physical differences noted in the passage, making it seem factually grounded."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "046efeb7-c636-5304-9323-433d39785a05",
+    "source_exam_code": "6",
+    "source_module_code": "02",
+    "source_question_number": 31,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 Meteorites found on Earth are divided into two categories. \u2022 A meteorite that was observed falling to Earth before being recovered is known as a meteorite fall. \u2022 All other meteorites found on Earth are known as meteorite finds. \u2022 There have been about 1,200 recorded meteorite falls. \u2022 There have been over 60,000 recorded meteorite finds. The student wants to contrast the number of meteorite falls with the number of meteorite finds.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_bullets",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "astronomy",
+      "answer_mechanism_key": "synthesize_information",
+      "solver_pattern_key": "identify_rhetorical_goal_then_select_supporting_data",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This is an Expression of Ideas question requiring synthesis of bulleted notes to fulfill a specified rhetorical goal (contrast). The correct answer must combine two distinct data points from the notes using appropriate logical connectors. Grammar rules apply because the task involves selecting the best expression of ideas \u2014 specifically, logical relationships \u2014 not reading comprehension or vocabulary in context."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option D directly contrasts the two numerical values (1,200 vs. 60,000) as requested by the student\u2019s goal, using only information from the notes.",
+      "full": "The student\u2019s goal is to contrast the number of meteorite falls with the number of meteorite finds. Option D explicitly states both numbers and uses the contrasting conjunction 'While' to highlight the disparity, making it the most effective synthesis. Options A and B define the terms but omit the quantitative contrast. Option C provides only one number without comparison. Only D fulfills the rhetorical goal of contrast using data from the notes."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "A meteorite that was observed falling to Earth before being recovered is known as a meteorite fall; all others are known as meteorite finds.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to include any numerical data or comparative structure; does not accomplish the goal of contrasting quantities.",
+        "why_plausible": "Defines the terms correctly using vocabulary from the notes, which may satisfy students who overlook the specific goal of numerical contrast."
+      },
+      {
+        "label": "B",
+        "text": "Meteorites found on Earth are divided into two categories: meteorite falls and meteorite finds.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "Only categorizes meteorites without providing any numbers or contrast; ignores the student\u2019s explicit goal.",
+        "why_plausible": "Uses exact phrasing from the first note, creating surface familiarity and appearing comprehensive."
+      },
+      {
+        "label": "C",
+        "text": "There have been about 1,200 recorded meteorite falls, or meteorites observed falling to Earth.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "scope_extension",
+        "student_failure_mode": null,
+        "why_wrong": "Provides only one side of the contrast (meteorite falls) and omits the much larger number of meteorite finds, failing the core requirement.",
+        "why_plausible": "Includes accurate data from the notes and adds a clarifying phrase ('or meteorites observed...'), which may seem helpful."
+      },
+      {
+        "label": "D",
+        "text": "While there have been only about 1,200 recorded meteorite falls, there have been over 60,000 meteorite finds.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Directly synthesizes the two key numerical facts from the notes using a contrastive transition ('While') to fulfill the student\u2019s stated goal."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "1ddf250a-145d-5428-aafd-9c39c1c0b692",
+    "source_exam_code": "6",
+    "source_module_code": "02",
+    "source_question_number": 32,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 Do\u00f1a Mar\u00eda do Carmo Bandeira was a Brazilian botanist. \u2022 Between 1924 and 1941, she collected approximately 800 botanical samples. \u2022 She collected a sample of Polytrichum juniperinum from Serra de Itatiaia in Mau\u00e1 in February of 1925. \u2022 She collected a sample of Sphagnum gracilescen from Ponte do Inferno in Corcovado in March of 1925. \u2022 Polytrichum juniperinum and Sphagnum gracilescen are both species of moss. The student wants to emphasize the sample collected from Serra de Itatiaia.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_bullets",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "botany",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is an Expression of Ideas question requiring synthesis of note content to achieve a specified rhetorical goal (emphasizing a specific sample). The correct answer must prioritize the named location (Serra de Itatiaia) over other details. Grammar focus is on logical relationships \u2014 ensuring the selected sentence fulfills the stated purpose without adding irrelevant or diluting information. Options A, C, and D fail because they either omit the location, include competing locations, or reframe the emphasis away from geography."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option B directly highlights the specific sample (Polytrichum juniperinum) collected from Serra de Itatiaia in 1925, aligning with the student\u2019s goal to emphasize that particular collection event.",
+      "full": "The student\u2019s goal is to emphasize the sample collected from Serra de Itatiaia. Option B achieves this by naming the exact species (Polytrichum juniperinum), specifying the location (Serra de Itatiaia), and including the year (1925), all while maintaining grammatical correctness and concision. Option A is too general, mentioning only the total number of samples without highlighting the Serra de Itatiaia collection. Option C includes both samples but dilutes the emphasis on Serra de Itatiaia by giving equal weight to Ponte do Inferno. Option D omits the location entirely and focuses only on species classification, failing to address the geographic emphasis required."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Do\u00f1a Mar\u00eda do Carmo Bandeira was a botanist notable for collecting approximately 800 botanical samples between 1924 and 1941.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "scope_extension",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to mention Serra de Itatiaia at all; instead, it emphasizes the total number of samples, which dilutes the specific geographic emphasis requested.",
+        "why_plausible": "Mentions the botanist and her overall collection activity, which is factually correct and relevant to the notes."
+      },
+      {
+        "label": "B",
+        "text": "Among the many botanical samples Do\u00f1a Mar\u00eda do Carmo Bandeira collected was Polytrichum juniperinum, a species of moss she collected from Serra de Itatiaia in 1925.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Directly names the species, location, and year as specified in the notes, fulfilling the student's goal to emphasize the Serra de Itatiaia sample."
+      },
+      {
+        "label": "C",
+        "text": "Between 1924 and 1941, Do\u00f1a Mar\u00eda do Carmo Bandeira collected many botanical samples, such as Polytrichum juniperinum from Serra de Itatiaia and Sphagnum gracilescen from Ponte do Inferno.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "overspecification",
+        "student_failure_mode": null,
+        "why_wrong": "Equally emphasizes two different locations (Serra de Itatiaia and Ponte do Inferno), thereby diluting the intended focus on Serra de Itatiaia alone.",
+        "why_plausible": "Includes both samples mentioned in the notes, making it factually accurate and contextually grounded."
+      },
+      {
+        "label": "D",
+        "text": "Between 1924 and 1941, Do\u00f1a Mar\u00eda do Carmo Bandeira collected samples of Polytrichum juniperinum and Sphagnum gracilescen, both species of moss.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "scope_extension",
+        "student_failure_mode": null,
+        "why_wrong": "Completely omits any reference to Serra de Itatiaia or Ponte do Inferno, thus failing to fulfill the student\u2019s goal of emphasizing the geographic origin of the sample.",
+        "why_plausible": "Correctly identifies both species as mosses, which is a factual detail from the notes."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "d8363f70-4b48-5607-87a5-591479c2e6a3",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Wanting to celebrate the 100th anniversary of the Alaska Purchase, _______ up with a motto that best captured the state\u2019s unique character. The commission selected \u201cNorth to the Future,\u201d submitted by Juneau journalist Richard Peter, as its winning entry.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_grammatically_correct_form",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "Alaska statehood",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing sentence structure and logical relationships. The correct answer must form a complete, grammatical sentence with proper subject-verb-object alignment and appropriate relative clause construction. While all options contain similar content, only D creates a coherent, active-voice sentence that logically connects the commission's action with the outcome."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option D correctly structures the sentence with an active subject (the Alaska Centennial Commission) performing the action (sponsored a contest) and uses proper relative clause construction ('who came'). Other options create awkward or ungrammatical constructions.",
+      "full": "The correct answer is D because it provides a grammatically complete and idiomatic sentence: 'the Alaska Centennial Commission sponsored a contest that would award $300 to an individual who came up with a motto...'. This option maintains subject-verb agreement, uses appropriate relative pronoun 'who' for human antecedent, and avoids passive voice or dangling modifiers. Option A creates a fragment by starting with a noun phrase without a clear verb for the main clause. Option B uses awkward word order and incorrect preposition ('for coming') that doesn't properly connect to the purpose of the contest. Option C uses passive voice unnecessarily and has an unnatural phrasing ('would be awarded to an individual by...'). Only D presents a clear, active, and grammatically correct construction that fits naturally in the context."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "a contest sponsored by the Alaska Centennial Commission would award $300 to an individual who came",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a sentence fragment; lacks a main verb for the subject 'a contest' in the context of the larger sentence. The phrase 'would award' is not sufficient to form a complete independent clause when preceded by a participial phrase.",
+        "why_plausible": "Uses key terms from the passage (Alaska Centennial Commission, $300, individual) and appears to describe the same event."
+      },
+      {
+        "label": "B",
+        "text": "an award of $300 would go to an individual in a contest sponsored by the Alaska Centennial Commission for coming",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "illogical_comparison",
+        "student_failure_mode": null,
+        "why_wrong": "Uses incorrect preposition 'for coming' which doesn't properly connect the purpose of the contest. The phrase should be 'who came up with' rather than 'for coming up with' to maintain proper relative clause structure and logical relationship between the individual and the action.",
+        "why_plausible": "Contains all necessary elements (commission, contest, $300, individual) and uses natural-sounding phrasing."
+      },
+      {
+        "label": "C",
+        "text": "$300 would be awarded to an individual by the Alaska Centennial Commission in a contest for coming",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Uses awkward passive construction that obscures the actor (the commission) and creates an unnatural flow. Also repeats the same preposition error as option B ('for coming') which doesn't properly connect to the purpose of the contest.",
+        "why_plausible": "Includes all key information and uses passive voice which is sometimes acceptable in formal writing."
+      },
+      {
+        "label": "D",
+        "text": "the Alaska Centennial Commission sponsored a contest that would award $300 to an individual who came",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Clear, active voice construction with proper subject-verb-object alignment and appropriate relative clause ('who came')."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "0d0cd835-b8a6-515b-94a5-1dd4753b4d15",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 29,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 \u201cRaymond\u2019s Run\u201d is a short story. \u2022 It was written by African American author Toni Cade Bambara. \u2022 It was first published in her book Gorilla, My Love in 1972. \u2022 It is told from a first person perspective. \u2022 It takes place in Harlem. The student wants to indicate where the short story takes place.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_summary",
+      "syntactic_trap_key": null,
+      "topic_broad": "literature",
+      "topic_fine": "short_story_setting",
+      "answer_mechanism_key": "goal_alignment",
+      "solver_pattern_key": "identify_goal_then_match_content",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This is an Expression of Ideas question requiring synthesis of notes to fulfill a specific rhetorical goal (indicating setting). The correct answer must match the goal precisely; distractors are factually true but irrelevant to the goal. Grammar role is expression_of_ideas because it tests alignment of content with purpose, not grammatical form."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "none",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The student's goal is to indicate where the story takes place. Only option A directly states the setting (Harlem), which matches the goal exactly.",
+      "full": "The student\u2019s explicit goal is to indicate where the short story takes place. Among the four options, only option A \u2014 \u201c\u2018Raymond\u2019s Run\u2019 takes place in Harlem.\u201d \u2014 directly addresses that goal. Options B, C, and D provide accurate information from the notes (publication context, narrative perspective, and author), but they do not fulfill the specific rhetorical purpose of indicating the story\u2019s setting. Therefore, A is the only option that synthesizes the correct piece of information to accomplish the stated goal."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "\u201cRaymond\u2019s Run\u201d takes place in Harlem.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Directly quotes the note about setting, matching the student\u2019s goal exactly."
+      },
+      {
+        "label": "B",
+        "text": "\u201cRaymond\u2019s Run\u201d was published in Gorilla, My Love.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "topical_relevance_without_logical_connection",
+        "student_failure_mode": null,
+        "why_wrong": "Does not address the student\u2019s goal of indicating where the story takes place; instead provides publication information.",
+        "why_plausible": "Mentions a factual detail from the notes (publication context) that is topically related to the story."
+      },
+      {
+        "label": "C",
+        "text": "\u201cRaymond\u2019s Run\u201d is told from a first person perspective.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "topical_relevance_without_logical_connection",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to address the goal of indicating setting; instead describes point of view.",
+        "why_plausible": "Accurately reflects a note about narrative perspective, which is a valid literary detail."
+      },
+      {
+        "label": "D",
+        "text": "\u201cRaymond\u2019s Run\u201d was written by Toni Cade Bambara.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "topical_relevance_without_logical_connection",
+        "student_failure_mode": null,
+        "why_wrong": "Irrelevant to the goal of indicating setting; provides authorship instead.",
+        "why_plausible": "Correctly identifies the author, a key factual detail from the notes."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "6fccd053-9fe1-5d4b-9b6e-a6717407d40e",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 30,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 The Royal Alc\u00e1zar of Seville is a historic royal palace in Andaluc\u00eda, Spain. \u2022 The palace is famous for its intricate tilework. \u2022 The palace features majolica and arista tiles. \u2022 In the majolica style, designs are painted directly on the ceramic tiles. \u2022 In the arista style, designs are stamped into the ceramic tiles. The student wants to contrast the two styles of tiles.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "synthesize_information_from_notes",
+      "stimulus_mode_key": "notes_summary",
+      "syntactic_trap_key": null,
+      "topic_broad": "art history",
+      "topic_fine": "ceramic tile styles",
+      "answer_mechanism_key": "synthesize_information",
+      "solver_pattern_key": "identify_goal_then_match_content",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This question tests the student's ability to synthesize information from bulleted notes to achieve a specific rhetorical goal (contrasting two styles). It falls under Expression of Ideas because it requires selecting the option that best fulfills the stated purpose using the provided content. The correct answer must directly compare the two styles, which only Option C does."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option C directly contrasts the two tile styles by explaining how designs are applied in each \u2014 painted in majolica, stamped in arista \u2014 which fulfills the student\u2019s goal.",
+      "full": "The student\u2019s goal is to contrast the two tile styles. Option C explicitly compares the methods used in each style: 'In the arista style, designs are stamped into the ceramic tiles, whereas in the majolica style, the designs are painted directly on them.' This directly addresses the contrast requested. Options A and B focus on location and fame rather than contrasting the styles. Option D describes only the majolica style, omitting the arista style entirely, thus failing to fulfill the contrast goal."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Tiles in the majolica and arista styles can be found in the Royal Alc\u00e1zar of Seville in Andaluc\u00eda, Spain.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "topic_trap",
+        "student_failure_mode": null,
+        "why_wrong": "States where the tiles are found but does not contrast how they are made, failing to meet the student\u2019s goal.",
+        "why_plausible": "Mentions both tile styles and the palace, matching key terms from the notes."
+      },
+      {
+        "label": "B",
+        "text": "Featuring tiles in the majolica and arista styles, the Royal Alc\u00e1zar of Seville in Spain is famous for its intricate tilework.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "topic_trap",
+        "student_failure_mode": null,
+        "why_wrong": "Describes the palace\u2019s reputation but does not contrast the tile-making techniques, ignoring the synthesis goal.",
+        "why_plausible": "Includes both tile styles and references the palace\u2019s fame, aligning with note content."
+      },
+      {
+        "label": "C",
+        "text": "In the arista style, designs are stamped into the ceramic tiles, whereas in the majolica style, the designs are painted directly on them.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Directly compares the two styles using precise verbs ('stamped' vs. 'painted') as stated in the notes."
+      },
+      {
+        "label": "D",
+        "text": "Among the famous tilework of the Royal Alc\u00e1zar of Seville are majolica style tiles, made by painting designs directly on the ceramic tiles.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_match",
+        "student_failure_mode": null,
+        "why_wrong": "Only describes one style (majolica) and omits any mention or comparison with arista style, failing the contrast goal.",
+        "why_plausible": "Accurately describes majolica style and mentions the palace, making it seem relevant."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "ed39d1bd-cdd2-589f-ac27-8c4cd1a768b2",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 31,
+    "question_text": "While researching a topic, a student has taken the following notes: \u2022 Musicians around the world have used protest songs to raise awareness about human rights violations. \u2022 US folk singer Aunt Molly Jackson released the protest song \u201cPoor Miner\u2019s Farewell\u201d in 1932. \u2022 It exposed the unlivable wages and dangerous working conditions coal miners faced in Kentucky during the 1920s and 1930s. \u2022 South African singer-songwriter Hugh Masekela released the protest song \u201cBring Him Back Home\u201d in 1987. \u2022 It called on the South African government to free Nelson Mandela, an anti-apartheid leader who\u2019d been unjustly imprisoned. The student wants to contrast the song \u201cPoor Miner\u2019s Farewell\u201d with the song \u201cBring Him Back Home.\u201d Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "synthesize_information_from_notes",
+      "stimulus_mode_key": "notes_summary",
+      "syntactic_trap_key": null,
+      "topic_broad": "music",
+      "topic_fine": "protest_songs",
+      "answer_mechanism_key": "synthesize_information",
+      "solver_pattern_key": "identify_contrast_goal_then_select_juxtaposition",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This is a rhetorical synthesis question requiring the student to select the option that best accomplishes the stated goal \u2014 contrasting two songs. The correct answer must juxtapose both songs\u2019 distinct subjects. Grammar-adjacent skills apply because the task involves logical relationships and rhetorical effectiveness, not grammar mechanics. Thus, it belongs in Expression of Ideas with grammar_role_key = expression_of_ideas and grammar_focus_key = logical_relationships."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option B directly contrasts the two songs by highlighting their distinct subjects \u2014 one focuses on coal miners in Kentucky, the other on Nelson Mandela in South Africa \u2014 which fulfills the student\u2019s goal of contrasting them.",
+      "full": "The student\u2019s goal is to contrast the two protest songs. Option B achieves this by explicitly comparing their subjects: 'Poor Miner\u2019s Farewell' addresses coal miners in Kentucky, while 'Bring Him Back Home' addresses Nelson Mandela in South Africa. This contrast highlights geographic, thematic, and historical differences between the songs. Options A, C, and D fail to contrast: A states a similarity (both are protest songs), while C and D each focus on only one song without referencing the other. Only B fulfills the synthesis task by juxtaposing both songs\u2019 unique contexts."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "The songs \u201cPoor Miner\u2019s Farewell\u201d and \u201cBring Him Back Home\u201d both raised awareness about human rights violations.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "States a similarity rather than a contrast; fails to fulfill the student\u2019s goal of contrasting the songs.",
+        "why_plausible": "Mentions both songs and references the general theme of human rights, which appears in the notes."
+      },
+      {
+        "label": "B",
+        "text": "While both are protest songs, \u201cPoor Miner\u2019s Farewell\u201d is about coal miners in Kentucky, whereas \u201cBring Him Back Home\u201d is about the anti-apartheid leader Nelson Mandela.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Directly synthesizes key details from the notes to highlight the contrast between the two songs\u2019 subjects."
+      },
+      {
+        "label": "C",
+        "text": "Hugh Masekela\u2019s song \u201cBring Him Back Home,\u201d released in 1987, called on the South African government to free Nelson Mandela.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_scope",
+        "student_failure_mode": null,
+        "why_wrong": "Focuses only on one song and omits any reference to the other, failing to contrast them as required.",
+        "why_plausible": "Accurately describes one song using details from the notes."
+      },
+      {
+        "label": "D",
+        "text": "Released in 1932 by Aunt Molly Jackson, the song \u201cPoor Miner\u2019s Farewell\u201d was a protest against the unlivable wages and dangerous working conditions faced by Kentucky coal miners.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_scope",
+        "student_failure_mode": null,
+        "why_wrong": "Focuses only on one song and omits any reference to the other, failing to contrast them as required.",
+        "why_plausible": "Accurately describes one song using details from the notes."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "e1973613-cbaf-541c-8d71-4c682fef469f",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 32,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 Political scientist Graham Allison is known for his Thucydides trap theory. \u2022 Allison\u2019s theory states that whenever \u201ca rising power is threatening to displace a ruling power,\u201d conflict is likely. \u2022 The theory is based on Thucydides\u2019s explanation of the conflict between Athens and Sparta. \u2022 Thucydides wrote that \u201cthe rise of Athens and the fear this instilled in Sparta\u201d made conflict \u201cinevitable.\u201d \u2022 History professor Edmund Stewart recently challenged the historical basis of the theory. \u2022 Stewart claimed that Athens was not a rising power and that the rivals experienced a \u201cclash of cultures\u201d instead. The student wants to use a quotation to challenge Thucydides\u2019s explanation of the conflict between Athens and Sparta.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "Rhetorical Synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_summary",
+      "syntactic_trap_key": null,
+      "topic_broad": "history",
+      "topic_fine": "ancient greece",
+      "answer_mechanism_key": "synthesize_information",
+      "solver_pattern_key": "identify_rhetorical_goal_then_select_quotation",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This is a rhetorical synthesis question requiring the student to select a quotation from the notes that directly challenges Thucydides's explanation. The correct answer must both quote Stewart's alternative cause ('clash of cultures') and serve the stated goal of challenging Thucydides. Options A, B, and D fail because they either support Thucydides (A), mention Stewart\u2019s challenge without quoting his alternative (B), or misattribute Stewart\u2019s disagreement (D)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option C directly quotes Stewart\u2019s alternative explanation \u2014 a 'clash of cultures' \u2014 which challenges Thucydides\u2019s claim that the conflict was caused by Athens\u2019s rise and Sparta\u2019s fear.",
+      "full": "The student\u2019s goal is to challenge Thucydides\u2019s explanation using a quotation from the notes. Thucydides attributed the conflict to 'the rise of Athens and the fear this instilled in Sparta.' Option C provides Stewart\u2019s direct quotation \u2014 'a clash of cultures' \u2014 which offers an alternative causal explanation, thereby challenging Thucydides\u2019s view. Option A restates Allison\u2019s theory (which supports Thucydides). Option B mentions Stewart\u2019s challenge but does not quote his alternative explanation. Option D misrepresents Stewart\u2019s position by suggesting he disagreed with Allison rather than Thucydides, and it conflates their views. Only Option C fulfills the synthesis goal by providing a direct quotation that contradicts Thucydides\u2019s causal claim."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "According to Allison\u2019s Thucydides trap theory, whenever \u201ca rising power is threatening to displace a ruling power,\u201d conflict is likely.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "Supports Thucydides\u2019s explanation rather than challenging it; fails to fulfill the student\u2019s goal.",
+        "why_plausible": "Mentions Allison\u2019s theory, which is derived from Thucydides, making it seem relevant to the topic."
+      },
+      {
+        "label": "B",
+        "text": "Thucydides wrote that conflict between the two powers was \u201cinevitable,\u201d although Stewart later challenged the historical basis of this claim.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "Does not provide a quotation offering an alternative explanation; only states that Stewart challenged the theory without quoting his proposed cause.",
+        "why_plausible": "Mentions Stewart\u2019s challenge, which aligns with the goal of challenging Thucydides."
+      },
+      {
+        "label": "C",
+        "text": "According to Stewart, a \u201cclash of cultures\u201d between Athens and Sparta caused the conflict, not Athens\u2019s rise.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Directly quotes Stewart\u2019s alternative explanation, fulfilling the goal of challenging Thucydides."
+      },
+      {
+        "label": "D",
+        "text": "Thucydides explained that conflict was caused by \u201cthe rise of Athens and the fear this instilled in Sparta,\u201d but Allison disagreed, seeing the conflict as an example of the Thucydides trap.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "reversed_attribution",
+        "student_failure_mode": null,
+        "why_wrong": "Misattributes the disagreement: Stewart challenged Thucydides, not Allison. Also, Allison\u2019s theory supports Thucydides, so there is no disagreement between them. This option confuses the relationships among the three figures.",
+        "why_plausible": "Uses accurate content from the notes and includes a contrastive structure ('but'), suggesting disagreement."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "4b1dacc1-804a-5df4-9654-e0b7003ba237",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Compared to that of alumina glass, _______ silica glass atoms are so far apart that they are unable to re-form bonds after being separated.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "modifier_attachment_ambiguity",
+      "topic_broad": "science",
+      "topic_fine": "materials science",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question requiring correction of possessive form and logical modification. The correct answer must maintain subject-verb agreement, proper possessive construction, and clear causal logic. Options A, B, and C each fail on one or more of these dimensions."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option D correctly uses the possessive form 'silica glass\u2019s' to modify 'atomic arrangement,' and the participial phrase 'resulting in a significant disadvantage' logically modifies the entire preceding clause. Other options contain structural or punctuation errors.",
+      "full": "The correct option (D) uses the possessive form 'silica glass\u2019s' to properly indicate that the atomic arrangement belongs to silica glass. The phrase 'resulting in a significant disadvantage' is a participial phrase that correctly modifies the entire main clause, showing consequence. Option A incorrectly uses a colon after a complete sentence without an independent clause following it. Option B misplaces the participial phrase, creating ambiguity about what 'resulting' modifies. Option C uses an awkward and indirect structure that disrupts the flow and logical connection between cause and effect. Only D maintains grammatical correctness and rhetorical clarity."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "silica glass is at a significant disadvantage due to its more dispersed atomic arrangement:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly places a colon after a complete sentence without an independent clause following it; violates Standard English punctuation rules for colons.",
+        "why_plausible": "Uses correct vocabulary and conveys the same general idea as the correct answer."
+      },
+      {
+        "label": "B",
+        "text": "silica glass has a more dispersed atomic arrangement, resulting in a significant disadvantage:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "modifier_attachment_ambiguity",
+        "student_failure_mode": null,
+        "why_wrong": "The participial phrase 'resulting in a significant disadvantage' ambiguously modifies 'atomic arrangement' rather than the entire clause, creating a logical disconnect with the consequence described.",
+        "why_plausible": "Grammatically well-formed and uses appropriate scientific terminology."
+      },
+      {
+        "label": "C",
+        "text": "a significant disadvantage of silica glass is that its atomic arrangement is more dispersed:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "redundancy_concision",
+        "student_failure_mode": null,
+        "why_wrong": "Structurally indirect and wordy; fails to clearly link cause (dispersed arrangement) and effect (disadvantage) in a single syntactic unit, reducing rhetorical effectiveness.",
+        "why_plausible": "States the same factual relationship using different phrasing."
+      },
+      {
+        "label": "D",
+        "text": "silica glass\u2019s atomic arrangement is more dispersed, resulting in a significant disadvantage:",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Clear, concise, and grammatically precise; directly links cause and effect with appropriate possessive form and participial modifier."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "019e8f71-75e8-57a0-abf7-d7128c0222f7",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 31,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 Most, but not all, of the Moon\u2019s oxygen comes from the Sun, via solar wind. \u2022 Cosmochemist Kentaro Terada from Osaka University wondered if some of the unaccounted-for oxygen could be coming from Earth. \u2022 In 2008, he analyzed data from the Japanese satellite Kaguya. \u2022 Kaguya gathered data about gases and particles it encountered while orbiting the Moon. \u2022 Based on the Kaguya data, Terada confirmed his suspicion that Earth is sending oxygen to the Moon. The student wants to emphasize the aim of the research study.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_bullets",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "planetary science",
+      "answer_mechanism_key": "rhetorical_classification",
+      "solver_pattern_key": "classify_rhetorical_move",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This is an Expression of Ideas question requiring synthesis of bulleted notes into a sentence that fulfills a specific rhetorical goal (emphasizing the research aim). The correct answer must reflect intent or purpose, not just fact. Grammar role is expression_of_ideas because the task involves selecting the option that best matches the intended rhetorical function. The grammar focus is logical_relationships because the choice hinges on accurately representing the relationship between the researcher\u2019s curiosity and the study\u2019s stated aim."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option C directly states the researcher's goal \u2014 to determine whether some of the Moon\u2019s oxygen was coming from Earth \u2014 which aligns with the student\u2019s aim to emphasize the research aim.",
+      "full": "The student\u2019s goal is to emphasize the aim of the research study. Option C explicitly states that 'Cosmochemist Kentaro Terada set out to determine whether some of the Moon\u2019s oxygen was coming from Earth,' which directly captures the purpose or aim of the study. Option A focuses on data collection, Option B states a prior curiosity without framing it as the study\u2019s aim, and Option D reports the conclusion rather than the aim. Only Option C fulfills the rhetorical goal specified in the prompt."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "As it orbited the Moon, the Kaguya satellite collected data that was later analyzed by cosmochemist Kentaro Terada.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_action_verb",
+        "student_failure_mode": null,
+        "why_wrong": "Describes data collection rather than the research aim; fails to capture the purpose or goal of the study.",
+        "why_plausible": "Mentions Kaguya and Terada, both central to the notes, and describes a factual event from the notes."
+      },
+      {
+        "label": "B",
+        "text": "Before 2008, Kentaro Terada wondered if the Moon was receiving some of its oxygen from Earth.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "States a prior state of wondering rather than the active aim or purpose of conducting the study; does not fulfill the rhetorical goal of emphasizing the research aim.",
+        "why_plausible": "Reflects Terada\u2019s curiosity mentioned in the notes, which is related to the study\u2019s aim."
+      },
+      {
+        "label": "C",
+        "text": "Cosmochemist Kentaro Terada set out to determine whether some of the Moon\u2019s oxygen was coming from Earth.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Directly states the research aim using the verb 'set out to determine,' which matches the student\u2019s goal."
+      },
+      {
+        "label": "D",
+        "text": "Kentaro Terada\u2019s study determined that Earth is sending a small amount of oxygen to the Moon.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_action_verb",
+        "student_failure_mode": null,
+        "why_wrong": "Focuses on the result rather than the aim; misaligns with the student\u2019s goal to emphasize the purpose of the research, not its finding.",
+        "why_plausible": "Reports the conclusion of the study, which is a key outcome mentioned in the notes."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "bd967a88-ed07-5596-995f-aaee0902b0b5",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 32,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 The factors that affect clutch size (the number of eggs laid at one time) have been well studied in birds but not in lizards. \u2022 A team led by Shai Meiri of Tel Aviv University investigated which factors influence lizard clutch size. \u2022 Meiri\u2019s team obtained clutch-size and habitat data for over 3,900 lizard species and analyzed the data with statistical models. \u2022 Larger clutch size was associated with environments in higher latitudes that have more seasonal change. \u2022 Lizards in higher-latitude environments may lay larger clutches to take advantage of shorter windows of favorable conditions. The student wants to emphasize the aim of the research study.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_bullets",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "biology",
+      "answer_mechanism_key": "synthesis_goal_alignment",
+      "solver_pattern_key": "identify_rhetorical_goal_then_match_content",
+      "evidence_scope_key": "notes",
+      "classification_rationale": "This question tests the ability to synthesize bullet-point notes into a sentence that fulfills a specific rhetorical goal \u2014 emphasizing the aim of the research. It falls under Expression of Ideas because it requires evaluating how well each option serves the communicative purpose, not grammar or reading comprehension per se. The correct answer must reflect the research motivation (gap in lizard studies vs. birds), which Option A does explicitly."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option A directly states the research aim \u2014 to investigate factors influencing lizard clutch size, motivated by the gap in existing knowledge compared to birds \u2014 which aligns with the student's goal to emphasize the aim.",
+      "full": "The student\u2019s goal is to emphasize the aim of the research study. Option A explicitly states that researchers wanted to know which factors influence lizard egg clutch size because such factors have been well studied in birds but not in lizards. This directly addresses the motivation and purpose behind the study, making it the best synthesis of the notes for the stated goal. Option B focuses on methodology and findings, Option C presents an interpretation or conclusion, and Option D describes only the data collection method \u2014 none of these emphasize the aim as directly as Option A does."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Researchers wanted to know which factors influence lizard egg clutch size because such factors have been well studied in birds but not in lizards.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Uses key phrases from the notes ('factors influence lizard clutch size', 'well studied in birds') and connects them to express the research aim."
+      },
+      {
+        "label": "B",
+        "text": "After they obtained data for over 3,900 lizard species, researchers determined that larger clutch size was associated with environments in higher latitudes that have more seasonal change.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_action_verb",
+        "student_failure_mode": null,
+        "why_wrong": "Describes what the researchers did and found, not why they undertook the study \u2014 fails to emphasize the aim as required.",
+        "why_plausible": "Accurately reports data and finding from the notes; sounds like a valid summary."
+      },
+      {
+        "label": "C",
+        "text": "We now know that lizards in higher-latitude environments may lay larger clutches to take advantage of shorter windows of favorable conditions.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_action_verb",
+        "student_failure_mode": null,
+        "why_wrong": "States a conclusion or implication, not the aim of the research. Does not address the motivation for studying lizard clutch size.",
+        "why_plausible": "Presents a plausible inference from the data; uses language consistent with scientific reporting."
+      },
+      {
+        "label": "D",
+        "text": "Researchers obtained clutch-size and habitat data for over 3,900 lizard species and analyzed the data with statistical models.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_action_verb",
+        "student_failure_mode": null,
+        "why_wrong": "Describes only the procedure, not the purpose or aim of the research. Fails to connect to the gap in knowledge mentioned in the notes.",
+        "why_plausible": "Directly quotes a methodological detail from the notes; appears factual and precise."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "40036251-f103-5b31-b10d-7eb5e655daf6",
+    "source_exam_code": "8",
+    "source_module_code": "02",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In 1966, Emmett Ashford became the first African American to umpire a Major League Baseball game. His energetic gestures announcing when a player had struck out and his habit of barreling after a hit ball to see if it would land out of _______ transform the traditionally solemn umpire role into a dynamic one.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "sports",
+      "topic_fine": "baseball history",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests the student's ability to maintain logical relationships and parallel structure within a compound subject construction. The correct answer must preserve the grammatical integrity of the sentence while completing the idiomatic phrase 'out of bounds'."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct answer is 'bounds helped' because it maintains subject-verb agreement and parallel structure with the preceding clause.",
+      "full": "The sentence contains two parallel subjects: 'His energetic gestures...' and 'his habit...'. The verb 'transform' must agree with both. Since both are plural in meaning (gestures and habit), the verb should be plural ('transform'). The phrase 'out of bounds' is a fixed idiom meaning outside the playing area. The correct completion is 'bounds helped', which forms a complete clause: 'his habit of barreling after a hit ball to see if it would land out of bounds helped transform...'. Option B incorrectly inserts a comma, breaking the grammatical structure. Option C adds an unnecessary relative clause. Option D uses an infinitive that does not fit the sentence's tense or structure."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "bounds helped",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Completes the idiomatic phrase 'out of bounds' and maintains subject-verb agreement."
+      },
+      {
+        "label": "B",
+        "text": "bounds, helping",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a comma inside the required syntactic unit (preposition-complement), violating Standard English conventions.",
+        "why_plausible": "Appears to separate clauses but actually breaks the grammatical structure by inserting an unnecessary comma."
+      },
+      {
+        "label": "C",
+        "text": "bounds that helped",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "illogical_comparison",
+        "student_failure_mode": null,
+        "why_wrong": "Creates an illogical comparison by implying 'bounds' is a thing that helped, rather than completing the phrase 'out of bounds'.",
+        "why_plausible": "Adds a relative clause that seems to provide additional information about 'bounds'."
+      },
+      {
+        "label": "D",
+        "text": "bounds to help",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Uses a non-finite verb form where a finite verb is required to maintain parallel structure and subject-verb agreement.",
+        "why_plausible": "Uses an infinitive that might seem appropriate for expressing purpose."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "88b45815-160d-5be6-8f8c-2bda910a240d",
+    "source_exam_code": "9",
+    "source_module_code": "02",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In the historical novel The Surrender Tree, Cuban American author Margarita Engle uses poetry rather than prose _______ the true story of Cuban folk hero Rosa La Bayamesa.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "logical_relationships",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nonfinite_for_finite",
+      "topic_broad": "literature",
+      "topic_fine": "authorial technique",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests the appropriate grammatical structure to express purpose after a verb of action. While verb form is involved, the primary issue is logical predication \u2014 selecting the form that correctly conveys the author's intention. The infinitive 'to tell' is the conventional marker of purpose in this context."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "logical_relationships",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The infinitive 'to tell' correctly expresses purpose after 'uses poetry rather than prose.'",
+      "full": "The sentence describes the author's purpose in using poetry: to tell a story. The correct grammatical construction is the infinitive 'to tell,' which functions as an adverbial phrase indicating purpose. Option A ('tells') creates a subject-verb agreement error (author uses... tells) and incorrectly implies simultaneous action. Option B ('told') introduces tense inconsistency with the present-tense main verb 'uses.' Option C ('is telling') creates an awkward progressive form that does not express purpose. Only option D ('to tell') correctly conveys the intended meaning and follows standard English conventions for expressing purpose after a verb of action."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "tells",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a subject-verb agreement error: 'author uses... tells' incorrectly treats 'tells' as a second main verb without proper conjunction or punctuation. Also fails to express purpose.",
+        "why_plausible": "Appears grammatically plausible at first glance because 'tells' is a common third-person singular verb form."
+      },
+      {
+        "label": "B",
+        "text": "told",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": null,
+        "why_wrong": "Introduces tense inconsistency: 'uses' (present) cannot be followed by 'told' (past) to describe the same ongoing authorial technique. Also fails to express purpose.",
+        "why_plausible": "May seem reasonable because the novel is historical, suggesting past tense might be appropriate."
+      },
+      {
+        "label": "C",
+        "text": "is telling",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_form",
+        "student_failure_mode": null,
+        "why_wrong": "Creates an awkward progressive form that doesn't express purpose. The construction 'uses... is telling' is grammatically incorrect without additional punctuation or conjunction. Also fails to convey the intended purpose relationship.",
+        "why_plausible": "The progressive form 'is telling' may seem natural because it describes ongoing action, which fits the context of storytelling."
+      },
+      {
+        "label": "D",
+        "text": "to tell",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly expresses the author's purpose in using poetry rather than prose."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

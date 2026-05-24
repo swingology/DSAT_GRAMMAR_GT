@@ -1,0 +1,93 @@
+[
+  {
+    "question_id": "68a8837a-dc30-526a-8ecb-24ad1c3d6747",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 30,
+    "question_text": "Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    "passage_text": "While researching a topic, a student has taken the following notes: \u2022 The Philadelphia and Lancaster Turnpike was a road built between 1792 and 1794. \u2022 It was the first private turnpike in the United States. \u2022 It connected the cities of Philadelphia and Lancaster in the state of Pennsylvania. \u2022 It was sixty-two miles long. The student wants to emphasize the distance covered by the Philadelphia and Lancaster Turnpike.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Expression of Ideas",
+      "skill_family_key": "rhetorical_synthesis",
+      "grammar_focus_key": "emphasis_meaning_shifts",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_notes_synthesis",
+      "stimulus_mode_key": "notes_bullets",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "transportation infrastructure",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is an Expression of Ideas question requiring synthesis of bullet-point notes into a single sentence that fulfills a specific rhetorical goal \u2014 emphasizing distance. The correct answer must foreground the length metric while integrating relevant context. Grammar rules apply because the task involves rhetorical effectiveness, precision, and emphasis, not pure reading comprehension."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "emphasis_meaning_shifts",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "Option A directly states the length (sixty-two miles) and connects it to the two cities, fulfilling the goal of emphasizing distance.",
+      "full": "The student\u2019s goal is to emphasize the distance covered by the turnpike. Option A explicitly includes the phrase 'sixty-two-mile-long' and names both endpoints, making the spatial extent the focal point. Option B highlights historical significance, not distance. Option C includes the distance but buries it within a compound sentence that emphasizes construction dates and location. Option D mentions completion year and general historic status without specifying length. Only Option A centers the sixty-two-mile measurement as the primary descriptor."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "The sixty-two-mile-long Philadelphia and Lancaster Turnpike connected the Pennsylvania cities of Philadelphia and Lancaster.",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Uses exact phrasing from the notes ('sixty-two miles') and correctly identifies the cities."
+      },
+      {
+        "label": "B",
+        "text": "The Philadelphia and Lancaster Turnpike was the first private turnpike in the United States.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_scope",
+        "student_failure_mode": null,
+        "why_wrong": "Focuses on historical primacy rather than distance, failing the student's stated goal.",
+        "why_plausible": "Mentions the turnpike and uses accurate historical fact from the notes."
+      },
+      {
+        "label": "C",
+        "text": "The Philadelphia and Lancaster Turnpike, which connected two Pennsylvania cities, was built between 1792 and 1794.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "partial_purpose",
+        "student_failure_mode": null,
+        "why_wrong": "Emphasizes construction period and location rather than distance; the distance is omitted entirely.",
+        "why_plausible": "Includes geographic context and time frame, both mentioned in the notes."
+      },
+      {
+        "label": "D",
+        "text": "A historic Pennsylvania road, the Philadelphia and Lancaster Turnpike was completed in 1794.",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_scope",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to mention the distance or connect the cities; focuses on temporal and categorical attributes instead.",
+        "why_plausible": "Describes the road as historic and provides completion date, both consistent with the notes."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": false,
+    "is_reading": true,
+    "annotation_confidence": null
+  }
+]

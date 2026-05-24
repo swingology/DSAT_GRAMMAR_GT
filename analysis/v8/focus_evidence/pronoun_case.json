@@ -1,0 +1,95 @@
+[
+  {
+    "question_id": "71ee5e44-6fc2-5a72-b7f0-ddbd7bf6fd08",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "British scientists James Watson and Francis Crick won the Nobel Prize in part for their 1953 paper announcing the double helix structure of DNA, but it is misleading to say that Watson and Crick discovered the double helix. _______ findings were based on a famous X-ray image of DNA fibers, \u201cPhoto 51,\u201d developed by X-ray crystallographer Rosalind Franklin and her graduate student Raymond Gosling.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "agreement",
+      "grammar_focus_key": "pronoun_case",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "science",
+      "topic_fine": "biology history",
+      "answer_mechanism_key": "pronoun_antecedent_agreement",
+      "solver_pattern_key": "identify_subject_then_match_pronoun",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a pronoun case question requiring agreement between the plural antecedent (Watson and Crick) and the possessive pronoun. The correct answer is 'Their' (option C). All distractors are grammatically plausible surface forms but fail on number or case agreement."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "pronoun_case",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The blank refers to Watson and Crick\u2019s findings, which requires the plural possessive pronoun 'Their.'",
+      "full": "The sentence discusses the findings of James Watson and Francis Crick \u2014 two people \u2014 so the possessive pronoun must be plural: 'Their.' Option A ('They\u2019re') is a contraction of 'they are,' which does not show possession. Option B ('It\u2019s') is singular and refers to a single entity, which does not match the plural subject. Option D ('Its') is also singular and possessive, but again, incorrect for a plural antecedent. Only option C correctly uses the plural possessive form to refer to Watson and Crick's findings."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "They\u2019re",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "commonly_confused_words",
+        "student_failure_mode": null,
+        "why_wrong": "\u2018They\u2019re\u2019 is a contraction of \u2018they are,\u2019 not a possessive pronoun. It cannot modify \u2018findings.\u2019",
+        "why_plausible": "Sounds identical to 'Their' and is commonly misused in informal writing."
+      },
+      {
+        "label": "B",
+        "text": "It\u2019s",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "noun_countability",
+        "student_failure_mode": null,
+        "why_wrong": "\u2018It\u2019s\u2019 is singular possessive, but the antecedent (Watson and Crick) is plural. Incorrect number agreement.",
+        "why_plausible": "May seem acceptable if the reader misidentifies the subject as singular (e.g., 'the discovery')."
+      },
+      {
+        "label": "C",
+        "text": "Their",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically required to agree with the plural antecedent Watson and Crick."
+      },
+      {
+        "label": "D",
+        "text": "Its",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "noun_countability",
+        "student_failure_mode": null,
+        "why_wrong": "\u2018Its\u2019 is singular possessive; the antecedent (Watson and Crick) is plural. Fails number agreement.",
+        "why_plausible": "May be selected if the reader confuses the subject with a singular noun like 'discovery' or 'paper.'"
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:agreement"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

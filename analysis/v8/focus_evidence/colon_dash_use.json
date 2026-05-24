@@ -1,0 +1,275 @@
+[
+  {
+    "question_id": "b78ca8c1-5f18-539f-9d0e-4986b227d147",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Researchers studying magnetosensation have determined why some soil-dwelling roundworms in the Southern Hemisphere move in the opposite direction of Earth\u2019s magnetic field when searching for _______ in the Northern Hemisphere, the magnetic field points down, into the ground, but in the Southern Hemisphere, it points up, toward the surface and away from worms\u2019 food sources.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "colon_dash_use",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "biology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a punctuation question testing the correct use of a colon to introduce an explanatory clause after a complete independent clause. The trap lies in the plausible but incorrect comma splice (Option B) and the misleading conjunction 'while' (Option C), which suggests contrast but fails to resolve the sentence boundary error."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "colon_dash_use",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The colon is required to introduce an explanation that follows a complete independent clause.",
+      "full": "The sentence before the blank is a complete independent clause: 'Researchers studying magnetosensation have determined why some soil-dwelling roundworms in the Southern Hemisphere move in the opposite direction of Earth\u2019s magnetic field when searching for...'. The phrase after the blank explains the reason for this behavior \u2014 specifically, how the magnetic field differs between hemispheres. A colon is used to introduce such explanatory material following a complete independent clause. Option B (comma) creates a comma splice. Option C (while) creates a run-on with no conjunction properly joining two independent clauses. Option D (no punctuation) leaves the sentence grammatically incomplete and illogical. Only option A correctly uses a colon to link the independent clause to its explanation."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "food:",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "N/A",
+        "why_plausible": "None \u2014 this is the correct answer."
+      },
+      {
+        "label": "B",
+        "text": "food,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice \u2014 two independent clauses joined by a comma without a coordinating conjunction or semicolon.",
+        "why_plausible": "Appears grammatically acceptable at first glance; students often overuse commas to separate clauses."
+      },
+      {
+        "label": "C",
+        "text": "food while",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence \u2014 'while' is not sufficient to join two independent clauses without a comma before it or restructuring.",
+        "why_plausible": "The word 'while' suggests contrast, which fits the context of comparing hemispheres, making it seem logically appropriate."
+      },
+      {
+        "label": "D",
+        "text": "food",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Leaves the sentence grammatically incomplete \u2014 the second part is an independent clause that cannot stand alone without proper punctuation or conjunction.",
+        "why_plausible": "Seems minimal and clean; students may assume no punctuation is needed if the meaning seems clear."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "2e51ee08-378a-5ad2-b0c1-ea151eef3816",
+    "source_exam_code": "6",
+    "source_module_code": "02",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "For thousands of years, humans have used domesticated goats (Capra hircus) to clear land of unwanted vegetation. When it comes to their diets, goats are notoriously _______ they will devour all kinds of shrubs and weeds, leaving virtually no part of any plant unconsumed.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "colon_dash_use",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "zoology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests the correct use of a colon to introduce an explanatory clause following an independent clause. This is a punctuation boundary rule under Standard English Conventions."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "colon_dash_use",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The colon is required to introduce an explanation or elaboration of the preceding clause.",
+      "full": "The sentence presents a claim about goats being 'notoriously indiscriminate' and then immediately explains what that means \u2014 they devour all kinds of vegetation. A colon is the correct punctuation to introduce this explanatory clause. The other options fail: 'and' creates a run-on; a comma creates a comma splice; omitting punctuation leaves the two independent clauses improperly joined."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "indiscriminate and",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by joining two independent clauses with only a coordinating conjunction without a preceding comma.",
+        "why_plausible": "The word 'and' is grammatically plausible in many contexts and connects ideas, making it seem like a natural connector here."
+      },
+      {
+        "label": "B",
+        "text": "indiscriminate,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice \u2014 two independent clauses incorrectly joined by a comma without a coordinating conjunction or semicolon.",
+        "why_plausible": "Commas are commonly used to separate clauses, so students may assume a comma alone suffices here."
+      },
+      {
+        "label": "C",
+        "text": "indiscriminate",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Leaves two independent clauses improperly joined without any punctuation or conjunction, creating a fused sentence.",
+        "why_plausible": "Omitting punctuation may seem acceptable if the student misreads the sentence as one unit rather than two clauses."
+      },
+      {
+        "label": "D",
+        "text": "indiscriminate:",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the rule that a colon introduces an explanation or elaboration of the preceding independent clause."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "75eb9b23-b56b-5582-b842-ab3b4596ab9f",
+    "source_exam_code": "9",
+    "source_module_code": "01",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English? As cheesemaking practices spread throughout Europe and Asia during and after the Neolithic, divergent strategies for preserving milk _______ whereas rennet-coagulated cheesemaking became key to milk preservation in Europe and Southwest Asia, acid-heat coagulation methods became common among nomadic herding populations of the northeastern Eurasian steppe.",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "colon_dash_use",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "food history",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The correct answer requires recognizing that a colon must introduce a clause that explains or contrasts with the preceding independent clause. Distractors test common punctuation errors: comma splice (D), run-on with coordinating conjunction (B), and missing punctuation (A)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "colon_dash_use",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "A colon is required to introduce the contrasting clause that follows, which explains the nature of the 'divergent strategies.'",
+      "full": "The sentence presents a general claim \u2014 that divergent strategies for preserving milk emerged \u2014 and then immediately provides specific examples of those strategies. The colon (option C) correctly introduces this explanatory contrast. A comma (D) would create a comma splice because the second clause is independent. 'And' (B) creates a run-on without proper conjunction structure. No punctuation (A) leaves the sentence grammatically incomplete. Only the colon properly signals that what follows will illustrate or elaborate on the preceding clause."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "emerged",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by joining two independent clauses without proper punctuation or conjunction.",
+        "why_plausible": "Appears grammatically complete at first glance; students may overlook the need for punctuation before the contrasting clause."
+      },
+      {
+        "label": "B",
+        "text": "emerged and",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence; 'and' alone cannot properly connect two independent clauses without a preceding comma.",
+        "why_plausible": "Students may assume 'and' can join any two clauses without considering the need for a comma before it in compound sentences."
+      },
+      {
+        "label": "C",
+        "text": "emerged:",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly introduces the explanatory contrast between two divergent cheesemaking strategies."
+      },
+      {
+        "label": "D",
+        "text": "emerged,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by incorrectly joining two independent clauses with only a comma.",
+        "why_plausible": "Students often overuse commas to separate clauses, mistaking them for sufficient connectors."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

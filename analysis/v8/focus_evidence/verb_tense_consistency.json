@@ -1,0 +1,1549 @@
+[
+  {
+    "question_id": "b90e88b3-bbfd-5969-bf08-d596971e29d2",
+    "source_exam_code": "1",
+    "source_module_code": "01",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In 1637, the price of tulips skyrocketed in Amsterdam, with single bulbs of rare varieties selling for up to the equivalent of $200,000 in today\u2019s US dollars. Some historians _______ that this \u201ctulip mania\u201d was the first historical instance of an asset bubble, which occurs when investors drive prices to highs not supported by actual demand.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nonfinite_for_finite",
+      "topic_broad": "history",
+      "topic_fine": "economic history",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb form and tense consistency. The subject 'Some historians' requires a finite present-tense verb. All distractors are non-finite forms that cannot serve as the main verb of the clause. The correct answer 'claim' is the only finite verb form that agrees with the plural subject and maintains tense consistency with the surrounding context."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The subject 'Some historians' requires a finite verb in the present tense to form a complete clause. 'Claim' is the correct base form verb that agrees with the plural subject and fits the sentence structure.",
+      "full": "The sentence requires a finite verb to complete the main clause. The subject 'Some historians' is plural and in the present tense, so the verb must be 'claim' (present simple) to maintain subject-verb agreement. Option A ('claiming') creates a participial phrase without a main verb. Option C ('having claimed') is a perfect participle and cannot serve as the main verb. Option D ('to claim') is an infinitive and does not function as a main verb in this context. Only option B provides a grammatically correct finite verb that agrees with the subject and completes the sentence according to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "claiming",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "This is a present participle and cannot serve as the main verb of the clause. It creates a sentence fragment without a finite verb.",
+        "why_plausible": "Students may select this because 'claiming' is a common participle form used in participial phrases, and they may overlook the need for a finite verb."
+      },
+      {
+        "label": "B",
+        "text": "claim",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "This is the correct finite verb form that agrees with the plural subject 'Some historians' and maintains present tense consistency with the surrounding context."
+      },
+      {
+        "label": "C",
+        "text": "having claimed",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "This is a perfect participle and cannot serve as the main verb of the clause. It creates a sentence fragment without a finite verb.",
+        "why_plausible": "Students may select this because 'having claimed' is a grammatically valid perfect participle form, and they may confuse it with a main verb form."
+      },
+      {
+        "label": "D",
+        "text": "to claim",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "This is an infinitive and cannot serve as the main verb of the clause. It creates a sentence fragment without a finite verb.",
+        "why_plausible": "Students may select this because 'to claim' is a common infinitive form used in purpose clauses, and they may overlook the need for a finite verb."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "79c8df4e-6fd2-5534-b45b-a63c60d91e4d",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In his 1963 exhibition Exposition of Music\u2014Electronic Television, Korean American artist Nam June Paik showed how television images could be manipulated to express an artist\u2019s perspective. Today, Paik _______ considered the first video artist.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb tense consistency. The temporal adverb 'Today' establishes a present context, requiring the simple present tense 'is'. The correct answer eliminates options that introduce incorrect time frames (future, past perfect, or simple past)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence describes a current, ongoing fact about Paik's legacy, requiring simple present tense.",
+      "full": "The phrase 'Today, Paik ___ considered...' refers to a present-day status or recognition that remains true in the current moment. The correct verb form must be in the simple present tense to reflect this enduring state. Option D, 'is', correctly conveys that Paik is currently regarded as the first video artist. Options A ('will be'), B ('had been'), and C ('was') incorrectly imply future, past perfect, or simple past time frames, which contradict the temporal marker 'Today.'"
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "will be",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Implies Paik will be considered the first video artist in the future, contradicting the present-tense context established by 'Today.'",
+        "why_plausible": "Students may misread 'Today' as setting up a future event rather than a current state."
+      },
+      {
+        "label": "B",
+        "text": "had been",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Past perfect implies a completed action before another past event, which is illogical here since 'Today' anchors the sentence in the present.",
+        "why_plausible": "May appeal to students who associate Paik\u2019s 1963 exhibition with past events and overextend that into the present clause."
+      },
+      {
+        "label": "C",
+        "text": "was",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Simple past suggests Paik was once considered the first video artist but no longer is, which contradicts the intended meaning of ongoing recognition.",
+        "why_plausible": "Students may associate Paik\u2019s historical role with past tense, ignoring the present-tense frame set by 'Today.'"
+      },
+      {
+        "label": "D",
+        "text": "is",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the present-tense context established by 'Today,' reflecting Paik\u2019s current status in art history."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "b3579b65-42dc-58d3-be9c-d0ed7ec4df56",
+    "source_exam_code": "1",
+    "source_module_code": "02",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In order to prevent nonnative fish species from moving freely between the Mediterranean and Red Seas, marine biologist Bella Galil has proposed that a saline lock system be installed along the Suez Canal in Egypt\u2019s Great Bitter Lakes. The lock would increase the salinity of the lakes and _______ a natural barrier of water most marine creatures would be unable to cross.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nonfinite_for_finite",
+      "topic_broad": "science",
+      "topic_fine": "marine biology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb form consistency with a modal auxiliary. The correct answer must be the base form 'create' to follow 'would.'"
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The verb must agree with the subject 'The lock' and match the modal auxiliary 'would' in tense and form.",
+      "full": "The subject of the sentence is 'The lock,' which is singular. The modal auxiliary 'would' requires the base form of the verb (infinitive without 'to') to follow it. Therefore, 'create' is grammatically correct. Option A ('creates') is incorrect because it is third-person singular present tense and does not match the modal construction. Option C ('creating') is a participle and cannot serve as the main verb after 'would.' Option D ('created') is past tense and does not match the conditional mood established by 'would.'"
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "creates",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "subject_verb_agreement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrect because 'creates' is third-person singular present tense and cannot follow the modal auxiliary 'would.'",
+        "why_plausible": "Appears grammatically plausible at first glance due to subject-verb agreement with 'The lock.'"
+      },
+      {
+        "label": "B",
+        "text": "create",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly follows the modal auxiliary 'would' with the base verb form."
+      },
+      {
+        "label": "C",
+        "text": "creating",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "'Creating' is a participle and cannot function as the main verb after 'would.'",
+        "why_plausible": "May seem plausible if student confuses participles with main verbs after modals."
+      },
+      {
+        "label": "D",
+        "text": "created",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "verb_tense_consistency",
+        "student_failure_mode": null,
+        "why_wrong": "'Created' is past tense and does not match the conditional mood established by 'would.'",
+        "why_plausible": "May be selected if student misinterprets 'would' as requiring past tense rather than base form."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "83d3854e-e2e1-5412-9269-02d87ecaade9",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Food and the sensation of taste are central to Monique Truong\u2019s novels. In The Book of Salt, for example, the exiled character of B\u00ecnh connects to his native Saigon through the food he prepares, while in Bitter in the Mouth, the character of Linda ______ a form of synesthesia whereby the words she hears evoke tastes.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "literature",
+      "topic_fine": "literary analysis",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing verb tense consistency within a literary context. All options are grammatically plausible singular verbs, but only 'experiences' matches the literary present tense used throughout the passage to describe fictional characters\u2019 enduring traits. The trap lies in selecting a past or future tense form that might seem appropriate if misreading the passage's register."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct verb form must agree with the singular subject 'Linda' and match the present-tense register established by the surrounding sentences.",
+      "full": "The passage describes general thematic elements across Monique Truong\u2019s novels using present tense ('are', 'connects'). The blank refers to a character trait (synesthesia) that is presented as a permanent or ongoing feature of Linda\u2019s experience, not a past or future event. Therefore, the simple present tense 'experiences' is required to maintain subject-verb agreement and tense consistency. Option A ('experienced') is past tense and mismatches the narrative register. Option B ('had experienced') is past perfect, implying an action completed before another past event \u2014 inappropriate here. Option D ('will be experiencing') is future continuous, suggesting a temporary future state \u2014 also inconsistent with the timeless, descriptive tone of the passage."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "experienced",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "past_tense_for_literary_present",
+        "why_wrong": "Uses past tense 'experienced', which contradicts the literary present tense register established by 'are' and 'connects'. The character\u2019s synesthesia is presented as a persistent condition, not a one-time event.",
+        "why_plausible": "Past tense is commonly used when describing events in stories, especially if misreading the passage as narrating a specific past event rather than describing a character\u2019s enduring trait."
+      },
+      {
+        "label": "B",
+        "text": "had experienced",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "past_tense_for_literary_present",
+        "why_wrong": "Past perfect 'had experienced' implies an action completed before another past event, which is not supported by the context. The passage uses literary present to describe timeless character traits.",
+        "why_plausible": "Past perfect might seem appropriate if the student assumes the synesthesia occurred before another past event mentioned elsewhere \u2014 though no such event exists in the passage."
+      },
+      {
+        "label": "C",
+        "text": "experiences",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Matches the literary present tense used throughout the passage to describe what characters do or possess in fictional works."
+      },
+      {
+        "label": "D",
+        "text": "will be experiencing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "past_tense_for_literary_present",
+        "why_wrong": "Future continuous 'will be experiencing' suggests a temporary future state, which contradicts the timeless, descriptive nature of the literary present tense used in the passage.",
+        "why_plausible": "Future continuous might seem appropriate if the student misreads the passage as predicting a future development in the character\u2019s life rather than describing an existing trait."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "82cc5055-0fe8-58bb-ad2a-4ba10f63ef85",
+    "source_exam_code": "11",
+    "source_module_code": "01",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Following her debut album release in 2002, Mexican singer-songwriter Natalia Lafourcade quickly shot to fame. By 2023, she b l a n k one of the most celebrated musicians in Latin America, having released twelve albums and won seventeen Latin Grammy awards\u2014more than any other female artist in history.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "language",
+      "topic_fine": "grammar",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests verb tense consistency with a past reference point ('By 2023'), requiring past perfect. Distractors include future tenses and simple present, which are grammatically incompatible with the temporal context."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'By 2023' indicates a completed action prior to a past reference point, requiring the past perfect tense.",
+      "full": "The sentence describes events that occurred before 2023, which is itself referenced as a past time. The phrase 'By 2023' signals that the state of being 'one of the most celebrated musicians' was achieved before that year. Therefore, the past perfect tense ('had become') is required to indicate an action completed before another past event. Option D correctly uses the past perfect tense. Option A (future) and C (future perfect) are incorrect because they refer to future time. Option B (simple present) is incorrect because it does not reflect the past timeframe established by 'By 2023'."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "will become",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Uses future tense, which contradicts the past timeframe established by 'By 2023'.",
+        "why_plausible": "Students may select this if they misread 'By 2023' as referring to a future time rather than a past deadline."
+      },
+      {
+        "label": "B",
+        "text": "becomes",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "grammar_fit_only",
+        "why_wrong": "Simple present tense is incompatible with the past reference point 'By 2023'.",
+        "why_plausible": "Students may default to simple present tense when unsure, especially if they overlook the temporal marker 'By 2023'."
+      },
+      {
+        "label": "C",
+        "text": "will have become",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Future perfect tense refers to completion before a future time, but 'By 2023' is a past reference point.",
+        "why_plausible": "Students may confuse future perfect with past perfect, especially if they misinterpret 'By 2023' as a future deadline."
+      },
+      {
+        "label": "D",
+        "text": "had become",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses past perfect tense to indicate an action completed before a specified past time."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "34720542-322f-528b-ac97-4e3c3e69ad9d",
+    "source_exam_code": "11",
+    "source_module_code": "01",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Helical b l a n k widely understood to confer stability and efficiency in the locomotion of a variety of microscopic organisms\u2014including bacteria, eukaryotic algae, and ciliates\u2014bestows similar advantages, albeit via different propulsive modes, to larger oceanic macroplanktons, such as salps.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "biology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests verb form selection to complete a grammatical sentence. The correct answer must supply a finite verb in the simple present tense to match the declarative, general-truth tone of the sentence. All distractors fail by either omitting the verb, using incorrect tense, or inserting unnecessary punctuation."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option provides a finite verb ('is') to complete the subject-verb-object structure without introducing unnecessary punctuation or incorrect verb form.",
+      "full": "The sentence requires a finite verb to link the subject 'Helical' (referring to helical swimming) with the predicate. Option B, 'swimming is', correctly supplies the linking verb 'is' to form a grammatically complete clause: 'Helical swimming is widely understood...'. Option A incorrectly inserts a comma after 'swimming', creating an unnecessary pause and disrupting the subject-verb agreement. Option C uses 'has been', which introduces an inappropriate perfect tense not supported by context. Option D ends with a comma, leaving the sentence incomplete and lacking a main verb."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "swimming, is",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a comma between the subject 'Helical swimming' and the verb 'is', violating the rule against internal punctuation within a required syntactic unit (subject\u2013verb).",
+        "why_plausible": "Includes the correct verb 'is' but adds an unnecessary comma after 'swimming', which may appear plausible to students who misapply comma rules for appositives or introductory phrases."
+      },
+      {
+        "label": "B",
+        "text": "swimming is",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Provides the grammatically necessary finite verb 'is' in the correct tense and position to complete the sentence without punctuation errors."
+      },
+      {
+        "label": "C",
+        "text": "swimming has been",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": null,
+        "why_wrong": "Introduces the present perfect tense 'has been', which implies a completed action with present relevance, whereas the sentence describes a general, ongoing scientific understanding requiring simple present tense.",
+        "why_plausible": "Uses a grammatically valid verb phrase 'has been' that might appeal to students who overgeneralize perfect tense usage for statements of fact."
+      },
+      {
+        "label": "D",
+        "text": "swimming,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "missing_verb",
+        "student_failure_mode": null,
+        "why_wrong": "Omits the required finite verb entirely, leaving the sentence grammatically incomplete. The comma alone cannot serve as a verb.",
+        "why_plausible": "May appear plausible to students who mistakenly believe the comma signals a pause before an implied verb or who confuse this structure with participial phrases."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "a28f2002-e7ca-5706-971b-76fd29c6c02b",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "If an animal can recognize itself in a reflective surface (\u201cthe mirror test\u201d), it is considered to have self-awareness. In a recent study, scientists b l a n k for evidence of self-awareness in snakes, species that rely primarily on olfactory rather than visual processing, adapted the test to foreground smell, modifying the scent trails of North American eastern garter snakes and African ball pythons.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "animal cognition",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing verb tense consistency within a past-tense narrative. The correct answer requires matching the simple past tense of 'adapted' and 'modifying' (which functions as a participial phrase modifying the main clause). All distractors represent plausible but incorrect verb forms that students might choose due to confusion about tense or aspect."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct verb form 'searched' agrees with the past-tense narrative context established by 'adapted' and 'modifying'.",
+      "full": "The sentence describes a completed action in the past: scientists conducted a study, adapted a test, and modified scent trails. The verb 'adapted' establishes past tense, so the blank must also be in simple past tense to maintain consistency. Option A, 'searched', is the simple past form of 'search' and correctly matches the tense of the surrounding verbs. Option B ('searching') is a present participle and would require an auxiliary verb (e.g., 'were searching'), which is not present. Option C ('were searching') is past continuous and implies ongoing action, which is not supported by the context. Option D ('have searched') is present perfect and refers to an action with present relevance, which contradicts the past-tense narrative. Therefore, 'searched' is the only option that conforms to Standard English conventions in this context."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "searched",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically well-formed and matches the past-tense context."
+      },
+      {
+        "label": "B",
+        "text": "searching",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Requires an auxiliary verb (e.g., 'were searching') to function as a main verb in past tense; stands alone as a non-finite form, which is incorrect in this syntactic position.",
+        "why_plausible": "Sounds natural in isolation and is grammatically valid as a participle, but lacks the finite verb form required here."
+      },
+      {
+        "label": "C",
+        "text": "were searching",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense_aspect",
+        "student_failure_mode": null,
+        "why_wrong": "Past continuous ('were searching') implies ongoing action, which is not supported by the context; the sentence describes a single completed action parallel to 'adapted' and 'modifying'.",
+        "why_plausible": "Matches the past time frame and includes a finite verb form, making it seem plausible to students who confuse simple past with past continuous."
+      },
+      {
+        "label": "D",
+        "text": "have searched",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense_aspect",
+        "student_failure_mode": null,
+        "why_wrong": "Present perfect ('have searched') connects past action to present relevance, which contradicts the clear past-tense narrative established by 'adapted' and 'modifying'.",
+        "why_plausible": "Present perfect tense often appears in academic writing and may seem appropriate for describing research findings."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "187b9a34-3f38-582e-a3a4-7ced6bfd62e0",
+    "source_exam_code": "4",
+    "source_module_code": "01",
+    "source_question_number": 20,
+    "question_text": "Like other amphibians, the wood frog (Rana sylvatica) is unable to generate its own heat, so during periods of subfreezing temperatures, it _______ by producing large amounts of glucose, a sugar that helps prevent damaging ice from forming inside its cells. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing verb tense consistency in the context of a general scientific fact. The correct answer must use the simple present tense to match the register of the surrounding sentence, which states a biological truth. All distractors use incorrect tenses that do not align with this register."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence describes a general biological fact about the wood frog\u2019s survival mechanism, which requires the simple present tense.",
+      "full": "The sentence presents a scientific fact about how the wood frog survives freezing temperatures \u2014 a consistent, recurring biological adaptation. Therefore, the verb must be in the simple present tense to match the general truth register. Option D, 'survives,' correctly uses the simple present tense. Option A ('had survived') is past perfect and implies a completed action before another past event, which is inappropriate here. Option B ('survived') is simple past and suggests a one-time or historical event, not a general trait. Option C ('would survive') is conditional and implies hypothetical or repeated past behavior, which does not fit the context of a factual biological description."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "had survived",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": null,
+        "why_wrong": "Past perfect tense ('had survived') implies an action completed before another past event, which is illogical in a sentence describing a general biological adaptation.",
+        "why_plausible": "Students may incorrectly assume the action occurred in the past because the frog 'is unable' to generate heat \u2014 misreading the present state as implying past action."
+      },
+      {
+        "label": "B",
+        "text": "survived",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": null,
+        "why_wrong": "Simple past tense ('survived') implies a completed action in the past, but the sentence describes an ongoing, universal biological mechanism.",
+        "why_plausible": "Simple past tense may seem appropriate if students interpret the survival as a specific historical event rather than a general trait."
+      },
+      {
+        "label": "C",
+        "text": "would survive",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": null,
+        "why_wrong": "Conditional tense ('would survive') implies hypothetical or repeated past behavior, not a general scientific truth.",
+        "why_plausible": "Conditional 'would survive' may appeal to students who think the survival depends on conditions (subfreezing temperatures), but the sentence describes a reliable, automatic biological response."
+      },
+      {
+        "label": "D",
+        "text": "survives",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Matches the scientific general present register established by 'is unable' and 'helps'."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "51479bc7-011d-5228-8b66-55e82577b9a1",
+    "source_exam_code": "5",
+    "source_module_code": "01",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In 1929, Edwin Herbert Land invented a polarizing filter that was featured in a number of products, from sunglasses to 3D movies. A decade later, Land _______ his technology to invent the world\u2019s first instant camera, the Polaroid Land camera.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "invention",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing verb tense consistency. The passage is in past tense, so the correct answer must be the simple past tense 'used'. All distractors are non-finite forms inappropriate for a main clause verb. The stem explicitly asks for conformity to Standard English conventions, placing it in the SEC domain."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct verb form is 'used' because the sentence describes a past event and requires simple past tense to match the surrounding context.",
+      "full": "The sentence describes a historical event \u2014 Land's invention of the Polaroid camera \u2014 which occurred in the past. The surrounding context uses past tense verbs ('invented', 'was featured'), so the blank must also use the simple past tense 'used'. Option B ('to have used') is an infinitive perfect form, which is not appropriate for a main clause describing a completed past action. Option C ('to use') is an infinitive, which cannot serve as the main verb in this independent clause. Option D ('using') is a present participle, which would create a dangling modifier or incomplete clause. Only option A correctly completes the sentence with a finite past-tense verb that agrees with the subject and context."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "used",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically correct and matches the past tense context of the sentence."
+      },
+      {
+        "label": "B",
+        "text": "to have used",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly uses an infinitive perfect form where a finite past-tense verb is required in the main clause.",
+        "why_plausible": "Appears more formal or complex, which may mislead students into thinking it is more correct."
+      },
+      {
+        "label": "C",
+        "text": "to use",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Uses an infinitive form where a finite past-tense verb is required in the main clause.",
+        "why_plausible": "May seem plausible due to its simplicity and common usage in other contexts."
+      },
+      {
+        "label": "D",
+        "text": "using",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Uses a present participle, which cannot function as the main verb in an independent clause without auxiliary support.",
+        "why_plausible": "May appear grammatically acceptable at first glance due to its participial form."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "2d573ee7-5b7c-4a28-ac0b-15a52865d6bd",
+    "source_exam_code": "5",
+    "source_module_code": "02",
+    "source_question_number": 18,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In January 2023, Nery and her colleagues _______ a study showing changes over time in four whale genes associated with body size.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "biology",
+      "answer_mechanism_key": "evidence_location",
+      "solver_pattern_key": "locate_detail_directly",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a straightforward verb-form question testing past-tense usage with a clear time marker. All distractors are non-finite verb forms that cannot function as main verbs in this context. The correct answer requires no inference or passage analysis \u2014 only application of basic tense and agreement rules."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence requires a past-tense finite verb to match the time marker 'In January 2023' and the subject-verb agreement with plural subject 'Nery and her colleagues'.",
+      "full": "The sentence describes a completed action in the past ('In January 2023'), requiring a simple past tense verb. The subject 'Nery and her colleagues' is plural, so the verb must be in plural past form. Option A, 'published', is the correct simple past tense form. Option B, 'publishing', is a present participle and cannot serve as the main verb without an auxiliary. Option C, 'having published', is a perfect participle and also cannot stand alone as the main verb. Option D, 'to publish', is an infinitive and does not indicate past tense. Only option A satisfies both tense and subject-verb agreement requirements."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "published",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Grammatically well-formed and matches the required past tense and subject-verb agreement."
+      },
+      {
+        "label": "B",
+        "text": "publishing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Cannot serve as the main verb without an auxiliary verb (e.g., 'were publishing').",
+        "why_plausible": "Uses the same root verb but in present participle form, which might appear plausible to students who confuse participles with main verbs."
+      },
+      {
+        "label": "C",
+        "text": "having published",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Perfect participle form; cannot function as the main verb without an auxiliary (e.g., 'had having published' is ungrammatical).",
+        "why_plausible": "Sounds formal and complex, which may appeal to students seeking sophisticated language."
+      },
+      {
+        "label": "D",
+        "text": "to publish",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Infinitive cannot express past tense; does not agree with the time marker 'In January 2023'.",
+        "why_plausible": "Infinitive form may seem appropriate for describing purpose or intention, but does not indicate past tense."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "66183e8a-f26a-5b45-8b29-1a431f852e35",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The Dust Bowl was a period of severe drought that plagued the Great Plains of the US during the 1930s. During this time, dust storms _______ over 100 million acres of land. They even reached as far east as New York City.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "environmental history",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb tense consistency within a historical narrative. The correct answer must align with the past tense established by surrounding verbs ('was', 'plagued')."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence describes a historical event in the past; therefore, the simple past tense 'affected' is required.",
+      "full": "The passage refers to the Dust Bowl, a historical event that occurred in the 1930s. The verb must be in the simple past tense to match the temporal context established by 'was' and 'plagued'. Option D, 'affected', correctly uses the simple past tense. Options A ('are affecting') and C ('will affect') are present and future tenses, respectively, which contradict the historical context. Option B ('will have affected') is future perfect, which implies a completed action before a future point \u2014 also inconsistent with the past narrative. Thus, only D conforms to Standard English conventions for this context."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "are affecting",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Uses present continuous tense, which is inconsistent with the past-tense narrative established by 'was' and 'plagued'.",
+        "why_plausible": "Grammatically well-formed and could describe ongoing action, but contradicts the historical past context."
+      },
+      {
+        "label": "B",
+        "text": "will have affected",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Future perfect tense implies an action completed before a future point, which conflicts with the historical past context.",
+        "why_plausible": "Grammatically valid future perfect construction, but inappropriate for describing a completed historical event."
+      },
+      {
+        "label": "C",
+        "text": "will affect",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Future tense contradicts the historical context established by 'was' and 'plagued'.",
+        "why_plausible": "Simple future tense is grammatically correct but does not match the past-tense narrative."
+      },
+      {
+        "label": "D",
+        "text": "affected",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Matches the historical past tense established by surrounding verbs."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "a8e534b5-5b7c-5ad2-9bdf-1532cc4d4995",
+    "source_exam_code": "7",
+    "source_module_code": "02",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The Globe Theatre in London is a reconstruction of the famed venue where many of Shakespeare\u2019s plays were first performed. In 1613, a prop cannon _______ during a performance and ignited the Globe\u2019s thatched roof. No one was hurt, but in two hours the original Globe was gone.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "theater history",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb tense consistency. The passage provides a clear past time marker (1613), making simple past the only grammatically correct choice. The distractors test common student errors in tense selection."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The event occurred in 1613, a specific past time, requiring simple past tense.",
+      "full": "The sentence describes a historical event that occurred in 1613. The verb must be in the simple past tense to match the temporal context. Option D, 'malfunctioned,' correctly uses the simple past tense. Options A ('malfunctions') is present tense, B ('will malfunction') is future tense, and C ('has malfunctioned') is present perfect, which implies relevance to the present \u2014 none are appropriate for a completed past event with no present connection."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "malfunctions",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Uses present tense for an event that occurred in 1613; violates tense consistency.",
+        "why_plausible": "Students may select this if they misread the context as general or habitual rather than historical past."
+      },
+      {
+        "label": "B",
+        "text": "will malfunction",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Uses future tense for a completed past event; violates tense consistency.",
+        "why_plausible": "May appeal to students who confuse narrative sequence with future prediction."
+      },
+      {
+        "label": "C",
+        "text": "has malfunctioned",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Uses present perfect, implying current relevance, for a completed historical event with no present connection.",
+        "why_plausible": "Students may choose this if they incorrectly assume the event has present relevance."
+      },
+      {
+        "label": "D",
+        "text": "malfunctioned",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly matches the simple past tense required by the historical context (1613)."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "b37dea64-660f-5c96-aaca-b3d5bdd4936b",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In order to prevent nonnative fish species from moving freely between the Mediterranean and Red Seas, marine biologist Bella Galil has proposed that a saline lock system be installed along the Suez Canal in Egypt\u2019s Great Bitter Lakes. The lock would increase the salinity of the lakes and _______ a natural barrier of water most marine creatures would be unable to cross.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nonfinite_for_finite",
+      "topic_broad": "science",
+      "topic_fine": "marine biology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb form after a modal auxiliary. The correct answer requires selecting the base form 'create' to follow 'would,' which is a high-frequency grammar rule on the DSAT. The syntactic trap involves students selecting a finite verb form (like 'creates') or a nonfinite form (like 'creating') instead of the required base form."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The verb 'create' must agree with the subject 'lock' and match the modal auxiliary 'would' in tense and form.",
+      "full": "The subject of the sentence is 'The lock,' which is singular. However, the verb follows the modal auxiliary 'would,' which requires the base form of the verb (infinitive without 'to'). Therefore, 'create' is correct. Option A ('creates') is incorrect because it is third-person singular present tense, which does not follow 'would.' Option C ('creating') is a participle and cannot serve as the main verb after a modal. Option D ('created') is past tense and does not match the conditional mood established by 'would.'"
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "creates",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "inflected_after_modal",
+        "student_failure_mode": "inflected_after_modal",
+        "why_wrong": "After the modal auxiliary 'would,' the base form 'create' is required, not the third-person singular 'creates.'",
+        "why_plausible": "Students may incorrectly apply subject-verb agreement rules and select 'creates' because 'lock' is singular, ignoring the modal 'would' that requires base form."
+      },
+      {
+        "label": "B",
+        "text": "create",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly follows the modal auxiliary 'would' with the base form verb 'create,' maintaining grammatical consistency."
+      },
+      {
+        "label": "C",
+        "text": "creating",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": "nonfinite_for_finite",
+        "why_wrong": "'Creating' is a participle/gerund and cannot function as the main verb after a modal auxiliary like 'would.'",
+        "why_plausible": "Students may confuse gerunds with main verbs and select 'creating' as it appears to describe an ongoing action related to the lock."
+      },
+      {
+        "label": "D",
+        "text": "created",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense_after_modal",
+        "student_failure_mode": "wrong_tense_after_modal",
+        "why_wrong": "'Created' is past tense and incompatible with the modal 'would,' which requires the base form 'create.'",
+        "why_plausible": "Students may mistakenly think the past tense 'created' is needed to match the hypothetical context, not realizing 'would' already establishes the conditional mood requiring base form."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "3a1f6223-83a4-5f52-81ea-a6d90328ba9d",
+    "source_exam_code": "8",
+    "source_module_code": "02",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "To survive when water is scarce, embryos inside African turquoise killifish eggs ______ a dormant state known as diapause. In this state, embryonic development is paused for as long as two years\u2014longer than the life span of an adult killifish.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nonfinite_for_finite",
+      "topic_broad": "science",
+      "topic_fine": "biology",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb form. The correct answer requires selecting the finite verb 'enter' to match the plural subject 'embryos' and maintain tense consistency with the scientific general present register. The distractors are nonfinite verb forms that cannot serve as the main verb in a declarative sentence."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence requires a finite verb in the present tense to agree with the plural subject 'embryos' and express a general biological fact.",
+      "full": "The subject 'embryos' is plural and requires a plural verb form. The context describes a general biological mechanism, so the simple present tense is appropriate. Option A, 'enter', is the correct finite verb form. Option B, 'to enter', creates an infinitive phrase that cannot serve as the main verb. Option C, 'having entered', is a perfect participle and cannot function as the main verb. Option D, 'entering', is a present participle and also cannot serve as the main verb without an auxiliary. Thus, only option A conforms to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "enter",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": ""
+      },
+      {
+        "label": "B",
+        "text": "to enter",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Creates an infinitive phrase that cannot serve as the main verb of the sentence; violates subject-verb agreement and verb form conventions.",
+        "why_plausible": "Infinitives can appear in purpose clauses, but here no auxiliary verb supports the infinitive as the main verb."
+      },
+      {
+        "label": "C",
+        "text": "having entered",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a perfect participle phrase that cannot serve as the main verb without an auxiliary verb; violates verb form conventions.",
+        "why_plausible": "Perfect participles can describe completed actions, but they require an auxiliary verb to function as the main verb."
+      },
+      {
+        "label": "D",
+        "text": "entering",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a present participle phrase that cannot serve as the main verb without an auxiliary verb; violates verb form conventions.",
+        "why_plausible": "Present participles can describe ongoing actions, but they require an auxiliary verb to function as the main verb."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "5fcf1298-3dc5-56bd-a836-19f996067807",
+    "source_exam_code": "8",
+    "source_module_code": "02",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Formed in 1967 to foster political and economic stability within the Asia-Pacific region, the Association of Southeast Asian Nations was originally made up of five members: Thailand, the Philippines, Singapore, Malaysia, and Indonesia. By the end of the 1990s, the organization ______ its initial membership.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "international organizations",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing verb tense consistency. The correct answer requires recognizing that 'By the end of the 1990s' establishes a past deadline relative to the founding event (1967), necessitating past perfect tense. All distractors represent plausible but incorrect tense choices based on common student errors: present perfect (A), simple present (C), and future (D)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'By the end of the 1990s' indicates a past time frame relative to another past event (the formation in 1967), requiring the past perfect tense.",
+      "full": "The sentence describes an action \u2014 doubling membership \u2014 that occurred before another past event (the formation of ASEAN in 1967). The phrase 'By the end of the 1990s' signals completion prior to a reference point in the past. This requires the past perfect tense ('had doubled'). Option A ('has doubled') is present perfect, which refers to actions continuing to the present or with present relevance \u2014 inappropriate here. Option C ('doubles') is simple present, used for habitual actions or general truths \u2014 incorrect for a completed historical event. Option D ('will double') is future tense \u2014 incompatible with the past context. Only option B correctly expresses the sequence of past events using past perfect tense."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "has doubled",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "tense_proximity_pull",
+        "why_wrong": "Present perfect ('has doubled') implies relevance to the present or continuation up to now, which contradicts the historical context and the past reference point established by 'By the end of the 1990s'.",
+        "why_plausible": "Students often confuse present perfect with past perfect when describing completed actions, especially when a time phrase like 'by the end of' is present."
+      },
+      {
+        "label": "B",
+        "text": "had doubled",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies past perfect tense to describe an action completed before another past event, matching the temporal marker 'By the end of the 1990s'."
+      },
+      {
+        "label": "C",
+        "text": "doubles",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "grammar_fit_only",
+        "why_wrong": "Simple present ('doubles') is used for habitual actions or general truths, not for specific completed events in the past. The context clearly refers to a historical change by a specific past date.",
+        "why_plausible": "Simple present is sometimes misapplied to historical facts, especially when students focus on the general truth aspect rather than the specific past timeframe."
+      },
+      {
+        "label": "D",
+        "text": "will double",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": "chronological_assumption",
+        "why_wrong": "Future tense ('will double') is incompatible with the past context established by 'By the end of the 1990s' and the founding date of 1967. The action must be completed in the past.",
+        "why_plausible": "Students may misread the time phrase as referring to a future projection rather than a past completion, especially if they overlook the historical context."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "1e070ae0-ae13-501c-b883-5e11736b3b4b",
+    "source_exam_code": "9",
+    "source_module_code": "01",
+    "source_question_number": 19,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English? A member of the Cherokee Nation, Mary Golda Ross is renowned for her contributions to NASA\u2019s Planetary Flight Handbook, which _______ detailed mathematical guidance for missions to Mars and Venus.",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "nonfinite_for_finite",
+      "topic_broad": "history",
+      "topic_fine": "Native American contributions to science",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb form. The correct answer requires selecting a finite verb to complete a relative clause. The distractors all use nonfinite verb forms (participle, infinitive), which are grammatically incorrect in this context. The syntactic trap is 'nonfinite_for_finite', where students may incorrectly choose a participle or infinitive thinking it fits the flow of the sentence."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The relative clause requires a finite verb to complete the sentence grammatically. 'Provided' is the correct past-tense verb form.",
+      "full": "The sentence contains a nonrestrictive relative clause introduced by 'which'. This clause must have a finite verb to be grammatically complete. Option A, 'provided', is the simple past tense verb form that correctly completes the clause. Options B ('having provided'), C ('to provide'), and D ('providing') are nonfinite verb forms and cannot serve as the main verb in a clause. The subject 'which' refers to 'Planetary Flight Handbook', and the action occurred in the past, making 'provided' the only grammatically correct choice."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "provided",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "N/A \u2014 correct option",
+        "why_plausible": "N/A \u2014 correct option"
+      },
+      {
+        "label": "B",
+        "text": "having provided",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Uses a nonfinite verb form (perfect participle) where a finite verb is required to complete the relative clause. The clause needs a subject-verb-object structure, not a participial modifier.",
+        "why_plausible": "Sounds fluent and continues the sentence smoothly, but 'having provided' is a participial phrase and cannot serve as the main verb of the relative clause."
+      },
+      {
+        "label": "C",
+        "text": "to provide",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Uses an infinitive where a finite verb is required. The relative clause must have a conjugated verb to be grammatically complete.",
+        "why_plausible": "Infinitives can express purpose, which might seem appropriate here, but 'to provide' cannot function as the main verb of a relative clause."
+      },
+      {
+        "label": "D",
+        "text": "providing",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "nonfinite_for_finite",
+        "student_failure_mode": null,
+        "why_wrong": "Uses a nonfinite verb form (present participle) where a finite verb is required. The relative clause needs a past-tense verb to match the historical context and grammatical structure.",
+        "why_plausible": "Sounds natural and flows well with the sentence, but 'providing' is a present participle and cannot serve as the main verb of the clause."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "81e65165-d6d6-592a-b55a-44abc06287ac",
+    "source_exam_code": "9",
+    "source_module_code": "02",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In the late nineteenth and early twentieth centuries, automobiles were commonly referred to as horseless carriages after the older technology they still resembled. Known as the Brass Era, this period in automotive design is remembered for its grandeur and artistry, its vehicles _______ by collectors for their ornate detailing and gleaming brass fittings.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "verb_tense_consistency",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing verb tense consistency within a historical context. The correct answer must match the past-tense narrative established in the first sentence. All distractors fail on tense or grammatical completeness."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "verb_tense_consistency",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence describes a historical period (late 19th\u2013early 20th century), so past tense is required. 'Were highly prized' correctly matches the subject 'vehicles' and the historical context.",
+      "full": "The passage refers to a specific historical period \u2014 the late nineteenth and early twentieth centuries \u2014 which requires the use of past tense. The subject 'its vehicles' is plural, so the verb must agree in number. Option D, 'were highly prized,' correctly uses the plural past tense form of 'to be' and fits the passive voice construction needed here ('vehicles were prized'). Option A ('are') is present tense and anachronistic. Option B ('had been') implies a past-before-past relationship not supported by context. Option C omits the necessary auxiliary verb, creating a sentence fragment."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "are highly prized",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": null,
+        "why_wrong": "The sentence is set in the historical past (late 19th\u2013early 20th century); present tense breaks tense consistency.",
+        "why_plausible": "Collectors still prize these vehicles today, making present tense seem reasonable in real-world knowledge."
+      },
+      {
+        "label": "B",
+        "text": "had been highly prized",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "wrong_tense",
+        "student_failure_mode": null,
+        "why_wrong": "No prior past event is mentioned to justify past perfect; simple past is sufficient and correct.",
+        "why_plausible": "Past perfect suggests an action completed before another past event, which may seem sophisticated to students."
+      },
+      {
+        "label": "C",
+        "text": "highly prized",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a sentence fragment; lacks the necessary auxiliary verb to form a complete passive construction.",
+        "why_plausible": "Omitting 'were' makes the phrase shorter and may appear more concise to some students."
+      },
+      {
+        "label": "D",
+        "text": "were highly prized",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Matches the historical past tense and plural subject 'vehicles'."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

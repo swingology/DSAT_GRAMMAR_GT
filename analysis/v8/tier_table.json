@@ -1,0 +1,178 @@
+{
+  "adjective_adverb_distinction": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "affirmative_agreement": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "apostrophe_use": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "appositive_punctuation": {
+    "pt_examples": 8,
+    "tier": "A"
+  },
+  "colon_dash_use": {
+    "pt_examples": 3,
+    "tier": "B"
+  },
+  "comma_splice": {
+    "pt_examples": 5,
+    "tier": "A"
+  },
+  "commonly_confused_words": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "comparative_structures": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "conjunction_usage": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "conjunctive_adverb_usage": {
+    "pt_examples": 4,
+    "tier": "B"
+  },
+  "data_interpretation_claims": {
+    "pt_examples": 1,
+    "tier": "B"
+  },
+  "determiners_articles": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "elliptical_constructions": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "emphasis_meaning_shifts": {
+    "pt_examples": 1,
+    "tier": "B"
+  },
+  "end_punctuation_question_statement": {
+    "pt_examples": 5,
+    "tier": "A"
+  },
+  "hyphen_usage": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "illogical_comparison": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "logical_predication": {
+    "pt_examples": 6,
+    "tier": "A"
+  },
+  "logical_relationships": {
+    "pt_examples": 22,
+    "tier": "A"
+  },
+  "modifier_placement": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "negation": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "noun_countability": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "parallel_structure": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "possessive_contraction": {
+    "pt_examples": 2,
+    "tier": "B"
+  },
+  "precision_word_choice": {
+    "pt_examples": 2,
+    "tier": "B"
+  },
+  "preposition_idiom": {
+    "pt_examples": 1,
+    "tier": "B"
+  },
+  "pronoun_antecedent_agreement": {
+    "pt_examples": 7,
+    "tier": "A"
+  },
+  "pronoun_case": {
+    "pt_examples": 1,
+    "tier": "B"
+  },
+  "pronoun_clarity": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "punctuation_comma": {
+    "pt_examples": 12,
+    "tier": "A"
+  },
+  "quotation_punctuation": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "redundancy_concision": {
+    "pt_examples": 0,
+    "tier": "C"
+  },
+  "register_style_consistency": {
+    "pt_examples": 2,
+    "tier": "B"
+  },
+  "relative_pronouns": {
+    "pt_examples": 1,
+    "tier": "B"
+  },
+  "run_on_sentence": {
+    "pt_examples": 1,
+    "tier": "B"
+  },
+  "semicolon_use": {
+    "pt_examples": 5,
+    "tier": "A"
+  },
+  "sentence_boundary": {
+    "pt_examples": 8,
+    "tier": "A"
+  },
+  "sentence_fragment": {
+    "pt_examples": 3,
+    "tier": "B"
+  },
+  "subject_verb_agreement": {
+    "pt_examples": 23,
+    "tier": "A"
+  },
+  "transition_logic": {
+    "pt_examples": 60,
+    "tier": "A"
+  },
+  "unnecessary_internal_punctuation": {
+    "pt_examples": 9,
+    "tier": "A"
+  },
+  "verb_form": {
+    "pt_examples": 3,
+    "tier": "B"
+  },
+  "verb_tense_consistency": {
+    "pt_examples": 17,
+    "tier": "A"
+  },
+  "voice_active_passive": {
+    "pt_examples": 0,
+    "tier": "C"
+  }
+}

@@ -1,0 +1,368 @@
+[
+  {
+    "question_id": "55bff365-ac56-5caa-a44e-dd58fce6bc99",
+    "source_exam_code": "4",
+    "source_module_code": "01",
+    "source_question_number": 26,
+    "question_text": "Sociologist Alton Okinaka sits on the review board tasked with adding new sites to the Hawai\u2018i Register of Historic Places, which includes Pi\u2018ilanihale Heiau and the \u2018\u014cpaeka\u2018a Road Bridge. Okinaka doesn\u2019t make such decisions _______ all historical designations must be approved by a group of nine other experts from the fields of architecture, archaeology, history, and Hawaiian culture. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Expression of Ideas",
+      "grammar_focus_key": "conjunctive_adverb_usage",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "social_science",
+      "topic_fine": "cultural_preservation",
+      "answer_mechanism_key": "punctuation_rule_application",
+      "solver_pattern_key": "apply_conjunctive_adverb_punctuation_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a grammar question testing the correct punctuation for joining two independent clauses with a conjunctive adverb. The correct answer requires a semicolon before 'however' and a comma after it. All distractors test common punctuation errors around conjunctive adverbs."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "conjunctive_adverb_usage",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct punctuation separates two independent clauses with a semicolon and introduces the conjunctive adverb 'however' with a comma.",
+      "full": "The sentence contains two independent clauses: 'Okinaka doesn\u2019t make such decisions single-handedly' and 'all historical designations must be approved by a group of nine other experts...'. These clauses are joined by the conjunctive adverb 'however', which requires a semicolon before it and a comma after it. Option B correctly uses '; however,' to join the clauses. Option A incorrectly uses a comma before 'however' instead of a semicolon. Option C incorrectly uses a comma before and after 'however' without the required semicolon. Option D omits necessary punctuation entirely, creating a run-on sentence."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "single-handedly, however;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_placement",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly uses a comma before 'however' instead of a semicolon. The first clause is independent and requires a semicolon before the conjunctive adverb.",
+        "why_plausible": "Uses a comma before 'however', which is a common mistake when students confuse this structure with coordinating conjunctions."
+      },
+      {
+        "label": "B",
+        "text": "single-handedly; however,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly applies the rule for punctuating conjunctive adverbs between independent clauses: semicolon before, comma after."
+      },
+      {
+        "label": "C",
+        "text": "single-handedly, however,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_placement",
+        "student_failure_mode": null,
+        "why_wrong": "Fails to use a semicolon before 'however'. Two independent clauses cannot be joined by a comma alone (comma splice).",
+        "why_plausible": "Uses commas on both sides of 'however', which mimics the punctuation pattern for nonrestrictive elements but is incorrect here because the clauses are independent."
+      },
+      {
+        "label": "D",
+        "text": "single-handedly however",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by joining two independent clauses without any punctuation or conjunction.",
+        "why_plausible": "Some students may omit punctuation entirely, thinking the sentence flows naturally without it."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "5e61a429-f731-5f33-91ee-2c61385b6ec7",
+    "source_exam_code": "6",
+    "source_module_code": "02",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Latin America is known to have dozens, if not hundreds, of popular dance forms. Only five of these dances are included in international ballroom dance _______ rumba, samba, cha-cha-cha, paso doble, and jive\u2014the last of which is grouped with the other Latin dances despite not having Latin roots.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "expression_of_ideas",
+      "grammar_focus_key": "conjunctive_adverb_usage",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "language",
+      "topic_fine": "punctuation",
+      "answer_mechanism_key": "punctuation_rule_application",
+      "solver_pattern_key": "apply_conjunctive_adverb_punctuation_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This question tests the correct punctuation surrounding a conjunctive adverb ('however') connecting two independent clauses. The correct answer requires a semicolon before and a comma after the adverb. All distractors violate this rule in different ways, making them plausible but incorrect choices for students who misremember the punctuation pattern."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "conjunctive_adverb_usage",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct punctuation separates two independent clauses with a semicolon before 'however' and a comma after it, following standard conjunctive adverb usage rules.",
+      "full": "The sentence contains two independent clauses: (1) 'Only five of these dances are included in international ballroom dance' and (2) 'rumba, samba, cha-cha-cha, paso doble, and jive\u2014the last of which is grouped with the other Latin dances despite not having Latin roots.' The word 'however' functions as a conjunctive adverb connecting these two clauses. According to Standard English conventions, a semicolon must precede a conjunctive adverb when joining two independent clauses, and a comma must follow it. Option D correctly uses '; however,' to satisfy this rule. Option A incorrectly uses a colon, which would introduce a list or explanation, not connect two independent clauses. Option B incorrectly uses a comma, creating a comma splice. Option C incorrectly uses a semicolon after 'however,' which breaks the required comma placement after the conjunctive adverb."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "competitions, however:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_type",
+        "student_failure_mode": null,
+        "why_wrong": "A colon cannot be used to join two independent clauses with a conjunctive adverb; it should introduce a list or explanation, not connect clauses.",
+        "why_plausible": "Uses familiar punctuation marks (comma and colon) and places 'however' in a position that might seem logical at first glance."
+      },
+      {
+        "label": "B",
+        "text": "competitions, however,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by using only a comma to join two independent clauses, violating Standard English conventions.",
+        "why_plausible": "Appears grammatically smooth and uses common punctuation around 'however', which students often overgeneralize from informal usage."
+      },
+      {
+        "label": "C",
+        "text": "competitions, however;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_placement",
+        "student_failure_mode": null,
+        "why_wrong": "Places the semicolon after 'however', breaking the required comma placement after the conjunctive adverb and violating the standard punctuation pattern for conjunctive adverbs.",
+        "why_plausible": "Uses a semicolon, which is correct for separating independent clauses, but places it after 'however' instead of before, which is a common student error."
+      },
+      {
+        "label": "D",
+        "text": "competitions; however,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the standard punctuation rule for conjunctive adverbs: semicolon before and comma after when joining independent clauses."
+      }
+    ],
+    "quality_flags": [
+      "inconsistent_skill_family_casing:expression_of_ideas"
+    ],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "85596760-c8e4-5328-bfd3-0f3659b905ec",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "During the English neoclassical period (1660\u20131789), many writers imitated the epic poetry and satires of ancient Greece and Rome. They were not the first in England to adopt the literary modes of classical _______ some of the most prominent figures of the earlier Renaissance period were also influenced by ancient Greek and Roman literature.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "conjunctive_adverb_usage",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "literature",
+      "topic_fine": "classical influence",
+      "answer_mechanism_key": "punctuation_rule_application",
+      "solver_pattern_key": "identify_independent_clauses_then_apply_punctuation_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a Standard English Conventions question testing punctuation rules for conjunctive adverbs joining independent clauses. The correct answer requires applying the semicolon-before-comma-after rule for 'however.' All distractors violate this rule in different ways, making them plausible traps for students who misremember or misunderstand the punctuation pattern."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "conjunctive_adverb_usage",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct choice uses a semicolon before 'however' and a comma after it to properly join two independent clauses with a conjunctive adverb.",
+      "full": "The sentence contains two independent clauses: 'They were not the first in England to adopt the literary modes of classical antiquity' and 'some of the most prominent figures of the earlier Renaissance period were also influenced by ancient Greek and Roman literature.' The word 'however' is a conjunctive adverb used to show contrast between these two clauses. According to Standard English conventions, a semicolon must precede a conjunctive adverb when joining two independent clauses, and a comma must follow it. Option D correctly uses '; however,' to satisfy this rule. Options A and B incorrectly use a comma before 'however,' which creates a comma splice. Option C incorrectly uses a semicolon after 'however,' which disrupts the required punctuation pattern."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "antiquity, however",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by using a comma to join two independent clauses without proper punctuation.",
+        "why_plausible": "Students often mistakenly use a comma before 'however' because they treat it like a coordinating conjunction."
+      },
+      {
+        "label": "B",
+        "text": "antiquity, however,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Still creates a comma splice; the comma before 'however' incorrectly joins two independent clauses.",
+        "why_plausible": "Students may think adding a comma after 'however' fixes the error, but the comma before 'however' still creates a comma splice."
+      },
+      {
+        "label": "C",
+        "text": "antiquity, however;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_pattern",
+        "student_failure_mode": null,
+        "why_wrong": "Incorrectly places the semicolon after 'however' instead of before it; the comma after 'however' is correct, but the semicolon position violates the standard rule.",
+        "why_plausible": "Students might confuse the placement of the semicolon, thinking it should come after 'however' rather than before it."
+      },
+      {
+        "label": "D",
+        "text": "antiquity; however,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly applies the standard punctuation rule for joining independent clauses with a conjunctive adverb: semicolon before, comma after."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "38080956-9e42-50e2-b478-b46ca3c64541",
+    "source_exam_code": "9",
+    "source_module_code": "01",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English? Journalists have dubbed Gil Scott-Heron the \u201cgodfather of rap,\u201d a title that has appeared in hundreds of articles about him since the 1990s. Scott-Heron himself resisted the godfather _______ feeling that it didn\u2019t encapsulate his devotion to the broader African American blues music tradition as well as \u201cbluesologist,\u201d the moniker he preferred.",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "conjunctive_adverb_usage",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts_and_culture",
+      "topic_fine": "music_history",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests the correct punctuation for joining two independent clauses with a conjunctive adverb. The correct answer requires both a semicolon before 'however' and a comma after it, which is a specific rule in Standard English Conventions. The distractors test common student errors: comma splice (A), missing comma after the conjunctive adverb (B), and using a comma instead of a semicolon (C)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "conjunctive_adverb_usage",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct punctuation separates two independent clauses with a semicolon and introduces the conjunctive adverb 'however' with a comma.",
+      "full": "The sentence contains two independent clauses: (1) 'Scott-Heron himself resisted the godfather nickname' and (2) 'feeling that it didn\u2019t encapsulate his devotion...'. The word 'however' is a conjunctive adverb connecting these clauses. According to Standard English conventions, two independent clauses joined by a conjunctive adverb require a semicolon before the adverb and a comma after it. Option D correctly uses '; however,'. Option A incorrectly uses a comma splice. Option B incorrectly uses a semicolon without a comma after 'however'. Option C incorrectly uses a comma before 'however' instead of a semicolon."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "nickname, however",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "This creates a comma splice because two independent clauses are joined by only a comma. A semicolon is required before the conjunctive adverb 'however'.",
+        "why_plausible": "Students often incorrectly use a comma to join two independent clauses, especially when a conjunctive adverb like 'however' is present."
+      },
+      {
+        "label": "B",
+        "text": "nickname, however;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_conjunctive_adverb_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "While the semicolon before 'however' is correct, the absence of a comma after 'however' violates the standard convention for punctuating conjunctive adverbs between independent clauses.",
+        "why_plausible": "Students may recognize that a semicolon is needed but forget that a comma must follow the conjunctive adverb 'however'."
+      },
+      {
+        "label": "C",
+        "text": "nickname, however,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_clause_boundary",
+        "student_failure_mode": null,
+        "why_wrong": "Using a comma before 'however' instead of a semicolon creates a comma splice. The first clause is independent and requires stronger punctuation than a comma to connect to the second independent clause.",
+        "why_plausible": "Students may confuse this structure with introductory phrases where a comma follows the introductory element, not realizing that 'however' here connects two independent clauses."
+      },
+      {
+        "label": "D",
+        "text": "nickname; however,",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "This option correctly applies the rule for punctuating conjunctive adverbs joining independent clauses: semicolon before the adverb, comma after it."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

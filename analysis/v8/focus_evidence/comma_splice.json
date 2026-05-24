@@ -1,0 +1,459 @@
+[
+  {
+    "question_id": "4a059c60-811f-5bb6-a3fa-cb622962abb4",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Typically, underlines, scribbles, and notes left in the margins by a former owner lower a book\u2019s _______ when the former owner is a famous poet like Walt Whitman, such markings, known as marginalia, can be a gold mine to literary scholars.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "comma_splice",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "grammar",
+      "topic_fine": "punctuation",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing sentence boundary rules. The stem explicitly asks for conformity to Standard English conventions, and the error involves joining two independent clauses without proper punctuation or conjunction. The correct answer requires inserting a comma followed by a coordinating conjunction to fix the comma splice."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "comma_splice",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence contains two independent clauses joined by a comma. A comma alone cannot join two independent clauses; a coordinating conjunction (like 'but') must follow the comma to form a grammatically correct compound sentence.",
+      "full": "The first clause \u2014 'Typically, underlines, scribbles, and notes left in the margins by a former owner lower a book\u2019s value' \u2014 is an independent clause. The second clause \u2014 'when the former owner is a famous poet like Walt Whitman, such markings, known as marginalia, can be a gold mine to literary scholars' \u2014 is also independent because it has its own subject ('such markings') and verb ('can be'). Joining two independent clauses with only a comma creates a comma splice, which is incorrect. Option A ('value, but') correctly adds the coordinating conjunction 'but' after the comma, forming a grammatically correct compound sentence. Option B omits necessary punctuation and conjunction. Option C leaves a comma splice. Option D lacks the required comma before the coordinating conjunction."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "value, but",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": ""
+      },
+      {
+        "label": "B",
+        "text": "value",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Omits both the necessary comma and coordinating conjunction, leaving a run-on sentence.",
+        "why_plausible": "The word 'value' fits semantically and is part of the correct phrase, making it tempting to select without considering punctuation."
+      },
+      {
+        "label": "C",
+        "text": "value,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by using only a comma to join two independent clauses.",
+        "why_plausible": "Includes the comma, which may appear sufficient to separate clauses, especially if the student overlooks the need for a conjunction."
+      },
+      {
+        "label": "D",
+        "text": "value but",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Lacks the required comma before the coordinating conjunction, resulting in a fused sentence.",
+        "why_plausible": "Includes the coordinating conjunction 'but', which students may recognize as necessary but forget to pair with a preceding comma."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "35189c90-fc28-5784-9115-e05fc35f9244",
+    "source_exam_code": "10",
+    "source_module_code": "01",
+    "source_question_number": 23,
+    "question_text": "While many video game creators strive to make their graphics ever more ______ others look to the past, developing titles with visuals inspired by the \u201c8-bit\u201d games of the 1980s and 1990s. (The term \u201c8-bit\u201d refers to a console whose processor could only handle eight bits of data at once.) Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "comma_splice",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "technology",
+      "topic_fine": "video_games",
+      "answer_mechanism_key": "punctuation_rule_application",
+      "solver_pattern_key": "identify_independent_clauses_then_apply_comma_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a Standard English Conventions question testing comma usage at a sentence boundary between two independent clauses. The correct answer requires applying the rule that a comma must precede a coordinating conjunction joining two independent clauses. The distractors test common errors: omitting the comma (A), omitting both comma and conjunction (B), and including the comma without the conjunction (C)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "comma_splice",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence contains two independent clauses joined by a coordinating conjunction ('but'), requiring a comma before the conjunction.",
+      "full": "The sentence presents two independent clauses: 'many video game creators strive to make their graphics ever more lifelike' and 'others look to the past, developing titles with visuals inspired by the \u201c8-bit\u201d games of the 1980s and 1990s.' When joining two independent clauses with a coordinating conjunction like 'but,' a comma must precede the conjunction. Option D correctly includes both the comma and the conjunction. Option A omits the comma, creating a comma splice. Option B omits both the comma and the conjunction, leaving the second clause unattached. Option C includes the comma but omits the conjunction, resulting in a sentence fragment or run-on depending on interpretation. Only D satisfies Standard English punctuation rules for compound sentences."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "lifelike but",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a coordinating conjunction without the required preceding comma.",
+        "why_plausible": "In informal speech, people often omit the comma before 'but' when joining two clauses, making this option sound natural to some students."
+      },
+      {
+        "label": "B",
+        "text": "lifelike",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "run_on_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a run-on sentence by failing to provide any punctuation or conjunction to separate the two independent clauses.",
+        "why_plausible": "The word 'lifelike' fits semantically and grammatically in the first clause; students may not recognize the need to connect the second clause properly."
+      },
+      {
+        "label": "C",
+        "text": "lifelike,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "sentence_fragment",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a sentence fragment or run-on by using a comma alone to join two independent clauses without a coordinating conjunction.",
+        "why_plausible": "Students may recognize the need for a comma but forget that a coordinating conjunction is also required to join two independent clauses."
+      },
+      {
+        "label": "D",
+        "text": "lifelike, but",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly applies the standard rule for joining two independent clauses with a coordinating conjunction: comma + conjunction."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "281e3fe0-80a9-524e-8846-0f4c51c86c03",
+    "source_exam_code": "4",
+    "source_module_code": "01",
+    "source_question_number": 23,
+    "question_text": "Seneca sculptor Marie Watt\u2019s blanket art comes in a range of shapes and sizes. In 2004, Watt sewed strips of blankets together to craft a 10-by-13-inch _______ in 2014, she arranged folded blankets into two large stacks and then cast them in bronze, creating two curving 18-foot-tall blue-bronze pillars. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "comma_splice",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "complete_the_text",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": null,
+      "topic_broad": "art",
+      "topic_fine": "sculpture",
+      "answer_mechanism_key": "punctuation_rule_application",
+      "solver_pattern_key": "identify_independent_clauses_then_apply_punctuation_rule",
+      "evidence_scope_key": "sentence",
+      "classification_rationale": "This is a Standard English Conventions question testing sentence boundary punctuation. The correct answer requires recognizing that two independent clauses are joined without a coordinating conjunction, necessitating a semicolon. The distractors test common comma splice errors and redundancy traps. The stem explicitly asks for conformity to Standard English conventions, confirming the grammar domain."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "comma_splice",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "medium",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The two independent clauses must be joined by a semicolon, not a comma or comma + conjunction, because no coordinating conjunction is present.",
+      "full": "The sentence contains two independent clauses: 'In 2004, Watt sewed strips of blankets together to craft a 10-by-13-inch sampler' and 'in 2014, she arranged folded blankets into two large stacks and then cast them in bronze, creating two curving 18-foot-tall blue-bronze pillars.' These clauses are not joined by a coordinating conjunction (FANBOYS), so they cannot be separated by a comma alone (which would create a comma splice). A semicolon correctly joins two independent clauses without a conjunction. Option B provides the correct punctuation. Option A adds 'later,' which is redundant and grammatically incorrect after a comma splice. Option C uses only a comma, creating a comma splice. Option D adds an unnecessary comma after 'sampler' and includes 'later,' which disrupts the parallel structure and introduces redundancy."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "sampler later,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice_with_redundancy",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice between two independent clauses and adds the redundant word 'later'.",
+        "why_plausible": "The word 'later' suggests temporal sequence, which may seem to justify the comma, but it does not fix the comma splice and adds redundancy."
+      },
+      {
+        "label": "B",
+        "text": "sampler;",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly uses a semicolon to join two independent clauses without a coordinating conjunction."
+      },
+      {
+        "label": "C",
+        "text": "sampler,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by joining two independent clauses with only a comma.",
+        "why_plausible": "Students often incorrectly use a comma to join independent clauses, especially when the clauses are closely related in topic."
+      },
+      {
+        "label": "D",
+        "text": "sampler, later,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice_with_redundancy",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice and adds redundant punctuation and wording ('later,').",
+        "why_plausible": "The inclusion of 'later' may seem to provide a logical transition, but it does not resolve the comma splice and introduces an unnecessary comma and redundancy."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "ebdc7831-6ccf-5fc9-bc30-b0e662a36c9b",
+    "source_exam_code": "7",
+    "source_module_code": "01",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Many mechanical calculators were powered by a notched cylinder mechanism called the Leibniz wheel. Leibniz wheel calculators were popular in the first half of the twentieth _______ these ingenious devices were eventually replaced by electronic calculators.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "comma_splice",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_grammatically_correct_form",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history of technology",
+      "topic_fine": "mechanical calculators",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing sentence boundary rules. The correct answer requires joining two independent clauses with a comma and coordinating conjunction. The distractors test common errors: fused sentence (A), comma splice (B), and incorrect subordination (D)."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "comma_splice",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct choice must connect two independent clauses with appropriate punctuation and conjunction. Only option C provides both a comma and the coordinating conjunction 'but' to join the clauses correctly.",
+      "full": "The sentence contains two independent clauses: 'Leibniz wheel calculators were popular in the first half of the twentieth century' and 'these ingenious devices were eventually replaced by electronic calculators.' To join two independent clauses, Standard English requires a comma followed by a coordinating conjunction (FANBOYS). Option C provides 'century, but,' which correctly joins the clauses. Option A leaves the clauses fused without punctuation or conjunction. Option B adds only a comma, creating a comma splice. Option D uses 'that,' which turns the second clause into a dependent clause, making the sentence grammatically incomplete."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "century",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "fused_sentence",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a fused sentence by joining two independent clauses without any punctuation or conjunction.",
+        "why_plausible": "The word 'century' fits semantically and grammatically as a noun completing the phrase 'first half of the twentieth century.'"
+      },
+      {
+        "label": "B",
+        "text": "century,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by using only a comma to join two independent clauses without a coordinating conjunction.",
+        "why_plausible": "The comma appears to separate the clauses, which might seem sufficient to some students."
+      },
+      {
+        "label": "C",
+        "text": "century, but",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "Correctly joins two independent clauses with a comma and coordinating conjunction 'but,' maintaining grammatical integrity while showing contrast between popularity and eventual replacement."
+      },
+      {
+        "label": "D",
+        "text": "century that",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_subordination",
+        "student_failure_mode": null,
+        "why_wrong": "Turns the second clause into a dependent clause, leaving the sentence grammatically incomplete because the main verb 'were' lacks a proper subject-verb structure after 'that'.",
+        "why_plausible": "'That' can introduce relative clauses, which might seem appropriate for connecting ideas."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "3d3b24fa-72eb-526d-ba3d-c8436390bc05",
+    "source_exam_code": "9",
+    "source_module_code": "01",
+    "source_question_number": 25,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English? Recent pollen analyses of the Aran Islands have led some researchers to propose that the now treeless islands were once wooded. This hypothesis _______ that certain trees, such as P. sylvestris, survived without interruption or human intervention throughout the Holocene cannot stand, researchers Michael O\u2019Connell and Karen Molloy counter, unless other explanations can first be ruled out.",
+    "passage_text": null,
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "comma_splice",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests whether the student can avoid creating a comma splice by selecting a non-finite verb form ('suggesting') to modify the noun 'hypothesis' rather than a finite verb that would create a second independent clause. This is a core sentence boundary issue under Standard English Conventions."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "comma_splice",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option 'suggesting' creates a participial phrase modifying 'hypothesis,' which is grammatically required to connect the two clauses without creating a comma splice or run-on sentence.",
+      "full": "The sentence contains two independent clauses: (1) 'Recent pollen analyses... were once wooded' and (2) 'This hypothesis... cannot stand, researchers... counter, unless other explanations can first be ruled out.' The blank must not create a new independent clause but instead link the second clause to the subject 'hypothesis' as a modifier. Option A, 'suggesting,' correctly forms a participial phrase ('suggesting that certain trees...') that modifies 'hypothesis' and avoids a comma splice. Options B, C, and D all create finite verbs that would turn the second part into an independent clause, resulting in a comma splice when joined with the first clause by a comma. Only 'suggesting' maintains grammatical correctness by functioning as a non-finite modifier."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "suggesting",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": ""
+      },
+      {
+        "label": "B",
+        "text": "suggested",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by turning the second clause into an independent clause without proper conjunction or punctuation.",
+        "why_plausible": "Uses past tense verb form that matches the narrative context of the passage."
+      },
+      {
+        "label": "C",
+        "text": "suggests",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by turning the second clause into an independent clause without proper conjunction or punctuation.",
+        "why_plausible": "Uses present tense verb form that matches the current relevance of the hypothesis."
+      },
+      {
+        "label": "D",
+        "text": "has suggested",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "comma_splice",
+        "student_failure_mode": null,
+        "why_wrong": "Creates a comma splice by turning the second clause into an independent clause without proper conjunction or punctuation.",
+        "why_plausible": "Uses present perfect tense that implies ongoing relevance, matching the academic tone."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]

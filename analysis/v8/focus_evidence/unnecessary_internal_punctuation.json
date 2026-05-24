@@ -1,0 +1,823 @@
+[
+  {
+    "question_id": "dc536e66-1748-53b5-ad7e-3f4e6ee6884d",
+    "source_exam_code": "11",
+    "source_module_code": "01",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "According to the original text of the US Constitution, written in 1787, the presidential candidate receiving the second-most Electoral College votes becomes vice president. The 12th amendment, ratified in b l a n k separated the elections for the two offices.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Punctuation",
+      "grammar_focus_key": "unnecessary_internal_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": "low",
+      "difficulty_vocab": "low",
+      "distractor_strength": "high",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "history",
+      "topic_fine": "us_constitution",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests whether students recognize that inserting punctuation (like a comma or colon) inside the required syntactic unit 'ratified in 1804' is incorrect unless it's part of a parenthetical structure. The correct answer uses a dash to set off the entire parenthetical phrase, which is allowed because it\u2019s not interrupting a core subject-verb or verb-object relationship but rather adding nonessential context. This falls under 'unnecessary_internal_punctuation' because the blank is testing whether punctuation should appear at all inside the prepositional phrase \u2014 and the correct answer shows that punctuation is needed to mark the parenthetical, not to break up a syntactic unit."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "unnecessary_internal_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The dash is required to set off the parenthetical date '1804' within the sentence, which provides nonessential information about when the 12th Amendment was ratified.",
+      "full": "The phrase 'ratified in 1804' is a nonrestrictive appositive that adds supplementary information about the 12th Amendment. In Standard English, such nonessential elements must be set off with punctuation \u2014 here, a pair of dashes (or commas) \u2014 to indicate they are not grammatically necessary to the main clause. Option A correctly uses an em dash to open the parenthetical element. While commas could also work, the dash is stylistically appropriate for emphasis or interruption and is acceptable under SAT conventions. Options B (comma), C (colon), and D (no punctuation) fail to properly set off the nonessential clause, violating Standard English punctuation rules."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "1804\u2014",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "The dash correctly sets off the parenthetical date, which is nonessential to the main clause."
+      },
+      {
+        "label": "B",
+        "text": "1804,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "While commas can set off nonrestrictive elements, in this case, using a comma after '1804' creates a comma splice or improperly breaks the prepositional phrase without closing punctuation. The sentence requires either a pair of commas or a pair of dashes \u2014 not a single comma.",
+        "why_plausible": "Commas are often used to set off nonrestrictive elements, making this option seem reasonable."
+      },
+      {
+        "label": "C",
+        "text": "1804:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A colon is used to introduce a list, explanation, or quotation \u2014 not to set off a parenthetical date. Using a colon here incorrectly implies that what follows explains or elaborates on '1804', which is not the case.",
+        "why_plausible": "Students may confuse colons with dashes, thinking both introduce explanations or interruptions."
+      },
+      {
+        "label": "D",
+        "text": "1804",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Omitting punctuation fails to set off the nonessential parenthetical phrase 'ratified in 1804', which violates Standard English conventions for marking nonrestrictive elements.",
+        "why_plausible": "Some students assume no punctuation is needed if the sentence reads smoothly without it."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "c0e05687-418f-508e-916b-fb20557a2a74",
+    "source_exam_code": "11",
+    "source_module_code": "02",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The part of a compound that determines the compound\u2019s color is b l a n k the chromophore. One example of a chromophore is hemoglobin, which gives human blood its red color.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "unnecessary_internal_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": null,
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "conform_to_standard_english",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "chemistry",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing punctuation mechanics within a single syntactic unit (verb + object). The correct answer requires recognizing that no punctuation belongs between 'called' and 'the chromophore'. All distractors insert punctuation where none is grammatically required, violating the rule against unnecessary internal punctuation."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "unnecessary_internal_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence is a simple declarative statement with no internal punctuation required. The correct option omits any punctuation after 'called' because no clause boundary, appositive, or parenthetical structure exists at that point.",
+      "full": "The sentence reads: 'The part of a compound that determines the compound\u2019s color is called the chromophore.' This is a straightforward subject-verb-object construction where 'is called' functions as a passive verb phrase and 'the chromophore' is the direct object. No punctuation is needed between the verb and its object. Option A inserts a comma, which incorrectly breaks the syntactic unit of verb + object. Option C uses an em dash, which would imply an interruption or parenthetical aside \u2014 none exists here. Option D uses a semicolon, which is reserved for joining two independent clauses \u2014 but 'the chromophore' is not a complete clause. Only Option B, with no punctuation, preserves the grammatical integrity of the sentence."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "called,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a comma inside the required syntactic unit of verb + object ('is called the chromophore'), which violates the rule against unnecessary internal punctuation.",
+        "why_plausible": "Students may mistakenly believe a comma is needed to separate the verb from its object, especially if they misread the sentence as having an appositive or introductory element."
+      },
+      {
+        "label": "B",
+        "text": "called",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly maintains the unbroken syntactic unit of verb + object without inserting unnecessary punctuation."
+      },
+      {
+        "label": "C",
+        "text": "called\u2014",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts an em dash inside the required syntactic unit of verb + object, which is grammatically incorrect and disrupts sentence flow.",
+        "why_plausible": "Students may over-punctuate by inserting an em dash, thinking it adds emphasis or separates elements \u2014 but no such function is required here."
+      },
+      {
+        "label": "D",
+        "text": "called;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Uses a semicolon to break the verb-object unit, which is incorrect because 'the chromophore' is not an independent clause.",
+        "why_plausible": "Students may confuse semicolon usage with comma usage, thinking it can separate verb from object \u2014 but semicolons join independent clauses, not verb-object pairs."
+      }
+    ],
+    "quality_flags": [
+      "missing_difficulty"
+    ],
+    "calibration_eligible": false,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "d1444473-b448-5eb8-8bb5-80a3b5f858d6",
+    "source_exam_code": "5",
+    "source_module_code": "01",
+    "source_question_number": 26,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In 1986, conceptual artist Sophie Calle asked twenty-three people, all of whom had been born without sight, to describe \u201ctheir image of beauty\u201d in rich detail. Calle paired excerpts of these conversations with photographs\u2014both of interviewees and the items they _______ to powerful effect in her exhibition The Blind.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Form, Structure, and Sense",
+      "grammar_focus_key": "unnecessary_internal_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "visual arts",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing punctuation rules, specifically the prohibition against inserting punctuation inside a required syntactic unit (verb\u2013object). The correct answer requires recognizing that no punctuation is needed between 'described' and its object phrase. All distractors introduce incorrect punctuation that disrupts the syntactic flow."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "unnecessary_internal_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'from hair to grass to sculptures' is a nonrestrictive appositive that modifies 'the items they described.' It does not require internal punctuation or a dash before it because it is essential to the meaning of the sentence. Option A correctly omits any unnecessary punctuation.",
+      "full": "The correct answer is A because the phrase 'from hair to grass to sculptures' functions as a nonrestrictive appositive that clarifies what 'the items they described' refers to. In Standard English, such appositives do not require internal punctuation or a preceding dash when they are essential to the meaning of the noun they modify. Option B incorrectly adds a dash after 'described,' which breaks the syntactic unit between verb and object. Option C incorrectly places a dash before the appositive and a comma after it, violating the rule against inserting punctuation inside required syntactic units (verb\u2013object). Option D incorrectly uses a colon, which would imply an explanation or list that follows, but here the phrase is simply descriptive. Only option A maintains grammatical integrity by omitting unnecessary punctuation."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "described, from hair to grass to sculptures",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "N/A",
+        "why_plausible": "None \u2014 this is the correct answer."
+      },
+      {
+        "label": "B",
+        "text": "described, from hair to grass to sculptures\u2014",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a comma and dash inside the verb-object unit 'they described from hair to grass to sculptures,' violating the rule against unnecessary internal punctuation.",
+        "why_plausible": "The comma after 'described' may seem acceptable to students who misapply appositive punctuation rules."
+      },
+      {
+        "label": "C",
+        "text": "described\u2014from hair to grass to sculptures,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a dash before and a comma after the appositive phrase, breaking the syntactic unit between verb and object. This violates the rule against punctuation inside required syntactic units.",
+        "why_plausible": "The dash may appear to set off the list for emphasis, which some students might confuse with parenthetical usage."
+      },
+      {
+        "label": "D",
+        "text": "described: from hair to grass to sculptures",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "Uses a colon to introduce the appositive phrase, which is not explanatory or enumerative in function. This inserts punctuation inside the required verb-object unit, violating the rule against unnecessary internal punctuation.",
+        "why_plausible": "Students may mistakenly think a colon is needed to introduce a list or explanation, especially since the phrase begins with 'from.'"
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "7db939f2-649c-50f6-ab07-e272d7f40690",
+    "source_exam_code": "6",
+    "source_module_code": "01",
+    "source_question_number": 20,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Louise Bennett (1919\u20132006), also known as \u201cMiss Lou,\u201d was an influential Jamaican poet and folklorist. Her innovative poems _______ the use of Jamaican Creole (a spoken language) in literature.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "unnecessary_internal_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "literature",
+      "topic_fine": "Jamaican poetry",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests whether punctuation should be inserted between the verb and its direct object \u2014 a required syntactic unit. The correct answer requires no punctuation, making this an 'unnecessary_internal_punctuation' item under the punctuation role."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "unnecessary_internal_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "very_high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The sentence is a simple declarative statement with no need for punctuation after the verb 'popularized'. Option C omits unnecessary punctuation, conforming to Standard English conventions.",
+      "full": "The sentence 'Her innovative poems popularized the use of Jamaican Creole (a spoken language) in literature.' is a complete, grammatically correct declarative sentence. No punctuation is required after the verb 'popularized' because there is no clause boundary, appositive, or introductory element that demands a comma, semicolon, or colon. Option A (semicolon) incorrectly suggests a compound sentence or list. Option B (comma) creates an unnecessary pause and breaks subject-verb-object flow. Option D (colon) implies an explanation or list follows, which is not the case. Only Option C, with no punctuation, correctly completes the sentence according to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "popularized;",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_use",
+        "student_failure_mode": null,
+        "why_wrong": "A semicolon is used to join two independent clauses or to separate items in a complex list; neither applies here. The verb 'popularized' is followed directly by its object, forming a single syntactic unit that requires no internal punctuation.",
+        "why_plausible": "Students may over-punctuate, thinking a semicolon is needed to separate clauses or ideas, even though no second independent clause exists."
+      },
+      {
+        "label": "B",
+        "text": "popularized,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_use",
+        "student_failure_mode": null,
+        "why_wrong": "No comma is needed between a verb and its direct object. Inserting a comma here breaks the required syntactic unit (verb\u2013object) and violates Standard English conventions.",
+        "why_plausible": "Students may insert a comma after the verb due to a mistaken belief that verbs always require a pause before their objects, or from overgeneralizing comma rules."
+      },
+      {
+        "label": "C",
+        "text": "popularized",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "The sentence is grammatically complete and fluent without any added punctuation, matching standard usage for simple declarative sentences."
+      },
+      {
+        "label": "D",
+        "text": "popularized:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation_use",
+        "student_failure_mode": null,
+        "why_wrong": "A colon introduces a list, explanation, or quotation that follows. Here, the object 'the use of Jamaican Creole...' is not introduced by the verb but is directly governed by it. No colon is required or appropriate.",
+        "why_plausible": "Students may associate colons with formal writing and incorrectly assume one is needed to introduce the object of the verb, especially since the object includes parenthetical information."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "0a318241-35bc-53fe-b046-efcc2c9ffc76",
+    "source_exam_code": "7",
+    "source_module_code": "02",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Nigerian American artist Toyin Ojih Odutola uses black-ink pens to create highly detailed drawings of human figures. Her portrait of novelist Zadie _______ is displayed in the National Portrait Gallery in London.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "unnecessary_internal_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "arts",
+      "topic_fine": "visual arts",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This question tests whether punctuation should appear inside a required syntactic unit \u2014 specifically, the noun phrase 'novelist Zadie Smith' functioning as the object of the preposition 'of'. The correct answer requires no punctuation, making it an 'unnecessary_internal_punctuation' item under the 'punctuation' role. All distractors insert punctuation where none is grammatically required, violating the rule that no punctuation may appear inside a required syntactic unit such as preposition\u2013complement."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "unnecessary_internal_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The blank appears after a proper noun (Zadie) and before a verb phrase ('is displayed'). No punctuation is needed because 'Zadie' is the object of the preposition 'of' and the sentence continues without interruption.",
+      "full": "The correct choice is C, 'Smith', because no punctuation is required between the proper noun 'Zadie Smith' and the verb phrase 'is displayed'. The phrase 'novelist Zadie Smith' functions as a single noun phrase acting as the object of the preposition 'of'. Inserting any punctuation (colon, dash, or comma) would incorrectly break this syntactic unit. A colon or dash would imply an appositive or explanation that follows, which is not present. A comma would incorrectly separate the subject from its verb or interrupt the noun phrase. Therefore, the absence of punctuation is grammatically correct and conforms to Standard English conventions."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Smith:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A colon is incorrect here because there is no appositive, list, or explanation following 'Zadie Smith'. The sentence continues directly with the verb phrase 'is displayed', so inserting a colon breaks the syntactic unit 'novelist Zadie Smith'.",
+        "why_plausible": "Students may think a colon is needed to introduce the full name or to signal an appositive, especially if they misread the structure as requiring elaboration."
+      },
+      {
+        "label": "B",
+        "text": "Smith\u2014",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A dash is incorrect because there is no parenthetical element, interruption, or appositive following 'Zadie Smith'. The sentence flows directly into the verb phrase, so inserting a dash breaks the required syntactic unit 'preposition\u2013complement'.",
+        "why_plausible": "Students may associate dashes with appositives or interruptions and incorrectly apply them here, thinking the name needs emphasis or separation."
+      },
+      {
+        "label": "C",
+        "text": "Smith",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "No punctuation is required because 'Zadie Smith' is part of a continuous noun phrase serving as the object of the preposition 'of'. The sentence structure does not require any break or pause at this point."
+      },
+      {
+        "label": "D",
+        "text": "Smith,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A comma is incorrect because it unnecessarily interrupts the noun phrase 'novelist Zadie Smith'. There is no clause boundary, appositive, or nonrestrictive element that justifies a comma. Inserting a comma breaks the syntactic unit and creates a grammatical error.",
+        "why_plausible": "Students may overapply comma rules, thinking a comma is needed after a proper noun or to separate elements in a compound structure, even though no such separation is grammatically required here."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "82a0a17b-ef35-5c73-966c-ef41752bf109",
+    "source_exam_code": "8",
+    "source_module_code": "01",
+    "source_question_number": 21,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "Paintings by the renowned twentieth-century US _______ were featured in Artist to Artist, an exhibition at the Smithsonian Art Museum that paired the works of artists whose career trajectories intersected in meaningful ways.",
+    "paired_passage_text": null,
+    "correct_option_label": "B",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "unnecessary_internal_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": null,
+      "topic_fine": null,
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing punctuation within an appositive phrase. The correct answer requires omitting unnecessary commas or colons that break up the required syntactic unit (noun + appositive). All distractors insert punctuation where none is needed, violating the rule against unnecessary internal punctuation."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "unnecessary_internal_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The correct option omits unnecessary punctuation and correctly lists two items without a comma before 'and' in a simple list.",
+      "full": "Option B is correct because it presents the two artists' names as a simple appositive phrase without any internal punctuation. The colon in Option A is incorrect because no independent clause follows it. The comma before 'and' in Option C is unnecessary in a two-item list. The comma after 'artists' in Option D incorrectly separates the appositive from its noun. Standard English conventions require no comma before 'and' in a two-item list unless it prevents ambiguity, which is not the case here."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "artists: Thomas Hart Benton and Jackson Pollock,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A colon cannot introduce a non-independent clause; the phrase following it is not a complete sentence.",
+        "why_plausible": "Some students may think a colon is appropriate to introduce a list of names."
+      },
+      {
+        "label": "B",
+        "text": "artists Thomas Hart Benton and Jackson Pollock",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "This is the grammatically correct form with no unnecessary punctuation."
+      },
+      {
+        "label": "C",
+        "text": "artists Thomas Hart Benton, and Jackson Pollock,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A comma before 'and' is unnecessary in a two-item list unless it prevents ambiguity, which is not the case here.",
+        "why_plausible": "Students may overapply the rule for comma usage in lists, inserting one before 'and' even in a two-item list."
+      },
+      {
+        "label": "D",
+        "text": "artists, Thomas Hart Benton and Jackson Pollock",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "incorrect_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "The appositive is restrictive and essential to identifying which artists are meant; no comma should separate it from the noun.",
+        "why_plausible": "Students may mistakenly treat the appositive as nonrestrictive and add a comma after 'artists'."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "111ccb1c-1f57-5fd3-bdde-d18529994ecd",
+    "source_exam_code": "8",
+    "source_module_code": "02",
+    "source_question_number": 23,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "The forty-seven geothermal springs of Arkansas\u2019 Hot Springs National Park are sourced via a process known as natural groundwater recharge, in which rainwater percolates downward through the earth\u2014in this case, the porous rocks of the hills around Hot ______ collect in a subterranean basin.",
+    "paired_passage_text": null,
+    "correct_option_label": "A",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "unnecessary_internal_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "medium",
+      "difficulty_reading": null,
+      "difficulty_grammar": "medium",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "high",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "geography",
+      "topic_fine": "geothermal systems",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "The question tests whether students recognize that no punctuation is required between the subject 'springs' and the verb 'collect' \u2014 a syntactic unit. The presence of an em dash earlier in the sentence does not justify adding another punctuation mark before the verb. Options B, C, and D all insert punctuation where none is grammatically necessary, making them distractors based on over-punctuation tendencies."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "unnecessary_internal_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": "medium",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'springs to' correctly completes the sentence without introducing unnecessary punctuation. The dash already separates the explanatory clause, so no additional punctuation is needed before 'collect.'",
+      "full": "The sentence describes how rainwater percolates through porous rocks and then collects in a basin. The blank occurs after 'Hot,' which is part of the proper noun 'Hot Springs.' The correct completion is 'springs to,' forming the phrase 'Hot Springs to collect,' which is grammatically sound and maintains the intended meaning. Option B adds an unnecessary colon, C adds an extra dash (redundant with the existing em dash), and D inserts a comma that incorrectly separates the subject from its verb ('springs...collect'). Only option A preserves standard syntax and punctuation."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Springs to",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": ""
+      },
+      {
+        "label": "B",
+        "text": "Springs: to",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A colon is not required here; it would incorrectly separate the subject from its verb. The syntactic unit 'springs to collect' must remain unpunctuated.",
+        "why_plausible": "Students may mistakenly believe a colon is needed to introduce the verb 'collect,' especially since the sentence already contains an em dash for explanation."
+      },
+      {
+        "label": "C",
+        "text": "Springs\u2014to",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "The em dash already serves to set off the explanatory clause. Adding another dash before 'to' breaks the syntactic unit 'springs to collect' and creates redundancy.",
+        "why_plausible": "Students may think another dash is needed to mirror the existing em dash, creating symmetry or emphasis."
+      },
+      {
+        "label": "D",
+        "text": "Springs, to",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "unnecessary_internal_punctuation",
+        "student_failure_mode": null,
+        "why_wrong": "A comma incorrectly separates the subject 'springs' from its verb 'collect,' violating the rule against internal punctuation within a required syntactic unit.",
+        "why_plausible": "Students may confuse this with a list or introductory phrase structure and insert a comma before 'to,' thinking it\u2019s needed for clarity."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "51b18940-ec18-567f-b3a8-f44a727f5529",
+    "source_exam_code": "9",
+    "source_module_code": "02",
+    "source_question_number": 22,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "In crafting her fantasy fiction, Nigerian-born British author Helen Oyeyemi has drawn inspiration from the classic nineteenth-century fairy tales of the Brothers Grimm. Her 2014 novel Boy, Snow, Bird, for instance, is a complex retelling of the story of Snow White, while her 2019 novel ______ offers a delicious twist on the classic tale of Hansel and Gretel.",
+    "paired_passage_text": null,
+    "correct_option_label": "C",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "unnecessary_internal_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "literature",
+      "topic_fine": "authorial adaptation",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a grammar question testing punctuation conventions within a syntactic unit. The correct answer requires recognizing that no punctuation belongs between the subject and verb in an independent clause. All distractors introduce punctuation that breaks the required subject-verb unit, making them clearly incorrect on first read."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "unnecessary_internal_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": "low",
+      "target_frequency_band": "high",
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The blank appears in a compound sentence joined by 'while'. No punctuation is needed before the subject 'offers' because the clause is independent and grammatically complete without any internal punctuation.",
+      "full": "The sentence contains two independent clauses joined by the coordinating conjunction 'while': (1) 'Her 2014 novel Boy, Snow, Bird, for instance, is a complex retelling of the story of Snow White' and (2) 'her 2019 novel [blank] offers a delicious twist on the classic tale of Hansel and Gretel.' The correct option must not insert unnecessary punctuation between the subject 'her 2019 novel' and the verb 'offers'. Option C \u2014 'Gingerbread' \u2014 is correct because no comma, dash, or colon is required or appropriate at this position. Option A inserts an em dash, which would incorrectly break the syntactic unit 'novel Gingerbread offers'. Option B inserts a comma, which creates a comma splice or interrupts the subject-verb connection. Option D inserts a colon, which is inappropriate because there is no list, explanation, or quotation following the blank. This is a test of unnecessary internal punctuation within a required syntactic unit (subject\u2013verb)."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "Gingerbread\u2014",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts an em dash inside the required syntactic unit 'novel Gingerbread offers', breaking the subject-verb connection. The clause is grammatically complete without punctuation.",
+        "why_plausible": "The em dash might seem plausible if the student misreads the sentence as needing a dramatic pause or appositive introduction."
+      },
+      {
+        "label": "B",
+        "text": "Gingerbread,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a comma inside the required syntactic unit 'novel Gingerbread offers', creating an interruption between subject and verb. No comma is grammatically required here.",
+        "why_plausible": "Students may overapply comma rules, thinking a comma is needed after the title as if it were an appositive or nonrestrictive element."
+      },
+      {
+        "label": "C",
+        "text": "Gingerbread",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": "",
+        "why_plausible": "No punctuation is needed; the sentence flows naturally with the title directly preceding the verb."
+      },
+      {
+        "label": "D",
+        "text": "Gingerbread:",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a colon inside the required syntactic unit 'novel Gingerbread offers'. A colon is only appropriate if followed by a list, explanation, or quotation \u2014 none of which appear here.",
+        "why_plausible": "Students may confuse this with a colon introducing a list or explanation, but nothing follows that would justify a colon."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  },
+  {
+    "question_id": "9341f3c0-d7a1-5d04-86b4-5f81acf24f86",
+    "source_exam_code": "9",
+    "source_module_code": "02",
+    "source_question_number": 24,
+    "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "passage_text": "When external forces are applied to common glass made from silicates, energy builds up around minuscule defects in the material, resulting in fractures. Recently, engineer Erkka Frankberg of Tampere University in Finland used the chemical ______ to make a glassy solid that can withstand higher strain than silicate glass can before fracturing.",
+    "paired_passage_text": null,
+    "correct_option_label": "D",
+    "classification": {
+      "domain": "Standard English Conventions",
+      "skill_family_key": "Boundaries",
+      "grammar_focus_key": "unnecessary_internal_punctuation",
+      "reading_focus_key": null,
+      "difficulty_overall": "low",
+      "difficulty_reading": null,
+      "difficulty_grammar": "low",
+      "difficulty_inference": null,
+      "difficulty_vocab": null,
+      "distractor_strength": "medium",
+      "stem_type_key": "choose_best_grammar_revision",
+      "stimulus_mode_key": "sentence_only",
+      "syntactic_trap_key": "none",
+      "topic_broad": "science",
+      "topic_fine": "materials science",
+      "answer_mechanism_key": null,
+      "solver_pattern_key": null,
+      "evidence_scope_key": null,
+      "classification_rationale": "This is a Standard English Conventions question testing punctuation rules. The blank occurs within a noun phrase ('chemical compound aluminum oxide'), and the correct answer requires no internal punctuation. The distractors insert unnecessary commas that violate the rule against punctuation inside required syntactic units. The primary grammar focus is 'unnecessary_internal_punctuation' under the 'punctuation' role."
+    },
+    "generation_profile": {
+      "target_grammar_focus_key": "unnecessary_internal_punctuation",
+      "target_grammar_role_key": null,
+      "target_syntactic_trap_key": null,
+      "syntactic_trap_intensity": null,
+      "target_frequency_band": null,
+      "passage_template": null,
+      "model_version": null
+    },
+    "explanation": {
+      "short": "The phrase 'chemical compound aluminum oxide' is a single noun phrase with no internal punctuation required. Options A, B, and C incorrectly insert commas that break up the syntactic unit.",
+      "full": "The correct answer is D: 'compound aluminum oxide'. The phrase functions as a single noun phrase modifying 'chemical', forming the compound noun 'chemical compound aluminum oxide'. No internal punctuation is needed because there is no appositive, list, or clause boundary within this unit. Option A inserts a comma after 'compound', which incorrectly separates the modifier from its head noun. Option B places a comma after 'oxide', which breaks the noun phrase at an unnatural point. Option C combines both errors. The correct option maintains grammatical integrity by preserving the unbroken noun phrase structure."
+    },
+    "options": [
+      {
+        "label": "A",
+        "text": "compound, aluminum oxide",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a comma inside the required syntactic unit 'chemical compound aluminum oxide', violating the rule against unnecessary internal punctuation.",
+        "why_plausible": "Students may incorrectly assume a comma is needed between 'compound' and 'aluminum oxide' because they perceive them as separate elements rather than part of a single noun phrase."
+      },
+      {
+        "label": "B",
+        "text": "compound aluminum oxide,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts a comma after 'oxide', breaking the noun phrase unnecessarily and creating an incorrect pause before the infinitive verb phrase.",
+        "why_plausible": "Students may think a comma is needed after 'oxide' to separate it from the infinitive 'to make', but the phrase is a complete noun phrase and does not require punctuation before the verb."
+      },
+      {
+        "label": "C",
+        "text": "compound, aluminum oxide,",
+        "is_correct": false,
+        "role": "distractor",
+        "distractor_type": "internal_unit_punctuation_insertion",
+        "student_failure_mode": null,
+        "why_wrong": "Inserts two unnecessary commas that break up the single noun phrase 'chemical compound aluminum oxide', violating the rule against punctuation inside required syntactic units.",
+        "why_plausible": "Combines both comma errors from options A and B, appealing to students who over-punctuate noun phrases due to misapplying comma rules for lists or appositives."
+      },
+      {
+        "label": "D",
+        "text": "compound aluminum oxide",
+        "is_correct": true,
+        "role": "correct",
+        "distractor_type": "correct",
+        "student_failure_mode": null,
+        "why_wrong": null,
+        "why_plausible": "Correctly maintains the unbroken noun phrase structure without inserting any unnecessary punctuation."
+      }
+    ],
+    "quality_flags": [],
+    "calibration_eligible": true,
+    "is_grammar": true,
+    "is_reading": false,
+    "annotation_confidence": null
+  }
+]
