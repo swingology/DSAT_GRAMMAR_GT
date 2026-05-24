@@ -589,18 +589,67 @@ subject.
 Create a compound sentence with or without a coordinating conjunction. Test
 FANBOYS comma, introductory phrase comma, or nonrestrictive element comma.
 
-**Secondary trap patterns:**
-- *Introductory-clause comma* — open with a subordinate clause ("Although the
-  study was small, **[blank]** the results were significant"). Distractors omit
-  the comma or place it mid-clause. Classify with
-  `syntactic_trap_key: "early_clause_anchor"` and note
-  `punctuation_subpattern: "introductory_clause_comma"`.
-- *Nonrestrictive-element comma* — embed an optional relative clause or
-  participial phrase ("The researcher, **who had studied the region for a
-  decade**, concluded…"). Distractors make the element restrictive by omitting
-  one or both commas. Classify with
-  `syntactic_trap_key: "modifier_attachment_ambiguity"` and note
-  `punctuation_subpattern: "nonrestrictive_element_comma"`.
+**Sub-pattern — FANBOYS Comma Joining Two Independent Clauses**
+
+(PT1 M2 Q20: "many dinosaurs and other animals to die ___ it left unexplored")
+
+Write two independent clauses that are topically linked (a claim and its
+limitation, an outcome and a residual issue) and place the blank where the
+coordinating conjunction ("but," "and," "so," "yet," "for") sits. The correct
+form is `comma + FANBOYS`. The trap lives in the fact that the second clause
+often opens with a pronoun referring back to the first ("it," "this," "they"),
+which makes the boundary feel like internal phrasing rather than a clause
+break. Reuses the v7 canonical pattern, now PT-grounded.
+
+Distractors: the conjunction with no preceding comma (run-on), a bare comma
+with no conjunction (comma splice), and a stray comma after the verb but
+before the conjunction is removed entirely.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "comma_fix_illusion"`. Note
+`punctuation_subpattern: "fanboys_independent_clauses"` in review_notes.
+
+**Sub-pattern — Introductory-Clause Comma**
+
+(PT10 M1 Q25: "light intensity affects the chemical reaction rate of ___ as")
+
+Open the sentence with an introductory prepositional phrase, participial
+phrase, or subordinate clause (`Along with X`, `With a pressure cooker pot`,
+`Although the study was small`) and place the blank at the boundary where the
+main clause begins. The correct form is a single comma at the boundary. The
+trap is that the introductory element is often long enough (or topically
+continuous with the main clause) that students perceive no audible pause and
+either omit the comma (run-on) or replace it with a heavier mark (colon,
+semicolon, period) that misreads the boundary as a sentence break.
+
+Distractors: a colon or semicolon at the boundary (mis-reads it as a
+list/clause break), no punctuation (run-on), and an added coordinating
+conjunction that creates a redundant connector.
+
+Classify with `syntactic_trap_key: "early_clause_anchor"` and
+`student_failure_mode_key: "punctuation_intimidation"`. Note
+`punctuation_subpattern: "introductory_clause_comma"` in review_notes.
+
+**Sub-pattern — Nonrestrictive-Element Comma**
+
+(PT9 M2 Q23: "repackaging successful narrative formulas as new ___ even shows")
+
+Embed an optional element (relative clause, participial phrase, short
+adverbial like `in that era`, or a closing interrupter like `assuming X`)
+inside an otherwise complete sentence. The correct form sets the element off
+with paired commas — opening AND closing — when it sits mid-sentence, or with
+a single comma when it closes one clause before the next begins. The trap is
+asymmetric punctuation: distractors supply one comma but not the other, or
+substitute a stronger mark (em dash, colon, semicolon) on one side, which
+breaks the bracketing rule even though each half looks locally acceptable.
+
+Distractors: a missing leading or trailing comma around the nonrestrictive
+element, an em dash or colon paired against a comma (mismatched brackets),
+and a semicolon that wrongly promotes the optional element to clause status.
+
+Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
+`student_failure_mode_key: "internal_unit_punctuation_insertion"`. Note
+`punctuation_subpattern: "nonrestrictive_element_comma"` in review_notes.
 
 ### `semicolon_use`
 
