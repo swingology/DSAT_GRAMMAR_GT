@@ -711,15 +711,74 @@ Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
 Use two closely related independent clauses. Place a transitional phrase
 after the semicolon zone.
 
-**Secondary trap patterns:**
-- *Conjunctive adverb pattern* — place a conjunctive adverb ("however,"
-  "therefore," "consequently") between the two independent clauses: "The data
-  were inconclusive**; however,** the team proceeded." The required form is
-  semicolon before + comma after the adverb. Distractors use a comma-only
-  splice before the adverb, or omit the post-adverb comma, or replace the
-  semicolon with a colon. Classify with
-  `syntactic_trap_key: "early_clause_anchor"` and note
-  `punctuation_subpattern: "conjunctive_adverb_semicolon"`.
+**Sub-pattern — Joining Two Independent Clauses Without a Coordinator**
+
+(PT1 M1 Q20: "soul,” ___ positing that all life's virtues derived from this absence")
+
+Construct two fully independent clauses on the same topic and place the blank
+at the boundary, with no coordinating conjunction (`and`, `but`, `so`) present
+in either clause around the blank. The correct option supplies a bare
+semicolon, marking the two clauses as equal-rank and closely related. The trap
+exploits the tonal smoothness of the prose: because the second clause
+elaborates or extends the first, students reach for a comma or a colon, both
+of which leave the clauses fused or mis-typed.
+
+Distractors: a bare comma (comma splice), a colon (mis-types the second clause
+as a definition/list rather than a coordinate IC), and a period with
+capitalization that severs a tight elaborative link the passage marks as
+single-thought.
+
+Classify with `syntactic_trap_key: "early_clause_anchor"` and
+`student_failure_mode_key: "comma_fix_illusion"`. Note
+`punctuation_subpattern: "semicolon_joins_two_ICs"` in review_notes.
+
+**Sub-pattern — Super-Comma in a Complex List with Internal Commas**
+
+(PT8 M2 Q25: "a novel about the changing roles of women in 1950s Lagos ___ A Kind of Marriage, a television play…; and Head Above Water, her autobiography")
+
+Construct a list of three or more items where each item is a noun phrase that
+already contains an internal comma (a title plus a descriptive appositive, a
+city plus a year, a name plus a role). Place the blank at the boundary between
+the first and second list items, with a later list item already separated by a
+semicolon visible in the choice context. The correct option supplies a
+semicolon, promoting the list separators above the appositive-internal commas
+and preserving parallel item structure across the series. The trap is the
+local two-item appearance: the immediate left neighbor looks like a simple
+appositive, so a comma seems sufficient.
+
+Distractors: a bare comma (collapses the item boundary into the internal
+appositive comma, producing an ambiguous list), a colon (mis-types the
+following items as a definition of the first), and an asymmetric mix
+(semicolon at one item boundary, comma at another) that breaks parallel list
+punctuation.
+
+Classify with `syntactic_trap_key: "early_clause_anchor"` and
+`student_failure_mode_key: "internal_unit_punctuation_insertion"`. Note
+`punctuation_subpattern: "semicolon_super_comma_in_list"` in review_notes.
+
+**Sub-pattern — Semicolon Before a Conjunctive Adverb Joining Two ICs**
+
+(PT8 M2 Q26: "Jetties can sometimes have the opposite effect ___ though obstructing the natural flow of sand along the shore can lead to increased erosion")
+
+Construct two independent clauses whose logical relation is concessive,
+adversative, or consequential and where the second clause is fronted by a
+conjunctive adverb (`however`, `therefore`, `consequently`, `though` used
+adverbially, `nevertheless`). Place the blank immediately before that adverb.
+The correct option supplies a semicolon before the adverb (and, when the
+adverb is sentence-initial multi-syllable, a following comma). The trap is
+that the adverb feels conjunction-like: students bracket it with paired
+commas, or use a comma before it as if it were a coordinator, producing a
+comma splice.
+
+Distractors: a bare comma before the adverb (comma splice — the canonical
+error), paired commas around the adverb that leave the clause break
+unmarked, and a comma plus the adverb followed by a stray semicolon
+(`effect, though;`) that mis-locates the clause break.
+
+Classify with `syntactic_trap_key: "early_clause_anchor"` and
+`student_failure_mode_key: "comma_fix_illusion"`. Note
+`punctuation_subpattern: "semicolon_before_conjunctive_adverb"` in
+review_notes.
 
 ### `apostrophe_use`
 
