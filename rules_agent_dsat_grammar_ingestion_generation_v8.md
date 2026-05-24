@@ -548,6 +548,66 @@ Classify with `syntactic_trap_key: "long_distance_dependency"` and
 Use a singular antecedent that looks plural ("the team," "everyone"). Place a
 plural noun nearby.
 
+**Sub-pattern — Reflexive Pronoun Matching Plural Agent**
+
+(PT1 M1 Q25: "turtle barnacles can dissolve the cement-like secretions they use to attach ___ to a sea turtle shell")
+
+Construct a sentence whose grammatical subject is an explicitly plural agent
+(`turtle barnacles`, `researchers`, `the dancers`) and that takes a reflexive
+pronoun as the object of a verb of orientation, attachment, or self-action
+(`attach`, `position`, `arrange`, `distinguish`). The blank holds the reflexive,
+which must be plural (`themselves`) because reflexives copy the number of the
+clause subject, not of any nearer singular noun in a prepositional phrase
+(`to a sea turtle shell`, `from the rest of the colony`).
+
+Distractors: the singular reflexive `itself` (agreement with a nearer singular
+locale noun), the third-person plural object pronoun `them` (drops the
+reflexive marker entirely), and a possessive-plus-self form (`their selves`)
+that mis-spells the reflexive.
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
+
+**Sub-pattern — Plural Demonstrative Determiner Matching Plural Antecedent**
+
+(PT7 M1 Q20: "Eighteen letters ___ at the New York Historical Society. ___ letters demonstrate Alcott's keen business sense")
+
+Build two adjacent sentences (or a sentence pair across a period) in which the
+first introduces a counted plural noun (`Eighteen letters`, `Three sketches`,
+`Several manuscripts`) and the second opens with a demonstrative determiner
+plus the same noun (`___ letters`, `___ sketches`). The blank holds the
+demonstrative, which must be the plural form `These` or `Those`. The trap is
+that the demonstrative sits at sentence-initial position with no immediately
+visible antecedent inside its own clause, tempting a singular default
+(`This`, `That`).
+
+Distractors: singular `This` or `That` (mismatched number), a possessive form
+(`Its`) that picks a wrong category of pronoun, and a bare article (`The`) that
+strips the demonstrative pointing function the passage requires.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "pronoun_anchor_error"`.
+
+**Sub-pattern — Possessive Pronoun for Singular Collective Phrase with Plural Tail Noun**
+
+(PT10 M1 Q26: "gone are the types of pop culture references that made the artist a star … In ___ place is a far more personal subject")
+
+Construct a sentence whose antecedent is a singular collective phrase whose
+head noun is plural-looking (`the types of pop culture references`, `the body
+of early sketches`, `the catalog of recordings`) and which is then referred to
+by a possessive pronoun (`in ___ place`, `its scope`, `its influence`). The
+phrase as a whole denotes a single thematic unit, so the pronoun must be
+singular (`its`). The trap is the immediately preceding plural tail noun
+(`references`, `sketches`, `recordings`), which pulls the reader toward a
+plural possessive (`their`).
+
+Distractors: plural possessive (`their`) keyed to the nearer plural tail noun,
+contraction (`it's`) that swaps possessive for `it is`, and an ambiguous
+pronoun (`there`) that misreads the slot as locative.
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
+
 ### `verb_tense_consistency`
 
 Open with a time marker. Place a distractor tense that matches a nearby
