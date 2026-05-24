@@ -21,7 +21,7 @@ and a third homophone from the set (*there* for *their/they're*, *your* for
 *you're*) that introduces an additional error type.
 
 Classify with `syntactic_trap_key: "none"` and
-`student_failure_mode_key: "common_idiom_pull"`.
+`student_failure_mode_key: "idiom_memory_pull"`.
 
 ---
 
