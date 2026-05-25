@@ -2,6 +2,17 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| session | Task: run_on_sentence v8 sub-patterns drafted (Tier B, 1 PT example): 1 PT-cited (Fused Boundary Repaired by Period — PT1 M2 Q24) + 2 web-only (Coordinating Conjunction Without Required Comma — The Critical Reader; Long Compound-Complex Sentence Missing a Legal IC Boundary — Khan Academy); validator: 51 sub-patterns / 17 focus keys, all pass; committed b9b319d | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~2k |
+| 22:35 | Task 6: Drafted v8 sub-patterns for 4 Tier C focus keys (modifier_placement: 3 sub-patterns, comparative_structures: 3, illogical_comparison: 2, adjective_adverb_distinction: 2). All web-only [NO PT EVIDENCE]. Committed 33498f5 on rules_edit. | rules_agent_dsat_grammar_ingestion_generation_v8.md, analysis/v8/subpattern_drafts/ | success | ~3k |
+| session | Task: sentence_fragment v8 sub-patterns drafted (Tier B, 3 PT examples, all PT-cited): Blank Must Supply a Finite IC Before a Trailing Participial Phrase — PT1 M1 Q28; Blank Must Supply a Complete IC Before a Colon-Introduced List — PT1 M2 Q26; Blank Must Supply a Noun-Phrase Subject for a Downstream Finite Verb — PT4 M1 Q24; validator: 48 sub-patterns / 16 focus keys, all pass; committed 8bccbd7 | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~2k |
+| session | Task: colon_dash_use v8 sub-patterns drafted (Tier B, 3 PT examples, all PT-cited): Colon Introducing an Explanatory IC — PT6 M2 Q25; Colon Introducing an Elaborating Clause After a Topically Open IC — PT1 M1 Q24; Colon Introducing a Contrastive or Result IC — PT9 M1 Q24; validator: 45 sub-patterns / 15 focus keys, all pass; committed b1d0825 | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~2k |
+| session | Task: conjunctive_adverb_usage v8 sub-patterns drafted (Tier B, 4 PT examples, all PT-cited): Semicolon Before / Comma After however Between Two ICs — PT4 M1 Q26; Colon-Confusion Variant — PT6 M2 Q24; Missing-Comma-After Variant — PT9 M1 Q22; validator: 42 sub-patterns / 14 focus keys, all pass; committed 8a8bde6 | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~2k |
+| 00:11 | Task: end_punctuation_question_statement v8 sub-patterns drafted from 5 PT examples — replaced v7 Variant A/B blocks with 3 PT-cited sub-patterns (Indirect Question After Verb of Cognition — PT6 M1 Q22; Embedded WH-Clause Inside Gerund/Participial Phrase — PT11 M1 Q19; "Which Is Why" Declarative Despite WH-Marker — PT11 M2 Q19); validator: 39 sub-patterns / 13 focus keys, all pass; committed 669f305 | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~3k |
+| 00:11 | Task: pronoun_antecedent_agreement v8 sub-patterns drafted from 7 PT examples (Reflexive Pronoun Matching Plural Agent — PT1 M1 Q25; Plural Demonstrative Determiner Matching Plural Antecedent — PT7 M1 Q20; Possessive Pronoun for Singular Collective Phrase with Plural Tail Noun — PT10 M1 Q26); validator: 36 sub-patterns / 12 focus keys, all pass; committed 38ba7cc | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~3k |
+| session | Task: logical_predication v8 sub-patterns drafted from 6 PT examples (Participial-Phrase Opener Demands a Logically Compatible Subject — PT6 M2 Q21; Consequence-Marking Participle Where Finite Verb Misaligns — PT1 M2 Q21 + PT10 M1 Q22; Real Agent Must Be the Grammatical Subject of the Reporting Verb — PT11 M2 Q25 + PT11 M2 Q24); validator: 21 sub-patterns / 7 focus keys, all pass; committed 1c5faac | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~3k |
+| session | Task: logical_relationships v8 sub-patterns drafted from 22 PT examples (Infinitive of Purpose After an Action Verb — PT9 M2 Q20 + PT4 M2 Q24; Active Subject Preserves Causal Agency After a Causal Cue — PT11 M1 Q23 + PT4 M2 Q25; Finite Verb Required to Anchor a Compound Subject — PT8 M2 Q22 + PT7 M1 Q25); validator: 18 sub-patterns / 6 focus keys, all pass; committed 4239a1e | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~3k |
+| 23:43 | Task 4: transition_logic v8 sub-patterns drafted from 60 PT examples (Causal Result After Mechanism Description, Converse Pairing of Parallel Cases, Expectation Reversal After a Setup); validator passes for transition_logic (pre-existing sentence_boundary error remains, out of scope); committed daa0aed | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~6k |
+| 13:10 | Created RULES_ANATOMY.md — documents how grammar_v7, reading_v2, and review_v1 form a layered spec+evaluation system | RULES_ANATOMY.md | success | ~700 |
 | session | Prompt caching: build_annotate_prompt_parts + build_generate_prompt_parts split rules (static) from instructions (dynamic). Anthropic uses cache_control:ephemeral on static block; Ollama sets num_keep; OpenAI concatenates (auto-caches). 751/751 tests pass. | llm/{base,anthropic,ollama,openai}_provider.py, prompts/{annotate,generate}_prompt.py, routers/{ingest,generate}.py, tests/ | success | ~4k |
 | session | v3→v7 rules_version fix: config.py rules_version updated to v7; prompt_version "v3.0"→"v7.0" in ingest.py/generate.py/student.py (8 sites); scripts/reannotate_official_v7.py written for bulk re-annotation of 569 official questions via /reannotate endpoint | backend/app/config.py, backend/app/routers/ingest.py, backend/app/routers/generate.py, backend/app/routers/student.py, scripts/reannotate_official_v7.py | success | ~2k |
 | 18:30 | Ingestion test for Test_9_digital_sec01_mod01 — BLOCKED: run.sh returned "Invalid admin API key"; server on :8000 (pid 175680) started from project root without backend/.env, using default key admin-key-change-me instead of admin-test-key; logged bug-151 | DEBUG_LOG.md, .wolf/buglog.json | blocked (env/config issue, no job submitted) | ~1k |
@@ -1703,3 +1714,144 @@
 | 22:07 | Edited TASKS_RULES_UPDATE_FEATURE.md | expanded (+63 lines) | ~804 |
 | 22:08 | Session end: 6 writes across 4 files (TRAPS_EXAMPLES.md, rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md, TASKS_RULES_UPDATE_FEATURE.md) | 5 reads | ~63833 tok |
 | 22:12 | Session end: 6 writes across 4 files (TRAPS_EXAMPLES.md, rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md, TASKS_RULES_UPDATE_FEATURE.md) | 5 reads | ~63833 tok |
+| 22:33 | Session end: 6 writes across 4 files (TRAPS_EXAMPLES.md, rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md, TASKS_RULES_UPDATE_FEATURE.md) | 5 reads | ~63833 tok |
+| 22:34 | Session end: 6 writes across 4 files (TRAPS_EXAMPLES.md, rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md, TASKS_RULES_UPDATE_FEATURE.md) | 5 reads | ~63833 tok |
+| 22:35 | Session end: 6 writes across 4 files (TRAPS_EXAMPLES.md, rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md, TASKS_RULES_UPDATE_FEATURE.md) | 5 reads | ~63833 tok |
+| 22:35 | Session end: 6 writes across 4 files (TRAPS_EXAMPLES.md, rules_agent_dsat_grammar_ingestion_generation_v7.md, rules_agent_dsat_reading_v2.md, TASKS_RULES_UPDATE_FEATURE.md) | 5 reads | ~63833 tok |
+
+## Session: 2026-05-24 22:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:47 | Created RULES_ANATOMY.md | — | ~1246 |
+| 22:47 | Session end: 1 writes across 1 files (RULES_ANATOMY.md) | 1 reads | ~31414 tok |
+| 22:55 | Session end: 1 writes across 1 files (RULES_ANATOMY.md) | 2 reads | ~67810 tok |
+| 23:02 | Session end: 1 writes across 1 files (RULES_ANATOMY.md) | 2 reads | ~67810 tok |
+| 23:11 | Created docs/superpowers/plans/2026-05-23-grammar-rules-v7-to-v8-subpatterns.md | — | ~7949 |
+| 23:11 | Session end: 2 writes across 2 files (RULES_ANATOMY.md, 2026-05-23-grammar-rules-v7-to-v8-subpatterns.md) | 2 reads | ~76327 tok |
+| 23:22 | Created scripts/v8/extract_focus_examples.py | — | ~388 |
+| 23:22 | Created scripts/v8/compute_tier_table.py | — | ~744 |
+| 23:22 | Created scripts/v8/validate_v8_citations.py | — | ~545 |
+| 23:23 | Task 1: created v8 extraction tooling | scripts/v8/extract_focus_examples.py, scripts/v8/compute_tier_table.py, scripts/v8/validate_v8_citations.py, analysis/v8/ | success | ~3500 tokens |
+| 23:25 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | inline fix | ~15 |
+| 23:25 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | reduced (-18 lines) | ~251 |
+| 23:25 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | inline fix | ~5 |
+| 23:25 | Task 2: bootstrapped v8 from v7 (header, changelog, model_version) | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~2k |
+| 23:26 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 5→7 lines | ~129 |
+| 23:27 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+113 lines) | ~1149 |
+| 23:31 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+32 lines) | ~649 |
+| 23:37 | Task 4: subject_verb_agreement v8 sub-patterns drafted from 23 PT examples | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~6k |
+| 23:38 | Edited scripts/v8/validate_v8_citations.py | added 1 condition(s) | ~322 |
+| 23:38 | Edited scripts/v8/validate_v8_citations.py | modified enumerate() | ~434 |
+| 23:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+68 lines) | ~1026 |
+| 23:46 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+49 lines) | ~930 |
+| 23:46 | Task 4: punctuation_comma v8 sub-patterns drafted from 12 PT examples | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~6k |
+| 23:49 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+55 lines) | ~886 |
+| 23:50 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+53 lines) | ~922 |
+| 23:51 | Task 4: verb_tense_consistency v8 sub-patterns drafted from 17 PT examples (Past Perfect for Earlier of Two Past Events, Simple Past Anchored by Explicit Historical Date, Tense Shift to Present Triggered by Today/Now); validator clean for key; committed dd59d03 | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~6k |
+| 23:51 | Task 4: sentence_boundary v8 sub-patterns drafted from 8 PT examples (Period Between Two Fully Independent Clauses, Subordinating Conjunction Repairs Fused Boundary, Declarative vs Interrogative Boundary); resolved v7 appositive-comma carryover; validator fully clean; committed 27f75f5 | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~6k |
+| 23:55 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+64 lines) | ~1016 |
+| 23:55 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+67 lines) | ~1042 |
+| 00:00 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+60 lines) | ~987 |
+| 00:01 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+52 lines) | ~955 |
+| 00:02 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | "the isotope ___ to identi" → "the isotope carbon-13 (13" | ~20 |
+| 00:05 | v8 sub-patterns: unnecessary_internal_punctuation (Tier A, 9 PT) | rules_agent_dsat_grammar_ingestion_generation_v8.md | 3 PT-cited sub-patterns added in B.3 (PT8 M2 Q23, PT11 M2 Q21, PT7 M2 Q21); commit a134f2f; validator pass 24 sub-patterns | ~1500 |
+| 00:08 | v8 sub-patterns: appositive_punctuation (Tier A, 8 PT) | rules_agent_dsat_grammar_ingestion_generation_v8.md | replaced v7 A/B/C blocks with 3 PT-cited sub-patterns (PT1 M2 Q27, PT4 M2 Q22, PT4 M1 Q25); distractor table preserved; commit a02224d; validator pass 27 sub-patterns | ~1500 |
+| 00:06 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+59 lines) | ~1047 |
+| 00:06 | semicolon_use: replaced v7 secondary block with 3 PT-cited sub-patterns (join 2 ICs, super-comma list, conjunctive adverb) | rules_agent_dsat_grammar_ingestion_generation_v8.md | committed 15bc142, validator passed | ~2200 |
+| 00:07 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+66 lines) | ~1045 |
+| 00:08 | comma_splice: appended 3 PT-cited sub-patterns (comma+FANBOYS, semicolon upgrade, non-finite demotion) | rules_agent_dsat_grammar_ingestion_generation_v8.md | committed 139a418, validator passed (33 sub-patterns across 11 keys) | ~2300 |
+| 00:10 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | modified the() | ~915 |
+| 00:11 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+58 lines) | ~952 |
+| 00:14 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+57 lines) | ~775 |
+| 00:15 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+60 lines) | ~854 |
+| 00:15 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+65 lines) | ~946 |
+| 00:16 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+59 lines) | ~838 |
+
+## Session: 2026-05-24 00:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:24 | Created docs/agents/issue-tracker.md | — | ~224 |
+| 00:24 | Created docs/agents/triage-labels.md | — | ~279 |
+| 00:24 | Created docs/agents/domain.md | — | ~337 |
+| 00:25 | Edited CLAUDE.md | expanded (+14 lines) | ~160 |
+| 00:25 | Session end: 4 writes across 4 files (issue-tracker.md, triage-labels.md, domain.md, CLAUDE.md) | 4 reads | ~1345 tok |
+| 00:26 | Created ../../../../tmp/v8-subpatterns-handoff-2026-05-24.md | — | ~3165 |
+| 00:26 | Session end: 5 writes across 5 files (issue-tracker.md, triage-labels.md, domain.md, CLAUDE.md, v8-subpatterns-handoff-2026-05-24.md) | 4 reads | ~4736 tok |
+| 00:27 | Session end: 5 writes across 5 files (issue-tracker.md, triage-labels.md, domain.md, CLAUDE.md, v8-subpatterns-handoff-2026-05-24.md) | 4 reads | ~4736 tok |
+
+## Session: 2026-05-24 00:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:39 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | modified as() | ~827 |
+| 00:39 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+57 lines) | ~791 |
+| 00:39 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+59 lines) | ~817 |
+| 00:39 | Created analysis/v8/subpattern_drafts/verb_form.md | — | ~773 |
+| 00:39 | Created analysis/v8/subpattern_drafts/possessive_contraction.md | — | ~807 |
+| 00:39 | Created analysis/v8/subpattern_drafts/pronoun_case.md | — | ~781 |
+| 00:39 | Task: verb_form, possessive_contraction, pronoun_case v8 sub-patterns drafted (Tier B). verb_form: 3 PT-cited (Infinitive After Enable-plus-Object — PT11 M2 Q20; Infinitive Complement After Decision Verb — PT7 M2 Q19; Past Participle as Sentence-Initial Modifier — PT6 M1 Q19). possessive_contraction: 2 PT-cited + 1 web-only (Plural Possessive with Irregular Plural Noun — PT4 M1 Q19; Plural Noun Misidentified as Possessive — PT5 M1 Q23; Possessive Pronoun vs. Contraction Homophone — Khan Academy). pronoun_case: 1 PT-cited + 2 web-only (Possessive Pronoun vs. Homophonous Contraction — PT1 M1 Q21; Pronoun Case in Compound Subject or Object — PrepScholar; Who vs. Whom in Object Position — The Critical Reader); committed 3920f73 | rules_agent_dsat_grammar_ingestion_generation_v8.md, analysis/v8/subpattern_drafts/{verb_form,possessive_contraction,pronoun_case}.md | success | ~3k |
+| 00:42 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+63 lines) | ~922 |
+| 00:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+60 lines) | ~967 |
+| 00:43 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+62 lines) | ~1009 |
+| 00:43 | Created analysis/v8/subpattern_drafts/relative_pronouns.md | — | ~903 |
+| 00:43 | Created analysis/v8/subpattern_drafts/precision_word_choice.md | — | ~866 |
+| 00:43 | Created analysis/v8/subpattern_drafts/register_style_consistency.md | — | ~909 |
+| 00:46 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+66 lines) | ~1046 |
+| 00:46 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+65 lines) | ~1041 |
+| 00:47 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+68 lines) | ~1120 |
+| 00:47 | Created analysis/v8/subpattern_drafts/emphasis_meaning_shifts.md | — | ~962 |
+| 00:47 | Created analysis/v8/subpattern_drafts/data_interpretation_claims.md | — | ~956 |
+| 00:47 | Created analysis/v8/subpattern_drafts/preposition_idiom.md | — | ~983 |
+| 00:48 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | inline fix | ~19 |
+| 00:52 | Created analysis/v8/subpattern_drafts/noun_countability.md | — | ~875 |
+| 00:52 | Created analysis/v8/subpattern_drafts/determiners_articles.md | — | ~914 |
+| 00:53 | Created analysis/v8/subpattern_drafts/affirmative_agreement.md | — | ~1000 |
+| 00:53 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+61 lines) | ~881 |
+| 00:53 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+64 lines) | ~924 |
+| 00:53 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+68 lines) | ~1005 |
+| 00:58 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+69 lines) | ~1004 |
+| 00:58 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+90 lines) | ~1316 |
+| 00:58 | Created analysis/v8/subpattern_drafts/pronoun_clarity.md | — | ~992 |
+| 00:59 | Created analysis/v8/subpattern_drafts/voice_active_passive.md | — | ~647 |
+| 00:59 | Created analysis/v8/subpattern_drafts/negation.md | — | ~659 |
+| 01:19 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+71 lines) | ~1091 |
+| 01:20 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+72 lines) | ~1115 |
+| 01:20 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+46 lines) | ~829 |
+| 01:20 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | modified as() | ~826 |
+| 01:20 | Created analysis/v8/subpattern_drafts/modifier_placement.md | — | ~1069 |
+| 01:21 | Created analysis/v8/subpattern_drafts/comparative_structures.md | — | ~1095 |
+| 01:21 | Created analysis/v8/subpattern_drafts/illogical_comparison.md | — | ~724 |
+| 01:21 | Created analysis/v8/subpattern_drafts/adjective_adverb_distinction.md | — | ~702 |
+| 01:25 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+64 lines) | ~938 |
+| 01:25 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+65 lines) | ~968 |
+| 01:25 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+66 lines) | ~990 |
+| 01:25 | Created analysis/v8/subpattern_drafts/apostrophe_use.md | — | ~922 |
+| 01:26 | Created analysis/v8/subpattern_drafts/hyphen_usage.md | — | ~956 |
+| 01:26 | Created analysis/v8/subpattern_drafts/quotation_punctuation.md | — | ~986 |
+| 01:26 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 4→4 lines | ~44 |
+| 01:26 | Edited analysis/v8/subpattern_drafts/apostrophe_use.md | inline fix | ~13 |
+| 07:50 | Created analysis/v8/subpattern_drafts/parallel_structure.md | — | ~922 |
+| 07:50 | Created analysis/v8/subpattern_drafts/elliptical_constructions.md | — | ~965 |
+| 07:50 | Created analysis/v8/subpattern_drafts/conjunction_usage.md | — | ~948 |
+| 07:50 | Created analysis/v8/subpattern_drafts/redundancy_concision.md | — | ~938 |
+| 07:50 | Created analysis/v8/subpattern_drafts/commonly_confused_words.md | — | ~1167 |
+| 07:51 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+65 lines) | ~936 |
+| 07:51 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+66 lines) | ~1033 |
+| 07:51 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+67 lines) | ~1049 |
+| 07:51 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+67 lines) | ~1063 |
+| 07:51 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+76 lines) | ~1336 |
+| 07:53 | Edited scripts/v8/validate_v8_citations.py | inline fix | ~30 |
+| 07:53 | Edited RULES_ANATOMY.md | 2→2 lines | ~42 |
+| 07:53 | Edited RULES_ANATOMY.md | 5→5 lines | ~70 |
+| 07:53 | Edited RULES_ANATOMY.md | 3→3 lines | ~24 |
+| 07:53 | Edited RULES_ANATOMY.md | 5→6 lines | ~119 |
+| 07:54 | Edited rules_agent_dsat_review_v1.md | "rules_agent_dsat_grammar_" → "rules_agent_dsat_grammar_" | ~37 |
+| 07:55 | Edited CHANGELOG.md | modified A() | ~397 |
+| 07:55 | Session end: 63 writes across 32 files (rules_agent_dsat_grammar_ingestion_generation_v8.md, verb_form.md, possessive_contraction.md, pronoun_case.md, relative_pronouns.md) | 27 reads | ~187262 tok |
+
+## Session: 2026-05-25 22:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

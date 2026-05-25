@@ -1,80 +1,12 @@
 {
-  "session_id": "session-2026-05-24-2126",
-  "started": "2026-05-24T04:26:45.621Z",
-  "files_read": {
-    "/home/jb/DSAT_REDUX_MD/TESTS/DATA_SRC/2024-2025 Tests Answers/Test05_ENG_Sec01.pdf": {
-      "count": 6,
-      "tokens": 0,
-      "first_read": "2026-05-24T04:37:14.308Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/docs/agentic/test/rules_agent_dsat_grammar_ingestion_generation.md": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-05-24T04:44:25.016Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md": {
-      "count": 3,
-      "tokens": 27429,
-      "first_read": "2026-05-24T04:46:25.068Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md": {
-      "count": 8,
-      "tokens": 29746,
-      "first_read": "2026-05-24T04:46:29.051Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md": {
-      "count": 1,
-      "tokens": 3740,
-      "first_read": "2026-05-24T05:07:14.985Z"
-    }
-  },
-  "files_written": [
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/TRAPS_EXAMPLES.md",
-      "action": "create",
-      "tokens": 891,
-      "at": "2026-05-24T04:48:38.992Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
-      "action": "edit",
-      "tokens": 203,
-      "at": "2026-05-24T04:49:32.308Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
-      "action": "edit",
-      "tokens": 461,
-      "at": "2026-05-24T04:56:42.157Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
-      "action": "edit",
-      "tokens": 146,
-      "at": "2026-05-24T05:00:32.055Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
-      "action": "edit",
-      "tokens": 356,
-      "at": "2026-05-24T05:00:44.037Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md",
-      "action": "edit",
-      "tokens": 861,
-      "at": "2026-05-24T05:07:40.989Z"
-    }
-  ],
-  "edit_counts": {
-    "TRAPS_EXAMPLES.md": 1,
-    "rules_agent_dsat_grammar_ingestion_generation_v7.md": 1,
-    "rules_agent_dsat_reading_v2.md": 3,
-    "TASKS_RULES_UPDATE_FEATURE.md": 1
-  },
-  "anatomy_hits": 3,
-  "anatomy_misses": 2,
-  "repeated_reads_warned": 14,
+  "session_id": "session-2026-05-25-2227",
+  "started": "2026-05-25T05:27:22.956Z",
+  "files_read": {},
+  "files_written": [],
+  "edit_counts": {},
+  "anatomy_hits": 0,
+  "anatomy_misses": 0,
+  "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 21
+  "stop_count": 0
 }

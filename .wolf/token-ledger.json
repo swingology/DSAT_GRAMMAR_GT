@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-09T23:06:22.868Z",
   "lifetime": {
-    "total_tokens_estimated": 32995972,
-    "total_reads": 3532,
-    "total_writes": 3982,
-    "total_sessions": 100,
-    "anatomy_hits": 2308,
-    "anatomy_misses": 1221,
-    "repeated_reads_blocked": 4110,
-    "estimated_savings_vs_bare_cli": 79868369
+    "total_tokens_estimated": 33752904,
+    "total_reads": 3600,
+    "total_writes": 4088,
+    "total_sessions": 104,
+    "anatomy_hits": 2346,
+    "anatomy_misses": 1251,
+    "repeated_reads_blocked": 4302,
+    "estimated_savings_vs_bare_cli": 90324301
   },
   "sessions": [
     {
@@ -51871,6 +51871,1180 @@
         "writes_count": 6,
         "repeated_reads_blocked": 14,
         "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-24-2126",
+      "started": "2026-05-24T04:26:45.621Z",
+      "ended": "2026-05-24T05:33:39.358Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TESTS/DATA_SRC/2024-2025 Tests Answers/Test05_ENG_Sec01.pdf",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docs/agentic/test/rules_agent_dsat_grammar_ingestion_generation.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27429,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 29746,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md",
+          "tokens_estimated": 3740,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TRAPS_EXAMPLES.md",
+          "tokens_estimated": 891,
+          "action": "create"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 203,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 461,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 146,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 356,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md",
+          "tokens_estimated": 861,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 60915,
+        "output_tokens_estimated": 2918,
+        "reads_count": 5,
+        "writes_count": 6,
+        "repeated_reads_blocked": 14,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-24-2126",
+      "started": "2026-05-24T04:26:45.621Z",
+      "ended": "2026-05-24T05:34:47.451Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TESTS/DATA_SRC/2024-2025 Tests Answers/Test05_ENG_Sec01.pdf",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docs/agentic/test/rules_agent_dsat_grammar_ingestion_generation.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27429,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 29746,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md",
+          "tokens_estimated": 3740,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TRAPS_EXAMPLES.md",
+          "tokens_estimated": 891,
+          "action": "create"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 203,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 461,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 146,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 356,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md",
+          "tokens_estimated": 861,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 60915,
+        "output_tokens_estimated": 2918,
+        "reads_count": 5,
+        "writes_count": 6,
+        "repeated_reads_blocked": 14,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-24-2126",
+      "started": "2026-05-24T04:26:45.621Z",
+      "ended": "2026-05-24T05:35:10.398Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TESTS/DATA_SRC/2024-2025 Tests Answers/Test05_ENG_Sec01.pdf",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docs/agentic/test/rules_agent_dsat_grammar_ingestion_generation.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27429,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 29746,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md",
+          "tokens_estimated": 3740,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TRAPS_EXAMPLES.md",
+          "tokens_estimated": 891,
+          "action": "create"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 203,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 461,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 146,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 356,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md",
+          "tokens_estimated": 861,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 60915,
+        "output_tokens_estimated": 2918,
+        "reads_count": 5,
+        "writes_count": 6,
+        "repeated_reads_blocked": 14,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-24-2126",
+      "started": "2026-05-24T04:26:45.621Z",
+      "ended": "2026-05-24T05:35:29.408Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TESTS/DATA_SRC/2024-2025 Tests Answers/Test05_ENG_Sec01.pdf",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/docs/agentic/test/rules_agent_dsat_grammar_ingestion_generation.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 27429,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 29746,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md",
+          "tokens_estimated": 3740,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TRAPS_EXAMPLES.md",
+          "tokens_estimated": 891,
+          "action": "create"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 203,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 461,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 146,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 356,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TASKS_RULES_UPDATE_FEATURE.md",
+          "tokens_estimated": 861,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 60915,
+        "output_tokens_estimated": 2918,
+        "reads_count": 5,
+        "writes_count": 6,
+        "repeated_reads_blocked": 14,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-24-2238",
+      "started": "2026-05-24T05:38:13.907Z",
+      "ended": "2026-05-24T05:44:59.929Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 30080,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-24-2238",
+      "started": "2026-05-24T05:38:13.907Z",
+      "ended": "2026-05-24T05:45:25.702Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 30080,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-24-2238",
+      "started": "2026-05-24T05:38:13.907Z",
+      "ended": "2026-05-24T05:47:42.996Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/RULES_ANATOMY.md",
+          "tokens_estimated": 1334,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 30080,
+        "output_tokens_estimated": 1334,
+        "reads_count": 1,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-24-2238",
+      "started": "2026-05-24T05:38:13.907Z",
+      "ended": "2026-05-24T05:55:52.455Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 36396,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/RULES_ANATOMY.md",
+          "tokens_estimated": 1334,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 66476,
+        "output_tokens_estimated": 1334,
+        "reads_count": 2,
+        "writes_count": 1,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-24-2238",
+      "started": "2026-05-24T05:38:13.907Z",
+      "ended": "2026-05-24T06:02:23.951Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 36396,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/RULES_ANATOMY.md",
+          "tokens_estimated": 1334,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 66476,
+        "output_tokens_estimated": 1334,
+        "reads_count": 2,
+        "writes_count": 1,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-24-2238",
+      "started": "2026-05-24T05:38:13.907Z",
+      "ended": "2026-05-24T06:11:22.312Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v7.md",
+          "tokens_estimated": 36396,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/RULES_ANATOMY.md",
+          "tokens_estimated": 1334,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/superpowers/plans/2026-05-23-grammar-rules-v7-to-v8-subpatterns.md",
+          "tokens_estimated": 8517,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 66476,
+        "output_tokens_estimated": 9851,
+        "reads_count": 2,
+        "writes_count": 2,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-24-0021",
+      "started": "2026-05-24T07:21:32.980Z",
+      "ended": "2026-05-24T07:25:15.284Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/setup-matt-pocock-skills/issue-tracker-local.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/setup-matt-pocock-skills/triage-labels.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/setup-matt-pocock-skills/domain.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CLAUDE.md",
+          "tokens_estimated": 274,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/agents/issue-tracker.md",
+          "tokens_estimated": 240,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/agents/triage-labels.md",
+          "tokens_estimated": 299,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/agents/domain.md",
+          "tokens_estimated": 361,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CLAUDE.md",
+          "tokens_estimated": 171,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 274,
+        "output_tokens_estimated": 1071,
+        "reads_count": 4,
+        "writes_count": 4,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-24-0021",
+      "started": "2026-05-24T07:21:32.980Z",
+      "ended": "2026-05-24T07:26:49.937Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/setup-matt-pocock-skills/issue-tracker-local.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/setup-matt-pocock-skills/triage-labels.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/setup-matt-pocock-skills/domain.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CLAUDE.md",
+          "tokens_estimated": 274,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/agents/issue-tracker.md",
+          "tokens_estimated": 240,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/agents/triage-labels.md",
+          "tokens_estimated": 299,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/agents/domain.md",
+          "tokens_estimated": 361,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CLAUDE.md",
+          "tokens_estimated": 171,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/v8-subpatterns-handoff-2026-05-24.md",
+          "tokens_estimated": 3391,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 274,
+        "output_tokens_estimated": 4462,
+        "reads_count": 4,
+        "writes_count": 5,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-24-0021",
+      "started": "2026-05-24T07:21:32.980Z",
+      "ended": "2026-05-24T07:27:02.355Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/setup-matt-pocock-skills/issue-tracker-local.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/setup-matt-pocock-skills/triage-labels.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/setup-matt-pocock-skills/domain.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CLAUDE.md",
+          "tokens_estimated": 274,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/agents/issue-tracker.md",
+          "tokens_estimated": 240,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/agents/triage-labels.md",
+          "tokens_estimated": 299,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/agents/domain.md",
+          "tokens_estimated": 361,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CLAUDE.md",
+          "tokens_estimated": 171,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/v8-subpatterns-handoff-2026-05-24.md",
+          "tokens_estimated": 3391,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 274,
+        "output_tokens_estimated": 4462,
+        "reads_count": 4,
+        "writes_count": 5,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-24-0032",
+      "started": "2026-05-24T07:32:01.046Z",
+      "ended": "2026-05-24T14:55:52.338Z",
+      "reads": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/handoff",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/.claude/skills/handoff/SKILL.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/docs/superpowers/plans/2026-05-23-grammar-rules-v7-to-v8-subpatterns.md",
+          "tokens_estimated": 7452,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/subagent-driven-development/implementer-prompt.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/focus_evidence/verb_form.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/focus_evidence/possessive_contraction.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/focus_evidence/pronoun_case.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/tier_table.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 72518,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/focus_evidence/relative_pronouns.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/focus_evidence/precision_word_choice.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/focus_evidence/register_style_consistency.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/verb_form.md",
+          "tokens_estimated": 725,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/focus_evidence/data_interpretation_claims.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/focus_evidence/emphasis_meaning_shifts.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/focus_evidence/preposition_idiom.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/register_style_consistency.md",
+          "tokens_estimated": 852,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/noun_countability.md",
+          "tokens_estimated": 820,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/affirmative_agreement.md",
+          "tokens_estimated": 937,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/negation.md",
+          "tokens_estimated": 617,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/determiners_articles.md",
+          "tokens_estimated": 857,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/apostrophe_use.md",
+          "tokens_estimated": 864,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/pronoun_clarity.md",
+          "tokens_estimated": 930,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/scripts/v8/validate_v8_citations.py",
+          "tokens_estimated": 734,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/RULES_ANATOMY.md",
+          "tokens_estimated": 1168,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_review_v1.md",
+          "tokens_estimated": 3578,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CHANGELOG.md",
+          "tokens_estimated": 40513,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 886,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 847,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 875,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/verb_form.md",
+          "tokens_estimated": 828,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/possessive_contraction.md",
+          "tokens_estimated": 864,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/pronoun_case.md",
+          "tokens_estimated": 836,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 988,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1036,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1081,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/relative_pronouns.md",
+          "tokens_estimated": 968,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/precision_word_choice.md",
+          "tokens_estimated": 928,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/register_style_consistency.md",
+          "tokens_estimated": 974,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1121,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1115,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1200,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/emphasis_meaning_shifts.md",
+          "tokens_estimated": 1031,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/data_interpretation_claims.md",
+          "tokens_estimated": 1024,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/preposition_idiom.md",
+          "tokens_estimated": 1053,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/noun_countability.md",
+          "tokens_estimated": 938,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/determiners_articles.md",
+          "tokens_estimated": 980,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/affirmative_agreement.md",
+          "tokens_estimated": 1071,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 944,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 990,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1076,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1076,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1410,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/pronoun_clarity.md",
+          "tokens_estimated": 1062,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/voice_active_passive.md",
+          "tokens_estimated": 693,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/negation.md",
+          "tokens_estimated": 706,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1169,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1194,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 888,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 884,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/modifier_placement.md",
+          "tokens_estimated": 1145,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/comparative_structures.md",
+          "tokens_estimated": 1173,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/illogical_comparison.md",
+          "tokens_estimated": 775,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/adjective_adverb_distinction.md",
+          "tokens_estimated": 752,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1005,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1037,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1060,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/apostrophe_use.md",
+          "tokens_estimated": 988,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/hyphen_usage.md",
+          "tokens_estimated": 1024,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/quotation_punctuation.md",
+          "tokens_estimated": 1057,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/apostrophe_use.md",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/parallel_structure.md",
+          "tokens_estimated": 988,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/elliptical_constructions.md",
+          "tokens_estimated": 1034,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/conjunction_usage.md",
+          "tokens_estimated": 1015,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/redundancy_concision.md",
+          "tokens_estimated": 1005,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/analysis/v8/subpattern_drafts/commonly_confused_words.md",
+          "tokens_estimated": 1251,
+          "action": "create"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1002,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1107,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1124,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1139,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1431,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/scripts/v8/validate_v8_citations.py",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/RULES_ANATOMY.md",
+          "tokens_estimated": 45,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/RULES_ANATOMY.md",
+          "tokens_estimated": 74,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/RULES_ANATOMY.md",
+          "tokens_estimated": 26,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/RULES_ANATOMY.md",
+          "tokens_estimated": 127,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/rules_agent_dsat_review_v1.md",
+          "tokens_estimated": 39,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/jb/Downloads/DSAT_GRAMMAR_GT/CHANGELOG.md",
+          "tokens_estimated": 425,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 132565,
+        "output_tokens_estimated": 54697,
+        "reads_count": 27,
+        "writes_count": 63,
+        "repeated_reads_blocked": 133,
+        "anatomy_lookups": 14
       }
     }
   ],

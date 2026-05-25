@@ -2692,6 +2692,214 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-24T05:07:40.990Z"
+    },
+    {
+      "id": "bug-166",
+      "timestamp": "2026-05-24T06:25:18.806Z",
+      "error_message": "Wrong reference: rules_agent_dsat_grammar_ingestion_generetion_v7 should be rules_agent_dsat_grammar_ingestion_generation_v8",
+      "file": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "root_cause": "Used \"rules_agent_dsat_grammar_ingestion_generetion_v7\" instead of \"rules_agent_dsat_grammar_ingestion_generation_v8\"",
+      "fix": "Changed rules_agent_dsat_grammar_ingestion_generetion_v7 → rules_agent_dsat_grammar_ingestion_generation_v8",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-24T06:25:40.819Z"
+    },
+    {
+      "id": "bug-167",
+      "timestamp": "2026-05-24T06:25:33.509Z",
+      "error_message": "Significant refactor of ",
+      "file": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "root_cause": "26 lines replaced/restructured",
+      "fix": "Rewrote 32→14 lines (26 removed) | Also: This is the consolidated v7 production rule file f; ingestion and generation agent. It extends v6 with | Also: **Secondary trap patterns:**; - *Inversion* — place the verb before the subject ",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-24T06:31:07.396Z"
+    },
+    {
+      "id": "bug-168",
+      "timestamp": "2026-05-24T06:38:00.171Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/v8/validate_v8_citations.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 18→21 lines (2 removed) | Also: sections = FOCUS_HEADER_RE.split(text); counts[focus] = len(subpatterns)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-24T06:38:58.017Z"
+    },
+    {
+      "id": "bug-169",
+      "timestamp": "2026-05-24T06:46:08.866Z",
+      "error_message": "Significant refactor of ",
+      "file": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "root_cause": "12 lines replaced/restructured",
+      "fix": "Rewrote 17→66 lines (12 removed) | Also: **Secondary trap patterns:**; - *Scientific-present interrupted by historical na | Also: **Sub-pattern — appositive-comma illusion masking ; Use a first sentence ending in a noun phrase, foll",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-24T06:50:54.700Z"
+    },
+    {
+      "id": "bug-170",
+      "timestamp": "2026-05-24T07:01:47.357Z",
+      "error_message": "Significant refactor of ",
+      "file": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 18→70 lines (9 removed) | Also: **Secondary trap patterns:**; - *Conjunctive adverb pattern* — place a conjuncti",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-24T07:06:00.352Z"
+    },
+    {
+      "id": "bug-171",
+      "timestamp": "2026-05-24T07:02:16.625Z",
+      "error_message": "Incorrect value in code",
+      "file": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "root_cause": "Had \"the isotope ___ to identify chemical signatures\"",
+      "fix": "Changed to \"the isotope carbon-13 (13C) to identify chemical ",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-24T07:02:16.625Z"
+    },
+    {
+      "id": "bug-172",
+      "timestamp": "2026-05-24T07:11:30.470Z",
+      "error_message": "Significant refactor of ",
+      "file": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 12→70 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-24T07:11:30.470Z"
+    },
+    {
+      "id": "bug-173",
+      "timestamp": "2026-05-24T07:48:03.954Z",
+      "error_message": "Incorrect value in code",
+      "file": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "root_cause": "Had `conducve to`",
+      "fix": "Changed to `conducive to`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-24T07:48:03.954Z"
+    },
+    {
+      "id": "bug-174",
+      "timestamp": "2026-05-24T08:26:47.538Z",
+      "error_message": "Wrong reference: common_idiom_pull should be idiom_memory_pull",
+      "file": "analysis/v8/subpattern_drafts/apostrophe_use.md",
+      "root_cause": "Used \"common_idiom_pull\" instead of \"idiom_memory_pull\"",
+      "fix": "Changed common_idiom_pull → idiom_memory_pull",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-24T08:26:47.538Z"
+    },
+    {
+      "id": "bug-175",
+      "timestamp": "2026-05-24T14:53:32.280Z",
+      "error_message": "Incorrect value in code",
+      "file": "scripts/v8/validate_v8_citations.py",
+      "root_cause": "Had `\\s*$\"",
+      "fix": "Changed to `(?:\\s*/\\s*`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-24T14:53:32.280Z"
+    },
+    {
+      "id": "bug-176",
+      "timestamp": "2026-05-24T14:53:47.563Z",
+      "error_message": "Incorrect value in code",
+      "file": "RULES_ANATOMY.md",
+      "root_cause": "Had `rules_agent_dsat_grammar_ingestion_generation_v7.",
+      "fix": "Changed to `rules_agent_dsat_grammar_ingestion_generation_v8.",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-24T14:53:47.563Z"
+    },
+    {
+      "id": "bug-177",
+      "timestamp": "2026-05-24T14:53:54.189Z",
+      "error_message": "Wrong reference: grammar_v7 should be grammar_v8",
+      "file": "RULES_ANATOMY.md",
+      "root_cause": "Used \"grammar_v7\" instead of \"grammar_v8\"",
+      "fix": "Changed grammar_v7 → grammar_v8",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-24T14:53:54.189Z"
+    },
+    {
+      "id": "bug-178",
+      "timestamp": "2026-05-24T14:54:13.454Z",
+      "error_message": "Incorrect value in code",
+      "file": "rules_agent_dsat_review_v1.md",
+      "root_cause": "Had `rules_agent_dsat_grammar_ingestion_generation_v7.",
+      "fix": "Changed to `rules_agent_dsat_grammar_ingestion_generation_v8.",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-24T14:54:13.454Z"
     }
   ]
 }
