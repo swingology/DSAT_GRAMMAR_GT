@@ -21,7 +21,7 @@ supports four linked workflows:
 The corpus spans two subjects — **Grammar** (Conventions and Expression of Ideas) and
 **Reading** (Craft and Structure, Information and Ideas) — and uses two active rule sets:
 
-- `rules_agent_dsat_grammar_ingestion_generation_v7.md` — grammar questions
+- `rules_agent_dsat_grammar_ingestion_generation_v8.md` — grammar questions
 - `rules_agent_dsat_reading_v2.md` — reading questions
 
 ---
@@ -125,7 +125,7 @@ cannot be approved.
 
 ### 6.1 Grammar Questions
 
-Rule file: `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+Rule file: `rules_agent_dsat_grammar_ingestion_generation_v8.md`
 
 Grammar questions are classified by:
 
@@ -1008,7 +1008,7 @@ STUDENT_API_KEYS=your-student-key
 DEFAULT_ANNOTATION_PROVIDER=ollama           # anthropic | openai | ollama
 DEFAULT_ANNOTATION_MODEL=deepseek-v4-pro:cloud
 DEFAULT_OLLAMA_MODEL=deepseek-v4-pro:cloud
-RULES_VERSION=rules_agent_dsat_grammar_ingestion_generation_v7
+RULES_VERSION=rules_agent_dsat_grammar_ingestion_generation_v8
 
 # Provider keys
 ANTHROPIC_API_KEY=sk-ant-...

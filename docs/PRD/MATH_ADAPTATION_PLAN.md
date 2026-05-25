@@ -2,7 +2,7 @@
 
 ## Overview
 
-The DSAT verbal system (`rules_agent_dsat_grammar_ingestion_generation_v7.md` +
+The DSAT verbal system (`rules_agent_dsat_grammar_ingestion_generation_v8.md` +
 `rules_agent_dsat_reading_v2.md`) can be replicated for the math section. The
 architecture maps cleanly — the same LLM-rules-based approach applies: define a
 taxonomy of question types, focus keys, and trap mechanisms; write generation
@@ -232,5 +232,5 @@ These map directly to the four official College Board math domains.
 ---
 
 *Plan version: v1.0 — 2026-04-30*
-*Based on: `rules_agent_dsat_grammar_ingestion_generation_v7.md` + `rules_agent_dsat_reading_v2.md`*
+*Based on: `rules_agent_dsat_grammar_ingestion_generation_v8.md` + `rules_agent_dsat_reading_v2.md`*
 *Scope: Digital SAT Math Section — all four official CB domains*

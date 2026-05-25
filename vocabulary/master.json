@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "note": "Canonical controlled vocabulary. Edit THIS file, then run scripts/gen_vocab.py --generate. ontology.py and the rules-doc VOCAB blocks are generated artefacts — do not hand-edit them.",
+  "samples_companion": "vocabulary/master_samples.json",
   "vocabularies": [
     {
       "name": "CONTENT_ORIGINS",
@@ -384,7 +385,7 @@
       "name": "TEST_FORMAT_KEYS",
       "kind": "flat",
       "domain": "system",
-      "comment": "Rules v7 generation format keys",
+      "comment": "Rules v8 generation format keys",
       "entries": [
         {
           "value": "digital_app_adaptive",
@@ -404,7 +405,7 @@
       "name": "SOURCE_STATS_FORMAT_KEYS",
       "kind": "flat",
       "domain": "system",
-      "comment": "Rules v7 source stats format keys",
+      "comment": "Rules v8 source stats format keys",
       "entries": [
         {
           "value": "official_digital",
@@ -3283,7 +3284,7 @@
       "name": "TRANSITION_SUBTYPE_KEYS",
       "kind": "flat",
       "domain": "grammar",
-      "comment": "Grammar v7 transition_subtype_key",
+      "comment": "Grammar v8 transition_subtype_key",
       "entries": [
         {
           "value": "sequence_final_event",
@@ -3435,7 +3436,7 @@
       "name": "SYNTHESIS_GOAL_KEYS",
       "kind": "flat",
       "domain": "grammar",
-      "comment": "Grammar v7 notes synthesis goal keys",
+      "comment": "Grammar v8 notes synthesis goal keys",
       "entries": [
         {
           "value": "emphasize_similarity",
@@ -3695,7 +3696,7 @@
       "name": "AUDIENCE_KNOWLEDGE_KEYS",
       "kind": "flat",
       "domain": "grammar",
-      "comment": "Grammar v7 audience knowledge keys",
+      "comment": "Grammar v8 audience knowledge keys",
       "entries": [
         {
           "value": "audience_familiar",
@@ -3721,7 +3722,7 @@
       "name": "REQUIRED_CONTENT_KEYS",
       "kind": "flat",
       "domain": "grammar",
-      "comment": "Grammar v7 required content keys",
+      "comment": "Grammar v8 required content keys",
       "entries": [
         {
           "value": "comparison_needed",
@@ -3921,7 +3922,7 @@
       "name": "SYNTHESIS_DISTRACTOR_FAILURE_KEYS",
       "kind": "flat",
       "domain": "grammar",
-      "comment": "Grammar v7 synthesis distractor failure keys",
+      "comment": "Grammar v8 synthesis distractor failure keys",
       "entries": [
         {
           "value": "wrong_goal",

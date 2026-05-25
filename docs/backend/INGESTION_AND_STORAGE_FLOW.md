@@ -390,7 +390,7 @@ markdown from disk and injects the relevant context into the system prompt.
 
 Current behavior:
 
-- grammar context comes from `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+- grammar context comes from `rules_agent_dsat_grammar_ingestion_generation_v8.md`
 - reading context comes from `rules_agent_dsat_reading_v2.md`
 - domain routing decides whether grammar, reading, or mixed context is included
 
