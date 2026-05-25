@@ -1855,3 +1855,39 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 11:24 | Created missing_rules_v8.md | — | ~8427 |
+| 11:24 | Session end: 1 writes across 1 files (missing_rules_v8.md) | 4 reads | ~83518 tok |
+| 11:29 | Session end: 1 writes across 1 files (missing_rules_v8.md) | 4 reads | ~83518 tok |
+| 11:31 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | added 1 import(s) | ~83 |
+| 11:31 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 5→5 lines | ~63 |
+| 11:31 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+90 lines) | ~1116 |
+| 11:32 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+21 lines) | ~297 |
+| 11:32 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | modified verbs() | ~801 |
+| 11:32 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | modified phrase() | ~919 |
+| 11:33 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+33 lines) | ~532 |
+| 11:33 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 12→16 lines | ~250 |
+| 11:33 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+27 lines) | ~401 |
+| 11:33 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | inline fix | ~77 |
+| 11:33 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 7→8 lines | ~115 |
+| 11:33 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 7→8 lines | ~119 |
+| 11:33 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 7→9 lines | ~246 |
+| 11:34 | Session end: 14 writes across 2 files (missing_rules_v8.md, rules_agent_dsat_grammar_ingestion_generation_v8.md) | 4 reads | ~88893 tok |
+
+## Session: 2026-05-25 11:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:55 | Edited rules_agent_dsat_reading_v3.md | 7→8 lines | ~184 |
+| 11:55 | Edited rules_agent_dsat_reading_v3.md | 9→11 lines | ~234 |
+| 11:57 | Edited rules_agent_dsat_reading_v3.md | modified as() | ~7104 |
+| 11:58 | Created rules_agent_dsat_reading_v3.md — added §22 Passage Style Fingerprint (sentence rules S1–S8, domain signatures, 10 failure modes, 22.7 checklist, 22.8 exemplars) | rules_agent_dsat_reading_v3.md | success +310 lines +27KB over v2 | ~37K |
+| 11:58 | Session end: 3 writes across 1 files (rules_agent_dsat_reading_v3.md) | 2 reads | ~68386 tok |
+| 12:02 | Session end: 3 writes across 1 files (rules_agent_dsat_reading_v3.md) | 2 reads | ~68386 tok |
+| 12:09 | Session end: 3 writes across 1 files (rules_agent_dsat_reading_v3.md) | 2 reads | ~68386 tok |
+| 12:17 | Edited rules_agent_dsat_reading_v3.md | modified of() | ~5766 |
+| 12:21 | Added §23 Generation Protocol to reading_v3: 5-phase protocol, skill-freq guide, per-skill stem templates, distractor framework, full worked example (social_studies/inferences) | rules_agent_dsat_reading_v3.md | success +337 lines, now 3110 total | ~43K |
+| 12:21 | Session end: 4 writes across 1 files (rules_agent_dsat_reading_v3.md) | 2 reads | ~44317 tok |
+| 12:28 | Session end: 4 writes across 1 files (rules_agent_dsat_reading_v3.md) | 3 reads | ~75659 tok |
+| 12:30 | Session end: 4 writes across 1 files (rules_agent_dsat_reading_v3.md) | 3 reads | ~75659 tok |
+| 12:33 | Edited DEBUG_LOG.md | modified patch() | ~1713 |
+| 12:33 | Session end: 5 writes across 2 files (rules_agent_dsat_reading_v3.md, DEBUG_LOG.md) | 4 reads | ~121152 tok |

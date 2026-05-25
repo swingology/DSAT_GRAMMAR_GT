@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-24T14:55:36.485Z
-> Files: 800 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-25T19:33:49.463Z
+> Files: 801 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -36,7 +36,7 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~41073 tok)
 - `CLAUDE.md` — OpenWolf (~378 tok)
-- `DEBUG_LOG.md` — Debug Log (~43658 tok)
+- `DEBUG_LOG.md` — Debug Log (~45484 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `FUTURE_FEATURES.md` — Future Features (~8540 tok)
@@ -47,12 +47,13 @@
 - `INGESTION_README.md` — DSAT Backend — Ingestion Pipeline (~6616 tok)
 - `kimi_4q_comparison_report.md` — DSAT Question Generation Comparison Report (~2222 tok)
 - `MATH_ADAPTATION_PLAN.md` — MATH_ADAPTATION_PLAN.md (~2352 tok)
+- `missing_rules_v8.md` — missing_rules_v8.md (~7900 tok)
 - `OCR_INGESTION_PLAN.md` — OCR Ingestion System Plan — DSAT Grammar Backend (~3762 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark dir for OCR/LLM benchmark runners + HTMX dashboard (~600 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark Directory (~830 tok)
 - `Reading_v1_rules_report.md` — Reading_v1 Rules Impact Report (~4265 tok)
 - `rules_agent_dsat_grammar_ingestion_generation_v7.md` — v7 frozen as audit trail (~36396 tok)
-- `rules_agent_dsat_grammar_ingestion_generation_v8.md` — v8 production rules with PT-cited sub-patterns (~72518 tok)
+- `rules_agent_dsat_grammar_ingestion_generation_v8.md` — rules_agent_dsat_grammar_ingestion_generation_v8.md (~76462 tok)
 - `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~30080 tok)
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)

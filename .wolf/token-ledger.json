@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-09T23:06:22.868Z",
   "lifetime": {
-    "total_tokens_estimated": 33752904,
-    "total_reads": 3600,
-    "total_writes": 4088,
-    "total_sessions": 104,
-    "anatomy_hits": 2346,
-    "anatomy_misses": 1251,
-    "repeated_reads_blocked": 4302,
-    "estimated_savings_vs_bare_cli": 90324301
+    "total_tokens_estimated": 34530778,
+    "total_reads": 3630,
+    "total_writes": 4130,
+    "total_sessions": 105,
+    "anatomy_hits": 2366,
+    "anatomy_misses": 1261,
+    "repeated_reads_blocked": 4430,
+    "estimated_savings_vs_bare_cli": 97573699
   },
   "sessions": [
     {
@@ -53045,6 +53045,566 @@
         "writes_count": 63,
         "repeated_reads_blocked": 133,
         "anatomy_lookups": 14
+      }
+    },
+    {
+      "id": "session-2026-05-25-2227",
+      "started": "2026-05-25T05:27:22.956Z",
+      "ended": "2026-05-25T18:24:55.790Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 72518,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/RULES_ANATOMY.md",
+          "tokens_estimated": 1192,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TRAPS_EXAMPLES.md",
+          "tokens_estimated": 780,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/59d3baac-d5b7-44ae-a8ae-966c7169610a/tool-results/toolu_01JnWsp1jT2wjx2U3PWqbXga.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/missing_rules_v8.md",
+          "tokens_estimated": 9028,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 74490,
+        "output_tokens_estimated": 9028,
+        "reads_count": 4,
+        "writes_count": 1,
+        "repeated_reads_blocked": 25,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-25-2227",
+      "started": "2026-05-25T05:27:22.956Z",
+      "ended": "2026-05-25T18:29:10.868Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 72518,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/RULES_ANATOMY.md",
+          "tokens_estimated": 1192,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TRAPS_EXAMPLES.md",
+          "tokens_estimated": 780,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/59d3baac-d5b7-44ae-a8ae-966c7169610a/tool-results/toolu_01JnWsp1jT2wjx2U3PWqbXga.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/missing_rules_v8.md",
+          "tokens_estimated": 9028,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 74490,
+        "output_tokens_estimated": 9028,
+        "reads_count": 4,
+        "writes_count": 1,
+        "repeated_reads_blocked": 25,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-25-2227",
+      "started": "2026-05-25T05:27:22.956Z",
+      "ended": "2026-05-25T18:34:13.599Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 72518,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/RULES_ANATOMY.md",
+          "tokens_estimated": 1192,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/TRAPS_EXAMPLES.md",
+          "tokens_estimated": 780,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/59d3baac-d5b7-44ae-a8ae-966c7169610a/tool-results/toolu_01JnWsp1jT2wjx2U3PWqbXga.json",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/missing_rules_v8.md",
+          "tokens_estimated": 9028,
+          "action": "create"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 89,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 67,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 1196,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 318,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 858,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 984,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 570,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 268,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 429,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 82,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 123,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 128,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+          "tokens_estimated": 263,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 74490,
+        "output_tokens_estimated": 14403,
+        "reads_count": 4,
+        "writes_count": 14,
+        "repeated_reads_blocked": 41,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-25-1153",
+      "started": "2026-05-25T18:53:22.841Z",
+      "ended": "2026-05-25T18:58:32.318Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 30247,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 250,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 7612,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 60327,
+        "output_tokens_estimated": 8059,
+        "reads_count": 2,
+        "writes_count": 3,
+        "repeated_reads_blocked": 4,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-25-1153",
+      "started": "2026-05-25T18:53:22.841Z",
+      "ended": "2026-05-25T19:02:16.527Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 30247,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 250,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 7612,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 60327,
+        "output_tokens_estimated": 8059,
+        "reads_count": 2,
+        "writes_count": 3,
+        "repeated_reads_blocked": 4,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-25-1153",
+      "started": "2026-05-25T18:53:22.841Z",
+      "ended": "2026-05-25T19:09:16.248Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 30247,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 250,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 7612,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 60327,
+        "output_tokens_estimated": 8059,
+        "reads_count": 2,
+        "writes_count": 3,
+        "repeated_reads_blocked": 4,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-25-1153",
+      "started": "2026-05-25T18:53:22.841Z",
+      "ended": "2026-05-25T19:21:52.164Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 250,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 7612,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 6178,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 30080,
+        "output_tokens_estimated": 14237,
+        "reads_count": 2,
+        "writes_count": 4,
+        "repeated_reads_blocked": 6,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-25-1153",
+      "started": "2026-05-25T18:53:22.841Z",
+      "ended": "2026-05-25T19:28:53.418Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/vocabulary/master.json",
+          "tokens_estimated": 31342,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 250,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 7612,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 6178,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 61422,
+        "output_tokens_estimated": 14237,
+        "reads_count": 3,
+        "writes_count": 4,
+        "repeated_reads_blocked": 6,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-25-1153",
+      "started": "2026-05-25T18:53:22.841Z",
+      "ended": "2026-05-25T19:30:08.689Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/vocabulary/master.json",
+          "tokens_estimated": 31342,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 250,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 7612,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 6178,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 61422,
+        "output_tokens_estimated": 14237,
+        "reads_count": 3,
+        "writes_count": 4,
+        "repeated_reads_blocked": 6,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-05-25-1153",
+      "started": "2026-05-25T18:53:22.841Z",
+      "ended": "2026-05-25T19:33:58.123Z",
+      "reads": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v2.md",
+          "tokens_estimated": 30080,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/vocabulary/master.json",
+          "tokens_estimated": 31342,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md",
+          "tokens_estimated": 43658,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 197,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 250,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 7612,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md",
+          "tokens_estimated": 6178,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md",
+          "tokens_estimated": 1835,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 105080,
+        "output_tokens_estimated": 16072,
+        "reads_count": 4,
+        "writes_count": 5,
+        "repeated_reads_blocked": 7,
+        "anatomy_lookups": 3
       }
     }
   ],

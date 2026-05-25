@@ -1341,6 +1341,8 @@ Generated items must be:
 - Free of trivia — the question tests reasoning, not prior knowledge
 - One correct answer only — the three distractors must be unambiguously wrong on the tested reasoning
 
+**Passage prose authenticity**: In addition to the structural requirements above, every generated passage must satisfy the sentence-level style rules in §22.2, the vocabulary and register rules in §22.4, the domain-specific style signature in §22.5, and must pass the §22.7 Style Authenticity Checklist before finalizing. Passages that fail any of the ten generation failure modes listed in §22.6 must be revised before the item is submitted to the distractor design phase.
+
 ### 16.6 Generation must respect stem wording conventions
 
 Use only the approved `stem_type_key` wording conventions from §3.2. Do not paraphrase
@@ -1757,13 +1759,658 @@ question, confirm:
 
 ---
 
-*Document version: v2.0 — 2026-04-29*
-*Merges: `rules_agent_dsat_reading_v1.md` (v1.0) + `rules_agent_dsat_reading_v1_1.md` (v1.1)*
+## 22. Passage Style Fingerprint and Generation Realism (added in v3)
+
+This section governs prose style for all generated passages. Satisfaction of §16.5 structural requirements is necessary but not sufficient — passages must also satisfy the style authenticity rules here. The §22.7 checklist is a mandatory generation gate.
+
+**Relationship to the grammar companion file**: Sentence-level grammar correctness is governed by `rules_agent_dsat_grammar_ingestion_generation_v8.md`. This section governs register, rhetorical texture, and stylistic authenticity. The two documents are complementary and both apply to generated passages.
+
+### 22.1 Why passage style realism matters
+
+DSAT passages are drawn from published academic, scholarly, and literary sources. Authentically styled passages produce more discriminating questions because:
+
+- Students recognize authentic academic register and are not distracted by stylistic anomalies
+- WIC items require precise register sensitivity — an off-register passage undermines that construct
+- Text Structure and Purpose items require clear rhetorical texture — monotone passages make these items ambiguous
+- Passages that do not sound like real sources fail the "free of trivia, tests reasoning" gate (§16.5)
+
+Common failure patterns in generated passages: monotone sentence length, absence of epistemic hedging in science contexts, anonymous authority ("scientists have found"), missing appositives for technical terms, and colloquial register bleed. See §22.6 for the full failure mode catalog.
+
+### 22.2 Sentence-level style rules
+
+The following eight rules apply to every generated passage unless domain exceptions are noted.
+
+**Rule S1 — Mixed sentence length**
+
+Target sentence-length variation across every passage. Authentic DSAT passages mix short declarative sentences (8–15 words) with longer complex sentences (25–45 words). Never generate more than two consecutive sentences within 5 words of each other in length.
+
+Enforcement: If all sentences are 20–25 words, revise by splitting the longest into two — a short declarative followed by the elaborating clause — or by combining the two shortest with a subordinating conjunction.
+
+**Rule S2 — Subordinate clause density**
+
+Target 1–2 subordinate clauses per 100 words. Zero subordinate clauses produces an oversimplified passage ("Dick and Jane" register). Three or more per 100 words produces a passage that fails the word-count norms for shorter skill types and is harder to read without adding useful complexity.
+
+Approved subordination types for DSAT style: relative clauses (`which`, `that`, `who`, `whose`), adverbial clauses (`although`, `because`, `when`, `while`, `since`, `even though`), nominal clauses (`that X is the case`), and absolute phrases (see grammar v8 §B.3 `absolute_phrase`).
+
+**Rule S3 — Epistemic hedging**
+
+Mandatory for science, social science, and economics passages. Use `may`, `might`, `appears to`, `suggests`, `indicates`, `tends to`, `has been proposed`, `is thought to`, `remains unclear whether`. Reserve unhedged claims for established scientific consensus (e.g., "water is composed of hydrogen and oxygen") or reported findings with explicit attribution.
+
+Forbidden in science passages: unqualified causal claims ("X causes Y") without attribution or qualification. Authentic DSAT passages say "X may cause Y," "X has been associated with Y," or "researchers found that X led to Y in [specific condition]."
+
+Literary and historical passages: hedging density is lower. Authors may state interpretive claims with more confidence because they are offering an argument rather than reporting empirical evidence. Use qualifiers like "arguably," "in [author]'s view," "suggests that," or "can be read as" to preserve appropriate epistemic caution.
+
+**Rule S4 — Named attribution**
+
+Most authentic DSAT passages attribute findings, arguments, or observations to a named source. Acceptable attribution forms:
+- Named researcher + institution: "Hernandez and colleagues at MIT"
+- Named researcher only: "Smith found that"
+- Named study or publication: "a 2019 study published in *Nature*"
+- Named historical figure: "Jefferson argued that"
+- Named institution: "researchers at the University of Chicago"
+
+Weak attribution ("scientists," "experts," "researchers") is acceptable only as a secondary reference after the named source is established. Do not open a passage with anonymous authority.
+
+**Rule S5 — Appositives and parenthetical clarification**
+
+Include 1–2 appositives per passage. An appositive introduces or defines a technical term, proper noun, or specialized concept in a natural, self-contained way — matching the style of passages from published sources that assume readers may be unfamiliar with the term.
+
+Form: `[technical term], [appositive definition],` (commas; see grammar v8 §B.3 `appositive_nonrestrictive`)
+
+Examples:
+- "The anterior cingulate cortex, a region involved in conflict monitoring, showed elevated activation."
+- "Symbiosis, the long-term interaction between organisms of different species, takes several forms."
+- "Ngũgĩ wa Thiong'o, the Kenyan novelist and theorist, has argued that..."
+
+Do not use parentheses for appositives in generated DSAT passages — commas or em dashes are the attested forms.
+
+**Rule S6 — Nominalization (measured use)**
+
+DSAT academic passages use nominalized forms of verbs and adjectives: "the investigation" (← investigate), "the assessment" (← assess), "the observation" (← observe), "the emergence" (← emerge), "the predominance" (← predominate). Nominalization elevates register and is expected in scholarly prose.
+
+Avoid weak nominalization that adds length without register value: "the making of" instead of "creation," "the doing of" instead of "performance." Two to four nominalizations per 100 words is the target range.
+
+**Rule S7 — Active vs. passive voice balance**
+
+Science passages about studies legitimately use passive voice for methods: "participants were randomly assigned," "samples were analyzed," "data were collected." Passive is also appropriate for outcomes where the agent is less important than the result: "the mechanism was identified," "the effect was observed."
+
+Do not normalize every passive to active in science passages — that produces an unnaturally journalistic register. Aim for roughly 20–35% passive sentences in research passages; 5–15% in literary and historical passages.
+
+**Rule S8 — Internal punctuation variety**
+
+Authentic passages use em dashes and colons for inline elaboration and definition. Use one em dash pair or one colon per passage for definitional or illustrative elaboration. Zero is acceptable; two or more is unusual and may signal over-reliance on a single device.
+
+Semicolons connect two closely related independent clauses. One to two semicolons per 150-word passage is authentic; zero is common in shorter passages.
+
+Do not use parentheses as a substitute for comma-appositive style. Parentheses in DSAT passages are rare and typically enclose a date, citation, or quantitative value.
+
+### 22.3 Passage-level texture
+
+**Opening strategies**
+
+Three patterns appear most frequently in authentic DSAT passages:
+
+1. **Research-finding lead**: Opens with a specific study, year, and finding.
+   > "In a 2019 study of migratory songbirds, researchers at the Cornell Lab of Ornithology found that..."
+
+2. **Definitional or contextual lead**: Opens by situating a concept in its field.
+   > "The concept of *embodied cognition*, first articulated by Merleau-Ponty in the mid-twentieth century, holds that..."
+
+3. **Counterintuitive or tension lead**: Opens with the expected view, then signals a reversal.
+   > "Despite widespread belief that increased competition drives innovation, economists have found..."
+
+Do not open with a question ("What happens when...?") — this pattern does not appear in released DSAT passages. Do not open with a journalistic assertion ("Today, scientists know that...") without a year or specific attribution.
+
+**Claim-support-explain arc**
+
+For passages of three or more sentences, follow the attested structure:
+1. State the claim, finding, or observation (often with attribution)
+2. Provide specific evidence: a quoted result, a named example, a data point
+3. Explain the mechanism, implication, or qualification
+
+Avoid reversing this order. Starting with mechanism ("Because X, researchers found Y") is inauthentic for most DSAT domains.
+
+**Closing strategies**
+
+Authentic DSAT passages close with one of:
+- An implication or significance statement ("This finding suggests that...")
+- A qualification or limitation ("The results, however, apply only to...")
+- An open question ("Whether this pattern extends to... remains to be determined")
+- A broadened perspective ("These observations align with a growing body of evidence suggesting...")
+
+Do not close with a simple restatement of the opening claim. Do not close with a prescription or recommendation ("Policymakers should therefore...") unless the passage's domain and purpose call for it.
+
+### 22.4 Vocabulary and register
+
+**Tier 2 academic vocabulary (mandatory)**
+
+Target 2–4 Tier 2 words per 100 words. Tier 2 words are general academic vocabulary used across disciplines: `phenomenon`, `attribute`, `demonstrate`, `consequently`, `predominantly`, `comprise`, `vary`, `fundamental`, `significant`, `elaborate`, `interpret`, `constitute`, `generate`, `contribute`, `contrast`, `emerge`, `correspond`, `distinguish`.
+
+Do not substitute simple words when Tier 2 equivalents are natural to the domain:
+- Use "demonstrate" not "show"
+- Use "indicate" not "point to"
+- Use "constitute" not "make up"
+- Use "consequently" not "so"
+
+**Tier 3 domain vocabulary (contextually required)**
+
+Include 1–3 domain-specific technical terms in each passage. Define at least one via appositive (Rule S5). Do not over-explain: a term already defined should not receive a second parenthetical explanation. For the WIC skill specifically, the tested word should be a Tier 2 or Tier 3 item used in a non-obvious sense, not a general vocabulary word with no domain constraint.
+
+**Forbidden register markers**
+
+The following are unconditionally prohibited in generated DSAT passages outside of literary direct quotation:
+
+| Forbidden pattern | Examples | Correct alternative |
+|---|---|---|
+| Contractions | don't, can't, it's, they're | do not, cannot, it is, they are |
+| Informal intensifiers | very, really, a lot, super | substantially, considerably, significantly, markedly |
+| Colloquial hedges | kind of, sort of, I think, I guess | to some degree, may, arguably |
+| Generic openers | Today, Recently, Nowadays | In [year], As of [date], In the past decade |
+| First-person opinion | I believe, we can see | the evidence suggests, the passage indicates |
+| Exclamation | Remarkable! This is surprising! | (use epistemic hedging instead) |
+
+**Exception**: Literary passages that include first-person narration or direct quotation from a source may contain contractions or informal language if they appear within quotation marks or italicized narrative voice that is clearly distinct from the author's analytical voice.
+
+### 22.5 Domain-specific style signatures
+
+Each `topic_broad_key` domain has a characteristic style profile. When generating a passage, select the domain first, then apply the corresponding style signature. Mismatches between domain and style are the most common authenticity failures.
+
+| Domain | Register | Hedging density | Attribution form | Typical architectures |
+|---|---|---|---|---|
+| `science` | Formal, technical | High — every empirical claim hedged | Named researcher + institution, or "a [year] study" | `research_summary`, `experiment_hypothesis_control_result`, `mechanism_manipulation_test`, `indirect_effect_mediation` |
+| `social_studies` | Academic, interpretive | Medium-high — findings hedged, theoretical claims less so | Named scholar + discipline; reference to "scholars" after establishment | `claim_evidence_explanation`, `studied_subgroup_generalization_limit`, `compare_contrast`, `multi_perspective_presentation` |
+| `history` / `humanities` | Scholarly narrative, interpretive | Low-medium — interpretive claims marked as argued/proposed; historical facts unhedged | Named figures, dates, events; named historians for contested claims | `chronological_sequence`, `history_claim_evidence_limitation`, `history_assumption_revision`, `multi_perspective_presentation` |
+| `literature` / `arts` | Narrative-descriptive, analytical | Low (diegetic certainty in narration); interpretive hedging in analysis | Named author + work title; named character | `literature_observation_interpretation_shift`, `literature_character_conflict_reveal` |
+| `economics` | Formal, argumentative | Medium — theoretical models stated with confidence; empirical applications hedged | Named theory, named economist, or "economic models suggest" | `economics_theory_exception_example`, `economics_problem_solution_tradeoff`, `claim_evidence_explanation` |
+| `environment` | Formal to journalistic | High — projections and risk claims hedged | Named study, named dataset, or governmental body | `research_summary`, `cautionary_framing`, `unexpected_finding` |
+| `technology` | Formal to semi-technical | Medium | Named researchers, companies, or publications | `research_summary`, `problem_solution`, `claim_evidence_explanation` |
+
+**Natural science style notes**: Science passages frequently describe experimental design, controls, and results. The passive voice is expected for methodology ("participants were randomly assigned," "samples were processed"). Organism names follow standard conventions: genus and species italicized (*Apis mellifera*), common names not italicized.
+
+**Social science style notes**: Social science passages often present a theoretical claim, then immediately introduce complicating evidence or a rival account. Signal phrases like "however," "yet," "subsequent work by [name] complicated this picture" are characteristic of the `multi_perspective_presentation` and `compare_contrast` architectures.
+
+**Literary/humanities style notes**: Literary passages may include quoted or paraphrased direct speech from the work under discussion. Analytical sentences use literary present tense ("Gay describes," "Hemingway writes," "the narrator reflects"). Historical context may be given in past tense; analysis in present. Interpretive claims are often introduced with "arguably," "in [author]'s view," or "can be read as."
+
+**Historical passage style notes**: Historical claims about events are stated in past tense without hedging ("The Treaty of Westphalia established...") unless the claim is contested, in which case it is attributed ("Gross argued that..."). Contested historical interpretations are a common `multi_perspective_presentation` architecture signal.
+
+### 22.6 Generation failure modes (passage level)
+
+These ten failure patterns cause generated passages to fail authenticity review. Each entry names the failure, its diagnostic signal, and the fix.
+
+**FAILURE-01 — Monotone sentence length**
+- Signal: All sentences within 5 words of each other in length
+- Fix: Split the longest sentence at a natural clause boundary into one short declarative and one elaborating clause. Or combine the two shortest with a subordinating conjunction.
+
+**FAILURE-02 — Certainty overclaim**
+- Signal: Unhedged causal or empirical assertions in a science or social science passage ("X causes Y," "X leads to Z")
+- Fix: Add epistemic qualifier ("X may cause Y," "X has been associated with Z," "researchers found that X led to Y under these specific conditions")
+
+**FAILURE-03 — Anonymous authority**
+- Signal: Passage opens with or relies on "scientists have found," "experts believe," "researchers discovered" without naming any researcher, institution, study, or date
+- Fix: Name a researcher, institution, or publication ("researchers at [institution] found," "a 2021 study in [journal] reported")
+
+**FAILURE-04 — Absent appositives**
+- Signal: A technical term, proper noun, or discipline-specific concept appears in the passage with no parenthetical clarification
+- Fix: Add one comma-delimited appositive after the first occurrence of the term ("the hippocampus, a brain region critical for memory formation,")
+
+**FAILURE-05 — Colloquial register bleed**
+- Signal: Contraction, informal intensifier, colloquial hedge, or first-person opinion voice in an academic passage
+- Fix: Substitute formal equivalents (see §22.4 Forbidden Register Markers table)
+
+**FAILURE-06 — Underdense academic vocabulary**
+- Signal: Passage contains no Tier 2 academic vocabulary beyond basic connectives and common nouns; reads at middle-school prose level
+- Fix: Introduce 2–3 Tier 2 words appropriate to the domain. Do not introduce vocabulary that conflicts with the passage's register or is unfamiliar to a 10th–12th grader.
+
+**FAILURE-07 — Passive-voice overcorrection**
+- Signal: Every sentence is in active voice in a science passage describing a controlled study, experiment, or data collection procedure
+- Fix: Allow legitimate passive for methods ("participants were assigned," "samples were analyzed") and outcome reporting ("the effect was observed in...")
+
+**FAILURE-08 — Opening with the blank**
+- Signal: For WIC or Inferences items, the blank appears in the first sentence with no prior context to establish the passage's domain, topic, or rhetorical situation
+- Fix: Add one sentence of context before the sentence containing the blank
+
+**FAILURE-09 — Collapsed concession**
+- Signal: In a `cautionary_framing`, `qualification_restatement`, or `compare_contrast` passage, the concessive or qualifying turn is so strong that the original main claim effectively collapses
+- Fix: Ensure the qualification is genuinely limited in scope. The main claim must survive the qualification. If the original claim does not survive, redesign the passage architecture.
+
+**FAILURE-10 — Missing implication**
+- Signal: A `research_summary` or `experiment_hypothesis_control_result` passage ends at the finding with no statement of implication, significance, or limitation
+- Fix: Add one closing sentence stating the implication ("This finding suggests that..."), a limitation ("The results, however, are limited to..."), or an open question ("Whether this pattern holds in naturalistic settings remains to be determined")
+
+### 22.7 Style authenticity checklist (generation gate)
+
+This checklist is a mandatory gate for all generated passages. A passage may not advance to distractor design until all applicable checks pass.
+
+**Sentence-level (§22.2)**
+- [ ] Sentence lengths vary: at least one sentence ≤15 words and one sentence ≥25 words
+- [ ] Subordinate clause density: 1–2 subordinate clauses per 100 words
+- [ ] Epistemic hedging present in all empirical claims (science, social science, economics domains)
+- [ ] At least one named attribution: named researcher, institution, figure, study, or publication
+- [ ] At least one appositive or parenthetical clarification for a technical or domain-specific term
+- [ ] Nominalization present: ≥2 nominalized forms per 100 words
+- [ ] Active/passive balance appropriate to domain (science passages: 20–35% passive; literary: ≤15%)
+- [ ] Internal punctuation variety: at least one colon, em dash, or semicolon for passages >80 words
+
+**Vocabulary and register (§22.4)**
+- [ ] No contractions outside literary direct quotation
+- [ ] No informal intensifiers (very, really, a lot) or colloquial hedges
+- [ ] Tier 2 academic vocabulary density: ≥2 items per 100 words
+- [ ] At least one Tier 3 domain-specific term with appositive clarification
+
+**Passage-level (§22.3)**
+- [ ] Opening strategy matches domain signature (§22.5): research-finding lead, definitional lead, or counterintuitive lead
+- [ ] Claim-support-explain arc maintained for passages ≥3 sentences
+- [ ] Closing strategy is implication, qualification, or open question — not a restatement
+
+**Failure-mode check (§22.6)**
+- [ ] FAILURE-01 (monotone length) — not present
+- [ ] FAILURE-02 (certainty overclaim) — not present
+- [ ] FAILURE-03 (anonymous authority) — not present
+- [ ] FAILURE-04 (absent appositives) — not present
+- [ ] FAILURE-05 (colloquial register bleed) — not present
+- [ ] FAILURE-06 (underdense vocabulary) — not present
+- [ ] FAILURE-07 (passive overcorrection) — not present
+- [ ] FAILURE-08 (opening with the blank) — not present
+- [ ] FAILURE-09 (collapsed concession) — not present
+- [ ] FAILURE-10 (missing implication) — not present
+
+### 22.8 Few-shot style exemplars
+
+These exemplars demonstrate the target prose style for four domain types. Use them as reference when generating or evaluating passage authenticity. Each exemplar is annotated with its domain signature, architecture, and active style rules.
+
+---
+
+**Exemplar A — Natural science, `research_summary`, ~95 words**
+
+> In a 2021 study examining the behavior of *Apis mellifera*, the common honeybee, researchers at the University of Toulouse found that foraging patterns shifted significantly in response to ambient temperature fluctuations exceeding 4°C. Bees exposed to such conditions allocated a greater proportion of their foraging time to shorter, more frequent trips rather than extended searches. The researchers suggested that this behavioral adjustment may function as a thermoregulatory strategy, reducing the metabolic cost of extended flight during periods of thermal stress. Whether this flexibility is heritable or exclusively environmentally induced remains an open question.
+
+*Active rules: S1 (mixed length), S3 (hedging: "may function," "remains an open question"), S4 (named attribution: researchers at Toulouse), S5 (appositive: "the common honeybee"), S7 (no over-normalization of passive). Domain: science. Architecture: research_summary. Tier 2 vocab: "allocated," "proportion," "exclusively," "induced."*
+
+---
+
+**Exemplar B — Social science, `claim_evidence_explanation`, ~85 words**
+
+> Linguistic accommodation—the tendency of speakers to adjust their speech patterns to match those of their interlocutors—has been documented across a wide range of social contexts. Giles and colleagues observed that individuals in lower-status positions converged more rapidly toward the speech patterns of higher-status speakers, while the reverse rarely occurred. This asymmetry, the researchers argued, reflects broader social hierarchies rather than strictly communicative efficiency. Subsequent studies have complicated this picture, noting that convergence rates also depend on the perceived identity salience of the interaction.
+
+*Active rules: S1 (varied length), S3 (hedging: "has been documented," "have complicated"), S4 (named attribution: "Giles and colleagues"), S5 (em-dash appositive: "the tendency of..."), S8 (em dash internal punctuation). Domain: social_studies. Architecture: claim_evidence_explanation. Tier 2 vocab: "documented," "converged," "asymmetry," "reflect," "perceived."*
+
+---
+
+**Exemplar C — Historical/humanities, `multi_perspective_presentation`, ~75 words**
+
+> Historians have long debated the extent to which the Treaty of Westphalia, signed in 1648, established the modern system of state sovereignty. Scholars such as Leo Gross characterized it as a foundational moment in international law, while critics like Andreas Osiander argued that the treaty's actual provisions were far more limited in scope than subsequent interpretation suggests. The debate reflects broader disagreements about whether legal concepts emerge from deliberate design or from retrospective narrativization.
+
+*Active rules: S1 (varied length), S2 (relative clauses: "which the Treaty...established," "that the treaty's..."), S4 (named figures: Gross, Osiander), S5 (appositive: "signed in 1648"), S6 (nominalization: "interpretation," "narrativization," "disagreements"). Domain: history. Architecture: multi_perspective_presentation. Tier 2 vocab: "characterized," "subsequent," "interpretation," "emerge," "reflect."*
+
+---
+
+**Exemplar D — Literary/arts, `literature_observation_interpretation_shift`, ~65 words**
+
+> In her memoir *Hunger*, Roxane Gay describes her relationship with her body not as a site of failure but as a form of protection—a fortress built in response to trauma. Gay's framing inverts common narratives of weight loss as reclamation, positioning the body's expansion as a response to pain rather than an abdication of self-control. The memoir challenges readers to reconsider the moral language typically applied to size.
+
+*Active rules: S1 (varied length), S3 (interpretive hedging: "as a form of protection" frames the claim as Gay's interpretation), S4 (named author: Roxane Gay, named work: Hunger), S5 (em-dash appositive: "a fortress built in response..."), literary present tense throughout. Domain: literature. Architecture: literature_observation_interpretation_shift. Tier 2 vocab: "inverts," "positioning," "abdication," "reconsider."*
+
+---
+
+**Cross-domain register contrast (diagnostic)**
+
+The following two passages cover the same topic at different registers. Use to calibrate register-checking:
+
+*Authentic DSAT register:*
+> A 2018 study conducted by Huang and colleagues at Stanford University found that undergraduate students who maintained consistent sleep schedules — defined as less than one hour of variation in sleep onset time across seven consecutive nights — demonstrated significantly higher academic performance than those with irregular schedules. The researchers proposed that circadian stability may support more effective consolidation of declarative memory during sleep.
+
+*Inauthentic generated register (do not produce):*
+> Scientists have found that students who sleep at the same time every night do a lot better in school. This is really interesting because it shows that sleep is very important. We can see that good sleep habits help students remember things better.
+
+Failures in the inauthentic version: FAILURE-03 (anonymous authority), FAILURE-05 (colloquial register: "do a lot better," "This is really interesting," "very important," "We can see"), FAILURE-06 (no Tier 2 vocabulary), FAILURE-02 (certainty overclaim: "help students remember" stated without hedging), FAILURE-01 (monotone sentence length).
+
+---
+
+## 23. Generation Protocol (added in v3)
+
+This section provides the step-by-step order of operations for generating a complete DSAT reading item from a blank slate. The five phases must be executed in order. Do not write passage prose before completing Phase 1, and do not design distractors before completing Phase 3.
+
+**Relationship to other sections**: This protocol stitches together existing sections. It does not add new rules — it sequences them. Phase 2 delegates to §22. Phase 4 delegates to §16. Phase 5 delegates to §21 and §22.7.
+
+---
+
+### 23.1 Protocol overview
+
+| Phase | Name | Delegates to |
+|---|---|---|
+| 1 | Profile selection | §23.2 — pick domain, skill, focus, architecture, difficulty, trap |
+| 2 | Passage composition | §23.3 → §22, §15 |
+| 3 | Stem construction | §23.4 → §3.2 |
+| 4 | Option design | §23.5 → §16.2–16.4, §16.9 |
+| 5 | Validation | §23.6 → §22.7, §21 |
+
+Lock each phase before moving to the next. If a later phase reveals a problem with an earlier choice (e.g., the passage cannot support the intended distractor architecture), return to the earliest affected phase rather than patching the later one.
+
+---
+
+### 23.2 Phase 1 — Profile selection
+
+Produce a completed `generation_profile` JSON before writing a single word of passage prose. All downstream decisions follow from this profile.
+
+**Step 1a — Select `topic_broad_key`**
+
+Choose from the seven approved domains: `science`, `social_studies`, `history`, `literature`, `economics`, `environment`, `technology`. Let skill family guide domain selection:
+
+- `command_of_evidence_quantitative` → prefer `science`, `social_studies`, `economics` (these domains naturally produce graphable data)
+- `cross_text_connections` → prefer `science`, `social_studies`, `history`, `literature` (two-text comparison is common in these domains)
+- `words_in_context` → all domains equally; prefer domains with strong Tier 2–3 vocabulary contrast
+- `inferences` → prefer `science`, `social_studies` (strongest evidence chains)
+- `text_structure_and_purpose` → all domains; `history` and `literature` are especially strong for `sentence_function` items
+
+**Step 1b — Select `skill_family_key`**
+
+If not externally constrained, use the DSAT frequency distribution as a guide for realistic item pools:
+
+| Skill family | Approx. share of a reading module | Priority for pool balance |
+|---|---|---|
+| `command_of_evidence_textual` | ~18% | High — generate frequently |
+| `words_in_context` | ~16% | High |
+| `text_structure_and_purpose` | ~16% | High |
+| `central_ideas_and_details` | ~13% | Medium |
+| `inferences` | ~10% | Medium |
+| `command_of_evidence_quantitative` | ~9% | Medium |
+| `cross_text_connections` | ~7% | Low — complex; generate deliberately |
+
+**Step 1c — Select `reading_focus_key`**
+
+Use the per-skill-family focus key lists in §7 and Appendix V `READING_FOCUS_BY_SKILL_FAMILY`. For each skill family, prefer the higher-frequency focus keys unless targeting a specific gap:
+
+| Skill family | Primary focus keys | Secondary (gap-filling) focus keys |
+|---|---|---|
+| `command_of_evidence_textual` | `evidence_supports_claim`, `evidence_illustrates_claim` | `evidence_weakens_claim`, `evidence_explains_claim`, `evidence_qualifies_claim` |
+| `command_of_evidence_quantitative` | `data_supports_claim`, `data_comparison` | `data_completes_example`, `data_weakens_claim`, `data_trend` |
+| `central_ideas_and_details` | `central_idea`, `supporting_detail` | `passage_summary`, `character_or_author_detail`, `author_stance` |
+| `inferences` | `causal_inference`, `implication_inference` | `motivational_inference`, `predictive_inference` |
+| `words_in_context` | `contextual_meaning`, `precision_fit` | `polarity_fit`, `connotation_fit`, `figurative_language_meaning`, `register_fit` |
+| `text_structure_and_purpose` | `overall_purpose`, `sentence_function` | `structural_pattern`, `author_stance` |
+| `cross_text_connections` | `text2_response_to_text1`, `texts_disagree` | `both_texts_agree`, `text2_qualifies_text1`, `methodological_critique` |
+
+**Step 1d — Select `passage_architecture_key`**
+
+Choose an architecture from §15.2 or §15.3 that is compatible with the selected skill and focus key. Incompatible pairings:
+
+- `most_logically_completes` stem (Inferences) → requires passage with a logical gap at the end; `research_summary` and `claim_evidence_explanation` are the most compatible architectures
+- `choose_sentence_function` stem (Text Structure) → requires a passage with a sentence that performs a distinct, nameable rhetorical role; `claim_evidence_explanation`, `compare_contrast`, and `qualification_restatement` work well
+- `command_of_evidence_textual` → any architecture works; `experiment_hypothesis_control_result` and `indirect_effect_mediation` produce stronger discriminating distractors
+- `command_of_evidence_quantitative` → passage architecture is constrained by what the graphic supports; generate the graphic description first
+
+**Step 1e — Select `difficulty_overall`**
+
+See §14 for per-skill difficulty profiles. When generating for pool balance, target 40% `low`, 40% `medium`, 20% `high`.
+
+**Step 1f — Select `reasoning_trap_key` and `target_distractor_pattern`**
+
+Select the primary trap from the skill-compatible traps in §10 and the per-focus distractor recipe in §16.9. Record the trap before writing the passage — the passage should be drafted so that the primary trap is available (e.g., a `topical_relevance_without_logical_connection` distractor requires the passage to contain topically related content that does NOT support the claim).
+
+**Completed profile template:**
+
+```json
+{
+  "generation_profile": {
+    "topic_broad_key": "science",
+    "topic_fine": "neuroscience",
+    "target_skill_family_key": "inferences",
+    "target_reading_focus_key": "causal_inference",
+    "target_test_construct_key": "inference_boundary_control",
+    "target_craft_subconstruct_key": null,
+    "target_reasoning_trap_key": "overreach",
+    "passage_structure_pattern": "research_summary",
+    "passage_architecture_key": "experiment_hypothesis_control_result",
+    "target_stimulus_mode_key": "prose_single",
+    "target_stem_type_key": "most_logically_completes",
+    "target_difficulty_overall": "medium",
+    "target_distractor_pattern": [
+      "one overreach distractor — extends beyond what the evidence supports",
+      "one reversal distractor — applies the finding to the wrong condition",
+      "one outside_knowledge distractor — appeals to general topic knowledge not grounded in the passage"
+    ],
+    "polarity_context": null,
+    "target_sentence_function_role": null,
+    "quantitative_sub_pattern": null,
+    "inference_type_note": null,
+    "two_part_claim": false
+  }
+}
+```
+
+---
+
+### 23.3 Phase 2 — Passage composition
+
+With the generation profile locked, compose the passage in three steps.
+
+**Step 2a — Apply the domain style signature (§22.5)**
+
+Select the style profile for the chosen `topic_broad_key`. Note the expected hedging density, attribution form, and register before writing the first sentence.
+
+**Step 2b — Apply the passage architecture (§15.2, §15.3)**
+
+Draft the passage so it instantiates the selected `passage_architecture_key`. For experimental architectures (§15.3), ensure all required passage elements are present (e.g., `experiment_hypothesis_control_result` requires a stated hypothesis, a described control vs. experimental condition, and a reported result with direction).
+
+**Step 2c — Apply sentence-level style rules (§22.2)**
+
+During drafting, actively enforce Rules S1–S8. Do not apply them as a post-hoc patch — build them in from the first sentence.
+
+Priority ordering for short passages (<80 words):
+1. Named attribution (S4) — always required
+2. Epistemic hedging (S3) — required for science/social science
+3. Mixed sentence length (S1) — required
+4. At least one appositive (S5) — required
+
+**Step 2d — Check against §22.7 before proceeding**
+
+Run the §22.7 Style Authenticity Checklist now. Do not proceed to Phase 3 with a passage that fails any applicable check.
+
+**Step 2e — Verify the passage supports the intended distractor architecture**
+
+Confirm the passage contains the elements needed for the primary trap distractor selected in Phase 1. If it does not, revise the passage — do not change the target trap to match the passage.
+
+---
+
+### 23.4 Phase 3 — Stem construction
+
+**Step 3a — Select canonical stem wording from §3.2**
+
+Use the `stem_type_key` selected in Phase 1 to retrieve the canonical wording from §3.2. Do not paraphrase or invent new wording variants. Only the approved canonical forms appear on released DSAT items.
+
+**Step 3b — Apply per-skill stem construction rules**
+
+Each skill family has a stem construction constraint in addition to the canonical wording:
+
+**`command_of_evidence_textual`**
+- The stem must quote or closely paraphrase the specific claim to be supported/weakened/illustrated. Do not use a vague stem like "Which choice best supports the text?" — the claim must be explicit.
+- `choose_best_support` → "Which choice best supports the claim that [exact claim from or derived from passage]?"
+- `choose_best_illustration` → "Which quotation from [work title] if used in the blank would most effectively illustrate the claim that [claim]?"
+- `choose_best_weakener` → "Which finding, if true, would most directly undermine the researchers' conclusion that [conclusion]?"
+
+**`command_of_evidence_quantitative`**
+- The stem must specify the graphic (table or graph) and the stated claim or example to complete.
+- `choose_best_completion_from_data` → "Which choice most effectively uses data from the [table/graph] to complete the [example/statement/claim]?"
+
+**`central_ideas_and_details`**
+- `choose_main_idea` → "Which choice best states the main idea of the text?" (for `central_idea` focus)
+- `choose_detail` → "Based on the text, [what is true about X / the text indicates that X]?" (for `supporting_detail` focus)
+- Do not use "What does the passage suggest?" — this phrasing belongs to `inferences`.
+
+**`inferences`**
+- `most_logically_completes` → the passage ends mid-sentence or at a logical gap, and the stem is always: "Which choice most logically completes the text?" The gap must be constructed so that one answer is logically required, not merely plausible. See §13.4 evidentiary standard annotation.
+- The blank appears at the end of the passage, not mid-passage.
+
+**`words_in_context`**
+- Default stem (blank-fill): "Which choice completes the text with the most logical and precise word or phrase?" — the target word or phrase is removed and replaced with a blank in the passage.
+- Alternate stem (underlined): "As used in the text, what does the word '[word]' most nearly mean?" — use only for the `underlined_word_meaning` focus key.
+- Do not mix formats within one item. Do not use both a blank and an underlined word.
+
+**`text_structure_and_purpose`**
+- `choose_main_purpose` → "Which choice best states the main purpose of the text?" or "Which choice best describes what the text does?"
+- `choose_sentence_function` → "Which choice best describes the function of the underlined sentence in the text as a whole?" The target sentence must be underlined in the passage and must perform exactly one named functional role from the §13.6 table.
+
+**`cross_text_connections`**
+- `choose_text_relationship` → "Based on the texts, how would [Text 2 source] most likely respond to [Text 1's claim that / Text 1's use of / the assertion in Text 1 that]?" — the specific Text 1 element must be named in the stem, not left generic.
+- `choose_agreement_across_texts` → "Based on the texts, both [Text 1 source] and [Text 2 source] would most likely agree with which statement?"
+- `choose_difference_across_texts` → "Which choice best describes a difference between the claims made in Text 1 and Text 2?"
+- For all cross-text stems, the sources must be labeled "Text 1" and "Text 2" in the stimulus; refer to them by those labels in the stem.
+
+**Step 3c — Record the stem in `prompt_text`**
+
+Once the stem wording is finalized, record it in `prompt_text`. Do not alter the stem wording after Phase 4 begins.
+
+---
+
+### 23.5 Phase 4 — Option design
+
+**Step 4a — Write the correct answer first**
+
+Draft the correct option before drafting any distractor. The correct answer must:
+- Unambiguously satisfy the stem and the target `reading_focus_key`
+- Be anchored to an `evidence_span_text` — a specific passage excerpt
+- Use comparable register, length, and syntactic form to what the distractors will use (do not write the correct answer and then match distractors to it; plan option homogeneity from the start)
+
+**Step 4b — Design three distractors using the three-distractor framework (§16.2)**
+
+Every item must contain:
+1. **Primary trap distractor** — targets the `reasoning_trap_key` selected in Phase 1; uses the most common partial-reading error for the skill family
+2. **Surface-plausible distractor** — shares topic, vocabulary, or structural form with the correct answer but fails the construct (wrong claim, wrong relationship, wrong direction)
+3. **Precision distractor** — almost correct but fails by scope, polarity, attribution, degree, or relationship type; competitive enough to survive first-pass elimination for high-difficulty items
+
+**Step 4c — Apply skill-specific distractor constraints (§16.3)**
+
+Apply the mandatory distractor rules for the selected skill family from §16.3. These are in addition to the three-distractor framework.
+
+**Step 4d — Apply the per-focus recipe (§16.9)**
+
+Look up the `target_reading_focus_key` in the §16.9 table and verify the generated distractors match the required distractor behavior for that focus key.
+
+**Step 4e — Apply the distractor quality gate (§16.4)**
+
+Before finalizing options, run the seven-criterion quality gate from §16.4. Every criterion must pass:
+- Incorrectness — each distractor has a named reason in `why_wrong`
+- Plausibility — each distractor maps to a real student error pattern with a non-null `plausibility_source_key`
+- Diversity — no two distractors fail through the same reasoning path
+- Construct alignment — every wrong answer fails the target construct, not random topic mismatch
+- Clue control — the key is not longer, more precise, or more polished than distractors
+- Option homogeneity — all options share syntax, abstraction level, register, and semantic category
+- Separation margin — the key is the single best answer; hard items have ≥2 distractors that survive first-pass elimination
+
+---
+
+### 23.6 Phase 5 — Validation
+
+Run both checklists in full before submitting the item.
+
+**§22.7 Style Authenticity Checklist** — passage prose only. If any check fails, return to Phase 2.
+
+**§21 Validator Checklist** — structural and annotation completeness. If any check fails, return to the appropriate phase.
+
+Additional cross-phase validation:
+
+- [ ] The correct answer is grounded in a non-null `evidence_span_text` that directly supports the answer
+- [ ] The primary trap distractor is grounded in the passage (topically related content, adjacent sentence, wrong condition, etc.) — not invented from outside the passage
+- [ ] The stem wording exactly matches a canonical form from §3.2 — no paraphrase
+- [ ] The `generation_profile` JSON is fully populated and all mandatory conditional fields are present (§16.8)
+- [ ] The passage word count is within the skill-family norms from §15.1
+
+If the item passes all Phase 5 checks, annotate `annotation_confidence: "high"` in `review` and set `needs_human_review: false`. If any check required a judgment call, annotate `annotation_confidence: "medium"` and record the judgment in `review_notes`.
+
+---
+
+### 23.7 Complete worked example
+
+The following example executes all five phases for a single item. Use it as a reference template.
+
+**Phase 1 — Profile**
+
+```json
+{
+  "generation_profile": {
+    "topic_broad_key": "social_studies",
+    "topic_fine": "linguistics",
+    "target_skill_family_key": "inferences",
+    "target_reading_focus_key": "causal_inference",
+    "target_test_construct_key": "inference_boundary_control",
+    "target_craft_subconstruct_key": null,
+    "target_reasoning_trap_key": "overreach",
+    "passage_structure_pattern": "claim_evidence_explanation",
+    "passage_architecture_key": "studied_subgroup_generalization_limit",
+    "target_stimulus_mode_key": "prose_single",
+    "target_stem_type_key": "most_logically_completes",
+    "target_difficulty_overall": "medium",
+    "target_distractor_pattern": [
+      "overreach — extends the finding to the broader population beyond what the subgroup evidence supports",
+      "reversal — attributes the effect to the wrong direction or wrong variable",
+      "outside_knowledge — appeals to general claims about language change not supported by the passage"
+    ],
+    "inference_type_note": "subgroup_overgeneralization_limit",
+    "two_part_claim": false
+  }
+}
+```
+
+**Phase 2 — Passage**
+
+Domain style: `social_studies` → medium-high hedging, named scholar attribution, `claim_evidence_explanation` arc.
+
+Architecture: `studied_subgroup_generalization_limit` → requires (1) evidence from a named subgroup, (2) explicit or implicit warning that the subgroup may not represent the broader population.
+
+> A 2017 study by Labov and colleagues examined code-switching patterns among bilingual adolescents in Philadelphia schools — specifically, students who reported Spanish as their home language. The researchers found that these students shifted to English vocabulary at markedly higher rates during academic discussions than during informal peer interactions, a pattern the team attributed to perceived audience expectations rather than vocabulary limitations. The researchers noted, however, that their participants were drawn entirely from communities with high rates of Spanish-English bilingualism, and cautioned that their findings ________.
+
+Style check (S1–S8): sentence lengths vary (14 / 40 / 32 / 23 words ✓), epistemic hedging ("attributed," "cautioned" ✓), named attribution ("Labov and colleagues" ✓), appositive ("specifically, students who reported Spanish as their home language" ✓), nominalization ("code-switching," "interactions," "limitations" ✓), passive voice limited to "were drawn" ✓.
+
+**Phase 3 — Stem**
+
+`most_logically_completes` → canonical wording: "Which choice most logically completes the text?"
+
+Blank placement: end of the final sentence, after "cautioned that their findings." No alteration to canonical stem wording.
+
+**Phase 4 — Options**
+
+Correct answer (causal_inference / subgroup_overgeneralization_limit):
+> **A. may not generalize to bilingual communities with different language environments or demographic profiles**
+
+*Why correct*: Directly applies the stated limitation ("drawn entirely from high-bilingualism communities") to restrict the scope of the findings. Logically required by the passage's final cautionary clause.
+
+Primary trap distractor (overreach):
+> **B. demonstrate that code-switching is primarily driven by academic pressure rather than vocabulary competence across all bilingual adolescent populations**
+
+*Why wrong*: Extrapolates the subgroup finding ("audience expectations" in one community) to "all bilingual adolescent populations" — the passage explicitly warns against this generalization. `distractor_type_key: "scope_error"`, `plausibility_source_key: "partial_truth"` (true within the subgroup, not beyond it).
+
+Surface-plausible distractor (reversal — wrong variable):
+> **C. suggest that vocabulary limitations, rather than audience expectations, account for the observed code-switching patterns**
+
+*Why wrong*: Reverses the passage's stated explanation: the researchers attributed code-switching to perceived audience expectations, not vocabulary limitations. `distractor_type_key: "inverted_logic"`, `plausibility_source_key: "passage_vocabulary_overlap"` (both terms appear in the passage).
+
+Precision distractor (outside_knowledge):
+> **D. align with broader research showing that bilingual speakers consistently prefer English in academic settings**
+
+*Why wrong*: Introduces a general claim not supported by the passage ("broader research," "consistently," "all bilingual speakers"). The passage describes findings for one subgroup and explicitly limits the scope. `distractor_type_key: "overstatement"`, `plausibility_source_key: "common_sense_appeal"`.
+
+Option homogeneity check: All four options are 12–22 words, use subordinate clause structure, and operate at the same level of abstraction ✓. Clue control: the correct answer (A) is not noticeably longer or more qualified than the distractors ✓.
+
+**Phase 5 — Validation**
+
+§22.7: all sentence-level checks pass ✓. Passage contains `studied_subgroup_generalization_limit` elements ✓.
+
+§21: `question_family_key: "information_and_ideas"` ✓, `skill_family_key: "inferences"` ✓, `reading_focus_key: "causal_inference"` ✓, `evidence_span_text: "drawn entirely from communities with high rates of Spanish-English bilingualism"` ✓, `paired_passage_text: null` ✓ (not cross-text), correct option has `is_correct: true` and `precision_score: 3` ✓, three distractors have distinct `distractor_type_key` values ✓.
+
+`review_notes`: "inference_type: subgroup_overgeneralization_limit — correct answer restricts findings to source community; primary trap (B) is the canonical subgroup overgeneralization distractor."
+
+`annotation_confidence: "high"`. `needs_human_review: false`.
+
+---
+
+*Document version: v3.0 — 2026-05-25*
+*Merges: `rules_agent_dsat_reading_v1.md` (v1.0) + `rules_agent_dsat_reading_v1_1.md` (v1.1) + `rules_agent_dsat_reading_v2.md` (v2.0)*
 *Source authority: CB_ANSWERS_QUESTIONS_ANALYSIS.md (PT4–PT11 official explanation cross-reference)*
-*Agent: Claude Opus 4.6*
+*v3.0 additions: §22 Passage Style Fingerprint and Generation Realism — sentence-level rules, domain style signatures, generation failure modes, few-shot exemplars*
+*Agent: Claude Sonnet 4.6*
 *Domain coverage: Information and Ideas, Craft and Structure*
-*Companion file: `rules_agent_dsat_grammar_ingestion_generation_v8.md`*
-*Supersedes: v1.0 + v1.1 addendum — these remain as historical reference, not as active load targets*
+*Companion file: `rules_agent_dsat_grammar_ingestion_generation_v8.md` (v8.1)*
+*Supersedes: v2.0 — remains as historical reference, not as active load target*
 
 ## Appendix V — Controlled Vocabulary (generated)
 

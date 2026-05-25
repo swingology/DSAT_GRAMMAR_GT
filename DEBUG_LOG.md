@@ -1,5 +1,126 @@
 # Debug Log
 
+## 2026-05-25 - Rules/Ontology Map and master_samples.json Companion
+Report created by: GPT-5 Codex
+Git branch: `rules_edit`
+Git checkpoint: `9936288` — refactor: reorganize rules hierarchy and add v8 tooling
+
+### Context
+
+The active rules and vocabulary surfaces were unclear after the grammar v8
+switch and the introduction of `rules_agent_dsat_reading_v3.md`. The user asked
+for a markdown artifact showing how the rule files and JSON vocabulary files
+support ingestion and generation, then asked for an extremely comprehensive
+`master_samples.json` companion that can assist analysis.
+
+### Work Completed
+
+1. **Rules/ontology map added:**
+   - Added `docs/backend/RULES_INGESTION_GENERATION_MAP.md`.
+   - The document explains how these files participate in ingestion,
+     generation, review, validation, and amendment promotion:
+     - `rules_agent_dsat_reading_v3.md`
+     - `rules_agent_dsat_grammar_ingestion_generation_v8.md`
+     - `vocabulary/master.json`
+     - `vocabulary/master_samples.json`
+     - `vocabulary/candidates.json`
+   - Important live-code finding: `rules_agent_dsat_reading_v3.md` exists, but
+     current backend prompt and vocabulary tooling still reference
+     `rules_agent_dsat_reading_v2.md`.
+
+2. **Comprehensive `master_samples.json` added:**
+   - Added `vocabulary/master_samples.json`.
+   - It contains advisory sample/guidance records for all `624` active
+     `master.json` entries across `47` vocabularies.
+   - Each sample entry is joinable back to `master.json` by:
+     - flat vocabularies: vocabulary name + value
+     - hierarchical vocabularies: vocabulary name + parent + value
+   - Each entry includes synthetic positive examples, near-miss distinctions,
+     ingestion guidance, generation guidance, and validation guidance.
+   - This file is advisory only; it does not define active ontology keys.
+
+3. **`master.json` companion pointer added:**
+   - Added `"samples_companion": "vocabulary/master_samples.json"` to
+     `vocabulary/master.json`.
+   - `master.json` remains the source of truth for active keys; the samples file
+     explains how to choose among valid keys more consistently.
+
+4. **Changelog updated:**
+   - Added the `master_samples.json` and rules-map documentation work to
+     `CHANGELOG.md`.
+
+### Verification
+
+- `python3 -m json.tool vocabulary/master.json` passed.
+- `python3 -m json.tool vocabulary/master_samples.json` passed.
+- `uv run python scripts/gen_vocab.py --check` passed.
+- `git diff --check` passed for:
+  - `vocabulary/master.json`
+  - `vocabulary/master_samples.json`
+  - `docs/backend/RULES_INGESTION_GENERATION_MAP.md`
+  - `CHANGELOG.md`
+
+### Remaining Risk / Follow-up
+
+This work improves explainability and retrieval support for ontology labeling,
+but it does **not** resolve the unresolved candidate-key queue documented in the
+`2026-05-25 - master.json Vocabulary Audit — Candidate Drift and Completeness
+Gap` entry below. Candidate promotion/rejection and reading v3 activation are
+still separate follow-up tasks.
+
+---
+
+## 2026-05-25 - master.json Vocabulary Audit — Candidate Drift and Completeness Gap
+Report created by: Claude Sonnet 4.6
+Git branch: `rules_edit`
+Git checkpoint: `9936288` — refactor: reorganize rules hierarchy and add v8 tooling
+
+### Context
+
+Audit of `vocabulary/master.json` revealed that the controlled vocabulary is incomplete relative to keys the system is actively producing during ingestion. Additionally, the file has no verified link to the student-facing UI or live DB key validation for grammar domain fields.
+
+### Findings
+
+1. **High — 35 unresolved candidate keys in `vocabulary/candidates.json`:**
+   - During live ingestion runs, `vocab_candidates.py` records unrecognized keys rather than hard-failing. As of this audit, 35 real candidate keys are queued but not yet promoted to `master.json`.
+   - Affected vocabularies and example unresolved values:
+     - `GRAMMAR_FOCUS_BY_ROLE`: `synthesis_from_notes`, `synthesis_of_information`, `precision`, `word_choice`, `subject_aux_inversion_and_punctuation`, `verb_tense`, `colon_usage`, `colon_introducing_explanation`, `rhetorical_synthesis`, `synthesize_information`, `similarity_emphasis`
+     - `GRAMMAR_ROLE_KEYS`: `rhetorical_synth`, `synthesis_from_notes`, `word_choice`, `verb`, `adjective`, `subject_pronoun`, `direct_question`, `time_clause_verb`, `main_verb`, `verb_number_agreement`, `introduce_list`, `subject_verb_agreement`, `synthesize_notes`, `goal_emphasis`, `rhetorical_synthesis`, `precision`
+     - `QUESTION_FAMILY_KEYS`: `reading_information_and_ideas`, `standard_english_conventions`
+     - `STEM_TYPE_KEYS`: `bad_stem`, `choose_grammatically_correct_form`, `synthesize_information_from_notes`, `choose_logical_transition`
+     - `STIMULUS_MODE_KEYS`: `bad_mode`
+   - Several of these look like legitimate aliases or renamed variants of approved keys (e.g., `rhetorical_synthesis` may map to `expression_of_ideas`; `synthesis_from_notes` may map to `notes_summary`). Others look like ingestion model drift that should be rejected. None have been formally reviewed.
+   - **Risk**: ingested questions with candidate-only keys pass storage but fail downstream validation, DB enum constraints, and any UI that reads these fields. The drift is silent — no alert fires.
+
+2. **Medium — master.json was bootstrapped from ontology.py, not from the rules documents:**
+   - The founding commit (`00a9307`, 2026-05-18) ran `gen_vocab.py --bootstrap` to extract enums already in `ontology.py` into master.json. This means the vocabulary reflects what the Python model had at that point, not a deliberate audit against the grammar v8 or reading v3 rules documents.
+   - Keys added to the rules documents since then (e.g., grammar v8.1 patch keys from the missing_rules audit: `absolute_phrase`, `subjunctive_mood` sub-patterns, `commonly_confused_words` additions, `singular_they`) are **not confirmed to exist in master.json**. Drift between the rules files and master.json has not been checked.
+
+3. **Medium — No verified connection between master.json and the student-facing UI:**
+   - It is unknown whether the student UI reads `grammar_focus_key`, `grammar_role_key`, or related fields from the DB and renders them in any way (e.g., skill labels, topic tags, study plan categories). If it does, unresolved candidate keys or rules-doc drift would produce blank or broken labels.
+   - No integration test or drift gate exists between master.json and the student UI layer.
+
+4. **Low — master.json does not cover all grammar v8 keys added in the v8.1 patch (2026-05-25):**
+   - Grammar v8.1 added: `absolute_phrase` focus key, `subjunctive_mood` sub-patterns (3 environments), expanded `commonly_confused_words` pairs, `singular_they` pronoun pattern, B.4 new distractor rows for `subject_verb_agreement`, `modifier_placement`, `transition_logic`.
+   - None of these were run through `gen_vocab.py --promote`. master.json may be missing these keys; ontology.py is therefore also missing them, meaning DB inserts for questions using these keys will fail enum validation.
+
+### Task — Rebuild master.json as a fully comprehensive controlled vocabulary
+
+**Priority: High**
+**Status: Open**
+
+Remake `vocabulary/master.json` as a deliberately audited, comprehensive vocabulary by doing the following:
+
+- [ ] **Step 1 — Candidate review**: For each of the 35 candidates in `candidates.json`, determine: (a) promote as-is, (b) promote as alias mapping to an existing key, or (c) reject as ingestion model error. Use `gen_vocab.py --promote` and `--reject` accordingly.
+- [ ] **Step 2 — Rules-doc audit**: Cross-reference master.json against the full key lists in `rules_agent_dsat_grammar_ingestion_generation_v8.md` (D.2, D.5, D.7 taxonomy sections) and `rules_agent_dsat_reading_v3.md` (Appendix V VOCAB blocks). Add any keys present in the rules docs but absent from master.json.
+- [ ] **Step 3 — Grammar v8.1 patch keys**: Explicitly promote the keys added in the 2026-05-25 v8.1 patch: `absolute_phrase`, `subjunctive_mood` (and its sub-pattern annotations), expanded `commonly_confused_words` pairs, `singular_they`. Verify `ontology.py` DB enum is regenerated after promotion.
+- [ ] **Step 4 — Student UI key audit**: Identify every field in the student-facing UI that reads a controlled vocabulary field from the DB (skill labels, topic tags, filter dropdowns, study plan categories). Map each UI field to its `master.json` vocabulary. Confirm all live DB values for those fields exist in master.json. Add any missing keys.
+- [ ] **Step 5 — DB live key verification for grammar**: Query the live DB for all distinct values of `grammar_focus_key`, `grammar_role_key`, `syntactic_trap_key`, and `student_failure_mode_key` across all ingested questions. Diff against master.json approved values. Any DB value not in master.json is a data integrity gap — flag for review or backfill.
+- [ ] **Step 6 — Regenerate artefacts**: After master.json is complete, run `gen_vocab.py --generate` to regenerate `ontology.py` and the Appendix V VOCAB blocks in both rules documents. Run `test_vocab_sync.py` to verify drift gate passes.
+- [ ] **Step 7 — Add a CI drift gate**: Extend `test_vocab_sync.py` or add a new CI check that fails if `candidates.json` accumulates more than N unreviewed entries (suggested threshold: 5). This prevents silent candidate drift from recurring.
+
+---
+
 ## 2026-05-23 - Ingestion Test Run (Test_5_digital_sec01_mod01)
 Report created by: Claude (ingestion-test skill subagent)
 Git branch: `generation_build`

@@ -403,8 +403,10 @@ Every sub-pattern carries either:
 
 ### B.3.0.4 Hard cap
 
-Maximum 3 sub-patterns per `grammar_focus_key`. Adding a fourth requires
-demoting one. Use the v7→v8 generation log to track demotions.
+Maximum 5 sub-patterns per `grammar_focus_key`. This cap was raised from 3
+in the v8.1 patch to accommodate the additional attested patterns documented
+via the missing-rules audit (see `missing_rules_v8.md`). Adding a sixth
+requires demoting one. Use the generation log to track demotions.
 
 ### B.3.0.5 Evidence tiers
 
@@ -413,7 +415,7 @@ Each focus key is assigned a tier in §B.3.0.6 based on PT example count in
 
 | Tier | PT examples | Sub-pattern policy |
 |---|---|---|
-| A | ≥5 | All 3 sub-patterns PT-cited |
+| A | ≥5 | All PT-cited sub-patterns; up to 5 permitted |
 | B | 1–4 | At least 1 PT-cited; remainder may be web-only |
 | C | 0 | All web-only with `[NO PT EVIDENCE]` markers |
 
@@ -543,6 +545,96 @@ sentence.
 Classify with `syntactic_trap_key: "long_distance_dependency"` and
 `student_failure_mode_key: "nearest_noun_reflex"`.
 
+**Sub-pattern — Inverted Sentence Order (Existential and Fronted Constructions)**
+
+[NO PT EVIDENCE — source: PrepScholar, The College Panda]
+
+Construct a sentence in which the grammatical subject follows the verb:
+an existential construction (`There is/are…`, `Here is/are…`) or a
+sentence with a fronted prepositional phrase (`Among the artifacts ___
+three bronze figurines`). The blank sits at the verb slot. The correct
+option agrees with the post-verbal subject, not with any noun in the
+fronted phrase. The trap is that students trained to find the subject
+before the verb latch onto the nearest preceding noun — which is not
+the subject.
+
+Distractors: singular verb agreeing with a singular noun in the fronted
+phrase (nearest-noun attraction applied to an inverted structure), wrong
+tense combined with wrong number, and a plural verb when the post-verbal
+subject is singular.
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
+
+**Sub-pattern — Indefinite Pronoun as Singular Subject**
+
+[NO PT EVIDENCE — source: PrepScholar, Magoosh]
+
+Construct a sentence in which the grammatical subject is a singular
+indefinite pronoun (`each`, `everyone`, `anyone`, `someone`, `no one`,
+`everybody`, `anybody`, `somebody`, `nobody`, `everything`, `anything`,
+`something`, `nothing`, `either`, `neither`, `whoever`, `whatever`).
+Follow the indefinite pronoun with a prepositional phrase containing a
+plural noun to create the attractor. The blank is the verb. The correct
+option is always singular.
+
+Canonical template: `Each of the [plural noun] ___ [predicate].`
+
+Distractors: plural verb agreeing with the plural object of the
+prepositional phrase, a tense-shifted plural form, and a third-person
+plural progressive that doubles the error.
+
+Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
+
+**Sub-pattern — Compound Subject Joined by `or`/`nor` (Proximity Rule)**
+
+[NO PT EVIDENCE — source: PrepScholar, Magoosh, The Critical Reader]
+
+Construct a sentence with two subjects joined by `or`, `nor`, `either…or`,
+or `neither…nor`. The blank is the verb. The correct option agrees with the
+subject **closest to the verb** (proximity rule). Vary which subject is
+closer to test both directions.
+
+Templates:
+- `Either the [singular noun] or the [plural noun] ___ .` → plural verb
+- `Either the [plural noun] or the [singular noun] ___ .` → singular verb
+- `Neither the results nor the method ___ .` → singular verb (singular
+  subject closest to verb)
+
+Distractors: verb agreeing with the first subject rather than the second,
+plural verb treating the compound as equivalent to an `and`-compound, and
+singular verb regardless of proximity.
+
+Distinguish from `and`-compounds, which always take a plural verb.
+
+Classify with `syntactic_trap_key: "long_distance_dependency"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
+
+**Sub-pattern — Stacked Relative Clauses**
+
+(PT5 M2 Q21: "a toxin that is deadly to nematodes that ___ in contact with it")
+
+Construct a sentence with two nested relative clauses where the second
+relative pronoun (`that` or `which`) refers to the plural noun embedded
+*inside* the first relative clause, not to the singular head noun of the
+entire noun phrase. The blank is the verb inside the second relative clause.
+The correct option is plural.
+
+Template: `a [singular noun] that [predicate] [plural noun] that ___ [phrase]`
+
+The antecedent of the second `that` is the plural noun two clauses back
+(`nematodes`), not the singular head noun (`toxin`). Students anchor to
+the distant singular head or to the nearest singular noun immediately
+before the second relative pronoun.
+
+Distractors: singular verb agreeing with the singular head noun, singular
+verb agreeing with an intervening singular noun, and present perfect where
+simple present is required.
+
+Classify with `syntactic_trap_key: "long_distance_dependency"` and
+`student_failure_mode_key: "nearest_noun_reflex"`.
+
 ### `pronoun_antecedent_agreement`
 
 Use a singular antecedent that looks plural ("the team," "everyone"). Place a
@@ -607,6 +699,27 @@ pronoun (`there`) that misreads the slot as locative.
 
 Classify with `syntactic_trap_key: "nearest_noun_attraction"` and
 `student_failure_mode_key: "nearest_noun_reflex"`.
+
+**Sub-pattern — Singular `they`/`their` for Gender-Neutral Singular Antecedent**
+
+[NO PT EVIDENCE — source: College Board Skills Insight, PrepScholar]
+
+Construct a sentence in which the antecedent is a singular noun that does
+not specify gender (`a student`, `the researcher`, `anyone`, `each person`)
+and the blank holds a pronoun that refers back to it. The correct option is
+`they`/`their`/`them` (singular they). The DSAT treats singular `they` as
+the preferred form over `he or she`/`his or her` for gender-neutral singular
+referents.
+
+Template: `When a student submits ___ assignment late, ___ must accept the penalty.`
+
+Distractors: `he or she` / `his or her` (older formal convention, now
+non-preferred on the DSAT), a restructured plural subject that removes the
+pronoun agreement requirement but changes meaning, and `it`/`its` (always
+wrong for persons).
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "pronoun_anchor_error"`.
 
 ### `verb_tense_consistency`
 
@@ -750,6 +863,68 @@ a participial modifier without an auxiliary).
 Classify with `syntactic_trap_key: "none"` and
 `student_failure_mode_key: "nonfinite_for_finite"`.
 
+**Sub-pattern — Gerund vs. Infinitive Idiomatic Selection**
+
+[NO PT EVIDENCE — source: The Critical Reader, PrepScholar, Magoosh]
+
+Construct a sentence in which a governing verb requires either a gerund
+(`-ing`) or a `to`-infinitive complement and the blank holds that
+complement form. The correct option supplies the idiomatic form; all
+distractors offer the wrong non-finite form or a tense-inflected form.
+
+Gerund-only verbs (always followed by `-ing`): `enjoy`, `avoid`, `finish`,
+`consider`, `suggest`, `recommend`, `deny`, `admit`, `practice`, `risk`,
+`postpone`, `keep`.
+→ "enjoyed *swimming*" not "enjoyed *to swim*"
+
+Infinitive-only verbs (always followed by `to + base`): `decide`, `choose`,
+`plan`, `hope`, `want`, `agree`, `offer`, `promise`, `refuse`, `expect`.
+→ "decided *to leave*" not "decided *leaving*"
+
+Meaning-change verbs (use context to determine which form is required):
+- `stop doing` (cease the action) vs. `stop to do` (pause in order to do)
+- `remember doing` (recall a past action) vs. `remember to do` (not forget)
+- `try doing` (experiment with) vs. `try to do` (make an attempt)
+
+Distractors: the wrong non-finite form (gerund where infinitive is needed
+or vice versa), bare infinitive lacking `to`, and past-tense inflected
+form that cannot serve as a complement.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "nonfinite_for_finite"`.
+
+**Sub-pattern — Subjunctive Mood (Hypothetical, Mandative, and Necessity Constructions)**
+
+[NO PT EVIDENCE — source: Admit Studio, The Critical Reader, Magoosh]
+
+Use the subjunctive when the convention is the base form of the verb (or
+`were` for `be`) rather than the indicative form. Three tested environments:
+
+**Environment 1 — Hypothetical / contrary-to-fact conditional:**
+`If [subject] were [predicate]…` or `If [subject] had [past participle]…`
+The blank sits in the `if`-clause. Correct: `were` (not `was`).
+
+**Environment 2 — Mandative `that`-clause after verbs of recommendation
+or requirement:**
+`[Verb] that [subject] [base form]`
+Trigger verbs: `recommend`, `suggest`, `require`, `demand`, `insist`,
+`propose`, `urge`, `request`, `mandate`.
+Correct: base form (`be`, `vote`, `exercise`) — no `-s`, no past tense.
+Template: "The committee *recommended* that the funding *be* approved."
+
+**Environment 3 — Necessity adjective in `it is … that` construction:**
+`It is [adjective] that [subject] [base form]`
+Trigger adjectives: `essential`, `important`, `critical`, `necessary`,
+`imperative`, `vital`.
+Correct: base form ("It is essential *that the data be preserved*").
+
+Distractors for all three environments: third-person singular indicative
+(adds `-s` — the most common trap), past tense form, `to`-infinitive, and
+present perfect.
+
+Classify with `syntactic_trap_key: "presupposition_trap"` and
+`student_failure_mode_key: "grammar_fit_only"`.
+
 ### `modifier_placement` / `dangling_modifier`
 
 Start with a participial phrase whose logical subject is not the grammatical
@@ -825,6 +1000,77 @@ dangling reference.
 
 Classify with `syntactic_trap_key: "nominalization_obscures_subject"` and
 `student_failure_mode_key: "grammar_fit_only"`.
+
+### `absolute_phrase`
+
+Construct a sentence containing an absolute phrase (nominative absolute): a
+noun plus a participial phrase that modifies the entire main clause, not any
+specific noun within it. The absolute phrase is separated from the main
+clause by a comma. The blank sits either inside the absolute phrase (verb
+form) or at the clause boundary (punctuation).
+
+An absolute phrase is structurally distinct from a dangling modifier: its
+nominal head is explicit and the phrase cannot be traced back to the main
+clause's subject. It modifies the event or situation expressed by the whole
+clause.
+
+Structure: `[Noun] + [participial phrase], [main clause].`
+
+**Sub-pattern — Absolute Phrase Requiring Comma Boundary**
+
+[NO PT EVIDENCE — source: The Critical Reader, PrepScholar]
+
+Construct a sentence opening with an absolute phrase and place the blank
+at the comma boundary between the absolute phrase and the main clause.
+The correct option supplies the comma. Distractors omit the comma
+(creating a run-on reading), replace it with a semicolon (elevating the
+absolute to clause status), or add a relative pronoun (`which`, `that`)
+that turns the absolute into a relative clause and destroys the main
+clause's predicate.
+
+Templates:
+- "The experiment completed, ___ the team published their findings."
+  (blank before subject; comma is the only correct option)
+- "Her voice trembling slightly, the professor ___ her lecture."
+  (blank at verb; finite verb is required)
+- "Weather permitting, we ___ proceed with the outdoor session."
+  (blank at modal; `will` is correct)
+
+Distractors: missing comma (run-on absolute attached directly to subject),
+semicolon (makes the absolute an independent clause fragment), a relative
+pronoun (`which` / `that`) that converts the absolute into a non-finite
+relative structure, and a coordinating conjunction that misreads the
+absolute as a coordinated clause.
+
+Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
+`student_failure_mode_key: "modifier_hitchhike"`.
+
+**Sub-pattern — Absolute vs. Dangling Modifier Disambiguation**
+
+[NO PT EVIDENCE — source: The Critical Reader]
+
+Construct two candidate sentences — one with a correct absolute phrase
+(nominal head explicit) and one with a dangling modifier (nominal head
+absent or mis-matched to main-clause subject). The blank holds the nominal
+head of the modifier. Only the option that supplies an explicit nominal head
+produces a well-formed absolute; all other options produce dangling modifiers.
+
+Template: "___ completed, the team published the results."
+Correct: "The experiment" (full noun phrase = well-formed absolute)
+Wrong: bare `-ing` participle (dangling modifier)
+Wrong: possessive noun phrase ("the experiment's") — possessives cannot
+serve as absolute-phrase heads
+
+Distractors: `-ing` participle without a nominal head (classic dangling
+modifier), possessive noun phrase (structurally ineligible as absolute
+head), and a finite clause with a subordinating conjunction (turns the
+absolute into an adverbial clause, which changes the logical relationship).
+
+Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
+`student_failure_mode_key: "modifier_hitchhike"`.
+
+Classification: `grammar_role_key: "modifier"`,
+`grammar_focus_key: "absolute_phrase"`.
 
 ### `punctuation_comma`
 
@@ -3542,6 +3788,39 @@ needed — correct meaning but less precise).
 Classify with `syntactic_trap_key: "none"` and
 `student_failure_mode_key: "confused_word_substitution"`.
 
+**Sub-pattern — Transitive/Intransitive and Role-Confusion Pairs (lie/lay, imply/infer, comprise/compose)**
+
+[NO PT EVIDENCE — source: PrepScholar, The Critical Reader, Magoosh]
+
+Construct a sentence where the blank requires one member of a confused pair
+whose members are distinguished by transitivity, direction of action, or
+part-whole role.
+
+Tested pairs in this sub-pattern:
+
+| Pair | Rule |
+|---|---|
+| `lie` / `lay` | `lie` is intransitive (no object: "she *lies* down"); `lay` is transitive (takes object: "she *lays* the book down") |
+| `imply` / `infer` | the speaker/writer *implies*; the listener/reader *infers* |
+| `comprise` / `compose` | the whole *comprises* the parts ("the kit *comprises* three tools"); the parts *compose* the whole ("three tools *compose* the kit") |
+| `farther` / `further` | `farther` for physical distance; `further` for figurative degree or extent |
+| `assure` / `ensure` / `insure` | *assure* a person (remove doubt); *ensure* a result (make certain); *insure* against financial risk |
+| `between` / `among` | `between` for exactly two items; `among` for three or more |
+| `who` / `that` | persons are preferentially introduced by `who` not `that` |
+
+Place the blank at the verb or determiner slot and ensure the sentence
+context specifies the direction of action, transitivity, or part-whole
+relationship unambiguously. The trap is that both members of the pair are
+real English words occupying the same syntactic slot.
+
+Distractors: the reversed member of the pair (most seductive — same
+syntactic slot, overlapping semantics), a third word from the same semantic
+field that is grammatically acceptable but semantically wrong, and a more
+formal synonym that changes register without fitting the precise meaning.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "confused_word_substitution"`.
+
 ### `preposition_idiom`
 
 Construct a sentence with a verb-preposition or adjective-preposition collocation where the correct preposition is idiomatic: `composed of`, `differ from`, `responsible for`, `interested in`, `capable of`, `independent of`, `account for`, `result in`, `consistent with`, `conducive to`.
@@ -3629,6 +3908,7 @@ Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "
 | 1 | Plural verb (nearest noun attraction) | `nearest_noun_attraction` |
 | 2 | Singular verb but wrong tense | `auditory_similarity` |
 | 3 | Compound or auxiliary verb that breaks agreement | `grammar_fit_only` |
+| 4 | Plural verb after collective noun subject (team/committee/group implies multiple members) | `nearest_noun_attraction` |
 
 ### `verb_tense_consistency`
 
@@ -3669,6 +3949,7 @@ Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "
 | 1 | Modifier placed next to wrong noun | `nearest_noun_attraction` |
 | 2 | Modifier split from its head noun | `grammar_fit_only` |
 | 3 | Dangling modifier preserved | `formal_register_match` |
+| 4 | Passive-voice main clause places abstract noun as subject, leaving opening participial phrase dangling (sounds formal and academic) | `formal_register_match` |
 
 ### `relative_pronouns`
 
@@ -3975,6 +4256,8 @@ Classification: `grammar_role_key: "expression_of_ideas"`, `grammar_focus_key: "
 | 1 | Transition from the wrong relation family (contrast vs. cause vs. addition) | `grammar_fit_only` |
 | 2 | Correct broad family but wrong subtype or degree | `formal_register_match` |
 | 3 | Familiar transition phrase creates an unsupported logical bridge | `formal_register_match` |
+| 4 | `restatement_clarification` (`in other words`) used where `example` (`for example`) is needed, or vice versa — both "continue" the prior idea but `restatement_clarification` only rephrases while `example` adds a new concrete instance | `transition_assumption` |
+| 5 | `purpose_action` (`to that end`) confused with `result_consequence` (`therefore`) — `purpose_action` introduces an *intended future action* to achieve a prior goal; `result_consequence` introduces an *outcome that already follows* from a prior fact | `transition_assumption` |
 
 ---
 
@@ -5088,6 +5371,10 @@ Use the most specific applicable `grammar_focus_key`.
 ### D.2.5 Modifier focus keys
 
 - `modifier_placement`
+- `absolute_phrase` — nominative absolute construction (noun + participial
+  phrase modifying the entire main clause); requires comma boundary; distinct
+  from `modifier_placement` because the nominal head is explicit and the phrase
+  does not attach to the main-clause subject; promoted from pending in v8.1
 - `comparative_structures` — comparisons where the compared elements are not
   grammatically parallel; includes implied/incomplete comparisons
 - `illogical_comparison` — comparing a noun to an action or dissimilar category
@@ -5111,6 +5398,33 @@ Use the most specific applicable `grammar_focus_key`.
 - `quotation_punctuation`
 - `unnecessary_internal_punctuation`
 - `end_punctuation_question_statement`
+
+#### Matching delimiter rule
+
+When a parenthetical element is set off inside a sentence, the opening
+delimiter must be matched by the **same type** of closing delimiter:
+comma→comma, dash→dash, parenthesis→parenthesis. Mixing is never permitted
+(e.g., opening comma + closing dash is always wrong). This rule applies to
+all parenthetical elements: appositives, nonrestrictive clauses, and
+mid-sentence interruptions. Distractors routinely exploit asymmetric
+punctuation — verify both halves of every paired delimiter.
+
+#### No comma before restrictive `that`
+
+On the DSAT, `comma + that` for a relative clause is **never** correct.
+`that` always introduces a restrictive (essential) relative clause, and
+restrictive clauses are never preceded by a comma. `which` (nonrestrictive)
+requires a comma. This distinction is absolute: if the relative pronoun is
+`that`, there is no comma; if a comma is present, the relative pronoun must
+be `which`.
+
+#### No comma immediately before or after a preposition
+
+No comma may appear directly before or after a preposition (`of`, `by`,
+`to`, `at`, `for`, `from`, `with`, `in`, `on`, `that`). A long prepositional
+phrase may feel like it earns a rhythmic pause, but the comma is always
+wrong. This is a sub-rule of `unnecessary_internal_punctuation`; annotators
+should use that key when the test is whether the comma is absent.
 
 #### `unnecessary_internal_punctuation` — rule definition
 
@@ -5158,7 +5472,7 @@ evidence warrants.
 
 | Proposed key | Proposed parent role | Evidence source | Note |
 |---|---|---|---|
-| `subjunctive_mood` | `verb_form` | PT analysis; counterfactual and hypothetical conditional constructions | Extremely rare (~1 per official book); document as sub-pattern of `verb_form` rather than standalone key |
+| `subjunctive_mood` | `verb_form` | PT analysis; counterfactual and hypothetical conditional constructions | Sub-patterns now documented in §B.3 `verb_form` (v8.1 patch). Classify as `grammar_focus_key: "verb_form"` with `subskill: "subjunctive mood"`. Do not create a standalone key. |
 
 Keys previously pending that were **promoted to production in v7:**
 `adjective_adverb_distinction` → D.2.5 (modifier),
@@ -5827,7 +6141,7 @@ regenerate. They stay in lockstep with the validator enums in
 
 <!-- VOCAB:system:TEST_FORMAT_KEYS START -->
 <!-- generated from vocabulary/master.json — do not hand-edit -->
-**`TEST_FORMAT_KEYS`** — Rules v7 generation format keys
+**`TEST_FORMAT_KEYS`** — Rules v8 generation format keys
 
 - `digital_app_adaptive`
 - `nondigital_linear_accommodation`
@@ -5835,7 +6149,7 @@ regenerate. They stay in lockstep with the validator enums in
 
 <!-- VOCAB:system:SOURCE_STATS_FORMAT_KEYS START -->
 <!-- generated from vocabulary/master.json — do not hand-edit -->
-**`SOURCE_STATS_FORMAT_KEYS`** — Rules v7 source stats format keys
+**`SOURCE_STATS_FORMAT_KEYS`** — Rules v8 source stats format keys
 
 - `official_digital`
 - `official_nondigital_linear`
@@ -6211,7 +6525,7 @@ regenerate. They stay in lockstep with the validator enums in
 
 <!-- VOCAB:grammar:TRANSITION_SUBTYPE_KEYS START -->
 <!-- generated from vocabulary/master.json — do not hand-edit -->
-**`TRANSITION_SUBTYPE_KEYS`** — Grammar v7 transition_subtype_key
+**`TRANSITION_SUBTYPE_KEYS`** — Grammar v8 transition_subtype_key
 
 - `sequence_final_event`
 - `contrast_refutation`
@@ -6241,7 +6555,7 @@ regenerate. They stay in lockstep with the validator enums in
 
 <!-- VOCAB:grammar:SYNTHESIS_GOAL_KEYS START -->
 <!-- generated from vocabulary/master.json — do not hand-edit -->
-**`SYNTHESIS_GOAL_KEYS`** — Grammar v7 notes synthesis goal keys
+**`SYNTHESIS_GOAL_KEYS`** — Grammar v8 notes synthesis goal keys
 
 - `emphasize_similarity`
 - `emphasize_difference`
@@ -6289,7 +6603,7 @@ regenerate. They stay in lockstep with the validator enums in
 
 <!-- VOCAB:grammar:AUDIENCE_KNOWLEDGE_KEYS START -->
 <!-- generated from vocabulary/master.json — do not hand-edit -->
-**`AUDIENCE_KNOWLEDGE_KEYS`** — Grammar v7 audience knowledge keys
+**`AUDIENCE_KNOWLEDGE_KEYS`** — Grammar v8 audience knowledge keys
 
 - `audience_familiar`
 - `audience_unfamiliar`
@@ -6298,7 +6612,7 @@ regenerate. They stay in lockstep with the validator enums in
 
 <!-- VOCAB:grammar:REQUIRED_CONTENT_KEYS START -->
 <!-- generated from vocabulary/master.json — do not hand-edit -->
-**`REQUIRED_CONTENT_KEYS`** — Grammar v7 required content keys
+**`REQUIRED_CONTENT_KEYS`** — Grammar v8 required content keys
 
 - `comparison_needed`
 - `definition_needed`
@@ -6336,7 +6650,7 @@ regenerate. They stay in lockstep with the validator enums in
 
 <!-- VOCAB:grammar:SYNTHESIS_DISTRACTOR_FAILURE_KEYS START -->
 <!-- generated from vocabulary/master.json — do not hand-edit -->
-**`SYNTHESIS_DISTRACTOR_FAILURE_KEYS`** — Grammar v7 synthesis distractor failure keys
+**`SYNTHESIS_DISTRACTOR_FAILURE_KEYS`** — Grammar v8 synthesis distractor failure keys
 
 - `wrong_goal`
 - `omits_required_content`
