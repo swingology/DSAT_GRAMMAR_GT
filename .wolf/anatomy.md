@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-26T00:08:20.824Z
-> Files: 802 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-26T20:19:13.879Z
+> Files: 805 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -37,7 +37,7 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~41073 tok)
 - `CLAUDE.md` — OpenWolf (~378 tok)
-- `DEBUG_LOG.md` — Debug Log (~45484 tok)
+- `DEBUG_LOG.md` — Debug Log (~47120 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `FUTURE_FEATURES.md` — Future Features (~8540 tok)
@@ -976,7 +976,7 @@
 - `db.py` — Declares QuestionJob (~8762 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5620 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~6897 tok)
+- `payload.py` — HTTP request/response models. (~6911 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -992,13 +992,14 @@
 - `ingestion_analysis.py` — Write reproducible ingestion analysis reports and re-appraisals. (~2600 tok)
 - `option_hydration.py` — Utilities for populating QuestionOption annotation fields from annotate_json. (~636 tok)
 - `overlap.py` — Overlap detection between unofficial/generated questions and official questions. (~1690 tok)
+- `rule_doc_patcher.py` — Rule-document body patch engine for approved vocabulary amendments. (~3041 tok)
 - `validator.py` — Validation rules from PRD §15. (~2948 tok)
 
 ## backend/app/prompts/
 
-- `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~4989 tok)
+- `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~5303 tok)
 - `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~1186 tok)
-- `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~2309 tok)
+- `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~2308 tok)
 - `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
 - `review_prompt.py` — Review prompt — composes rubric + grammar canon + optional reading rules + question context. (~2278 tok)
 - `stimulus_prompt.py` — Vision prompt for annotating cropped stimulus regions (tables, charts, figures). (~543 tok)
@@ -1014,10 +1015,10 @@
 
 - `admin.py` — API: 7 endpoints (~24627 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
-- `generate.py` (~15354 tok)
+- `generate.py` (~15836 tok)
 - `ingest.py` (~35920 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
-- `student.py` — API: 1 endpoints (~13753 tok)
+- `student.py` — API: 1 endpoints (~13787 tok)
 
 ## backend/app/storage/
 
@@ -1076,6 +1077,7 @@
 - `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
 - `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~2181 tok)
 - `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~10512 tok)
+- `test_prompts.py` — test_extract_prompt_contains_instructions, test_annotate_prompt_loads_current_rules, test_annotate_p (~1029 tok)
 - `test_review_parser.py` — Tests for the review JSON parser and validator. (~2144 tok)
 - `test_review_prompt.py` — Tests for the review prompt composer. (~2061 tok)
 - `test_review_runner.py` — Phase 4 (review swarm runner) — runner, provider config, concurrency, (~5834 tok)
@@ -1124,4 +1126,5 @@
 
 ## vocabulary/
 
+- `candidates.json` (~348 tok)
 - `master.json` (~31342 tok)

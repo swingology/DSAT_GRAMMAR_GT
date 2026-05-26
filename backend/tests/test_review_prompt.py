@@ -87,7 +87,7 @@ class TestBuildReviewPrompt:
             source_examples=[],
             overlap_status="none",
         )
-        assert "Reading v2 RULES REFERENCE" in system
+        assert "Reading v3 RULES REFERENCE" in system
 
     def test_review_prompt_excludes_reading_v2_for_grammar_questions(self):
         from app.prompts.review_prompt import build_review_prompt
@@ -98,7 +98,7 @@ class TestBuildReviewPrompt:
             source_examples=[],
             overlap_status="none",
         )
-        assert "Reading v2 RULES REFERENCE" not in system
+        assert "Reading v3 RULES REFERENCE" not in system
 
     def test_review_prompt_includes_overlap_status(self):
         from app.prompts.review_prompt import build_review_prompt
@@ -165,7 +165,7 @@ class TestReviewVersionConstants:
         assert "grammar" in RULES_VERSIONS
         assert "reading" in RULES_VERSIONS
         assert RULES_VERSIONS["grammar"] == "v8"
-        assert RULES_VERSIONS["reading"] == "v2"
+        assert RULES_VERSIONS["reading"] == "v3"
 
 
 class TestInferReviewDomain:

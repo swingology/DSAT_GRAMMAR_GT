@@ -197,7 +197,7 @@ class GenerationCompareRequest(_GenerationTargetRequest):
 # from the rules-agent canon:
 #
 #   * grammar: rules_agent_dsat_grammar_ingestion_generation_v8.md §B.1.1
-#   * reading: rules_agent_dsat_reading_v2.md §16.1 (+ §2.2 conditionals)
+#   * reading: rules_agent_dsat_reading_v3.md §16.1 (+ §2.2 conditionals)
 #
 # A request that wouldn't pass the rules-agent's own "validate generation
 # request" step (Step 1 of B.2 in the grammar doc) is rejected here with
@@ -226,7 +226,7 @@ class GenerationBatchRequest(BaseModel):
     stimulus_mode_key: Optional[str] = None
     stem_type_key: Optional[str] = None
 
-    # --- Grammar target fields (per v7 §B.1.1) ---
+    # --- Grammar target fields (per v8 §B.1.1) ---
     target_grammar_role_key: Optional[str] = None
     target_grammar_focus_key: Optional[str] = None
     target_syntactic_trap_key: str = "none"
@@ -345,16 +345,16 @@ class GenerationBatchRequest(BaseModel):
             raise ValueError(
                 "Grammar batch request is missing required field(s) "
                 f"{missing}; see rules_agent_dsat_grammar_ingestion_"
-                "generation_v7.md §B.1.1."
+                "generation_v8.md §B.1.1."
             )
 
-        # `very_low` frequency requires explicit justification per v7 §B.1.1.
+        # `very_low` frequency requires explicit justification per v8 §B.1.1.
         # The batch endpoint does not accept it.
         if self.target_frequency_band == "very_low":
             raise ValueError(
                 "target_frequency_band='very_low' is not accepted by the "
                 "batch endpoint without explicit justification "
-                "(see v7 §B.1.1)."
+                "(see v8 §B.1.1)."
             )
 
         # Conditional: transition_logic items need transition subtype +
@@ -368,7 +368,7 @@ class GenerationBatchRequest(BaseModel):
             if cond_missing:
                 raise ValueError(
                     "transition_logic grammar requests require additional "
-                    f"field(s): {cond_missing}; see v7 §B.1.1."
+                    f"field(s): {cond_missing}; see v8 §B.1.1."
                 )
 
         # Conditional: choose_best_notes_synthesis items need synthesis
@@ -387,7 +387,7 @@ class GenerationBatchRequest(BaseModel):
             if cond_missing:
                 raise ValueError(
                     "choose_best_notes_synthesis grammar requests require "
-                    f"additional field(s): {cond_missing}; see v7 §B.1.1."
+                    f"additional field(s): {cond_missing}; see v8 §B.1.1."
                 )
 
     def _enforce_reading_mandatory(self):
@@ -396,7 +396,7 @@ class GenerationBatchRequest(BaseModel):
             raise ValueError(
                 "Reading batch request requires target_skill_family_key "
                 "(or alias target_reading_skill_family_key); see "
-                "rules_agent_dsat_reading_v2.md §16.1."
+                "rules_agent_dsat_reading_v3.md §16.1."
             )
 
         missing = [
@@ -408,13 +408,13 @@ class GenerationBatchRequest(BaseModel):
         if self.target_distractor_pattern is not None and len(self.target_distractor_pattern) != 3:
             raise ValueError(
                 "target_distractor_pattern must be an array of exactly 3 "
-                "items (per v2 §16.1)."
+                "items (per v3 §16.1)."
             )
 
         if missing:
             raise ValueError(
                 "Reading batch request is missing required field(s) "
-                f"{missing}; see rules_agent_dsat_reading_v2.md §16.1."
+                f"{missing}; see rules_agent_dsat_reading_v3.md §16.1."
             )
 
         # Conditional fields from v2 §2.2

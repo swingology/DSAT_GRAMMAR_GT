@@ -14,7 +14,7 @@ def test_annotate_prompt_loads_current_rules():
         extract_json={"question_text": "test", "options": [], "correct_option_label": "A"},
     )
     assert "Grammar v8 RULES REFERENCE" in system
-    assert "Reading v2 RULES REFERENCE" in system
+    assert "Reading v3 RULES REFERENCE" in system
     assert "## 17. Disambiguation Rules" in system
     assert "JSON" in system
 
@@ -47,7 +47,7 @@ def test_generate_prompt_includes_target():
     system, user = build_generate_prompt(generation_request=request)
     assert "subject_verb_agreement" in user
     assert "Grammar v8 RULES REFERENCE" in system
-    assert "Reading v2 RULES REFERENCE" in system
+    assert "Reading v3 RULES REFERENCE" in system
     assert "## B.3.0 Sub-Pattern Policy and Evidence Tiers" in system
     assert "## B.4 Distractor Generation Heuristics by Grammar Focus" in system
 
@@ -62,7 +62,7 @@ def test_generate_prompt_loads_reading_generation_rules():
     system, user = build_generate_prompt(generation_request=request)
     assert "figurative_language_meaning" in user
     assert "Grammar v8 RULES REFERENCE" in system
-    assert "Reading v2 RULES REFERENCE" in system
+    assert "Reading v3 RULES REFERENCE" in system
     assert "## 16. Generation Rules" in system
     assert "### 16.9 Per-focus generation and distractor recipes" in system
     assert "## 21. Validator Checklist" in system

@@ -2,8 +2,8 @@
 
 Domain routing:
   Grammar  → grammar_v8 Part A (routing) + Parts C+D (annotation + taxonomy)
-  Reading  → reading_v2 §3–14 (question fields through difficulty calibration)
-  Unknown  → grammar_v8 Parts C+D + reading_v2 §3–7
+  Reading  → reading_v3 §3–14 (question fields through difficulty calibration)
+  Unknown  → grammar_v8 Parts C+D + reading_v3 §3–7
 """
 import os
 import json
@@ -11,6 +11,9 @@ import json
 from app.models.ontology import (
     STIMULUS_MODE_KEYS,
     STEM_TYPE_KEYS,
+    QUESTION_FAMILY_KEYS,
+    GRAMMAR_ROLE_KEYS,
+    GRAMMAR_FOCUS_BY_ROLE,
     READING_FOCUS_BY_SKILL_FAMILY,
     REASONING_TRAP_KEYS,
 )
@@ -25,20 +28,34 @@ def _build_allowed_keys_block() -> str:
     lines = [
         "=== ALLOWED KEY VALUES (controlled vocabulary — choose EXACTLY one, verbatim) ===",
         "",
+        "question_family_key MUST be one of:",
+        "  " + ", ".join(QUESTION_FAMILY_KEYS),
+        "  (do NOT use College Board display labels like 'Standard English Conventions'",
+        "   or 'Information and Ideas' — use the snake_case key above)",
+        "",
         "stimulus_mode_key MUST be one of:",
         "  " + ", ".join(STIMULUS_MODE_KEYS),
         "",
         "stem_type_key MUST be one of:",
         "  " + ", ".join(STEM_TYPE_KEYS),
         "",
-        "reading_focus_key MUST be one of these, matching the chosen skill_family_key:",
+        "grammar_role_key (grammar/SEC domain only) MUST be one of:",
+        "  " + ", ".join(GRAMMAR_ROLE_KEYS),
+        "",
+        "grammar_focus_key (grammar/SEC domain only) MUST be one of these, matching the chosen grammar_role_key:",
     ]
+    for role, focuses in GRAMMAR_FOCUS_BY_ROLE.items():
+        lines.append(f"  {role}: {', '.join(focuses)}")
+    lines.append("")
+    lines.append(
+        "reading_focus_key MUST be one of these, matching the chosen skill_family_key:"
+    )
     for family, focuses in READING_FOCUS_BY_SKILL_FAMILY.items():
         lines.append(f"  {family}: {', '.join(focuses)}")
     lines.append("")
     lines.append(
         "reasoning_trap_key (question-level, reading domains) MUST be one of "
-        "(per reading_v2 §10 — do NOT use the §12.1 distractor_type_key list here):"
+        "(per reading_v3 §10 — do NOT use the §12.1 distractor_type_key list here):"
     )
     lines.append("  " + ", ".join(REASONING_TRAP_KEYS))
     lines.append("")
@@ -53,7 +70,7 @@ _ALLOWED_KEYS_BLOCK = _build_allowed_keys_block()
 
 _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 _GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generation_v8.md"
-_READING_FILE = "rules_agent_dsat_reading_v2.md"
+_READING_FILE = "rules_agent_dsat_reading_v3.md"
 
 # stem_type_key values that unambiguously belong to grammar / SEC domain
 _GRAMMAR_STEMS = {
@@ -140,7 +157,7 @@ def _reading_context(extended: bool = False) -> str:
         chunk = _extract_between(text, section, "##" if section != "## 19. Student Failure Mode Keys" else "## 20.")
         if chunk:
             extra += f"\n{chunk}"
-    return f"Reading v2 RULES REFERENCE:\n=== READING v2: ANNOTATION REFERENCE (§3-14 + disambiguation) ===\n{core}{extra}"
+    return f"Reading v3 RULES REFERENCE:\n=== READING v3: ANNOTATION REFERENCE (§3-14 + disambiguation) ===\n{core}{extra}"
 
 
 def _detect_domain(q_data: dict) -> str:
@@ -176,11 +193,11 @@ _SYSTEM_INSTRUCTIONS_TEMPLATE = """You are a DSAT question annotation specialist
    • Standard English Conventions (SEC) / Expression of Ideas (grammar-adjacent):
      - grammar_focus_key: required, non-null
      - grammar_role_key: required, non-null
-     - Use grammar_v7 taxonomy keys only
+     - Use grammar_v8 taxonomy keys only
    • Information and Ideas / Craft and Structure (reading):
      - grammar_focus_key: MUST be null
      - grammar_role_key: MUST be null
-     - Use reading_v2 taxonomy keys only
+     - Use reading_v3 taxonomy keys only
 
 2. complete_the_text DISAMBIGUATION:
    • If the blank tests a TRANSITION WORD or CONJUNCTION → SEC domain
@@ -203,9 +220,11 @@ _SYSTEM_INSTRUCTIONS_TEMPLATE = """You are a DSAT question annotation specialist
 
 5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
 
-6. CONTROLLED VOCABULARY: stimulus_mode_key, stem_type_key, and reading_focus_key
-   must be drawn verbatim from the allowed-values list below. Output is rejected
-   if any of these keys is not an exact match.
+6. CONTROLLED VOCABULARY: question_family_key, stimulus_mode_key, stem_type_key,
+   grammar_role_key, grammar_focus_key, and reading_focus_key must be drawn
+   verbatim from the allowed-values list below. Output is rejected if any value
+   is not an exact match. Do NOT use descriptive variants, display labels, or
+   human-readable synonyms — use the exact snake_case key string listed.
 
 7. AMENDMENT PROPOSALS:
    • Current content_origin: {content_origin}
@@ -230,11 +249,11 @@ _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the gi
    • Standard English Conventions (SEC) / Expression of Ideas (grammar-adjacent):
      - grammar_focus_key: required, non-null
      - grammar_role_key: required, non-null
-     - Use grammar_v7 taxonomy keys only
+     - Use grammar_v8 taxonomy keys only
    • Information and Ideas / Craft and Structure (reading):
      - grammar_focus_key: MUST be null
      - grammar_role_key: MUST be null
-     - Use reading_v2 taxonomy keys only
+     - Use reading_v3 taxonomy keys only
 
 2. complete_the_text DISAMBIGUATION:
    • If the blank tests a TRANSITION WORD or CONJUNCTION → SEC domain
@@ -257,9 +276,11 @@ _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the gi
 
 5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
 
-6. CONTROLLED VOCABULARY: stimulus_mode_key, stem_type_key, and reading_focus_key
-   must be drawn verbatim from the allowed-values list below. Output is rejected
-   if any of these keys is not an exact match.
+6. CONTROLLED VOCABULARY: question_family_key, stimulus_mode_key, stem_type_key,
+   grammar_role_key, grammar_focus_key, and reading_focus_key must be drawn
+   verbatim from the allowed-values list below. Output is rejected if any value
+   is not an exact match. Do NOT use descriptive variants, display labels, or
+   human-readable synonyms — use the exact snake_case key string listed.
 
 7. AMENDMENT PROPOSALS:
    • Current content_origin: {content_origin}
@@ -353,7 +374,7 @@ def build_annotate_prompt_parts(
 ) -> tuple[str, str, str]:
     """Return (system_static, system_dynamic, user) for prompt-cached annotation calls.
 
-    system_static  — the grammar v7 or reading v2 rules block; mark with cache_control
+    system_static  — the grammar v8 or reading v3 rules block; mark with cache_control
                      on Anthropic or use as num_keep prefix on Ollama (~10-17K tokens,
                      identical for all questions of the same domain in a job).
     system_dynamic — routing rules + allowed keys + content_origin; fresh each call

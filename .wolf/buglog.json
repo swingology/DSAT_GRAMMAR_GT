@@ -2964,6 +2964,262 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-26T00:07:00.430Z"
+    },
+    {
+      "id": "bug-183",
+      "timestamp": "2026-05-26T17:06:17.707Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Had \"v7.0\"",
+      "fix": "Changed to \"v8.0\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T17:06:17.707Z"
+    },
+    {
+      "id": "bug-184",
+      "timestamp": "2026-05-26T17:06:17.842Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/routers/generate.py",
+      "root_cause": "Had \"v7.0\"",
+      "fix": "Changed to \"v8.0\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T17:06:17.842Z"
+    },
+    {
+      "id": "bug-185",
+      "timestamp": "2026-05-26T17:06:17.955Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/routers/student.py",
+      "root_cause": "Had \"v7.0\"",
+      "fix": "Changed to \"v8.0\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T17:06:17.955Z"
+    },
+    {
+      "id": "bug-186",
+      "timestamp": "2026-05-26T17:06:33.335Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/models/payload.py",
+      "root_cause": "Had \"generation_v7.md §B.1.1.\"",
+      "fix": "Changed to \"generation_v8.md §B.1.1.\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-26T17:11:00.495Z"
+    },
+    {
+      "id": "bug-187",
+      "timestamp": "2026-05-26T17:06:40.897Z",
+      "error_message": "Wrong reference: grammar_v7 should be grammar_v8",
+      "file": "backend/app/prompts/annotate_prompt.py",
+      "root_cause": "Used \"grammar_v7\" instead of \"grammar_v8\"",
+      "fix": "Changed grammar_v7 → grammar_v8",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-26T17:10:42.343Z"
+    },
+    {
+      "id": "bug-188",
+      "timestamp": "2026-05-26T17:10:40.845Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/prompts/annotate_prompt.py",
+      "root_cause": "Had \"rules_agent_dsat_reading_v2.md\"",
+      "fix": "Changed to \"rules_agent_dsat_reading_v3.md\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-26T17:10:43.453Z"
+    },
+    {
+      "id": "bug-189",
+      "timestamp": "2026-05-26T17:10:47.230Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/prompts/generate_prompt.py",
+      "root_cause": "Had \"Reading v2\"",
+      "fix": "Changed to \"Reading v3\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T17:10:47.230Z"
+    },
+    {
+      "id": "bug-190",
+      "timestamp": "2026-05-26T17:10:48.266Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/prompts/review_prompt.py",
+      "root_cause": "Had \"rules_agent_dsat_reading_v2.md\"",
+      "fix": "Changed to \"rules_agent_dsat_reading_v3.md\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-26T17:10:49.702Z"
+    },
+    {
+      "id": "bug-191",
+      "timestamp": "2026-05-26T17:10:53.330Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/pipeline/rule_doc_patcher.py",
+      "root_cause": "Had \"rules_agent_dsat_reading_v2.md\"",
+      "fix": "Changed to \"rules_agent_dsat_reading_v3.md\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T17:10:53.330Z"
+    },
+    {
+      "id": "bug-192",
+      "timestamp": "2026-05-26T17:10:54.787Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/pipeline/amendment_review.py",
+      "root_cause": "Had \"rules_agent_dsat_reading_v2.md\"",
+      "fix": "Changed to \"rules_agent_dsat_reading_v3.md\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T17:10:54.787Z"
+    },
+    {
+      "id": "bug-193",
+      "timestamp": "2026-05-26T17:10:56.164Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/pipeline/ingestion_analysis.py",
+      "root_cause": "Had \"rules_agent_dsat_reading_v2.md\"",
+      "fix": "Changed to \"rules_agent_dsat_reading_v3.md\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T17:10:56.164Z"
+    },
+    {
+      "id": "bug-194",
+      "timestamp": "2026-05-26T17:10:59.121Z",
+      "error_message": "Wrong reference: rules_agent_dsat_reading_v2 should be rules_agent_dsat_reading_v3",
+      "file": "backend/app/models/payload.py",
+      "root_cause": "Used \"rules_agent_dsat_reading_v2\" instead of \"rules_agent_dsat_reading_v3\"",
+      "fix": "Changed rules_agent_dsat_reading_v2 → rules_agent_dsat_reading_v3",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T17:10:59.121Z"
+    },
+    {
+      "id": "bug-195",
+      "timestamp": "2026-05-26T19:41:53.901Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/prompts/annotate_prompt.py",
+      "root_cause": "Had \"Reading v2 RULES REFERENCE:\\n=== READING v2: ANNO",
+      "fix": "Changed to \"Reading v3 RULES REFERENCE:\\n=== READING v3: ANNO",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T19:41:53.901Z"
+    },
+    {
+      "id": "bug-196",
+      "timestamp": "2026-05-26T19:43:13.027Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/tests/test_review_prompt.py",
+      "root_cause": "Had \"v2\"",
+      "fix": "Changed to \"v3\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T19:43:13.027Z"
+    },
+    {
+      "id": "bug-197",
+      "timestamp": "2026-05-26T19:43:49.609Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 10→11 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T19:43:49.609Z"
+    },
+    {
+      "id": "bug-198",
+      "timestamp": "2026-05-26T20:18:10.268Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/prompts/annotate_prompt.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 3→5 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T20:18:10.268Z"
     }
   ]
 }

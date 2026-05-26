@@ -15,7 +15,7 @@ from app.models.amendments import AmendmentStatus, RuleAmendment
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DOC_BY_AFFECTED_DOC = {
-    "reading": "rules_agent_dsat_reading_v2.md",
+    "reading": "rules_agent_dsat_reading_v3.md",
     "grammar": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
 }
 PENDING_DIR = REPO_ROOT / "vocabulary" / "amendments" / "pending"

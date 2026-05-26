@@ -1,5 +1,44 @@
 # Debug Log
 
+## 2026-05-26 - Rules v8/v3 Pipeline Gap Audit
+Report created by: Claude Sonnet 4.6
+Git branch: `rules_edit`
+Git checkpoint: `a171298` — chore(v8): switch active grammar references from v7 to v8
+
+### Findings
+
+1. ~~**Low:** Stale "reading v2" docstring references in prompt files — code correctly loads v3 but comments mislead future readers~~
+   - ~~`backend/app/prompts/generate_prompt.py:165`~~
+   - ~~`backend/app/prompts/review_prompt.py:21, 120`~~
+   - ~~`backend/app/prompts/annotate_prompt.py:356`~~
+   - **Fixed:** Updated all "Reading v2" labels and docstrings to "Reading v3" across all three prompt files and their test files.
+
+2. ~~**High:** `question_family_key` annotated with wrong values — LLM emits College Board display labels instead of canonical keys~~
+   - ~~`candidates.json` shows `reading_information_and_ideas` (8 occurrences) → should be `information_and_ideas`~~
+   - ~~`candidates.json` shows `standard_english_conventions` (8 occurrences) → should be `conventions_grammar`~~
+   - ~~Canonical set in `master.json`: `conventions_grammar`, `expression_of_ideas`, `craft_and_structure`, `information_and_ideas`~~
+   - **Fixed:** Added `question_family_key`, `grammar_role_key`, and `grammar_focus_key` (by role) to `_build_allowed_keys_block()` in `annotate_prompt.py`, with an explicit note not to use College Board display labels. Also imported `QUESTION_FAMILY_KEYS`, `GRAMMAR_ROLE_KEYS`, `GRAMMAR_FOCUS_BY_ROLE` from `ontology.py`. 23/23 prompt tests passing.
+
+3. ~~**Medium:** ~30 hallucinated grammar taxonomy keys in `candidates.json` from live ingestion jobs~~
+   - ~~`GRAMMAR_ROLE_KEYS` hallucinations: `rhetorical_synth`, `synthesis_from_notes`, `synthesize_notes`, `word_choice`, `precision`, `adjective`, `verb`, `main_verb`, `time_clause_verb`, `subject_pronoun`, `subject_verb_agreement`, `goal_emphasis`, `rhetorical_synthesis`~~
+   - ~~`GRAMMAR_FOCUS_BY_ROLE` hallucinations: `verb_tense`, `colon_usage`, `colon_introducing_explanation`, `subject_aux_inversion_and_punctuation`, `word_choice`, `precision`, `rhetorical_synthesis`, `synthesis_of_information`, `synthesize_information`, `similarity_emphasis`~~
+   - ~~`STEM_TYPE_KEYS` hallucinations: `choose_grammatically_correct_form` (4×), `synthesize_information_from_notes` (4×), `choose_logical_transition`~~
+   - **Fixed:** Rule 6 in both annotate prompt templates updated to require `question_family_key`, `grammar_role_key`, and `grammar_focus_key` verbatim from the allowed-keys block, with an explicit ban on descriptive variants. Stale hallucination entries purged from `candidates.json` (4 test fixtures retained). 42 tests passing.
+
+4. **High:** 17 documented gaps in grammar v8 rules doc — real DSAT patterns the agent cannot correctly annotate or generate
+   - GAP-001: `subject_verb_agreement` — inverted sentence order (CRITICAL)
+   - GAP-002: `subject_verb_agreement` — indefinite pronoun subjects (CRITICAL)
+   - GAP-003: `subject_verb_agreement` — compound `or`/`nor` subjects (CRITICAL)
+   - GAP-004: `verb_form` — gerund vs. infinitive idiomatic selection (CRITICAL)
+   - GAP-005: Absolute phrases / nominative absolutes (CRITICAL)
+   - GAP-006: `subjunctive_mood` sub-patterns not documented (MAJOR)
+   - GAP-007: `pronoun_antecedent_agreement` — singular `they` (MAJOR)
+   - GAP-008 through GAP-017: various MODERATE/MINOR sub-pattern gaps
+   - Full detail in `missing_rules_v8.md`
+   - Fix: patch `rules_agent_dsat_grammar_ingestion_generation_v8.md` via amendment workflow for CRITICAL/MAJOR gaps first
+
+---
+
 ## 2026-05-25 - Rules/Ontology Map and master_samples.json Companion
 Report created by: GPT-5 Codex
 Git branch: `rules_edit`

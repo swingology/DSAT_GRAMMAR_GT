@@ -6,7 +6,7 @@ import os
 _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 _GENERATION_RULE_FILES = [
     ("Grammar v8", "rules_agent_dsat_grammar_ingestion_generation_v8.md"),
-    ("Reading v2", "rules_agent_dsat_reading_v2.md"),
+    ("Reading v3", "rules_agent_dsat_reading_v3.md"),
 ]
 
 
@@ -162,7 +162,7 @@ def build_generate_prompt_parts(
 ) -> tuple[str, str, str]:
     """Return (system_static, system_dynamic, user) for prompt-cached generation calls.
 
-    system_static  — grammar v7 + reading v2 generation sections; mark with cache_control
+    system_static  — grammar v8 + reading v3 generation sections; mark with cache_control
                      on Anthropic or use as num_keep prefix on Ollama. Domain-filtered
                      when the request clearly targets one domain.
     system_dynamic — GENERATE_SYSTEM_PROMPT base instructions; brief and stable.

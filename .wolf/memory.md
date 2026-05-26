@@ -1919,3 +1919,72 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-05-26 09:59
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:06 | Edited backend/app/routers/ingest.py | "v7.0" → "v8.0" | ~9 |
+| 10:06 | Edited backend/app/routers/generate.py | "v7.0" → "v8.0" | ~9 |
+| 10:06 | Edited backend/app/routers/student.py | "v7.0" → "v8.0" | ~10 |
+| 10:06 | Edited backend/app/prompts/generate_prompt.py | inline fix | ~26 |
+| 10:06 | Edited backend/app/pipeline/validator.py | inline fix | ~24 |
+| 10:06 | Edited backend/app/models/payload.py | inline fix | ~15 |
+| 10:06 | Edited backend/app/models/payload.py | "generation_v7.md §B.1.1." → "generation_v8.md §B.1.1." | ~12 |
+| 10:06 | Edited backend/app/models/payload.py | inline fix | ~22 |
+| 10:06 | Edited backend/app/models/payload.py | "(see v7 §B.1.1)." → "(see v8 §B.1.1)." | ~10 |
+| 10:06 | Edited backend/app/models/payload.py | "field(s): {cond_missing};" → "field(s): {cond_missing};" | ~13 |
+| 10:06 | Edited backend/app/prompts/annotate_prompt.py | inline fix | ~12 |
+| 10:06 | Edited backend/app/prompts/annotate_prompt.py | inline fix | ~25 |
+| 10:06 | Edited backend/app/models/payload.py | "additional field(s): {con" → "additional field(s): {con" | ~22 |
+| 10:06 | Edited backend/app/routers/ingest.py | inline fix | ~24 |
+| 10:07 | Session end: 14 writes across 7 files (ingest.py, generate.py, student.py, generate_prompt.py, validator.py) | 7 reads | ~82417 tok |
+| 10:09 | Session end: 14 writes across 7 files (ingest.py, generate.py, student.py, generate_prompt.py, validator.py) | 7 reads | ~82417 tok |
+| 10:10 | Edited backend/app/prompts/annotate_prompt.py | 2→2 lines | ~38 |
+| 10:10 | Edited backend/app/prompts/annotate_prompt.py | "rules_agent_dsat_reading_" → "rules_agent_dsat_reading_" | ~14 |
+| 10:10 | Edited backend/app/prompts/annotate_prompt.py | inline fix | ~12 |
+| 10:10 | Edited backend/app/prompts/annotate_prompt.py | "(per reading_v2 §10 — do " → "(per reading_v3 §10 — do " | ~24 |
+| 10:10 | Edited backend/app/prompts/generate_prompt.py | "Reading v2" → "Reading v3" | ~16 |
+| 10:10 | Edited backend/app/prompts/review_prompt.py | 2→2 lines | ~14 |
+| 10:10 | Edited backend/app/prompts/review_prompt.py | inline fix | ~15 |
+| 10:10 | Edited backend/app/pipeline/rule_doc_patcher.py | inline fix | ~14 |
+| 10:10 | Edited backend/app/pipeline/amendment_review.py | "rules_agent_dsat_reading_" → "rules_agent_dsat_reading_" | ~16 |
+| 10:10 | Edited backend/app/pipeline/ingestion_analysis.py | inline fix | ~21 |
+| 10:10 | Edited backend/app/models/payload.py | inline fix | ~11 |
+| 10:11 | Edited backend/app/models/payload.py | "items (per v2 §16.1)." → "items (per v3 §16.1)." | ~12 |
+| 10:11 | Session end: 26 writes across 11 files (ingest.py, generate.py, student.py, generate_prompt.py, validator.py) | 11 reads | ~92548 tok |
+| 10:21 | Session end: 26 writes across 11 files (ingest.py, generate.py, student.py, generate_prompt.py, validator.py) | 13 reads | ~92548 tok |
+
+## Session: 2026-05-26 11:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-26 12:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-26 12:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:40 | Edited DEBUG_LOG.md | modified chore() | ~820 |
+| 12:40 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 3 reads | ~58746 tok |
+| 12:41 | Edited backend/app/prompts/annotate_prompt.py | 6→9 lines | ~62 |
+| 12:41 | Edited backend/app/prompts/annotate_prompt.py | modified items() | ~485 |
+| 12:41 | Edited backend/app/prompts/annotate_prompt.py | "Reading v2 RULES REFERENC" → "Reading v3 RULES REFERENC" | ~36 |
+| 12:42 | Edited backend/app/prompts/annotate_prompt.py | inline fix | ~25 |
+| 12:42 | Edited backend/app/prompts/generate_prompt.py | inline fix | ~26 |
+| 12:42 | Edited backend/app/prompts/review_prompt.py | 2→2 lines | ~36 |
+| 12:42 | Edited backend/app/prompts/review_prompt.py | inline fix | ~21 |
+| 12:43 | Edited backend/tests/test_prompts.py | inline fix | ~8 |
+| 12:43 | Edited backend/tests/test_review_prompt.py | inline fix | ~8 |
+| 12:43 | Edited backend/tests/test_review_prompt.py | inline fix | ~14 |
+| 12:43 | Edited backend/app/prompts/review_prompt.py | inline fix | ~3 |
+| 12:43 | Edited DEBUG_LOG.md | 10→11 lines | ~342 |
+| 12:43 | Session end: 13 writes across 6 files (DEBUG_LOG.md, annotate_prompt.py, generate_prompt.py, review_prompt.py, test_prompts.py) | 8 reads | ~71684 tok |
+| 13:18 | Edited backend/app/prompts/annotate_prompt.py | 3→5 lines | ~111 |
+| 13:18 | Created vocabulary/candidates.json | — | ~348 |
+| 13:19 | Edited DEBUG_LOG.md | 6→5 lines | ~306 |
+| 13:19 | Session end: 16 writes across 7 files (DEBUG_LOG.md, annotate_prompt.py, generate_prompt.py, review_prompt.py, test_prompts.py) | 8 reads | ~72470 tok |

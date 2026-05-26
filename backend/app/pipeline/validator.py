@@ -38,7 +38,7 @@ def validate_question(
     options = question_data.get("options", [])
 
     # Normalize option format: the annotation LLM returns option_label/option_text
-    # (rules v7 format) while the extraction LLM and internal code use label/text.
+    # (rules v8 format) while the extraction LLM and internal code use label/text.
     # Fall back to option_label/option_text when label/text are missing so that
     # the validator sees consistent keys regardless of which pipeline stage
     # produced the data.

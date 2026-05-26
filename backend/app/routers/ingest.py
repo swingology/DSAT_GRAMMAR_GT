@@ -224,7 +224,7 @@ def _merge_for_validation(q_data: dict, annotate_json: dict) -> dict:
     fields in _EXTRACTION_OWNED_KEYS. On any key collision, extraction wins.
 
     After the merge, option dicts are normalized so that option_label/option_text
-    (annotation format from rules v7 examples) fall back to label/text (extraction
+    (annotation format from rules v8 examples) fall back to label/text (extraction
     and internal format). This prevents validation failures when the annotation LLM
     returns options with the wrong key names.
     """
@@ -2408,7 +2408,7 @@ async def ingest_official_pdf(
         status="parsing",
         provider_name=provider_name,
         model_name=model_name,
-        prompt_version="v7.0",
+        prompt_version="v8.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
         pass1_json={
@@ -2545,7 +2545,7 @@ async def ingest_unofficial_file(
         status="parsing",
         provider_name=provider_name,
         model_name=model_name,
-        prompt_version="v7.0",
+        prompt_version="v8.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
         pass1_json={"raw_text": raw_text[:100000], "_truncated": len(raw_text) > 100000, "_page_images": page_images, "_page_texts": [{"page_number": p["page_number"], "text": p.get("text", "")} for p in pdf_result["pages"]] if pdf_result else [], "_ocr_strategy": ocr_strategy},
@@ -2607,7 +2607,7 @@ async def ingest_text(
         status="parsing",
         provider_name=provider_name,
         model_name=model_name,
-        prompt_version="v7.0",
+        prompt_version="v8.0",
         rules_version=settings.rules_version,
         pass1_json={"raw_text": text, "source_metadata": source_metadata},
         created_at=now,
@@ -2847,7 +2847,7 @@ async def reannotate_question(
         status="annotating",
         provider_name=body.provider_name,
         model_name=body.model_name,
-        prompt_version="v7.0",
+        prompt_version="v8.0",
         rules_version=settings.rules_version,
         pass1_json=synthesized_pass1,
         question_id=qid,
@@ -2981,7 +2981,7 @@ async def ingest_benchmark_ocr(
             status="parsing",
             provider_name=prov,
             model_name=model,
-            prompt_version="v7.0",
+            prompt_version="v8.0",
             rules_version=settings.rules_version,
             raw_asset_id=asset_id,
             comparison_group_id=comparison_group_id,

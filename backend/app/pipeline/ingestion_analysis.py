@@ -12,7 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 ANALYSIS_ROOT = REPO_ROOT / "analysis" / "ingestion"
 HASH_PATHS = {
     "master_json_hash": REPO_ROOT / "vocabulary" / "master.json",
-    "reading_rules_hash": REPO_ROOT / "rules_agent_dsat_reading_v2.md",
+    "reading_rules_hash": REPO_ROOT / "rules_agent_dsat_reading_v3.md",
     "grammar_rules_hash": REPO_ROOT / "rules_agent_dsat_grammar_ingestion_generation_v8.md",
     "ontology_hash": REPO_ROOT / "backend" / "app" / "models" / "ontology.py",
 }

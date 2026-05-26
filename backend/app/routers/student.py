@@ -961,7 +961,7 @@ async def _create_self_study_batch(
             status="pending",
             provider_name=provider_name,
             model_name=model_name,
-            prompt_version="v7.0",
+            prompt_version="v8.0",
             rules_version=settings.rules_version,
             generation_batch_id=batch_id,
             generation_request_jsonb=job_request,
