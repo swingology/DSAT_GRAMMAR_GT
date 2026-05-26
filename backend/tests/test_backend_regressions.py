@@ -335,7 +335,7 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
         "explanation_full": "Long generated explanation",
         "annotation_confidence": 0.88,
         "needs_human_review": False,
-        "generation_profile": {"model_version": "rules_agent_v7.0"},
+        "generation_profile": {"model_version": "rules_agent_v8.0"},
     }
     responses = iter([generated, annotated])
     provider = SimpleNamespace(
@@ -377,7 +377,7 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
     assert job.question_id == question.id
     assert job.status == "approved"
     assert annotation.generation_profile_jsonb == {
-        "model_version": "rules_agent_v7.0",
+        "model_version": "rules_agent_v8.0",
         "target_grammar_role_key": "agreement",
     }
 

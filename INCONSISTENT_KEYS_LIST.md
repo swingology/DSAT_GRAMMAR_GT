@@ -2,7 +2,7 @@
 
 Extracted from the DB (`question_annotations.annotation_jsonb`) for all 569
 official questions. Each section lists non-standard values found alongside the
-canonical approved value from `rules_agent_dsat_grammar_ingestion_generation_v7.md`.
+canonical approved value from `rules_agent_dsat_grammar_ingestion_generation_v8.md`.
 
 ---
 

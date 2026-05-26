@@ -69,7 +69,7 @@ Build an approval-gated rules update workflow where official ingestion analysis
 can propose amendments to:
 
 - `rules_agent_dsat_reading_v2.md`
-- `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+- `rules_agent_dsat_grammar_ingestion_generation_v8.md`
 
 Approved amendments patch the body of the relevant rule doc, then promote the
 approved controlled-vocabulary change into `vocabulary/master.json`. The updated
@@ -214,7 +214,7 @@ promotion.
 
 - [x] Implement patch application for:
   - `rules_agent_dsat_reading_v2.md`
-  - `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+  - `rules_agent_dsat_grammar_ingestion_generation_v8.md`
 - [x] Rule doc body patches should update the relevant taxonomy section with:
   - new key definition
   - when-to-use guidance

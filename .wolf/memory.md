@@ -1891,3 +1891,31 @@
 | 12:30 | Session end: 4 writes across 1 files (rules_agent_dsat_reading_v3.md) | 3 reads | ~75659 tok |
 | 12:33 | Edited DEBUG_LOG.md | modified patch() | ~1713 |
 | 12:33 | Session end: 5 writes across 2 files (rules_agent_dsat_reading_v3.md, DEBUG_LOG.md) | 4 reads | ~121152 tok |
+| 13:36 | Session end: 5 writes across 2 files (rules_agent_dsat_reading_v3.md, DEBUG_LOG.md) | 4 reads | ~121152 tok |
+| 13:37 | Session end: 5 writes across 2 files (rules_agent_dsat_reading_v3.md, DEBUG_LOG.md) | 4 reads | ~121152 tok |
+| 13:38 | Session end: 5 writes across 2 files (rules_agent_dsat_reading_v3.md, DEBUG_LOG.md) | 4 reads | ~121152 tok |
+
+## Session: 2026-05-25 15:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:18 | Created ../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md | — | ~1822 |
+| 15:18 | Session end: 1 writes across 1 files (vocab-candidate-workflow-and-ingestion-gaps.md) | 2 reads | ~47436 tok |
+| 16:57 | Session end: 1 writes across 1 files (vocab-candidate-workflow-and-ingestion-gaps.md) | 3 reads | ~47436 tok |
+| 17:00 | Edited ../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md | modified mappings() | ~176 |
+| 17:00 | Edited ../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md | 6→8 lines | ~190 |
+| 17:00 | Session end: 3 writes across 1 files (vocab-candidate-workflow-and-ingestion-gaps.md) | 3 reads | ~47827 tok |
+| 17:02 | Session end: 3 writes across 1 files (vocab-candidate-workflow-and-ingestion-gaps.md) | 3 reads | ~47827 tok |
+| 17:06 | Edited ../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md | modified mappings() | ~110 |
+| 17:06 | Session end: 4 writes across 1 files (vocab-candidate-workflow-and-ingestion-gaps.md) | 3 reads | ~47945 tok |
+| 17:06 | Edited ../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md | 1→2 lines | ~144 |
+| 17:07 | Edited ../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md | 1→2 lines | ~80 |
+| 17:07 | Edited ../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md | inline fix | ~44 |
+| 17:07 | Session end: 7 writes across 1 files (vocab-candidate-workflow-and-ingestion-gaps.md) | 3 reads | ~48231 tok |
+| 17:08 | Edited ../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md | 1→5 lines | ~137 |
+| 17:08 | Session end: 8 writes across 1 files (vocab-candidate-workflow-and-ingestion-gaps.md) | 3 reads | ~48378 tok |
+
+## Session: 2026-05-26 09:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

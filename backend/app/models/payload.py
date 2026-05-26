@@ -196,7 +196,7 @@ class GenerationCompareRequest(_GenerationTargetRequest):
 # Stricter than `GenerationRequest`. Enforces the full mandatory-field lists
 # from the rules-agent canon:
 #
-#   * grammar: rules_agent_dsat_grammar_ingestion_generation_v7.md §B.1.1
+#   * grammar: rules_agent_dsat_grammar_ingestion_generation_v8.md §B.1.1
 #   * reading: rules_agent_dsat_reading_v2.md §16.1 (+ §2.2 conditionals)
 #
 # A request that wouldn't pass the rules-agent's own "validate generation

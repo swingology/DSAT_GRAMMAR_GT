@@ -5,7 +5,7 @@ import os
 
 _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 _GENERATION_RULE_FILES = [
-    ("Grammar v7", "rules_agent_dsat_grammar_ingestion_generation_v7.md"),
+    ("Grammar v8", "rules_agent_dsat_grammar_ingestion_generation_v8.md"),
     ("Reading v2", "rules_agent_dsat_reading_v2.md"),
 ]
 
@@ -27,7 +27,7 @@ def _extract_sections(text: str, sections: list[tuple[str, str | None]]) -> str:
 
 
 def _generation_sections(label: str, rules_text: str) -> str:
-    if label == "Grammar v7":
+    if label == "Grammar v8":
         return _extract_sections(
             rules_text,
             [
@@ -35,7 +35,7 @@ def _generation_sections(label: str, rules_text: str) -> str:
                 ("# PART A", "# PART B"),
                 ("## B.1 Generation Input Specification", "## B.2"),
                 ("## B.2 Step-by-Step Generation Workflow", "## B.3"),
-                ("## B.3 Passage Construction Rules by Grammar Focus", "## B.4"),
+                ("## B.3.0 Sub-Pattern Policy and Evidence Tiers", "## B.4"),
                 ("## B.4 Distractor Generation Heuristics by Grammar Focus", "## B.5"),
                 ("## B.5 Transition Subtype Vocabulary", "## B.6"),
                 ("## B.6 Notes Synthesis Metadata", "## B.7"),
@@ -101,7 +101,7 @@ def _infer_generation_domain(generation_request: dict) -> str:
 def _load_generation_rule_context(domain: str = "both") -> str:
     sections: list[str] = []
     for label, filename in _GENERATION_RULE_FILES:
-        if domain == "grammar" and label != "Grammar v7":
+        if domain == "grammar" and label != "Grammar v8":
             continue
         if domain == "reading" and label != "Reading v2":
             continue

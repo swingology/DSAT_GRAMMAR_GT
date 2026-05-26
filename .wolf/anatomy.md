@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-25T19:33:49.463Z
-> Files: 801 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-26T00:08:20.824Z
+> Files: 802 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -18,6 +18,7 @@
 - `squishy-giggling-dolphin.md` — Plan: Separate Passage Text from Question Text in Extraction Pipeline (~1307 tok)
 - `steady-moseying-music.md` — Phase 3: Review Swarm Rubric — Implementation Plan (~4357 tok)
 - `vivid-giggling-riddle.md` — Plan: Benchmark Markdown Reports + SUMMARY.md Auto-Update (~959 tok)
+- `vocab-candidate-workflow-and-ingestion-gaps.md` — Vocabulary Candidate Workflow & Ingestion/Generation Gap Reduction (~2170 tok)
 - `wiggly-shimmying-leaf.md` — Plan: OCR Strategy Benchmark Endpoint (~1287 tok)
 
 ## ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/

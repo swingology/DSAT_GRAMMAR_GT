@@ -52,7 +52,7 @@ ONTOLOGY_PATH = BACKEND_ROOT / "app" / "models" / "ontology.py"
 MASTER_PATH = REPO_ROOT / "vocabulary" / "master.json"
 RULES_DOCS = {
     "reading": REPO_ROOT / "rules_agent_dsat_reading_v2.md",
-    "grammar": REPO_ROOT / "rules_agent_dsat_grammar_ingestion_generation_v7.md",
+    "grammar": REPO_ROOT / "rules_agent_dsat_grammar_ingestion_generation_v8.md",
 }
 
 SCHEMA_VERSION = 1
@@ -82,9 +82,9 @@ REGISTRY: list[dict] = [
     {"name": "STIMULUS_MODE_KEYS", "kind": "flat", "domain": "shared",
      "comment": "V3 §3.1 stimulus_mode_key"},
     {"name": "TEST_FORMAT_KEYS", "kind": "flat", "domain": "system",
-     "comment": "Rules v7 generation format keys"},
+     "comment": "Rules v8 generation format keys"},
     {"name": "SOURCE_STATS_FORMAT_KEYS", "kind": "flat", "domain": "system",
-     "comment": "Rules v7 source stats format keys"},
+     "comment": "Rules v8 source stats format keys"},
     {"name": "STEM_TYPE_KEYS", "kind": "flat", "domain": "shared",
      "comment": "V3 §3.2 stem_type_key"},
     {"name": "GRAMMAR_ROLE_KEYS", "kind": "flat", "domain": "grammar",
@@ -137,15 +137,15 @@ REGISTRY: list[dict] = [
     {"name": "SENTENCE_FUNCTION_ROLE_KEYS", "kind": "flat", "domain": "reading",
      "comment": "Reading v2 target_sentence_function_role"},
     {"name": "TRANSITION_SUBTYPE_KEYS", "kind": "flat", "domain": "grammar",
-     "comment": "Grammar v7 transition_subtype_key"},
+     "comment": "Grammar v8 transition_subtype_key"},
     {"name": "SYNTHESIS_GOAL_KEYS", "kind": "flat", "domain": "grammar",
-     "comment": "Grammar v7 notes synthesis goal keys"},
+     "comment": "Grammar v8 notes synthesis goal keys"},
     {"name": "AUDIENCE_KNOWLEDGE_KEYS", "kind": "flat", "domain": "grammar",
-     "comment": "Grammar v7 audience knowledge keys"},
+     "comment": "Grammar v8 audience knowledge keys"},
     {"name": "REQUIRED_CONTENT_KEYS", "kind": "flat", "domain": "grammar",
-     "comment": "Grammar v7 required content keys"},
+     "comment": "Grammar v8 required content keys"},
     {"name": "SYNTHESIS_DISTRACTOR_FAILURE_KEYS", "kind": "flat", "domain": "grammar",
-     "comment": "Grammar v7 synthesis distractor failure keys"},
+     "comment": "Grammar v8 synthesis distractor failure keys"},
     {"name": "TOPIC_BROAD_KEYS", "kind": "flat", "domain": "shared",
      "comment": "Broad topic keys"},
 ]

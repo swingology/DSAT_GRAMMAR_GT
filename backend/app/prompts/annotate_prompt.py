@@ -1,9 +1,9 @@
 """Pass 2 prompt — annotates extracted question data using current DSAT rules.
 
 Domain routing:
-  Grammar  → grammar_v7 Part A (routing) + Parts C+D (annotation + taxonomy)
+  Grammar  → grammar_v8 Part A (routing) + Parts C+D (annotation + taxonomy)
   Reading  → reading_v2 §3–14 (question fields through difficulty calibration)
-  Unknown  → grammar_v7 Parts C+D + reading_v2 §3–7
+  Unknown  → grammar_v8 Parts C+D + reading_v2 §3–7
 """
 import os
 import json
@@ -52,7 +52,7 @@ def _build_allowed_keys_block() -> str:
 _ALLOWED_KEYS_BLOCK = _build_allowed_keys_block()
 
 _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-_GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generation_v7.md"
+_GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generation_v8.md"
 _READING_FILE = "rules_agent_dsat_reading_v2.md"
 
 # stem_type_key values that unambiguously belong to grammar / SEC domain
@@ -125,7 +125,7 @@ def _grammar_context() -> str:
         return ""
     routing = _extract_between(text, "# PART A", "# PART B")
     annotation = _extract_between(text, "# PART C", "# PART E")
-    return f"Grammar v7 RULES REFERENCE:\n=== GRAMMAR v7: MODE ROUTING ===\n{routing}\n\n=== GRAMMAR v7: ANNOTATION + TAXONOMY (Parts C & D) ===\n{annotation}"
+    return f"Grammar v8 RULES REFERENCE:\n=== GRAMMAR v8: MODE ROUTING ===\n{routing}\n\n=== GRAMMAR v8: ANNOTATION + TAXONOMY (Parts C & D) ===\n{annotation}"
 
 
 def _reading_context(extended: bool = False) -> str:
@@ -373,7 +373,7 @@ def build_annotate_prompt_parts(
         g = _extract_between(_read_file(_GRAMMAR_FILE), "# PART D", "# PART E")
         r = _reading_context()
         system_static = (
-            f"Grammar v7 RULES REFERENCE:\n=== GRAMMAR v7: TAXONOMY (Part D) ===\n{g}\n\n{r}"
+            f"Grammar v8 RULES REFERENCE:\n=== GRAMMAR v8: TAXONOMY (Part D) ===\n{g}\n\n{r}"
         )
 
     system_dynamic = _SYSTEM_INSTRUCTIONS_TEMPLATE.format(
@@ -410,7 +410,7 @@ def build_annotate_prompt(q_data: dict | None = None, rules_file_path: str = "",
             # Unknown: include both — grammar taxonomy + reading core
             g = _extract_between(_read_file(_GRAMMAR_FILE), "# PART D", "# PART E")
             r = _reading_context()
-            rules_context = f"Grammar v7 RULES REFERENCE:\n=== GRAMMAR v7: TAXONOMY (Part D) ===\n{g}\n\n{r}"
+            rules_context = f"Grammar v8 RULES REFERENCE:\n=== GRAMMAR v8: TAXONOMY (Part D) ===\n{g}\n\n{r}"
 
     system = _SYSTEM_BASE.format(
         rules_context=rules_context,

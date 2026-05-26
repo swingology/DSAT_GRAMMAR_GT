@@ -2900,6 +2900,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-24T14:54:13.454Z"
+    },
+    {
+      "id": "bug-179",
+      "timestamp": "2026-05-25T18:31:21.231Z",
+      "error_message": "Significant refactor of ",
+      "file": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4→6 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-25T18:31:21.231Z"
+    },
+    {
+      "id": "bug-180",
+      "timestamp": "2026-05-25T18:55:25.373Z",
+      "error_message": "Significant refactor of ",
+      "file": "rules_agent_dsat_reading_v3.md",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 7→8 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-25T18:55:25.373Z"
+    },
+    {
+      "id": "bug-181",
+      "timestamp": "2026-05-26T00:00:28.973Z",
+      "error_message": "Significant refactor of ",
+      "file": "../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6→8 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T00:00:28.973Z"
+    },
+    {
+      "id": "bug-182",
+      "timestamp": "2026-05-26T00:07:00.430Z",
+      "error_message": "Incorrect value in code",
+      "file": "../.claude/plans/vocab-candidate-workflow-and-ingestion-gaps.md",
+      "root_cause": "Had `review-candidates`",
+      "fix": "Changed to `gen_vocab.py --promote`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-26T00:07:00.430Z"
     }
   ]
 }

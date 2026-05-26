@@ -115,11 +115,11 @@ def test_question_recall_response():
         "source_subject_code": "verbal",
         "source_section_code": "01",
         "source_module_code": "02",
-        "generation_profile": {"model_version": "rules_agent_v7.0"},
+        "generation_profile": {"model_version": "rules_agent_v8.0"},
     }
     r = QuestionRecallResponse(**data)
     assert r.practice_status == "active"
-    assert r.generation_profile == {"model_version": "rules_agent_v7.0"}
+    assert r.generation_profile == {"model_version": "rules_agent_v8.0"}
     assert r.source_subject_code == "verbal"
 
 
@@ -134,10 +134,10 @@ def test_question_detail_response():
         "practice_status": "draft",
         "official_overlap_status": "none",
         "is_admin_edited": False,
-        "generation_profile": {"model_version": "rules_agent_v7.0"},
+        "generation_profile": {"model_version": "rules_agent_v8.0"},
     }
     r = QuestionDetailResponse(**data)
-    assert r.generation_profile == {"model_version": "rules_agent_v7.0"}
+    assert r.generation_profile == {"model_version": "rules_agent_v8.0"}
 
 
 def test_generation_request_valid():

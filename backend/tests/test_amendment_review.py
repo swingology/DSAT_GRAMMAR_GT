@@ -28,7 +28,7 @@ def _repo(tmp_path: Path) -> Path:
         ]),
         encoding="utf-8",
     )
-    (tmp_path / "rules_agent_dsat_grammar_ingestion_generation_v7.md").write_text(
+    (tmp_path / "rules_agent_dsat_grammar_ingestion_generation_v8.md").write_text(
         "# Grammar Rules\n",
         encoding="utf-8",
     )

@@ -54,6 +54,12 @@
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
+- [2026-05-25] **Draft re-activation + backup on promotion:** `gen_vocab.py --promote` must (1) before any mutation, snapshot all files under a single shared timestamp — vocabulary files to `vocabulary/backups/YYYY-MM-DDTHH-MM-SS/` (`master.json`, `aliases.json`, `candidates.json`) AND rules docs to `rules_backups/YYYY-MM-DDTHH-MM-SS/` (`rules_agent_dsat_grammar_ingestion_generation_v8.md`, `rules_agent_dsat_reading_v3.md`) — restore all on any failure; (2) after successful `--generate`, automatically set all `draft` questions whose controlled-vocab key was just promoted to `practice_status="approved"` in a single DB update.
+
+- [2026-05-25] **Alias storage:** Use a separate `vocabulary/aliases.json` flat map (`{ "from": "to" }`), not inline fields in `master.json`. Keeps master.json canonical-only. `gen_vocab.py --promote` writes both files atomically. CI checks all alias targets resolve to active master.json keys.
+
+- [2026-05-25] **Candidate promotion workflow (agreed):** After any ingestion beyond baseline, unrecognized keys land in `candidates.json` non-blocking. Promotion to `master.json` requires two gates: (1) LLM triage — three parallel model calls (Claude, OpenAI, Ollama `deepseek-v4-pro:cloud`) each independently classify every candidate as promote/alias/reject; review report shows all three verdicts side-by-side with dissent flagged; (2) admin confirms or overrides before `gen_vocab.py --promote` runs. No key enters `master.json` without both gates. Dev tooling: CLI-first via `review-candidates` skill; dashboard UI to follow. This is the only sanctioned promotion path.
+
 - [2026-05-18] Controlled vocabulary: `vocabulary/master.json` is the single source of truth; `ontology.py` and rules-doc VOCAB blocks are generated from it. New keys the LLM invents go to `vocabulary/candidates.json` (non-blocking review queue), promoted via `gen_vocab.py --promote`. Chose master-JSON-canonical over ontology-canonical for strongest consistency, and a review queue over auto-append so vocabulary growth stays human-controlled. options.py option-level validators demoted from hard `ValueError` to non-blocking candidate recording.
 
 - 2026-05-18 — Ingest jobs with any non-blocking validation warning (e.g.

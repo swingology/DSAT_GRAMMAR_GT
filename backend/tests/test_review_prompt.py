@@ -67,7 +67,7 @@ class TestBuildReviewPrompt:
         assert "realism_score" in system
         assert "verdict" in system.lower()
 
-    def test_review_prompt_always_includes_grammar_v7(self):
+    def test_review_prompt_always_includes_grammar_v8(self):
         from app.prompts.review_prompt import build_review_prompt
 
         system, user = build_review_prompt(
@@ -76,7 +76,7 @@ class TestBuildReviewPrompt:
             source_examples=[],
             overlap_status="none",
         )
-        assert "Grammar v7 RULES REFERENCE" in system
+        assert "Grammar v8 RULES REFERENCE" in system
 
     def test_review_prompt_includes_reading_v2_for_reading_questions(self):
         from app.prompts.review_prompt import build_review_prompt
@@ -164,7 +164,7 @@ class TestReviewVersionConstants:
 
         assert "grammar" in RULES_VERSIONS
         assert "reading" in RULES_VERSIONS
-        assert RULES_VERSIONS["grammar"] == "v7"
+        assert RULES_VERSIONS["grammar"] == "v8"
         assert RULES_VERSIONS["reading"] == "v2"
 
 

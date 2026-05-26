@@ -7,25 +7,25 @@ from app.prompts.generate_prompt import _extract_between, _extract_sections
 
 _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 _REVIEW_RULE_FILE = "rules_agent_dsat_review_v1.md"
-_GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generation_v7.md"
+_GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generation_v8.md"
 _READING_FILE = "rules_agent_dsat_reading_v2.md"
 
 RUBRIC_VERSION = "v1"
-RULES_VERSIONS = {"grammar": "v7", "reading": "v2"}
+RULES_VERSIONS = {"grammar": "v8", "reading": "v2"}
 
 
 def _review_sections(label: str, rules_text: str) -> str:
     """Extract review-relevant sections from grammar and reading rule files.
 
     For the review rubric itself, return the full text (no section extraction).
-    For grammar v7 and reading v2, extract only the sections relevant to
+    For grammar v8 and reading v2, extract only the sections relevant to
     reviewing — not the generation workflow sections.
     """
     if label == "Review v1":
         # The rubric file is purpose-built for review; include it in full.
         return rules_text
 
-    if label == "Grammar v7":
+    if label == "Grammar v8":
         return _extract_sections(
             rules_text,
             [
@@ -108,7 +108,7 @@ def _infer_review_domain(question_data: dict, annotation: dict | None = None) ->
 
 _REVIEW_RULE_FILES = [
     ("Review v1", _REVIEW_RULE_FILE),
-    ("Grammar v7", _GRAMMAR_FILE),
+    ("Grammar v8", _GRAMMAR_FILE),
     ("Reading v2", _READING_FILE),
 ]
 
@@ -116,15 +116,15 @@ _REVIEW_RULE_FILES = [
 def _load_review_rule_context(domain: str = "both") -> str:
     """Load and compose review-relevant rule sections based on domain.
 
-    Always loads: review rubric + grammar v7.
+    Always loads: review rubric + grammar v8.
     Conditionally loads: reading v2 (when domain is "reading" or "both").
     """
     sections: list[str] = []
     for label, filename in _REVIEW_RULE_FILES:
         if domain == "grammar" and label == "Reading v2":
             continue
-        if domain == "reading" and label == "Grammar v7":
-            # Grammar v7 is ALWAYS loaded per locked decisions.
+        if domain == "reading" and label == "Grammar v8":
+            # Grammar v8 is ALWAYS loaded per locked decisions.
             pass
         path = os.path.join(_ROOT_DIR, filename)
         if not os.path.exists(path):

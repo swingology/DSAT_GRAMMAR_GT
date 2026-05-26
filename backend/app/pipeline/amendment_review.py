@@ -191,7 +191,7 @@ def promote_amendment(
         repo_root / "vocabulary" / "master.json",
         repo_root / "backend" / "app" / "models" / "ontology.py",
         repo_root / "rules_agent_dsat_reading_v2.md",
-        repo_root / "rules_agent_dsat_grammar_ingestion_generation_v7.md",
+        repo_root / "rules_agent_dsat_grammar_ingestion_generation_v8.md",
     ]
     backups = {path: path.read_text(encoding="utf-8") for path in touched if path.exists()}
     try:

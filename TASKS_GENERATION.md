@@ -24,7 +24,7 @@ self-study monitor.
 - `GenerationRequest` and `GenerationCompareRequest` support grammar and
   reading targets.
 - Generation prompts load both:
-  - `rules_agent_dsat_grammar_ingestion_generation_v7.md`
+  - `rules_agent_dsat_grammar_ingestion_generation_v8.md`
   - `rules_agent_dsat_reading_v2.md`
 - `source_question_ids` can load stored official questions, annotations, and
   options into the generation prompt as foundational source examples.
@@ -201,7 +201,7 @@ later phases depend on.
   `content_origin='official'`.)
 - [x] Confirm generation prompts include both grammar and reading rule
   markdowns. (`backend/app/prompts/generate_prompt.py` loads
-  `rules_agent_dsat_grammar_ingestion_generation_v7.md` and
+  `rules_agent_dsat_grammar_ingestion_generation_v8.md` and
   `rules_agent_dsat_reading_v2.md`.)
 - [x] Add or update a short architecture note explaining:
   - official questions are the generation foundation
@@ -390,7 +390,7 @@ quality.
 - [x] Rubric must require short reasons for every score below threshold.
 - [x] **Create `backend/app/prompts/review_prompt.py`** loader that composes:
   - `rules_agent_dsat_review_v1.md` (rubric).
-  - `rules_agent_dsat_grammar_ingestion_generation_v7.md` **always**,
+  - `rules_agent_dsat_grammar_ingestion_generation_v8.md` **always**,
     regardless of question domain (prose-style canon for all DSAT
     writing).
   - `rules_agent_dsat_reading_v2.md` only when the candidate is a reading
@@ -925,7 +925,7 @@ scopes are locked below.
   - `rules_agent_dsat_review_v1.md` at repo root holds scoring
     dimensions, anchor bands per numeric score, and the strict JSON
     schema reviewers must return.
-  - `rules_agent_dsat_grammar_ingestion_generation_v7.md` is loaded as
+  - `rules_agent_dsat_grammar_ingestion_generation_v8.md` is loaded as
     canon **always**, regardless of question domain. It is the prose
     style canon for all DSAT-style writing.
   - `rules_agent_dsat_reading_v2.md` is loaded only when the candidate

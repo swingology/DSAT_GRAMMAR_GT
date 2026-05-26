@@ -55,12 +55,12 @@ STIMULUS_MODE_KEYS = (
     "poem",
 )
 
-# --- Rules v7 generation format keys ---
+# --- Rules v8 generation format keys ---
 TEST_FORMAT_KEYS = (
     "digital_app_adaptive", "nondigital_linear_accommodation",
 )
 
-# --- Rules v7 source stats format keys ---
+# --- Rules v8 source stats format keys ---
 SOURCE_STATS_FORMAT_KEYS = (
     "official_digital", "official_nondigital_linear",
 )
@@ -380,7 +380,7 @@ SENTENCE_FUNCTION_ROLE_KEYS = (
     "obstacle", "background_setup",
 )
 
-# --- Grammar v7 transition_subtype_key ---
+# --- Grammar v8 transition_subtype_key ---
 TRANSITION_SUBTYPE_KEYS = (
     "sequence_final_event", "contrast_refutation", "addition",
     "result_consequence", "chronology", "alternative", "emphasis_support",
@@ -391,7 +391,7 @@ TRANSITION_SUBTYPE_KEYS = (
     "concession_qualification", "example", "restatement_clarification",
 )
 
-# --- Grammar v7 notes synthesis goal keys ---
+# --- Grammar v8 notes synthesis goal keys ---
 SYNTHESIS_GOAL_KEYS = (
     "emphasize_similarity", "emphasize_difference", "explain_advantage",
     "explain_mechanism", "present_research", "present_theory",
@@ -413,12 +413,12 @@ SYNTHESIS_GOAL_KEYS = (
     "emphasize_age_similarity",
 )
 
-# --- Grammar v7 audience knowledge keys ---
+# --- Grammar v8 audience knowledge keys ---
 AUDIENCE_KNOWLEDGE_KEYS = (
     "audience_familiar", "audience_unfamiliar", "not_specified",
 )
 
-# --- Grammar v7 required content keys ---
+# --- Grammar v8 required content keys ---
 REQUIRED_CONTENT_KEYS = (
     "comparison_needed", "definition_needed", "background_omit",
     "measurement_values_needed", "result_needed", "title_and_content_needed",
@@ -434,7 +434,7 @@ REQUIRED_CONTENT_KEYS = (
     "scope_terms_needed",
 )
 
-# --- Grammar v7 synthesis distractor failure keys ---
+# --- Grammar v8 synthesis distractor failure keys ---
 SYNTHESIS_DISTRACTOR_FAILURE_KEYS = (
     "wrong_goal", "omits_required_content",
     "adds_background_audience_does_not_need", "correct_topic_wrong_comparison",

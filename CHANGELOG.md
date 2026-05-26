@@ -5,6 +5,20 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-25 — Switch active grammar references to v8
+
+**Model:** GPT-5 Codex
+
+### Changed
+- **Active grammar rules path** — Updated generation, annotation, review, config, amendment, ingestion-analysis, vocabulary-generation, and test references from `rules_agent_dsat_grammar_ingestion_generation_v7.md` to `rules_agent_dsat_grammar_ingestion_generation_v8.md`.
+- **Generated vocabulary appendices** — Regenerated `ontology.py`, `rules_agent_dsat_reading_v2.md`, and the v8 grammar rules appendix so controlled-vocabulary comments now identify Grammar/Rules v8.
+
+### Added
+- **`vocabulary/master_samples.json`** — Added a comprehensive advisory examples companion for every active `master.json` entry, with synthetic positive examples, near-miss distinctions, and ingestion/generation guidance.
+- **Rules map documentation** — Updated `docs/backend/RULES_INGESTION_GENERATION_MAP.md` to show how rules docs, `master.json`, `master_samples.json`, `candidates.json`, and generated ontology constants work together.
+
+---
+
 ## 2026-05-24 — Grammar Rules v8 sub-pattern expansion
 
 **Model:** Claude Opus 4.7 (Subagent-Driven Development)

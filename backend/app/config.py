@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     default_annotation_provider: str = "ollama"
     default_annotation_model: str = "deepseek-v4-pro:cloud"
     default_ollama_model: str = "deepseek-v4-pro:cloud"
-    rules_version: str = "rules_agent_dsat_grammar_ingestion_generation_v7"
+    rules_version: str = "rules_agent_dsat_grammar_ingestion_generation_v8"
     official_auto_activate_for_testing: bool = False
 
     # Retry
