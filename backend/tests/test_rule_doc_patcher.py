@@ -11,7 +11,7 @@ from app.pipeline import rule_doc_patcher
 def _repo(tmp_path: Path) -> Path:
     (tmp_path / "vocabulary" / "amendments" / "pending").mkdir(parents=True)
     (tmp_path / "vocabulary" / "amendments" / "needs_manual_patch").mkdir(parents=True)
-    (tmp_path / "rules_agent_dsat_reading_v2.md").write_text(
+    (tmp_path / "rules_agent_dsat_reading_v3.md").write_text(
         "\n".join([
             "# Reading Rules",
             "",
@@ -111,7 +111,7 @@ def test_dry_run_rule_doc_patch_returns_body_diff(tmp_path):
 
     assert result.ok is True
     assert "evidence_scope_shift" in result.diff
-    assert (repo / "rules_agent_dsat_reading_v2.md").read_text(encoding="utf-8").count("evidence_scope_shift") == 0
+    assert (repo / "rules_agent_dsat_reading_v3.md").read_text(encoding="utf-8").count("evidence_scope_shift") == 0
 
 
 def test_apply_rule_doc_patch_updates_body_without_regenerating_by_default(monkeypatch, tmp_path):
@@ -132,7 +132,7 @@ def test_apply_rule_doc_patch_updates_body_without_regenerating_by_default(monke
 
     assert result.ok is True
     assert calls == []
-    text = (repo / "rules_agent_dsat_reading_v2.md").read_text(encoding="utf-8")
+    text = (repo / "rules_agent_dsat_reading_v3.md").read_text(encoding="utf-8")
     assert "`evidence_scope_shift`" in text
 
 
@@ -185,7 +185,7 @@ def test_apply_rule_doc_patch_rejects_regeneration_before_master_json_promotion(
     assert result.ok is False
     assert "before amendment value is active in master.json" in result.error
     assert calls == []
-    assert "`evidence_scope_shift`" not in (repo / "rules_agent_dsat_reading_v2.md").read_text(encoding="utf-8")
+    assert "`evidence_scope_shift`" not in (repo / "rules_agent_dsat_reading_v3.md").read_text(encoding="utf-8")
     assert not amendment_path.exists()
 
 
@@ -208,7 +208,7 @@ def test_rule_doc_patch_rejects_generated_vocab_block_target(tmp_path):
 
 def test_rule_doc_patch_allows_anchor_immediately_after_generated_vocab_end_marker(tmp_path):
     repo = _repo(tmp_path)
-    (repo / "rules_agent_dsat_reading_v2.md").write_text(
+    (repo / "rules_agent_dsat_reading_v3.md").write_text(
         "\n".join([
             "# Reading Rules",
             "",
@@ -236,7 +236,7 @@ def test_rule_doc_patch_allows_anchor_immediately_after_generated_vocab_end_mark
 
 def test_rule_doc_patch_rejects_ambiguous_before_anchor(tmp_path):
     repo = _repo(tmp_path)
-    (repo / "rules_agent_dsat_reading_v2.md").write_text(
+    (repo / "rules_agent_dsat_reading_v3.md").write_text(
         "\n".join([
             "# Reading Rules",
             "",

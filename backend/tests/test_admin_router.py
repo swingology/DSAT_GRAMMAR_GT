@@ -389,7 +389,7 @@ def _amendment_repo(tmp_path):
 
     for name in ("pending", "approved", "rejected", "needs_manual_patch"):
         (tmp_path / "vocabulary" / "amendments" / name).mkdir(parents=True)
-    (tmp_path / "rules_agent_dsat_reading_v2.md").write_text(
+    (tmp_path / "rules_agent_dsat_reading_v3.md").write_text(
         "\n".join([
             "# Reading Rules",
             "",
@@ -558,7 +558,7 @@ def test_admin_amendment_promote_flow_against_real_filesystem(client, monkeypatc
     master = json.loads((repo / "vocabulary" / "master.json").read_text(encoding="utf-8"))
     focus = next(v for v in master["vocabularies"] if v["name"] == "READING_FOCUS_BY_SKILL_FAMILY")
     assert any(e["value"] == "evidence_scope_shift" for e in focus["entries"])
-    doc = (repo / "rules_agent_dsat_reading_v2.md").read_text(encoding="utf-8")
+    doc = (repo / "rules_agent_dsat_reading_v3.md").read_text(encoding="utf-8")
     assert "`evidence_scope_shift`" in doc
 
 

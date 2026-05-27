@@ -370,7 +370,7 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
 
     question = next(obj for obj in db.added if isinstance(obj, Question))
     annotation = next(obj for obj in db.added if isinstance(obj, QuestionAnnotation))
-    assert db.flush_count == 1
+    assert db.flush_count == 2  # flush after Q+Version, flush after Annotation
     assert question.latest_version_id is not None
     assert question.latest_annotation_id is not None
     assert question.derived_from_question_id == parent_question_id
@@ -1265,6 +1265,7 @@ async def test_reannotate_updates_current_explanation_text():
     db = _FakeDB()
     question_id = uuid.uuid4()
     job = SimpleNamespace(
+        id=uuid.uuid4(),
         question_id=question_id,
         content_origin="official",
         provider_name="anthropic",

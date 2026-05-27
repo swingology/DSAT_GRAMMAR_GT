@@ -1,5 +1,28 @@
 # Debug Log
 
+## 2026-05-27 - Test Suite Fixes and GAP-010 Matching Delimiter Rule
+Report created by: Claude Sonnet 4.6
+Git branch: `rules_edit`
+Git checkpoint: `7186296` — docs(debug-log): add 2026-05-27 vocab integrity entry, strikethrough resolved findings
+
+### Findings
+
+1. **Medium:** 4 pre-existing test failures found when running full suite on `rules_edit`:
+   - `test_admin_amendment_promote_flow_against_real_filesystem` — fixture created `rules_agent_dsat_reading_v2.md` but `DOC_BY_AFFECTED_DOC["reading"]` was updated to `v3.md`; returned 409 Conflict.
+   - `test_generate_pipeline_flushes_before_wiring_latest_pointers` — asserted `flush_count == 1` but generate pipeline correctly does 2 flushes (after Q+Version, after Annotation).
+   - `test_reannotate_updates_current_explanation_text` — job `SimpleNamespace` missing `id` field; sanitizer call `str(job.id)` raised `AttributeError`.
+   - `test_rules_versions` — asserted `grammar == "v7"` and `reading == "v2"` but `RULES_VERSIONS` was updated to v8/v3.
+   - **Fixed:** Updated all four tests: renamed fixtures to `reading_v3.md`, corrected flush assertion to 2, added `id=uuid.uuid4()` to job fixture, updated version strings. 753 tests pass, 2 skipped.
+
+2. **Medium:** GAP-010 from `missing_rules_v8.md` — Matching Delimiter Rule (comma/dash/paren symmetry) was buried in `appositive_punctuation` sub-pattern 3 only; no cross-key note for `colon_dash_use` and `unnecessary_internal_punctuation`.
+   - **Fixed:** `### Matching Delimiter Rule (Cross-Key Note)` section added immediately before `### \`punctuation_comma\`` in `rules_agent_dsat_grammar_ingestion_generation_v8.md`. Explains symmetry requirement, distractor pattern, and annotator guidance across all three parenthetical-punctuation focus keys.
+
+### Status
+- All 17 gaps from `missing_rules_v8.md`: GAP-001–004 and GAP-006–017 were **already resolved** in the v8 sub-pattern sprint before this session. GAP-005 (absolute_phrase) fixed 2026-05-27 (see vocab integrity entry). GAP-010 (Matching Delimiter Rule) fixed this entry.
+- Remaining open (this entry): GAP-001–004 (SVA/verb-form CRITICAL patterns), GAP-006 (subjunctive_mood), GAP-007 (singular_they), GAP-008–017 (MODERATE/MINOR).
+
+---
+
 ## 2026-05-27 - Vocabulary Integrity and Annotation Key Sanitization
 Report created by: Claude Sonnet 4.6
 Git branch: `rules_edit`

@@ -1072,6 +1072,39 @@ Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
 Classification: `grammar_role_key: "modifier"`,
 `grammar_focus_key: "absolute_phrase"`.
 
+### Matching Delimiter Rule (Cross-Key Note)
+
+**This rule applies across `appositive_punctuation`, `colon_dash_use`, and
+`unnecessary_internal_punctuation`. Annotators and generators must enforce it
+regardless of which focus key is primary.**
+
+When a parenthetical element is set off *inside* a sentence, the opening
+delimiter and the closing delimiter must be the **same type**:
+
+| Opening | Required closing |
+|---|---|
+| Comma | Comma |
+| Em dash | Em dash |
+| Parenthesis `(` | Parenthesis `)` |
+
+Mixing is never correct: a comma-opened parenthetical cannot close with a dash;
+a dash-opened parenthetical cannot close with a comma.
+
+**Why distractors exploit this:**
+Each delimiter is locally plausible — a comma in isolation looks fine and a
+dash in isolation looks fine — so students evaluate each delimiter on its own
+rather than checking the pair. The asymmetric option (comma + dash) is the
+canonical wrong-but-seductive distractor across all parenthetical-punctuation
+item types.
+
+**Key for annotators:**
+When a question blank sits at one end of a parenthetical and the other end
+already carries a comma or dash, the correct option must match that existing
+delimiter. Classify under whichever focus key governs the parenthetical content
+(`appositive_punctuation` for renaming phrases, `colon_dash_use` for
+elaborating dashes, `unnecessary_internal_punctuation` for spurious internal
+delimiters).
+
 ### `punctuation_comma`
 
 Create a compound sentence with or without a coordinating conjunction. Test

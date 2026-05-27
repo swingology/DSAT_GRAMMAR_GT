@@ -554,5 +554,5 @@ class TestVersionConstants:
     def test_rules_versions(self):
         assert "grammar" in RULES_VERSIONS
         assert "reading" in RULES_VERSIONS
-        assert RULES_VERSIONS["grammar"] == "v7"
-        assert RULES_VERSIONS["reading"] == "v2"
+        assert RULES_VERSIONS["grammar"] == "v8"
+        assert RULES_VERSIONS["reading"] == "v3"

@@ -11,7 +11,7 @@ def _repo(tmp_path):
     (tmp_path / "vocabulary").mkdir()
     (tmp_path / "backend" / "app" / "models").mkdir(parents=True)
     (tmp_path / "vocabulary" / "master.json").write_text('{"schema_version":1}\n')
-    (tmp_path / "rules_agent_dsat_reading_v2.md").write_text("reading rules\n")
+    (tmp_path / "rules_agent_dsat_reading_v3.md").write_text("reading rules\n")
     (tmp_path / "rules_agent_dsat_grammar_ingestion_generation_v8.md").write_text("grammar rules\n")
     (tmp_path / "backend" / "app" / "models" / "ontology.py").write_text("KEYS = ()\n")
     return tmp_path

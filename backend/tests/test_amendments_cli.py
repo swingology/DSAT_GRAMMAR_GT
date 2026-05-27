@@ -23,7 +23,7 @@ def _load_script(path: Path, name: str):
 def _repo(tmp_path: Path) -> Path:
     for name in ("pending", "approved", "rejected", "needs_manual_patch"):
         (tmp_path / "vocabulary" / "amendments" / name).mkdir(parents=True)
-    (tmp_path / "rules_agent_dsat_reading_v2.md").write_text(
+    (tmp_path / "rules_agent_dsat_reading_v3.md").write_text(
         "\n".join([
             "# Reading Rules",
             "",

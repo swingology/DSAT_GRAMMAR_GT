@@ -14,7 +14,7 @@ from app.pipeline.rule_doc_patcher import RuleDocPatchResult
 def _repo(tmp_path: Path) -> Path:
     for name in ("pending", "approved", "rejected", "needs_manual_patch"):
         (tmp_path / "vocabulary" / "amendments" / name).mkdir(parents=True)
-    (tmp_path / "rules_agent_dsat_reading_v2.md").write_text(
+    (tmp_path / "rules_agent_dsat_reading_v3.md").write_text(
         "\n".join([
             "# Reading Rules",
             "",
@@ -210,7 +210,7 @@ def test_promote_patches_doc_updates_master_regenerates_and_moves_file(monkeypat
             if v["name"] == "READING_FOCUS_BY_SKILL_FAMILY"
         )
         assert any(e["value"] == "evidence_scope_shift" for e in focus_at_call["entries"])
-        doc_at_call = (repo_root / "rules_agent_dsat_reading_v2.md").read_text(encoding="utf-8")
+        doc_at_call = (repo_root / "rules_agent_dsat_reading_v3.md").read_text(encoding="utf-8")
         assert "`evidence_scope_shift` - Evidence scope distinction." in doc_at_call
         return RuleDocPatchResult(ok=True, amendment_id="", affected_doc="", doc_path=None)
 
@@ -228,7 +228,7 @@ def test_promote_patches_doc_updates_master_regenerates_and_moves_file(monkeypat
     assert not pending.exists()
     promoted_path = repo / "vocabulary" / "amendments" / "approved" / "amd-test.json"
     assert promoted_path.exists()
-    assert "`evidence_scope_shift`" in (repo / "rules_agent_dsat_reading_v2.md").read_text(encoding="utf-8")
+    assert "`evidence_scope_shift`" in (repo / "rules_agent_dsat_reading_v3.md").read_text(encoding="utf-8")
     master = json.loads((repo / "vocabulary" / "master.json").read_text(encoding="utf-8"))
     focus = next(item for item in master["vocabularies"] if item["name"] == "READING_FOCUS_BY_SKILL_FAMILY")
     new_entry = next(e for e in focus["entries"] if e["value"] == "evidence_scope_shift")
@@ -252,7 +252,7 @@ def test_promote_restores_master_and_doc_when_regeneration_fails(monkeypatch, tm
     repo = _repo(tmp_path)
     pending = _write_pending(repo, _amendment(status="approved"))
     master_before = (repo / "vocabulary" / "master.json").read_text(encoding="utf-8")
-    doc_before = (repo / "rules_agent_dsat_reading_v2.md").read_text(encoding="utf-8")
+    doc_before = (repo / "rules_agent_dsat_reading_v3.md").read_text(encoding="utf-8")
 
     def fake_regenerate(*, repo_root):
         return RuleDocPatchResult(
@@ -272,7 +272,7 @@ def test_promote_restores_master_and_doc_when_regeneration_fails(monkeypatch, tm
     assert result.error == "regeneration failed"
     # master.json and the rule doc are rolled back to their pre-promotion state.
     assert (repo / "vocabulary" / "master.json").read_text(encoding="utf-8") == master_before
-    assert (repo / "rules_agent_dsat_reading_v2.md").read_text(encoding="utf-8") == doc_before
+    assert (repo / "rules_agent_dsat_reading_v3.md").read_text(encoding="utf-8") == doc_before
     # Amendment file state: regeneration failure routes the file to
     # needs_manual_patch (it is no longer in pending or promoted to approved).
     assert not pending.exists()
