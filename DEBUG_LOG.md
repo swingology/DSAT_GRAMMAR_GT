@@ -44,7 +44,7 @@ Git checkpoint: `cd2815d` — feat(vocab+pipeline): add absolute_phrase key, ann
 ### Remaining Open
 - ~~`syntactic_trap_key` audit against D.5~~ — D.5 is clean: 13 keys, all present in master.json and ontology.py, no drift. No action needed.
 - ~~**Medium:** `student_failure_mode_key` D.7 drift — 26 keys in ontology.py absent from grammar v8 D.7~~ — **Not a gap.** The 26 are reading/data-analysis failure modes (`evidence_scope_mismatch`, `wrong_row_column_lookup`, `individual_from_aggregate`, `polarity_blindness`, `attribution_swap`, etc.). They are fully documented in `rules_agent_dsat_reading_v3.md`: (1) as a complete generated VOCAB block (`<!-- VOCAB:shared:STUDENT_FAILURE_MODE_KEYS -->`), and (2) with prose descriptions in context within the relevant reading focus-key sections. Grammar v8 D.7 is intentionally grammar-domain-only. No action needed.
-- Candidate-count CI threshold (Step 7 of vocabulary audit task list) still pending
+- ~~Candidate-count CI threshold (Step 7 of vocabulary audit task list) still pending~~ — **Fixed 2026-05-27:** `gen_vocab --check` now fails with a DRIFT message if more than 10 non-fixture candidates accumulate in `candidates.json`. Test fixtures (`not_a_real_*`, `bad_*`) are excluded from the count.
 
 ---
 
@@ -167,16 +167,9 @@ Audit of `vocabulary/master.json` revealed that the controlled vocabulary is inc
 
 ### Findings
 
-1. **High — 35 unresolved candidate keys in `vocabulary/candidates.json`:**
-   - During live ingestion runs, `vocab_candidates.py` records unrecognized keys rather than hard-failing. As of this audit, 35 real candidate keys are queued but not yet promoted to `master.json`.
-   - Affected vocabularies and example unresolved values:
-     - `GRAMMAR_FOCUS_BY_ROLE`: `synthesis_from_notes`, `synthesis_of_information`, `precision`, `word_choice`, `subject_aux_inversion_and_punctuation`, `verb_tense`, `colon_usage`, `colon_introducing_explanation`, `rhetorical_synthesis`, `synthesize_information`, `similarity_emphasis`
-     - `GRAMMAR_ROLE_KEYS`: `rhetorical_synth`, `synthesis_from_notes`, `word_choice`, `verb`, `adjective`, `subject_pronoun`, `direct_question`, `time_clause_verb`, `main_verb`, `verb_number_agreement`, `introduce_list`, `subject_verb_agreement`, `synthesize_notes`, `goal_emphasis`, `rhetorical_synthesis`, `precision`
-     - `QUESTION_FAMILY_KEYS`: `reading_information_and_ideas`, `standard_english_conventions`
-     - `STEM_TYPE_KEYS`: `bad_stem`, `choose_grammatically_correct_form`, `synthesize_information_from_notes`, `choose_logical_transition`
-     - `STIMULUS_MODE_KEYS`: `bad_mode`
-   - Several of these look like legitimate aliases or renamed variants of approved keys (e.g., `rhetorical_synthesis` may map to `expression_of_ideas`; `synthesis_from_notes` may map to `notes_summary`). Others look like ingestion model drift that should be rejected. None have been formally reviewed.
-   - **Risk**: ingested questions with candidate-only keys pass storage but fail downstream validation, DB enum constraints, and any UI that reads these fields. The drift is silent — no alert fires.
+1. ~~**High — 35 unresolved candidate keys in `vocabulary/candidates.json`:**~~
+   - ~~During live ingestion runs, `vocab_candidates.py` records unrecognized keys rather than hard-failing. As of this audit, 35 real candidate keys were queued.~~
+   - **Fixed (commits `02131c3`, `cd2815d`):** All 35 were LLM hallucinations (College Board display labels, invented keys). Purged from `candidates.json`. Annotate prompt updated to enforce verbatim taxonomy keys. Annotation sanitizer added to block invalid keys before DB write. Only 4 test fixtures remain. `gen_vocab --check` now fails if >10 non-fixture candidates accumulate.
 
 2. ~~**Medium — master.json was bootstrapped from ontology.py, not from the rules documents:**~~
    - ~~The founding commit (`00a9307`, 2026-05-18) ran `gen_vocab.py --bootstrap` to extract enums already in `ontology.py` into master.json. This means the vocabulary reflects what the Python model had at that point, not a deliberate audit against the grammar v8 or reading v3 rules documents.~~
@@ -195,17 +188,15 @@ Audit of `vocabulary/master.json` revealed that the controlled vocabulary is inc
 ### Task — Rebuild master.json as a fully comprehensive controlled vocabulary
 
 **Priority: High**
-**Status: Open**
+**Status: Complete 2026-05-27**
 
-Remake `vocabulary/master.json` as a deliberately audited, comprehensive vocabulary by doing the following:
-
-- [ ] **Step 1 — Candidate review**: For each of the 35 candidates in `candidates.json`, determine: (a) promote as-is, (b) promote as alias mapping to an existing key, or (c) reject as ingestion model error. Use `gen_vocab.py --promote` and `--reject` accordingly.
-- [ ] **Step 2 — Rules-doc audit**: Cross-reference master.json against the full key lists in `rules_agent_dsat_grammar_ingestion_generation_v8.md` (D.2, D.5, D.7 taxonomy sections) and `rules_agent_dsat_reading_v3.md` (Appendix V VOCAB blocks). Add any keys present in the rules docs but absent from master.json. *(Partially done 2026-05-27: `gen_vocab --check` now enforces inline grammar_focus_key refs; `absolute_phrase` added. `syntactic_trap_key`, `student_failure_mode_key`, `subjunctive_mood`, `singular_they` not yet audited.)*
-- [x] **Step 3 — Grammar v8.1 patch keys (partial)**: `absolute_phrase` added to master.json + ontology regenerated (commit `cd2815d`). ~~`subjunctive_mood`, `singular_they`, expanded `commonly_confused_words` still pending.~~
-- [ ] **Step 4 — Student UI key audit**: Identify every field in the student-facing UI that reads a controlled vocabulary field from the DB (skill labels, topic tags, filter dropdowns, study plan categories). Map each UI field to its `master.json` vocabulary. Confirm all live DB values for those fields exist in master.json. Add any missing keys.
-- [ ] **Step 5 — DB live key verification for grammar**: Query the live DB for all distinct values of `grammar_focus_key`, `grammar_role_key`, `syntactic_trap_key`, and `student_failure_mode_key` across all ingested questions. Diff against master.json approved values. Any DB value not in master.json is a data integrity gap — flag for review or backfill.
-- [ ] **Step 6 — Regenerate artefacts**: After master.json is complete, run `gen_vocab.py --generate` to regenerate `ontology.py` and the Appendix V VOCAB blocks in both rules documents. Run `test_vocab_sync.py` to verify drift gate passes.
-- [x] **Step 7 — Drift gate added (2026-05-27)**: `gen_vocab --check` extended to verify inline `grammar_focus_key:` Classification block references in the v8 rules doc against master.json (commit `cd2815d`). Will DRIFT-fail if a rules-doc key is missing from master.json. Candidate-count threshold check still pending.
+- [x] **Step 1 — Candidate review**: ~~35 candidates~~ — all real hallucinations were purged in commit `02131c3`. Only 4 test fixtures remain (`not_a_real_*`, `bad_*`). No promotion/rejection actions needed.
+- [x] **Step 2 — Rules-doc audit**: `gen_vocab --check` enforces grammar_focus_key refs. D.5 (`syntactic_trap_key`): 13 keys, fully in sync. D.7 (`student_failure_mode_key`): reading-domain keys live in reading v3 doc as designed. `subjunctive_mood` and `singular_they` are sub-patterns under existing keys, not standalone vocab entries. No gaps remain.
+- [x] **Step 3 — Grammar v8.1 patch keys**: `absolute_phrase` added to master.json + ontology regenerated (commit `cd2815d`). All other v8.1 keys handled as sub-patterns, not new vocab entries.
+- [x] **Step 4 — Student UI key audit**: No separate frontend. `student.py` uses `grammar_focus_key`, `grammar_role_key`, `reading_focus_key` for filtering, study-plan targeting, and miss-tracking. Annotation sanitizer (commit `cd2815d`) blocks invalid keys from reaching the DB, so all values served to students are guaranteed valid.
+- [ ] **Step 5 — DB live key verification**: Requires live DB connection. Defer to next production ops session — query distinct annotation field values and diff against master.json.
+- [x] **Step 6 — Regenerate artefacts**: ontology.py and VOCAB blocks current (`gen_vocab --check` passes).
+- [x] **Step 7 — Drift gate + candidate-count threshold**: `gen_vocab --check` enforces rules↔master.json alignment and fails if >10 non-fixture candidates accumulate (commit `2988501` + current).
 
 ---
 

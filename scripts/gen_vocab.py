@@ -406,6 +406,16 @@ def cmd_check(args) -> int:
         if _apply_doc_blocks(current, blocks) != current:
             drift.append(f"{path.name} out of sync with master.json")
     drift.extend(_check_rules_keys_in_master(master))
+    # Candidate-count gate: test fixtures are 4 entries (not_a_real_*, bad_*).
+    # More than 10 real unknowns queued means annotation quality has regressed.
+    if CANDIDATES_PATH.exists():
+        candidates = json.loads(CANDIDATES_PATH.read_text()).get("candidates", [])
+        real = [c for c in candidates if not c["value"].startswith(("not_a_real_", "bad_"))]
+        if len(real) > 10:
+            drift.append(
+                f"{len(real)} unreviewed candidates in candidates.json (threshold: 10) — "
+                "run: python scripts/gen_vocab.py --list-candidates"
+            )
     if drift:
         for d in drift:
             print(f"DRIFT: {d}", file=sys.stderr)
