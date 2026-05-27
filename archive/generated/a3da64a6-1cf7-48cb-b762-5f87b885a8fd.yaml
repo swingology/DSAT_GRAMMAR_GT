@@ -1,0 +1,18 @@
+question_id: a3da64a6-1cf7-48cb-b762-5f87b885a8fd
+question_text: Q3
+passage_text: Shared passage.
+correct_option_label: C
+options:
+- label: A
+  text: a
+- label: B
+  text: b
+- label: C
+  text: c
+- label: D
+  text: d
+annotation:
+  explanation_short: E
+  explanation_full: F
+  annotation_confidence: 0.9
+  needs_human_review: false

@@ -1,0 +1,18 @@
+question_id: 4d65f437-2526-4a12-ab47-b9a493eefc0e
+question_text: Q1
+passage_text: Shared passage.
+correct_option_label: A
+options:
+- label: A
+  text: a
+- label: B
+  text: b
+- label: C
+  text: c
+- label: D
+  text: d
+annotation:
+  explanation_short: E
+  explanation_full: F
+  annotation_confidence: 0.9
+  needs_human_review: false

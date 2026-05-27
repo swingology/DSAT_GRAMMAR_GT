@@ -1988,3 +1988,84 @@
 | 13:18 | Created vocabulary/candidates.json | — | ~348 |
 | 13:19 | Edited DEBUG_LOG.md | 6→5 lines | ~306 |
 | 13:19 | Session end: 16 writes across 7 files (DEBUG_LOG.md, annotate_prompt.py, generate_prompt.py, review_prompt.py, test_prompts.py) | 8 reads | ~72470 tok |
+| 13:22 | Session end: 16 writes across 7 files (DEBUG_LOG.md, annotate_prompt.py, generate_prompt.py, review_prompt.py, test_prompts.py) | 8 reads | ~72470 tok |
+
+## Session: 2026-05-27 18:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:05 | Edited vocabulary/master.json | expanded (+7 lines) | ~131 |
+| 19:06 | Edited scripts/gen_vocab.py | modified _check_rules_keys_in_master() | ~579 |
+| 19:07 | Edited scripts/gen_vocab.py | keys() → headers() | ~99 |
+| 19:08 | Created backend/app/pipeline/annotation_sanitizer.py | — | ~1282 |
+| 19:08 | Edited backend/app/routers/ingest.py | added 1 import(s) | ~36 |
+| 19:08 | Edited backend/app/routers/ingest.py | 14→17 lines | ~229 |
+| 19:11 | Edited backend/app/routers/ingest.py | 17→18 lines | ~273 |
+| 02:20 | Tasks A-E: added absolute_phrase to master.json + regenerated ontology; extended gen_vocab --check to verify inline grammar_focus_key refs vs master.json; new annotation_sanitizer.py (difflib nearest-match, nulls unknowns, records candidates); wired into _persist_single_question + reannotation; drafted 3 PT-cited logical_predication sub-patterns (136 total / 44 keys); committed cd2815d | vocabulary/master.json, ontology.py, annotation_sanitizer.py, ingest.py, gen_vocab.py, v8 rules | success | ~6k |
+| 19:14 | Session end: 7 writes across 4 files (master.json, gen_vocab.py, annotation_sanitizer.py, ingest.py) | 7 reads | ~49805 tok |
+| 19:14 | Edited CHANGELOG.md | expanded (+34 lines) | ~899 |
+| 19:14 | Session end: 8 writes across 5 files (master.json, gen_vocab.py, annotation_sanitizer.py, ingest.py, CHANGELOG.md) | 7 reads | ~50768 tok |
+| 19:16 | Edited DEBUG_LOG.md | 11→13 lines | ~332 |
+| 19:16 | Edited DEBUG_LOG.md | 3→4 lines | ~272 |
+| 19:16 | Edited DEBUG_LOG.md | modified patch() | ~209 |
+| 19:17 | Edited DEBUG_LOG.md | 2→2 lines | ~204 |
+| 19:17 | Edited DEBUG_LOG.md | "test_vocab_sync.py" → "gen_vocab --check" | ~86 |
+| 19:17 | Edited DEBUG_LOG.md | modified feat() | ~661 |
+| 19:17 | Session end: 14 writes across 6 files (master.json, gen_vocab.py, annotation_sanitizer.py, ingest.py, CHANGELOG.md) | 7 reads | ~52657 tok |
+
+## Session: 2026-05-27 03:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 03:06 | Edited backend/tests/test_admin_router.py | "rules_agent_dsat_reading_" → "rules_agent_dsat_reading_" | ~18 |
+| 03:06 | Edited backend/tests/test_admin_router.py | "rules_agent_dsat_reading_" → "rules_agent_dsat_reading_" | ~23 |
+| 03:08 | Edited backend/tests/test_backend_regressions.py | 3→3 lines | ~52 |
+| 03:09 | Edited backend/tests/test_backend_regressions.py | 16→17 lines | ~145 |
+| 03:09 | Edited backend/tests/test_review_runner.py | 2→2 lines | ~28 |
+| 03:10 | Edited DEBUG_LOG.md | modified docs() | ~612 |
+| 03:10 | Session end: 6 writes across 4 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md) | 9 reads | ~204629 tok |
+| 03:12 | Session end: 6 writes across 4 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md) | 9 reads | ~204629 tok |
+| 03:12 | Edited CHANGELOG.md | expanded (+19 lines) | ~459 |
+| 03:12 | Session end: 7 writes across 5 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md, CHANGELOG.md) | 10 reads | ~247277 tok |
+| 03:15 | Edited DEBUG_LOG.md | modified Fixed() | ~394 |
+| 03:16 | Edited DEBUG_LOG.md | 2→1 lines | ~92 |
+| 03:16 | Edited DEBUG_LOG.md | 4→3 lines | ~106 |
+| 03:16 | Session end: 10 writes across 5 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md, CHANGELOG.md) | 10 reads | ~248465 tok |
+| 03:17 | Edited DEBUG_LOG.md | 1→2 lines | ~58 |
+| 03:18 | Edited DEBUG_LOG.md | inline fix | ~304 |
+| 03:19 | Session end: 12 writes across 5 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md, CHANGELOG.md) | 11 reads | ~254473 tok |
+| 03:21 | Edited DEBUG_LOG.md | inline fix | ~166 |
+| 03:22 | Session end: 13 writes across 5 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md, CHANGELOG.md) | 12 reads | ~254651 tok |
+| 03:25 | Edited scripts/gen_vocab.py | modified exists() | ~251 |
+| 03:25 | Edited DEBUG_LOG.md | inline fix | ~81 |
+| 03:26 | Edited DEBUG_LOG.md | modified 5() | ~435 |
+| 03:26 | Edited DEBUG_LOG.md | modified Fixed() | ~167 |
+| 03:27 | Session end: 17 writes across 6 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md, CHANGELOG.md) | 14 reads | ~276767 tok |
+| 03:29 | Session end: 17 writes across 6 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md, CHANGELOG.md) | 14 reads | ~276767 tok |
+| 03:31 | Session end: 17 writes across 6 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md, CHANGELOG.md) | 14 reads | ~276767 tok |
+| 03:31 | Edited DEBUG_LOG.md | inline fix | ~176 |
+| 03:32 | Edited DEBUG_LOG.md | modified patch() | ~402 |
+| 03:32 | Session end: 19 writes across 6 files (test_admin_router.py, test_backend_regressions.py, test_review_runner.py, DEBUG_LOG.md, CHANGELOG.md) | 14 reads | ~277114 tok |
+
+## Session: 2026-05-27 03:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 03:41 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/feedback_generation-seeding.md | — | ~240 |
+| 03:41 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→2 lines | ~87 |
+| 03:41 | Session end: 2 writes across 2 files (feedback_generation-seeding.md, MEMORY.md) | 3 reads | ~23097 tok |
+| 03:47 | Session end: 2 writes across 2 files (feedback_generation-seeding.md, MEMORY.md) | 3 reads | ~23097 tok |
+| 03:55 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/feedback_generation-seeding.md | 1→3 lines | ~208 |
+| 03:55 | Session end: 3 writes across 2 files (feedback_generation-seeding.md, MEMORY.md) | 4 reads | ~23320 tok |
+| 03:56 | Session end: 3 writes across 2 files (feedback_generation-seeding.md, MEMORY.md) | 4 reads | ~23320 tok |
+| 03:58 | Session end: 3 writes across 2 files (feedback_generation-seeding.md, MEMORY.md) | 4 reads | ~23320 tok |
+| 03:59 | Edited FUTURE_FEATURES.md | modified _GenerationTargetRequest() | ~1525 |
+| 03:59 | Session end: 4 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 6 reads | ~35802 tok |
+| 04:11 | Session end: 4 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 6 reads | ~35802 tok |
+| 04:27 | Session end: 4 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 6 reads | ~35802 tok |
+| 04:37 | Session end: 4 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 6 reads | ~35802 tok |
+| 04:38 | Edited FUTURE_FEATURES.md | modified Source() | ~1160 |
+| 04:39 | Session end: 5 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 6 reads | ~38456 tok |
+| 04:50 | Session end: 5 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 7 reads | ~86636 tok |
+| 04:53 | Session end: 5 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 7 reads | ~86636 tok |
+| 09:34 | Session end: 5 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 7 reads | ~86636 tok |

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-26T20:19:13.879Z
-> Files: 805 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-27T11:38:46.579Z
+> Files: 807 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -24,7 +24,8 @@
 ## ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/
 
 - `feedback_debug-log-workflow.md` — YYYY-MM-DD - <Audit Title> (~208 tok)
-- `MEMORY.md` — Memory Index (~202 tok)
+- `feedback_generation-seeding.md` (~375 tok)
+- `MEMORY.md` — Memory Index (~247 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_dual-user-routers.md` (~210 tok)
 
@@ -35,12 +36,12 @@
 - `.gitignore` — Git ignore rules (~36 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~41073 tok)
+- `CHANGELOG.md` — CHANGELOG (~42558 tok)
 - `CLAUDE.md` — OpenWolf (~378 tok)
-- `DEBUG_LOG.md` — Debug Log (~47120 tok)
+- `DEBUG_LOG.md` — Debug Log (~48180 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
-- `FUTURE_FEATURES.md` — Future Features (~8540 tok)
+- `FUTURE_FEATURES.md` — Future Features (~11020 tok)
 - `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
 - `INCONSISTENT_KEYS_LIST.md` — Inconsistent Taxonomy Keys in Official Question Annotations (~1473 tok)
@@ -989,6 +990,7 @@
 
 - `amendment_review.py` — Admin review and promotion operations for rule amendments. (~5047 tok)
 - `amendments.py` — Capture and persist official-source rule amendment proposals. (~5459 tok)
+- `annotation_sanitizer.py` — Sanitize LLM-produced annotation dicts before DB writes. (~1282 tok)
 - `ingestion_analysis.py` — Write reproducible ingestion analysis reports and re-appraisals. (~2600 tok)
 - `option_hydration.py` — Utilities for populating QuestionOption annotation fields from annotate_json. (~636 tok)
 - `overlap.py` — Overlap detection between unofficial/generated questions and official questions. (~1690 tok)
@@ -1016,7 +1018,7 @@
 - `admin.py` — API: 7 endpoints (~24627 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` (~15836 tok)
-- `ingest.py` (~35920 tok)
+- `ingest.py` (~35990 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
 - `student.py` — API: 1 endpoints (~13787 tok)
 
@@ -1057,14 +1059,14 @@
 ## backend/tests/
 
 - `conftest.py` — Force test env before any app imports — use assignment, not setdefault (~385 tok)
-- `test_admin_router.py` — FakeQuestion: test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, (~5434 tok)
+- `test_admin_router.py` — FakeQuestion: test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, (~5520 tok)
 - `test_amendment_capture.py` — Tests for extracting and storing Pass 2 amendment proposals. (~3724 tok)
 - `test_amendment_review.py` — Tests for admin amendment review and promotion operations. (~5112 tok)
 - `test_amendments_cli.py` — Tests for local development amendment CLI commands. (~2584 tok)
 - `test_amendments.py` — Tests for approval-gated rules amendment schemas. (~1165 tok)
 - `test_analytics.py` — Phase 9: Generation Quality Analytics endpoint tests. (~2351 tok)
 - `test_auto_release.py` — Phase 10: Controlled auto-release tests. (~3253 tok)
-- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~19416 tok)
+- `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~19437 tok)
 - `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~601 tok)
 - `test_consensus.py` — Phase 5 (consensus gate) — deterministic verdict computation tests. (~4251 tok)
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
@@ -1080,7 +1082,7 @@
 - `test_prompts.py` — test_extract_prompt_contains_instructions, test_annotate_prompt_loads_current_rules, test_annotate_p (~1029 tok)
 - `test_review_parser.py` — Tests for the review JSON parser and validator. (~2144 tok)
 - `test_review_prompt.py` — Tests for the review prompt composer. (~2061 tok)
-- `test_review_runner.py` — Phase 4 (review swarm runner) — runner, provider config, concurrency, (~5834 tok)
+- `test_review_runner.py` — Phase 4 (review swarm runner) — runner, provider config, concurrency, (~6058 tok)
 - `test_self_study.py` — Phase 8 — Self-Study Agent Request Layer tests. (~7550 tok)
 - `test_student_retrieval.py` — Phase 7 — Student Retrieval API Expansion tests. (~4606 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~510 tok)
@@ -1115,7 +1117,7 @@
 - `dev_reset_ingestion.sh` — dev_reset_ingestion.sh (~902 tok)
 - `dev_reset_ingestion.sql` — DEV-ONLY: TRUNCATEs all question_* tables + llm_evaluations (CASCADE clears user_progress), keeps users; clears the duplicate-checksum guard so PDFs can be re-ingested. (~625 tok)
 - `export_review.py` — Export ingested questions to a markdown review file with tables and passages. (~1399 tok)
-- `gen_vocab.py` — Controlled-vocabulary source-of-truth tooling. (~6018 tok)
+- `gen_vocab.py` — Controlled-vocabulary generation and review-queue tooling. (~7489 tok)
 - `reannotate_official_v7.py` — fetch_official_question_ids, submit_reannotate, poll_job, main (~2059 tok)
 
 ## scripts/v8/
@@ -1127,4 +1129,4 @@
 ## vocabulary/
 
 - `candidates.json` (~348 tok)
-- `master.json` (~31342 tok)
+- `master.json` (~31436 tok)

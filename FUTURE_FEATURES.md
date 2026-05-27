@@ -687,4 +687,248 @@ Persist saved vocabulary items with enough context for later review:
 - optional definition shown at save time
 
 The flash-card layer can then schedule saved words through spaced repetition
+
+---
+
+## PT Passage Seeding for Generation (`context_hint`)
+
+### Problem
+
+When generating `command_of_evidence_textual` (and similar reading-domain)
+questions, the model currently has only two inputs: (1) the generation rules
+and (2) any `source_question_ids` examples. Without concrete domain content
+to anchor the new passage, the model falls back to generic scaffold structures
+— e.g. a two-named-scholar debate — that produce:
+
+- Thin, formulaic passages with invented details
+- Distractors that are wrong in generic ways rather than specifically wrong
+- Explanations that restate the question rather than explain the reasoning
+
+The first generation (`words_in_context / precision_fit`, seeded from a Marilyn
+Dingle basket question) produced tight distractors because the source passage
+had specific material for the model to pattern-match against. The second
+(`command_of_evidence_textual`, seeded from a Mexican-American folklore
+question) produced a generic linguists-debate passage because the model
+mirrored the structural scaffold rather than the domain substance.
+
+### Solution: `context_hint` field + PT passage seeding
+
+Add a `context_hint: str | None` field to the generation request. When
+present, it is injected into the generation user prompt as a topic/domain
+seed: the model writes a passage grounded in that material rather than
+inventing its own.
+
+The natural source for `context_hint` is the official PT passages already
+in the database. They are:
+
+- Substantive and specific (real scholars, real findings, real historical events)
+- DSAT-register (academic, appropriately complex, College Board-vetted)
+- Already tagged with `reading_focus_key` so they can be matched to the
+  target generation key
+- Zero external dependency — no web search, no third-party API
+
+The workflow at generation time:
+
+1. Caller supplies `target_reading_focus_key` + `source_question_ids` as today
+2. Caller optionally supplies `context_hint` — a raw passage text from a
+   *different* official PT question that shares the same focus key
+3. The generation prompt instructs the model: "Write a new passage inspired
+   by the topic domain and factual specificity of the following source text.
+   Do not reproduce its sentences, proper nouns, or exact claims. Use it
+   only as a content anchor."
+4. The model generates a passage with real domain substance, then builds
+   question + distractors around it
+
+Callers can also query the DB themselves to find a matching passage:
+
+```
+GET /admin/questions?content_origin=official&reading_focus_key=<key>&limit=20
+```
+
+Pick any `current_passage_text` from the result and pass it as `context_hint`.
+
+### Changes required
+
+#### 1. `backend/app/models/payload.py` — add field to `_GenerationTargetRequest`
+
+```python
+class _GenerationTargetRequest(BaseModel):
+    ...
+    context_hint: Optional[str] = None   # ← add this
+```
+
+No validator needed — it is free-form text, passed through as-is.
+Also add to `GenerationBatchRequest` if/when batch generation uses this flow.
+
+#### 2. `backend/app/prompts/generate_prompt.py` — inject into user prompt
+
+In `build_generate_prompt` / `build_generate_prompt_parts`, after the
+`source_examples` block:
+
+```python
+if generation_request.get("context_hint"):
+    user_parts.append(
+        "\nTopic/domain seed — use this passage as a content anchor when "
+        "writing the new passage. Do NOT reproduce its sentences, named "
+        "entities, or exact claims. Draw on its subject matter, factual "
+        "specificity, and domain vocabulary to give the generated passage "
+        "real substance:\n\n"
+        + generation_request["context_hint"]
+    )
+```
+
+Place this *after* source_examples so it reads: rules → source style
+examples → content anchor.
+
+#### 3. `backend/app/routers/generate.py` — no changes needed
+
+`request_data = body.model_dump()` already passes all fields through to
+`build_generate_prompt_parts`. The new field rides along automatically.
+
+#### 4. Optional: `/admin/questions` filter by `reading_focus_key`
+
+Add `reading_focus_key` as a query param to `GET /admin/questions` so
+callers can fetch candidate passages without pulling 200 questions and
+filtering client-side. This is a convenience affordance, not a blocker.
+
+### What to strip from `context_hint` before persisting
+
+`context_hint` is a generation input, not question content. It must be
+stripped from `Question.generation_source_set` at save time (add it to
+`_SOURCE_SET_OPERATIONAL_KEYS` in `generate.py`), the same way
+`requested_by` and `seed` are stripped today.
+
+### Expected quality improvement
+
+The failure mode from the second demo generation — generic passage,
+obvious distractors, restatement explanation — is directly traceable to
+the model having no factual anchor. Injecting a real PT passage as
+`context_hint` gives it the same grounding that made the first generation
+(Marilyn Dingle → rock erosion) work well: the model can borrow domain
+register, factual texture, and specificity without cloning structure.
+
+This is a small, low-risk change: one new optional field, one conditional
+block in the prompt builder, one addition to the operational-key strip
+list. No schema migrations, no new tables, no provider changes.
+
+### Suggested first test
+
+1. Pick an official PT question with `reading_focus_key = "evidence_supports_claim"`
+   and a rich passage (e.g. a science or history passage with specific named
+   findings)
+2. Generate with `source_question_ids` = folklore question ID (same as before)
+   and `context_hint` = the new passage text
+3. Compare passage quality and distractor specificity against the baseline
+   (linguistics debate) generation
 and optionally group them by test, topic, difficulty, or source passage.
+
+---
+
+## Passage Length Matching for Generation (`target_passage_word_count`)
+
+### Problem
+
+Generated reading-domain passages are consistently shorter and less factually
+dense than the official PT passages used as source examples. This gap directly
+degrades distractor quality: fewer named entities, shorter causal chains, and
+less specific domain detail give the model fewer precise ways to be wrong,
+producing distractors that are generic rather than calibrated.
+
+Observed example:
+- **Source (Barbacenia plants):** ~130 words — two named researchers, two named
+  species, two named acids (malic, citric), specific rock type (quartzite),
+  two-step mechanism (dissolution → channels + phosphate release)
+- **Generated (Liolaemus lizard):** ~55 words — one species, one location,
+  one-step mechanism (grooves → capillary action)
+
+The distractor quality difference is traceable directly to this density gap.
+The current generation system prompt contains the rule:
+
+```
+- Passage must be 20-40 words for sentence_only items
+```
+
+This rule is correct for grammar fill-in-the-blank items but the model
+treats it as a general ceiling. Reading comprehension passages should match
+the source passage length, not hit a grammar-item floor.
+
+### Solution: two-tier fix
+
+#### Tier 1 — Quick (one-line prompt change, no new fields)
+
+In `build_generate_prompt` / `build_generate_prompt_parts`
+(`backend/app/prompts/generate_prompt.py`), extend the source-examples
+instruction to include an explicit length/density directive:
+
+```python
+if source_examples:
+    user_parts.append(
+        "\nStored official questions are serving as the foundational source "
+        "for generation. Use these examples to calibrate DSAT style, taxonomy, "
+        "passage architecture, distractor construction, and difficulty. "
+        "Match the approximate word count and factual density of the source "
+        "passage — include a comparable number of named entities, specific "
+        "measurements or mechanisms, and causal steps. "
+        "Do not copy passages, stems, or options.\n"
+        f"{json.dumps(source_examples, indent=2)}"
+    )
+```
+
+This is the minimum viable fix and requires no schema or API changes.
+
+#### Tier 2 — Clean (pairs with `context_hint` spec)
+
+Add `target_passage_word_count: int | None = None` to
+`_GenerationTargetRequest` in `backend/app/models/payload.py`:
+
+```python
+class _GenerationTargetRequest(BaseModel):
+    ...
+    context_hint: Optional[str] = None
+    target_passage_word_count: Optional[int] = None
+```
+
+When set, inject into the generation user prompt:
+
+```python
+if generation_request.get("target_passage_word_count"):
+    user_parts.append(
+        f"\nTarget passage length: approximately "
+        f"{generation_request['target_passage_word_count']} words."
+    )
+```
+
+Callers auto-populate this by measuring the source passage before submitting:
+
+```python
+word_count = len(source_question["current_passage_text"].split())
+# pass as target_passage_word_count in the generation request
+```
+
+Add `target_passage_word_count` to `_SOURCE_SET_OPERATIONAL_KEYS` in
+`generate.py` so it is stripped from `Question.generation_source_set` at
+save time.
+
+### Why length proxies complexity on this question type
+
+For `command_of_evidence_textual` and `evidence_supports_claim` questions,
+passage length correlates directly with the number of:
+
+- Named entities (researchers, species, locations) that can anchor
+  topically plausible but wrong distractors
+- Causal links in a mechanism chain — each link is a place to insert a
+  distractor that breaks the chain at a specific point
+- Specific facts (acids, rock types, percentages) that enable distractors
+  which are wrong in precise, non-obvious ways rather than generically wrong
+
+The 20-40 word rule is appropriate only for `sentence_only` grammar items
+where the entire passage is a single sentence with a blank. It should be
+explicitly scoped in the system prompt to that stimulus mode.
+
+### Suggested rollout
+
+1. Apply Tier 1 (prompt wording change) immediately — zero risk, testable
+   in one generation run
+2. Verify by regenerating from the Barbacenia plants source and comparing
+   word count and distractor specificity
+3. Ship Tier 2 alongside `context_hint` if Tier 1 alone does not close the gap

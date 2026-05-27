@@ -1,0 +1,18 @@
+question_id: 3a163c26-9ee6-43e7-b4d8-ddc9167b70ce
+question_text: Single Q
+passage_text: A passage.
+correct_option_label: A
+options:
+- label: A
+  text: a
+- label: B
+  text: b
+- label: C
+  text: c
+- label: D
+  text: d
+annotation:
+  explanation_short: E
+  explanation_full: F
+  annotation_confidence: 0.9
+  needs_human_review: false

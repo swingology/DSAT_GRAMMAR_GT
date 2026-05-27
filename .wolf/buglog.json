@@ -3220,6 +3220,150 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-26T20:18:10.268Z"
+    },
+    {
+      "id": "bug-199",
+      "timestamp": "2026-05-27T02:16:31.630Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 11→13 lines (3 removed) | Also: 2. **Medium — master.json was bootstrapped from on; - The founding commit (`00a9307`, 2026-05-18) ran  | Also: 4. **Low — master.json does not cover all grammar ; - Grammar v8.1 added: `absolute_phrase` focus key,",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-27T02:16:53.089Z"
+    },
+    {
+      "id": "bug-200",
+      "timestamp": "2026-05-27T02:17:04.521Z",
+      "error_message": "Incorrect value in code",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "Had `absolute_phrase`",
+      "fix": "Changed to `gen_vocab --check`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-27T02:17:10.536Z"
+    },
+    {
+      "id": "bug-201",
+      "timestamp": "2026-05-27T02:17:30.995Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-27T02:17:30.995Z"
+    },
+    {
+      "id": "bug-202",
+      "timestamp": "2026-05-27T10:06:41.356Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/tests/test_admin_router.py",
+      "root_cause": "Had \"rules_agent_dsat_reading_v2.md\"",
+      "fix": "Changed to \"rules_agent_dsat_reading_v3.md\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-27T10:06:44.374Z"
+    },
+    {
+      "id": "bug-203",
+      "timestamp": "2026-05-27T10:09:40.657Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/tests/test_review_runner.py",
+      "root_cause": "Had \"v7\"",
+      "fix": "Changed to \"v8\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-27T10:09:40.657Z"
+    },
+    {
+      "id": "bug-204",
+      "timestamp": "2026-05-27T10:21:58.905Z",
+      "error_message": "Incorrect value in code",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "Had `wrong_group_selected`",
+      "fix": "Changed to `polarity_blindness`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-27T10:21:58.906Z"
+    },
+    {
+      "id": "bug-205",
+      "timestamp": "2026-05-27T10:26:18.263Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 12→10 lines (9 removed) | Also: 1. **High — 35 unresolved candidate keys in `vocab; - During live ingestion runs, `vocab_candidates.py",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-27T10:26:31.596Z"
+    },
+    {
+      "id": "bug-206",
+      "timestamp": "2026-05-27T10:31:49.659Z",
+      "error_message": "Incorrect value in code",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "Had `candidates.json`",
+      "fix": "Changed to `89868ad`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-27T10:31:49.659Z"
+    },
+    {
+      "id": "bug-207",
+      "timestamp": "2026-05-27T10:32:03.430Z",
+      "error_message": "Significant refactor of ",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 13→11 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-27T10:32:03.430Z"
     }
   ]
 }
