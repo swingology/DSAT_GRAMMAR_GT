@@ -801,6 +801,13 @@
           "description": ""
         },
         {
+          "value": "absolute_phrase",
+          "parent": "modifier",
+          "status": "active",
+          "added": "2026-05-27",
+          "description": "Nominative absolute construction (noun + participial phrase modifying the whole main clause)"
+        },
+        {
           "value": "punctuation_comma",
           "parent": "punctuation",
           "status": "active",

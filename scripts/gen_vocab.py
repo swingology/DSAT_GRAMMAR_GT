@@ -367,6 +367,32 @@ def cmd_generate(args) -> int:
     return 0
 
 
+def _check_rules_keys_in_master(master: dict) -> list[str]:
+    """Return drift messages for grammar_focus_key values in the v8 rules doc
+    that are not present in master.json GRAMMAR_FOCUS_BY_ROLE."""
+    import re
+    grammar_path = RULES_DOCS.get("grammar")
+    if not grammar_path or not grammar_path.exists():
+        return []
+    master_keys = {
+        e.get("value") or e.get("key")
+        for v in master.get("vocabularies", [])
+        if v.get("name") == "GRAMMAR_FOCUS_BY_ROLE"
+        for e in v.get("entries", [])
+        if e.get("status") == "active"
+    }
+    text = grammar_path.read_text()
+    # Only match inline `grammar_focus_key: "foo"` classification lines.
+    # Section headers (### `foo`) are not reliable because sub-pattern labels and
+    # generation-pattern names also appear as headers but are not focus keys.
+    rules_keys = set(re.findall(r'grammar_focus_key:\s*["\']?(\w+)', text))
+    missing = rules_keys - master_keys
+    return [
+        f"rules doc defines grammar_focus_key {k!r} but it is not in master.json GRAMMAR_FOCUS_BY_ROLE"
+        for k in sorted(missing)
+    ]
+
+
 def cmd_check(args) -> int:
     master = json.loads(MASTER_PATH.read_text())
     drift = []
@@ -379,6 +405,7 @@ def cmd_check(args) -> int:
         current = path.read_text()
         if _apply_doc_blocks(current, blocks) != current:
             drift.append(f"{path.name} out of sync with master.json")
+    drift.extend(_check_rules_keys_in_master(master))
     if drift:
         for d in drift:
             print(f"DRIFT: {d}", file=sys.stderr)

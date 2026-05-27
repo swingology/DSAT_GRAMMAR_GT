@@ -105,7 +105,7 @@ GRAMMAR_FOCUS_BY_ROLE = {
     "modifier": (
         "modifier_placement", "comparative_structures", "illogical_comparison",
         "adjective_adverb_distinction", "logical_predication",
-        "relative_pronouns",
+        "relative_pronouns", "absolute_phrase",
     ),
     "punctuation": (
         "punctuation_comma", "colon_dash_use", "semicolon_use",

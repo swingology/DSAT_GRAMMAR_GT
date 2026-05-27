@@ -1892,7 +1892,75 @@ Classify with `syntactic_trap_key: "none"` and
 ### `logical_predication`
 
 Create a sentence where the subject and predicate are grammatically possible
-but logically incompatible.
+but logically incompatible. Three principal trap variants tested in official
+DSAT items:
+
+**Sub-pattern — Consequence-Marking Participle Where Finite Verb Misaligns**
+
+(PT1 M2 Q21 + PT10 M1 Q22: "forcing")
+
+The passage describes a causal situation in the main clause and the blank
+sits at a clause boundary that calls for a present participial showing
+consequence. The correct option (`-ing` form: "forcing") attaches as a
+result-participle to the preceding clause — the only option that correctly
+expresses the logical consequence without introducing a splice or tense
+conflict. Distractors: finite verb in third person singular ("forces") —
+creates a comma splice because no coordinator is present; bare infinitive
+("to force") — signals purpose rather than consequence and cannot attach at
+a boundary following a finite clause without a coordinator; past participle
+("forced") — reverses agency, implying the subject was acted upon rather
+than acting as the agent of consequence.
+
+Passage kernel: "...those food sources may become unavailable because of
+extensive snow and ice cover, _______ the monkeys to hunt for marine animals
+in any streams that have not frozen over."
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "tense_confusion"`.
+
+**Sub-pattern — Participial-Phrase Opener Demands Logically Compatible Subject**
+
+(PT6 M2 Q21: "the topological tapestries of Argentine textile artist
+Alexandra Kehayoglou are"; PT11 M2 Q24: "amorphous ice lacks the thermal
+energy to form the crystals found in ice Ih")
+
+An opening participial phrase (e.g., "Using a carpet weaving technique passed
+down by the artist's Turkish grandmother, ___"; "Defined by a disorganized
+molecular structure, ___") sets an implicit agent. The blank supplies the
+main-clause subject plus predicate. The correct option provides a subject
+that is the logical agent of the participial phrase; all distractors supply
+a subject that cannot be the agent (creating a dangling modifier) or that
+distorts the semantic relationship.
+
+The trap is that distractors are often grammatically well-formed sentences
+whose subject is thematically adjacent to the participial phrase's agent
+(e.g., the artist's grandmother rather than the tapestries; a different
+property of ice rather than amorphous ice itself) — the modifier-agent
+mismatch is logical, not purely syntactic.
+
+Classify with `syntactic_trap_key: "modifier_attachment_ambiguity"` and
+`student_failure_mode_key: "modifier_hitchhike"`.
+
+**Sub-pattern — Real Agent Must Be the Grammatical Subject of the Reporting Verb**
+
+(PT11 M2 Q25: "electrograms show that while responding to hypothetical match
+scenarios, the most highly skilled soccer players have")
+
+The passage reports a finding through an instrument or measurement ("Recordings
+of electrical activity in the brain, ___"). The blank supplies the grammatical
+subject plus predicate. The correct option makes the logical agent (the
+skilled players or the recordings as logical subject) the grammatical subject
+of the main verb. Distractors reassign the grammatical subject to a
+semantically plausible but logically incompatible entity — the measurement
+result rather than its source, the brain rather than the players, or an
+abstract noun that cannot perform the action ascribed by the predicate.
+
+Classify with `syntactic_trap_key: "none"` and
+`student_failure_mode_key: "nominalization_obscures_subject"`.
+
+Classification: `grammar_role_key: "modifier"`,
+`grammar_focus_key: "logical_predication"`.
+
 
 ### `comparative_structures`
 
@@ -6231,6 +6299,7 @@ regenerate. They stay in lockstep with the validator enums in
   - `adjective_adverb_distinction`
   - `logical_predication`
   - `relative_pronouns`
+  - `absolute_phrase` — Nominative absolute construction (noun + participial phrase modifying the whole main clause)
 - **`punctuation`**
   - `punctuation_comma`
   - `colon_dash_use`

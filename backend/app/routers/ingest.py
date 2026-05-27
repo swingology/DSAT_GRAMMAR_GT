@@ -31,6 +31,7 @@ from app.parsers.pdf_parser import parse_pdf
 from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 from app.pipeline.orchestrator import JobOrchestrator
 from app.pipeline.validator import validate_question
+from app.pipeline.annotation_sanitizer import sanitize_annotation_keys
 from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields, apply_option_annotations
 from app.models.payload import JobResponse, ReannotateRequest, OCRJobResult, OCRBenchmarkResponse
 
@@ -837,6 +838,9 @@ async def _persist_single_question(
 
     await db.flush()
 
+    annotate_json = sanitize_annotation_keys(
+        annotate_json, job_id=str(job.id)
+    )
     db.add(QuestionAnnotation(
         id=annotation_id,
         question_id=question_id,
@@ -2717,6 +2721,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     ))
     await db.flush()  # persist version before annotation FK references it
 
+    annotate_json = sanitize_annotation_keys(annotate_json, job_id=str(job.id))
     db.add(QuestionAnnotation(
         id=annotation_id,
         question_id=question.id,
