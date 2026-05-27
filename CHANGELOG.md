@@ -5,6 +5,25 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-27 — GAP-010 delimiter rule, test suite fixes (reading v2→v3, flush count, job.id, version strings)
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `rules_edit`
+**Commit:** `567c64c`
+
+### Added
+- **Matching Delimiter Rule cross-key note** (`rules_agent_dsat_grammar_ingestion_generation_v8.md`) — New `### Matching Delimiter Rule (Cross-Key Note)` section before `punctuation_comma`. Formalizes the comma/em-dash/paren symmetry requirement as a cross-cutting principle for `appositive_punctuation`, `colon_dash_use`, and `unnecessary_internal_punctuation`. Explains why asymmetric-delimiter distractors are seductive and gives annotators the rule for which focus key to assign based on parenthetical content type.
+
+### Fixed
+- **Test fixtures using `rules_agent_dsat_reading_v2.md`** — 5 test files still created `v2.md` fixtures after `DOC_BY_AFFECTED_DOC["reading"]` was updated to `v3.md`. Amendment approval returned 409 Conflict. Updated all fixture creation and path assertions to `v3.md`.
+- **`flush_count == 1` assertion in generate pipeline test** — Generate pipeline correctly does 2 flushes (after Question+Version, after Annotation); assertion updated to 2.
+- **Missing `id` field on reannotation job fixture** — `_run_reannotate_pipeline` sanitizer call uses `str(job.id)`; the `SimpleNamespace` fixture lacked the field, raising `AttributeError`. Added `id=uuid.uuid4()`.
+- **Stale `RULES_VERSIONS` version strings in test** — `test_rules_versions` asserted `grammar == "v7"` and `reading == "v2"` after the constants were updated to v8/v3. Corrected.
+
+753 tests pass, 2 skipped.
+
+---
+
 ## 2026-05-27 — Vocabulary integrity: absolute_phrase key, annotation sanitizer, logical_predication sub-patterns
 
 **Model:** Claude Sonnet 4.6
