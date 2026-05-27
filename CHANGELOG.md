@@ -5,6 +5,40 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-27 — Vocabulary integrity: absolute_phrase key, annotation sanitizer, logical_predication sub-patterns
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `rules_edit`
+**Commit:** `cd2815d`
+
+### Added
+- **`absolute_phrase` grammar focus key** (`vocabulary/master.json`) — Key was defined in the v8 rules file with a full Classification block and 2 PT-cited sub-patterns but was absent from master.json; LLM had no valid path to output it. Added under the `modifier` role; ontology.py and VOCAB blocks regenerated.
+- **`annotation_sanitizer.py`** (`backend/app/pipeline/annotation_sanitizer.py`) — New pipeline module. Before any `annotation_jsonb` DB write, checks each controlled-vocabulary field (`grammar_focus_key`, `grammar_role_key`, `question_family_key`, `stem_type_key`, `stimulus_mode_key`, `skill_family_key`, `reading_focus_key`, `reasoning_trap_key`) against master.json. Uses `difflib.get_close_matches(cutoff=0.7)` to substitute near-misses; nulls fields with no viable match. All originals recorded in `candidates.json` with `sanitized→target` context. Corrections are auditable in `annotation_jsonb._key_corrections`.
+- **`logical_predication` sub-patterns** (`rules_agent_dsat_grammar_ingestion_generation_v8.md`) — Replaced one-line stub with 3 PT-cited sub-patterns: Consequence-Marking Participle Where Finite Verb Misaligns (PT1 M2 Q21 + PT10 M1 Q22), Participial-Phrase Opener Demands Logically Compatible Subject (PT6 M2 Q21 + PT11 M2 Q24), Real Agent Must Be the Grammatical Subject of the Reporting Verb (PT11 M2 Q25). All 44 grammar focus keys now have sub-patterns (136 total, up from 133).
+
+### Changed
+- **`gen_vocab.py --check`** extended to cross-verify inline `grammar_focus_key:` references in the v8 rules doc against master.json `GRAMMAR_FOCUS_BY_ROLE`; will fail with a DRIFT message if a rules-doc Classification block references a key not in master.json. Uses inline-only matching (not section headers) to avoid false positives from sub-pattern and generation-pattern labels.
+- **`ingest.py`** — `sanitize_annotation_keys()` wired into both `_persist_single_question()` and the reannotation pipeline immediately before `annotation_jsonb=` DB write. Invalid controlled-vocabulary keys no longer reach the database.
+
+---
+
+## 2026-05-26 — Fix annotate prompt hallucinations, upgrade to v8/v3 rules
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `rules_edit`
+**Commit:** `02131c3`
+
+### Fixed
+- **Annotate prompt hallucinated CB display labels** — LLM was emitting College Board display names (e.g. `standard_english_conventions`) instead of canonical snake_case taxonomy keys. Added `grammar_focus_key` (by role) and `grammar_role_key` to `_build_allowed_keys_block()`; updated Rule 6 in both annotate templates to require all six taxonomy keys verbatim with explicit ban on display-label variants.
+- **Stale `Reading v2` labels in prompt files** — Updated all `_REVIEW_RULE_FILES` and prompt references to `Reading v3` (code already loaded v3 but labels were still v2).
+- **~30 hallucinated grammar/stem candidates purged** from `vocabulary/candidates.json`.
+
+### Changed
+- **`prompt_version`** bumped from `v7.0` to `v8.0` across all ingest/generate/reannotate job creation sites.
+- **`payload.py`, pipeline modules, routers** — Updated v7→v8 and v2→v3 rule-file references.
+
+---
+
 ## 2026-05-25 — Switch active grammar references to v8
 
 **Model:** GPT-5 Codex
