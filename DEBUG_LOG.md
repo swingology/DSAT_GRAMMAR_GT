@@ -1,5 +1,31 @@
 # Debug Log
 
+## 2026-05-27 - Vocabulary Integrity and Annotation Key Sanitization
+Report created by: Claude Sonnet 4.6
+Git branch: `rules_edit`
+Git checkpoint: `cd2815d` — feat(vocab+pipeline): add absolute_phrase key, annotation sanitizer, logical_predication sub-patterns
+
+### Findings
+
+1. **High:** `absolute_phrase` defined in v8 rules with a Classification block but absent from `master.json` — LLM had no valid path to output it; if it did the validator recorded it as a candidate and the bad key persisted to DB.
+   - **Fixed:** Added `absolute_phrase` to `master.json` (parent: `modifier`), ran `gen_vocab --generate`. Key now in `ontology.py` and propagated to annotate-prompt allowed-keys block.
+
+2. **High:** Invalid controlled-vocabulary keys from LLM annotation were persisted to `annotation_jsonb` in the DB — validator recorded them in `candidates.json` non-blocking but never sanitized the value before writing.
+   - **Fixed:** `backend/app/pipeline/annotation_sanitizer.py` added. `difflib.get_close_matches(cutoff=0.7)` substitutes near-misses; unknowns are nulled. Audit trail stored in `annotation_jsonb._key_corrections`. Wired into `_persist_single_question()` and the reannotation pipeline before every `annotation_jsonb=` DB write.
+
+3. **Medium:** `gen_vocab --check` only verified `ontology.py ↔ master.json` — did not catch rules-doc keys missing from master.json (how `absolute_phrase` slipped through).
+   - **Fixed:** `cmd_check()` in `scripts/gen_vocab.py` now parses inline `grammar_focus_key:` Classification references from the v8 rules doc and diffs against `master.json GRAMMAR_FOCUS_BY_ROLE`. Exits non-zero with DRIFT message if any key is missing.
+
+4. **Medium:** `logical_predication` (Tier A, 6 PT examples) had only a one-line stub — no sub-patterns. All other 43 grammar focus keys had sub-patterns.
+   - **Fixed:** 3 PT-cited sub-patterns drafted (Consequence-Marking Participle — PT1 M2 Q21; Participial Opener Demands Compatible Subject — PT6 M2 Q21 + PT11 M2 Q24; Real Agent Must Be Grammatical Subject — PT11 M2 Q25). All 44 focus keys now covered (136 total sub-patterns).
+
+### Remaining Open
+- `subjunctive_mood`, `singular_they` still not in `master.json` (GAP-006, GAP-007 from missing_rules_v8.md)
+- `syntactic_trap_key` and `student_failure_mode_key` not yet audited against rules-doc D.5/D.7 taxonomy
+- Candidate-count CI threshold (Step 7 of vocabulary audit task list) still pending
+
+---
+
 ## 2026-05-26 - Rules v8/v3 Pipeline Gap Audit
 Report created by: Claude Sonnet 4.6
 Git branch: `rules_edit`
@@ -30,12 +56,14 @@ Git checkpoint: `a171298` — chore(v8): switch active grammar references from v
    - GAP-002: `subject_verb_agreement` — indefinite pronoun subjects (CRITICAL)
    - GAP-003: `subject_verb_agreement` — compound `or`/`nor` subjects (CRITICAL)
    - GAP-004: `verb_form` — gerund vs. infinitive idiomatic selection (CRITICAL)
-   - GAP-005: Absolute phrases / nominative absolutes (CRITICAL)
+   - ~~GAP-005: Absolute phrases / nominative absolutes (CRITICAL)~~
+     **Fixed 2026-05-27:** `absolute_phrase` added to `master.json` (modifier role), ontology.py regenerated, 2 sub-patterns already present in v8 rules. `gen_vocab --check` now enforces rules↔master.json alignment.
    - GAP-006: `subjunctive_mood` sub-patterns not documented (MAJOR)
    - GAP-007: `pronoun_antecedent_agreement` — singular `they` (MAJOR)
    - GAP-008 through GAP-017: various MODERATE/MINOR sub-pattern gaps
-   - Full detail in `missing_rules_v8.md`
-   - Fix: patch `rules_agent_dsat_grammar_ingestion_generation_v8.md` via amendment workflow for CRITICAL/MAJOR gaps first
+   - ~~`logical_predication` had no sub-patterns (stub only)~~
+     **Fixed 2026-05-27:** 3 PT-cited sub-patterns added (PT1 M2 Q21, PT6 M2 Q21, PT11 M2 Q24/Q25). All 44 focus keys now have sub-patterns (136 total).
+   - Remaining: GAP-001–004, GAP-006–017 still open. Full detail in `missing_rules_v8.md`.
 
 ---
 
@@ -131,17 +159,19 @@ Audit of `vocabulary/master.json` revealed that the controlled vocabulary is inc
    - Several of these look like legitimate aliases or renamed variants of approved keys (e.g., `rhetorical_synthesis` may map to `expression_of_ideas`; `synthesis_from_notes` may map to `notes_summary`). Others look like ingestion model drift that should be rejected. None have been formally reviewed.
    - **Risk**: ingested questions with candidate-only keys pass storage but fail downstream validation, DB enum constraints, and any UI that reads these fields. The drift is silent — no alert fires.
 
-2. **Medium — master.json was bootstrapped from ontology.py, not from the rules documents:**
-   - The founding commit (`00a9307`, 2026-05-18) ran `gen_vocab.py --bootstrap` to extract enums already in `ontology.py` into master.json. This means the vocabulary reflects what the Python model had at that point, not a deliberate audit against the grammar v8 or reading v3 rules documents.
-   - Keys added to the rules documents since then (e.g., grammar v8.1 patch keys from the missing_rules audit: `absolute_phrase`, `subjunctive_mood` sub-patterns, `commonly_confused_words` additions, `singular_they`) are **not confirmed to exist in master.json**. Drift between the rules files and master.json has not been checked.
+2. ~~**Medium — master.json was bootstrapped from ontology.py, not from the rules documents:**~~
+   - ~~The founding commit (`00a9307`, 2026-05-18) ran `gen_vocab.py --bootstrap` to extract enums already in `ontology.py` into master.json. This means the vocabulary reflects what the Python model had at that point, not a deliberate audit against the grammar v8 or reading v3 rules documents.~~
+   - ~~Keys added to the rules documents since then (e.g., grammar v8.1 patch keys from the missing_rules audit: `absolute_phrase`, `subjunctive_mood` sub-patterns, `commonly_confused_words` additions, `singular_they`) are **not confirmed to exist in master.json**. Drift between the rules files and master.json has not been checked.~~
+   - **Partially fixed 2026-05-27:** `gen_vocab --check` now cross-verifies inline `grammar_focus_key:` Classification block references in the v8 rules doc against master.json; `absolute_phrase` gap closed. Remaining drift for `subjunctive_mood`, `singular_they`, etc. still needs audit.
 
 3. **Medium — No verified connection between master.json and the student-facing UI:**
    - It is unknown whether the student UI reads `grammar_focus_key`, `grammar_role_key`, or related fields from the DB and renders them in any way (e.g., skill labels, topic tags, study plan categories). If it does, unresolved candidate keys or rules-doc drift would produce blank or broken labels.
    - No integration test or drift gate exists between master.json and the student UI layer.
 
-4. **Low — master.json does not cover all grammar v8 keys added in the v8.1 patch (2026-05-25):**
-   - Grammar v8.1 added: `absolute_phrase` focus key, `subjunctive_mood` sub-patterns (3 environments), expanded `commonly_confused_words` pairs, `singular_they` pronoun pattern, B.4 new distractor rows for `subject_verb_agreement`, `modifier_placement`, `transition_logic`.
-   - None of these were run through `gen_vocab.py --promote`. master.json may be missing these keys; ontology.py is therefore also missing them, meaning DB inserts for questions using these keys will fail enum validation.
+4. ~~**Low — master.json does not cover all grammar v8 keys added in the v8.1 patch (2026-05-25):**~~
+   - ~~Grammar v8.1 added: `absolute_phrase` focus key, `subjunctive_mood` sub-patterns (3 environments), expanded `commonly_confused_words` pairs, `singular_they` pronoun pattern, B.4 new distractor rows for `subject_verb_agreement`, `modifier_placement`, `transition_logic`.~~
+   - ~~None of these were run through `gen_vocab.py --promote`. master.json may be missing these keys; ontology.py is therefore also missing them, meaning DB inserts for questions using these keys will fail enum validation.~~
+   - **Fixed 2026-05-27:** `absolute_phrase` added to master.json and ontology regenerated (commit `cd2815d`). `subjunctive_mood`, `singular_they` not yet added — still open.
 
 ### Task — Rebuild master.json as a fully comprehensive controlled vocabulary
 
@@ -151,12 +181,12 @@ Audit of `vocabulary/master.json` revealed that the controlled vocabulary is inc
 Remake `vocabulary/master.json` as a deliberately audited, comprehensive vocabulary by doing the following:
 
 - [ ] **Step 1 — Candidate review**: For each of the 35 candidates in `candidates.json`, determine: (a) promote as-is, (b) promote as alias mapping to an existing key, or (c) reject as ingestion model error. Use `gen_vocab.py --promote` and `--reject` accordingly.
-- [ ] **Step 2 — Rules-doc audit**: Cross-reference master.json against the full key lists in `rules_agent_dsat_grammar_ingestion_generation_v8.md` (D.2, D.5, D.7 taxonomy sections) and `rules_agent_dsat_reading_v3.md` (Appendix V VOCAB blocks). Add any keys present in the rules docs but absent from master.json.
-- [ ] **Step 3 — Grammar v8.1 patch keys**: Explicitly promote the keys added in the 2026-05-25 v8.1 patch: `absolute_phrase`, `subjunctive_mood` (and its sub-pattern annotations), expanded `commonly_confused_words` pairs, `singular_they`. Verify `ontology.py` DB enum is regenerated after promotion.
+- [ ] **Step 2 — Rules-doc audit**: Cross-reference master.json against the full key lists in `rules_agent_dsat_grammar_ingestion_generation_v8.md` (D.2, D.5, D.7 taxonomy sections) and `rules_agent_dsat_reading_v3.md` (Appendix V VOCAB blocks). Add any keys present in the rules docs but absent from master.json. *(Partially done 2026-05-27: `gen_vocab --check` now enforces inline grammar_focus_key refs; `absolute_phrase` added. `syntactic_trap_key`, `student_failure_mode_key`, `subjunctive_mood`, `singular_they` not yet audited.)*
+- [x] **Step 3 — Grammar v8.1 patch keys (partial)**: `absolute_phrase` added to master.json + ontology regenerated (commit `cd2815d`). ~~`subjunctive_mood`, `singular_they`, expanded `commonly_confused_words` still pending.~~
 - [ ] **Step 4 — Student UI key audit**: Identify every field in the student-facing UI that reads a controlled vocabulary field from the DB (skill labels, topic tags, filter dropdowns, study plan categories). Map each UI field to its `master.json` vocabulary. Confirm all live DB values for those fields exist in master.json. Add any missing keys.
 - [ ] **Step 5 — DB live key verification for grammar**: Query the live DB for all distinct values of `grammar_focus_key`, `grammar_role_key`, `syntactic_trap_key`, and `student_failure_mode_key` across all ingested questions. Diff against master.json approved values. Any DB value not in master.json is a data integrity gap — flag for review or backfill.
 - [ ] **Step 6 — Regenerate artefacts**: After master.json is complete, run `gen_vocab.py --generate` to regenerate `ontology.py` and the Appendix V VOCAB blocks in both rules documents. Run `test_vocab_sync.py` to verify drift gate passes.
-- [ ] **Step 7 — Add a CI drift gate**: Extend `test_vocab_sync.py` or add a new CI check that fails if `candidates.json` accumulates more than N unreviewed entries (suggested threshold: 5). This prevents silent candidate drift from recurring.
+- [x] **Step 7 — Drift gate added (2026-05-27)**: `gen_vocab --check` extended to verify inline `grammar_focus_key:` Classification block references in the v8 rules doc against master.json (commit `cd2815d`). Will DRIFT-fail if a rules-doc key is missing from master.json. Candidate-count threshold check still pending.
 
 ---
 
