@@ -18,8 +18,7 @@ Git checkpoint: `7186296` — docs(debug-log): add 2026-05-27 vocab integrity en
    - **Fixed:** `### Matching Delimiter Rule (Cross-Key Note)` section added immediately before `### \`punctuation_comma\`` in `rules_agent_dsat_grammar_ingestion_generation_v8.md`. Explains symmetry requirement, distractor pattern, and annotator guidance across all three parenthetical-punctuation focus keys.
 
 ### Status
-- All 17 gaps from `missing_rules_v8.md`: GAP-001–004 and GAP-006–017 were **already resolved** in the v8 sub-pattern sprint before this session. GAP-005 (absolute_phrase) fixed 2026-05-27 (see vocab integrity entry). GAP-010 (Matching Delimiter Rule) fixed this entry.
-- Remaining open (this entry): GAP-001–004 (SVA/verb-form CRITICAL patterns), GAP-006 (subjunctive_mood), GAP-007 (singular_they), GAP-008–017 (MODERATE/MINOR).
+- All 17 gaps from `missing_rules_v8.md` are now **fully resolved**. GAP-001–004, 006–009, 011–017 were addressed in the v8 sub-pattern sprint. GAP-005 fixed 2026-05-27 (absolute_phrase to master.json). GAP-010 fixed this entry (Matching Delimiter cross-key note). `missing_rules_v8.md` is a stale audit document; no further action needed on it.
 
 ---
 
@@ -43,8 +42,7 @@ Git checkpoint: `cd2815d` — feat(vocab+pipeline): add absolute_phrase key, ann
    - **Fixed:** 3 PT-cited sub-patterns drafted (Consequence-Marking Participle — PT1 M2 Q21; Participial Opener Demands Compatible Subject — PT6 M2 Q21 + PT11 M2 Q24; Real Agent Must Be Grammatical Subject — PT11 M2 Q25). All 44 focus keys now covered (136 total sub-patterns).
 
 ### Remaining Open
-- `subjunctive_mood`, `singular_they` still not in `master.json` (GAP-006, GAP-007 from missing_rules_v8.md)
-- `syntactic_trap_key` and `student_failure_mode_key` not yet audited against rules-doc D.5/D.7 taxonomy
+- `syntactic_trap_key` and `student_failure_mode_key` not yet audited against rules-doc D.5/D.7 taxonomy (note: `subjunctive_mood` and `singular_they` are handled as sub-patterns under `verb_form` and `pronoun_antecedent_agreement` in v8, not as standalone keys — no master.json change needed)
 - Candidate-count CI threshold (Step 7 of vocabulary audit task list) still pending
 
 ---
@@ -74,19 +72,16 @@ Git checkpoint: `a171298` — chore(v8): switch active grammar references from v
    - ~~`STEM_TYPE_KEYS` hallucinations: `choose_grammatically_correct_form` (4×), `synthesize_information_from_notes` (4×), `choose_logical_transition`~~
    - **Fixed:** Rule 6 in both annotate prompt templates updated to require `question_family_key`, `grammar_role_key`, and `grammar_focus_key` verbatim from the allowed-keys block, with an explicit ban on descriptive variants. Stale hallucination entries purged from `candidates.json` (4 test fixtures retained). 42 tests passing.
 
-4. **High:** 17 documented gaps in grammar v8 rules doc — real DSAT patterns the agent cannot correctly annotate or generate
-   - GAP-001: `subject_verb_agreement` — inverted sentence order (CRITICAL)
-   - GAP-002: `subject_verb_agreement` — indefinite pronoun subjects (CRITICAL)
-   - GAP-003: `subject_verb_agreement` — compound `or`/`nor` subjects (CRITICAL)
-   - GAP-004: `verb_form` — gerund vs. infinitive idiomatic selection (CRITICAL)
+4. ~~**High:** 17 documented gaps in grammar v8 rules doc — real DSAT patterns the agent cannot correctly annotate or generate~~
+   - ~~GAP-001: `subject_verb_agreement` — inverted sentence order (CRITICAL)~~
+   - ~~GAP-002: `subject_verb_agreement` — indefinite pronoun subjects (CRITICAL)~~
+   - ~~GAP-003: `subject_verb_agreement` — compound `or`/`nor` subjects (CRITICAL)~~
+   - ~~GAP-004: `verb_form` — gerund vs. infinitive idiomatic selection (CRITICAL)~~
    - ~~GAP-005: Absolute phrases / nominative absolutes (CRITICAL)~~
-     **Fixed 2026-05-27:** `absolute_phrase` added to `master.json` (modifier role), ontology.py regenerated, 2 sub-patterns already present in v8 rules. `gen_vocab --check` now enforces rules↔master.json alignment.
-   - GAP-006: `subjunctive_mood` sub-patterns not documented (MAJOR)
-   - GAP-007: `pronoun_antecedent_agreement` — singular `they` (MAJOR)
-   - GAP-008 through GAP-017: various MODERATE/MINOR sub-pattern gaps
-   - ~~`logical_predication` had no sub-patterns (stub only)~~
-     **Fixed 2026-05-27:** 3 PT-cited sub-patterns added (PT1 M2 Q21, PT6 M2 Q21, PT11 M2 Q24/Q25). All 44 focus keys now have sub-patterns (136 total).
-   - Remaining: GAP-001–004, GAP-006–017 still open. Full detail in `missing_rules_v8.md`.
+   - ~~GAP-006: `subjunctive_mood` sub-patterns not documented (MAJOR)~~
+   - ~~GAP-007: `pronoun_antecedent_agreement` — singular `they` (MAJOR)~~
+   - ~~GAP-008 through GAP-017: various MODERATE/MINOR sub-pattern gaps~~
+   - **Fixed (v8 sub-pattern sprint + 2026-05-27 patches):** All 17 gaps resolved. GAP-001–004, 006–009, 011–017: sub-patterns added in the v8 sprint (§B.3 inverted SVA, indefinite-pronoun SVA, or/nor SVA, gerund/infinitive, subjunctive, singular-they, stacked-relative, today/now tense shift, Meltzer comma rule, restrictive-that, commonly-confused pairs, B.4 distractor rows). GAP-005: `absolute_phrase` added to master.json 2026-05-27 (commit `cd2815d`). GAP-010: Matching Delimiter cross-key note added 2026-05-27 (commit `567c64c`). `logical_predication` stub → 3 PT-cited sub-patterns. All 44 focus keys now have sub-patterns (136 total). `missing_rules_v8.md` is a stale audit document (written before the sprint).
 
 ---
 
