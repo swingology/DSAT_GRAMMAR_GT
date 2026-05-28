@@ -1,7 +1,7 @@
 # DSAT Student Practice Frontend — PRD
 
-**Version:** 1.1  
-**Date:** 2026-05-27  
+**Version:** 1.2  
+**Date:** 2026-05-28  
 **Scope:** Student-facing web app for DSAT verbal exam prep — core drill and stats only  
 **Backend:** FastAPI at `http://localhost:8000` (existing, unchanged)  
 **Auth:** Handled separately — see `STUDENT_AUTH_PRD.md`
@@ -93,31 +93,44 @@ Verify that submitted answers are accumulating correctly in the DB, and surface 
 - [ ] Submit 5 answers (mix of correct/wrong), confirm `total_answered` increments correctly
 - [ ] Submit a wrong answer on a grammar question, confirm `top_missed_focus_keys` reflects it
 - [ ] Accuracy % matches manual calculation
-- [ ] Stats panel updates immediately after each submission (not stale)
+- [ ] Stats panel updates immediately after each submission (TanStack Query `invalidateQueries` on submit mutation — not stale)
 
 ---
 
 ## Technical Stack
 
-| Concern | Choice |
-|---------|--------|
-| Framework | React 18 + TypeScript |
-| Build tool | Vite |
-| Styling | Tailwind CSS |
-| Routing | React Router v6 |
-| HTTP client | native `fetch` (no axios — keep deps minimal) |
-| State | React `useState` / `useReducer` (no Redux — overkill) |
-| Auth | Supabase JS client — separate phase, see `STUDENT_AUTH_PRD.md` |
+| Concern | Choice | Rationale |
+|---------|--------|-----------|
+| Framework | React 18 + TypeScript | — |
+| Build tool | Vite | — |
+| Styling | Tailwind CSS + **shadcn/ui** | Accessible radio buttons, buttons, and form controls out of the box (Radix UI primitives); avoids hand-rolling keyboard/focus handling on the question card |
+| Routing | React Router v6 | 3 routes — TanStack Router type-safety not worth the overhead |
+| Data fetching | **TanStack Query (React Query v5)** | Handles the stats re-fetch-after-submit pattern, loading/error states, and caching without manual `useEffect` boilerplate |
+| HTTP client | native `fetch` inside query/mutation fns | No Axios needed |
+| State | React `useState` / `useReducer` | Session drill state is local to `PracticePage` — no Redux/Zustand |
+| Auth | Supabase JS client — separate phase, see `STUDENT_AUTH_PRD.md` | — |
+
+### Key dependency list
+```
+react, react-dom, typescript
+vite, @vitejs/plugin-react
+tailwindcss, tailwindcss-animate
+@radix-ui/react-* (via shadcn/ui)
+@tanstack/react-query
+react-router-dom
+@supabase/supabase-js   # Phase 3 only
+```
 
 ### Project structure
 ```
 frontend/
   src/
-    api/           # typed fetch wrappers for each endpoint
-    components/    # QuestionCard, OptionButton, StatsPanel, SessionSummary
+    api/           # typed fetch fns (used as queryFn / mutationFn)
+    components/    # QuestionCard, OptionButton, StatsPanel, SessionSummary (shadcn primitives inside)
     pages/         # PracticePage, StatsPage, LoginPage (Phase 3)
     lib/
       auth.ts      # getUserToken() stub — returns VITE_TEST_USER_TOKEN (replaced in auth phase)
+      query.ts     # QueryClient singleton
     types/         # TypeScript interfaces matching API response shapes
   .env             # VITE_API_BASE_URL, VITE_TEST_USER_TOKEN, VITE_TEST_USER_ID, VITE_STUDENT_API_KEY
 ```

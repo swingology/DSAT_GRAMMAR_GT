@@ -3364,6 +3364,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-27T10:32:03.430Z"
+    },
+    {
+      "id": "bug-208",
+      "timestamp": "2026-05-27T19:30:24.717Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/PRD/STUDENT_FRONTEND_PRD.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4→5 lines (2 removed) | Also: ## Phase 3 — Auth Integration (Supabase, no UI red; ### Goal",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-27T19:30:55.412Z"
+    },
+    {
+      "id": "bug-209",
+      "timestamp": "2026-05-27T19:30:29.935Z",
+      "error_message": "Wrong reference: three should be two",
+      "file": "docs/PRD/STUDENT_FRONTEND_PRD.md",
+      "root_cause": "Used \"three\" instead of \"two\"",
+      "fix": "Changed three → two",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-27T19:30:29.935Z"
+    },
+    {
+      "id": "bug-210",
+      "timestamp": "2026-05-27T19:31:46.637Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/PRD/STUDENT_FRONTEND_TASKS.md",
+      "root_cause": "56 lines replaced/restructured",
+      "fix": "Rewrote 82→11 lines (56 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-27T19:31:46.637Z"
+    },
+    {
+      "id": "bug-211",
+      "timestamp": "2026-05-28T07:15:52.145Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/PRD/STUDENT_FRONTEND_PRD.md",
+      "root_cause": "11 lines replaced/restructured",
+      "fix": "Rewrote 24→37 lines (11 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T07:15:52.145Z"
     }
   ]
 }

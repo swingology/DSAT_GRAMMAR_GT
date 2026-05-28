@@ -2069,3 +2069,120 @@
 | 04:50 | Session end: 5 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 7 reads | ~86636 tok |
 | 04:53 | Session end: 5 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 7 reads | ~86636 tok |
 | 09:34 | Session end: 5 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 7 reads | ~86636 tok |
+| 09:35 | Session end: 5 writes across 3 files (feedback_generation-seeding.md, MEMORY.md, FUTURE_FEATURES.md) | 7 reads | ~86636 tok |
+
+## Session: 2026-05-27 10:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:21 | Created ingestion_generation_summary.md | — | ~1367 |
+| 10:22 | wrote ingestion_generation_summary.md — step-by-step pipeline breakdown for ingestion (9 steps) and generation (7 steps) with comparison table | ingestion_generation_summary.md, .wolf/anatomy.md | created | ~680 tok |
+| 10:22 | Session end: 1 writes across 1 files (ingestion_generation_summary.md) | 5 reads | ~57520 tok |
+
+## Session: 2026-05-27 12:08
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:21 | Created docs/PRD/STUDENT_FRONTEND_PRD.md | — | ~1808 |
+| 12:22 | Created docs/PRD/STUDENT_FRONTEND_TASKS.md | — | ~3111 |
+| 12:22 | Session end: 2 writes across 2 files (STUDENT_FRONTEND_PRD.md, STUDENT_FRONTEND_TASKS.md) | 3 reads | ~25969 tok |
+| 12:30 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | 4→5 lines | ~70 |
+| 12:30 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | 3→3 lines | ~95 |
+| 12:30 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | layer() → site() | ~192 |
+| 12:30 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | removed 28 lines | ~7 |
+| 12:30 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | inline fix | ~20 |
+| 12:31 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | 4→4 lines | ~75 |
+| 12:31 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | 7→7 lines | ~89 |
+| 12:31 | Edited docs/PRD/STUDENT_FRONTEND_TASKS.md | 3→5 lines | ~83 |
+| 12:31 | Edited docs/PRD/STUDENT_FRONTEND_TASKS.md | modified getUserToken() | ~112 |
+| 12:31 | Edited docs/PRD/STUDENT_FRONTEND_TASKS.md | removed 82 lines | ~82 |
+| 12:32 | Created docs/PRD/STUDENT_AUTH_PRD.md | — | ~1248 |
+| 12:32 | Created docs/PRD/STUDENT_AUTH_TASKS.md | — | ~2004 |
+| 12:33 | Session end: 14 writes across 4 files (STUDENT_FRONTEND_PRD.md, STUDENT_FRONTEND_TASKS.md, STUDENT_AUTH_PRD.md, STUDENT_AUTH_TASKS.md) | 5 reads | ~34948 tok |
+
+## Session: 2026-05-27 12:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:34 | Edited .understand-anything/.understandignore | expanded (+6 lines) | ~41 |
+| 14:15 | Created .understand-anything/intermediate/scan-result.json | — | ~12785 |
+| 14:26 | Created .understand-anything/intermediate/batch-8.json | — | ~2756 |
+| 14:26 | Created .understand-anything/intermediate/batch-7.json | — | ~2720 |
+| 14:26 | Created .understand-anything/intermediate/batch-3.json | — | ~6044 |
+| 14:26 | Created .understand-anything/intermediate/batch-4.json | — | ~6500 |
+| 14:26 | Created .understand-anything/intermediate/batch-6.json | — | ~4204 |
+| 14:26 | Created .understand-anything/intermediate/batch-2.json | — | ~8591 |
+| 14:26 | Created .understand-anything/intermediate/batch-16.json | — | ~1294 |
+| 14:27 | Created .understand-anything/intermediate/batch-17.json | — | ~916 |
+| 14:27 | Created .understand-anything/intermediate/batch-1.json | — | ~9514 |
+| 14:27 | Created .understand-anything/intermediate/batch-9.json | — | ~4392 |
+| 14:27 | Created .understand-anything/intermediate/batch-21.json | — | ~2346 |
+| 14:27 | Created .understand-anything/intermediate/batch-11.json | — | ~935 |
+| 14:27 | Created .understand-anything/intermediate/batch-5.json | — | ~9139 |
+| 14:27 | Created .understand-anything/intermediate/batch-10.json | — | ~5149 |
+| 14:27 | Created .understand-anything/intermediate/batch-18.json | — | ~2109 |
+| 14:28 | Created .understand-anything/intermediate/batch-22.json | — | ~1700 |
+| 14:28 | Created .understand-anything/intermediate/batch-19.json | — | ~985 |
+| 14:28 | Created .understand-anything/intermediate/batch-12.json | — | ~2252 |
+| 14:28 | Created .understand-anything/intermediate/batch-20.json | — | ~691 |
+| 14:28 | Created .understand-anything/intermediate/batch-23.json | — | ~1724 |
+| 14:28 | Created .understand-anything/intermediate/batch-26.json | — | ~1722 |
+| 14:29 | Created .understand-anything/intermediate/batch-24.json | — | ~2503 |
+| 14:29 | Created .understand-anything/intermediate/batch-27.json | — | ~1996 |
+| 14:29 | Created .understand-anything/intermediate/batch-13.json | — | ~5803 |
+| 14:29 | Created .understand-anything/intermediate/batch-28.json | — | ~1224 |
+| 14:29 | Created .understand-anything/intermediate/batch-25.json | — | ~1785 |
+| 14:29 | Created .understand-anything/intermediate/batch-29.json | — | ~826 |
+| 14:30 | Created .understand-anything/intermediate/batch-14.json | — | ~3471 |
+| 14:30 | Created .understand-anything/intermediate/batch-15.json | — | ~2260 |
+| 14:31 | Created .understand-anything/intermediate/batch-30.json | — | ~4671 |
+| 14:32 | Created .understand-anything/intermediate/batch-31.json | — | ~4116 |
+| 14:49 | Created .understand-anything/intermediate/tour.json | — | ~2484 |
+| 14:52 | Session end: 34 writes across 34 files (.understandignore, scan-result.json, batch-8.json, batch-7.json, batch-3.json) | 271 reads | ~876073 tok |
+| 14:58 | Session end: 34 writes across 34 files (.understandignore, scan-result.json, batch-8.json, batch-7.json, batch-3.json) | 271 reads | ~876073 tok |
+| 15:22 | Session end: 34 writes across 34 files (.understandignore, scan-result.json, batch-8.json, batch-7.json, batch-3.json) | 271 reads | ~876073 tok |
+| 21:29 | Session end: 34 writes across 34 files (.understandignore, scan-result.json, batch-8.json, batch-7.json, batch-3.json) | 271 reads | ~876073 tok |
+
+## Session: 2026-05-28 22:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-28 22:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-28 22:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-28 22:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-28 22:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-28 22:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-28 22:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-28 22:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:15 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | 2→2 lines | ~11 |
+| 00:15 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | expanded (+13 lines) | ~464 |
+| 00:15 | Edited docs/PRD/STUDENT_FRONTEND_PRD.md | inline fix | ~34 |
+| 00:16 | Session end: 3 writes across 1 files (STUDENT_FRONTEND_PRD.md) | 10 reads | ~15872 tok |

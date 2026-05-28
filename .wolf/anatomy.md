@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-27T11:38:46.579Z
-> Files: 807 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T07:15:57.920Z
+> Files: 847 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -45,6 +45,8 @@
 - `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
 - `INCONSISTENT_KEYS_LIST.md` — Inconsistent Taxonomy Keys in Official Question Annotations (~1473 tok)
+- `ingestion_generation_summary.md` — Ingestion & Generation Pipeline — Step-by-Step Summary (~1281 tok)
+- `ingestion_generation_summary.md` — Step-by-step breakdown of ingestion and generation pipelines, including all sub-steps, key differences, and shared components (~680 tok)
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~7592 tok)
 - `INGESTION_README.md` — DSAT Backend — Ingestion Pipeline (~6616 tok)
 - `kimi_4q_comparison_report.md` — DSAT Question Generation Comparison Report (~2222 tok)
@@ -60,6 +62,8 @@
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
+- `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~1879 tok)
+- `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~2298 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
@@ -110,6 +114,46 @@
 - `.gitignore` — Git ignore rules (~7 tok)
 - `project.local.yml` — This file allows you to locally override settings in project.yml for development purposes. (~115 tok)
 - `project.yml` — the name by which the project can be referenced within Serena (~2252 tok)
+
+## .understand-anything/
+
+- `.understandignore` — # !local_object_store/* (~223 tok)
+
+## .understand-anything/intermediate/
+
+- `batch-1.json` (~9514 tok)
+- `batch-10.json` — Declares or (~5149 tok)
+- `batch-11.json` (~935 tok)
+- `batch-12.json` (~2252 tok)
+- `batch-13.json` (~5803 tok)
+- `batch-14.json` — Declares with (~3471 tok)
+- `batch-15.json` — Declares name (~2260 tok)
+- `batch-16.json` (~1294 tok)
+- `batch-17.json` (~916 tok)
+- `batch-18.json` (~2109 tok)
+- `batch-19.json` (~985 tok)
+- `batch-2.json` — Declares holding (~8591 tok)
+- `batch-20.json` (~691 tok)
+- `batch-21.json` — Declares and (~2346 tok)
+- `batch-22.json` — Declares creation (~1700 tok)
+- `batch-23.json` (~1724 tok)
+- `batch-24.json` — Declares name (~2503 tok)
+- `batch-25.json` — Declares contract (~1785 tok)
+- `batch-26.json` (~1722 tok)
+- `batch-27.json` — Declares holding (~1996 tok)
+- `batch-28.json` (~1224 tok)
+- `batch-29.json` (~826 tok)
+- `batch-3.json` — Declares keys (~6044 tok)
+- `batch-30.json` (~4671 tok)
+- `batch-31.json` (~4116 tok)
+- `batch-4.json` — Declares result (~6500 tok)
+- `batch-5.json` — Declares with (~9139 tok)
+- `batch-6.json` (~4204 tok)
+- `batch-7.json` — that: computation (~2720 tok)
+- `batch-8.json` — Declares and (~2756 tok)
+- `batch-9.json` (~4392 tok)
+- `scan-result.json` (~12785 tok)
+- `tour.json` — Declares defined (~2484 tok)
 
 ## TESTS/DATA_SRC/2024-2025 Tests Answers/
 
@@ -1095,6 +1139,8 @@
 ## docs/PRD/
 
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~10510 tok)
+- `STUDENT_AUTH_PRD.md` — DSAT Student Auth — PRD (~1170 tok)
+- `STUDENT_FRONTEND_PRD.md` — DSAT Student Practice Frontend — PRD (~1680 tok)
 
 ## docs/agents/
 
