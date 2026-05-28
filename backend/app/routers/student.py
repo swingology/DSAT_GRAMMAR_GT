@@ -339,6 +339,8 @@ async def student_recall(
             source_section_code=q.source_section_code,
             source_module_code=q.source_module_code,
             options=enriched_options,
+            source_question_number=q.source_question_number,
+            question_family_key=ann_data.get("question_family_key"),
             reasoning_trap_key=ann_data.get("reasoning_trap_key"),
             explanation_short=ann_data.get("explanation_short"),
             solver_pattern_key=ann_data.get("solver_pattern_key"),

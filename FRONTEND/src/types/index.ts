@@ -20,6 +20,8 @@ export interface Question {
   reading_focus_key: string | null;
   difficulty_overall: string | null;
   stimulus_mode_key: string | null;
+  source_question_number: number | null;
+  question_family_key: string | null;
   reasoning_trap_key: string | null;
   explanation_short: string | null;
   solver_pattern_key: string | null;

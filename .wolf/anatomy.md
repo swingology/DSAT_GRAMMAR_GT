@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T18:15:48.741Z
-> Files: 870 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T18:22:06.659Z
+> Files: 871 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -177,9 +177,10 @@
 ## FRONTEND/src/components/
 
 - `QuestionCard.tsx` — formatKey (~2058 tok)
-- `SessionComplete.tsx` — SessionComplete (~324 tok)
-- `SessionSetup.tsx` — DIFFICULTY_OPTIONS (~2131 tok)
+- `SessionComplete.tsx` — SessionComplete (~502 tok)
+- `SessionSetup.tsx` — DIFFICULTY_OPTIONS (~2566 tok)
 - `StatsPanel.tsx` — StatsPanel (~871 tok)
+- `TestTimer.tsx` — TestTimer (~331 tok)
 
 ## FRONTEND/src/components/ui/
 
@@ -195,12 +196,12 @@
 
 ## FRONTEND/src/pages/
 
-- `PracticePage.tsx` — PracticePage (~922 tok)
+- `PracticePage.tsx` — FAMILY_ORDER (~1567 tok)
 - `StatsPage.tsx` — StatsPage (~147 tok)
 
 ## FRONTEND/src/types/
 
-- `index.ts` — Exports QuestionOption, Question, InventoryMetadata, QuestionsResponse + 2 more (~411 tok)
+- `index.ts` — Exports QuestionOption, Question, InventoryMetadata, QuestionsResponse + 2 more (~434 tok)
 
 ## TESTS/DATA_SRC/2024-2025 Tests Answers/
 
@@ -1068,7 +1069,7 @@
 - `db.py` — Declares QuestionJob (~8762 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5620 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~6949 tok)
+- `payload.py` — HTTP request/response models. (~6976 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1111,7 +1112,7 @@
 - `generate.py` (~15836 tok)
 - `ingest.py` (~35990 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
-- `student.py` — API: 1 endpoints (~14049 tok)
+- `student.py` — API: 1 endpoints (~14086 tok)
 
 ## backend/app/storage/
 

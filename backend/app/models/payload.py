@@ -23,6 +23,8 @@ class StudentQuestionResponse(BaseModel):
     source_section_code: Optional[str] = None
     source_module_code: Optional[str] = None
     options: List[dict] = Field(default_factory=list)
+    source_question_number: Optional[int] = None
+    question_family_key: Optional[str] = None
     reasoning_trap_key: Optional[str] = None
     explanation_short: Optional[str] = None
     solver_pattern_key: Optional[str] = None
