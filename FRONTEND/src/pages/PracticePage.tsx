@@ -3,14 +3,12 @@ import { useMutation } from "@tanstack/react-query";
 import { fetchQuestions, submitAnswer } from "../api/questions";
 import { getUserToken } from "../lib/auth";
 import { queryClient } from "../lib/query";
-import { SessionSetup } from "../components/SessionSetup";
+import { SessionSetup, type Domain, type Difficulty } from "../components/SessionSetup";
 import { QuestionCard } from "../components/QuestionCard";
 import { SessionComplete } from "../components/SessionComplete";
 import type { Question, SubmitResult } from "../types";
 
 type Phase = "setup" | "drilling" | "complete";
-type Domain = "grammar" | "reading" | "mixed";
-type Difficulty = "easy" | "medium" | "hard" | "any";
 
 export function PracticePage() {
   const [phase, setPhase] = useState<Phase>("setup");

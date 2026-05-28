@@ -230,6 +230,54 @@ Behavior:
 - Difficulty radio: Easy / Medium / Hard / Any (default)
 - "Start Drill" button → calls `fetchQuestions()` with selections → passes `items[]` to parent
 
+### P1-11 · Dynamic filter options — only show domains and difficulties with active questions
+
+**Why:** Domain filter on the backend uses `grammar_role_key` (grammar) and `reading_skill_family_key` (reading) — both null in current data, so selecting either returns 0 results. Hardcoded options mislead the user. Probe the API at mount time and render only options that have inventory.
+
+**Approach:** 3 parallel probes on `SessionSetup` mount, all with `limit=1` (or `limit=50` for difficulties):
+
+```ts
+// src/api/inventory.ts
+export interface FilterInventory {
+  hasGrammar: boolean;
+  hasReading: boolean;
+  hasMixed: boolean;  // always true if any active questions exist
+  difficulties: string[];  // distinct non-null values from sample
+}
+
+export async function fetchFilterInventory(userToken: string): Promise<FilterInventory> {
+  const [mixed, grammar, reading] = await Promise.all([
+    fetch(`${BASE}/api/questions?limit=50&user_token=${userToken}`, { headers }),
+    fetch(`${BASE}/api/questions?domain=grammar&limit=1&user_token=${userToken}`, { headers }),
+    fetch(`${BASE}/api/questions?domain=reading&limit=1&user_token=${userToken}`, { headers }),
+  ]);
+  const [mixedData, grammarData, readingData] = await Promise.all([
+    mixed.json(), grammar.json(), reading.json(),
+  ]);
+  const difficulties = [...new Set(
+    mixedData.items
+      .map((q: Question) => q.difficulty_overall)
+      .filter(Boolean)
+  )] as string[];
+  return {
+    hasMixed: mixedData.inventory.matching_target_total > 0,
+    hasGrammar: grammarData.inventory.matching_target_total > 0,
+    hasReading: readingData.inventory.matching_target_total > 0,
+    difficulties,
+  };
+}
+```
+
+**`SessionSetup` changes:**
+- Add `useQuery({ queryKey: ['filter-inventory'], queryFn: () => fetchFilterInventory(getUserToken()) })`
+- While loading: show skeleton / disabled "Start Drill" button
+- Domain options: render each only if its flag is true; always render Mixed if `hasMixed`
+- Difficulty options: render "Any" always + one chip per value in `difficulties`; if `difficulties` is empty, show "Any" only
+- If selected domain/difficulty becomes unavailable (e.g. user navigated away and inventory changed), reset to default
+- Error: if inventory probe fails, fall back to showing all options (fail open)
+
+**Files touched:** `src/api/inventory.ts` (new), `src/components/SessionSetup.tsx` (update)
+
 ### P1-08 · Build `<SessionComplete>` component
 Props: `answered: number`, `correct: number`
 

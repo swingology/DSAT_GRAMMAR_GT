@@ -3508,6 +3508,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T08:42:29.322Z"
+    },
+    {
+      "id": "bug-217",
+      "timestamp": "2026-05-28T08:49:54.255Z",
+      "error_message": "Missing await",
+      "file": "STUDENT_FRONTEND_TASKS.md",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:49:54.255Z"
     }
   ]
 }

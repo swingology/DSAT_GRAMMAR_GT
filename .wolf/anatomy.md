@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T08:46:43.973Z
-> Files: 869 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T08:50:53.144Z
+> Files: 870 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -64,7 +64,7 @@
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
-- `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~3994 tok)
+- `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~4589 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
@@ -170,6 +170,7 @@
 
 ## FRONTEND/src/api/
 
+- `inventory.ts` — Exports FilterInventory, fetchFilterInventory (~381 tok)
 - `questions.ts` — Exports fetchQuestions, submitAnswer (~387 tok)
 - `stats.ts` — Exports fetchStats (~124 tok)
 
@@ -177,7 +178,7 @@
 
 - `QuestionCard.tsx` — QuestionCard (~1202 tok)
 - `SessionComplete.tsx` — SessionComplete (~324 tok)
-- `SessionSetup.tsx` — SessionSetup (~773 tok)
+- `SessionSetup.tsx` — SessionSetup (~1352 tok)
 - `StatsPanel.tsx` — StatsPanel (~871 tok)
 
 ## FRONTEND/src/components/ui/
@@ -194,7 +195,7 @@
 
 ## FRONTEND/src/pages/
 
-- `PracticePage.tsx` — PracticePage (~921 tok)
+- `PracticePage.tsx` — PracticePage (~901 tok)
 - `StatsPage.tsx` — StatsPage (~147 tok)
 
 ## FRONTEND/src/types/
