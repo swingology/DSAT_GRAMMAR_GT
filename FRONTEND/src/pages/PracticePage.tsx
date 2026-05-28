@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { fetchQuestions, submitAnswer } from "../api/questions";
 import { getUserToken } from "../lib/auth";
 import { queryClient } from "../lib/query";
-import { SessionSetup, type Domain, type Difficulty } from "../components/SessionSetup";
+import { SessionSetup, type SessionParams } from "../components/SessionSetup";
 import { QuestionCard } from "../components/QuestionCard";
 import { SessionComplete } from "../components/SessionComplete";
 import type { Question, SubmitResult } from "../types";
@@ -11,21 +11,20 @@ import type { Question, SubmitResult } from "../types";
 type Phase = "setup" | "drilling" | "complete";
 
 export function PracticePage() {
-  const [phase, setPhase] = useState<Phase>("setup");
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [index, setIndex] = useState(0);
-  const [correct, setCorrect] = useState(0);
+  const [phase, setPhase]           = useState<Phase>("setup");
+  const [questions, setQuestions]   = useState<Question[]>([]);
+  const [index, setIndex]           = useState(0);
+  const [correct, setCorrect]       = useState(0);
+  const [mode, setMode]             = useState<"practice" | "test">("practice");
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [fetchLoading, setFetchLoading] = useState(false);
 
   const submitMutation = useMutation({
     mutationFn: submitAnswer,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["stats"] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["stats"] }),
   });
 
-  async function handleStart(domain: Domain, difficulty: Difficulty) {
+  async function handleStart({ domain, difficulty, mode: selectedMode, count }: SessionParams) {
     setFetchLoading(true);
     setFetchError(null);
     try {
@@ -33,7 +32,7 @@ export function PracticePage() {
       const data = await fetchQuestions({
         domain: domain === "mixed" ? undefined : domain,
         difficulty: difficulty === "any" ? undefined : difficulty,
-        limit: 20,
+        limit: count,
         userToken: token,
       });
 
@@ -45,6 +44,7 @@ export function PracticePage() {
       setQuestions(data.items);
       setIndex(0);
       setCorrect(0);
+      setMode(selectedMode);
       setPhase("drilling");
     } catch (e) {
       setFetchError((e as Error).message);
@@ -81,23 +81,11 @@ export function PracticePage() {
   }
 
   if (phase === "setup") {
-    return (
-      <SessionSetup
-        onStart={handleStart}
-        loading={fetchLoading}
-        error={fetchError}
-      />
-    );
+    return <SessionSetup onStart={handleStart} loading={fetchLoading} error={fetchError} />;
   }
 
   if (phase === "complete") {
-    return (
-      <SessionComplete
-        answered={questions.length}
-        correct={correct}
-        onRestart={handleRestart}
-      />
-    );
+    return <SessionComplete answered={questions.length} correct={correct} onRestart={handleRestart} />;
   }
 
   const question = questions[index];
@@ -108,6 +96,7 @@ export function PracticePage() {
       question={question}
       questionNumber={index + 1}
       total={questions.length}
+      mode={mode}
       onSubmitAnswer={handleSubmitAnswer}
       onNext={handleNext}
     />

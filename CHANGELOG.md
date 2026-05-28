@@ -5,6 +5,28 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-28 — Landing page overhaul: mode selector, question count, fixed filters, distractor review
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `frontend`
+**Commits:** `a67a0fa`, `e88bb8f`, this commit
+
+### Added
+- **Practice vs Test mode selector** — Practice shows inline feedback + distractor review panel after each answer; Test mode hides all feedback until session complete
+- **Question count picker** — choose 5, 10, or 20 questions per session (was hardcoded to 20)
+- **Page title and description** — "DSAT Verbal Practice / Configure your session" heading on landing page
+- **Dynamic button label** — reflects selected mode and count ("Start Practice — 10 Questions →" / "Start Test — 10 Questions →")
+- **Per-option distractor review panel** (practice mode) — after answering, shows trap type badge, "why tempting", and "why wrong" for the selected wrong option
+- **Post-answer metadata panel** (practice mode) — focus key, difficulty, reasoning trap key badges + `explanation_short` + solver strategy hint
+- **Backend: distractor metadata on options** — `student.py` now merges per-option `distractor_type_key`, `why_wrong`, `why_plausible` from `annotation_jsonb` into each option dict; `StudentQuestionResponse` extended with `reasoning_trap_key`, `explanation_short`, `solver_pattern_key`
+
+### Fixed
+- **Domain always shows all 3 options** (Grammar, Reading, Mixed) — removed dynamic hiding that suppressed Grammar/Reading when their specific annotation keys (`grammar_role_key`, `reading_skill_family_key`) were null in current data. Error state handles empty results gracefully; UI should not hide valid options.
+- **Difficulty always shows all 4 options** (Any, Easy, Moderate, Hard) — removed dynamic discovery that only surfaced "medium" from live DB. All four options visible; selecting one with no data shows the empty-results error.
+- **Difficulty label** — "Medium" displayed as "Moderate" to match user-facing language
+
+---
+
 ## 2026-05-28 — Student frontend scaffold (Phase 1-2), task file gap patches, doc reorg
 
 **Model:** Claude Sonnet 4.6

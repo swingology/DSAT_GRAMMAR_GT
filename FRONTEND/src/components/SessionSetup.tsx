@@ -1,123 +1,151 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { fetchFilterInventory } from "../api/inventory";
-import { getUserToken } from "../lib/auth";
 
 export type Domain = "grammar" | "reading" | "mixed";
-export type Difficulty = "any" | string;
+export type Difficulty = "any" | "easy" | "medium" | "hard";
+export type Mode = "practice" | "test";
+
+export interface SessionParams {
+  domain: Domain;
+  difficulty: Difficulty;
+  mode: Mode;
+  count: number;
+}
 
 interface Props {
-  onStart: (domain: Domain, difficulty: Difficulty) => void;
+  onStart: (params: SessionParams) => void;
   loading?: boolean;
   error?: string | null;
 }
 
+const DOMAIN_OPTIONS: { value: Domain; label: string; description: string }[] = [
+  { value: "mixed",   label: "Mixed",   description: "Grammar + Reading" },
+  { value: "grammar", label: "Grammar", description: "Language & conventions" },
+  { value: "reading", label: "Reading", description: "Craft & structure" },
+];
+
+const DIFFICULTY_OPTIONS: { value: Difficulty; label: string }[] = [
+  { value: "any",    label: "Any" },
+  { value: "easy",   label: "Easy" },
+  { value: "medium", label: "Moderate" },
+  { value: "hard",   label: "Hard" },
+];
+
+const COUNT_OPTIONS = [5, 10, 20];
+
+const MODE_OPTIONS: { value: Mode; label: string; description: string }[] = [
+  { value: "practice", label: "Practice", description: "Feedback after each question" },
+  { value: "test",     label: "Test",     description: "No hints — score at the end" },
+];
+
 export function SessionSetup({ onStart, loading, error }: Props) {
-  const [domain, setDomain] = useState<Domain>("mixed");
-  const [difficulty, setDifficulty] = useState<Difficulty>("any");
-
-  const { data: inv, isLoading: invLoading } = useQuery({
-    queryKey: ["filter-inventory"],
-    queryFn: () => fetchFilterInventory(getUserToken()),
-    staleTime: 60_000,
-    retry: 1,
-  });
-
-  // Reset domain if current selection has no inventory
-  useEffect(() => {
-    if (!inv) return;
-    if (domain === "grammar" && !inv.hasGrammar) setDomain("mixed");
-    if (domain === "reading" && !inv.hasReading) setDomain("mixed");
-  }, [inv, domain]);
-
-  // Reset difficulty if no longer in available list
-  useEffect(() => {
-    if (!inv || difficulty === "any") return;
-    if (!inv.difficulties.includes(difficulty)) setDifficulty("any");
-  }, [inv, difficulty]);
-
-  const domainOptions: { value: Domain; label: string; available: boolean }[] = [
-    { value: "mixed", label: "Mixed", available: inv?.hasMixed ?? true },
-    { value: "grammar", label: "Grammar", available: inv?.hasGrammar ?? true },
-    { value: "reading", label: "Reading", available: inv?.hasReading ?? true },
-  ];
-
-  const difficultyOptions: { value: Difficulty; label: string }[] = [
-    { value: "any", label: "Any" },
-    ...(inv?.difficulties ?? ["easy", "medium", "hard"]).map((d) => ({
-      value: d,
-      label: d.charAt(0).toUpperCase() + d.slice(1),
-    })),
-  ];
+  const [domain, setDomain]     = useState<Domain>("mixed");
+  const [difficulty, setDiff]   = useState<Difficulty>("any");
+  const [mode, setMode]         = useState<Mode>("practice");
+  const [count, setCount]       = useState<number>(10);
 
   const errorMessage = error
     ? error === "INVALID_API_KEY"
       ? "Invalid API key — check VITE_STUDENT_API_KEY in .env"
-      : error.includes("No active questions")
-      ? "No active questions for these filters. Try a different selection."
-      : `Error: ${error}`
+      : "No active questions for these filters. Try a different selection."
     : null;
 
   return (
     <div className="space-y-8 max-w-lg">
       <div>
-        <h2 className="text-lg font-semibold mb-3">Domain</h2>
-        {invLoading ? (
-          <div className="flex gap-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-10 w-24 rounded-lg bg-muted animate-pulse" />
-            ))}
-          </div>
-        ) : (
-          <RadioGroup
-            value={domain}
-            onValueChange={(v) => setDomain(v as Domain)}
-            className="flex flex-wrap gap-3"
-          >
-            {domainOptions
-              .filter((o) => o.available)
-              .map((o) => (
-                <label
-                  key={o.value}
-                  htmlFor={`domain-${o.value}`}
-                  className="flex items-center gap-2 rounded-lg border px-4 py-2 cursor-pointer hover:bg-accent has-[:checked]:border-primary has-[:checked]:bg-accent"
-                >
-                  <RadioGroupItem value={o.value} id={`domain-${o.value}`} />
-                  {o.label}
-                </label>
-              ))}
-          </RadioGroup>
-        )}
+        <h1 className="text-2xl font-bold">DSAT Verbal Practice</h1>
+        <p className="text-muted-foreground text-sm mt-1">Configure your session and start drilling.</p>
       </div>
 
+      {/* Mode */}
       <div>
-        <h2 className="text-lg font-semibold mb-3">Difficulty</h2>
-        {invLoading ? (
-          <div className="flex gap-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-10 w-20 rounded-lg bg-muted animate-pulse" />
-            ))}
-          </div>
-        ) : (
-          <RadioGroup
-            value={difficulty}
-            onValueChange={setDifficulty}
-            className="flex flex-wrap gap-3"
-          >
-            {difficultyOptions.map((o) => (
-              <label
-                key={o.value}
-                htmlFor={`diff-${o.value}`}
-                className="flex items-center gap-2 rounded-lg border px-4 py-2 cursor-pointer hover:bg-accent has-[:checked]:border-primary has-[:checked]:bg-accent"
-              >
-                <RadioGroupItem value={o.value} id={`diff-${o.value}`} />
-                {o.label}
-              </label>
-            ))}
-          </RadioGroup>
-        )}
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Mode</h2>
+        <RadioGroup
+          value={mode}
+          onValueChange={(v) => setMode(v as Mode)}
+          className="grid grid-cols-2 gap-3"
+        >
+          {MODE_OPTIONS.map((o) => (
+            <label
+              key={o.value}
+              htmlFor={`mode-${o.value}`}
+              className="flex flex-col gap-0.5 rounded-lg border p-3 cursor-pointer hover:bg-accent has-[:checked]:border-primary has-[:checked]:bg-accent"
+            >
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value={o.value} id={`mode-${o.value}`} />
+                <span className="font-medium text-sm">{o.label}</span>
+              </div>
+              <span className="text-xs text-muted-foreground pl-6">{o.description}</span>
+            </label>
+          ))}
+        </RadioGroup>
+      </div>
+
+      {/* Domain */}
+      <div>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Domain</h2>
+        <RadioGroup
+          value={domain}
+          onValueChange={(v) => setDomain(v as Domain)}
+          className="grid grid-cols-3 gap-3"
+        >
+          {DOMAIN_OPTIONS.map((o) => (
+            <label
+              key={o.value}
+              htmlFor={`domain-${o.value}`}
+              className="flex flex-col gap-0.5 rounded-lg border p-3 cursor-pointer hover:bg-accent has-[:checked]:border-primary has-[:checked]:bg-accent"
+            >
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value={o.value} id={`domain-${o.value}`} />
+                <span className="font-medium text-sm">{o.label}</span>
+              </div>
+              <span className="text-xs text-muted-foreground pl-6">{o.description}</span>
+            </label>
+          ))}
+        </RadioGroup>
+      </div>
+
+      {/* Difficulty */}
+      <div>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Difficulty</h2>
+        <RadioGroup
+          value={difficulty}
+          onValueChange={(v) => setDiff(v as Difficulty)}
+          className="flex flex-wrap gap-3"
+        >
+          {DIFFICULTY_OPTIONS.map((o) => (
+            <label
+              key={o.value}
+              htmlFor={`diff-${o.value}`}
+              className="flex items-center gap-2 rounded-lg border px-4 py-2 cursor-pointer hover:bg-accent has-[:checked]:border-primary has-[:checked]:bg-accent"
+            >
+              <RadioGroupItem value={o.value} id={`diff-${o.value}`} />
+              <span className="text-sm">{o.label}</span>
+            </label>
+          ))}
+        </RadioGroup>
+      </div>
+
+      {/* Question count */}
+      <div>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Questions</h2>
+        <div className="flex gap-3">
+          {COUNT_OPTIONS.map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setCount(n)}
+              className={`w-16 h-10 rounded-lg border text-sm font-medium transition-colors
+                ${count === n
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "hover:bg-accent"
+                }`}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
       </div>
 
       {errorMessage && (
@@ -127,11 +155,16 @@ export function SessionSetup({ onStart, loading, error }: Props) {
       )}
 
       <Button
-        onClick={() => onStart(domain, difficulty)}
-        disabled={loading || invLoading}
+        onClick={() => onStart({ domain, difficulty, mode, count })}
+        disabled={loading}
         size="lg"
+        className="w-full"
       >
-        {loading ? "Loading questions…" : "Start Drill →"}
+        {loading
+          ? "Loading questions…"
+          : mode === "test"
+          ? `Start Test — ${count} Questions →`
+          : `Start Practice — ${count} Questions →`}
       </Button>
     </div>
   );

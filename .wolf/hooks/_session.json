@@ -108,8 +108,8 @@
       "first_read": "2026-05-28T08:35:25.784Z"
     },
     "/home/jb/DSAT_REDUX_MD/FRONTEND/src/components/SessionSetup.tsx": {
-      "count": 1,
-      "tokens": 773,
+      "count": 2,
+      "tokens": 1352,
       "first_read": "2026-05-28T08:40:12.953Z"
     },
     "/home/jb/DSAT_REDUX_MD/CHANGELOG.md": {
@@ -118,8 +118,8 @@
       "first_read": "2026-05-28T08:46:05.834Z"
     },
     "/home/jb/DSAT_REDUX_MD/FRONTEND/src/pages/PracticePage.tsx": {
-      "count": 1,
-      "tokens": 921,
+      "count": 2,
+      "tokens": 901,
       "first_read": "2026-05-28T08:50:47.505Z"
     }
   },
@@ -453,6 +453,48 @@
       "action": "edit",
       "tokens": 3,
       "at": "2026-05-28T17:51:31.741Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/FRONTEND/src/components/SessionSetup.tsx",
+      "action": "create",
+      "tokens": 1756,
+      "at": "2026-05-28T17:56:51.832Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/FRONTEND/src/pages/PracticePage.tsx",
+      "action": "create",
+      "tokens": 922,
+      "at": "2026-05-28T17:57:06.762Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/FRONTEND/src/components/QuestionCard.tsx",
+      "action": "edit",
+      "tokens": 56,
+      "at": "2026-05-28T17:57:11.087Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/FRONTEND/src/components/QuestionCard.tsx",
+      "action": "edit",
+      "tokens": 46,
+      "at": "2026-05-28T17:57:16.360Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/FRONTEND/src/components/QuestionCard.tsx",
+      "action": "edit",
+      "tokens": 51,
+      "at": "2026-05-28T17:57:22.064Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/FRONTEND/src/components/QuestionCard.tsx",
+      "action": "edit",
+      "tokens": 156,
+      "at": "2026-05-28T17:57:30.778Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/CHANGELOG.md",
+      "action": "edit",
+      "tokens": 584,
+      "at": "2026-05-28T17:57:56.698Z"
     }
   ],
   "edit_counts": {
@@ -472,23 +514,23 @@
     "FRONTEND/src/components/ui/button.tsx": 1,
     "FRONTEND/src/components/ui/radio-group.tsx": 1,
     "FRONTEND/src/components/ui/badge.tsx": 1,
-    "FRONTEND/src/components/QuestionCard.tsx": 3,
-    "FRONTEND/src/components/SessionSetup.tsx": 2,
+    "FRONTEND/src/components/QuestionCard.tsx": 7,
+    "FRONTEND/src/components/SessionSetup.tsx": 3,
     "FRONTEND/src/components/SessionComplete.tsx": 1,
     "FRONTEND/src/components/StatsPanel.tsx": 1,
-    "FRONTEND/src/pages/PracticePage.tsx": 2,
+    "FRONTEND/src/pages/PracticePage.tsx": 3,
     "FRONTEND/src/pages/StatsPage.tsx": 1,
     "FRONTEND/src/App.tsx": 1,
     "FRONTEND/src/main.tsx": 1,
     "FRONTEND/.gitignore": 1,
-    "CHANGELOG.md": 1,
+    "CHANGELOG.md": 2,
     "FRONTEND/src/api/inventory.ts": 1,
     "backend/app/models/payload.py": 1,
     "backend/app/routers/student.py": 1
   },
   "anatomy_hits": 16,
   "anatomy_misses": 8,
-  "repeated_reads_warned": 16,
+  "repeated_reads_warned": 18,
   "cerebrum_warnings": 0,
-  "stop_count": 19
+  "stop_count": 21
 }

@@ -9,6 +9,7 @@ interface Props {
   question: Question;
   questionNumber: number;
   total: number;
+  mode?: "practice" | "test";
   onSubmitAnswer: (label: string) => Promise<SubmitResult>;
   onNext: () => void;
 }
@@ -17,7 +18,8 @@ function formatKey(key: string): string {
   return key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export function QuestionCard({ question, questionNumber, total, onSubmitAnswer, onNext }: Props) {
+export function QuestionCard({ question, questionNumber, total, mode = "practice", onSubmitAnswer, onNext }: Props) {
+  const isPractice = mode === "practice";
   const [selected, setSelected] = useState<string | null>(null);
   const [result, setResult] = useState<SubmitResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -96,8 +98,8 @@ export function QuestionCard({ question, questionNumber, total, onSubmitAnswer, 
                 </span>
               </label>
 
-              {/* Per-option distractor analysis — shown after submission for selected wrong answer */}
-              {result && showWrong && opt.distractor_type_key && (
+              {/* Per-option distractor analysis — practice mode only, shown after submission */}
+              {isPractice && result && showWrong && opt.distractor_type_key && (
                 <div className="ml-10 rounded-md bg-orange-50 border border-orange-200 px-3 py-2 text-xs space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-orange-800">Trap:</span>
@@ -118,8 +120,8 @@ export function QuestionCard({ question, questionNumber, total, onSubmitAnswer, 
         })}
       </RadioGroup>
 
-      {/* Submission feedback */}
-      {result && (
+      {/* Submission feedback — practice mode only */}
+      {isPractice && result && (
         <div
           className={cn(
             "rounded-lg px-4 py-3 text-sm font-medium",
@@ -132,8 +134,8 @@ export function QuestionCard({ question, questionNumber, total, onSubmitAnswer, 
         </div>
       )}
 
-      {/* Post-answer review panel */}
-      {result && (
+      {/* Post-answer review panel — practice mode only */}
+      {isPractice && result && (
         <div className="rounded-lg border bg-muted/30 p-4 space-y-3 text-sm">
           {/* Metadata badges */}
           <div className="flex flex-wrap gap-2">

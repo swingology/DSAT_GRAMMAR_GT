@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T17:51:31.730Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T17:57:56.688Z
 > Files: 870 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -37,7 +37,7 @@
 - `.gitignore` — Git ignore rules (~36 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~43618 tok)
+- `CHANGELOG.md` — CHANGELOG (~44106 tok)
 - `CLAUDE.md` — OpenWolf (~378 tok)
 - `DEBUG_LOG.md` — Debug Log (~48180 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
@@ -176,9 +176,9 @@
 
 ## FRONTEND/src/components/
 
-- `QuestionCard.tsx` — formatKey (~2009 tok)
+- `QuestionCard.tsx` — formatKey (~2058 tok)
 - `SessionComplete.tsx` — SessionComplete (~324 tok)
-- `SessionSetup.tsx` — SessionSetup (~1352 tok)
+- `SessionSetup.tsx` — DOMAIN_OPTIONS (~1756 tok)
 - `StatsPanel.tsx` — StatsPanel (~871 tok)
 
 ## FRONTEND/src/components/ui/
@@ -195,7 +195,7 @@
 
 ## FRONTEND/src/pages/
 
-- `PracticePage.tsx` — PracticePage (~901 tok)
+- `PracticePage.tsx` — PracticePage (~922 tok)
 - `StatsPage.tsx` — StatsPage (~147 tok)
 
 ## FRONTEND/src/types/
