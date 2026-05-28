@@ -40,6 +40,20 @@
       "occurrences": 1,
       "job_ids": [],
       "contexts": []
+    },
+    {
+      "vocab": "READING_SKILL_FAMILY_KEYS",
+      "value": "expression_of_ideas",
+      "field": "skill_family_key",
+      "first_seen": "2026-05-28T19:03:09.648942+00:00",
+      "last_seen": "2026-05-28T19:03:09.648942+00:00",
+      "occurrences": 1,
+      "job_ids": [
+        "d752e8cc-a588-4952-9f34-0861c104f330"
+      ],
+      "contexts": [
+        "sanitized→null"
+      ]
     }
   ]
 }

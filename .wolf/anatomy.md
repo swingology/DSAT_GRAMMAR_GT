@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T18:22:06.659Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T18:45:47.463Z
 > Files: 871 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -39,7 +39,7 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~44106 tok)
 - `CLAUDE.md` — OpenWolf (~378 tok)
-- `DEBUG_LOG.md` — Debug Log (~48180 tok)
+- `DEBUG_LOG.md` — Debug Log (~50318 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `FUTURE_FEATURES.md` — Future Features (~12323 tok)
