@@ -61,12 +61,17 @@ export function SessionSetup({ onStart, loading, error }: Props) {
     retry: 1,
   });
 
-  const domainOptions = DOMAIN_OPTIONS.map((o) => ({
-    ...o,
-    total: o.value === "mixed" ? inv?.mixedTotal
-         : o.value === "grammar" ? inv?.grammarTotal
-         : inv?.readingTotal,
-  }));
+  const domainOptions = DOMAIN_OPTIONS.map((o) => {
+    const total = o.value === "mixed" ? inv?.mixedTotal
+                : o.value === "grammar" ? inv?.grammarTotal
+                : inv?.readingTotal;
+    const countSuffix = total !== undefined ? ` (${total})` : '';
+    return {
+      ...o,
+      total,
+      description: o.description + countSuffix,
+    };
+  });
 
   function renderError() {
     if (!error) return null;
