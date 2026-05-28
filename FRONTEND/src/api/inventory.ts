@@ -20,27 +20,27 @@ export async function fetchFilterInventory(userToken: string): Promise<FilterInv
   const url = (extra = "") =>
     `${BASE}/api/questions?limit=${extra ? 1 : 50}&user_token=${userToken}${extra}`;
 
-  const [mixedRes, grammarRes, readingRes, easyRes, hardRes] = await Promise.all([
+  const [mixedRes, grammarRes, readingRes, lowRes, highRes] = await Promise.all([
     fetch(url(),                       { headers: h() }),
     fetch(url("&domain=grammar"),      { headers: h() }),
     fetch(url("&domain=reading"),      { headers: h() }),
-    fetch(url("&difficulty=easy"),     { headers: h() }),
-    fetch(url("&difficulty=hard"),     { headers: h() }),
+    fetch(url("&difficulty=low"),      { headers: h() }),
+    fetch(url("&difficulty=high"),     { headers: h() }),
   ]);
 
-  const [mixed, grammar, reading, easy, hard] = await Promise.all([
+  const [mixed, grammar, reading, low, high] = await Promise.all([
     mixedRes.json(),
     grammarRes.json(),
     readingRes.json(),
-    easyRes.json(),
-    hardRes.json(),
+    lowRes.json(),
+    highRes.json(),
   ]);
 
   const mixedTotal   = mixed.inventory?.matching_target_total   ?? 0;
   const grammarTotal = grammar.inventory?.matching_target_total ?? 0;
   const readingTotal = reading.inventory?.matching_target_total ?? 0;
-  const easyTotal    = easy.inventory?.matching_target_total    ?? 0;
-  const hardTotal    = hard.inventory?.matching_target_total    ?? 0;
+  const lowTotal     = low.inventory?.matching_target_total     ?? 0;
+  const highTotal    = high.inventory?.matching_target_total    ?? 0;
 
   // Derive medium count from the 50-item sample
   const mediumCount = (mixed.items as Question[]).filter(
@@ -64,9 +64,9 @@ export async function fetchFilterInventory(userToken: string): Promise<FilterInv
     readingTotal,
     difficulties,
     diffCounts: {
-      easy:   easyTotal,
+      low:    lowTotal,
       medium: mediumCount,
-      hard:   hardTotal,
+      high:   highTotal,
     },
   };
 }

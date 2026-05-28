@@ -6,7 +6,7 @@ import { fetchFilterInventory } from "../api/inventory";
 import { getUserToken } from "../lib/auth";
 
 export type Domain = "grammar" | "reading" | "mixed";
-export type Difficulty = "any" | "easy" | "medium" | "hard";
+export type Difficulty = "any" | "low" | "medium" | "high";
 export type Mode = "practice" | "test";
 
 export interface SessionParams {
@@ -24,9 +24,9 @@ interface Props {
 
 const DIFFICULTY_OPTIONS: { value: Difficulty; label: string }[] = [
   { value: "any",    label: "Any" },
-  { value: "easy",   label: "Easy" },
+  { value: "low",    label: "Easy" },
   { value: "medium", label: "Moderate" },
-  { value: "hard",   label: "Hard" },
+  { value: "high",   label: "Hard" },
 ];
 
 const COUNT_OPTIONS = [5, 10, 20];
