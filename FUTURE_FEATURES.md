@@ -932,3 +932,118 @@ explicitly scoped in the system prompt to that stimulus mode.
 2. Verify by regenerating from the Barbacenia plants source and comparing
    word count and distractor specificity
 3. Ship Tier 2 alongside `context_hint` if Tier 1 alone does not close the gap
+
+---
+
+## Admin Dashboard — Per-Student Control & Question Assignment
+
+### Problem
+
+The current system has no mechanism for an admin (teacher, tutor, parent) to:
+- See which questions a specific student has been served or has answered
+- Control which question pools a student has access to (by exam, domain, difficulty, or focus key)
+- Assign specific question sets to a student for a session
+- Monitor a student's progress over time across assessments and practice sessions
+- Lock or unlock question pools (e.g. hold back PT10 questions until the student has completed PT1–9)
+
+Without this, the system is a single shared pool with no per-student curation.
+
+### The Correct Student Progression Loop
+
+The end-to-end workflow should be a closed loop:
+
+```
+Assessment
+    ↓
+  Identify weak areas (by focus key + difficulty)
+    ↓
+Targeted Practice
+  (drill questions from weak focus keys, adaptive difficulty)
+    ↓
+  Accumulate stats, re-identify weak areas
+    ↓
+New Assessment
+  (different question pool, fresh baseline)
+    ↓
+  Compare delta: which focus keys improved? Which regressed?
+    ↓
+  Repeat
+```
+
+**Assessment phase** — a timed, no-feedback session using a curated question set
+(e.g. one full PT module). Results establish a baseline score and a per-focus-key
+weakness profile. Questions used in assessment should be locked from the practice pool
+to avoid contamination.
+
+**Practice phase** — adaptive drill using the weakness profile from the most recent
+assessment as the seeding priority. `POST /api/study/recommendations` already returns
+`top_targets[]` ranked by `weakness_score` — this output should drive which questions
+are served. Students drill until weak areas converge toward threshold accuracy.
+
+**New assessment phase** — a fresh timed session from a different PT module, measuring
+whether practice improved the identified weak areas. The delta between assessment 1 and
+assessment 2 is the primary outcome metric.
+
+### Required Admin Dashboard Features
+
+#### Student Management
+- List all students with last-active date, current phase (assessment / practice), and
+  overall accuracy trend
+- Drill into a student to see: questions served, accuracy by focus key, missed trap keys,
+  assessment history, and practice session log
+
+#### Question Pool Control
+- Assign specific PT modules (e.g. PT5 mod01) to a student as their assessment source
+- Set which PT modules are available for their practice pool (e.g. exclude assessment
+  questions from the drill pool)
+- Lock/unlock individual focus keys or difficulty tiers per student
+- Override `practice_status` for individual questions per student (mark a question as
+  "reserved for assessment" or "available for practice" at the student level, not globally)
+
+#### Assessment Management
+- Create an assessment: pick a PT module + time limit + student
+- Mark an assessment as complete and lock those questions from the practice pool
+- View assessment results: score, per-focus-key breakdown, comparison to prior assessment
+- Export results (PDF or CSV) for sharing with student/parent
+
+#### Progress Monitoring
+- Per-student dashboard: accuracy trend over time, focus key heatmap (red = weak,
+  green = strong), sessions completed, time spent
+- Cohort view (if multiple students): rank by overall score, filter by focus key weakness
+- Alert when a student's accuracy on a focus key has been below threshold for N sessions
+
+### Backend Requirements
+
+#### New tables / schema changes
+- `student_assignments` — maps a user to a question pool (exam codes, focus keys,
+  difficulty range) with a phase tag (`assessment` | `practice`)
+- `assessments` — records a timed session with `started_at`, `ended_at`, `score`,
+  `source_module`, linked to a user; questions used are flagged as assessment-locked
+- `question_locks` — per-student record marking a question as `assessment_used` (excluded
+  from practice) or `practice_available`
+
+#### API changes
+- `GET /admin/students/{id}/progress` — full progress profile
+- `POST /admin/students/{id}/assignments` — create/update question pool assignment
+- `POST /admin/assessments` — create a new assessment session
+- `GET /admin/assessments/{id}/results` — scored results with focus key breakdown
+- Extend `GET /api/questions` to respect per-student `question_locks` when filtering
+
+### Frontend Requirements
+
+- Admin dashboard at `/admin` (separate from student app at `/`)
+- Student detail page with progress charts and assessment history
+- Assignment editor: select modules, domains, difficulties, and assign to a student
+- Assessment creator wizard: pick student → pick module → set time limit → generate link
+- Results viewer: score breakdown by focus key with delta vs prior assessment
+
+### Priority
+
+This is the feature that turns the system from a standalone drill tool into a full
+tutoring platform. It should be built after:
+1. Full ingestion pipeline is run on all 18 official PDFs (~486 questions in pool)
+2. Auth workstream (STUDENT_AUTH_TASKS.md) is complete — admin needs its own auth role
+3. The student practice loop (Phases 1–2) is verified stable
+
+Suggested build order: schema → admin auth → student progress API → admin dashboard UI
+→ assessment workflow → per-student pool control.

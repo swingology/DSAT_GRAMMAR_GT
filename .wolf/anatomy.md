@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T18:10:51.003Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T18:15:48.741Z
 > Files: 870 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -42,7 +42,7 @@
 - `DEBUG_LOG.md` — Debug Log (~48180 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
-- `FUTURE_FEATURES.md` — Future Features (~11020 tok)
+- `FUTURE_FEATURES.md` — Future Features (~12323 tok)
 - `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
 - `grammar-app.html` — SAT Grammar Practice (~8803 tok)
 - `INCONSISTENT_KEYS_LIST.md` — Inconsistent Taxonomy Keys in Official Question Annotations (~1473 tok)
