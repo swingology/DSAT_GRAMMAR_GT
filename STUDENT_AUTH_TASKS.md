@@ -6,6 +6,21 @@
 
 ---
 
+## A-00 · Register `student_auth` router in backend (one-time backend change)
+
+The `student_auth` router exists at `backend/app/routers/student_auth.py` but is **not mounted** in `backend/app/main.py`. Add it before any auth task:
+
+```python
+# backend/app/main.py
+from backend.app.routers import student_auth          # add this import
+# ...
+app.include_router(student_auth.router)               # add after existing routers
+```
+
+**Verify:** `GET http://localhost:8000/api/auth/me` should return `401` (not `404`).
+
+---
+
 ## A-01 · Supabase project setup (manual, outside code)
 
 - Create a Supabase project at supabase.com (or use existing)
@@ -77,7 +92,7 @@ export function LoginPage() {
 `exchangeToken(session)` is a local helper inside this file:
 ```ts
 async function exchangeToken(session: Session) {
-  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
+  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -91,7 +106,7 @@ async function exchangeToken(session: Session) {
 }
 ```
 
-**Note:** Confirm the exact request shape `POST /auth/login` expects by reading `backend/app/routers/student_auth.py` before implementing. It may expect the Supabase JWT in the body rather than the header.
+**Note:** Confirm the exact request shape `POST /api/auth/login` expects by reading `backend/app/routers/student_auth.py` before implementing. It may expect the Supabase JWT in the body rather than the `Authorization` header.
 
 ---
 
@@ -225,7 +240,8 @@ Only after A-08 is verified working:
 ## Implementation Order
 
 ```
-A-01 (manual Supabase setup)
+A-00 (register student_auth router in main.py)
+  → A-01 (manual Supabase setup)
   → A-02 (install + env)
   → A-03 (supabase.ts)
   → A-04 (LoginPage)

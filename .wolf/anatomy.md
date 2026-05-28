@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T07:15:57.920Z
-> Files: 847 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T07:55:26.483Z
+> Files: 869 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -19,6 +19,7 @@
 - `steady-moseying-music.md` — Phase 3: Review Swarm Rubric — Implementation Plan (~4357 tok)
 - `vivid-giggling-riddle.md` — Plan: Benchmark Markdown Reports + SUMMARY.md Auto-Update (~959 tok)
 - `vocab-candidate-workflow-and-ingestion-gaps.md` — Vocabulary Candidate Workflow & Ingestion/Generation Gap Reduction (~2170 tok)
+- `what-is-teh-architecture-memoized-cook.md` — Plan: Patch STUDENT_FRONTEND_TASKS.md Before Implementation (~1333 tok)
 - `wiggly-shimmying-leaf.md` — Plan: OCR Strategy Benchmark Endpoint (~1287 tok)
 
 ## ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/
@@ -62,8 +63,8 @@
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
-- `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~1879 tok)
-- `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~2298 tok)
+- `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
+- `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~2916 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
@@ -154,6 +155,51 @@
 - `batch-9.json` (~4392 tok)
 - `scan-result.json` (~12785 tok)
 - `tour.json` — Declares defined (~2484 tok)
+
+## FRONTEND/
+
+- `.gitignore` — Git ignore rules (~72 tok)
+- `tailwind.config.js` (~360 tok)
+- `vite.config.ts` (~48 tok)
+
+## FRONTEND/src/
+
+- `App.tsx` — NavBar (~546 tok)
+- `index.css` — Styles: 5 rules, 16 vars (~208 tok)
+- `main.tsx` (~118 tok)
+
+## FRONTEND/src/api/
+
+- `questions.ts` — Exports fetchQuestions, submitAnswer (~387 tok)
+- `stats.ts` — Exports fetchStats (~124 tok)
+
+## FRONTEND/src/components/
+
+- `QuestionCard.tsx` — QuestionCard (~1202 tok)
+- `SessionComplete.tsx` — SessionComplete (~324 tok)
+- `SessionSetup.tsx` — SessionSetup (~773 tok)
+- `StatsPanel.tsx` — StatsPanel (~871 tok)
+
+## FRONTEND/src/components/ui/
+
+- `badge.tsx` — badgeVariants (~272 tok)
+- `button.tsx` — buttonVariants (~502 tok)
+- `radio-group.tsx` — RadioGroup (~374 tok)
+
+## FRONTEND/src/lib/
+
+- `auth.ts` — Auth seam — the only file that changes between dev and prod auth. (~376 tok)
+- `query.ts` — Exports queryClient (~55 tok)
+- `utils.ts` — Exports cn (~49 tok)
+
+## FRONTEND/src/pages/
+
+- `PracticePage.tsx` — PracticePage (~921 tok)
+- `StatsPage.tsx` — StatsPage (~147 tok)
+
+## FRONTEND/src/types/
+
+- `index.ts` — Exports QuestionOption, Question, InventoryMetadata, QuestionsResponse + 2 more (~351 tok)
 
 ## TESTS/DATA_SRC/2024-2025 Tests Answers/
 

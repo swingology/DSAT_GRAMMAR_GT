@@ -10,24 +10,53 @@
 
 ### P1-01 · Scaffold frontend project
 - `cd /home/jb/DSAT_REDUX_MD && npm create vite@latest frontend -- --template react-ts`
-- Add Tailwind CSS, React Router v6
-- Add proxy in `vite.config.ts`: `'/api': 'http://localhost:8000'`, `'/users': 'http://localhost:8000'`, `'/auth': 'http://localhost:8000'`
+- Install dependencies:
+  ```bash
+  cd frontend
+  npm install react-router-dom @tanstack/react-query
+  npm install -D tailwindcss @tailwindcss/vite tailwindcss-animate
+  npx shadcn@latest init   # choose "Default" style, Tailwind CSS, src/lib/utils.ts path
+  npx shadcn@latest add button radio-group accordion
+  ```
+- `vite.config.ts` — **no proxy needed**; fetch calls use `VITE_API_BASE_URL` directly and backend CORS allows `*`
 - Create `.env` with:
   ```
   VITE_API_BASE_URL=http://localhost:8000
+  VITE_STUDENT_API_KEY=<one key from backend STUDENT_API_KEYS>
   VITE_TEST_USER_TOKEN=<uuid-from-seed>
   VITE_TEST_USER_ID=<int-id-from-seed>
   ```
 - Create folder structure: `src/api/`, `src/components/`, `src/pages/`, `src/lib/`, `src/types/`
+- Create `src/lib/query.ts`:
+  ```ts
+  import { QueryClient } from '@tanstack/react-query';
+  export const queryClient = new QueryClient();
+  ```
+- Wrap `<App>` in `main.tsx`:
+  ```tsx
+  import { QueryClientProvider } from '@tanstack/react-query';
+  import { queryClient } from './lib/query';
+  // ...
+  <QueryClientProvider client={queryClient}>
+    <App />
+  </QueryClientProvider>
+  ```
 
 ### P1-02 · Seed test user
-- Hit `POST /users` with `{ "name": "Test Student", "role": "student" }` (or insert directly into DB)
-- Copy the returned `user_token` UUID and integer `id` into `.env`
-- Verify with `GET /users/{id}` that the row exists
+- Hit `POST /users` with the **admin API key** (not the student key):
+  ```bash
+  curl -X POST http://localhost:8000/users \
+    -H "X-API-Key: <one key from backend ADMIN_API_KEYS>" \
+    -H "Content-Type: application/json" \
+    -d '{ "username": "test-student" }'
+  ```
+  The admin key value is in `backend/.env` as `ADMIN_API_KEYS` (or check `backend/app/config.py`).
+- Copy the returned `user_token` UUID and integer `id` into `frontend/.env`
+- Verify with `GET /users/{id}` (admin key required) that the row exists
 
 ### P1-03 · Create `src/lib/auth.ts` (test-user stub)
 ```ts
-// Stub for Phases 1–2. Auth phase replaces this body — no other file changes.
+// Stub for Phases 1–2. Auth phase replaces this body and awaits the two API call sites.
 export function getUserToken(): string {
   return import.meta.env.VITE_TEST_USER_TOKEN;
 }
@@ -35,26 +64,33 @@ export function getUserId(): string {
   return import.meta.env.VITE_TEST_USER_ID;
 }
 ```
-**This is the only file that changes when auth is wired up.** Every other call-site imports from here.
+**`lib/auth.ts` is the primary seam.** In Phase 3 (A-06), both getters become `async` and return `Promise<string>`. You will also need to add `await` at the two call sites in `api/questions.ts` and `api/stats.ts` — no other files change.
 
 ### P1-04 · Define TypeScript types (`src/types/index.ts`)
 Match these exactly to the API response shapes:
 ```ts
 export interface QuestionOption {
-  option_label: string;
-  option_text: string;
+  label: string;   // matches GET /api/questions response (backend serializes as label/text)
+  text: string;
 }
 export interface Question {
   id: string;
+  content_origin: string;
   current_question_text: string;
   current_passage_text: string | null;
+  passage_tokens: Record<string, unknown>[] | null;
+  practice_status: string;
   options: QuestionOption[];
   grammar_role_key: string | null;
   grammar_focus_key: string | null;
   reading_skill_family_key: string | null;
   reading_focus_key: string | null;
   difficulty_overall: string | null;
-  content_origin: string;
+  stimulus_mode_key: string | null;
+  source_exam_code: string | null;
+  source_subject_code: string | null;
+  source_section_code: string | null;
+  source_module_code: string | null;
 }
 export interface InventoryMetadata {
   matching_target_total: number;
@@ -79,6 +115,25 @@ export interface UserStats {
   top_missed_focus_keys: string[];
   top_missed_trap_keys: string[];
 }
+export interface WeaknessTarget {
+  domain: string;
+  focus_key: string;
+  skill_family_key: string | null;
+  grammar_role_key: string | null;
+  difficulty: string;
+  weakness_score: number;
+  miss_count: number;
+  attempt_count: number;
+  miss_rate: number;
+  days_since_last_attempt: number;
+  inventory_unseen: number;
+  inventory_below_threshold: boolean;
+}
+export interface StudyRecommendationsResponse {
+  user_id: number;
+  top_targets: WeaknessTarget[];
+  threshold: number;
+}
 ```
 
 ### P1-05 · Create API module (`src/api/questions.ts`)
@@ -86,6 +141,7 @@ export interface UserStats {
 import { QuestionsResponse, SubmitResult } from '../types';
 
 const BASE = import.meta.env.VITE_API_BASE_URL;
+const STUDENT_API_KEY = import.meta.env.VITE_STUDENT_API_KEY;
 
 export async function fetchQuestions(params: {
   domain?: 'grammar' | 'reading';
@@ -99,9 +155,12 @@ export async function fetchQuestions(params: {
   qs.set('limit', String(params.limit ?? 20));
   qs.set('user_token', params.userToken);
   const res = await fetch(`${BASE}/api/questions?${qs}`, {
-    headers: { 'X-API-Key': import.meta.env.VITE_STUDENT_API_KEY ?? 'student' },
+    headers: { 'X-API-Key': STUDENT_API_KEY },
   });
-  if (!res.ok) throw new Error(`fetchQuestions ${res.status}`);
+  if (!res.ok) {
+    if (res.status === 403) throw new Error('INVALID_API_KEY');
+    throw new Error(`fetchQuestions ${res.status}`);
+  }
   return res.json();
 }
 
@@ -114,7 +173,7 @@ export async function submitAnswer(body: {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-API-Key': import.meta.env.VITE_STUDENT_API_KEY ?? 'student',
+      'X-API-Key': STUDENT_API_KEY,
     },
     body: JSON.stringify(body),
   });
@@ -122,19 +181,49 @@ export async function submitAnswer(body: {
   return res.json();
 }
 ```
-**Note:** Check `backend/app/auth.py` for the exact header name and key value the `student_required` dependency expects. Add `VITE_STUDENT_API_KEY` to `.env` accordingly.
+
+**Usage with TanStack Query** — in `PracticePage` use `useMutation`:
+```ts
+const submitMutation = useMutation({
+  mutationFn: submitAnswer,
+  onSuccess: () => queryClient.invalidateQueries({ queryKey: ['stats'] }),
+  onError: () => { /* re-enable submit button */ },
+});
+```
+
+**Error states to handle in consuming components:**
+- `INVALID_API_KEY` error → display "Invalid API key — check VITE_STUDENT_API_KEY in .env"
+- `items[]` empty after fetch → display "No active questions for these filters"
+- `items[]` exhausted (index >= length) → trigger SessionComplete state
+- Fetch network failure → display retry button, do not crash
+- Submit 4xx/5xx → re-enable submit button, display inline error message
+
+**Note:** `VITE_STUDENT_API_KEY` should already be in `.env` from P1-01. Confirm the value by reading `backend/app/config.py` → `student_api_keys` / `student_api_key_list`.
 
 ### P1-06 · Build `<QuestionCard>` component
-Props: `question: Question`, `onSubmit: (label: string, result: SubmitResult) => void`
+Props:
+```ts
+{
+  question: Question;
+  onSubmitAnswer: (label: string) => Promise<SubmitResult>;
+  onAnswered: (label: string, result: SubmitResult) => void;
+  onNext: () => void;
+}
+```
+
+Use shadcn `RadioGroup` + `RadioGroupItem` for options and shadcn `Button` for submit/next.
 
 Behavior:
 - Renders passage (if present) in a styled blockquote
 - Renders question stem
-- Renders 4 radio buttons (A–D) — labels come from `options[].option_label`, text from `options[].option_text`
+- Renders 4 radio buttons (A–D) — labels come from `options[].label`, text from `options[].text`
 - "Submit Answer" button — disabled until selection made
-- On click: calls `submitAnswer()`, then calls `onSubmit(selectedLabel, result)`
-- Shows feedback inline: green "Correct!" or red "Wrong — the answer was [X]"
-- "Next" button appears after feedback is shown
+- On click: calls `onSubmitAnswer(selectedLabel)`, then calls `onAnswered(selectedLabel, result)`
+- Shows feedback inline: green "Correct! ✓" or red "Incorrect ✗"
+  - **Note:** The student API intentionally omits the correct answer label (`POST /api/submit` returns `{id, is_correct}` only). Do not attempt to reveal the correct option.
+- "Next Question" button appears after feedback; parent (`PracticePage`) advances the index via `onNext`
+- While submit is in-flight: disable button, show loading state
+- On submit error: re-enable button, show "Submission failed — try again"
 
 ### P1-07 · Build `<SessionSetup>` component (filter screen)
 - Domain radio: Grammar / Reading / Mixed (default)
@@ -171,10 +260,11 @@ No routing changes needed between these states — single page, local state.
 ```ts
 import { UserStats } from '../types';
 const BASE = import.meta.env.VITE_API_BASE_URL;
+const STUDENT_API_KEY = import.meta.env.VITE_STUDENT_API_KEY;
 
 export async function fetchStats(userId: string): Promise<UserStats> {
   const res = await fetch(`${BASE}/api/stats/${userId}`, {
-    headers: { 'X-API-Key': import.meta.env.VITE_STUDENT_API_KEY ?? 'student' },
+    headers: { 'X-API-Key': STUDENT_API_KEY },
   });
   if (!res.ok) throw new Error(`fetchStats ${res.status}`);
   return res.json();
@@ -184,8 +274,8 @@ export async function fetchStats(userId: string): Promise<UserStats> {
 ### P2-02 · Build `<StatsPanel>` component
 Props: `userId: string`
 
-- Fetches stats on mount
-- Re-fetches whenever parent calls a `refresh()` callback (pass `onRefresh` prop or use a version counter pattern)
+- Fetches stats using `useQuery({ queryKey: ['stats', userId], queryFn: () => fetchStats(userId) })`
+- Auto-refetches when `submitMutation` in `PracticePage` calls `queryClient.invalidateQueries({ queryKey: ['stats'] })` on success — no manual refresh callback needed
 - Shows:
   - Large accuracy % circle or number
   - "X / Y answered correctly"
@@ -193,10 +283,12 @@ Props: `userId: string`
   - Chip list: top missed trap keys
 - **Dev accordion:** collapsible `<pre>{JSON.stringify(rawStats, null, 2)}</pre>` — remove in Phase 3
 
-### P2-03 · Wire `<StatsPanel>` into `PracticePage`
-- Add `/stats` route that renders `<StatsPanel userId={getUserId()} />`
+### P2-03 · Wire stats route and query invalidation
+- Create `StatsPage` that renders `<StatsPanel userId={getUserId()} />`
+- Add `/stats` route for `StatsPage`
 - Add a minimal nav bar: "Practice" | "Stats"
-- After every `submitAnswer()` in `<QuestionCard>`, call the refresh callback so `<StatsPanel>` re-fetches (if it is mounted)
+- In `PracticePage`, own the submit mutation and pass `onSubmitAnswer` into `<QuestionCard>`
+- On every successful `submitAnswer()`, call `queryClient.invalidateQueries({ queryKey: ['stats'] })` so `/stats` is fresh after navigation and any mounted stats panel re-fetches
 
 ### P2-04 · Phase 2 verification checklist (all must pass)
 - [ ] Open Stats page — shows 0/0 initially for fresh test user
@@ -206,6 +298,37 @@ Props: `userId: string`
 - [ ] Submit a wrong grammar answer → `top_missed_focus_keys` includes the question's `grammar_focus_key`
 - [ ] Stats update without a full page reload (just navigate to /stats after submitting)
 - [ ] Raw JSON accordion shows no unexpected `null` or missing fields
+
+### P2-05 · Optional Phase 2 stretch: study recommendations
+This is explicitly optional in the PRD and is **not** a gate for moving to `STUDENT_AUTH_TASKS.md`.
+
+- Create `src/api/recommendations.ts`
+  ```ts
+  import { StudyRecommendationsResponse } from '../types';
+
+  const BASE = import.meta.env.VITE_API_BASE_URL;
+  const STUDENT_API_KEY = import.meta.env.VITE_STUDENT_API_KEY;
+
+  export async function fetchStudyRecommendations(body: {
+    user_token: string;
+    limit?: number;
+  }): Promise<StudyRecommendationsResponse> {
+    const res = await fetch(`${BASE}/api/study/recommendations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': STUDENT_API_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`fetchStudyRecommendations ${res.status}`);
+    return res.json();
+  }
+  ```
+- Add a "What should I study?" button to `StatsPage` or `StatsPanel`
+- On click, call `fetchStudyRecommendations({ user_token: getUserToken(), limit: 5 })`
+- Render returned `top_targets[]` as a compact "Focus On" list
+- Backend note: current `StudyRecommendationsRequest` only requires `user_token`; `limit` is PRD-level UI intent and is safe to omit if the backend rejects extra fields
 
 ---
 
@@ -217,6 +340,8 @@ P1-01 → P1-02 → P1-03 → P1-04 → P1-05 → P1-06 → P1-07 → P1-08 → 
 P2-01 → P2-02 → P2-03 → P2-04 verification checklist
                     ↓ (checklist passes)
 → continue in STUDENT_AUTH_TASKS.md
+
+Optional: P2-05 can be done before auth if desired, but it is not part of the strict gate.
 ```
 
 ---
@@ -227,8 +352,8 @@ P2-01 → P2-02 → P2-03 → P2-04 verification checklist
 
 2. **`practice_status` filter:** `GET /api/questions` only returns questions with `practice_status = 'active'`. If the question list comes back empty, the DB likely has no approved/active questions — check with `GET /admin/questions?status=active&limit=5`.
 
-3. **`options[]` shape:** The `options` array in `StudentQuestionResponse` is `List[dict]` — confirm actual keys returned (`option_label`, `option_text`) by logging the first raw response before building `<QuestionCard>`.
+3. **`options[]` shape:** The backend serializes options as `{"label": ..., "text": ...}` (see `student.py` line ~297). The `QuestionOption` TypeScript type uses `label` / `text` to match this. Do not use `option_label` / `option_text`.
 
 4. **`user_token` vs `user_id`:** The submit endpoint takes a `user_token` UUID (not the integer `id`). The stats endpoint takes the integer `user_id`. Keep both in env/auth module.
 
-5. **CORS:** If running frontend on port 5173 and backend on 8000, ensure `BACKEND_CORS_ORIGINS` in `config.py` includes `http://localhost:5173`.
+5. **CORS:** If running frontend on port 5173 and backend on 8000 with direct `VITE_API_BASE_URL` calls, ensure `CORS_ALLOWED_ORIGINS` in backend config includes `http://localhost:5173` or is `*`.

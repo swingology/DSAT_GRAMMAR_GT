@@ -3428,6 +3428,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T07:15:52.145Z"
+    },
+    {
+      "id": "bug-212",
+      "timestamp": "2026-05-28T07:35:20.035Z",
+      "error_message": "Significant refactor of ",
+      "file": "STUDENT_FRONTEND_TASKS.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 11→31 lines (2 removed) | Also: - Hit `POST /users` with `{ \"name\": \"Test Student\"; - Copy the returned `user_token` UUID and integer  | Also: option_label: string;; option_text: string; | Also: - Renders 4 radio buttons (A–D) — labels come from; - On click: calls `submitAnswer()`, then calls `on | Also: - Fetches stats on mount; - Re-fetches whenever parent calls a `refresh()` c",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-28T07:36:07.184Z"
+    },
+    {
+      "id": "bug-213",
+      "timestamp": "2026-05-28T07:36:13.750Z",
+      "error_message": "Incorrect value in code",
+      "file": "STUDENT_FRONTEND_TASKS.md",
+      "root_cause": "Had `options`",
+      "fix": "Changed to \"label\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T07:36:13.750Z"
+    },
+    {
+      "id": "bug-214",
+      "timestamp": "2026-05-28T07:36:24.397Z",
+      "error_message": "Incorrect value in code",
+      "file": "STUDENT_AUTH_TASKS.md",
+      "root_cause": "Had `${import.meta.env.VITE_API_BASE_URL}/auth/login`",
+      "fix": "Changed to `${import.meta.env.VITE_API_BASE_URL}/api/auth/log",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T07:36:47.519Z"
+    },
+    {
+      "id": "bug-215",
+      "timestamp": "2026-05-28T07:52:47.640Z",
+      "error_message": "Wrong reference: require should be animate",
+      "file": "FRONTEND/tailwind.config.js",
+      "root_cause": "Used \"require\" instead of \"animate\"",
+      "fix": "Changed require → animate",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T07:52:47.640Z"
     }
   ]
 }
