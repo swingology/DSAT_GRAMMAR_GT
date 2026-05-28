@@ -1,5 +1,157 @@
 # Debug Log
 
+## 2026-05-28 — Annotation Metadata First-Class Audit: Domain Filter Bug + Ingestion Coverage Gaps
+Report created by: Claude Sonnet 4.6
+Git branch: `frontend`
+Git checkpoint: `3a5e944` — feat(frontend+backend): test mode — 33q/32min timed, DSAT question ordering
+
+### Context
+
+User observed that the frontend `SessionSetup` filter counts are inconsistent:
+Grammar shows **(12)** and Medium shows **(19)**, but selecting Grammar with any
+difficulty returns zero questions. Hypothesis: the ingestion pipeline produces
+incomplete metadata, causing domain routing to silently fail.
+
+Full diagnostic run against all 33 active questions in the DB
+(all from PT5 sec01 mod01, annotated with `rules_agent_dsat_grammar_ingestion_generation_v3`
+via `qwen3-vl:235b-instruct-cloud`).
+
+---
+
+### Findings
+
+1. **Critical: `domain=reading` filter permanently broken for all current data**
+   - The backend `student.py` domain filter for `reading` uses:
+     ```python
+     annotation_jsonb["reading_skill_family_key"].astext.isnot(None)
+     ```
+   - `reading_skill_family_key` is **NULL for all 33 active questions** — `0/33` populated
+   - Root cause: all questions were annotated with v3 *grammar* rules, which do not
+     populate `reading_skill_family_key`. That field is only populated by the reading
+     annotation pipeline.
+   - Result: `GET /api/questions?domain=reading` returns 0 questions regardless of how
+     many reading-topic questions exist.
+   - Correct field to filter on for reading: `reading_focus_key`, which IS populated
+     for 17/33 questions.
+   - **Fix required:** Change the `domain=reading` filter in `student.py` from
+     `reading_skill_family_key` to `reading_focus_key`.
+
+2. **High: JSONB null vs SQL NULL semantic mismatch in domain filters**
+   - The filter `annotation_jsonb["key"].astext.isnot(None)` is **syntactically wrong**
+     in raw SQL context — `["key"].astext` is not valid JSONB syntax and falls through
+     to SQLAlchemy's `->>` operator internally.
+   - More critically: when a JSON key exists but has the value `null`
+     (i.e. `{"grammar_role_key": null}`), PostgreSQL's `->>` operator returns the
+     string `"null"` — which IS NOT SQL NULL — so `.isnot(None)` evaluates to `TRUE`,
+     incorrectly matching questions whose `grammar_role_key` is explicitly unset.
+   - **Confirmed:** 
+     - `annotation_jsonb->>'grammar_role_key' IS NOT NULL` → 33 rows (all questions, wrong)
+     - `annotation_jsonb->>'grammar_role_key' IS NOT NULL AND != 'null'` → 12 rows (correct)
+   - **Fix required:** All domain and key filters in `student.py` must use the two-part check:
+     ```python
+     annotation_jsonb["key"].astext.isnot(None),
+     annotation_jsonb["key"].astext != "null"
+     ```
+
+3. **High: 4 questions (Q2–Q5) have no domain classification whatsoever**
+   - `question_family_key`: null
+   - `grammar_role_key`: null
+   - `reading_focus_key`: null
+   - `difficulty_overall`: null
+   - All 4 have `stem_type_key: complete_the_text` — they are `sentence_only` vocabulary
+     questions (Words in Context) that the v3 annotation pass failed to classify.
+   - These 4 questions are unroutable: they are excluded by `domain=grammar`,
+     `domain=reading`, and any difficulty filter. They only appear in `domain=mixed`
+     with `difficulty=any`.
+   - **Fix required:** Reannotate Q2–Q5 with current v8 grammar + v3 reading rules.
+
+4. **High: All 33 questions annotated with stale v3 grammar rules**
+   - Annotation metadata: `rules_version = 'rules_agent_dsat_grammar_ingestion_generation_v3'`
+   - Current grammar rules version: **v8** (28 major versions ahead)
+   - v3 did not produce: `reading_skill_family_key`, `question_family_key` (for some Qs),
+     `difficulty_overall` (for some Qs), or correct `grammar_focus_key` sub-patterns.
+   - v8 introduced: 44 grammar focus keys with PT-cited sub-patterns, reading routing rules,
+     `annotation_sanitizer` for key validation.
+   - **Fix required:** Full reannotation of all 33 questions with v8 grammar + v3 reading rules.
+
+5. **Medium: `reading_skill_family_key` absent from all annotations**
+   - This field is the backbone of reading domain routing. It should be populated by the
+     reading annotation pipeline (`rules_agent_dsat_reading_v3.md`).
+   - None of the 33 current annotations were produced by the reading pipeline — they all
+     went through the grammar pipeline which sets only grammar taxonomy fields.
+   - Mixed-domain questions (most verbal questions that are not pure grammar) require a
+     second annotation pass with the reading rules to populate `reading_skill_family_key`,
+     `reading_focus_key`, `reading_skill_family_key`.
+   - **Fix required:** The ingestion pipeline must route each question through BOTH
+     grammar AND reading annotation (or detect domain first and route appropriately).
+
+6. **Medium: No metadata completeness gate before `practice_status = 'active'`**
+   - Questions can be promoted to `active` without any required metadata fields being
+     populated.
+   - This means questions with null `question_family_key`, null difficulty, and null
+     domain keys can silently enter the active pool and confuse filter counts.
+   - **Fix required:** Add a pre-activation check (either in the API or as a DB constraint)
+     that requires at minimum: `question_family_key`, `difficulty_overall`, and either
+     `grammar_role_key` or `reading_focus_key` to be non-null before `practice_status`
+     can be set to `active`.
+
+7. **Low: Inventory probe counts are correct for grammar but misleading for reading**
+   - Grammar count badge shows **(12)** — correct, matches actual `domain=grammar` results
+   - Reading count badge shows **(0)** — correct that the filter returns 0, but misleading
+     because 17 questions ARE reading-type questions; they just can't be found by the filter
+   - Difficulty Medium shows **(19)** — correct count for questions with
+     `difficulty_overall = 'medium'` in annotation_jsonb
+   - The numbers themselves are accurate given the current filter logic; the root problem
+     is the filter logic (findings 1–2), not the inventory probe.
+
+---
+
+### Proposed Fix Plan (ordered by impact)
+
+#### Fix 1 — Immediate: correct `domain=reading` filter (no reannotation needed)
+- **File:** `backend/app/routers/student.py`
+- Change `reading` domain filter from `reading_skill_family_key` to `reading_focus_key`
+- Reading questions in current data have `reading_focus_key` populated (17/33)
+- This restores the Reading domain option immediately without any reannotation
+
+#### Fix 2 — Immediate: add `!= 'null'` guard to all JSONB domain filters
+- **File:** `backend/app/routers/student.py`
+- All `annotation_jsonb["key"].astext.isnot(None)` checks must also assert `!= "null"`
+- Prevents JSON null strings from matching as valid values
+
+#### Fix 3 — Short-term: add metadata completeness gate
+- **File:** `backend/app/routers/admin.py` (question approval endpoint) or a new validator
+- Block `practice_status → active` transition unless `question_family_key`,
+  `difficulty_overall`, and at least one of `grammar_role_key` / `reading_focus_key`
+  are non-null
+
+#### Fix 4 — Medium-term: reannotate all active questions with current rules
+- Run `POST /admin/reannotate` on all 33 active questions using current v8 + reading-v3 rules
+- This will populate `reading_skill_family_key`, correct `question_family_key` on Q2–Q5,
+  and apply v8 grammar taxonomy (44 focus keys, PT-cited sub-patterns)
+
+#### Fix 5 — Medium-term: fix ingestion pipeline domain routing
+- The ingestion pipeline must detect question domain during Pass 2 annotation and run
+  reading-domain questions through the reading annotation rules, not just grammar rules
+- Mixed questions (e.g. vocabulary / Words in Context) require both passes
+
+#### Fix 6 — Long-term: promote metadata to first-class schema columns
+- Key fields (`question_family_key`, `grammar_role_key`, `reading_focus_key`,
+  `reading_skill_family_key`, `difficulty_overall`) should be **denormalized into
+  the `questions` table as indexed columns**, not buried in `annotation_jsonb`.
+- This enables proper SQL indexes, NOT NULL constraints, and eliminates all JSONB
+  null/string ambiguity at the filter layer.
+- Migration: add columns → backfill from annotation_jsonb → add NOT NULL constraints
+  on active questions → update ORM filters to use columns directly.
+
+---
+
+### Immediate Action
+Fixes 1 and 2 unblock the Reading domain filter today with zero reannotation needed.
+Fixes 3–6 are prerequisite for a reliable multi-PT ingestion pipeline.
+
+---
+
 ## 2026-05-27 - Test Suite Fixes and GAP-010 Matching Delimiter Rule
 Report created by: Claude Sonnet 4.6
 Git branch: `rules_edit`
