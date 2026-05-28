@@ -1,6 +1,9 @@
 export interface QuestionOption {
   label: string;
   text: string;
+  distractor_type_key?: string | null;
+  why_wrong?: string | null;
+  why_plausible?: string | null;
 }
 
 export interface Question {
@@ -17,6 +20,9 @@ export interface Question {
   reading_focus_key: string | null;
   difficulty_overall: string | null;
   stimulus_mode_key: string | null;
+  reasoning_trap_key: string | null;
+  explanation_short: string | null;
+  solver_pattern_key: string | null;
   source_exam_code: string | null;
   source_subject_code: string | null;
   source_section_code: string | null;

@@ -294,9 +294,7 @@ async def student_recall(
         for opt in opts_rows.scalars().all():
             qid = version_to_qid.get(opt.question_version_id)
             if qid:
-                opts_by_qid.setdefault(qid, []).append(
-                    {"label": opt.option_label, "text": opt.option_text}
-                )
+                opts_by_qid.setdefault(qid, []).append(opt)
     else:
         opts_by_qid = {}
 
@@ -307,6 +305,22 @@ async def student_recall(
             includes_generated = True
         ann = ann_map.get(q.latest_annotation_id) if q.latest_annotation_id else None
         ann_data = ann.annotation_jsonb if ann else {}
+
+        # Merge per-option annotation data (distractor analysis) keyed by option_label.
+        # Omit distractor_type_key=="correct" so the answer is not revealed before submission.
+        ann_opts = {o["option_label"]: o for o in ann_data.get("options", []) if isinstance(o, dict)}
+        enriched_options = []
+        for opt in opts_by_qid.get(q.id, []):
+            ao = ann_opts.get(opt.option_label, {})
+            d_key = ao.get("distractor_type_key")
+            enriched_options.append({
+                "label": opt.option_label,
+                "text": opt.option_text,
+                "distractor_type_key": d_key if d_key and d_key != "correct" else None,
+                "why_wrong": ao.get("why_wrong") or None,
+                "why_plausible": ao.get("why_plausible") or None,
+            })
+
         items.append(StudentQuestionResponse(
             id=str(q.id),
             content_origin=q.content_origin,
@@ -324,7 +338,10 @@ async def student_recall(
             source_subject_code=q.source_subject_code,
             source_section_code=q.source_section_code,
             source_module_code=q.source_module_code,
-            options=opts_by_qid.get(q.id, []),
+            options=enriched_options,
+            reasoning_trap_key=ann_data.get("reasoning_trap_key"),
+            explanation_short=ann_data.get("explanation_short"),
+            solver_pattern_key=ann_data.get("solver_pattern_key"),
         ))
 
     inventory = InventoryMetadata(

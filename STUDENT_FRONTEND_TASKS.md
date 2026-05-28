@@ -381,6 +381,75 @@ This is explicitly optional in the PRD and is **not** a gate for moving to `STUD
 - Render returned `top_targets[]` as a compact "Focus On" list
 - Backend note: current `StudyRecommendationsRequest` only requires `user_token`; `limit` is PRD-level UI intent and is safe to omit if the backend rejects extra fields
 
+### P1-12 · Expose distractor metadata from backend + render post-answer review panel
+
+**Why:** `annotation_jsonb` holds rich per-option distractor analysis (`distractor_type_key`,
+`why_wrong`, `why_plausible`) and question-level metadata (`reasoning_trap_key`,
+`explanation_short`, `solver_pattern_key`). None of this reaches the student API today.
+Show it after submission so students understand why wrong options are tempting.
+
+**Backend change — `backend/app/models/payload.py`:**
+Add 3 new fields to `StudentQuestionResponse`:
+```python
+reasoning_trap_key: Optional[str] = None
+explanation_short: Optional[str] = None
+solver_pattern_key: Optional[str] = None
+```
+Options dict already typed as `List[dict]`; add per-option fields there (no model change needed).
+
+**Backend change — `backend/app/routers/student.py` (option building loop ~line 295):**
+Merge per-option annotation data into each option dict:
+```python
+ann_opts = {o["option_label"]: o for o in ann_data.get("options", [])}
+for opt in question_options:
+    ann_opt = ann_opts.get(opt.option_label, {})
+    d_key = ann_opt.get("distractor_type_key")
+    options_list.append({
+        "label": opt.option_label,
+        "text": opt.option_text,
+        # Only include distractor fields — omit "correct" to avoid revealing answer
+        "distractor_type_key": d_key if d_key and d_key != "correct" else None,
+        "why_wrong": ann_opt.get("why_wrong") or None,
+        "why_plausible": ann_opt.get("why_plausible") or None,
+    })
+```
+Add question-level fields to `StudentQuestionResponse(...)` constructor call:
+```python
+reasoning_trap_key=ann_data.get("reasoning_trap_key"),
+explanation_short=ann_data.get("explanation_short"),
+solver_pattern_key=ann_data.get("solver_pattern_key"),
+```
+
+**Frontend — `src/types/index.ts`:** Extend types:
+```ts
+export interface QuestionOption {
+  label: string;
+  text: string;
+  distractor_type_key?: string | null;
+  why_wrong?: string | null;
+  why_plausible?: string | null;
+}
+export interface Question {
+  // ... existing fields ...
+  reasoning_trap_key: string | null;
+  explanation_short: string | null;
+  solver_pattern_key: string | null;
+}
+```
+
+**Frontend — `src/components/QuestionCard.tsx`:** Add post-answer review panel.
+Shown only after `result` is set (i.e. after submission). Contains:
+- Row of metadata badges: focus key, difficulty, trap key (each only if non-null)
+- Short explanation text (`explanation_short`)
+- Per-option: if the selected option was wrong, show `distractor_type_key` label + `why_wrong` inline under that option's radio row
+- Solver pattern hint: `solver_pattern_key` shown as a "Strategy:" line
+
+**Files touched:**
+- `backend/app/models/payload.py` — add 3 fields to `StudentQuestionResponse`
+- `backend/app/routers/student.py` — extend option dict and constructor call
+- `src/types/index.ts` — add 3 Question fields + 3 QuestionOption fields
+- `src/components/QuestionCard.tsx` — render review panel post-submission
+
 ---
 
 ## Implementation Order (strict)

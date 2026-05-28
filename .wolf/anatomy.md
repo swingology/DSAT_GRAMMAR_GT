@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T08:50:53.144Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T17:51:31.730Z
 > Files: 870 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -64,7 +64,7 @@
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
-- `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~4589 tok)
+- `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~5330 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
@@ -176,7 +176,7 @@
 
 ## FRONTEND/src/components/
 
-- `QuestionCard.tsx` — QuestionCard (~1202 tok)
+- `QuestionCard.tsx` — formatKey (~2009 tok)
 - `SessionComplete.tsx` — SessionComplete (~324 tok)
 - `SessionSetup.tsx` — SessionSetup (~1352 tok)
 - `StatsPanel.tsx` — StatsPanel (~871 tok)
@@ -200,7 +200,7 @@
 
 ## FRONTEND/src/types/
 
-- `index.ts` — Exports QuestionOption, Question, InventoryMetadata, QuestionsResponse + 2 more (~351 tok)
+- `index.ts` — Exports QuestionOption, Question, InventoryMetadata, QuestionsResponse + 2 more (~411 tok)
 
 ## TESTS/DATA_SRC/2024-2025 Tests Answers/
 
@@ -1068,7 +1068,7 @@
 - `db.py` — Declares QuestionJob (~8762 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5620 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~6911 tok)
+- `payload.py` — HTTP request/response models. (~6949 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1111,7 +1111,7 @@
 - `generate.py` (~15836 tok)
 - `ingest.py` (~35990 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
-- `student.py` — API: 1 endpoints (~13787 tok)
+- `student.py` — API: 1 endpoints (~14049 tok)
 
 ## backend/app/storage/
 
