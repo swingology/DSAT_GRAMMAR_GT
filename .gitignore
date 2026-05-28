@@ -5,3 +5,7 @@
 local_object_store/**
 !local_object_store/**/
 !local_object_store/**/.gitkeep
+.codegraph/
+.cursor/
+.understand-anything/
+**/__pycache__/
