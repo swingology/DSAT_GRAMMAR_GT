@@ -495,6 +495,18 @@
       "action": "edit",
       "tokens": 584,
       "at": "2026-05-28T17:57:56.698Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/FRONTEND/src/components/SessionSetup.tsx",
+      "action": "create",
+      "tokens": 2131,
+      "at": "2026-05-28T18:10:18.025Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/FRONTEND/src/api/inventory.ts",
+      "action": "create",
+      "tokens": 630,
+      "at": "2026-05-28T18:10:51.016Z"
     }
   ],
   "edit_counts": {
@@ -515,7 +527,7 @@
     "FRONTEND/src/components/ui/radio-group.tsx": 1,
     "FRONTEND/src/components/ui/badge.tsx": 1,
     "FRONTEND/src/components/QuestionCard.tsx": 7,
-    "FRONTEND/src/components/SessionSetup.tsx": 3,
+    "FRONTEND/src/components/SessionSetup.tsx": 4,
     "FRONTEND/src/components/SessionComplete.tsx": 1,
     "FRONTEND/src/components/StatsPanel.tsx": 1,
     "FRONTEND/src/pages/PracticePage.tsx": 3,
@@ -524,7 +536,7 @@
     "FRONTEND/src/main.tsx": 1,
     "FRONTEND/.gitignore": 1,
     "CHANGELOG.md": 2,
-    "FRONTEND/src/api/inventory.ts": 1,
+    "FRONTEND/src/api/inventory.ts": 2,
     "backend/app/models/payload.py": 1,
     "backend/app/routers/student.py": 1
   },
@@ -532,5 +544,5 @@
   "anatomy_misses": 8,
   "repeated_reads_warned": 18,
   "cerebrum_warnings": 0,
-  "stop_count": 21
+  "stop_count": 22
 }

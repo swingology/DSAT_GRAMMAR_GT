@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T17:57:56.688Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T18:10:51.003Z
 > Files: 870 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -170,7 +170,7 @@
 
 ## FRONTEND/src/api/
 
-- `inventory.ts` — Exports FilterInventory, fetchFilterInventory (~381 tok)
+- `inventory.ts` — Exports FilterInventory, fetchFilterInventory (~630 tok)
 - `questions.ts` — Exports fetchQuestions, submitAnswer (~387 tok)
 - `stats.ts` — Exports fetchStats (~124 tok)
 
@@ -178,7 +178,7 @@
 
 - `QuestionCard.tsx` — formatKey (~2058 tok)
 - `SessionComplete.tsx` — SessionComplete (~324 tok)
-- `SessionSetup.tsx` — DOMAIN_OPTIONS (~1756 tok)
+- `SessionSetup.tsx` — DIFFICULTY_OPTIONS (~2131 tok)
 - `StatsPanel.tsx` — StatsPanel (~871 tok)
 
 ## FRONTEND/src/components/ui/
