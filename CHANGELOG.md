@@ -5,6 +5,54 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-28 — Student frontend scaffold (Phase 1-2), task file gap patches, doc reorg
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `frontend`
+**Commits:** `a5cbcc0`, `61fb919`, `7ca4f7e`
+
+### Added
+- **Student frontend — Phase 1-2 scaffold** (`FRONTEND/`) — Full Vite + React 18 + TypeScript project. 44 files. Builds clean, zero TS errors.
+  - Stack: Tailwind CSS + shadcn/ui primitives (Button, RadioGroup, Badge via Radix UI), TanStack Query v5, React Router v6, native fetch
+  - `src/lib/auth.ts` — dev/prod seam: reads `VITE_TEST_USER_TOKEN`/`VITE_TEST_USER_ID` env vars in dev; falls back to localStorage for Phase 3 Supabase auth — no code change needed at switch
+  - `src/lib/query.ts` — QueryClient singleton with `invalidateQueries(['stats'])` wired on every submit mutation
+  - `src/api/questions.ts` — `fetchQuestions()` + `submitAnswer()` with typed error for 403 (bad API key)
+  - `src/api/stats.ts` — `fetchStats()` used via `useQuery`
+  - `src/components/QuestionCard.tsx` — passage blockquote, RadioGroup A–D, inline correct ✓ / incorrect ✗ feedback (correct answer intentionally withheld by API design)
+  - `src/components/SessionSetup.tsx` — domain (grammar/reading/mixed) + difficulty (any/easy/medium/hard) filters with inline error states
+  - `src/components/SessionComplete.tsx` — accuracy % + X/Y correct summary
+  - `src/components/StatsPanel.tsx` — `useQuery` for stats, dev raw-JSON accordion, badge chip lists for missed focus/trap keys
+  - `src/pages/PracticePage.tsx` — setup → drilling → complete state machine; owns submit mutation
+  - `src/pages/StatsPage.tsx` — renders StatsPanel with user ID from auth seam
+  - `src/App.tsx` — BrowserRouter routing, NavBar with DEV USER badge when test env vars are set
+  - `FRONTEND/.env` — pre-filled with `student-test-key`; test user token/ID seeded from live DB (`user_token=92451633-1318-410a-8687-5b1ab59e4709`, `user_id=1`)
+- **`STUDENT_FRONTEND_PRD.md` v1.2** — updated tech stack table: added TanStack Query and shadcn/ui with rationale; added `src/lib/query.ts` to project structure; updated stats verification note to reference `invalidateQueries`
+- **`STUDENT_FRONTEND_TASKS.md`** — new root location; comprehensive gap patches (8 items):
+  - Fixed `QuestionOption` type: `option_label`/`option_text` → `label`/`text` (matches backend serialization)
+  - Fixed feedback copy: removed impossible "the answer was [X]" (submit returns `{id, is_correct}` only)
+  - Fixed seed user instruction: `{name, role}` → `{username}` with admin key
+  - Added TanStack Query + shadcn/ui to P1-01 install step, QueryClient to main.tsx
+  - Removed dead Vite proxy; committed to absolute URL + CORS `*` strategy
+  - Clarified auth seam: call-site `await` needed in 2 API files during Phase 3
+  - Fixed P1-10 smoke test: replaced `Grammar/Any` and `Reading/Hard` (no active data) with valid combos
+  - Fixed P2-04 checklist: grammar focus key test → reading focus key (no active grammar questions)
+  - Added Key Integration Notes 6 (active inventory with all distinct filter values) and 7 (passage text ingestion gap)
+- **`STUDENT_AUTH_TASKS.md`** — new root location; gap patches:
+  - Added `A-00`: register `student_auth.router` in `backend/app/main.py` (was missing; endpoints returned 404)
+  - Fixed `exchangeToken` URL: `/auth/login` → `/api/auth/login` (matches router prefix)
+  - Updated implementation order to start at A-00
+
+### Changed
+- **Doc reorganization** — moved `STUDENT_AUTH_TASKS.md` and `STUDENT_FRONTEND_TASKS.md` from `docs/PRD/` to project root alongside other `TASKS_*.md` files
+- Moved `CB_ANSWERS_QUESTIONS_ANALYSIS.md`, `GENERATION_ARCHITECTURE.md`, `INCONSISTENT_KEYS_LIST.md`, `ingestion_generation_summary.md`, `kimi_4q_comparison_report.md` → `docs/`
+- Deprecated `Reading_v1_rules_report.md`, `rules_agent_dsat_grammar_ingestion_generation_v7.md`, `rules_agent_dsat_reading_v2.md` → `_deprecated/`
+
+### Data / Runtime
+- Activated 10 draft questions to `practice_status = 'active'` for frontend testing (all reading, all official, Test 5 verbal)
+- All 10 active questions return `current_passage_text = null` despite `stimulus_mode_key = passage_excerpt` — passage ingestion gap, not a frontend bug; `<QuestionCard>` handles null gracefully
+
+---
+
 ## 2026-05-27 — GAP-010 delimiter rule, test suite fixes (reading v2→v3, flush count, job.id, version strings)
 
 **Model:** Claude Sonnet 4.6

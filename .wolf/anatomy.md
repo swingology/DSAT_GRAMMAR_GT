@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T07:55:26.483Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T08:46:43.973Z
 > Files: 869 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -37,7 +37,7 @@
 - `.gitignore` — Git ignore rules (~36 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~42558 tok)
+- `CHANGELOG.md` — CHANGELOG (~43618 tok)
 - `CLAUDE.md` — OpenWolf (~378 tok)
 - `DEBUG_LOG.md` — Debug Log (~48180 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
@@ -64,7 +64,7 @@
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
-- `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~2916 tok)
+- `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~3994 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)

@@ -246,11 +246,13 @@ No routing changes needed between these states — single page, local state.
 
 ### P1-10 · Phase 1 manual smoke test
 - [ ] App loads with no console errors
-- [ ] Filter "Grammar / Any difficulty" → questions load, passage shown where applicable
-- [ ] Select option, submit → correct/wrong feedback shown
-- [ ] Next question advances; last question shows SessionComplete
-- [ ] Filter "Reading / Hard" → different questions load
+- [ ] Filter "Reading / Any difficulty" → questions load (10 active reading questions in DB)
+- [ ] Select option, submit → correct ✓ or incorrect ✗ feedback shown inline
+- [ ] Next question advances; last question (10/10) shows SessionComplete
+- [ ] Filter "Reading / Medium" → subset of questions loads (6 medium-difficulty questions)
+- [ ] Filter "Grammar / Any" → shows "No active questions" error message (expected — no grammar questions active yet)
 - [ ] Network tab: `POST /api/submit` returns `{ id, is_correct }` with HTTP 200
+- [ ] Note: passages will not render even on `passage_excerpt` questions — `current_passage_text` is null in current data (ingestion gap, not a frontend bug)
 
 ---
 
@@ -295,7 +297,8 @@ Props: `userId: string`
 - [ ] Submit 5 answers in Practice (mix of correct/wrong), navigate to Stats → `total_answered = 5`
 - [ ] `total_correct` matches the count you knew you got right
 - [ ] `accuracy` equals `total_correct / total_answered` (within 0.01 floating point)
-- [ ] Submit a wrong grammar answer → `top_missed_focus_keys` includes the question's `grammar_focus_key`
+- [ ] Submit a wrong **reading** answer → `top_missed_focus_keys` includes the question's `reading_focus_key` (e.g. `underlined_word_meaning`, `main_purpose`)
+  - Note: no active grammar questions exist yet — `grammar_focus_key` is null on all current questions; test reading keys instead
 - [ ] Stats update without a full page reload (just navigate to /stats after submitting)
 - [ ] Raw JSON accordion shows no unexpected `null` or missing fields
 
@@ -357,3 +360,22 @@ Optional: P2-05 can be done before auth if desired, but it is not part of the st
 4. **`user_token` vs `user_id`:** The submit endpoint takes a `user_token` UUID (not the integer `id`). The stats endpoint takes the integer `user_id`. Keep both in env/auth module.
 
 5. **CORS:** If running frontend on port 5173 and backend on 8000 with direct `VITE_API_BASE_URL` calls, ensure `CORS_ALLOWED_ORIGINS` in backend config includes `http://localhost:5173` or is `*`.
+
+6. **Active question inventory (as of first test run):** 10 questions active, all reading, all official.
+   Verified filter values from `/api/questions`:
+   ```
+   domain            reading (all) — grammar returns empty
+   difficulty        medium (6), null (4) — easy/hard return empty
+   reading_focus_key underlined_word_meaning, main_purpose, central_idea,
+                     sentence_function, structural_pattern, null
+   grammar_focus_key null (all) — no active grammar questions
+   stimulus_mode_key passage_excerpt (9), sentence_only (1)
+   ```
+   SessionSetup filter options are **hardcoded** — selecting `grammar`, `easy`, or `hard` will hit the
+   empty-results error state (handled gracefully). To show only valid options, a `/api/inventory`
+   endpoint returning distinct active values would be needed.
+
+7. **Passage text gap:** All 10 active questions have `stimulus_mode_key = passage_excerpt` but
+   `current_passage_text = null`. Passages were not ingested into these records (data pipeline gap,
+   not a frontend bug). The `<QuestionCard>` passage blockquote will not render for any current
+   questions. This will resolve once the full ingestion pipeline runs on the official PDFs.
