@@ -1,43 +1,56 @@
 # Debug Log
 
-## 2026-05-31 — 2-Phase Ingestion Architecture Demonstration: GLM-OCR + DeepSeek
+## 2026-05-31 — 2-Phase Ingestion Test: Pipeline Timeout at 30-Minute Mark
 Report created by: Claude Haiku 4.5
 Git branch: `frontend`
 Git checkpoint: `dad6ecb` — fix(frontend): align difficulty filter values with canonical low/medium/high vocabulary
 
 ### Summary
-Successfully demonstrated complete 2-phase ingestion pipeline with full hang diagnostics. Test02_ENG_Sec01_Mod01.pdf (27 pages, 43+ questions) ingested and approved. Documented Phase 1b hang point (DeepSeek API timeout with recovery).
+Test02_ENG_Sec01_Mod01.pdf (27 pages) ingestion **FAILED** — Job exceeded 30-minute pipeline timeout threshold. API showed transient "approved" status during Phase 2, but background sweeper marked job as failed after timeout, zero questions persisted.
 
 ### Findings
 
-1. **No Critical Issues** — Pipeline performed as designed
-   - Phase 1a (GLM-OCR): ✅ 48.6s, 27 pages, 24,688 characters
-   - Phase 1b (DeepSeek Extraction): ✅ 153.7s (exceeded 120s timeout, recovered with retry/backoff)
-   - Phase 2 (Concurrent Annotation + Serial Validate+Persist): ✅ 194s
-   - Final Status: `approved`, all questions persisted
+1. **Critical: Pipeline timeout exceeded on Phase 2 annotation/persistence**
+   - Job ID: `4fcd250a-0e29-46de-8ea5-0bb0572cdcee`
+   - Start time: 2026-05-31T17:35:10Z
+   - Timeout threshold: 1800s (30 minutes)
+   - Final status: `failed` (marked by sweeper)
+   - Validation error: `{"step": "sweeper", "error": "Job timed out"}`
+   - Questions persisted: 0
+   
+   **Timeline (est.)**:
+   - Phase 1a (GLM-OCR): 48.6s ✅
+   - Phase 1b (DeepSeek Extraction): 153.7s ✅ (with timeout recovery)
+   - Phase 2 (Annotation): Started but exceeded 30min cutoff while annotating
+   - Job status: Stuck in "annotating" > 30min → Sweeper marked as failed
 
-2. **Documented Hang Point: Phase 1b DeepSeek API Latency**
-   - Location: `backend/app/routers/ingest.py:~1600` in `_run_pass1_extract()`
-   - Cause: DeepSeek-v4-pro:cloud API response exceeded 120-second timeout threshold
-   - Actual latency: 153.7 seconds on 27-page, ~26,000-character extraction
-   - Tokens: 6,923 input, 10,865 output
-   - Recovery: System has retry/backoff logic that eventually succeeded
-   - Root cause: Cloud API latency on large text volumes; not a code defect
+2. **Discovered Secondary Hang: Phase 2 Annotation Performance Issue**
+   - Location: `backend/app/routers/ingest.py:~2505-2624` in Phase 2 annotation+validation+persist
+   - Issue: Concurrent annotation of 43+ questions + serial validation+persistence exceeded 30-minute threshold
+   - Each question requires LLM annotation call (blocked by `_annot_semaphore`) + validation + DB persist
+   - For large test volumes (43+ questions), Phase 2 can exceed pipeline timeout
+   - Example: This test spent >30 min in Phase 2 before sweeper timeout triggered
 
-3. **Architecture Validation: Phase 2 Concurrency**
-   - Phase 2 annotation fires all questions concurrently via `asyncio.gather()` (bounded by `_annot_semaphore`)
-   - Serial validation+persistence loop runs after concurrent annotation completes
-   - Total Phase 2 time = max(individual_question_annotation_latency) + serial_loop_time
-   - For 43+ questions: ~194 seconds total (3m14s)
+3. **Root Cause Analysis**
+   - Phase 1b (DeepSeek extraction): 153.7s ✅ (takes significant time for large PDFs)
+   - Phase 2 annotation: ~30min+ ❌ (may be slow due to:)
+     * Semaphore-bounded concurrent LLM calls (slow annotation latency per question)
+     * Serial validation/persistence per question (DB overhead)
+     * No optimization for 40+ question batches
+   - **Impact**: Large tests (25+ pages, 40+ questions) may exceed 30min pipeline timeout
 
-### Operational Notes
+### Operational Gaps
 
-- **Timeout Behavior**: Phase 1b appears to hang when DeepSeek exceeds 120s, but retries continue and eventually succeed. From user's perspective, job appears stuck until final recovery.
-- **Expected Durations**: 
-  - GLM-OCR: 30-50s per 27-page document
-  - DeepSeek Extraction: 120-180s on large documents (may timeout but recovers)
-  - Annotation: 50-200s depending on question count and annotation latency
-  - **Total: 8-15 minutes for typical 27-page test**
+- **Gap 1: No progress reporting** — Job stuck in "annotating" for 30 minutes with no visibility into which questions are done
+- **Gap 2: Pipeline timeout is too aggressive** — 30-minute timeout may be insufficient for large tests (27 pages should reasonably take <1 hour)
+- **Gap 3: No per-question timeout** — If a single LLM annotation call hangs, the entire job hangs
+
+### Next Steps
+
+1. Increase `pipeline_timeout_s` from 1800 (30 min) to at least 3600 (1 hour) for large test ingestions
+2. Add progress logging in Phase 2 to track which questions are being annotated
+3. Consider parallel validation+persistence instead of serial per-question processing
+4. Add per-question timeouts on LLM annotation calls
 
 ---
 
