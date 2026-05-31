@@ -149,12 +149,11 @@ def _grammar_context() -> str:
 
 
 @lru_cache(maxsize=1)
-def _reading_context(extended: bool = False) -> str:
+def _reading_context() -> str:
     text = _read_file(_READING_FILE)
     if not text:
         return ""
-    end = "## 16. Generation Rules" if not extended else None
-    core = _extract_between(text, "## 3. Question Fields", end)
+    core = _extract_between(text, "## 3. Question Fields", "## 16. Generation Rules")
     # Always include disambiguation rules and student failure modes
     extra = ""
     for section in ("## 17. Disambiguation Rules", "## 19. Student Failure Mode Keys"):
@@ -162,6 +161,13 @@ def _reading_context(extended: bool = False) -> str:
         if chunk:
             extra += f"\n{chunk}"
     return f"Reading v3 RULES REFERENCE:\n=== READING v3: ANNOTATION REFERENCE (§3-14 + disambiguation) ===\n{core}{extra}"
+
+
+@lru_cache(maxsize=1)
+def _unknown_context() -> str:
+    g = _extract_between(_read_file(_GRAMMAR_FILE), "# PART D", "# PART E")
+    r = _reading_context()
+    return f"Grammar v8 RULES REFERENCE:\n=== GRAMMAR v8: TAXONOMY (Part D) ===\n{g}\n\n{r}"
 
 
 def _detect_domain(q_data: dict) -> str:
@@ -395,11 +401,7 @@ def build_annotate_prompt_parts(
     elif domain == "reading":
         system_static = _reading_context()
     else:
-        g = _extract_between(_read_file(_GRAMMAR_FILE), "# PART D", "# PART E")
-        r = _reading_context()
-        system_static = (
-            f"Grammar v8 RULES REFERENCE:\n=== GRAMMAR v8: TAXONOMY (Part D) ===\n{g}\n\n{r}"
-        )
+        system_static = _unknown_context()
 
     system_dynamic = _SYSTEM_INSTRUCTIONS_TEMPLATE.format(
         allowed_keys=_ALLOWED_KEYS_BLOCK,
@@ -432,10 +434,7 @@ def build_annotate_prompt(q_data: dict | None = None, rules_file_path: str = "",
         elif domain == "reading":
             rules_context = _reading_context()
         else:
-            # Unknown: include both — grammar taxonomy + reading core
-            g = _extract_between(_read_file(_GRAMMAR_FILE), "# PART D", "# PART E")
-            r = _reading_context()
-            rules_context = f"Grammar v8 RULES REFERENCE:\n=== GRAMMAR v8: TAXONOMY (Part D) ===\n{g}\n\n{r}"
+            rules_context = _unknown_context()
 
     system = _SYSTEM_BASE.format(
         rules_context=rules_context,
@@ -444,3 +443,15 @@ def build_annotate_prompt(q_data: dict | None = None, rules_file_path: str = "",
     )
     user = f"Annotate the following extracted question:\n\n{json.dumps(q_data, indent=2)}"
     return system, user
+
+
+def clear_prompt_cache() -> None:
+    """Invalidate all cached rules contexts in dependency order.
+
+    Call after updating rules files on disk, or in test teardown.
+    Order matters: clear derived caches before the raw file cache.
+    """
+    _unknown_context.cache_clear()
+    _grammar_context.cache_clear()
+    _reading_context.cache_clear()
+    _read_file.cache_clear()
