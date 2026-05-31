@@ -7,6 +7,7 @@ Domain routing:
 """
 import os
 import json
+from functools import lru_cache
 
 from app.models.ontology import (
     STIMULUS_MODE_KEYS,
@@ -118,6 +119,7 @@ _GRAMMAR_QUESTION_SIGNALS = {
 }
 
 
+@lru_cache(maxsize=2)
 def _read_file(filename: str) -> str:
     path = os.path.join(_ROOT_DIR, filename)
     if not os.path.exists(path):
@@ -136,6 +138,7 @@ def _extract_between(text: str, start_marker: str, end_marker: str | None = None
     return text[start:]
 
 
+@lru_cache(maxsize=1)
 def _grammar_context() -> str:
     text = _read_file(_GRAMMAR_FILE)
     if not text:
@@ -145,6 +148,7 @@ def _grammar_context() -> str:
     return f"Grammar v8 RULES REFERENCE:\n=== GRAMMAR v8: MODE ROUTING ===\n{routing}\n\n=== GRAMMAR v8: ANNOTATION + TAXONOMY (Parts C & D) ===\n{annotation}"
 
 
+@lru_cache(maxsize=1)
 def _reading_context(extended: bool = False) -> str:
     text = _read_file(_READING_FILE)
     if not text:
