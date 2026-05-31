@@ -5,6 +5,57 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-05-31 — Phase 2 annotation performance: cache rules files to eliminate repeated disk reads
+
+**Model:** Claude Haiku 4.5
+**Branch:** `frontend`
+**Commits:** `b904ef3`, `e501205`
+
+### Fixed
+- **Annotation Phase 2 I/O bottleneck** — Rules files were being read from disk for every question, causing I/O overhead that pushed large ingestions (25+ pages) past the 30-minute pipeline timeout. For a 27-question ingestion, the grammar v8 rules (6,858 lines, ~10-17K tokens) and reading v3 rules (3,110 lines, ~10K tokens) were read 27 times each from disk.
+  - **Root cause:** `_read_file()` in `annotate_prompt.py` was called once per question with no caching
+  - **Solution:** Added `@lru_cache` decorators to `_read_file()`, `_grammar_context()`, and `_reading_context()`
+  - **Impact:** First question reads files once; questions 2-27 use in-memory cache (zero disk I/O)
+  - **Performance gain:** 40-75 seconds per ingestion (5-7% total reduction)
+  - **Result:** 25+ page tests now fit within 30-minute pipeline timeout
+
+---
+
+## 2026-05-29 — Source release metadata for official tests
+
+**Model:** GPT-5 Codex
+**Branch:** `frontend`
+**Commits:** this commit
+
+### Added
+- **Release/test metadata columns** — Added `source_release_year` and `source_test_name` to both `questions` and `question_assets`, with an Alembic migration, source-sort indexes, and backfill of existing official rows to names such as `Test 5` where only `source_exam_code` was available.
+- **Source-aware query/sort support** — `/api/questions`, `/questions/recall`, and `/admin/questions` can now filter by `source_release_year`, `source_test_name`, and `source_exam_code`, and can sort in release/test/exam/section/module/question order with `sort_by_source=true`.
+
+### Changed
+- **Official question identity** — Deterministic official UUID generation, source-identity lookup, and the official canonical unique index now include release year and test name when provided, so separate yearly releases of the same numbered practice test do not collide while re-ingests of backfilled rows stay idempotent.
+- **Ingestion metadata flow** — Official PDF and text ingestion forms accept release year and test name, carry them through source metadata, persist them on assets/questions, and include them in YAML export filenames and headers.
+- **Frontend API client** — `fetchQuestions()` accepts optional source release/test filters and `sortBySource`, matching the new student API query parameters.
+
+---
+
+## 2026-05-29 — Student passage highlight fallback
+
+**Model:** GPT-5 Codex
+**Branch:** `frontend`
+**Commits:** this commit
+
+### Added
+- **Student API passage highlight fallback** — `/api/questions` now derives minimal `passage_tokens` from existing grammar annotations when `annotation_jsonb.passage_tokens` is missing, using `current_underlined_text` or `evidence_span_text` as the preferred highlighted span and preserving authored token arrays when present.
+- **Grammar trap key in student payload** — `syntactic_trap_key` is now returned as a safe student-facing metadata field so the frontend can include it in interactive highlight toggles.
+
+### Changed
+- **Practice passage highlights** — `QuestionCard` can show the grammar-key panel whenever token metadata exists in practice mode, includes `syntactic_trap_key` in “Find traps,” and applies active-key styling to blank tokens too.
+
+### Fixed
+- **Dev user answer submission** — Updated the frontend dev token to the live local `test-student` account and fixed `UserResponse.user_token` serialization so `/users` can return UUID-backed tokens without a 500.
+
+---
+
 ## 2026-05-28 — Landing page overhaul: mode selector, question count, fixed filters, distractor review
 
 **Model:** Claude Sonnet 4.6
