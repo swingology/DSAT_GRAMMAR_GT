@@ -2,6 +2,8 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| 09:11:53 | Ingestion test for Test01_ENG_Sec01_Mod01 FAILED — job 8ee9f12a, Qwen3-VL OCR returns invalid JSON after 5 min extraction, 33,654 tokens, 0 questions created. Root cause: LLM response not valid JSON. Fixed config issues first (bug-228, bug-231), then discovered blocking OCR issue (bug-232). | DEBUG_LOG.md, .wolf/buglog.json | failed (ocr-json-error) | ~2k |
+| 00:00 | Ingestion test for Test01_ENG_Sec01_Mod01 — BLOCKED: run.sh hardcoded to TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL/ (empty); actual PDFs in 2024-2025 directory with different naming. Config mismatch prevents test execution. Logged bug-228, DEBUG_LOG.md entry. | .claude/skills/ingestion-test/run.sh, backend/app/config.py, DEBUG_LOG.md, .wolf/buglog.json | blocked (infrastructure config) | ~2k |
 | session | Task: run_on_sentence v8 sub-patterns drafted (Tier B, 1 PT example): 1 PT-cited (Fused Boundary Repaired by Period — PT1 M2 Q24) + 2 web-only (Coordinating Conjunction Without Required Comma — The Critical Reader; Long Compound-Complex Sentence Missing a Legal IC Boundary — Khan Academy); validator: 51 sub-patterns / 17 focus keys, all pass; committed b9b319d | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~2k |
 | 22:35 | Task 6: Drafted v8 sub-patterns for 4 Tier C focus keys (modifier_placement: 3 sub-patterns, comparative_structures: 3, illogical_comparison: 2, adjective_adverb_distinction: 2). All web-only [NO PT EVIDENCE]. Committed 33498f5 on rules_edit. | rules_agent_dsat_grammar_ingestion_generation_v8.md, analysis/v8/subpattern_drafts/ | success | ~3k |
 | session | Task: sentence_fragment v8 sub-patterns drafted (Tier B, 3 PT examples, all PT-cited): Blank Must Supply a Finite IC Before a Trailing Participial Phrase — PT1 M1 Q28; Blank Must Supply a Complete IC Before a Colon-Introduced List — PT1 M2 Q26; Blank Must Supply a Noun-Phrase Subject for a Downstream Finite Verb — PT4 M1 Q24; validator: 48 sub-patterns / 16 focus keys, all pass; committed 8bccbd7 | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~2k |
@@ -39,6 +41,7 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 10:42 | 2-phase ingestion test: Test02_ENG_Sec01_Mod01.pdf (27 pages, 43+ questions). Phase 1a (GLM-OCR): 48.6s ✅. Phase 1b (DeepSeek extract): 153.7s (exceeded 120s timeout, recovered with retry). Phase 2 (Concurrent annotation+validation+persist): 194s. Job 4fcd250a approved with all questions created. Demonstrated hang point in Phase 1b DeepSeek API latency. | backend/app/routers/ingest.py, .wolf/cerebrum.md | success (hang diagnosed + recovered) | ~3k |
 | 20:11 | Inspected OpenWolf protocol/config and confirmed Wolf is enabled for repo workflow | .wolf/OPENWOLF.md, .wolf/config.json, .wolf/hooks/package.json | Will follow anatomy/memory/cerebrum rules for future repo work | ~700 |
 | 20:56 | Audited backend PRD against backend routers/models for incomplete features and gaps | docs/PRD/INGESTION_PRD.md, backend/app/routers/*.py, backend/app/models/db.py | Identified PRD-known gaps plus stale OCR and auth/generation mismatches | ~9000 |
 | 21:02 | Queried OpenWolf CLI help and subcommand help | openwolf CLI | Confirmed installed version 1.0.4 and available commands/options | ~1500 |
@@ -2291,3 +2294,168 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 12:26 | Edited .gitignore | 7→11 lines | ~51 |
+| 12:26 | Session end: 1 writes across 1 files (.gitignore) | 1 reads | ~91 tok |
+| 12:28 | Session end: 1 writes across 1 files (.gitignore) | 1 reads | ~91 tok |
+| 12:30 | Edited FRONTEND/src/components/SessionSetup.tsx | CSS: description | ~106 |
+| 12:30 | Session end: 2 writes across 2 files (.gitignore, SessionSetup.tsx) | 2 reads | ~2763 tok |
+| 12:31 | Session end: 2 writes across 2 files (.gitignore, SessionSetup.tsx) | 3 reads | ~2763 tok |
+| 12:35 | Edited FRONTEND/src/components/SessionSetup.tsx | inline fix | ~17 |
+| 12:35 | Edited FRONTEND/src/components/SessionSetup.tsx | 6→6 lines | ~65 |
+| 12:35 | Edited FRONTEND/src/api/inventory.ts | 21→21 lines | ~260 |
+| 12:35 | Edited FRONTEND/src/api/inventory.ts | 5→5 lines | ~29 |
+| 12:37 | Session end: 6 writes across 3 files (.gitignore, SessionSetup.tsx, inventory.ts) | 9 reads | ~27362 tok |
+| 12:38 | Session end: 6 writes across 3 files (.gitignore, SessionSetup.tsx, inventory.ts) | 9 reads | ~27362 tok |
+| 12:39 | Session end: 6 writes across 3 files (.gitignore, SessionSetup.tsx, inventory.ts) | 10 reads | ~27987 tok |
+
+## Session: 2026-05-28 12:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-28 12:51
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:56 | Edited FRONTEND/src/components/QuestionCard.tsx | added nullish coalescing | ~428 |
+| 12:57 | Edited FRONTEND/src/components/QuestionCard.tsx | 6→4 lines | ~41 |
+| 12:57 | Session end: 2 writes across 1 files (QuestionCard.tsx) | 5 reads | ~19442 tok |
+| 12:59 | Session end: 2 writes across 1 files (QuestionCard.tsx) | 5 reads | ~19442 tok |
+| 13:04 | Created FRONTEND/src/components/QuestionCard.tsx | — | ~4405 |
+| 13:04 | Session end: 3 writes across 1 files (QuestionCard.tsx) | 5 reads | ~23847 tok |
+| 13:06 | Session end: 3 writes across 1 files (QuestionCard.tsx) | 5 reads | ~23847 tok |
+
+## Session: 2026-05-28 13:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-28 13:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-29 09:31
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:49 | Created qwen3_test01_q01.md | — | ~351 |
+| 13:49 | Session end: 1 writes across 1 files (qwen3_test01_q01.md) | 13 reads | ~53258 tok |
+| 13:50 | Session end: 1 writes across 1 files (qwen3_test01_q01.md) | 14 reads | ~53587 tok |
+| 13:52 | Edited DEBUG_LOG.md | modified fix() | ~1060 |
+| 13:52 | Session end: 2 writes across 2 files (qwen3_test01_q01.md, DEBUG_LOG.md) | 15 reads | ~105040 tok |
+| 13:54 | Session end: 2 writes across 2 files (qwen3_test01_q01.md, DEBUG_LOG.md) | 15 reads | ~105040 tok |
+
+## Session: 2026-05-29 14:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-29 14:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-29 16:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:41 | Edited DEBUG_LOG.md | modified fix() | ~860 |
+| 19:41 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 9 reads | ~90133 tok |
+
+## Session: 2026-05-31 07:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-31 07:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 07:40 | Edited backend/app/config.py | 3→3 lines | ~43 |
+| 07:41 | Session end: 1 writes across 1 files (config.py) | 1 reads | ~1981 tok |
+| 07:42 | Session end: 1 writes across 1 files (config.py) | 4 reads | ~54046 tok |
+| 07:46 | Session end: 1 writes across 1 files (config.py) | 5 reads | ~54107 tok |
+| 07:47 | Session end: 1 writes across 1 files (config.py) | 5 reads | ~54107 tok |
+| 07:47 | Session end: 1 writes across 1 files (config.py) | 6 reads | ~54107 tok |
+| 07:48 | Session end: 1 writes across 1 files (config.py) | 7 reads | ~90097 tok |
+| 07:53 | Session end: 1 writes across 1 files (config.py) | 8 reads | ~90097 tok |
+| 07:54 | Session end: 1 writes across 1 files (config.py) | 8 reads | ~90097 tok |
+| 07:57 | Session end: 1 writes across 1 files (config.py) | 8 reads | ~90097 tok |
+| 07:57 | Session end: 1 writes across 1 files (config.py) | 8 reads | ~90097 tok |
+| 08:00 | Edited backend/app/config.py | 8→8 lines | ~132 |
+| 08:00 | Edited backend/app/config.py | 4→4 lines | ~68 |
+| 08:01 | Edited backend/app/config.py | 4→5 lines | ~88 |
+| 08:01 | Edited backend/app/config.py | 5→5 lines | ~90 |
+| 08:01 | Session end: 5 writes across 1 files (config.py) | 9 reads | ~92653 tok |
+| 08:02 | Session end: 5 writes across 1 files (config.py) | 9 reads | ~92653 tok |
+| 08:03 | Session end: 5 writes across 1 files (config.py) | 10 reads | ~92653 tok |
+| 08:06 | Session end: 5 writes across 1 files (config.py) | 11 reads | ~92653 tok |
+
+## Session: 2026-05-31 08:10
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:17 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/glm_ocr_testing.md | — | ~404 |
+| 08:18 | Session end: 1 writes across 1 files (glm_ocr_testing.md) | 12 reads | ~39594 tok |
+| 08:23 | Session end: 1 writes across 1 files (glm_ocr_testing.md) | 12 reads | ~39594 tok |
+| 08:24 | Session end: 1 writes across 1 files (glm_ocr_testing.md) | 12 reads | ~39594 tok |
+| 08:35 | Session end: 1 writes across 1 files (glm_ocr_testing.md) | 13 reads | ~39594 tok |
+
+## Session: 2026-05-31 08:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:48 | Edited DEBUG_LOG.md | modified fix() | ~494 |
+| 08:49 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~56101 tok |
+| 08:51 | Edited .claude/skills/ingestion-test/run.sh | 6→6 lines | ~59 |
+| 08:51 | Edited .claude/skills/ingestion-test/run.sh | 3→3 lines | ~47 |
+| 08:52 | Edited backend/app/config.py | 2→2 lines | ~30 |
+| 08:52 | Session end: 4 writes across 3 files (DEBUG_LOG.md, run.sh, config.py) | 5 reads | ~56244 tok |
+| 08:52 | Edited DEBUG_LOG.md | modified Test() | ~248 |
+| 08:52 | Ingestion test for Test01_ENG_Sec01_Mod01 — BLOCKED: authentication failure. Server running with .env key admin-test-key but test runner defaults to admin-key-change-me (no env var discovery). Logged bug-231 to buglog.json and new entry to DEBUG_LOG.md. | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md, .wolf/buglog.json | blocked (api key mismatch) | ~1k |
+| 08:53 | Session end: 5 writes across 3 files (DEBUG_LOG.md, run.sh, config.py) | 6 reads | ~56940 tok |
+| 08:53 | Session end: 5 writes across 3 files (DEBUG_LOG.md, run.sh, config.py) | 6 reads | ~56940 tok |
+| 09:01 | Session end: 5 writes across 3 files (DEBUG_LOG.md, run.sh, config.py) | 6 reads | ~56940 tok |
+| 09:03 | Session end: 5 writes across 3 files (DEBUG_LOG.md, run.sh, config.py) | 6 reads | ~56940 tok |
+| 09:11 | Session end: 5 writes across 3 files (DEBUG_LOG.md, run.sh, config.py) | 7 reads | ~56940 tok |
+| 09:12 | Edited DEBUG_LOG.md | modified Test() | ~469 |
+| 09:14 | Session end: 6 writes across 3 files (DEBUG_LOG.md, run.sh, config.py) | 7 reads | ~57652 tok |
+| 09:15 | Session end: 6 writes across 3 files (DEBUG_LOG.md, run.sh, config.py) | 8 reads | ~58838 tok |
+| 09:23 | Edited backend/app/routers/ingest.py | 5→5 lines | ~95 |
+| 09:23 | Session end: 7 writes across 4 files (DEBUG_LOG.md, run.sh, config.py, ingest.py) | 9 reads | ~61111 tok |
+| 09:23 | Session end: 7 writes across 4 files (DEBUG_LOG.md, run.sh, config.py, ingest.py) | 9 reads | ~61111 tok |
+
+## Session: 2026-05-31 09:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:34 | Edited .claude/skills/ingestion-test/run.sh | "$ROOT/TESTS/DATA_SRC/2024" → "$ROOT/TESTS/DATA_SRC/2025" | ~17 |
+| 09:34 | Edited .claude/skills/ingestion-test/run.sh | "${1:-Test01_ENG_Sec01_Mod" → "${1:-Test_1_digital_sec01" | ~11 |
+| 09:34 | Session end: 2 writes across 1 files (run.sh) | 4 reads | ~3530 tok |
+
+## Session: 2026-05-31 09:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:50 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/ingestion_two_phase_glm_ocr.md | — | ~1133 |
+| 09:50 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 9→10 lines | ~302 |
+| 09:51 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 5 reads | ~5041 tok |
+| 09:55 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 5 reads | ~5041 tok |
+| 10:31 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 5 reads | ~5041 tok |
+| 10:36 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 7 reads | ~5041 tok |
+| 10:37 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 8 reads | ~5041 tok |
+| 10:37 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 9 reads | ~5041 tok |
+| 10:38 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 10 reads | ~5041 tok |
+| 10:38 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 11 reads | ~5041 tok |
+| 10:38 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 11 reads | ~5041 tok |
+| 10:39 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 11 reads | ~5041 tok |
+| 10:39 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 11 reads | ~5041 tok |
+| 10:40 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 12 reads | ~5041 tok |
+| 10:40 | Session end: 2 writes across 2 files (ingestion_two_phase_glm_ocr.md, MEMORY.md) | 13 reads | ~5041 tok |
+
+## Session: 2026-05-31 10:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:43 | Edited DEBUG_LOG.md | modified fix() | ~624 |
