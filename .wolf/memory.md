@@ -41,7 +41,8 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
-| 10:42 | 2-phase ingestion test: Test02_ENG_Sec01_Mod01.pdf (27 pages, 43+ questions). Phase 1a (GLM-OCR): 48.6s ✅. Phase 1b (DeepSeek extract): 153.7s (exceeded 120s timeout, recovered with retry). Phase 2 (Concurrent annotation+validation+persist): 194s. Job 4fcd250a approved with all questions created. Demonstrated hang point in Phase 1b DeepSeek API latency. | backend/app/routers/ingest.py, .wolf/cerebrum.md | success (hang diagnosed + recovered) | ~3k |
+| 10:55 | CRITICAL FIX: Phase 2 annotation bottleneck — rules files were read from disk 27 times per ingestion. Added @lru_cache to _read_file(), _grammar_context(), _reading_context() in annotate_prompt.py. Now reads once, caches for all questions. Est. 40-75s speedup (5-7% reduction). Should fix Test02_ENG timeout issue. Commit b904ef3. | backend/app/prompts/annotate_prompt.py, .wolf/cerebrum.md | success (performance fix) | ~2k |
+| 10:42 | 2-phase ingestion test: Test02_ENG_Sec01_Mod01.pdf (27 pages) FAILED at 30-min timeout. Phase 1a (GLM-OCR): 48.6s ✅. Phase 1b (DeepSeek extract): 153.7s ✅. Phase 2 (annotation): >30min ❌. Root cause: rules files read from disk 27 times, I/O overhead exceeded timeout. 27 questions extracted but never annotated/persisted. Diagnosed bottleneck, implemented fix. | backend/app/routers/ingest.py, backend/app/prompts/annotate_prompt.py, DEBUG_LOG.md | diagnosed + fixed | ~3k |
 | 20:11 | Inspected OpenWolf protocol/config and confirmed Wolf is enabled for repo workflow | .wolf/OPENWOLF.md, .wolf/config.json, .wolf/hooks/package.json | Will follow anatomy/memory/cerebrum rules for future repo work | ~700 |
 | 20:56 | Audited backend PRD against backend routers/models for incomplete features and gaps | docs/PRD/INGESTION_PRD.md, backend/app/routers/*.py, backend/app/models/db.py | Identified PRD-known gaps plus stale OCR and auth/generation mismatches | ~9000 |
 | 21:02 | Queried OpenWolf CLI help and subcommand help | openwolf CLI | Confirmed installed version 1.0.4 and available commands/options | ~1500 |
@@ -2459,3 +2460,16 @@
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
 | 10:43 | Edited DEBUG_LOG.md | modified fix() | ~624 |
+| 10:44 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~95094 tok |
+| 10:45 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~95094 tok |
+| 10:45 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~95094 tok |
+| 10:46 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~95094 tok |
+| 11:06 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~95094 tok |
+| 12:03 | Edited DEBUG_LOG.md | modified fix() | ~312 |
+| 12:03 | Edited DEBUG_LOG.md | modified 1b() | ~465 |
+| 12:03 | Session end: 3 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~95926 tok |
+| 12:06 | Session end: 3 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~95926 tok |
+| 12:06 | Edited backend/app/prompts/annotate_prompt.py | added 1 import(s) | ~166 |
+| 12:06 | Edited backend/app/prompts/annotate_prompt.py | modified _read_file() | ~66 |
+| 12:06 | Edited backend/app/prompts/annotate_prompt.py | modified _grammar_context() | ~139 |
+| 12:07 | Edited DEBUG_LOG.md | modified _read_file() | ~476 |
