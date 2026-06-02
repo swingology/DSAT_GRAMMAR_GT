@@ -11,6 +11,8 @@ You must output valid JSON matching this schema:
 {
   "passage_text": "The shared passage text, or null if no passage",
   "paired_passage_text": null,
+  "source_release_year": 2024 or 2025 or null — use the value from source metadata if provided",
+  "source_test_name": "e.g. Bluebook Practice Test 1, Linear SAT Practice Test 1, or null — use the value from source metadata if provided",
   "source_exam_code": "e.g. PT1, PT4, PT11, or null — use the value from the source metadata if provided",
   "source_subject_code": "verbal or math or null",
   "source_section_code": "01 or 02 or null",
@@ -61,7 +63,12 @@ Rules:
   • Do not renumber questions based on their position in your output array.
 - Identify the correct answer from the answer key or context
 - Preserve the original wording as closely as possible
-- If no passage, set passage_text to null
+- PASSAGE TEXT — include the full passage exactly as presented in the source:
+  • If there is an introductory or attribution sentence before the passage body
+    (e.g. "The following text is adapted from ...", "The passage below is excerpted from ..."),
+    include it as the first line(s) of passage_text — do NOT omit it.
+  • passage_text should be the complete block: intro/attribution sentence(s) + passage body.
+  • If no passage, set passage_text to null
 - For a single question, return a questions array with one element
 - If a question is accompanied by a table, chart, graph, or figure, populate stimulus_assets for that question with one entry per distinct visual element. If there are no visual elements, set stimulus_assets to []
 - For tables: extract headers and rows into structured_data. For charts/graphs: extract axis labels and data series into structured_data. For figures: provide a text description

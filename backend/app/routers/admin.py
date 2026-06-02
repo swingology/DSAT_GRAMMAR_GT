@@ -148,6 +148,10 @@ async def promote_amendment(
 async def list_questions(
     practice_status: Optional[str] = Query(None, description="Filter by practice_status (draft/active/retired)"),
     content_origin: Optional[str] = Query(None, description="Filter by content_origin (official/generated)"),
+    source_release_year: Optional[int] = Query(None, description="Filter by official release year"),
+    source_test_name: Optional[str] = Query(None, description="Filter by source test name"),
+    source_exam_code: Optional[str] = Query(None, description="Filter by source exam code"),
+    sort_by_source: bool = Query(False, description="Sort by release/test/exam/module/question order"),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
@@ -160,7 +164,27 @@ async def list_questions(
         stmt = stmt.where(Question.practice_status == practice_status)
     if content_origin:
         stmt = stmt.where(Question.content_origin == content_origin)
-    stmt = stmt.order_by(Question.created_at.desc()).offset(offset).limit(limit)
+    if source_release_year is not None:
+        stmt = stmt.where(Question.source_release_year == source_release_year)
+    if source_test_name:
+        stmt = stmt.where(Question.source_test_name == source_test_name)
+    if source_exam_code:
+        stmt = stmt.where(Question.source_exam_code == source_exam_code)
+
+    if sort_by_source:
+        stmt = stmt.order_by(
+            Question.source_release_year.asc().nullslast(),
+            Question.source_test_name.asc().nullslast(),
+            Question.source_exam_code.asc().nullslast(),
+            Question.source_subject_code.asc().nullslast(),
+            Question.source_section_code.asc().nullslast(),
+            Question.source_module_code.asc().nullslast(),
+            Question.source_question_number.asc().nullslast(),
+            Question.created_at.desc(),
+        )
+    else:
+        stmt = stmt.order_by(Question.created_at.desc())
+    stmt = stmt.offset(offset).limit(limit)
 
     result = await db.execute(stmt)
     questions = result.unique().scalars().all()
@@ -201,7 +225,11 @@ async def list_questions(
             "content_origin": q.content_origin,
             "practice_status": q.practice_status,
             "official_overlap_status": q.official_overlap_status,
+            "source_release_year": q.source_release_year,
+            "source_test_name": q.source_test_name,
             "source_exam_code": q.source_exam_code,
+            "source_subject_code": q.source_subject_code,
+            "source_section_code": q.source_section_code,
             "source_module_code": q.source_module_code,
             "source_question_number": q.source_question_number,
             "current_passage_text": q.current_passage_text,
@@ -493,7 +521,10 @@ async def _serialize_generated_candidates(
             if source:
                 item_source_examples.append({
                     "id": str(source.id),
+                    "source_release_year": source.source_release_year,
+                    "source_test_name": source.source_test_name,
                     "source_exam_code": source.source_exam_code,
+                    "source_subject_code": source.source_subject_code,
                     "source_section_code": source.source_section_code,
                     "source_module_code": source.source_module_code,
                     "source_question_number": source.source_question_number,
@@ -514,6 +545,13 @@ async def _serialize_generated_candidates(
             "passage_text": question.current_passage_text,
             "paired_passage_text": question.current_paired_passage_text,
             "underlined_text": question.current_underlined_text,
+            "source_release_year": question.source_release_year,
+            "source_test_name": question.source_test_name,
+            "source_exam_code": question.source_exam_code,
+            "source_subject_code": question.source_subject_code,
+            "source_section_code": question.source_section_code,
+            "source_module_code": question.source_module_code,
+            "source_question_number": question.source_question_number,
             "correct_option_label": question.current_correct_option_label,
             "explanation_text": question.current_explanation_text,
             "annotation": annotation,

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T18:45:47.463Z
-> Files: 871 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T20:45:18.819Z
+> Files: 877 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -26,20 +26,30 @@
 
 - `feedback_debug-log-workflow.md` — YYYY-MM-DD - <Audit Title> (~208 tok)
 - `feedback_generation-seeding.md` (~375 tok)
-- `MEMORY.md` — Memory Index (~247 tok)
+- `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
+- `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
+- `MEMORY.md` — Memory Index (~283 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_dual-user-routers.md` (~210 tok)
+
+## ../.claude/skills/ramlog/
+
+- `SKILL.md` — ramlog (~468 tok)
+
+## ../.claude/skills/ramlog/scripts/
+
+- `ramlog.sh` — RAM usage logger — appends timestamped snapshots to ~/.ram_log.txt (~305 tok)
 
 ## ./
 
 - `.codex` (~0 tok)
 - `.gitattributes` — Git attributes (~12 tok)
-- `.gitignore` — Git ignore rules (~36 tok)
+- `.gitignore` — Git ignore rules (~52 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~44106 tok)
+- `CHANGELOG.md` — CHANGELOG (~45962 tok)
 - `CLAUDE.md` — OpenWolf (~378 tok)
-- `DEBUG_LOG.md` — Debug Log (~50318 tok)
+- `DEBUG_LOG.md` — Debug Log (~45092 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `FUTURE_FEATURES.md` — Future Features (~12323 tok)
@@ -56,6 +66,7 @@
 - `OCR_INGESTION_PLAN.md` — OCR Ingestion System Plan — DSAT Grammar Backend (~3762 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark dir for OCR/LLM benchmark runners + HTMX dashboard (~600 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark Directory (~830 tok)
+- `qwen3_test01_q01.md` — Test 01 - Question 1 (~329 tok)
 - `Reading_v1_rules_report.md` — Reading_v1 Rules Impact Report (~4265 tok)
 - `rules_agent_dsat_grammar_ingestion_generation_v7.md` — v7 frozen as audit trail (~36396 tok)
 - `rules_agent_dsat_grammar_ingestion_generation_v8.md` — rules_agent_dsat_grammar_ingestion_generation_v8.md (~76462 tok)
@@ -76,7 +87,7 @@
 
 ## .claude/
 
-- `settings.json` (~441 tok)
+- `settings.json` (~750 tok)
 - `settings.local.json` (~926 tok)
 
 ## .claude/rules/
@@ -94,7 +105,7 @@
 
 ## .claude/skills/ingestion-test/
 
-- `run.sh` — Ingestion pipeline test runner — used by the /ingestion-test skill. (~1486 tok)
+- `run.sh` — Ingestion pipeline test runner — used by the /ingestion-test skill. (~1491 tok)
 
 ## .claude/skills/qa-question/
 
@@ -170,15 +181,15 @@
 
 ## FRONTEND/src/api/
 
-- `inventory.ts` — Exports FilterInventory, fetchFilterInventory (~630 tok)
+- `inventory.ts` — Exports FilterInventory, fetchFilterInventory (~628 tok)
 - `questions.ts` — Exports fetchQuestions, submitAnswer (~387 tok)
 - `stats.ts` — Exports fetchStats (~124 tok)
 
 ## FRONTEND/src/components/
 
-- `QuestionCard.tsx` — formatKey (~2058 tok)
+- `QuestionCard.tsx` — ── Colour palette — assigned deterministically by key name hash ────────────── (~4405 tok)
 - `SessionComplete.tsx` — SessionComplete (~502 tok)
-- `SessionSetup.tsx` — DIFFICULTY_OPTIONS (~2566 tok)
+- `SessionSetup.tsx` — DIFFICULTY_OPTIONS (~2614 tok)
 - `StatsPanel.tsx` — StatsPanel (~871 tok)
 - `TestTimer.tsx` — TestTimer (~331 tok)
 
@@ -1051,7 +1062,7 @@
 ## backend/app/
 
 - `auth.py` — --- Password hashing ------------------------------------------------------- (~2644 tok)
-- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~1938 tok)
+- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2046 tok)
 - `main.py` — lifespan (~1514 tok)
 
 ## backend/app/llm/
@@ -1091,8 +1102,8 @@
 
 ## backend/app/prompts/
 
-- `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~5303 tok)
-- `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~1186 tok)
+- `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~5617 tok)
+- `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~1552 tok)
 - `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~2308 tok)
 - `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
 - `review_prompt.py` — Review prompt — composes rubric + grammar canon + optional reading rules + question context. (~2278 tok)
@@ -1110,7 +1121,7 @@
 - `admin.py` — API: 7 endpoints (~24627 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` (~15836 tok)
-- `ingest.py` (~35990 tok)
+- `ingest.py` (~41864 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
 - `student.py` — API: 1 endpoints (~14086 tok)
 
@@ -1147,6 +1158,10 @@
 - `026_phase10_auto_release_audit.py` — Phase 10: auto_release_audit_logs table for controlled auto-release audit trail. (~678 tok)
 - `027_admin_question_audit_log.py` — Admin question audit log table. (~518 tok)
 - `028_student_auth.py` — Student auth — add email, password_hash, role, is_active, refresh_token columns. (~350 tok)
+
+## backend/scripts/
+
+- `normalize_source_labels.py` — run (~1932 tok)
 
 ## backend/tests/
 

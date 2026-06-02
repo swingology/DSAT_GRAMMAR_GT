@@ -5,6 +5,53 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-06-01 — Passage introduction sentences missing from official questions
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `frontend`
+
+### Fixed
+
+- **Extract prompt missing passage intro rule** (`backend/app/prompts/extract_prompt.py`) — DSAT reading passages are preceded by an introductory attribution sentence (e.g., "The following text is adapted from William Shakespeare's 1609 poem 'Sonnet 27.'..."). The `EXTRACT_SYSTEM_PROMPT` had no instruction to include this text, so the LLM extracted only the passage body. Added an explicit rule: include any introductory/attribution sentence(s) as the first line(s) of `passage_text`. Fix applies to both the text path (`build_extract_prompt`) and the vision/GLM-OCR path (`build_vision_extract_prompt`) since they share the same prompt constant. Future ingestions will capture the intro automatically.
+
+- **Q6, Q7, Q8 (PT1 sec01 mod01) backfilled via direct SQL** — The three already-ingested questions with missing intros were corrected by direct SQL `UPDATE` against both `questions.current_passage_text` and `question_versions.passage_text` (version 1 mutated in-place). This bypasses the admin edit path intentionally: the backend was not running and the fix was purely additive (prepend only, no semantic change). Gaps vs. the admin API path noted below.
+
+  | Field | Admin API (`PATCH /admin/questions/{id}`) | Direct SQL (this fix) |
+  |---|---|---|
+  | Version history | New version created (`change_source="admin_edit"`) | Version 1 mutated in-place |
+  | `is_admin_edited` | Set to `True` | Unchanged (`False`) |
+  | `annotation_stale` | Set to `True` | Unchanged (`False`) |
+  | QuestionOption rows | Cloned for new version | Unchanged |
+  | Admin audit log | Written | Not written |
+
+  The annotation stale flag is not a concern here — the annotation trimming cap (`_trim_q_data_for_annotation`) discards most of the passage body anyway, and the intro sentence carries no domain signals that would change annotation output.
+
+  Affected rows: `9fd7d3f5` (Q6, Austen), `0fcab85b` (Q7, Chesnutt), `4645ba20` (Q8, Shakespeare/Sonnet 27).
+
+---
+
+## 2026-05-31 — Phase 2 annotation performance: passage truncation + KV cache pre-warm
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `frontend`
+
+### Fixed
+
+- **Annotation user payload bloat** (`backend/app/prompts/annotate_prompt.py`) — Added `_trim_q_data_for_annotation()` which caps `passage_text` at 800 chars and `paired_passage_text` at 600 chars before serializing `q_data` as the user prompt. Reading questions with long passages were sending 3,000–8,000+ token user payloads. The annotation LLM only needs domain signals (stem type, question text, option labels) — not the full passage body. Applied in both `build_annotate_prompt_parts()` and `build_annotate_prompt()`.
+
+- **Cold KV cache stall on first annotation call** (`backend/app/routers/ingest.py`) — Added `_prewarm_annotation_cache()` which fires a minimal dummy call per distinct domain (grammar / reading / unknown) before the real `asyncio.gather` starts. The rules block (`system_static`) is 10–17K tokens; without pre-warming, the first real annotation call pays the full prefill cost while all other concurrent tasks wait behind the semaphore. Pre-warming fills the KV cache serially so every concurrent call gets a cache hit. Non-fatal — a pre-warm failure logs a warning and the real calls proceed normally.
+
+### Token budget impact (reading-domain question, before → after)
+
+| Block | Before | After |
+|---|---|---|
+| `system_static` (rules) | ~17,083 tokens | ~17,083 tokens (cached after pre-warm) |
+| User payload (passage) | up to ~8,000 tokens | ~500–800 tokens |
+| **Effective cold-cache cost** | **~25K tokens × Q1** | **~18K tokens × 1 pre-warm call** |
+| **Effective warm-cache cost** | **~25K tokens × each Q** | **~800 tokens × each Q** |
+
+---
+
 ## 2026-05-31 — Phase 2 annotation performance: cache rules files to eliminate repeated disk reads
 
 **Model:** Claude Haiku 4.5
@@ -3441,3 +3488,183 @@ Files changed: `rules/mcq_realism_rules.md`, `rules/rules_grammar_module_outline
 **Commits:** `b621316`
 
 - Alembic config; 10-table initial schema migration
+
+## Session snapshot — 2026-06-01 13:17:16
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Test01_ENG_Sec01.pdf 
+_( 58 files changed, 12322 insertions(+), 67093 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_06_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:17:44
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Test01_ENG_Sec01.pdf 
+_( 58 files changed, 12332 insertions(+), 67093 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_06_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:19:24 (50kb-written)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Test01_ENG_Sec01.pdf 
+_( 58 files changed, 12291 insertions(+), 66997 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:19:34 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Test01_ENG_Sec01.pdf 
+_( 58 files changed, 12301 insertions(+), 66997 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:21:36 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Test01_ENG_Sec01.pdf 
+_( 58 files changed, 12331 insertions(+), 66972 deletions(-))_
+
+**Untracked:** .wolf/agent.log .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh 
+
+---
+
+## Session snapshot — 2026-06-01 13:21:48 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12342 insertions(+), 66972 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:22:13 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12453 insertions(+), 66983 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:24:40 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12463 insertions(+), 66983 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:25:56 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12512 insertions(+), 66933 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:26:19 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12555 insertions(+), 66921 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:26:22 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12598 insertions(+), 66909 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:26:54 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12641 insertions(+), 66897 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:27:47 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12684 insertions(+), 66885 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:31:37 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12687 insertions(+), 66878 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:40:56 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12724 insertions(+), 67630 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:44:29 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12754 insertions(+), 67628 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 13:45:18 (50kb-written)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12874 insertions(+), 67630 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---
+
+## Session snapshot — 2026-06-01 21:22:48 (session-end)
+_branch:_ `frontend` · _commit:_ `239ded8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .claude/settings.json .claude/skills/ingestion-test/run.sh .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md FRONTEND/src/api/questions.ts FRONTEND/src/components/QuestionCard.tsx FRONTEND/src/types/index.ts TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#10 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#5 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#6 Answer Key (upd recent).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#7 Answer Key (upd 2-3-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#8 Answer Key (upd 2-7-25).pdf TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/BBPT#9 Answer Key (upd 2-7-25).pdf 
+_( 59 files changed, 12906 insertions(+), 67623 deletions(-))_
+
+**Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
+
+---

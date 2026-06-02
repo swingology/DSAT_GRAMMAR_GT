@@ -15,9 +15,9 @@ set -uo pipefail
 
 ROOT="/home/jb/DSAT_REDUX_MD"
 BACKEND="$ROOT/backend"
-PDF_DIR="$ROOT/TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL"
+PDF_DIR="$ROOT/TESTS/DATA_SRC/2024-2025 Tests Answers"
 API="http://localhost:8000"
-KEY="${ADMIN_API_KEY:-admin-key-change-me}"
+KEY="${ADMIN_API_KEY:-admin-test-key}"
 TARGET="${1:-Test_1_digital_sec01_mod01}"
 STARTED_SERVER=0
 SERVER_PID=""
@@ -80,14 +80,15 @@ fi
 PDF="$PDF_DIR/${TARGET}.pdf"
 [[ -f "$PDF" ]] || { echo "RESULT_JSON:{\"error\":\"pdf not found: $PDF\"}"; exit 1; }
 
-EXAM=$(echo "$TARGET"    | sed -E 's/Test_([0-9]+)_.*/\1/')
-SECTION=$(echo "$TARGET" | sed -E 's/.*_sec([0-9]+)_.*/\1/')
-MODULE=$(echo "$TARGET"  | sed -E 's/.*_mod([0-9]+).*/\1/')
+EXAM=$(echo "$TARGET"    | sed -E 's/Test([0-9]+).*/\1/')
+SECTION=$(echo "$TARGET" | sed -E 's/.*Sec([0-9]+).*/\1/')
+MODULE=$(echo "$TARGET"  | sed -E 's/.*Mod([0-9]+).*/\1/')
 
 log "submitting $TARGET (exam=$EXAM section=$SECTION module=$MODULE)"
 SUBMIT=$(curl -s -X POST "$API/ingest/official/pdf" -H "X-API-Key: $KEY" \
     -F "file=@$PDF" -F "source_exam_code=$EXAM" -F "source_subject_code=verbal" \
-    -F "source_section_code=$SECTION" -F "source_module_code=$MODULE")
+    -F "source_section_code=$SECTION" -F "source_module_code=$MODULE" \
+    -F "source_release_year=2024")
 JOB=$(echo "$SUBMIT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('id') or d.get('job_id') or '')" 2>/dev/null)
 [[ -n "$JOB" ]] || { echo "RESULT_JSON:{\"error\":\"no job_id\",\"response\":$(echo "$SUBMIT" | python3 -c 'import sys,json;print(json.dumps(sys.stdin.read()))')}"; exit 1; }
 log "job_id=$JOB"

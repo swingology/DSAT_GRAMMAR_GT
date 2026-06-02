@@ -17,6 +17,10 @@ async def recall_questions(
     grammar_focus: Optional[str] = Query(None),
     difficulty: Optional[str] = Query(None),
     origin: Optional[str] = Query(None),
+    source_release_year: Optional[int] = Query(None),
+    source_test_name: Optional[str] = Query(None),
+    source_exam_code: Optional[str] = Query(None),
+    sort_by_source: bool = Query(False, description="Sort by release/test/exam/module/question order"),
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
@@ -26,6 +30,12 @@ async def recall_questions(
 
     if origin:
         stmt = stmt.where(Question.content_origin == origin)
+    if source_release_year is not None:
+        stmt = stmt.where(Question.source_release_year == source_release_year)
+    if source_test_name:
+        stmt = stmt.where(Question.source_test_name == source_test_name)
+    if source_exam_code:
+        stmt = stmt.where(Question.source_exam_code == source_exam_code)
 
     # Join annotations once when any annotation-backed filter is present.
     if grammar_focus or difficulty:
@@ -41,6 +51,17 @@ async def recall_questions(
             stmt = stmt.where(
                 QuestionAnnotation.annotation_jsonb["difficulty_overall"].astext == difficulty
             )
+
+    if sort_by_source:
+        stmt = stmt.order_by(
+            Question.source_release_year.asc().nullslast(),
+            Question.source_test_name.asc().nullslast(),
+            Question.source_exam_code.asc().nullslast(),
+            Question.source_subject_code.asc().nullslast(),
+            Question.source_section_code.asc().nullslast(),
+            Question.source_module_code.asc().nullslast(),
+            Question.source_question_number.asc().nullslast(),
+        )
 
     stmt = stmt.offset(offset).limit(limit)
     result = await db.execute(stmt)
@@ -63,6 +84,8 @@ async def recall_questions(
             current_passage_text=q.current_passage_text,
             current_correct_option_label=q.current_correct_option_label,
             practice_status=q.practice_status,
+            source_release_year=q.source_release_year,
+            source_test_name=q.source_test_name,
             grammar_role_key=ann.annotation_jsonb.get("grammar_role_key") if ann else None,
             grammar_focus_key=ann.annotation_jsonb.get("grammar_focus_key") if ann else None,
             difficulty_overall=ann.annotation_jsonb.get("difficulty_overall") if ann else None,
@@ -71,6 +94,7 @@ async def recall_questions(
             source_subject_code=q.source_subject_code,
             source_section_code=q.source_section_code,
             source_module_code=q.source_module_code,
+            source_question_number=q.source_question_number,
             generation_profile=ann.generation_profile_jsonb if ann else None,
         ))
     return responses
@@ -133,9 +157,12 @@ async def get_question_detail(
         official_overlap_status=q.official_overlap_status,
         is_admin_edited=q.is_admin_edited,
         source_exam_code=q.source_exam_code,
+        source_release_year=q.source_release_year,
+        source_test_name=q.source_test_name,
         source_subject_code=q.source_subject_code,
         source_section_code=q.source_section_code,
         source_module_code=q.source_module_code,
+        source_question_number=q.source_question_number,
         latest_annotation=latest_annotation,
         generation_profile=generation_profile,
         options=options,

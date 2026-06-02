@@ -534,6 +534,8 @@ class TestNormalizeExtractedQuestions:
 
         extract = {
             "passage_text": "P",
+            "source_release_year": 2025,
+            "source_test_name": "Bluebook Practice Test 5",
             "source_exam_code": "PT5",
             "source_section_code": "S1",
             "source_module_code": "M2",
@@ -544,6 +546,8 @@ class TestNormalizeExtractedQuestions:
         questions, _, _, _ = _normalize_extracted_questions(extract)
 
         assert questions[0]["source_exam_code"] == "PT5"
+        assert questions[0]["source_release_year"] == 2025
+        assert questions[0]["source_test_name"] == "Bluebook Practice Test 5"
         assert questions[0]["source_section_code"] == "S1"
         assert questions[0]["source_module_code"] == "M2"
 

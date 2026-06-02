@@ -15,6 +15,8 @@ class QuestionExtract(BaseModel):
     paired_passage_text: Optional[str] = None
     options: List[ExtractedOption] = Field(min_length=4, max_length=4)
     correct_option_label: str = Field(pattern=r"^[A-D]$")
+    source_release_year: Optional[int] = None
+    source_test_name: Optional[str] = None
     source_exam_code: Optional[str] = None
     source_subject_code: Optional[str] = None
     source_section_code: Optional[str] = None

@@ -27,7 +27,8 @@ def test_questions_columns():
     from app.models.db import Question
     mapper = inspect(Question).mapper
     col_names = {c.key for c in mapper.columns}
-    required = {"id", "content_origin", "source_exam_code", "source_subject_code", "source_section_code", "source_module_code",
+    required = {"id", "content_origin", "source_release_year", "source_test_name",
+                "source_exam_code", "source_subject_code", "source_section_code", "source_module_code",
                 "stimulus_mode_key", "stem_type_key",
                 "current_question_text", "current_passage_text",
                 "current_correct_option_label", "current_explanation_text",
@@ -44,6 +45,14 @@ def test_question_options_columns():
     required = {"id", "question_id", "option_label", "option_text",
                 "is_correct", "option_role", "distractor_type_key",
                 "precision_score", "created_at"}
+    assert required.issubset(col_names), f"Missing cols: {required - col_names}"
+
+
+def test_question_assets_source_release_columns():
+    from app.models.db import QuestionAsset
+    mapper = inspect(QuestionAsset).mapper
+    col_names = {c.key for c in mapper.columns}
+    required = {"source_release_year", "source_test_name", "source_exam_code", "source_name"}
     assert required.issubset(col_names), f"Missing cols: {required - col_names}"
 
 

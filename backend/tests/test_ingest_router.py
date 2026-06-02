@@ -146,6 +146,16 @@ def test_normalize_source_metadata_accepts_legacy_codes():
     assert module_code == "02"
 
 
+def test_normalize_source_metadata_accepts_split_verbal_module_codes():
+    from app.routers.ingest import _normalize_source_metadata
+
+    subject_code, section_code, module_code = _normalize_source_metadata("english", "01", "M2B")
+
+    assert subject_code == "verbal"
+    assert section_code == "01"
+    assert module_code == "02B"
+
+
 def test_normalize_source_metadata_rejects_bad_section():
     import pytest
     from fastapi import HTTPException

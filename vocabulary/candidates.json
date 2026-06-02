@@ -46,10 +46,124 @@
       "value": "expression_of_ideas",
       "field": "skill_family_key",
       "first_seen": "2026-05-28T19:03:09.648942+00:00",
-      "last_seen": "2026-05-28T19:03:09.648942+00:00",
+      "last_seen": "2026-06-01T17:25:35.567694+00:00",
+      "occurrences": 13,
+      "job_ids": [
+        "3942bcf5-1e09-4c43-a48e-f77f04d0852f",
+        "9b164791-c44b-4bf0-8723-67a345e02ec6",
+        "6f8e8276-0bc7-4907-9ddc-b01fcf6e77bf",
+        "c32303a8-4530-4267-9394-99588db8ccd1",
+        "35a040fa-a2b8-4fe3-90f5-78b7e340d2b6"
+      ],
+      "contexts": [
+        "sanitized→null"
+      ]
+    },
+    {
+      "vocab": "READING_SKILL_FAMILY_KEYS",
+      "value": "rhetorical_synthesis",
+      "field": "skill_family_key",
+      "first_seen": "2026-05-31T15:56:05.923484+00:00",
+      "last_seen": "2026-06-01T11:00:09.107294+00:00",
+      "occurrences": 2,
+      "job_ids": [
+        "0e5d66e8-aae8-4b8d-bd64-66d6d42631f3",
+        "c32303a8-4530-4267-9394-99588db8ccd1"
+      ],
+      "contexts": [
+        "sanitized→null"
+      ]
+    },
+    {
+      "vocab": "STEM_TYPE_KEYS",
+      "value": "data_interpretation",
+      "field": "stem_type_key",
+      "first_seen": "2026-05-31T17:50:08.316935+00:00",
+      "last_seen": "2026-05-31T17:50:08.316935+00:00",
+      "occurrences": 1,
+      "job_ids": [],
+      "contexts": []
+    },
+    {
+      "vocab": "READING_SKILL_FAMILY_KEYS",
+      "value": "boundaries",
+      "field": "skill_family_key",
+      "first_seen": "2026-06-01T04:53:30.024343+00:00",
+      "last_seen": "2026-06-01T10:24:35.719717+00:00",
+      "occurrences": 2,
+      "job_ids": [
+        "bd072449-02b7-4337-a71e-1aff5a6cb6f2",
+        "6f8e8276-0bc7-4907-9ddc-b01fcf6e77bf"
+      ],
+      "contexts": [
+        "sanitized→null"
+      ]
+    },
+    {
+      "vocab": "READING_SKILL_FAMILY_KEYS",
+      "value": "precision_word_choice",
+      "field": "skill_family_key",
+      "first_seen": "2026-06-01T07:09:49.223373+00:00",
+      "last_seen": "2026-06-01T07:09:49.223373+00:00",
       "occurrences": 1,
       "job_ids": [
-        "d752e8cc-a588-4952-9f34-0861c104f330"
+        "3942bcf5-1e09-4c43-a48e-f77f04d0852f"
+      ],
+      "contexts": [
+        "sanitized→null"
+      ]
+    },
+    {
+      "vocab": "READING_SKILL_FAMILY_KEYS",
+      "value": "punctuation",
+      "field": "skill_family_key",
+      "first_seen": "2026-06-01T07:09:50.080974+00:00",
+      "last_seen": "2026-06-01T07:09:50.080974+00:00",
+      "occurrences": 1,
+      "job_ids": [
+        "3942bcf5-1e09-4c43-a48e-f77f04d0852f"
+      ],
+      "contexts": [
+        "sanitized→null"
+      ]
+    },
+    {
+      "vocab": "STEM_TYPE_KEYS",
+      "value": "conventions_of_standard_english",
+      "field": "stem_type_key",
+      "first_seen": "2026-06-01T09:03:02.010853+00:00",
+      "last_seen": "2026-06-01T09:03:02.015477+00:00",
+      "occurrences": 2,
+      "job_ids": [
+        "9b164791-c44b-4bf0-8723-67a345e02ec6"
+      ],
+      "contexts": [
+        "sanitized→conform_to_standard_english"
+      ]
+    },
+    {
+      "vocab": "STEM_TYPE_KEYS",
+      "value": "conventions",
+      "field": "stem_type_key",
+      "first_seen": "2026-06-01T09:29:20.451383+00:00",
+      "last_seen": "2026-06-01T09:29:20.456087+00:00",
+      "occurrences": 2,
+      "job_ids": [
+        "1c5e0c50-0a45-4276-be90-c1ed414caaa9"
+      ],
+      "contexts": [
+        "sanitized→null"
+      ]
+    },
+    {
+      "vocab": "READING_SKILL_FAMILY_KEYS",
+      "value": "form_structure_sense",
+      "field": "skill_family_key",
+      "first_seen": "2026-06-01T09:29:20.456655+00:00",
+      "last_seen": "2026-06-01T09:29:20.456655+00:00",
+      "occurrences": 1,
+      "job_ids": [
+        "1c5e0c50-0a45-4276-be90-c1ed414caaa9"
       ],
       "contexts": [
         "sanitized→null"

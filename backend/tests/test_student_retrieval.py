@@ -32,6 +32,10 @@ def _make_question(
     stimulus_mode_key=None,
     latest_annotation_id=None,
     latest_version_id=None,
+    current_passage_text=None,
+    current_underlined_text=None,
+    source_release_year=None,
+    source_test_name=None,
 ):
     return SimpleNamespace(
         id=qid or uuid.uuid4(),
@@ -41,11 +45,15 @@ def _make_question(
         latest_annotation_id=latest_annotation_id,
         latest_version_id=latest_version_id,
         current_question_text="Sample question?",
-        current_passage_text=None,
+        current_passage_text=current_passage_text,
+        current_underlined_text=current_underlined_text,
+        source_release_year=source_release_year,
+        source_test_name=source_test_name,
         source_exam_code=None,
         source_subject_code=None,
         source_section_code=None,
         source_module_code=None,
+        source_question_number=None,
     )
 
 
@@ -144,6 +152,10 @@ async def _recall(db, auth=("student", "test"), **kwargs):
         reading_focus_key=None,
         stimulus_mode_key=None,
         origin=None,
+        source_release_year=None,
+        source_test_name=None,
+        source_exam_code=None,
+        sort_by_source=False,
         exclude_seen=None,
         user_token=None,
         limit=20,
@@ -292,6 +304,24 @@ async def test_origin_mixed_no_content_origin_value_filter():
 
 
 @pytest.mark.asyncio
+async def test_source_release_filters_and_sort_in_sql():
+    db = _CaptureDB()
+    await _recall(
+        db,
+        source_release_year=2025,
+        source_test_name="Bluebook Practice Test 1",
+        source_exam_code="PT1",
+        sort_by_source=True,
+    )
+    fetch_sql = db.executed_sql[-1]
+    assert "source_release_year = 2025" in fetch_sql
+    assert "source_test_name = 'Bluebook Practice Test 1'" in fetch_sql
+    assert "source_exam_code = 'PT1'" in fetch_sql
+    assert "ORDER BY" in fetch_sql
+    assert "source_question_number ASC NULLS LAST" in fetch_sql
+
+
+@pytest.mark.asyncio
 async def test_stimulus_mode_key_filter_in_sql():
     db = _CaptureDB()
     await _recall(db, stimulus_mode_key="paired_passages")
@@ -383,7 +413,12 @@ async def test_inventory_served_equals_items_count():
 async def test_annotation_fields_populated_in_response():
     ann_id = uuid.uuid4()
     ver_id = uuid.uuid4()
-    q = _make_question(latest_annotation_id=ann_id, latest_version_id=ver_id)
+    q = _make_question(
+        latest_annotation_id=ann_id,
+        latest_version_id=ver_id,
+        source_release_year=2025,
+        source_test_name="Bluebook Practice Test 1",
+    )
     ann = SimpleNamespace(
         id=ann_id,
         annotation_jsonb={
@@ -407,6 +442,90 @@ async def test_annotation_fields_populated_in_response():
     assert item.grammar_role_key == "usage"
     assert item.grammar_focus_key == "subject_verb_agreement"
     assert item.difficulty_overall == "medium"
+    assert item.source_release_year == 2025
+    assert item.source_test_name == "Bluebook Practice Test 1"
+
+
+@pytest.mark.asyncio
+async def test_passage_tokens_derived_from_existing_grammar_annotation():
+    """Student payload should support frontend highlights even when Pass 2 omitted passage_tokens."""
+    ann_id = uuid.uuid4()
+    ver_id = uuid.uuid4()
+    q = _make_question(
+        latest_annotation_id=ann_id,
+        latest_version_id=ver_id,
+        current_passage_text="Although the committee deliberated for weeks, its decision reflected compromise.",
+        current_underlined_text="deliberated",
+    )
+    ann = SimpleNamespace(
+        id=ann_id,
+        annotation_jsonb={
+            "grammar_role_key": "verb_form",
+            "grammar_focus_key": "verb_tense_consistency",
+            "syntactic_trap_key": "temporal_sequence_ambiguity",
+            "difficulty_overall": "medium",
+        },
+    )
+    db = _QueueDB([
+        _ScalarResult(first_item=1),
+        _ScalarResult(first_item=1),
+        _ScalarResult(items=[q]),
+        _ScalarResult(items=[ann]),
+        _ScalarResult(items=[]),
+    ])
+
+    result = await _recall(db)
+
+    item = result.items[0]
+    assert item.syntactic_trap_key == "temporal_sequence_ambiguity"
+    assert item.passage_tokens == [
+        {"text": "Although the committee ", "tags": []},
+        {
+            "text": "deliberated",
+            "tags": [
+                "verb_form",
+                "verb_tense_consistency",
+                "temporal_sequence_ambiguity",
+            ],
+        },
+        {"text": " for weeks, its decision reflected compromise.", "tags": []},
+    ]
+
+
+@pytest.mark.asyncio
+async def test_existing_passage_tokens_are_preserved():
+    ann_id = uuid.uuid4()
+    ver_id = uuid.uuid4()
+    existing_tokens = [
+        {"text": "Already", "tags": ["subject"]},
+        {"text": " tagged.", "tags": []},
+    ]
+    q = _make_question(
+        latest_annotation_id=ann_id,
+        latest_version_id=ver_id,
+        current_passage_text="Already tagged.",
+        current_underlined_text="Already",
+    )
+    ann = SimpleNamespace(
+        id=ann_id,
+        annotation_jsonb={
+            "grammar_role_key": "sentence_boundaries",
+            "grammar_focus_key": "fragment",
+            "difficulty_overall": "medium",
+            "passage_tokens": existing_tokens,
+        },
+    )
+    db = _QueueDB([
+        _ScalarResult(first_item=1),
+        _ScalarResult(first_item=1),
+        _ScalarResult(items=[q]),
+        _ScalarResult(items=[ann]),
+        _ScalarResult(items=[]),
+    ])
+
+    result = await _recall(db)
+
+    assert result.items[0].passage_tokens == existing_tokens
 
 
 # ---------------------------------------------------------------------------

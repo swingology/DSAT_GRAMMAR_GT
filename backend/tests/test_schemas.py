@@ -109,6 +109,8 @@ def test_question_recall_response():
         "current_passage_text": "A passage here.",
         "current_correct_option_label": "C",
         "practice_status": "active",
+        "source_release_year": 2025,
+        "source_test_name": "Bluebook Practice Test 1",
         "grammar_role_key": "agreement",
         "grammar_focus_key": "subject_verb_agreement",
         "difficulty_overall": "medium",
@@ -121,6 +123,8 @@ def test_question_recall_response():
     assert r.practice_status == "active"
     assert r.generation_profile == {"model_version": "rules_agent_v8.0"}
     assert r.source_subject_code == "verbal"
+    assert r.source_release_year == 2025
+    assert r.source_test_name == "Bluebook Practice Test 1"
 
 
 def test_question_detail_response():
@@ -134,10 +138,30 @@ def test_question_detail_response():
         "practice_status": "draft",
         "official_overlap_status": "none",
         "is_admin_edited": False,
+        "source_release_year": 2024,
+        "source_test_name": "Linear SAT Practice Test 1",
         "generation_profile": {"model_version": "rules_agent_v8.0"},
     }
     r = QuestionDetailResponse(**data)
     assert r.generation_profile == {"model_version": "rules_agent_v8.0"}
+    assert r.source_release_year == 2024
+    assert r.source_test_name == "Linear SAT Practice Test 1"
+
+
+def test_user_response_accepts_uuid_token():
+    from uuid import uuid4
+    from app.models.payload import UserResponse
+
+    token = uuid4()
+    data = {
+        "id": 1,
+        "username": "test-student",
+        "user_token": token,
+    }
+
+    r = UserResponse(**data)
+
+    assert r.user_token == token
 
 
 def test_generation_request_valid():

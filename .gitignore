@@ -9,3 +9,4 @@ local_object_store/**
 .cursor/
 .understand-anything/
 **/__pycache__/
+.wolf/agent.log

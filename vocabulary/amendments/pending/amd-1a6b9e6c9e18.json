@@ -1,0 +1,47 @@
+{
+  "amendment_id": "amd-1a6b9e6c9e18",
+  "status": "pending",
+  "source_job_id": "4fcd250a-0e29-46de-8ea5-0bb0572cdcee",
+  "source_exam_code": "2",
+  "source_subject_code": "verbal",
+  "source_section_code": "01",
+  "source_module_code": "01",
+  "source_question_number": 25,
+  "content_origin": "official",
+  "affected_doc": "grammar",
+  "proposal_type": "new_controlled_vocab_key",
+  "affected_vocab": "GRAMMAR_FOCUS_BY_ROLE",
+  "proposed_value": "rhetorical_synthesis",
+  "parent_key": "expression_of_ideas",
+  "definition": "Rhetorical Synthesis is a distinct SAT question type that does not fit neatly under existing grammar_focus_keys like 'emphasis_meaning_shifts'. It requires synthesizing notes to achieve a specific rhetorical goal (e.g., emphasize a difference, introduce a topic, make a comparison). A dedicated key would improve classification accuracy.",
+  "current_best_fit": "unknown",
+  "why_current_rules_are_insufficient": "Rhetorical Synthesis is a distinct SAT question type that does not fit neatly under existing grammar_focus_keys like 'emphasis_meaning_shifts'. It requires synthesizing notes to achieve a specific rhetorical goal (e.g., emphasize a difference, introduce a topic, make a comparison). A dedicated key would improve classification accuracy.",
+  "official_evidence": "The question asks to emphasize a difference between two portraits using bulleted notes, a classic Rhetorical Synthesis task.",
+  "rule_doc_patch": {
+    "target_section": "Grammar taxonomy section",
+    "before": "TBD",
+    "after": "- `rhetorical_synthesis` — Rhetorical Synthesis is a distinct SAT question type that does not fit neatly under existing grammar_focus_keys like 'emphasis_meaning_shifts'. It requires synthesizing notes to achieve a specific rhetorical goal (e.g., emphasize a difference, introduce a topic, make a comparison). A dedicated key would improve classification accuracy.",
+    "rationale": "The question asks to emphasize a difference between two portraits using bulleted notes, a classic Rhetorical Synthesis task."
+  },
+  "master_json_patch": {
+    "affected_vocab": "GRAMMAR_FOCUS_BY_ROLE",
+    "proposed_value": "rhetorical_synthesis",
+    "parent_key": "expression_of_ideas",
+    "description": "Rhetorical Synthesis is a distinct SAT question type that does not fit neatly under existing grammar_focus_keys like 'emphasis_meaning_shifts'. It requires synthesizing notes to achieve a specific rhetorical goal (e.g., emphasize a difference, introduce a topic, make a comparison). A dedicated key would improve classification accuracy."
+  },
+  "supporting_examples": [
+    {
+      "source_job_id": "4fcd250a-0e29-46de-8ea5-0bb0572cdcee",
+      "source_exam_code": "2",
+      "source_subject_code": "verbal",
+      "source_section_code": "01",
+      "source_module_code": "01",
+      "source_question_number": 25,
+      "official_evidence": "The question asks to emphasize a difference between two portraits using bulleted notes, a classic Rhetorical Synthesis task."
+    }
+  ],
+  "review_notes": [],
+  "admin_decision": null,
+  "created_at": "2026-05-31T17:50:09.033550Z",
+  "updated_at": "2026-05-31T17:50:09.033551Z"
+}

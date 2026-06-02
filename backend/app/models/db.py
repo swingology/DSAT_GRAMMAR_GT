@@ -76,6 +76,8 @@ class Question(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     content_origin = Column(Enum(*CONTENT_ORIGINS, name="content_origin_enum"), nullable=False)
+    source_release_year = Column(Integer, nullable=True)
+    source_test_name = Column(String(100), nullable=True)
     source_exam_code = Column(String(20), nullable=True)
     source_subject_code = Column(String(10), nullable=True)
     source_section_code = Column(String(10), nullable=True)
@@ -205,6 +207,8 @@ class QuestionAsset(Base):
     page_end = Column(Integer, nullable=True)
     source_url = Column(Text, nullable=True)
     source_name = Column(String(200), nullable=True)
+    source_release_year = Column(Integer, nullable=True)
+    source_test_name = Column(String(100), nullable=True)
     source_exam_code = Column(String(20), nullable=True)
     source_subject_code = Column(String(10), nullable=True)
     source_section_code = Column(String(10), nullable=True)

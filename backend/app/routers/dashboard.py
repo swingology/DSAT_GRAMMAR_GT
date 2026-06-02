@@ -1006,6 +1006,16 @@ _PAGE = """<!DOCTYPE html>
               <span class="chip bg-blue-100 text-blue-700">official</span>
             </div>
             <form id="official-pdf-form" class="space-y-3">
+              <div class="grid grid-cols-2 gap-3">
+                <div class="field">
+                  <label>Release Year</label>
+                  <input name="source_release_year" class="inp" placeholder="2025">
+                </div>
+                <div class="field">
+                  <label>Test Name</label>
+                  <input name="source_test_name" class="inp" placeholder="Bluebook Practice Test 1">
+                </div>
+              </div>
               <div class="grid grid-cols-3 gap-3">
                 <div class="field">
                   <label>Exam</label>
@@ -1130,6 +1140,16 @@ _PAGE = """<!DOCTYPE html>
                 <div class="field">
                   <label>Exam Code</label>
                   <input name="source_exam_code" class="inp" placeholder="PT11">
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="field">
+                  <label>Release Year</label>
+                  <input name="source_release_year" class="inp" placeholder="2025">
+                </div>
+                <div class="field">
+                  <label>Test Name</label>
+                  <input name="source_test_name" class="inp" placeholder="Bluebook Practice Test 1">
                 </div>
               </div>
               <div class="grid grid-cols-4 gap-3">

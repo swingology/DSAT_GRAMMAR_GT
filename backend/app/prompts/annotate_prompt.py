@@ -378,6 +378,28 @@ def enforce_nullability(annotation: dict, domain: str) -> dict:
     return result
 
 
+_PASSAGE_CHAR_LIMIT = 800
+_PAIRED_PASSAGE_CHAR_LIMIT = 600
+
+def _trim_q_data_for_annotation(q_data: dict) -> dict:
+    """Return a copy of q_data with large text fields trimmed.
+
+    The annotation LLM needs domain signals (stem type, question text, option
+    labels) — not full passage bodies. Sending 3-8K-char passages inflates the
+    user payload beyond what most local models handle cleanly and is the
+    primary cause of annotation hangs on reading questions.
+    """
+    trimmed = dict(q_data)
+    for field, limit in (
+        ("passage_text", _PASSAGE_CHAR_LIMIT),
+        ("paired_passage_text", _PAIRED_PASSAGE_CHAR_LIMIT),
+    ):
+        val = trimmed.get(field)
+        if isinstance(val, str) and len(val) > limit:
+            trimmed[field] = val[:limit] + " …[truncated for annotation]"
+    return trimmed
+
+
 def build_annotate_prompt_parts(
     q_data: dict | None = None,
     **kwargs,
@@ -407,7 +429,7 @@ def build_annotate_prompt_parts(
         allowed_keys=_ALLOWED_KEYS_BLOCK,
         content_origin=content_origin,
     )
-    user = f"Annotate the following extracted question:\n\n{json.dumps(q_data, indent=2)}"
+    user = f"Annotate the following extracted question:\n\n{json.dumps(_trim_q_data_for_annotation(q_data), indent=2)}"
     return system_static, system_dynamic, user
 
 
@@ -441,7 +463,7 @@ def build_annotate_prompt(q_data: dict | None = None, rules_file_path: str = "",
         allowed_keys=_ALLOWED_KEYS_BLOCK,
         content_origin=content_origin,
     )
-    user = f"Annotate the following extracted question:\n\n{json.dumps(q_data, indent=2)}"
+    user = f"Annotate the following extracted question:\n\n{json.dumps(_trim_q_data_for_annotation(q_data), indent=2)}"
     return system, user
 
 

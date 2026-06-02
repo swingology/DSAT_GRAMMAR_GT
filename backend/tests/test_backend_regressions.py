@@ -1354,6 +1354,11 @@ async def test_recall_questions_combines_annotation_filters_with_one_join():
     await questions_router.recall_questions(
         grammar_focus="subject_verb_agreement",
         difficulty="medium",
+        origin=None,
+        source_release_year=None,
+        source_test_name=None,
+        source_exam_code=None,
+        sort_by_source=False,
         limit=20,
         offset=0,
         db=db,
@@ -1362,6 +1367,39 @@ async def test_recall_questions_combines_annotation_filters_with_one_join():
 
     sql = str(db.statement)
     assert sql.count("JOIN question_annotations") == 1
+
+
+@pytest.mark.asyncio
+async def test_recall_questions_can_filter_and_sort_by_source_release():
+    class _StatementDB:
+        def __init__(self):
+            self.statement = None
+
+        async def execute(self, stmt):
+            self.statement = stmt
+            return _ScalarResult(items=[])
+
+    db = _StatementDB()
+    await questions_router.recall_questions(
+        grammar_focus=None,
+        difficulty=None,
+        origin="official",
+        source_release_year=2025,
+        source_test_name="Bluebook Practice Test 1",
+        source_exam_code="PT1",
+        sort_by_source=True,
+        limit=20,
+        offset=0,
+        db=db,
+        _auth="ok",
+    )
+
+    sql = str(db.statement)
+    assert "source_release_year" in sql
+    assert "source_test_name" in sql
+    assert "source_exam_code" in sql
+    assert "ORDER BY" in sql
+    assert "source_question_number ASC NULLS LAST" in sql
 
 
 @pytest.mark.asyncio
@@ -1384,6 +1422,10 @@ async def test_student_recall_combines_annotation_filters_with_one_join():
         reading_focus_key=None,
         stimulus_mode_key=None,
         origin=None,
+        source_release_year=None,
+        source_test_name=None,
+        source_exam_code=None,
+        sort_by_source=False,
         exclude_seen=None,
         user_token=None,
         limit=20,
@@ -1743,6 +1785,37 @@ def test_official_question_uuid_differs_by_field():
     diff_module  = ingest_router._official_question_uuid("PT1", "verbal", "01", "02", 3)
     diff_qnum    = ingest_router._official_question_uuid("PT1", "verbal", "01", "01", 4)
     assert len({base, diff_exam, diff_section, diff_module, diff_qnum}) == 5
+
+
+def test_official_question_uuid_differs_by_release_metadata():
+    base_2024 = ingest_router._official_question_uuid(
+        "PT1",
+        "verbal",
+        "01",
+        "01",
+        3,
+        source_release_year=2024,
+        source_test_name="Bluebook Practice Test 1",
+    )
+    base_2025 = ingest_router._official_question_uuid(
+        "PT1",
+        "verbal",
+        "01",
+        "01",
+        3,
+        source_release_year=2025,
+        source_test_name="Bluebook Practice Test 1",
+    )
+    different_name = ingest_router._official_question_uuid(
+        "PT1",
+        "verbal",
+        "01",
+        "01",
+        3,
+        source_release_year=2024,
+        source_test_name="Linear SAT Practice Test 1",
+    )
+    assert len({base_2024, base_2025, different_name}) == 3
 
 
 # ── _scan_qnums_from_ocr ──────────────────────────────────────────────────────

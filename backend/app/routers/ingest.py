@@ -57,7 +57,14 @@ IMAGE_MIME_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 MAX_PAGE_RENDER_BYTES = 10 * 1024 * 1024  # 10 MB per decoded page image
 OCR_TEXT_EXTRACT_PROVIDER = "ollama"
-OCR_TEXT_EXTRACT_MODEL = "qwen3-vl:235b-instruct-cloud"
+OCR_TEXT_EXTRACT_MODEL = "deepseek-v4-pro:cloud"  # Two-step extraction: GLM-OCR (text) + Deepseek (JSON)
+OCR_PAGE_SYSTEM_PROMPT = (
+    "You are a precise OCR engine. Extract all text from the image exactly as it "
+    "appears. Preserve question numbers on their own lines, option labels (A/B/C/D), "
+    "and blank markers (______). Return only the extracted text."
+)
+OCR_PAGE_USER_PROMPT = "Extract all text from this image."
+MAX_OCR_PAGE_CONCURRENCY = 3
 
 
 def _resolve_provider_and_model(
@@ -101,6 +108,14 @@ def _should_disable_thinking(provider_name: str, model_name: str) -> bool:
     return provider_name == "ollama" and model_name == OCR_TEXT_EXTRACT_MODEL
 
 
+def _ocr_page_concurrency(settings) -> int:
+    try:
+        requested = int(getattr(settings, "ocr_page_concurrency", MAX_OCR_PAGE_CONCURRENCY))
+    except (TypeError, ValueError):
+        requested = MAX_OCR_PAGE_CONCURRENCY
+    return max(1, min(MAX_OCR_PAGE_CONCURRENCY, requested))
+
+
 def _should_auto_activate_official(settings) -> bool:
     return bool(getattr(settings, "official_auto_activate_for_testing", False))
 
@@ -116,15 +131,52 @@ def _official_question_uuid(
     section_code: str,
     module_code: str,
     question_number: int,
+    source_release_year: int | None = None,
+    source_test_name: str | None = None,
 ) -> uuid.UUID:
     """Return a deterministic UUID5 for an official College Board question.
 
-    The canonical key is exam:subject:section:module:question_number, e.g.
-    "PT1:verbal:01:01:3".  Same inputs always produce the same UUID, making
-    re-ingestion of the same question idempotent.
+    The canonical key includes release metadata when present, followed by
+    exam:subject:section:module:question_number. Same inputs always produce the
+    same UUID, making re-ingestion of the same question idempotent while
+    allowing separate 2024/2025 releases of the same numbered practice test.
     """
-    canonical = f"{exam_code.upper()}:{subject_code.lower()}:{section_code}:{module_code}:{question_number}"
+    parts: list[str] = []
+    if source_release_year is not None:
+        parts.append(f"Y{source_release_year}")
+    normalized_test_name = (source_test_name or "").strip()
+    if normalized_test_name:
+        parts.append(normalized_test_name.upper())
+    parts.extend([
+        exam_code.upper(),
+        subject_code.lower(),
+        section_code,
+        module_code,
+        str(question_number),
+    ])
+    canonical = ":".join(parts)
     return uuid.uuid5(_OFFICIAL_Q_NAMESPACE, canonical)
+
+
+def _normalize_source_release_year(value: int | str | None) -> int | None:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        value = value.strip()
+        if not value:
+            return None
+    try:
+        year = int(value)
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=422, detail="source_release_year must be a four-digit year")
+    if year < 2000 or year > 2100:
+        raise HTTPException(status_code=422, detail="source_release_year must be between 2000 and 2100")
+    return year
+
+
+def _normalize_source_test_name(value: str | None) -> str | None:
+    normalized = " ".join((value or "").strip().split())
+    return normalized[:100] or None
 
 
 def _normalize_source_subject_code(value: str | None) -> str | None:
@@ -151,19 +203,44 @@ def _normalize_source_slot(value: str | None, field_name: str) -> str | None:
     normalized = (value or "").strip().upper()
     if not normalized:
         return None
-    aliases = {
-        "S1": "01",
-        "S2": "02",
-        "M1": "01",
-        "M2": "02",
-        "1": "01",
-        "2": "02",
-        "01": "01",
-        "02": "02",
-    }
+    if field_name == "source_module_code":
+        aliases = {
+            "M1": "01",
+            "M2": "02",
+            "M2A": "02A",
+            "M2B": "02B",
+            "MOD1": "01",
+            "MOD2": "02",
+            "MOD2A": "02A",
+            "MOD2B": "02B",
+            "MODULE1": "01",
+            "MODULE2": "02",
+            "MODULE2A": "02A",
+            "MODULE2B": "02B",
+            "1": "01",
+            "2": "02",
+            "2A": "02A",
+            "2B": "02B",
+            "01": "01",
+            "02": "02",
+            "02A": "02A",
+            "02B": "02B",
+        }
+        valid = {"01", "02", "02A", "02B"}
+    else:
+        aliases = {
+            "S1": "01",
+            "S2": "02",
+            "1": "01",
+            "2": "02",
+            "01": "01",
+            "02": "02",
+        }
+        valid = {"01", "02"}
     normalized = aliases.get(normalized, normalized)
-    if normalized not in {"01", "02"}:
-        raise HTTPException(status_code=422, detail=f"{field_name} must be '01' or '02'")
+    if normalized not in valid:
+        allowed = "', '".join(sorted(valid))
+        raise HTTPException(status_code=422, detail=f"{field_name} must be '{allowed}'")
     return normalized
 
 
@@ -197,6 +274,8 @@ def _generation_profile_payload(*sources: dict | None) -> dict | None:
 _DSAT_QUESTION_RANGES: dict[tuple[str, str], tuple[int, int]] = {
     ("verbal", "01"): (1, 33),
     ("verbal", "02"): (1, 33),
+    ("verbal", "02A"): (1, 27),
+    ("verbal", "02B"): (1, 27),
     ("math",   "01"): (1, 22),
     ("math",   "02"): (1, 22),
 }
@@ -630,6 +709,8 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
     """
     shared_passage = extract_root.get("passage_text")
     shared_source = {
+        "source_release_year": extract_root.get("source_release_year"),
+        "source_test_name": extract_root.get("source_test_name"),
         "source_exam_code": extract_root.get("source_exam_code"),
         "source_subject_code": extract_root.get("source_subject_code"),
         "source_section_code": extract_root.get("source_section_code"),
@@ -761,15 +842,35 @@ async def _persist_single_question(
     section = q_data.get("source_section_code") or section_code
     module = q_data.get("source_module_code")
     q_num = q_data.get("source_question_number")
+    release_year = _normalize_source_release_year(q_data.get("source_release_year"))
+    test_name = _normalize_source_test_name(q_data.get("source_test_name"))
+    q_num_int: int | None = None
+    if q_num is not None:
+        try:
+            q_num_int = int(q_num)
+        except (TypeError, ValueError):
+            q_num_int = None
 
     is_suspect = bool(suspect_question_indices and question_index in suspect_question_indices)
-    if not is_suspect and job.content_origin == "official" and all([exam, subject, section, module, q_num]):
-        try:
-            question_id = _official_question_uuid(exam, subject, section, module, int(q_num))
-        except (TypeError, ValueError):
-            logger.warning("source_question_number %r is not an integer — using UUID4", q_num)
-            question_id = uuid.uuid4()
+    has_complete_official_identity = (
+        not is_suspect
+        and job.content_origin == "official"
+        and all([exam, subject, section, module])
+        and q_num_int is not None
+    )
+    if has_complete_official_identity:
+        question_id = _official_question_uuid(
+            exam,
+            subject,
+            section,
+            module,
+            q_num_int,
+            source_release_year=release_year,
+            source_test_name=test_name,
+        )
     else:
+        if job.content_origin == "official" and q_num is not None and q_num_int is None:
+            logger.warning("source_question_number %r is not an integer — using UUID4", q_num)
         question_id = uuid.uuid4()
 
     version_id = uuid.uuid4()
@@ -781,6 +882,29 @@ async def _persist_single_question(
         if existing_q:
             logger.info("Official question %s already exists — skipping re-insert", question_id)
             return question_id
+        if has_complete_official_identity:
+            identity_stmt = (
+                select(Question.id)
+                .where(Question.content_origin == "official")
+                .where(Question.source_exam_code == exam)
+                .where(Question.source_subject_code == subject)
+                .where(Question.source_section_code == section)
+                .where(Question.source_module_code == module)
+                .where(Question.source_question_number == q_num_int)
+            )
+            if release_year is None:
+                identity_stmt = identity_stmt.where(Question.source_release_year.is_(None))
+            else:
+                identity_stmt = identity_stmt.where(Question.source_release_year == release_year)
+            if test_name is None:
+                identity_stmt = identity_stmt.where(Question.source_test_name.is_(None))
+            else:
+                identity_stmt = identity_stmt.where(Question.source_test_name == test_name)
+            existing_identity = await db.execute(identity_stmt)
+            existing_id = existing_identity.scalars().first()
+            if existing_id:
+                logger.info("Official question %s already exists by source identity — skipping re-insert", existing_id)
+                return existing_id
 
     official_auto_activate = _should_auto_activate_official(get_settings())
     if defer_activation:
@@ -798,6 +922,8 @@ async def _persist_single_question(
     question = Question(
         id=question_id,
         content_origin=job.content_origin,
+        source_release_year=release_year,
+        source_test_name=test_name,
         source_exam_code=q_data.get("source_exam_code"),
         source_subject_code=q_data.get("source_subject_code"),
         source_section_code=q_data.get("source_section_code"),
@@ -1224,6 +1350,8 @@ def _export_question(job: QuestionJob, q_data: dict, annotate_json: dict, questi
 
     settings = get_settings()
     source_meta = (job.pass1_json or {}).get("source_metadata", {})
+    release_year = q_data.get("source_release_year") or source_meta.get("source_release_year")
+    test_name = q_data.get("source_test_name") or source_meta.get("source_test_name")
     exam_code = q_data.get("source_exam_code") or source_meta.get("source_exam_code")
     section_code = q_data.get("source_section_code") or source_meta.get("source_section_code")
     module_code = q_data.get("source_module_code") or source_meta.get("source_module_code")
@@ -1236,6 +1364,8 @@ def _export_question(job: QuestionJob, q_data: dict, annotate_json: dict, questi
             question_number=q_data.get("source_question_number"),
             extract_json=q_data,
             annotate_json=annotate_json,
+            source_release_year=release_year,
+            source_test_name=test_name,
             section_code=section_code,
             base_dir=settings.local_archive_mirror,
         )
@@ -1272,6 +1402,8 @@ def _store_page_render(
             "asset_id": asset_id,
             "job_id": job_id,
             "content_origin": content_origin,
+            "source_release_year": source_metadata.get("source_release_year"),
+            "source_test_name": source_metadata.get("source_test_name"),
             "source_exam_code": source_metadata.get("source_exam_code"),
             "source_subject_code": source_metadata.get("source_subject_code"),
             "source_section_code": source_metadata.get("source_section_code"),
@@ -1344,6 +1476,8 @@ def _store_raw_upload(
             "asset_id": asset_id,
             "job_id": job_id,
             "content_origin": content_origin,
+            "source_release_year": source_metadata.get("source_release_year"),
+            "source_test_name": source_metadata.get("source_test_name"),
             "source_exam_code": source_metadata.get("source_exam_code"),
             "source_subject_code": source_metadata.get("source_subject_code"),
             "source_section_code": source_metadata.get("source_section_code"),
@@ -1397,6 +1531,10 @@ def _gc_page_images(archive_mirror: str, max_age_days: int = 30) -> int:
 
 
 def _collect_page_images(pass1_json: dict) -> list:
+    return [entry["image"] for entry in _collect_page_image_entries(pass1_json)]
+
+
+def _collect_page_image_entries(pass1_json: dict) -> list[dict]:
     """Extract pre-stored page images from pass1_json._page_images.
 
     Entries may carry a ``path`` key (named file on disk) or an inline ``b64``.
@@ -1408,25 +1546,205 @@ def _collect_page_images(pass1_json: dict) -> list:
     for img in raw_images:
         mime = img.get("mime_type", "image/png")
         page_idx = img.get("page_number", "?")
+        image = None
         if img.get("path"):
             try:
                 b64 = base64.b64encode(Path(img["path"]).read_bytes()).decode()
-                result.append(ImageContent(b64=b64, mime_type=mime))
-                continue
+                image = ImageContent(b64=b64, mime_type=mime)
             except (OSError, FileNotFoundError):
                 pass  # fall through to b64 fallback
-        if img.get("storage_path"):
+        if image is None and img.get("storage_path"):
             try:
                 b64 = base64.b64encode(read_object(img["storage_path"])).decode()
-                result.append(ImageContent(b64=b64, mime_type=mime))
-                continue
+                image = ImageContent(b64=b64, mime_type=mime)
             except (OSError, FileNotFoundError, NotImplementedError):
                 pass
-        if img.get("b64"):
-            result.append(ImageContent(b64=img["b64"], mime_type=mime))
-        else:
+        if image is None and img.get("b64"):
+            image = ImageContent(b64=img["b64"], mime_type=mime)
+        if image is None:
             logger.warning("_collect_page_images: dropping unreadable page image (page=%s)", page_idx)
+            continue
+        result.append({
+            "image": image,
+            "page_number": page_idx,
+        })
     return result
+
+
+def _strategy_image_entries(strategy: str, entries: list[dict], settings) -> list[dict]:
+    """Return image entries for an OCR strategy.
+
+    VLM-fused strategies do all extraction in one multimodal request and need a
+    bounded image count. Two-step OCR strategies produce raw text before the
+    extraction call, so they must see the full document.
+    """
+    if strategy in {"glm", "deepseek"}:
+        return entries
+    return entries[:settings.vision_max_images]
+
+
+def _merge_token_usage(*usages: dict | None) -> dict:
+    merged: dict = {}
+    for usage in usages:
+        for key, value in (usage or {}).items():
+            if isinstance(value, (int, float)):
+                merged[key] = merged.get(key, 0) + value
+    return merged
+
+
+async def _run_pagewise_vision_ocr(
+    provider,
+    *,
+    image_entries: list[dict],
+    system: str,
+    user: str,
+    model: str,
+    max_tokens: int,
+    temperature: float = 0.0,
+    max_concurrency: int = 1,
+) -> dict:
+    """Run OCR one page image at a time and combine the page text.
+
+    Local GLM-OCR fails on multi-image batches for scanned PDFs. Each model
+    request receives exactly one rendered page, while async scheduling can run a
+    small bounded number of page requests at once.
+    """
+    concurrency = max(1, min(MAX_OCR_PAGE_CONCURRENCY, int(max_concurrency or 1)))
+    semaphore = asyncio.Semaphore(concurrency)
+
+    async def _run_one(ordinal: int, entry: dict, *, attempt: int = 1) -> dict:
+        page_number = entry.get("page_number")
+        display_page = page_number + 1 if isinstance(page_number, int) else ordinal
+        async with semaphore:
+            result = await provider.complete_vision(
+                system=system,
+                user=user,
+                images=[entry["image"]],
+                model=model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+            )
+        raw_text = result.raw_text or ""
+        return {
+            "page_number": page_number,
+            "display_page": display_page,
+            "text": raw_text,
+            "latency_ms": result.latency_ms,
+            "token_usage": getattr(result, "token_usage", None) or {},
+            "attempt": attempt,
+        }
+
+    page_results = await asyncio.gather(
+        *[_run_one(ordinal, entry) for ordinal, entry in enumerate(image_entries, start=1)]
+    )
+    blank_positions = [
+        idx for idx, page in enumerate(page_results)
+        if not (page.get("text") or "").strip()
+    ]
+    if blank_positions:
+        logger.warning(
+            "Pagewise OCR returned blank text for %d page(s); retrying sequentially: %s",
+            len(blank_positions),
+            [page_results[idx]["display_page"] for idx in blank_positions],
+        )
+        for idx in blank_positions:
+            page_results[idx] = await _run_one(
+                idx + 1,
+                image_entries[idx],
+                attempt=2,
+            )
+
+    still_blank = [
+        page["display_page"] for page in page_results
+        if not (page.get("text") or "").strip()
+    ]
+    if still_blank:
+        raise ValueError(f"pagewise OCR returned blank text for page(s): {still_blank}")
+
+    total_latency_ms = sum((page.get("latency_ms") or 0) for page in page_results)
+    token_usage: dict = {}
+    for page in page_results:
+        token_usage = _merge_token_usage(token_usage, page.get("token_usage"))
+
+    combined = "\n\n".join(
+        f"--- Page {page['display_page']} ---\n{page['text']}"
+        for page in page_results
+        if page["text"].strip()
+    )
+    return {
+        "raw_text": combined,
+        "latency_ms": total_latency_ms,
+        "token_usage": token_usage,
+        "pages": page_results,
+    }
+
+
+async def _run_pagewise_deepseek_ocr(
+    client,
+    *,
+    image_entries: list[dict],
+    max_concurrency: int = 1,
+) -> dict:
+    """Run DeepSeek OCR one rendered PDF page per request."""
+    concurrency = max(1, min(MAX_OCR_PAGE_CONCURRENCY, int(max_concurrency or 1)))
+    semaphore = asyncio.Semaphore(concurrency)
+
+    async def _run_one(ordinal: int, entry: dict, *, attempt: int = 1) -> dict:
+        page_number = entry.get("page_number")
+        display_page = page_number + 1 if isinstance(page_number, int) else ordinal
+        async with semaphore:
+            result = await client.extract([entry["image"]])
+        raw_text = result.raw_text or ""
+        return {
+            "page_number": page_number,
+            "display_page": display_page,
+            "text": raw_text,
+            "latency_ms": result.latency_ms,
+            "token_usage": getattr(result, "token_usage", None) or {},
+            "attempt": attempt,
+        }
+
+    page_results = await asyncio.gather(
+        *[_run_one(ordinal, entry) for ordinal, entry in enumerate(image_entries, start=1)]
+    )
+    blank_positions = [
+        idx for idx, page in enumerate(page_results)
+        if not (page.get("text") or "").strip()
+    ]
+    if blank_positions:
+        logger.warning(
+            "Pagewise DeepSeek OCR returned blank text for %d page(s); retrying sequentially: %s",
+            len(blank_positions),
+            [page_results[idx]["display_page"] for idx in blank_positions],
+        )
+        for idx in blank_positions:
+            page_results[idx] = await _run_one(
+                idx + 1,
+                image_entries[idx],
+                attempt=2,
+            )
+
+    still_blank = [
+        page["display_page"] for page in page_results
+        if not (page.get("text") or "").strip()
+    ]
+    if still_blank:
+        raise ValueError(f"pagewise DeepSeek OCR returned blank text for page(s): {still_blank}")
+
+    token_usage: dict = {}
+    for page in page_results:
+        token_usage = _merge_token_usage(token_usage, page.get("token_usage"))
+    combined = "\n\n".join(
+        f"--- Page {page['display_page']} ---\n{page['text']}"
+        for page in page_results
+        if page["text"].strip()
+    )
+    return {
+        "raw_text": combined,
+        "latency_ms": sum((page.get("latency_ms") or 0) for page in page_results),
+        "token_usage": token_usage,
+        "pages": page_results,
+    }
 
 
 def _resolve_ocr_strategy(requested: str | None, settings) -> str:
@@ -1513,6 +1831,39 @@ def _build_ocr_chain(resolved: str, settings) -> list[str]:
     return chain
 
 
+async def _prewarm_annotation_cache(provider, questions_data: list[dict], content_origin: str) -> None:
+    """Fire a minimal annotation call per distinct domain to fill the provider's KV cache.
+
+    The rules block (system_static) is 10-17K tokens. Without pre-warming, the
+    first real annotation call in asyncio.gather pays the full prefill cost while
+    all other concurrent tasks wait behind the semaphore. Pre-warming fills the
+    cache serially before the gather starts so every concurrent call gets a cache hit.
+
+    A failed pre-warm is non-fatal — the real annotation calls will still work,
+    just without the cache benefit on the first question of each domain.
+    """
+    from app.prompts.annotate_prompt import build_annotate_prompt_parts, _detect_domain
+
+    seen_domains: set[str] = set()
+    for q_data in questions_data:
+        domain = _detect_domain(q_data)
+        if domain in seen_domains:
+            continue
+        seen_domains.add(domain)
+        try:
+            prompt_q_data = {**q_data, "content_origin": content_origin}
+            sys_static, sys_dynamic, _ = build_annotate_prompt_parts(prompt_q_data)
+            await provider.complete_cached(
+                system_static=sys_static,
+                system_dynamic=sys_dynamic,
+                user="Cache pre-warm — respond with exactly: {}",
+                max_tokens=4,
+            )
+            logger.info("Annotation cache pre-warmed for domain=%s", domain)
+        except Exception as exc:
+            logger.warning("Annotation cache pre-warm failed for domain=%s: %s", domain, exc)
+
+
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     from app.llm.factory import get_provider
     from app.prompts.extract_prompt import build_extract_prompt
@@ -1528,7 +1879,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     orch = JobOrchestrator(str(job.id), job.content_origin, job.job_type)
 
     raw_text = (job.pass1_json or {}).get("raw_text", "")
-    page_images = _collect_page_images(job.pass1_json)
+    page_image_entries = _collect_page_image_entries(job.pass1_json)
     ocr_strategy_req = (job.pass1_json or {}).get("_ocr_strategy")
     # Capture form metadata before pass1_json may be overwritten by LLM output
     form_meta = (job.pass1_json or {}).get("source_metadata", {})
@@ -1546,13 +1897,26 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         if _page_texts and not all(t.strip() for t in _page_texts):
             # Some pages have no text — collect images for those pages only
             _empty_page_indices = [i for i, t in enumerate(_page_texts) if not t.strip()]
-            _partial_images = [img for i, img in enumerate(page_images) if i in _empty_page_indices]
-            if _partial_images:
+            _empty_page_numbers = {
+                page.get("page_number", idx)
+                for idx, page in enumerate((job.pass1_json or {}).get("_page_texts", []))
+                if not (page.get("text", "") or "").strip()
+            }
+            _partial_entries = [
+                entry for entry in page_image_entries
+                if entry.get("page_number") in _empty_page_numbers
+            ]
+            if not _partial_entries:
+                _partial_entries = [
+                    entry for i, entry in enumerate(page_image_entries)
+                    if i in _empty_page_indices
+                ]
+            if _partial_entries:
                 logger.info(
                     "Mixed PDF detected for job %s: %d/%d pages need OCR",
                     job.id, len(_empty_page_indices), len(_page_texts),
                 )
-                page_images = _partial_images[:settings.vision_max_images]
+                page_image_entries = _partial_entries
                 # Fall through to OCR gate below with partial page images
                 raw_text = ""  # Clear raw_text so OCR gate runs
                 # Preserve full raw text for later concatenation
@@ -1566,9 +1930,10 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     else:
         _full_raw_text = None
 
-    if not raw_text and page_images:
-        page_images = page_images[:settings.vision_max_images]
+    if not raw_text and page_image_entries:
         # ── OCR gate ─────────────────────────────────────────────────────
+        pagewise_pdf_ocr = job.input_format == "pdf"
+        ocr_page_concurrency = _ocr_page_concurrency(settings) if pagewise_pdf_ocr else 1
         try:
             resolved_strategy = _resolve_ocr_strategy(ocr_strategy_req, settings)
         except ValueError as e:
@@ -1601,26 +1966,29 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             if _strategy == "glm":
                 # GLM-OCR: two-step — glm-ocr:latest via Ollama vision → raw_text → Pass 1 LLM
                 from app.llm.ollama_provider import OllamaProvider as _OllamaProvider
+                _strategy_entries = (
+                    page_image_entries
+                    if pagewise_pdf_ocr
+                    else _strategy_image_entries(_strategy, page_image_entries, settings)
+                )
+                _strategy_images = [entry["image"] for entry in _strategy_entries]
                 glm_model = settings.glm_ocr_model
                 glm_provider = _OllamaProvider(
                     base_url=settings.ollama_base_url,
                     default_model=glm_model,
                 )
-                _GLM_OCR_SYSTEM = (
-                    "You are a precise OCR engine. Extract all text from the image exactly as it "
-                    "appears. Preserve question numbers on their own lines, option labels (A/B/C/D), "
-                    "and blank markers (______). Return only the extracted text."
-                )
                 try:
-                    ocr_result = await glm_provider.complete_vision(
-                        system=_GLM_OCR_SYSTEM,
-                        user="Extract all text from this image.",
-                        images=page_images,
+                    ocr_result = await _run_pagewise_vision_ocr(
+                        glm_provider,
+                        system=OCR_PAGE_SYSTEM_PROMPT,
+                        user=OCR_PAGE_USER_PROMPT,
+                        image_entries=_strategy_entries,
                         model=glm_model,
                         max_tokens=4096,
                         temperature=0.0,
+                        max_concurrency=ocr_page_concurrency,
                     )
-                    raw_text = ocr_result.raw_text
+                    raw_text = ocr_result["raw_text"]
                     ocr_text_path = _store_ocr_text(job, raw_text, "glm")
                     job.pass1_json = {
                         **(job.pass1_json or {}),
@@ -1628,10 +1996,20 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         "_ocr_meta": {
                             "strategy": "glm",
                             "model": glm_model,
-                            "page_count": len(page_images),
-                            "latency_ms": ocr_result.latency_ms,
-                            "token_usage": getattr(ocr_result, "token_usage", None) or {},
+                            "page_count": len(_strategy_images),
+                            "pagewise": True,
+                            "page_concurrency": ocr_page_concurrency,
+                            "latency_ms": ocr_result["latency_ms"],
+                            "token_usage": ocr_result["token_usage"],
                             "ocr_text_path": ocr_text_path,
+                            "pages": [
+                                {
+                                    "page_number": page.get("page_number"),
+                                    "latency_ms": page.get("latency_ms"),
+                                    "chars": len(page.get("text", "")),
+                                }
+                                for page in ocr_result["pages"]
+                            ],
                         },
                     }
                     await db.commit()
@@ -1656,13 +2034,23 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             elif _strategy == "deepseek":
                 # Option A: DeepSeek OCR-2 → raw_text → Pass 1 LLM extraction
                 from app.llm.factory import get_ocr_client
+                _strategy_entries = (
+                    page_image_entries
+                    if pagewise_pdf_ocr
+                    else _strategy_image_entries(_strategy, page_image_entries, settings)
+                )
+                _strategy_images = [entry["image"] for entry in _strategy_entries]
                 ocr_client = get_ocr_client(
                     base_url=settings.deepseek_ocr_base_url,
                     model=settings.deepseek_ocr_model,
                 )
                 try:
-                    ocr_result = await ocr_client.extract(page_images)
-                    raw_text = ocr_result.raw_text
+                    ocr_result = await _run_pagewise_deepseek_ocr(
+                        ocr_client,
+                        image_entries=_strategy_entries,
+                        max_concurrency=ocr_page_concurrency,
+                    )
+                    raw_text = ocr_result["raw_text"]
                     ocr_text_path = _store_ocr_text(job, raw_text, "deepseek")
                     job.pass1_json = {
                         **(job.pass1_json or {}),
@@ -1670,10 +2058,20 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         "_ocr_meta": {
                             "strategy": "deepseek",
                             "model": settings.deepseek_ocr_model,
-                            "page_count": len(page_images),
-                            "latency_ms": ocr_result.latency_ms,
-                            "token_usage": getattr(ocr_result, "token_usage", None) or {},
+                            "page_count": len(_strategy_images),
+                            "pagewise": True,
+                            "page_concurrency": ocr_page_concurrency,
+                            "latency_ms": ocr_result["latency_ms"],
+                            "token_usage": ocr_result["token_usage"],
                             "ocr_text_path": ocr_text_path,
+                            "pages": [
+                                {
+                                    "page_number": page.get("page_number"),
+                                    "latency_ms": page.get("latency_ms"),
+                                    "chars": len(page.get("text", "")),
+                                }
+                                for page in ocr_result["pages"]
+                            ],
                         },
                     }
                     await db.commit()
@@ -1694,15 +2092,21 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     logger.warning("DeepSeek OCR failed (%s)", e)
 
             elif _strategy in ("ollama", "anthropic", "openai"):
-                # Option B/C/D: VLM fused — one provider call for both OCR and
-                # extraction, with a 3-attempt JSON-parse retry.
+                # VLM providers can either run legacy fused extraction or, for
+                # PDFs, pagewise OCR first so extraction/annotation stay in the
+                # normal text-only phases.
                 from app.prompts.extract_prompt import build_vision_extract_prompt
                 from app.llm.factory import get_provider as _get_provider
+                _strategy_entries = (
+                    page_image_entries
+                    if pagewise_pdf_ocr
+                    else _strategy_image_entries(_strategy, page_image_entries, settings)
+                )
+                _strategy_images = [entry["image"] for entry in _strategy_entries]
 
                 orch.advance()
                 job.status = "extracting"
                 await db.commit()
-                system, user = build_vision_extract_prompt(form_meta)
                 vlm_model = _vlm_model_for_strategy(_strategy, settings)
                 vlm_provider = _get_provider(
                     _strategy,
@@ -1711,12 +2115,71 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                     default_model=vlm_model,
                 )
                 stimulus_provider = vlm_provider
+                if pagewise_pdf_ocr:
+                    try:
+                        ocr_result = await _run_pagewise_vision_ocr(
+                            vlm_provider,
+                            system=OCR_PAGE_SYSTEM_PROMPT,
+                            user=OCR_PAGE_USER_PROMPT,
+                            image_entries=_strategy_entries,
+                            model=vlm_model,
+                            max_tokens=4096,
+                            temperature=0.0,
+                            max_concurrency=ocr_page_concurrency,
+                        )
+                        raw_text = ocr_result["raw_text"]
+                        ocr_text_path = _store_ocr_text(job, raw_text, _strategy)
+                        job.pass1_json = {
+                            **(job.pass1_json or {}),
+                            "raw_text": raw_text,
+                            "_ocr_meta": {
+                                "strategy": _strategy,
+                                "model": vlm_model,
+                                "page_count": len(_strategy_images),
+                                "pagewise": True,
+                                "page_concurrency": ocr_page_concurrency,
+                                "latency_ms": ocr_result["latency_ms"],
+                                "token_usage": ocr_result["token_usage"],
+                                "ocr_text_path": ocr_text_path,
+                                "pages": [
+                                    {
+                                        "page_number": page.get("page_number"),
+                                        "latency_ms": page.get("latency_ms"),
+                                        "chars": len(page.get("text", "")),
+                                    }
+                                    for page in ocr_result["pages"]
+                                ],
+                            },
+                        }
+                        await db.commit()
+                        text_extraction_provider = get_provider(
+                            OCR_TEXT_EXTRACT_PROVIDER,
+                            base_url=settings.ollama_base_url,
+                            default_model=OCR_TEXT_EXTRACT_MODEL,
+                        )
+                        text_extraction_provider_name = OCR_TEXT_EXTRACT_PROVIDER
+                        text_extraction_model_name = OCR_TEXT_EXTRACT_MODEL
+                        logger.info(
+                            "OCR strategy %s succeeded for PDF job %s: pagewise OCR via %s, extraction via %s/%s",
+                            _strategy,
+                            job.id,
+                            vlm_model,
+                            text_extraction_provider_name,
+                            text_extraction_model_name,
+                        )
+                        _ocr_done = True
+                    except Exception as _vexc:
+                        _ocr_last_err = _vexc
+                        logger.warning("Pagewise VLM OCR failed (strategy %s): %s", _strategy, _vexc)
+                    continue
+
+                system, user = build_vision_extract_prompt(form_meta)
                 for _v_attempt in range(3):
                     try:
                         vision_result = await vlm_provider.complete_vision(
                             system=system,
                             user=user,
-                            images=page_images,
+                            images=_strategy_images,
                             model=vlm_model,
                             max_tokens=16000,
                         )
@@ -1738,7 +2201,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                             "_ocr_meta": {
                                 "strategy": _strategy,
                                 "model": vlm_model,
-                                "page_count": len(page_images),
+                                "page_count": len(_strategy_images),
                                 "latency_ms": vision_result.latency_ms,
                                 "token_usage": getattr(vision_result, "token_usage", None) or {},
                                 "ocr_text_path": ocr_text_path,
@@ -1911,6 +2374,8 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         return _passage_to_group.get(pt)
 
     # Form-submitted metadata takes precedence; fall back to LLM-extracted values
+    release_year = form_meta.get("source_release_year") or shared_source.get("source_release_year")
+    test_name = form_meta.get("source_test_name") or shared_source.get("source_test_name")
     exam_code = form_meta.get("source_exam_code") or shared_source.get("source_exam_code")
     subject_code = form_meta.get("source_subject_code") or shared_source.get("source_subject_code")
     section_code = form_meta.get("source_section_code") or shared_source.get("source_section_code")
@@ -2014,13 +2479,17 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
 
     # Apply form metadata before annotation starts
     for i, q_data in enumerate(questions_data):
+        if release_year:
+            q_data["source_release_year"] = release_year
+        if test_name:
+            q_data["source_test_name"] = test_name
         if exam_code:
             q_data["source_exam_code"] = exam_code
         q_data.setdefault("source_subject_code", subject_code)
         q_data.setdefault("source_section_code", section_code)
         q_data.setdefault("source_module_code", module_code)
 
-    _annot_semaphore = asyncio.Semaphore(settings.ollama_max_concurrent)
+    _annot_semaphore = asyncio.Semaphore(settings.annotation_max_concurrent)
 
     async def _annotate_one(idx: int) -> tuple[int, dict | None, Exception | None, dict | None]:
         """Annotate a single question with retry. Returns (idx, annotate_json, last_err, meta)."""
@@ -2061,6 +2530,12 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 last_err = exc
                 break
         return idx, None, last_err, None
+
+    # Pre-warm the provider's KV / prompt cache with the static rules block for
+    # each distinct domain present in this batch. The rules block is 10-17K tokens;
+    # filling the cache once here means every subsequent concurrent annotation call
+    # hits the warm cache instead of paying the full prefill cost.
+    await _prewarm_annotation_cache(provider, questions_data, job.content_origin)
 
     # Fire all annotation calls concurrently, bounded by semaphore
     job.status = "annotating"
@@ -2309,6 +2784,8 @@ def _asset_type_from_mime(mime: str) -> str:
 @router.post("/official/pdf", response_model=JobResponse)
 async def ingest_official_pdf(
     file: UploadFile = File(...),
+    source_release_year: str = Form(""),
+    source_test_name: str = Form(""),
     source_exam_code: str = Form(""),
     source_subject_code: str = Form(""),
     source_section_code: str = Form(""),
@@ -2345,6 +2822,8 @@ async def ingest_official_pdf(
         source_section_code,
         source_module_code,
     )
+    source_release_year = _normalize_source_release_year(source_release_year)
+    source_test_name = _normalize_source_test_name(source_test_name)
 
     checksum = compute_checksum(content)
     existing = await db.execute(select(QuestionAsset).where(QuestionAsset.checksum == checksum))
@@ -2355,6 +2834,8 @@ async def ingest_official_pdf(
     asset_id = uuid.uuid4()
     job_id = uuid.uuid4()
     source_metadata = {
+        "source_release_year": source_release_year,
+        "source_test_name": source_test_name,
         "source_exam_code": source_exam_code,
         "source_subject_code": source_subject_code,
         "source_section_code": source_section_code,
@@ -2393,6 +2874,8 @@ async def ingest_official_pdf(
         page_start=0,
         page_end=len(pdf_result["pages"]) - 1,
         source_name=_sanitize_source_name(file.filename),
+        source_release_year=source_release_year,
+        source_test_name=source_test_name,
         source_exam_code=source_exam_code or None,
         source_subject_code=source_subject_code,
         source_section_code=source_section_code or None,
@@ -2570,6 +3053,8 @@ async def ingest_unofficial_file(
 async def ingest_text(
     text: str = Form(...),
     content_origin: str = Form("unofficial"),
+    source_release_year: str = Form(""),
+    source_test_name: str = Form(""),
     source_exam_code: str = Form(""),
     source_subject_code: str = Form(""),
     source_section_code: str = Form(""),
@@ -2588,6 +3073,8 @@ async def ingest_text(
         source_section_code,
         source_module_code,
     )
+    source_release_year = _normalize_source_release_year(source_release_year)
+    source_test_name = _normalize_source_test_name(source_test_name)
 
     settings = get_settings()
     now = datetime.now(timezone.utc)
@@ -2595,6 +3082,8 @@ async def ingest_text(
 
     source_metadata = {
         k: v for k, v in {
+            "source_release_year": source_release_year,
+            "source_test_name": source_test_name,
             "source_exam_code": source_exam_code or None,
             "source_subject_code": source_subject_code,
             "source_section_code": source_section_code or None,

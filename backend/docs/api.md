@@ -28,6 +28,8 @@ Upload an official PDF. Creates a `QuestionJob` and spawns a background pipeline
 | Field | Type | Required | Default |
 |---|---|---|---|
 | `file` | UploadFile | Yes | — |
+| `source_release_year` | int | Yes | — |
+| `source_test_name` | str | No | `""` |
 | `source_exam_code` | str | Yes | `""` |
 | `source_subject_code` | str | Yes | `""` |
 | `source_section_code` | str | Yes | `""` |
@@ -87,6 +89,8 @@ Upload raw text content for processing.
 |---|---|---|---|
 | `text` | str | Yes | — |
 | `content_origin` | str | No | `unofficial` |
+| `source_release_year` | int | No | — |
+| `source_test_name` | str | No | `""` |
 | `source_exam_code` | str | No | `""` |
 | `source_subject_code` | str | No | `""` |
 | `source_section_code` | str | No | `""` |

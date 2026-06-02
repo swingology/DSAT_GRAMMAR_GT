@@ -40,6 +40,7 @@ def test_settings_default_values():
         assert s.ocr_vision_model == "qwen3.0-vl"
         assert s.ocr_strategy == "glm"
         assert s.glm_ocr_model == "glm-ocr:latest"
+        assert s.ocr_page_concurrency == 3
         assert s.deepseek_ocr_base_url == ""
         assert s.max_concurrent_jobs == 8
         assert s.ollama_max_concurrent == 8

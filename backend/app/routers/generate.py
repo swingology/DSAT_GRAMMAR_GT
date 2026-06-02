@@ -301,6 +301,8 @@ async def _load_official_source_examples(db: AsyncSession, source_question_ids: 
         ann = ann_by_id.get(q.latest_annotation_id) if q.latest_annotation_id else None
         example = _without_none_values({
             "source_question_id": str(q.id),
+            "source_release_year": q.source_release_year,
+            "source_test_name": q.source_test_name,
             "source_exam_code": q.source_exam_code,
             "source_subject_code": q.source_subject_code,
             "source_section_code": q.source_section_code,
@@ -416,12 +418,14 @@ def _difficulty_sort_key(
     question: Question,
     annotation: QuestionAnnotation | None,
     body: GenerationBatchRequest,
-) -> tuple[int, str, int]:
+) -> tuple[int, int, str, str, int]:
     ann = _annotation_payload(annotation)
     difficulty_penalty = 0 if ann.get("difficulty_overall") == body.difficulty_overall else 1
+    release_year = getattr(question, "source_release_year", None) or 0
+    test_name = getattr(question, "source_test_name", None) or ""
     exam = getattr(question, "source_exam_code", None) or ""
     number = getattr(question, "source_question_number", None) or 0
-    return (difficulty_penalty, exam, number)
+    return (difficulty_penalty, release_year, test_name, exam, number)
 
 
 async def _recent_generation_source_ids(

@@ -10,10 +10,18 @@ export async function fetchQuestions(params: {
   difficulty?: string;
   limit?: number;
   userToken: string;
+  sourceReleaseYear?: number;
+  sourceTestName?: string;
+  sourceExamCode?: string;
+  sortBySource?: boolean;
 }): Promise<QuestionsResponse> {
   const qs = new URLSearchParams();
   if (params.domain) qs.set("domain", params.domain);
   if (params.difficulty && params.difficulty !== "any") qs.set("difficulty", params.difficulty);
+  if (params.sourceReleaseYear) qs.set("source_release_year", String(params.sourceReleaseYear));
+  if (params.sourceTestName) qs.set("source_test_name", params.sourceTestName);
+  if (params.sourceExamCode) qs.set("source_exam_code", params.sourceExamCode);
+  if (params.sortBySource) qs.set("sort_by_source", "true");
   qs.set("limit", String(params.limit ?? 20));
   qs.set("user_token", params.userToken);
 

@@ -2,6 +2,7 @@
 from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Optional, List, Any, Dict, Literal
 from datetime import datetime
+from uuid import UUID
 
 
 class StudentQuestionResponse(BaseModel):
@@ -12,6 +13,8 @@ class StudentQuestionResponse(BaseModel):
     current_passage_text: Optional[str] = None
     passage_tokens: Optional[List[dict]] = None
     practice_status: str
+    source_release_year: Optional[int] = None
+    source_test_name: Optional[str] = None
     grammar_role_key: Optional[str] = None
     grammar_focus_key: Optional[str] = None
     reading_skill_family_key: Optional[str] = None
@@ -25,6 +28,7 @@ class StudentQuestionResponse(BaseModel):
     options: List[dict] = Field(default_factory=list)
     source_question_number: Optional[int] = None
     question_family_key: Optional[str] = None
+    syntactic_trap_key: Optional[str] = None
     reasoning_trap_key: Optional[str] = None
     explanation_short: Optional[str] = None
     solver_pattern_key: Optional[str] = None
@@ -55,6 +59,8 @@ class QuestionRecallResponse(BaseModel):
     current_passage_text: Optional[str] = None
     current_correct_option_label: str
     practice_status: str
+    source_release_year: Optional[int] = None
+    source_test_name: Optional[str] = None
     grammar_role_key: Optional[str] = None
     grammar_focus_key: Optional[str] = None
     difficulty_overall: Optional[str] = None
@@ -63,6 +69,7 @@ class QuestionRecallResponse(BaseModel):
     source_subject_code: Optional[str] = None
     source_section_code: Optional[str] = None
     source_module_code: Optional[str] = None
+    source_question_number: Optional[int] = None
     generation_profile: Optional[dict] = None
 
     model_config = {"from_attributes": True}
@@ -78,10 +85,13 @@ class QuestionDetailResponse(BaseModel):
     practice_status: str
     official_overlap_status: str
     is_admin_edited: bool
+    source_release_year: Optional[int] = None
+    source_test_name: Optional[str] = None
     source_exam_code: Optional[str] = None
     source_subject_code: Optional[str] = None
     source_section_code: Optional[str] = None
     source_module_code: Optional[str] = None
+    source_question_number: Optional[int] = None
     latest_annotation: Optional[dict] = None
     generation_profile: Optional[dict] = None
     options: List[dict] = Field(default_factory=list)
@@ -510,7 +520,7 @@ class UserResponse(BaseModel):
     username: str
     email: Optional[str] = None
     role: str = "student"
-    user_token: str
+    user_token: UUID
     created_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}

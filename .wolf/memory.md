@@ -2,6 +2,10 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| 05:22 | Data fix: prepended passage intro to Q6 (Austen), Q7 (Chesnutt), Q8 (Shakespeare/Sonnet 27) in PT1 sec01 mod01. Updated questions + question_versions tables directly. bug-245. | DB | success |\n| 05:13 | Bug fix: passage intro/attribution sentence missing from passage_text during extraction. Updated EXTRACT_SYSTEM_PROMPT with explicit rule. Logged bug-244, DEBUG_LOG.md. | backend/app/prompts/extract_prompt.py | fixed | ~300 |
+| 21:53:44 | Ingestion test for Test01_ENG_Sec01_Mod01 SUCCESS — job bd072449, Phase 1 extracted 27 questions (~6 min), Phase 2 annotation completed in ~13m46s (13m46s vs prior 7m31s hang), status=approved, 27/27 created. One non-blocking amendment_proposal warning (affected_vocab="grammar_focus_key" not an ontology constant). No option-label cascade. Fix 1 (passage truncation) credited with enabling completion. Logged bug-243, DEBUG_LOG.md Run #3. | DEBUG_LOG.md, .wolf/buglog.json | success (first full completion) | ~1k |
+| 21:30:42 | Ingestion test for Test01_ENG_Sec01_Mod01 BLOCKED — duplicate-checksum blocker; submission rejected with no job_id. Prior job row still in question_jobs. Logged bug-241. DEBUG_LOG.md updated (Run #2). | .wolf/buglog.json, DEBUG_LOG.md | blocked (duplicate-checksum) | ~500 |
+| 21:29:25 | Ingestion test for Test01_ENG_Sec01_Mod01 FAILED — job 5df31438, Phase 1 extracted 27 questions (14 min), Phase 2 annotation hung for 7m31s then manually cancelled. Fix 1 (passage truncation) deployed but insufficient; Fix 2+3 still required (reading context ~17K tokens, unknown domain ~20K). Logged bug-240. | DEBUG_LOG.md, .wolf/buglog.json | failed (annotation-hang, fixes 2+3 needed) | ~3k |
 | 09:11:53 | Ingestion test for Test01_ENG_Sec01_Mod01 FAILED — job 8ee9f12a, Qwen3-VL OCR returns invalid JSON after 5 min extraction, 33,654 tokens, 0 questions created. Root cause: LLM response not valid JSON. Fixed config issues first (bug-228, bug-231), then discovered blocking OCR issue (bug-232). | DEBUG_LOG.md, .wolf/buglog.json | failed (ocr-json-error) | ~2k |
 | 00:00 | Ingestion test for Test01_ENG_Sec01_Mod01 — BLOCKED: run.sh hardcoded to TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL/ (empty); actual PDFs in 2024-2025 directory with different naming. Config mismatch prevents test execution. Logged bug-228, DEBUG_LOG.md entry. | .claude/skills/ingestion-test/run.sh, backend/app/config.py, DEBUG_LOG.md, .wolf/buglog.json | blocked (infrastructure config) | ~2k |
 | session | Task: run_on_sentence v8 sub-patterns drafted (Tier B, 1 PT example): 1 PT-cited (Fused Boundary Repaired by Period — PT1 M2 Q24) + 2 web-only (Coordinating Conjunction Without Required Comma — The Critical Reader; Long Compound-Complex Sentence Missing a Legal IC Boundary — Khan Academy); validator: 51 sub-patterns / 17 focus keys, all pass; committed b9b319d | rules_agent_dsat_grammar_ingestion_generation_v8.md | success | ~2k |
@@ -2473,3 +2477,170 @@
 | 12:06 | Edited backend/app/prompts/annotate_prompt.py | modified _read_file() | ~66 |
 | 12:06 | Edited backend/app/prompts/annotate_prompt.py | modified _grammar_context() | ~139 |
 | 12:07 | Edited DEBUG_LOG.md | modified _read_file() | ~476 |
+| 12:07 | Session end: 7 writes across 2 files (DEBUG_LOG.md, annotate_prompt.py) | 5 reads | ~102840 tok |
+| 12:08 | Edited CHANGELOG.md | expanded (+16 lines) | ~334 |
+| 12:08 | Session end: 8 writes across 3 files (DEBUG_LOG.md, annotate_prompt.py, CHANGELOG.md) | 6 reads | ~147304 tok |
+| 12:09 | Edited backend/app/prompts/annotate_prompt.py | modified _reading_context() | ~22 |
+| 12:09 | Edited backend/app/prompts/annotate_prompt.py | modified _unknown_context() | ~84 |
+| 12:09 | Edited backend/app/prompts/annotate_prompt.py | 11→7 lines | ~67 |
+| 12:09 | Edited backend/app/prompts/annotate_prompt.py | 10→7 lines | ~75 |
+| 12:13 | Session end: 12 writes across 3 files (DEBUG_LOG.md, annotate_prompt.py, CHANGELOG.md) | 8 reads | ~150409 tok |
+| 12:14 | Edited backend/app/prompts/annotate_prompt.py | modified _reading_context() | ~60 |
+| 12:14 | Edited backend/app/prompts/annotate_prompt.py | modified clear_prompt_cache() | ~141 |
+
+## Session: 2026-05-31 12:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:32 | Edited backend/app/prompts/annotate_prompt.py | 6→6 lines | ~90 |
+| 12:33 | Edited backend/app/prompts/annotate_prompt.py | modified _trim_q_data_for_annotation() | ~246 |
+| 12:33 | Edited backend/app/prompts/annotate_prompt.py | 2→2 lines | ~41 |
+| 12:33 | Edited DEBUG_LOG.md | modified _unknown_context() | ~1604 |
+| session | Fix 1 of 3 annotation hang fixes: added _trim_q_data_for_annotation() to annotate_prompt.py — caps passage_text at 800 chars and paired_passage_text at 600 chars before json.dumps. Reading questions were sending 8K+ token user payloads causing LLM hangs. Logged full 3-fix analysis to DEBUG_LOG.md. Fixes 2+3 pending. | backend/app/prompts/annotate_prompt.py, DEBUG_LOG.md | success | ~2k |
+| 12:34 | Session end: 4 writes across 2 files (annotate_prompt.py, DEBUG_LOG.md) | 3 reads | ~102975 tok |
+| 19:32 | Session end: 4 writes across 2 files (annotate_prompt.py, DEBUG_LOG.md) | 3 reads | ~102975 tok |
+| 20:44 | Session end: 4 writes across 2 files (annotate_prompt.py, DEBUG_LOG.md) | 5 reads | ~121119 tok |
+| 20:46 | Session end: 4 writes across 2 files (annotate_prompt.py, DEBUG_LOG.md) | 5 reads | ~121119 tok |
+| 20:47 | Session end: 4 writes across 2 files (annotate_prompt.py, DEBUG_LOG.md) | 5 reads | ~121119 tok |
+| 20:48 | Edited backend/app/routers/ingest.py | expanded (+6 lines) | ~160 |
+| 20:48 | Edited backend/app/routers/ingest.py | modified _prewarm_annotation_cache() | ~484 |
+| 20:49 | Edited CHANGELOG.md | expanded (+22 lines) | ~531 |
+| session | Added _prewarm_annotation_cache() to ingest.py — fires one minimal dummy call per distinct domain before asyncio.gather so the 10-17K token rules block is in KV cache before concurrent annotation calls start. Non-fatal on failure. Logged to CHANGELOG.md. | backend/app/routers/ingest.py, CHANGELOG.md | success | ~1k |
+| 20:49 | Session end: 7 writes across 4 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md) | 6 reads | ~167450 tok |
+| 20:57 | Session end: 7 writes across 4 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md) | 6 reads | ~168931 tok |
+| 21:04 | Edited .claude/skills/ingestion-test/run.sh | 3→3 lines | ~33 |
+| 21:05 | Session end: 8 writes across 5 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 7 reads | ~170450 tok |
+| 21:13 | Session end: 8 writes across 5 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 7 reads | ~170447 tok |
+| 21:26 | Session end: 8 writes across 5 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 10 reads | ~173333 tok |
+| 21:27 | Session end: 8 writes across 5 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 10 reads | ~173333 tok |
+| 21:28 | Edited backend/app/config.py | 1→2 lines | ~50 |
+| 21:28 | Edited backend/app/routers/ingest.py | inline fix | ~22 |
+| 21:28 | Session end: 10 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 11 reads | ~175424 tok |
+| 21:29 | Session end: 10 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 11 reads | ~175424 tok |
+| 21:29 | Session end: 10 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 11 reads | ~175424 tok |
+| 21:29 | Edited DEBUG_LOG.md | modified fix() | ~440 |
+| 21:30 | Session end: 11 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 11 reads | ~176288 tok |
+| 21:30 | Session end: 11 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 11 reads | ~176288 tok |
+| 21:31 | Edited DEBUG_LOG.md | modified fix() | ~318 |
+| 21:33 | Session end: 12 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 11 reads | ~176908 tok |
+| 21:39 | Session end: 12 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 11 reads | ~176908 tok |
+| 21:40 | Edited DEBUG_LOG.md | modified fix() | ~685 |
+| 21:40 | Session end: 13 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 11 reads | ~177642 tok |
+| 21:47 | Session end: 13 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 12 reads | ~177642 tok |
+| 21:50 | Session end: 13 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 12 reads | ~177642 tok |
+| 21:52 | Session end: 13 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 12 reads | ~177642 tok |
+| 21:53 | Session end: 13 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 12 reads | ~177642 tok |
+| 21:54 | Edited DEBUG_LOG.md | modified fix() | ~445 |
+| 21:55 | Session end: 14 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 12 reads | ~178741 tok |
+| 21:59 | Session end: 14 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 12 reads | ~178741 tok |
+| 22:06 | Session end: 14 writes across 6 files (annotate_prompt.py, DEBUG_LOG.md, ingest.py, CHANGELOG.md, run.sh) | 12 reads | ~178741 tok |
+
+## Session: 2026-06-01 22:10
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:12 | Edited backend/app/prompts/extract_prompt.py | 3→8 lines | ~165 |
+| 22:12 | Edited DEBUG_LOG.md | modified fix() | ~281 |
+| 22:13 | Session end: 2 writes across 2 files (extract_prompt.py, DEBUG_LOG.md) | 4 reads | ~67802 tok |
+| 22:29 | Session end: 2 writes across 2 files (extract_prompt.py, DEBUG_LOG.md) | 6 reads | ~92429 tok |
+| 22:33 | Edited CHANGELOG.md | expanded (+25 lines) | ~583 |
+| 22:33 | Session end: 3 writes across 3 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md) | 7 reads | ~138491 tok |
+| 22:44 | Session end: 3 writes across 3 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md) | 7 reads | ~138734 tok |
+| 22:54 | Session end: 3 writes across 3 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md) | 8 reads | ~138734 tok |
+| 22:55 | Session end: 3 writes across 3 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md) | 8 reads | ~138734 tok |
+| 22:56 | Edited .claude/skills/ingestion-test/run.sh | 4→5 lines | ~89 |
+| 22:56 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:56 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:57 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:57 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:57 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:58 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:58 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:58 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:58 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:58 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:59 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:59 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:59 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 22:59 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:00 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:00 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:00 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:00 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:01 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:01 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:01 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:01 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:02 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:02 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:02 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:02 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:03 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:03 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:03 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:03 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:04 | Session end: 4 writes across 4 files (extract_prompt.py, DEBUG_LOG.md, CHANGELOG.md, run.sh) | 9 reads | ~140311 tok |
+| 23:09 | Edited DEBUG_LOG.md | added error handling | ~686 |
+
+## Session: 2026-06-01 23:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-01 00:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-01 00:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-01 00:10
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:31 | Created backend/scripts/normalize_source_labels.py | — | ~1851 |
+| 09:32 | Edited backend/scripts/normalize_source_labels.py | modified _format_module() | ~202 |
+| 09:32 | Session end: 2 writes across 1 files (normalize_source_labels.py) | 5 reads | ~46561 tok |
+| 09:37 | Session end: 2 writes across 1 files (normalize_source_labels.py) | 5 reads | ~46561 tok |
+| 10:09 | Session end: 2 writes across 1 files (normalize_source_labels.py) | 5 reads | ~46561 tok |
+
+## Session: 2026-06-01 10:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-01 13:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:11 | Created ../.claude/skills/ramlog/scripts/ramlog.sh | — | ~305 |
+| 13:11 | Created ../.claude/skills/ramlog/SKILL.md | — | ~499 |
+| 13:12 | Session end: 2 writes across 2 files (ramlog.sh, SKILL.md) | 0 reads | ~861 tok |
+| 13:17 | Edited .claude/settings.json | expanded (+30 lines) | ~572 |
+| 13:17 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+| 13:19 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+| 13:21 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+| 13:22 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+| 13:24 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+| 13:25 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+| 13:26 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+| 13:26 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+| 13:26 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+| 13:27 | Session end: 3 writes across 3 files (ramlog.sh, SKILL.md, settings.json) | 2 reads | ~2315 tok |
+
+## Session: 2026-06-01 13:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:40 | Cleaned DEBUG_LOG.md — removed 19 fully-fixed/crossed-off sections (3214→2466 lines) | DEBUG_LOG.md | success | ~200 |
+| 13:45 | Edited DEBUG_LOG.md | modified fix() | ~1548 |
+| 21:22 | Added DB ingestion validation audit entry to DEBUG_LOG.md | DEBUG_LOG.md | success | ~150 |
+| 21:22 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~59914 tok |
+
+## Session: 2026-06-02 12:07
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

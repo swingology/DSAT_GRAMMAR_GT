@@ -67,6 +67,8 @@ def export_official_question(
     question_number: Optional[int],
     extract_json: dict,
     annotate_json: dict,
+    source_release_year: Optional[int] = None,
+    source_test_name: Optional[str] = None,
     section_code: Optional[str] = None,
     base_dir: str = "./archive",
 ) -> None:
@@ -75,7 +77,13 @@ def export_official_question(
     Filename: {exam_code}_{section_code}_{module_code}.yaml when section_code is
     present, otherwise {exam_code}_{module_code}.yaml.
     """
-    parts = [exam_code]
+    parts = []
+    if source_release_year:
+        parts.append(str(source_release_year))
+    if source_test_name:
+        safe_test_name = "_".join(str(source_test_name).split())
+        parts.append(safe_test_name)
+    parts.append(exam_code)
     if section_code:
         parts.append(section_code)
     parts.append(module_code)
@@ -98,6 +106,10 @@ def export_official_question(
         by_number[key] = record
 
         header: dict = {"exam_code": exam_code}
+        if source_release_year:
+            header["source_release_year"] = source_release_year
+        if source_test_name:
+            header["source_test_name"] = source_test_name
         if section_code:
             header["section_code"] = section_code
         header["module_code"] = module_code

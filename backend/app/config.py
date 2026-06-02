@@ -23,9 +23,10 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
     ollama_max_concurrent: int = 8  # max parallel requests to Ollama (429 at ~20)
+    annotation_max_concurrent: int = 3  # concurrent LLM annotation calls per ingestion job
 
     # Official test data
-    official_test_verbal_dir: str = "../TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL"
+    official_test_verbal_dir: str = "../TESTS/DATA_SRC/2024-2025 Tests Answers"
 
     # Storage
     raw_asset_storage_backend: str = "local"
@@ -56,16 +57,20 @@ class Settings(BaseSettings):
     # Output token budget for Pass 1 extraction. A full 27-question module of
     # JSON exceeds 16K tokens for large modules; too low a cap truncates the
     # JSON mid-array and the parse fails.
-    extraction_max_tokens: int = 32000
+    # For qwen3-vl cloud: cloud API may have lower limits than local models.
+    extraction_max_tokens: int = 16000
     # Background sweeper interval — marks jobs stuck in in-progress statuses
     # longer than pipeline_timeout_s as failed. 0 disables the sweeper.
     job_sweeper_interval_s: int = 300
 
     # OCR / Vision — Option B: Ollama VLM (fused)
     ocr_vision_provider: str = "ollama"
-    ocr_vision_model: str = "qwen3.0-vl"
+    ocr_vision_model: str = "qwen3-vl:235b-instruct-cloud"
     ocr_strategy: str = "glm"  # glm | deepseek | ollama | anthropic | openai | auto
     ocr_fallback: bool = True
+    # PDF OCR is pagewise. This bounds concurrent page OCR calls; values above 3
+    # are clamped in the ingest pipeline to avoid overloading local vision models.
+    ocr_page_concurrency: int = 1
     vision_max_images: int = 10
 
     # OCR — Option A: DeepSeek OCR-2 (optional local server via vLLM Docker or LMDeploy)

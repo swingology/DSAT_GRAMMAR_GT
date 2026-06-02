@@ -1,12 +1,24 @@
 """Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision()."""
-import pytest
+import asyncio
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch, MagicMock
 
+import pytest
+
 from app.parsers.ocr import DeepSeekOCRClient
-from app.llm.base import ImageContent
+from app.llm.base import ImageContent, LLMResponse
 from app.llm.ollama_provider import OllamaProvider
 from app.prompts.extract_prompt import build_vision_extract_prompt
-from app.routers.ingest import _collect_page_images, _build_ocr_chain, _resolve_ocr_strategy
+from app.routers.ingest import (
+    _build_ocr_chain,
+    _collect_page_image_entries,
+    _collect_page_images,
+    _ocr_page_concurrency,
+    _resolve_ocr_strategy,
+    _run_pagewise_deepseek_ocr,
+    _run_pagewise_vision_ocr,
+    _strategy_image_entries,
+)
 
 
 # ── DeepSeekOCRClient ────────────────────────────────────────────────────────
@@ -110,6 +122,20 @@ def test_collect_page_images_returns_image_content():
     assert images[1].mime_type == "image/jpeg"
 
 
+def test_collect_page_image_entries_preserves_page_numbers():
+    pass1_json = {
+        "_page_images": [
+            {"b64": "abc", "mime_type": "image/png", "page_number": 7},
+        ]
+    }
+
+    entries = _collect_page_image_entries(pass1_json)
+
+    assert len(entries) == 1
+    assert entries[0]["page_number"] == 7
+    assert entries[0]["image"].b64 == "abc"
+
+
 def test_collect_page_images_skips_empty_b64():
     pass1_json = {
         "_page_images": [
@@ -125,6 +151,190 @@ def test_collect_page_images_skips_empty_b64():
 def test_collect_page_images_handles_none():
     assert _collect_page_images(None) == []
     assert _collect_page_images({}) == []
+
+
+def test_strategy_image_entries_only_caps_vlm_fused_strategies():
+    settings = SimpleNamespace(vision_max_images=2)
+    entries = [{"image": object(), "page_number": i} for i in range(5)]
+
+    assert _strategy_image_entries("glm", entries, settings) == entries
+    assert _strategy_image_entries("deepseek", entries, settings) == entries
+    assert _strategy_image_entries("ollama", entries, settings) == entries[:2]
+    assert _strategy_image_entries("anthropic", entries, settings) == entries[:2]
+
+
+@pytest.mark.asyncio
+async def test_run_pagewise_vision_ocr_sends_one_image_per_request():
+    provider = MagicMock()
+    provider.complete_vision = AsyncMock(side_effect=[
+        LLMResponse(
+            raw_text="page one text",
+            model="glm",
+            provider="ollama",
+            latency_ms=10,
+            token_usage={"input": 1, "output": 2},
+        ),
+        LLMResponse(
+            raw_text="page two text",
+            model="glm",
+            provider="ollama",
+            latency_ms=20,
+            token_usage={"input": 3, "output": 4},
+        ),
+    ])
+    entries = [
+        {"image": ImageContent(b64="one", mime_type="image/png"), "page_number": 0},
+        {"image": ImageContent(b64="two", mime_type="image/png"), "page_number": 1},
+    ]
+
+    result = await _run_pagewise_vision_ocr(
+        provider,
+        image_entries=entries,
+        system="sys",
+        user="user",
+        model="glm-ocr:latest",
+        max_tokens=4096,
+    )
+
+    assert result["raw_text"] == "--- Page 1 ---\npage one text\n\n--- Page 2 ---\npage two text"
+    assert result["latency_ms"] == 30
+    assert result["token_usage"] == {"input": 4, "output": 6}
+    assert provider.complete_vision.await_count == 2
+    for call in provider.complete_vision.await_args_list:
+        assert len(call.kwargs["images"]) == 1
+
+
+@pytest.mark.asyncio
+async def test_run_pagewise_vision_ocr_caps_async_concurrency():
+    active = 0
+    max_active = 0
+
+    async def complete_vision(**kwargs):
+        nonlocal active, max_active
+        active += 1
+        max_active = max(max_active, active)
+        await asyncio.sleep(0.01)
+        active -= 1
+        return LLMResponse(
+            raw_text=f"text {kwargs['images'][0].b64}",
+            model="glm",
+            provider="ollama",
+            latency_ms=5,
+            token_usage={"input": 1, "output": 1},
+        )
+
+    provider = MagicMock()
+    provider.complete_vision = AsyncMock(side_effect=complete_vision)
+    entries = [
+        {"image": ImageContent(b64=str(i), mime_type="image/png"), "page_number": i}
+        for i in range(6)
+    ]
+
+    result = await _run_pagewise_vision_ocr(
+        provider,
+        image_entries=entries,
+        system="sys",
+        user="user",
+        model="glm-ocr:latest",
+        max_tokens=4096,
+        max_concurrency=99,
+    )
+
+    assert max_active == 3
+    assert provider.complete_vision.await_count == 6
+    assert result["raw_text"].startswith("--- Page 1 ---\ntext 0")
+    assert "--- Page 6 ---\ntext 5" in result["raw_text"]
+
+
+@pytest.mark.asyncio
+async def test_run_pagewise_vision_ocr_retries_blank_pages_sequentially():
+    provider = MagicMock()
+    provider.complete_vision = AsyncMock(side_effect=[
+        LLMResponse(
+            raw_text="",
+            model="glm",
+            provider="ollama",
+            latency_ms=10,
+            token_usage={"input": 1, "output": 1},
+        ),
+        LLMResponse(
+            raw_text="page two text",
+            model="glm",
+            provider="ollama",
+            latency_ms=10,
+            token_usage={"input": 1, "output": 1},
+        ),
+        LLMResponse(
+            raw_text="page one retry text",
+            model="glm",
+            provider="ollama",
+            latency_ms=10,
+            token_usage={"input": 1, "output": 1},
+        ),
+    ])
+    entries = [
+        {"image": ImageContent(b64="one", mime_type="image/png"), "page_number": 0},
+        {"image": ImageContent(b64="two", mime_type="image/png"), "page_number": 1},
+    ]
+
+    result = await _run_pagewise_vision_ocr(
+        provider,
+        image_entries=entries,
+        system="sys",
+        user="user",
+        model="glm-ocr:latest",
+        max_tokens=4096,
+        max_concurrency=2,
+    )
+
+    assert provider.complete_vision.await_count == 3
+    assert result["pages"][0]["attempt"] == 2
+    assert result["raw_text"] == "--- Page 1 ---\npage one retry text\n\n--- Page 2 ---\npage two text"
+
+
+@pytest.mark.asyncio
+async def test_run_pagewise_deepseek_ocr_sends_one_image_per_request():
+    client = MagicMock()
+    client.extract = AsyncMock(side_effect=[
+        LLMResponse(
+            raw_text="page one text",
+            model="deepseek",
+            provider="deepseek_ocr",
+            latency_ms=10,
+            token_usage={"input": 1, "output": 2},
+        ),
+        LLMResponse(
+            raw_text="page two text",
+            model="deepseek",
+            provider="deepseek_ocr",
+            latency_ms=20,
+            token_usage={"input": 3, "output": 4},
+        ),
+    ])
+    entries = [
+        {"image": ImageContent(b64="one", mime_type="image/png"), "page_number": 0},
+        {"image": ImageContent(b64="two", mime_type="image/png"), "page_number": 1},
+    ]
+
+    result = await _run_pagewise_deepseek_ocr(
+        client,
+        image_entries=entries,
+        max_concurrency=3,
+    )
+
+    assert result["raw_text"] == "--- Page 1 ---\npage one text\n\n--- Page 2 ---\npage two text"
+    assert result["latency_ms"] == 30
+    assert result["token_usage"] == {"input": 4, "output": 6}
+    assert client.extract.await_count == 2
+    for call in client.extract.await_args_list:
+        assert len(call.args[0]) == 1
+
+
+def test_ocr_page_concurrency_defaults_and_caps_at_three():
+    assert _ocr_page_concurrency(SimpleNamespace()) == 3
+    assert _ocr_page_concurrency(SimpleNamespace(ocr_page_concurrency=0)) == 1
+    assert _ocr_page_concurrency(SimpleNamespace(ocr_page_concurrency=2)) == 2
+    assert _ocr_page_concurrency(SimpleNamespace(ocr_page_concurrency=8)) == 3
 
 
 def test_resolve_ocr_strategy_explicit():

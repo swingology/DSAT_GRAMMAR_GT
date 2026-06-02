@@ -110,6 +110,84 @@ _READING_SKILL_FAMILIES = set(READING_FOCUS_BY_SKILL_FAMILY.keys())
 _DRY_RUN_RELEASE_POLICY = "dry_run"
 
 
+def _unique_strings(values: list[Any]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for value in values:
+        if not isinstance(value, str):
+            continue
+        value = value.strip()
+        if not value or value == "none" or value in seen:
+            continue
+        seen.add(value)
+        result.append(value)
+    return result
+
+
+def _annotation_highlight_tags(ann_data: dict[str, Any]) -> list[str]:
+    values: list[Any] = [
+        ann_data.get("grammar_role_key"),
+        ann_data.get("grammar_focus_key"),
+        ann_data.get("syntactic_trap_key"),
+    ]
+    secondary_focus = ann_data.get("secondary_grammar_focus_keys")
+    if isinstance(secondary_focus, list):
+        values.extend(secondary_focus)
+    return _unique_strings(values)
+
+
+def _find_span(passage: str, span: str) -> tuple[int, int] | None:
+    span = span.strip()
+    if not span:
+        return None
+
+    start = passage.find(span)
+    if start == -1:
+        start = passage.lower().find(span.lower())
+    if start == -1:
+        return None
+    return start, start + len(span)
+
+
+def _fallback_passage_tokens(
+    question: Question,
+    ann_data: dict[str, Any],
+) -> list[dict[str, Any]] | None:
+    """Build minimal student highlight tokens when Pass 2 did not provide them."""
+    passage_tokens = ann_data.get("passage_tokens")
+    if isinstance(passage_tokens, list) and passage_tokens:
+        return passage_tokens
+
+    passage = getattr(question, "current_passage_text", None)
+    if not passage:
+        return passage_tokens if isinstance(passage_tokens, list) else None
+
+    tags = _annotation_highlight_tags(ann_data)
+    if not tags:
+        return passage_tokens if isinstance(passage_tokens, list) else None
+
+    span_candidates = [
+        getattr(question, "current_underlined_text", None),
+        ann_data.get("evidence_span_text"),
+    ]
+    for candidate in span_candidates:
+        if not isinstance(candidate, str):
+            continue
+        match = _find_span(passage, candidate)
+        if not match:
+            continue
+        start, end = match
+        tokens: list[dict[str, Any]] = []
+        if start > 0:
+            tokens.append({"text": passage[:start], "tags": []})
+        tokens.append({"text": passage[start:end], "tags": tags})
+        if end < len(passage):
+            tokens.append({"text": passage[end:], "tags": []})
+        return tokens
+
+    return [{"text": passage, "tags": tags}]
+
+
 def _build_question_filter_stmt(
     *,
     domain: Optional[str],
@@ -120,6 +198,10 @@ def _build_question_filter_stmt(
     reading_focus_key: Optional[str],
     stimulus_mode_key: Optional[str],
     origin: Optional[str],
+    source_release_year: Optional[int] = None,
+    source_test_name: Optional[str] = None,
+    source_exam_code: Optional[str] = None,
+    sort_by_source: bool = False,
 ):
     """Return a SELECT(Question) statement with all target filters applied.
 
@@ -141,6 +223,13 @@ def _build_question_filter_stmt(
 
     if origin and origin != "mixed":
         stmt = stmt.where(Question.content_origin == origin)
+
+    if source_release_year is not None:
+        stmt = stmt.where(Question.source_release_year == source_release_year)
+    if source_test_name:
+        stmt = stmt.where(Question.source_test_name == source_test_name)
+    if source_exam_code:
+        stmt = stmt.where(Question.source_exam_code == source_exam_code)
 
     if stimulus_mode_key:
         stmt = stmt.where(Question.stimulus_mode_key == stimulus_mode_key)
@@ -184,6 +273,17 @@ def _build_question_filter_stmt(
                 QuestionAnnotation.annotation_jsonb["reading_focus_key"].astext == reading_focus_key
             )
 
+    if sort_by_source:
+        stmt = stmt.order_by(
+            Question.source_release_year.asc().nullslast(),
+            Question.source_test_name.asc().nullslast(),
+            Question.source_exam_code.asc().nullslast(),
+            Question.source_subject_code.asc().nullslast(),
+            Question.source_section_code.asc().nullslast(),
+            Question.source_module_code.asc().nullslast(),
+            Question.source_question_number.asc().nullslast(),
+        )
+
     return stmt
 
 
@@ -197,6 +297,10 @@ async def student_recall(
     reading_focus_key: Optional[str] = Query(None),
     stimulus_mode_key: Optional[str] = Query(None),
     origin: Optional[str] = Query(None, description="'official', 'generated', or 'mixed' (default)"),
+    source_release_year: Optional[int] = Query(None),
+    source_test_name: Optional[str] = Query(None),
+    source_exam_code: Optional[str] = Query(None),
+    sort_by_source: bool = Query(False, description="Sort by release/test/exam/module/question order"),
     exclude_seen: Optional[bool] = Query(None),
     user_token: Optional[str] = Query(None, description="Required for exclude_seen when student scope"),
     limit: int = Query(20, ge=1, le=100),
@@ -220,6 +324,10 @@ async def student_recall(
         reading_focus_key=reading_focus_key,
         stimulus_mode_key=stimulus_mode_key,
         origin=origin,
+        source_release_year=source_release_year,
+        source_test_name=source_test_name,
+        source_exam_code=source_exam_code,
+        sort_by_source=sort_by_source,
     )
 
     # Count total active matching questions before exclude_seen.
@@ -326,14 +434,17 @@ async def student_recall(
             content_origin=q.content_origin,
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
-            passage_tokens=ann_data.get("passage_tokens"),
+            passage_tokens=_fallback_passage_tokens(q, ann_data),
             practice_status=q.practice_status,
             grammar_role_key=ann_data.get("grammar_role_key"),
             grammar_focus_key=ann_data.get("grammar_focus_key"),
+            syntactic_trap_key=ann_data.get("syntactic_trap_key"),
             reading_skill_family_key=ann_data.get("reading_skill_family_key"),
             reading_focus_key=ann_data.get("reading_focus_key"),
             difficulty_overall=ann_data.get("difficulty_overall"),
             stimulus_mode_key=q.stimulus_mode_key,
+            source_release_year=q.source_release_year,
+            source_test_name=q.source_test_name,
             source_exam_code=q.source_exam_code,
             source_subject_code=q.source_subject_code,
             source_section_code=q.source_section_code,
@@ -1026,6 +1137,10 @@ async def _fetch_pool_questions(
         reading_focus_key=target.focus_key if target.domain == "reading" else None,
         stimulus_mode_key=None,
         origin=None,
+        source_release_year=None,
+        source_test_name=None,
+        source_exam_code=None,
+        sort_by_source=False,
     )
 
     resurface_cutoff = datetime.now(timezone.utc) - timedelta(
@@ -1067,14 +1182,17 @@ async def _fetch_pool_questions(
             content_origin=q.content_origin,
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
-            passage_tokens=ann_data.get("passage_tokens"),
+            passage_tokens=_fallback_passage_tokens(q, ann_data),
             practice_status=q.practice_status,
             grammar_role_key=ann_data.get("grammar_role_key"),
             grammar_focus_key=ann_data.get("grammar_focus_key"),
+            syntactic_trap_key=ann_data.get("syntactic_trap_key"),
             reading_skill_family_key=ann_data.get("reading_skill_family_key"),
             reading_focus_key=ann_data.get("reading_focus_key"),
             difficulty_overall=ann_data.get("difficulty_overall"),
             stimulus_mode_key=q.stimulus_mode_key,
+            source_release_year=q.source_release_year,
+            source_test_name=q.source_test_name,
             source_exam_code=q.source_exam_code,
             source_subject_code=q.source_subject_code,
             source_section_code=q.source_section_code,

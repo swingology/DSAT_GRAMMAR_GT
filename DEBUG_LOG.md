@@ -1,5 +1,341 @@
 # Debug Log
 
+## 2026-06-01 — DB Ingestion Validation Audit
+Report created by: Claude Sonnet 4.6
+Git branch: `frontend`
+Git checkpoint: `239ded8` — fix(annotate): clean up lru_cache implementation
+
+### Scope
+
+Full database scan across all ingested official test modules. Checks: source year metadata, file ingested, passage text coverage, stem (question text) presence, and multiple-choice option validity (count, labels, correct answer).
+
+### Multiple Choice Integrity
+
+**CLEAN across all modules.** Every non-failed job has:
+- Exactly 4 options per question (min = max = 4, no exceptions)
+- Exactly 1 correct answer marked per question
+- Zero empty option labels
+
+### Findings
+
+1. **High: `source_year` is NULL for every ingested job.**
+   - `pass1_json.source_metadata.source_year` is not populated by any ingestion path. Only `source_exam_code` (e.g., `01`, `7`, `10`) is stored.
+   - No year tagging (2024-2025 vs 2025-2026) is available anywhere in the DB.
+   - **Fix required:** Populate `source_year` during ingestion from the source directory path or PDF filename convention.
+
+2. **High: Test_3 mod01 — only 9/27 questions have passage text (18 missing).**
+   - Approved job `0e5d66e8`. 18 questions have NULL or blank `current_passage_text`.
+   - Root cause unknown — may indicate grammar-only questions correctly have no passage, or extraction dropped passage for reading questions.
+   - **Action required:** Spot-check 2-3 of the 18 passage-null questions against the source PDF to determine if the gap is expected (grammar) or a data quality issue.
+
+3. **High: Test_9 mod01 — only 13/33 questions have passage text (20 missing).**
+   - Job `9231d84b` (needs_review). 20 questions have no passage text.
+   - **Action required:** Same spot-check as Test_3.
+
+4. **High: Test_4 mod01 — only 1/33 questions ingested.**
+   - Job `35a040fa` (approved). Effectively a stale stub, not a usable module.
+   - **Action required:** Re-ingest after duplicate-checksum fix.
+
+5. **High: 4 failed jobs with 0 questions — need re-ingestion.**
+   - `Test01_ENG_Sec01_Mod02A.pdf` — Phase 2 annotation JSON parse failure
+   - `Test02_ENG_Sec01_Mod02A.pdf` — failed
+   - `Test02_ENG_Sec01_Mod02B.pdf` — failed
+   - `Test_5_digital_sec01_mod02.pdf` — failed
+   - **Action required:** Clear duplicate-checksum blockers and re-ingest once pipeline is stable.
+
+6. **Medium: Test_5 mod01 — only 19/33 questions ingested.**
+   - Job `969d415a` (needs_review). Known extraction failure pattern (LLM skips questions in the early-to-middle range). Duplicate-checksum blocks re-ingestion.
+
+7. **Medium: Test_6 mod01 and mod02 — duplicate jobs, both needs_review, both short.**
+   - mod01: two jobs with 17 questions each (expected 33). mod02: 15 + 17.
+   - **Action required:** Determine which job is canonical, delete the other, re-ingest for full count.
+
+8. **Medium: Passage text gaps across several approved/needs_review modules.**
+   - Test_11 mod01: 25/33, mod02: 24/33
+   - Test_7 mod01: 27/33, mod02: 27/33
+   - Test_8 mod01: 31/33
+   - Test_11 and Test_7 gaps are likely grammar questions (no passage expected). Needs verification.
+
+9. **Medium: Null `source_question_number` on 2-7 questions in 6 modules.**
+   - Affected: Test01_Mod02B (3), Test_3_mod01 (4), Test_7_mod01 (2), Test_9_mod01 (2), Test_10_mod02 (7), Test_11_mod02 (2).
+   - Non-blocking but affects ordering and student-facing question numbering.
+
+10. **Low: Test_1 mod02, Test_8 mod02, Test_10 mod01 — 1-2 questions short.**
+    - All `needs_review`. Minor gap, likely validation-blocked questions.
+
+### Status Table
+
+| File | Status | Q | Expected | Delta | Passage | Stems | Null Q# |
+|------|--------|---|----------|-------|---------|-------|---------|
+| Test01_ENG_Sec01_Mod01.pdf | approved | 27 | 27 | 0 | 27/27 ✅ | 27/27 | 0 |
+| Test01_ENG_Sec01_Mod02A.pdf | **failed** | 0 | — | — | — | — | — |
+| Test01_ENG_Sec01_Mod02B.pdf | approved | 27 | 27 | 0 | 26/27 ⚠️ | 27/27 | 3 |
+| Test02_ENG_Sec01_Mod01.pdf | approved | 27 | 27 | 0 | 27/27 ✅ | 27/27 | 0 |
+| Test02_ENG_Sec01_Mod02A.pdf | **failed** | 0 | — | — | — | — | — |
+| Test02_ENG_Sec01_Mod02B.pdf | **failed** | 0 | — | — | — | — | — |
+| Test_1 mod01 | approved | 33 | 33 | 0 | 32/33 ⚠️ | 33/33 | 0 |
+| Test_1 mod02 | needs_review | 31 | 33 | -2 | 28/31 ⚠️ | 31/31 | 0 |
+| Test_3 mod01 | approved | 27 | 33 | -6 | 9/27 ❌ | 27/27 | 4 |
+| Test_4 mod01 | approved | 1 | 33 | -32 | 1/1 | 1/1 | 0 |
+| Test_5 mod01 | needs_review | 19 | 33 | -14 | 19/19 | 19/19 | 0 |
+| Test_5 mod02 | **failed** | 0 | — | — | — | — | — |
+| Test_6 mod01 | needs_review ⚠️DUP | 17+17 | 33 | -16 | mixed | 34/34 | 0 |
+| Test_6 mod02 | needs_review ⚠️DUP | 15+17 | 33 | -16 | mixed | 32/32 | 0 |
+| Test_7 mod01 | approved | 33 | 33 | 0 | 27/33 ⚠️ | 33/33 | 2 |
+| Test_7 mod02 | approved | 33 | 33 | 0 | 27/33 ⚠️ | 33/33 | 0 |
+| Test_8 mod01 | approved | 33 | 33 | 0 | 31/33 ⚠️ | 33/33 | 0 |
+| Test_8 mod02 | needs_review | 32 | 33 | -1 | 29/32 ⚠️ | 32/32 | 0 |
+| Test_9 mod01 | needs_review | 33 | 33 | 0 | 13/33 ❌ | 33/33 | 2 |
+| Test_9 mod02 | needs_review | 33 | 33 | 0 | 31/33 ⚠️ | 33/33 | 0 |
+| Test_10 mod01 | needs_review | 32 | 33 | -1 | 29/32 ⚠️ | 32/32 | 0 |
+| Test_10 mod02 | needs_review | 33 | 33 | 0 | 33/33 ✅ | 33/33 | 7 |
+| Test_11 mod01 | approved | 33 | 33 | 0 | 25/33 ⚠️ | 33/33 | 0 |
+| Test_11 mod02 | approved | 33 | 33 | 0 | 24/33 ⚠️ | 33/33 | 2 |
+
+### Summary
+
+8/24 non-trivial modules fully healthy (approved + expected Q count). MC structure is perfect everywhere — no option data issues exist. Primary gaps are: `source_year` never populated (all modules), passage text missing on 20–33% of questions in Test_3/Test_9/Test_11/Test_7, 4 failed jobs awaiting re-ingestion, and Test_4/Test_5/Test_6 needing full re-runs.
+
+---
+
+## 2026-06-01 - Ingestion Test Run (Test01_ENG_Sec01_Mod02A)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `frontend`
+Git checkpoint: `239ded8` — fix(annotate): clean up lru_cache implementation
+
+### Findings
+
+1. **High:** Phase 2 annotation failed for question_index 7 (source_question_number 8) — `deepseek-v4-pro:cloud` returned a response that the annotation JSON parser could not parse on attempt 1/3.
+   - Job: `95ec68f2-c3d2-4d8f-9fa8-3b59d9e568ee`
+   - Error: `Annotation JSON parse failed (attempt 1/3) for question_index 7: No valid JSON found in text (provider='ollama', model='deepseek-v4-pro:cloud', input_len=4666, preview='{   "question": {     "source_exam": "PT1", ...')`
+   - `pass2_json` is NULL in the DB — no annotation output was committed. Job status: `failed`. Questions extracted: 27. Questions created: 0. Validation errors by step: none (0).
+   - The log only records attempt 1/3; no further retry/failure entries appear before the server was shut down. The job likely failed after all 3 retries exhausted without the runner catching the terminal status (see finding 3).
+
+2. **Medium:** Phase 1 crop-detector failures on all 26 pages — `glm-ocr:latest` returned plain-text layout descriptions instead of valid JSON for every page. `detect_layout` logged 26 warnings (`No valid JSON found in text`). This is non-blocking (extraction completed with 27 questions), but indicates the crop-detector's JSON-mode prompt is not being honoured by `glm-ocr:latest` for this module.
+   - Representative error: `detect_layout: ollama layout call failed for page 0: No valid JSON found in text (provider='ollama', model='glm-ocr:latest', input_len=251, preview='Question Block: - "1 Mark for Review" ...')`
+   - Pages 23–26 returned `input_len=0` (blank OCR output), suggesting the PDF has 23 question pages plus trailing blank/cover pages.
+
+3. **Medium:** Runner poll loop never breaks on `failed` status — the job status API endpoint returns `{"status": ""}` (empty string) for a `failed` job instead of `"failed"`. The runner's break condition `approved|needs_review|failed` does not match `""`, so the script polls all 120 iterations (30 min cap) after the job has already failed, wasting time and producing no RESULT_JSON until the cap is exhausted.
+   - This is the same blank-status bug observed in prior runs. The runner script reads status via `json.load(sys.stdin).get('status','?')` — returns `''` not `'?'` when the field exists but is empty.
+
+---
+
+## 2026-06-01 — Passage Introduction Missing from Ingestion
+Report created by: Claude Sonnet 4.6
+Git branch: `frontend`
+Git checkpoint: `239ded8` — fix(annotate): clean up lru_cache implementation
+
+### Findings
+
+1. **High:** Passage introduction/attribution sentences omitted from `passage_text` during extraction. DSAT reading passages typically open with a framing sentence (e.g., "The following text is adapted from William Shakespeare's 1609 poem 'Sonnet 27.' The poem is addressed to a close friend as if he were physically present.") that was being dropped — only the passage body was captured.
+   - Affected file: `backend/app/prompts/extract_prompt.py`
+   - **Fixed:** Added explicit rule to `EXTRACT_SYSTEM_PROMPT` instructing the model to prepend any introductory/attribution sentence(s) to `passage_text`. Fix applies to both text-based (`build_extract_prompt`) and vision (`build_vision_extract_prompt`) paths since they share the same prompt constant.
+
+---
+
+## 2026-06-01 — Ingestion Test Run (Test01_ENG_Sec01_Mod01) — Run #3
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `frontend`
+Git checkpoint: `239ded8` — fix(annotate): clean up lru_cache implementation
+
+### Findings
+
+1. **Medium (warning):** One `amendment_proposal` validation warning — `invalid_amendment_proposal_dropped`. The annotation LLM proposed a `RuleAmendment` with `affected_vocab = "grammar_focus_key"`, which is not an ontology constant name. The proposal was dropped; the question was still created and the job reached `approved`.
+   - Validation error counts by step: `amendment_proposal: 1`
+   - Error detail: `1 validation error for RuleAmendment\naffected_vocab\n  Value error, affected_vocab must be an ontology constant name [type=value_error, input_value='grammar_focus_key', input_type=str]`
+   - Severity: `warning` (per error payload) — not a blocking error; job approved.
+   - This run is the first successful completion for this module: job `bd072449-02b7-4337-a71e-1aff5a6cb6f2` reached `approved` with 27 questions extracted and 27 created.
+   - Phase 1 extraction: ~6 min (21:33:42 → 21:39:58). Phase 2 annotation: ~13 min 46s (21:39:58 → 21:53:44). Phase 2 is significantly slower than Phase 1 but completed without hanging.
+   - The "Option labels must be exactly {A, B, C, D}, got ['']" cascade: **not present** — zero option-label errors.
+   - Fix 1 (passage truncation: `_trim_q_data_for_annotation()`) was in effect for this run and is credited with enabling Phase 2 to complete after two prior hang failures.
+
+---
+
+## 2026-06-01 — Bug: Duplicate Checksum Blocks Re-ingestion After Failed Jobs
+Report created by: Claude Sonnet 4.6
+Git branch: `frontend`
+Git checkpoint: `239ded8` — fix(annotate): clean up lru_cache implementation
+
+### Summary
+
+Failed ingestion jobs leave a `question_assets` row behind with the PDF's SHA-256 checksum. The deduplication guard checks the checksum table without filtering by job status, so any subsequent attempt to re-ingest the same PDF is rejected with `"This file has already been ingested (duplicate checksum)."` — even though the previous job failed and created zero questions.
+
+### Root Cause
+
+The deduplication check fires before the pipeline runs, comparing the uploaded file's SHA-256 against existing `question_assets` rows. A `question_assets` row is written at the start of Phase 1 (before extraction). If Phase 2 (annotation) hangs and the job is marked `failed`, the `question_assets` row is **never cleaned up**. The guard has no awareness of job status — it only checks whether the checksum exists.
+
+### Affected Files
+
+- `backend/app/routers/ingest.py` — deduplication check location (search for `duplicate checksum`)
+
+### Required Fix
+
+**Option A (recommended):** Change the deduplication query to only block if the prior job for that checksum reached a terminal success state (`approved` or `needs_review`). A `failed` or `cancelled` job should be treated as if it never ran:
+
+```python
+# Instead of: "does this checksum exist?"
+# Use: "does this checksum exist AND its job succeeded?"
+existing = await db.execute(
+    select(QuestionAsset)
+    .join(QuestionJob, QuestionJob.raw_asset_id == QuestionAsset.id)
+    .where(QuestionAsset.checksum == checksum)
+    .where(QuestionJob.status.in_(["approved", "needs_review"]))
+)
+```
+
+**Option B:** Delete the `question_assets` row (and its job) in the job failure handler so the checksum slot is freed automatically on failure.
+
+Option A is safer — it preserves the asset row for debugging while unblocking re-ingestion. Option B risks losing provenance on repeated failures.
+
+### Severity
+
+**High** — blocks all re-ingestion attempts after any pipeline failure, requiring manual DB cleanup every time. This is a recurring blocker that has affected every test run in this session.
+
+### Workaround (until fixed)
+
+Manually delete the failed job and its asset before re-ingesting:
+```sql
+DELETE FROM question_jobs WHERE id = '<failed_job_id>';
+DELETE FROM question_assets WHERE id = '<asset_id>';
+```
+
+---
+
+## 2026-05-31 — Ingestion Test Run (Test01_ENG_Sec01_Mod01) — Run #2
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `frontend`
+Git checkpoint: `239ded8` — fix(annotate): clean up lru_cache implementation
+
+### Findings
+
+1. **High:** Submission rejected with duplicate-checksum blocker — job was never created. `run.sh` returned `RESULT_JSON:{"error":"no job_id","response":"{\"detail\":\"This file has already been ingested (duplicate checksum).\"}"}`. No job_id was issued; polling and DB collection were skipped.
+   - A prior ingested job for `Test01_ENG_Sec01_Mod01` exists in the database with a matching PDF checksum. The run.sh script has no automatic deduplication-clearing step; the blocker must be manually removed from `question_jobs` (and `question_assets` if applicable) before the next test run can proceed.
+   - The "Option labels must be exactly {A, B, C, D}, got ['']" cascade: **not applicable** — ingestion did not reach Phase 1 extraction.
+   - Validation error counts by step: **N/A** (no job created).
+   - Extracted / created question counts: **N/A** (no job created).
+
+---
+
+## 2026-05-31 — Ingestion Test Run (Test01_ENG_Sec01_Mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `frontend`
+Git checkpoint: `239ded8` — fix(annotate): clean up lru_cache implementation
+
+### Findings
+
+1. **High:** Phase 2 annotation hung and was manually cancelled — job `5df31438-5f1b-41ea-824b-a6270d7ad8c2` failed with `"manually cancelled — annotation hang"`.
+   - Phase 1 extraction succeeded: 27 questions extracted from `Test01_ENG_Sec01_Mod01.pdf` (model: `qwen3-vl:235b-instruct-cloud`, input ~33,654 tokens, duration ~14 min).
+   - Phase 2 annotation entered `annotating` status at 21:21:54, remained active for 7m31s (to 21:29:25) before cancellation. Zero questions created.
+   - Validation error count by step: `cancelled: 1`.
+   - The "Option labels must be exactly {A,B,C,D}, got ['']" cascade error was NOT present — failure mode is annotation hang, not option-label parsing.
+   - Fix 1 (passage truncation: `_trim_q_data_for_annotation()`, caps `passage_text` at 800 chars) was deployed (commit `b904ef3` / `239ded8`) prior to this run, but was insufficient to resolve the hang. Fix 2 (narrow `_reading_context()` extraction window from §3–15 to §3–10) and Fix 3 (unknown-domain → reading-only context) remain unimplemented and are the likely remaining causes.
+   - Two prior failed jobs for this same module (`8ee9f12a`, `4fcd250a`) were present as duplicate-checksum blockers. Both were deleted from `question_jobs` and `question_assets` to clear the way for this test run (no questions were linked to them).
+
+---
+
+## 2026-05-31 — Annotation Phase Hang: Token Size Root Cause + 3 Fixes
+Report created by: Claude Sonnet 4.6
+Git branch: `frontend`
+Git checkpoint: `239ded8` — fix(annotate): clean up lru_cache implementation
+
+### Summary
+
+Identified the root cause of the annotation phase hanging during ingestion: the LLM is given prompts that are too large, causing it to either stall, generate garbage, or never return. Three fixes were identified; Fix 1 was implemented.
+
+### Root Cause: Token Budget Breakdown
+
+Each annotation call sends three blocks to the LLM:
+
+| Block | Grammar domain | Reading domain | Unknown domain |
+|---|---|---|---|
+| `system_static` (rules) | ~9,753 tokens | **~17,083 tokens** | ~20,000+ tokens |
+| `system_dynamic` (routing + keys) | ~600 tokens | ~600 tokens | ~600 tokens |
+| `user` (question JSON w/ full passage) | 500–**8,000+** tokens | 500–**8,000+** tokens | 500–**8,000+** tokens |
+| **Total** | ~11K | **~26K** | **~29K+** |
+
+Reading and unknown-domain questions were sending 25–30K+ tokens per annotation call. Local models (e.g., `qwen3-vl:235b-instruct-cloud`, `deepseek-v4-pro:cloud`) stall or produce incoherent output above their effective context utilization range, causing the `provider.complete_cached()` call in `_annotate_one()` to hang indefinitely. Since `asyncio.gather()` at `ingest.py:2505` has no outer timeout, one stuck annotation task freezes the entire Phase 2 for 30+ minutes until the job sweeper kills the job.
+
+The reading rules context is the largest contributor: `_reading_context()` in `annotate_prompt.py` extracts §3 through §15 of `rules_agent_dsat_reading_v3.md` — **68,333 chars / ~17K tokens**. For unknown-domain questions, `_unknown_context()` prepends grammar Part D on top of that.
+
+The user payload (`q_data`) compounds the problem: `passage_text` for cross-text or data-heavy reading questions can be 3,000–8,000 chars. It is serialized raw via `json.dumps(q_data, indent=2)` with no truncation.
+
+### Three Proposed Fixes
+
+#### Fix 1 — Truncate `passage_text` / `paired_passage_text` in user payload ✅ IMPLEMENTED
+
+**File:** `backend/app/prompts/annotate_prompt.py`
+
+The annotation LLM needs domain signals (stem type, question text, option labels) — not the full passage body. Added `_trim_q_data_for_annotation()` which caps:
+- `passage_text` at 800 chars
+- `paired_passage_text` at 600 chars
+
+Applied in both `build_annotate_prompt_parts()` (cached path) and `build_annotate_prompt()` (legacy path).
+
+**Expected impact:** Reduces user payload from up to 8,000+ tokens down to ~500–800 tokens for reading questions. For a 33-question module, this saves ~200K+ tokens of LLM input across the annotation phase.
+
+**Risk:** Low. The annotation task is classification (stem type, grammar/reading domain, focus keys) — it doesn't require the full passage text. The truncation marker `" …[truncated for annotation]"` makes the trim visible in logs.
+
+---
+
+#### Fix 2 — Narrow the reading rules extraction window in `_reading_context()` ⏳ NOT YET IMPLEMENTED
+
+**File:** `backend/app/prompts/annotate_prompt.py:156`
+
+Current extraction: `## 3. Question Fields` → `## 16. Generation Rules` (sections §3–15, **68,333 chars / ~17K tokens**)
+
+Annotation only needs the classification taxonomy, not generation rules, difficulty calibration details, or the full example banks. Narrowing the end marker to `## 11.` or `## 12.` would reduce reading context to ~8–10K tokens — on par with grammar context.
+
+**Suggested change:**
+```python
+# Before:
+core = _extract_between(text, "## 3. Question Fields", "## 16. Generation Rules")
+# After (target §3–10 only):
+core = _extract_between(text, "## 3. Question Fields", "## 11.")
+```
+
+**Expected impact:** ~7,000–9,000 token reduction per reading-domain annotation call. Eliminates the grammar/reading prompt size asymmetry.
+
+**Risk:** Medium. Need to verify that §11–15 don't contain classification keys or reasoning trap definitions that the LLM uses during annotation. Check reading_v3.md section headings before cutting.
+
+---
+
+#### Fix 3 — For "unknown" domain, stop sending both grammar + reading contexts ⏳ NOT YET IMPLEMENTED
+
+**File:** `backend/app/prompts/annotate_prompt.py:167–170`
+
+`_unknown_context()` concatenates grammar Part D + full reading context (~20K+ tokens). Unknown-domain questions are typically mis-classified reading questions (ambiguous `complete_the_text` stem). Defaulting unknown → reading context only would halve the token budget for these cases.
+
+**Suggested change:**
+```python
+@lru_cache(maxsize=1)
+def _unknown_context() -> str:
+    # Unknown-domain questions are more often reading than grammar.
+    # Send reading context only; grammar Part D adds ~3K tokens of taxonomy
+    # that rarely helps when domain is genuinely ambiguous.
+    return _reading_context()
+```
+
+If the grammar taxonomy is still needed for disambiguation, consider a slim summary (Part D header only, ~500 tokens) instead of the full section.
+
+**Expected impact:** ~3,000–5,000 token reduction for unknown-domain questions. Eliminates the worst-case prompt size scenario.
+
+**Risk:** Low-medium. Unknown-domain questions already fall back to reading context in the annotation rules. The grammar Part D taxonomy is present in `system_dynamic` via the allowed-keys block anyway.
+
+### Verification Plan
+
+After all 3 fixes:
+1. Re-run `ingestion-test` on a reading-heavy module (e.g., Test01_ENG_Sec01_Mod01 or Test_4 sec01 mod01)
+2. Confirm Phase 2 completes in < 5 minutes for 27–33 questions
+3. Confirm annotation quality is unchanged: `grammar_focus_key`, `reading_focus_key`, `stem_type_key` all pass validator
+4. Check DB for any questions with null annotation keys that passed before
+
+### Affected Files
+
+- `backend/app/prompts/annotate_prompt.py` — Fix 1 implemented; Fix 2 and Fix 3 pending
+- `backend/app/routers/ingest.py` — No change yet; Fix 2/3 completion may make additional timeout protection unnecessary
+
+---
+
 ## 2026-05-31 — 2-Phase Ingestion Test: Pipeline Timeout at 30-Minute Mark
 Report created by: Claude Haiku 4.5
 Git branch: `frontend`
@@ -455,94 +791,6 @@ via `qwen3-vl:235b-instruct-cloud`).
 Fixes 1 and 2 unblock the Reading domain filter today with zero reannotation needed.
 Fixes 3–6 are prerequisite for a reliable multi-PT ingestion pipeline.
 
----
-
-## 2026-05-27 - Test Suite Fixes and GAP-010 Matching Delimiter Rule
-Report created by: Claude Sonnet 4.6
-Git branch: `rules_edit`
-Git checkpoint: `7186296` — docs(debug-log): add 2026-05-27 vocab integrity entry, strikethrough resolved findings
-
-### Findings
-
-1. **Medium:** 4 pre-existing test failures found when running full suite on `rules_edit`:
-   - `test_admin_amendment_promote_flow_against_real_filesystem` — fixture created `rules_agent_dsat_reading_v2.md` but `DOC_BY_AFFECTED_DOC["reading"]` was updated to `v3.md`; returned 409 Conflict.
-   - `test_generate_pipeline_flushes_before_wiring_latest_pointers` — asserted `flush_count == 1` but generate pipeline correctly does 2 flushes (after Q+Version, after Annotation).
-   - `test_reannotate_updates_current_explanation_text` — job `SimpleNamespace` missing `id` field; sanitizer call `str(job.id)` raised `AttributeError`.
-   - `test_rules_versions` — asserted `grammar == "v7"` and `reading == "v2"` but `RULES_VERSIONS` was updated to v8/v3.
-   - **Fixed:** Updated all four tests: renamed fixtures to `reading_v3.md`, corrected flush assertion to 2, added `id=uuid.uuid4()` to job fixture, updated version strings. 753 tests pass, 2 skipped.
-
-2. **Medium:** GAP-010 from `missing_rules_v8.md` — Matching Delimiter Rule (comma/dash/paren symmetry) was buried in `appositive_punctuation` sub-pattern 3 only; no cross-key note for `colon_dash_use` and `unnecessary_internal_punctuation`.
-   - **Fixed:** `### Matching Delimiter Rule (Cross-Key Note)` section added immediately before `### \`punctuation_comma\`` in `rules_agent_dsat_grammar_ingestion_generation_v8.md`. Explains symmetry requirement, distractor pattern, and annotator guidance across all three parenthetical-punctuation focus keys.
-
-### Status
-- All 17 gaps from `missing_rules_v8.md` are now **fully resolved**. GAP-001–004, 006–009, 011–017 were addressed in the v8 sub-pattern sprint. GAP-005 fixed 2026-05-27 (absolute_phrase to master.json). GAP-010 fixed this entry (Matching Delimiter cross-key note). `missing_rules_v8.md` is a stale audit document; no further action needed on it.
-
----
-
-## 2026-05-27 - Vocabulary Integrity and Annotation Key Sanitization
-Report created by: Claude Sonnet 4.6
-Git branch: `rules_edit`
-Git checkpoint: `cd2815d` — feat(vocab+pipeline): add absolute_phrase key, annotation sanitizer, logical_predication sub-patterns
-
-### Findings
-
-1. **High:** `absolute_phrase` defined in v8 rules with a Classification block but absent from `master.json` — LLM had no valid path to output it; if it did the validator recorded it as a candidate and the bad key persisted to DB.
-   - **Fixed:** Added `absolute_phrase` to `master.json` (parent: `modifier`), ran `gen_vocab --generate`. Key now in `ontology.py` and propagated to annotate-prompt allowed-keys block.
-
-2. **High:** Invalid controlled-vocabulary keys from LLM annotation were persisted to `annotation_jsonb` in the DB — validator recorded them in `candidates.json` non-blocking but never sanitized the value before writing.
-   - **Fixed:** `backend/app/pipeline/annotation_sanitizer.py` added. `difflib.get_close_matches(cutoff=0.7)` substitutes near-misses; unknowns are nulled. Audit trail stored in `annotation_jsonb._key_corrections`. Wired into `_persist_single_question()` and the reannotation pipeline before every `annotation_jsonb=` DB write.
-
-3. **Medium:** `gen_vocab --check` only verified `ontology.py ↔ master.json` — did not catch rules-doc keys missing from master.json (how `absolute_phrase` slipped through).
-   - **Fixed:** `cmd_check()` in `scripts/gen_vocab.py` now parses inline `grammar_focus_key:` Classification references from the v8 rules doc and diffs against `master.json GRAMMAR_FOCUS_BY_ROLE`. Exits non-zero with DRIFT message if any key is missing.
-
-4. **Medium:** `logical_predication` (Tier A, 6 PT examples) had only a one-line stub — no sub-patterns. All other 43 grammar focus keys had sub-patterns.
-   - **Fixed:** 3 PT-cited sub-patterns drafted (Consequence-Marking Participle — PT1 M2 Q21; Participial Opener Demands Compatible Subject — PT6 M2 Q21 + PT11 M2 Q24; Real Agent Must Be Grammatical Subject — PT11 M2 Q25). All 44 focus keys now covered (136 total sub-patterns).
-
-### Remaining Open
-- ~~`syntactic_trap_key` audit against D.5~~ — D.5 is clean: 13 keys, all present in master.json and ontology.py, no drift. No action needed.
-- ~~**Medium:** `student_failure_mode_key` D.7 drift — 26 keys in ontology.py absent from grammar v8 D.7~~ — **Not a gap.** The 26 are reading/data-analysis failure modes (`evidence_scope_mismatch`, `wrong_row_column_lookup`, `individual_from_aggregate`, `polarity_blindness`, `attribution_swap`, etc.). They are fully documented in `rules_agent_dsat_reading_v3.md`: (1) as a complete generated VOCAB block (`<!-- VOCAB:shared:STUDENT_FAILURE_MODE_KEYS -->`), and (2) with prose descriptions in context within the relevant reading focus-key sections. Grammar v8 D.7 is intentionally grammar-domain-only. No action needed.
-- ~~Candidate-count CI threshold (Step 7 of vocabulary audit task list) still pending~~ — **Fixed 2026-05-27:** `gen_vocab --check` now fails with a DRIFT message if more than 10 non-fixture candidates accumulate in `candidates.json`. Test fixtures (`not_a_real_*`, `bad_*`) are excluded from the count.
-
----
-
-## 2026-05-26 - Rules v8/v3 Pipeline Gap Audit
-Report created by: Claude Sonnet 4.6
-Git branch: `rules_edit`
-Git checkpoint: `a171298` — chore(v8): switch active grammar references from v7 to v8
-
-### Findings
-
-1. ~~**Low:** Stale "reading v2" docstring references in prompt files — code correctly loads v3 but comments mislead future readers~~
-   - ~~`backend/app/prompts/generate_prompt.py:165`~~
-   - ~~`backend/app/prompts/review_prompt.py:21, 120`~~
-   - ~~`backend/app/prompts/annotate_prompt.py:356`~~
-   - **Fixed:** Updated all "Reading v2" labels and docstrings to "Reading v3" across all three prompt files and their test files.
-
-2. ~~**High:** `question_family_key` annotated with wrong values — LLM emits College Board display labels instead of canonical keys~~
-   - ~~`candidates.json` shows `reading_information_and_ideas` (8 occurrences) → should be `information_and_ideas`~~
-   - ~~`candidates.json` shows `standard_english_conventions` (8 occurrences) → should be `conventions_grammar`~~
-   - ~~Canonical set in `master.json`: `conventions_grammar`, `expression_of_ideas`, `craft_and_structure`, `information_and_ideas`~~
-   - **Fixed:** Added `question_family_key`, `grammar_role_key`, and `grammar_focus_key` (by role) to `_build_allowed_keys_block()` in `annotate_prompt.py`, with an explicit note not to use College Board display labels. Also imported `QUESTION_FAMILY_KEYS`, `GRAMMAR_ROLE_KEYS`, `GRAMMAR_FOCUS_BY_ROLE` from `ontology.py`. 23/23 prompt tests passing.
-
-3. ~~**Medium:** ~30 hallucinated grammar taxonomy keys in `candidates.json` from live ingestion jobs~~
-   - ~~`GRAMMAR_ROLE_KEYS` hallucinations: `rhetorical_synth`, `synthesis_from_notes`, `synthesize_notes`, `word_choice`, `precision`, `adjective`, `verb`, `main_verb`, `time_clause_verb`, `subject_pronoun`, `subject_verb_agreement`, `goal_emphasis`, `rhetorical_synthesis`~~
-   - ~~`GRAMMAR_FOCUS_BY_ROLE` hallucinations: `verb_tense`, `colon_usage`, `colon_introducing_explanation`, `subject_aux_inversion_and_punctuation`, `word_choice`, `precision`, `rhetorical_synthesis`, `synthesis_of_information`, `synthesize_information`, `similarity_emphasis`~~
-   - ~~`STEM_TYPE_KEYS` hallucinations: `choose_grammatically_correct_form` (4×), `synthesize_information_from_notes` (4×), `choose_logical_transition`~~
-   - **Fixed:** Rule 6 in both annotate prompt templates updated to require `question_family_key`, `grammar_role_key`, and `grammar_focus_key` verbatim from the allowed-keys block, with an explicit ban on descriptive variants. Stale hallucination entries purged from `candidates.json` (4 test fixtures retained). 42 tests passing.
-
-4. ~~**High:** 17 documented gaps in grammar v8 rules doc — real DSAT patterns the agent cannot correctly annotate or generate~~
-   - ~~GAP-001: `subject_verb_agreement` — inverted sentence order (CRITICAL)~~
-   - ~~GAP-002: `subject_verb_agreement` — indefinite pronoun subjects (CRITICAL)~~
-   - ~~GAP-003: `subject_verb_agreement` — compound `or`/`nor` subjects (CRITICAL)~~
-   - ~~GAP-004: `verb_form` — gerund vs. infinitive idiomatic selection (CRITICAL)~~
-   - ~~GAP-005: Absolute phrases / nominative absolutes (CRITICAL)~~
-   - ~~GAP-006: `subjunctive_mood` sub-patterns not documented (MAJOR)~~
-   - ~~GAP-007: `pronoun_antecedent_agreement` — singular `they` (MAJOR)~~
-   - ~~GAP-008 through GAP-017: various MODERATE/MINOR sub-pattern gaps~~
-   - **Fixed (v8 sub-pattern sprint + 2026-05-27 patches):** All 17 gaps resolved. GAP-001–004, 006–009, 011–017: sub-patterns added in the v8 sprint (§B.3 inverted SVA, indefinite-pronoun SVA, or/nor SVA, gerund/infinitive, subjunctive, singular-they, stacked-relative, today/now tense shift, Meltzer comma rule, restrictive-that, commonly-confused pairs, B.4 distractor rows). GAP-005: `absolute_phrase` added to master.json 2026-05-27 (commit `cd2815d`). GAP-010: Matching Delimiter cross-key note added 2026-05-27 (commit `567c64c`). `logical_predication` stub → 3 PT-cited sub-patterns. All 44 focus keys now have sub-patterns (136 total). `missing_rules_v8.md` is a stale audit document (written before the sprint).
-
----
-
 ## 2026-05-25 - Rules/Ontology Map and master_samples.json Companion
 Report created by: GPT-5 Codex
 Git branch: `rules_edit`
@@ -610,50 +858,6 @@ but it does **not** resolve the unresolved candidate-key queue documented in the
 `2026-05-25 - master.json Vocabulary Audit — Candidate Drift and Completeness
 Gap` entry below. Candidate promotion/rejection and reading v3 activation are
 still separate follow-up tasks.
-
----
-
-## 2026-05-25 - master.json Vocabulary Audit — Candidate Drift and Completeness Gap
-Report created by: Claude Sonnet 4.6
-Git branch: `rules_edit`
-Git checkpoint: `9936288` — refactor: reorganize rules hierarchy and add v8 tooling
-
-### Context
-
-Audit of `vocabulary/master.json` revealed that the controlled vocabulary is incomplete relative to keys the system is actively producing during ingestion. Additionally, the file has no verified link to the student-facing UI or live DB key validation for grammar domain fields.
-
-### Findings
-
-1. ~~**High — 35 unresolved candidate keys in `vocabulary/candidates.json`:**~~
-   - ~~During live ingestion runs, `vocab_candidates.py` records unrecognized keys rather than hard-failing. As of this audit, 35 real candidate keys were queued.~~
-   - **Fixed (commits `02131c3`, `cd2815d`, `89868ad`):** All 35 were LLM hallucinations (College Board display labels, invented keys). Purged from `candidates.json`. Three layers now prevent recurrence: (1) annotate prompt lists all valid keys verbatim with an explicit ban on display-label variants; (2) annotation sanitizer intercepts at ingest time — substitutes near-misses, nulls unknowns, bad keys never reach the DB; (3) `gen_vocab --check` fails if >10 non-fixture candidates accumulate. The threshold check (layer 3) is redundant with the other two and only becomes load-bearing if a future ingestion path bypasses the sanitizer — not a current risk.
-
-2. ~~**Medium — master.json was bootstrapped from ontology.py, not from the rules documents:**~~
-   - ~~Drift between rules files and master.json had not been checked.~~
-   - **Fixed 2026-05-27:** `gen_vocab --check` now cross-verifies inline `grammar_focus_key:` Classification block references in the v8 rules doc against master.json. `absolute_phrase` gap closed. Full rules-doc audit confirmed no remaining drift — D.5/D.7 keys are either in sync or intentionally domain-separated between grammar v8 and reading v3 docs.
-
-3. ~~**Medium — No verified connection between master.json and the student-facing UI:**~~
-   - ~~Unknown whether the student UI reads controlled vocab fields from the DB.~~
-   - **Fixed 2026-05-27:** No separate frontend exists. `student.py` uses `grammar_focus_key`, `grammar_role_key`, and `reading_focus_key` for filtering, study-plan targeting, and miss-tracking. Annotation sanitizer guarantees all DB values are valid before write; invalid keys cannot reach the student API.
-
-4. ~~**Low — master.json does not cover all grammar v8 keys added in the v8.1 patch (2026-05-25):**~~
-   - ~~`absolute_phrase`, `subjunctive_mood` sub-patterns, `singular_they`, etc. not in master.json.~~
-   - **Fixed 2026-05-27:** `absolute_phrase` added to master.json (commit `cd2815d`). `subjunctive_mood` and `singular_they` are not standalone vocab keys — they are sub-patterns documented under `verb_form` and `pronoun_antecedent_agreement` respectively. No new master.json entries needed.
-
-### Task — Rebuild master.json as a fully comprehensive controlled vocabulary
-
-**Priority: High**
-**Status: Complete 2026-05-27**
-
-- [x] **Step 1 — Candidate review**: ~~35 candidates~~ — all real hallucinations were purged in commit `02131c3`. Only 4 test fixtures remain (`not_a_real_*`, `bad_*`). No promotion/rejection actions needed.
-- [x] **Step 2 — Rules-doc audit**: `gen_vocab --check` enforces grammar_focus_key refs. D.5 (`syntactic_trap_key`): 13 keys, fully in sync. D.7 (`student_failure_mode_key`): reading-domain keys live in reading v3 doc as designed. `subjunctive_mood` and `singular_they` are sub-patterns under existing keys, not standalone vocab entries. No gaps remain.
-- [x] **Step 3 — Grammar v8.1 patch keys**: `absolute_phrase` added to master.json + ontology regenerated (commit `cd2815d`). All other v8.1 keys handled as sub-patterns, not new vocab entries.
-- [x] **Step 4 — Student UI key audit**: No separate frontend. `student.py` uses `grammar_focus_key`, `grammar_role_key`, `reading_focus_key` for filtering, study-plan targeting, and miss-tracking. Annotation sanitizer (commit `cd2815d`) blocks invalid keys from reaching the DB, so all values served to students are guaranteed valid.
-- [ ] **Step 5 — DB live key verification**: Requires live DB connection. Defer to next production ops session — query distinct annotation field values and diff against master.json.
-- [x] **Step 6 — Regenerate artefacts**: ontology.py and VOCAB blocks current (`gen_vocab --check` passes).
-- [x] **Step 7 — Drift gate + candidate-count threshold**: `gen_vocab --check` enforces rules↔master.json alignment and fails if >10 non-fixture candidates accumulate (commit `2988501` + current).
-
----
 
 ## 2026-05-23 - Ingestion Test Run (Test_5_digital_sec01_mod01)
 Report created by: Claude (ingestion-test skill subagent)
@@ -872,87 +1076,6 @@ All 9 bugs found in the May 21 Codex audit were remediated. 188 tests passing.
 
 Ingestion pipeline is running. Test 5 (both modules) reached `needs_review` with OCR cross-check warnings (18 `qnum_ocr_crosscheck` mismatches on mod01 — non-blocking). The full 18-PDF batch has not been run yet.
 
----
-
-## 2026-05-21 - Generation Phases 0-10 Code Gap Review
-Report created by: GPT-5 Codex
-Git branch: `generation_build`
-Git checkpoint: `89d3526`
-
-### Scope
-
-Reviewed the live generation Phase 0-10 implementation paths after the
-document-drift review: batch generation, source-example selection, self-study
-generation requests, review-swarm source loading, consensus/auto-release, admin
-approve/reject/regenerate, student retrieval, and Phase 9 analytics.
-
-### Findings
-
-1. **High:** Auto-release allowed-target matching is broken.
-   - `backend/app/review/auto_release.py::_annotation_dict` reads attributes
-     such as `grammar_focus_key` directly from `QuestionAnnotation`, but those
-     values live in `QuestionAnnotation.annotation_jsonb`. Configured allowed
-     targets therefore usually never match.
-
-2. **High:** Auto-release audit rows are only written for successful releases.
-   - `maybe_auto_release` returns early on failed gates and creates
-     `AutoReleaseAuditLog` only after every gate passes. This contradicts the
-     Phase 10 changelog claim that all gate outcomes are recorded.
-
-3. **High:** Self-study generation bypasses the batch request contract and
-   source-example selection.
-   - `_create_self_study_batch` creates minimal request JSON with only
-     focus/difficulty, skips `GenerationBatchRequest` validation, and does not
-     call source-example selection. Resulting jobs can enter the generation
-     prompt without required grammar/reading fields or official examples.
-
-4. **Medium:** `dry_run` release policy is not enforced at release/retrieval.
-   - Admin approval can activate generated questions from `dry_run` batches,
-     and student retrieval only filters `practice_status='active'`; no path
-     excludes active dry-run generated questions.
-
-5. **Medium:** Phase 9 batch analytics and self-study quality cooldown can use
-   stale denormalized counters for admin decisions.
-   - Generation increments `GenerationBatch.accepted_count` for clean pipeline
-     saves, while admin approve/reject changes `Question.practice_status`
-     without changing batch decision counters. Any analytics or quality gate
-     that treats those counters as admin decisions can misreport quality.
-
-6. **Medium:** Auto-selected official source examples do not implement the full
-   locked selection contract.
-   - `_select_source_question_ids_for_batch` lacks last-50 source dedupe,
-     request `stimulus_mode_key` hard filtering, and exam-code diversification.
-
-7. **Medium:** Review swarm reuses generator source examples.
-   - `_load_question_for_review` pulls `source_question_ids` from the original
-     generation request instead of selecting fresh same-target official examples
-     for review calibration.
-
-8. **Low:** Analytics token totals read the wrong JSON keys.
-   - LLM providers store token usage as `{"input": ..., "output": ...}`, while
-     analytics sums `input_tokens` / `output_tokens`, so totals can report zero.
-
-9. **Low:** `copy_risk_failures` overcounts all reject recommendations.
-   - Phase 9 analytics counts every `reject_recommended` consensus as a copy
-     risk failure, including low-realism or low-SAT-fidelity rejects.
-
-### Verification Before Fix
-
-Focused suite still passed despite the findings:
-`uv run pytest tests/test_auto_release.py tests/test_self_study.py tests/test_generate_batches.py tests/test_analytics.py -q`
-returned `121 passed, 1 warning`. The warning was an existing async mock warning
-in `tests/test_generate_batches.py::test_batch_reading_complete_request_creates_batch`.
-
-### Resolution
-
-All nine code findings in this section were remediated on 2026-05-21 and logged
-to `CHANGELOG.md` under "Generation Phases 0-10 Code Gap Remediation."
-
-Verification after fix:
-`uv run pytest tests/test_auto_release.py tests/test_self_study.py tests/test_generate_batches.py tests/test_analytics.py tests/test_backend_regressions.py -q`
-returned `188 passed, 1 warning`. The warning is the same pre-existing async mock
-warning in `tests/test_generate_batches.py::test_batch_reading_complete_request_creates_batch`.
-
 ## 2026-05-21 - Generation Phases 0-10 Changelog/Task Drift Review
 Report created by: GPT-5 Codex
 Git branch: `generation_build`
@@ -1121,23 +1244,6 @@ Git checkpoint: `657570b` — Filter passage line numbers from qnum OCR crossche
 
 4. **No "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.** That regression remains absent.
 
-## 2026-05-19 - Ingestion Test Run (Test_6_digital_sec01_mod01)
-Report created by: Claude (ingestion-test skill subagent)
-Git branch: `main`
-Git checkpoint: `657570b` — Filter passage line numbers from qnum OCR crosscheck
-
-### Findings
-
-1. ~~**High:** Non-contiguous question numbers with gaps at [2, 3, 5] (question_number_validation step).~~
-   - ~~Job `21993eaf-0cc6-43c4-94b1-789d66dd267f` (Test_6_digital_sec01_mod01). Status: `needs_review`. Extracted 17, created 17. Found question numbers [1, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 26, 31] — gaps at 2, 3, 5. LLM is skipping early questions (2, 3, 5) and extracting non-sequential tail numbers (19, 26, 31), matching the same systematic extraction pattern seen on Test_5.~~
-   - **Fixed (e3be02b):** Same `_normalize_extracted_questions` silent-dedupe bug. See Test_6 mod02 finding 2 above. Confirmed via DB inspection that `pass1_json.questions` always contained 33 raw entries; the normalize layer was dropping ~half.
-
-2. ~~**Medium:** 16 question-number / OCR crosscheck mismatches (qnum_ocr_crosscheck step).~~
-   - ~~Same job. Representative: question_index 16 LLM=31 but OCR=17. The crosscheck flags the non-contiguous LLM numbering vs the sequential OCR-detected numbers, a symptom of the same underlying extraction issue as finding 1.~~
-   - **Fixed (e3be02b, downstream symptom):** Resolved by fixing finding 1.
-
-3. **No "Option labels must be exactly {A, B, C, D}, got ['']" cascade appeared.** No blocking `validating`-step errors; job reached `needs_review` with all 17 extracted questions persisted.
-
 ## 2026-05-19 - Ingestion Test Run (Test_5)
 Report created by: Claude (ingestion-test skill subagent)
 Git branch: `main`
@@ -1193,19 +1299,6 @@ Git checkpoint: `3a3eb72` — test 5 sec01 mod 01 successful - only chart bug le
 
 2. **Low:** Duplicate checksum prevented re-ingestion — test runner does not handle already-ingested PDFs gracefully.
    - The run.sh script exited with `RESULT_JSON:{"error":"no job_id","response":"{\"detail\":\"This file has already been ingested (duplicate checksum).\"}"}` because the PDF was already ingested in a prior session. The script does not have a code path for retrieving the existing job_id when a duplicate is detected. The existing job data was collected via direct DB queries instead.
-
-## 2026-05-18 - VLM-Fused Extraction Drops All Passage Text
-Report created by: Claude Sonnet 4.6
-Git branch: `main`
-Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
-
-### Findings
-
-1. **Critical:** ~~qwen3-vl VLM-fused extraction drops ALL passage text — 0/33 questions have `current_passage_text`.~~
-   - Job `edb9c0a8-3cc1-43d5-b08a-b96ede1b2c22` (Test 5 sec01 mod01). The OCR strategy was `ollama` (qwen3-vl:235b-instruct-cloud), which uses the VLM-fused path: the vision model processes page images directly and its output IS the extraction result (Pass 1 is skipped entirely via `raw_text = "_vision_fused_"` sentinel at `ingest.py:1498`). The model successfully extracted question stems, options, and answer keys, but **returned `passage_text: null` at the top level and omitted `passage_text` from every question dict**. For most questions, the VLM also dumped passage content directly into `question_text` (e.g., Q6's `question_text` starts with "The following text is adapted from Jean Webster's 1912 novel Daddy-Long-Legs..."). For Q1, the passage was dropped entirely (only the 65-char stem survived).
-   - The pymupdf raw_text (32866 chars) in `pass1_json.raw_text` **does contain all passage content** — e.g., Q1's passage about "The King's Coin" starts at char offset 539.
-   - Root cause: `build_vision_extract_prompt()` sends only page images to the VLM with no raw_text context. The prompt instructs the model to output `passage_text` per the JSON schema, but qwen3-vl ignores this field systematically and embeds passage content in `question_text` instead.
-   - **Fixed:** Added two post-extraction helpers in `ingest.py`: (1) `_split_passage_from_question()` detects passage content in `question_text` using stem-opener patterns (e.g., "Which choice", "As used in the text", "Which quotation") at sentence boundaries (period, blank `_______`, or newline) and splits it into `passage_text` / `question_text`. (2) `_recover_passage_from_raw_text()` uses pymupdf `raw_text` to recover passages the VLM completely dropped (like Q1) — it finds the question stem in the raw text, looks backwards for the question number marker, and extracts the passage between them. Both helpers run inside `_normalize_extracted_questions()` after the shared_passage propagation step. Result: 33/33 questions now have properly separated passage_text and question_text.
 
 ## 2026-05-18 - Ingestion Test Run (Test_5_digital_sec01_mod01) [attempt 3]
 Report created by: Claude (ingestion-test skill subagent)
@@ -1434,192 +1527,6 @@ tests/test_pipeline.py tests/test_backend_regressions.py tests/test_rule_doc_pat
       `test_empty_question_records_do_not_emit_stub_files`, and
       `test_amendment_candidates_captures_legacy_top_level_proposal`.
 
-## 2026-05-18 - Phase 6 Consistency Scanner Review
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
-
-### Findings
-
-1. ~~**Medium:** `_check_reading_shape_rules` only checks `skill_family_key`, not `reading_skill_family_key`.~~
-   - `check_vocab_consistency.py:231-232` — reads `payload.get("skill_family_key")` for
-     Cross-Text and quantitative shape rules, but `FIELD_TO_VOCAB` also maps
-     `reading_skill_family_key` to the same vocabulary. Records using
-     `reading_skill_family_key` instead of `skill_family_key` will skip both
-     `cross_text_missing_prose_paired` and `quantitative_missing_graphic_data` checks.
-   - **Fixed:** Shape checks now accept `skill_family_key` and
-     `reading_skill_family_key`; fixture coverage verifies both Cross-Text and
-     quantitative issues are reported through the alias.
-
-2. ~~**Low:** `FIELD_TO_VOCAB` is duplicated in 3 places (scanner, amendments, vocab_candidates).~~
-   - Scanner has 19 entries, amendments has 13, vocab_candidates has 13. The scanner
-     legitimately has more (target-prefixed variants, `distractor_distance`), but the
-     shared 13 entries must be kept in sync manually. A new field added to one but not
-     the others will silently be missed.
-   - **Fixed:** Added shared `app.models.vocab_fields` mappings. Amendment
-     capture and candidate capture now use `BASE_FIELD_TO_VOCAB`; the scanner
-     uses `SCANNER_FIELD_TO_VOCAB` for base plus scanner-only fields.
-
-3. ~~**Low:** `collect_db_records` loads all rows with no limit or chunking.~~
-   - `select(QuestionJob)`, `select(QuestionAnnotation)`, `select(QuestionOption)` with
-     no `limit()` or batching. Acceptable for a CLI tool on small datasets but will OOM
-     on large production databases.
-   - **Fixed:** DB collection now uses async streaming with `yield_per`
-     execution options for jobs, annotations, and options.
-
-4. ~~**Low:** `_check_domain_rules` only flags grammar keys on reading questions, not the reverse.~~
-   - Doesn't check for `skill_family_key` or `reading_focus_key` on grammar-domain questions.
-   - **Fixed:** Domain checks now also flag grammar-domain records that carry
-     reading skill/focus keys.
-
-5. ~~**Low:** `--no-fail` exits 0 on all issues regardless of severity.~~
-   - `check_vocab_consistency.py:402` — treats blocking errors and review warnings
-     equally. A CI pipeline using `--no-fail` will never catch any issue.
-   - **Fixed:** `--no-fail` now exits 0 only for non-blocking findings; blocking
-     issues still return non-zero. Added `exit_code_for_report` coverage.
-
-6. ~~**Low:** `PARENT_FIELD_BY_CHILD_FIELD` is hardcoded; new hierarchical vocabularies
-     added to `master.json` won't be scanned for parent mismatches.
-   - `scripts/check_vocab_consistency.py:46-51`~~
-   - **Fixed:** Parent-child checks now derive hierarchical vocabulary
-     relationships from `master.json` parent-set metadata, with alias fields for
-     known parent vocabularies. Added dynamic hierarchical fixture coverage.
-
-7. ~~**Low:** No DB integration test for `collect_db_records` or `run_scan --all/--db`.~~
-   - All 4 tests use in-memory fixtures via `scan_records`/`scan_option_rows`. The async
-     DB path and `run_scan` flow are untested.
-   - **Fixed:** Added async-session fixture coverage for `collect_db_records`
-     using streamed fake rows for jobs, annotations, and options.
-
-## 2026-05-18 - Phase 5 Dev CLI Review
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
-
-### Findings
-
-1. ~~**Low:** `gen_vocab.py --promote-from-amendment` hardcodes `repo_root=REPO_ROOT`.~~
-   - `gen_vocab.py:484` — unlike `amendments.py` which has `--repo-root`, the
-     promote-from-amendment path has no CLI flag for custom repo root. Tests
-     monkeypatch `gen_vocab.REPO_ROOT` instead. Both default to the same root,
-     so this only affects non-standard layouts.
-   - **Fixed:** Added `--repo-root` to `scripts/gen_vocab.py` and routed
-     `--promote-from-amendment` through the supplied repository root.
-
-2. ~~**Low:** CLI test exercises 4 transitions on the same amendment sequentially,
-   masking the Phase 4 status-guard gap.
-   - `test_amendments_cli.py:119-138` — does `request-more-evidence` → `approve` →
-     `reject` on the same amendment. Each succeeds because there's no status
-     transition validation, reinforcing that the gap exists but hiding it behind
-     a passing test.
-   - `tests/test_amendments_cli.py`~~
-   - **Fixed:** Split the CLI transition coverage into independent tests for
-     list/show, request-more-evidence, approve, and reject so each command runs
-     from an appropriate starting state.
-
-3. ~~**Low:** `gen_vocab.py --promote-from-amendment` gives no explicit regeneration
-     confirmation output.
-   - `gen_vocab.py:492-495` — prints `"promoted amendment ..."` but doesn't confirm
-     that `ontology.py` and VOCAB blocks were regenerated. `amendment_review.promote_amendment`
-     handles regeneration internally; the user just sees the amendment status.
-   - `scripts/gen_vocab.py`~~
-   - **Fixed:** Successful `--promote-from-amendment` now prints an explicit
-     regeneration confirmation naming the `master.json` source.
-
-4. **Info:** All Phase 5 checklist items are complete. CLI (`scripts/amendments.py`)
-     implements all 6 subcommands, shares logic with the admin API through
-     `amendment_review`, `gen_vocab.py --promote-from-amendment` is gated behind
-     the approval workflow, and `--promote` is blocked without
-     `--unsafe-direct-promote`. 5 CLI tests pass.
-
-## 2026-05-18 - Phase 4 Admin Review API Review
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
-
-### Findings
-
-1. ~~**Medium:** `approve_amendment` has no status transition guard.~~
-   - `amendment_review.py:67-87` — does not check `amendment.status` before approving. Allows double-approve, approve-after-reject, and approve-after-promote, silently overwriting the status and `admin_decision`. Only `promote_amendment` has a status guard (`amendment.status != APPROVED`).
-   - **Fixed:** `approve_amendment` now only accepts `pending` and
-     `more_evidence_requested` amendments. Invalid transitions return a
-     validation failure instead of overwriting status/admin metadata.
-
-2. ~~**Medium:** `reject_amendment` has no status transition guard.~~
-   - `amendment_review.py:90-108` — allows rejecting an already-promoted amendment. The file moves to `rejected/` but the key remains active in `master.json`, creating inconsistency between file state and vocabulary state.
-   - **Fixed:** `reject_amendment` now blocks `promoted` amendments and only
-     allows rejection from pre-promotion review states.
-
-3. ~~**Medium:** `_restore_files` rollback on promotion failure is untested.~~
-   - `amendment_review.py:190-192` — the try/except with `_restore_files(backups)` is the critical safety mechanism if patching fails after `master.json` has been mutated. No test exercises this path; the only promotion test mocks regeneration so it never fails mid-operation.
-   - **Fixed:** Added a promotion regression that forces regeneration failure
-     after `master.json` mutation and verifies both `master.json` and the rule
-     doc body are restored.
-
-4. ~~**Low:** `request_more_evidence` has no status transition guard.~~
-   - `amendment_review.py:111-126` — can be called on already-approved or already-promoted amendments with no semantic validation.
-   - **Fixed:** `request_more_evidence` now only accepts `pending`
-     amendments.
-
-5. ~~**Low:** No business-logic test for `reject_amendment`.~~
-   - Only a mocked router test exists (`test_admin_router.py:121`). No test in `test_amendment_review.py` verifies that the file actually moves to `rejected/` and the status updates.
-   - **Fixed:** Added service-level tests proving rejection moves the file,
-     updates status, and blocks promoted amendments.
-
-6. ~~**Low:** No business-logic test for `request_more_evidence`.~~
-   - Same as finding 5 — only a mocked router test.
-   - **Fixed:** Added service-level tests proving pending amendments can request
-     more evidence and approved amendments cannot.
-
-7. ~~**Low:** `_amendment_or_404` returns HTTP 409 for all non-not-found errors.~~
-   - `admin.py:61` — schema validation failures, already-active-key, and patch failures all return 409 (Conflict). Some are more naturally 422 or 400.
-   - **Fixed:** `AmendmentOperationResult` now carries an `error_code`, and the
-     router maps `not_found` to 404, `validation` to 422, and true conflicts to
-     409.
-
-8. ~~**Low:** `promote_amendment` doesn't verify amendment file directory.~~
-   - Uses `_find_amendment_path` which searches all directories. A manually placed `approved`-status file in `rejected/` would pass the status check. Unlikely edge case.
-   - **Fixed:** Promotion now requires the approved amendment file to still be
-     in the pending review directory before promotion.
-
-9. ~~**Low:** Dual-read pattern in `promote_amendment` is fragile.~~
-   - `amendment_review.py:162` calls `apply_rule_doc_patch(loaded.path, ...)` which re-reads the amendment file. The file still has `status=approved` at that point. Works correctly now but the implicit ordering dependency could confuse future maintainers.
-   - **Fixed:** Added `apply_loaded_rule_doc_patch` and changed promotion to pass
-     the already-loaded amendment object into the patcher, removing the implicit
-     re-read dependency.
-
-## 2026-05-18 - Phase 3 Rule-Doc Patch Engine Review
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `00a9307` — Add master vocabulary file as single source of truth + review queue
-
-### Findings
-
-1. ~~**Low:** `_inside_generated_vocab_block` off-by-one edge case.~~
-   - `rule_doc_patcher.py:174-182` — `rfind("<!-- VOCAB:", 0, index + 1)` and the `block_end + len(" END -->")` comparison can include text after the `END -->` marker on the same line. In practice `END -->` is line-terminal so this rarely triggers, but the bounds check is imprecise.
-   - **Fixed:** Generated VOCAB block detection now parses matching
-     `<!-- VOCAB:... START -->` / `<!-- VOCAB:... END -->` markers and treats
-     only the exact generated block bounds as protected. Added a regression
-     proving an editable anchor immediately after an END marker is accepted.
-
-2. ~~**Low:** `apply_rule_doc_patch` uses bare `assert` for `result.doc_path is not None`.~~
-   - `rule_doc_patcher.py:62` — assertions are stripped with `-O`, so if an unreachable code path produced `ok=True` with `doc_path=None`, it would crash in production with no useful message. Should be an explicit `if result.doc_path is None: raise ValueError(...)`.
-   - **Fixed:** Replaced the bare assert with an explicit guard that returns a
-     failed `RuleDocPatchResult`, marks the amendment `needs_manual_patch`, and
-     records conflict details.
-
-3. ~~**Low:** No test for ambiguous `before` anchor (count > 1).~~
-   - `_validate_body_patch_target` returns an "ambiguous" error when `text.count(patch.before) > 1`, but no test covers this case. The code is correct but untested.
-   - **Fixed:** Added `test_rule_doc_patch_rejects_ambiguous_before_anchor`.
-
-4. ~~**Medium:** `apply_rule_doc_patch` regenerates appendix blocks from `master.json` *without* first adding the new key to it.~~
-   - `rule_doc_patcher.py:63-67` — `regenerate_vocab_appendices()` runs `gen_vocab.py --generate`, which emits only active keys from master.json. If the approved key hasn't been promoted into master.json yet (that's Phase 4's job), the regenerated appendix blocks will omit the new key, making the patch incomplete until a separate promotion step adds it. The ordering constraint (master.json update before body patch + regeneration) isn't documented or enforced.
-   - **Fixed:** Appendix regeneration is now opt-in and guarded. Calling
-     `apply_rule_doc_patch(..., regenerate_appendix=True)` before the amendment
-     value is active in `vocabulary/master.json` fails before writing the rule
-     document, moves the amendment to `needs_manual_patch`, and skips
-     regeneration. Phase 4 can safely opt in after master promotion.
-
 ## 2026-05-18 - Phase 2 Amendment Capture Review
 Report created by: Claude Sonnet 4.6
 Git branch: `main`
@@ -1823,123 +1730,6 @@ labels must be exactly {A, B, C, D}, got ['']" cascade did NOT appear.
    Consistent off-by-one offset module-wide; non-blocking — job reached
    approved and persisted all 33 questions.
 
-## 2026-05-17 - Stale Test After Verbal Cap Correction
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `4ec08a4` — test: add concurrent annotation tests and fix mock settings
-
-### Findings
-
-1. **Low:** `test_validate_qnums_out_of_range` failed — not an ingestion regression.
-   - Commit `bb1c597` changed the verbal range in `_DSAT_QUESTION_RANGES`
-     (ingest.py:197-198) from `(1, 27)` to `(1, 33)` but did not update the test.
-   - Test data `[25, 26, 28]` (comment `# 28 > 27 for verbal`) is now fully in
-     range, so `_validate_question_numbers` emits no `out_of_range` warning.
-   - **Fixed:** updated test data to `[32, 33, 35]` (`35 > 33 cap`) in
-     test_backend_regressions.py:1104; still triggers `non_contiguous` too.
-
-## 2026-05-17 - Reading Ontology vs Rules-Doc Desync (Test 4 ingest)
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `bb1c597` — feat(ingest): correct verbal question cap and add ingestion test tooling
-
-**Context:** Test 4 sec01/mod01 ingest (job `c9aeeb9d`) reached `approved` with 31/33
-questions persisted. Two questions (q6, q7) were blocked at the `validating` step:
-`reading_focus_key 'structural_pattern' is not allowed for skill_family_key
-'text_structure_and_purpose'`. Investigation traced this to a controlled-vocabulary
-desync between the LLM-facing rules doc and the code ontology.
-
-### Findings
-
-1. ~~**High: `reading_focus_key` controlled vocabulary has diverged between
-   `rules_agent_dsat_reading_v2.md` and `backend/app/models/ontology.py`.**
-   - The Pass 2 annotate prompt injects the full reading rules doc *and* a
-     code-derived allowed-keys block — these now contradict each other.
-   - The validator checks the code ontology (`READING_FOCUS_BY_SKILL_FAMILY`);
-     the LLM trusts the richer, repeated rules-doc descriptions. Any question
-     whose focus the model names per the rules doc fails validation.
-   - Full audit of all 7 reading skill families — 4 match, 3 drift:
-     - `text_structure_and_purpose`: rules says `structural_pattern`, code says
-       `text_structure`; code also has `rhetorical_shift`, rules §7.6 does not.
-       → directly blocked Test 4 q6, q7.
-     - `words_in_context`: rules §7.5 adds `figurative_language_meaning`; code
-       ontology lacks it.
-     - `cross_text_connections`: near-total divergence — only `text2_response_to_text1`
-       is shared. Rules §7.7 has 6 keys absent from code; code has 3 keys absent
-       from rules. Every cross-text question is a latent validation failure.
-   - Likely the same root cause behind the earlier "unknown enum key" symptoms
-     (bug-106), not generic model sloppiness.~~
-   - **Fixed (2026-05-18):** Reconciled `ontology.py` to the rules doc as the
-     canonical source — the rules doc is internally self-consistent and is
-     referenced by both the annotate and generate prompts (tables, checklists),
-     so it is cheaper and safer to make the ontology follow it than vice versa.
-     `READING_FOCUS_BY_SKILL_FAMILY` updated: `text_structure_and_purpose` →
-     `(overall_purpose, sentence_function, structural_pattern, author_stance)`;
-     `words_in_context` gains `figurative_language_meaning`;
-     `cross_text_connections` → the full rules §7.7 set (`text2_response_to_text1,
-     both_texts_agree, texts_disagree, text2_qualifies_text1,
-     text2_contradicts_text1, methodological_critique, expectation_violation`).
-     All 38 reading focus keys now appear verbatim in the rules doc. Verified the
-     5 dropped keys (`text_structure`, `rhetorical_shift`, `agreement_across_texts`,
-     `difference_across_texts`, `shared_topic_different_conclusion`) have no DB
-     rows in `question_annotations` and no code references, so no migration is
-     needed. The allowed-keys block in `annotate_prompt.py` is built from this
-     same ontology, so prompt and validator are now consistent. Unblocks Test 4
-     q6/q7.
-
-## 2026-05-16 - Full Ingestion Run Error Tracking (18 PDFs)
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `cde9480` — fix(pipeline): remediate in-flight gaps and log 17 open gap inventory entries
-
-**Context:** Ran all 18 official verbal test PDFs (Tests 1, 4–11, sec01/mod01 + sec01/mod02) through `/ingest/official/pdf` with `ocr_strategy=auto`. DB crashed mid-run before completion. 4 jobs reached terminal states before crash.
-
-### Findings
-
-1. ~~**High: Empty option labels on all questions after annotation merge.**
-   - Extraction (Pass 1) produces correct option labels (`label: 'A'`, `label: 'B'`, etc.)
-   - After annotation (Pass 2), the merged dict `{**q_data, **annotate_json}` replaces the `options` key with the annotation output, which has empty labels
-   - Validation then fails: `Option labels must be exactly {A, B, C, D}, got ['']`
-   - Affects ALL questions in every job that reaches the validation step
-   - **Not yet fixed** — annotation prompt or merge logic needs to preserve option labels~~
-   - **Fixed:** Added `_merge_for_validation()` + `_EXTRACTION_OWNED_KEYS` to `ingest.py`. Extraction owns the structural keys (`options`, `question_text`, `passage_text`, `correct_option_label`, etc.); on any merge collision extraction wins, so the annotation's per-option *analysis* block (keyed `option_label`, blank `label`) can no longer blank the A/B/C/D labels. Applied at both merge sites (ingest pipeline + generate pipeline).
-
-2. ~~**High: Question number out-of-range after extraction.**
-   - LLM assigns question numbers 28–33 for modules that only have 27 questions (verbal/mod01)
-   - The `_validate_question_numbers` check correctly flags these as `out_of_range`
-   - OCR crosscheck also shows mismatches (LLM says Q1, OCR says Q10; LLM says Q18, OCR says Q50)
-   - The LLM is hallucinating question numbers that don't exist in the PDF
-   - **Not yet fixed** — extraction prompt may need stronger constraints on question numbering~~
-   - **Fixed:** Added an explicit QUESTION NUMBERING rule block to `EXTRACT_SYSTEM_PROMPT` — `source_question_number` must be the literal printed number (copy, never compute/guess), capped at the module maximum (27 verbal / 22 math), unique and contiguous, `null` when no number is printed, and never derived from output array position.
-
-3. ~~**High: JSON parse failure on large inputs (39K chars).**
-   - `Test_10_digital_sec01_mod02.pdf` (39836 input chars) produced valid-looking JSON that `extract_json_from_text` couldn't parse
-   - Error: `No valid JSON found in text (provider='ollama', model='qwen3-vl:235b-instruct-cloud', input_len=39836)`
-   - Preview shows correct JSON structure (`{ "passage_text": null, "questions": [...]`) suggesting truncated output or formatting issue
-   - **Not yet fixed** — need to check if max_tokens limit is causing truncation or if the JSON has nested issues~~
-   - **Fixed:** Confirmed truncation — the 16000-token extraction `max_tokens` cap couldn't fit a full large module's JSON. Added `extraction_max_tokens` setting (default 32000); both Pass 1 `complete()` calls now read `getattr(settings, "extraction_max_tokens", 32000)`.
-
-4. ~~**Medium: Unknown annotation keys from LLM.**
-   - `stem_type_key` values: `'analyze_structure'`, `'most_logically_completes'`, `'synthesize_information'`, `'emphasize_duration_purpose'`, `'highlight_difference'`
-   - `stimulus_mode_key` values: `'notes_to_summary'`
-   - `reading_focus_key` mismatch: `'structural_pattern'` not allowed for `skill_family_key 'text_structure_and_purpose'`
-   - These are valid semantic descriptions but not in the validator's allowed enum sets
-   - **Not yet fixed** — validator enums need updating or the annotation prompt needs to restrict output~~
-   - **Fixed:** These were hallucinated synonyms, not new concepts — kept the controlled vocabulary intact and restricted the prompt instead. `annotate_prompt.py` now builds an `ALLOWED KEY VALUES` block from the ontology (`STIMULUS_MODE_KEYS`, `STEM_TYPE_KEYS`, `READING_FOCUS_BY_SKILL_FAMILY`) and injects it into `_SYSTEM_BASE` as rule 6, instructing the LLM to choose verbatim from the list.
-
-5. ~~**Medium: `.env` file has stale `OCR_VISION_MODEL`.**
-   - `.env` sets `OCR_VISION_MODEL=qwen2.5vl:7b` but `config.py` default is `qwen3.0-vl`
-   - The `.env` value overrides the default, so fused VLM fallback uses the old model
-   - **Not yet fixed** — `.env` needs updating to `qwen3.0-vl`~~
-   - **Fixed:** `backend/.env` and `backend/.env.example` updated to `OCR_VISION_MODEL=qwen3.0-vl`; `tests/test_config.py` default-value assertion updated to match.
-
-6. ~~**Low: DB connection saturation during concurrent ingestion.**
-   - With 18 concurrent jobs and `max_concurrent_jobs=4`, the connection pool was exhausted
-   - Direct Python/psql queries failed with `ConnectionRefusedError`
-   - Eventually Docker/PostgreSQL container died entirely
-   - **Not yet fixed** — connection pool sizing or job concurrency needs tuning~~
-   - **Fixed:** `max_concurrent_jobs` raised 4→8; DB pool made configurable via `db_pool_size` (15) and `db_max_overflow` (10) — 25 connections total, comfortably covering 8 concurrent jobs plus request handlers and staying well under PG's default `max_connections=100`. `database.py` engine now reads these settings instead of hardcoded `pool_size=5`.
-
 ## 2026-05-16 - Open Gap Inventory (All Audits)
 Report created by: Claude Sonnet 4.6
 Git branch: `main`
@@ -1976,72 +1766,6 @@ Additional items resolved in this session (2026-05-16):
     `_MockSession` returns `None` for all `.get()` and empty results for all `.execute()`. Wrong JOINs, missing WHERE clauses, and bad column references all pass silently.
     - `backend/tests/conftest.py`
     - Cross-reference: 2026-05-10 Backend Gap Audit #25
-
----
-
-## 2026-05-16 - Live Ingestion Run Gaps
-Report created by: Claude Opus 4.7
-Git branch: `main`
-Git checkpoint: `4c43353` — fix(pipeline): remediate four open audit findings — retry, empty filter, passage grouping, junction table
-
-### Findings
-
-1. ~~**Critical: `httpx.TimeoutException` produces empty error message in `validation_errors_jsonb`.**
-   Live run of `Test_1_digital_sec01_mod01.pdf` (30,257 chars raw text) against `qwen3-vl:235b-instruct-cloud` via Ollama timed out after 120s on the extraction call. The `@with_retry` decorator retried 3 times, all timed out. After the final retry, the `TimeoutException` propagates to the `except Exception as _exc` block at line 1477, which calls `error_payload("extracting", _last_p1_err)`. But `str(httpx.TimeoutException)` is empty or near-empty, resulting in `{"step": "extracting", "error": ""}` — no useful diagnostic info (no timeout duration, no model name, no input length).
-   - `backend/app/routers/ingest.py:1477-1483`, `backend/app/llm/errors.py:72`, `backend/app/llm/ollama_provider.py:28`~~
-   - **Fixed:** Added `_exception_message()` helper to `errors.py`. When `str(exc)` is empty it falls back to `"{ExceptionType} (no message)"`. `error_payload` now also always emits an `error_type` field for diagnostics.
-
-2. ~~**High: Ollama `complete()` timeout is 120s — insufficient for large extraction payloads.**
-   The `OllamaProvider.__init__` sets `self.client = httpx.AsyncClient(timeout=120.0)`. With 30K+ chars of raw text, the extraction prompt sends ~30K input tokens to the cloud model. The `qwen3-vl:235b-instruct-cloud` model took >120s for this payload, causing all 3 retry attempts to time out. Vision calls get 600s but text extraction only gets 120s. For large PDFs this is inadequate.
-   - `backend/app/llm/ollama_provider.py:28`~~
-   - **Fixed:** Added `TEXT_TIMEOUT = 300.0` class constant (parallel to `VISION_TIMEOUT`); the text `client` now uses it instead of the hardcoded 120s.
-
-3. ~~**High: Text ingest validation failure — LLM returns empty option labels.**
-   A short 2-question text ingest succeeded through extraction and annotation but failed at validation with `"Option labels must be exactly {A, B, C, D}, got ['']"`. The LLM parsed the questions but produced options with empty string labels. This reveals that the extraction prompt does not reliably force the LLM to output `"label": "A"` format for options, and the retry loop only retries on `ValueError` (JSON parse failure), not on structurally valid JSON that produces invalid question data.
-   - `backend/app/routers/ingest.py:1469-1476`, `backend/app/pipeline/validator.py`~~
-   - **Fixed:** `_normalize_extracted_questions` now backfills positional labels (A/B/C/D) when a question has exactly 4 options and all option labels are blank — the exact failure mode observed.
-
-4. ~~**Medium: `extract_json_from_text` retries don't cover the case where JSON parses but produces bad structure.**
-   The 3-attempt retry loop at lines 1430-1479 retries on `ValueError` (JSON parse failure) but breaks immediately on `Exception` (line 1477-1479). If the LLM returns valid JSON that parses successfully but produces an empty `questions` array or questions with empty option labels, the retry loop exits with `extract_root` set to a valid but useless dict. No structural validation occurs between JSON parsing and proceeding to annotation.
-   - `backend/app/routers/ingest.py:1430-1479`~~
-   - **Fixed:** Added a structural check inside the Pass 1 retry loop — if no extracted question has a non-empty `question_text`, a `ValueError` is raised, which the existing `except ValueError` branch retries.
-
-5. ~~**Medium: No pipeline-level timeout or heartbeat.**
-   Even with `@with_retry(max_attempts=3)`, a slow model can occupy the job semaphore for 3×120s = 6 minutes per extraction attempt. Four concurrent stuck jobs block all new ingestion for up to 24 minutes. There's no pipeline-level timeout that aborts a job after N total minutes.
-   - `backend/app/routers/ingest.py`, `backend/app/job_limits.py`~~
-   - **Fixed:** `_run_pipeline_with_session` now wraps `_run_pipeline` in `asyncio.wait_for(timeout=settings.pipeline_timeout_s)` (default 1800s). On timeout the job is marked `failed` on a fresh session with a `pipeline_timeout` error.
-
-6. ~~**Low: Source metadata `page_count` is `null` for PDF ingests.**
-   The `source_metadata` in `pass1_json` includes `source_exam_code` but not `page_count` — the field is missing from the stored JSON. The PDF parser computes page count but it's not preserved in the metadata dict passed through to `pass1_json`.
-   - `backend/app/routers/ingest.py`~~
-   - **Fixed:** The official PDF ingest route now includes `"page_count": len(pdf_result["pages"])` in the `source_metadata` dict stored in `pass1_json`.
-
----
-
-## 2026-05-16 - Pipeline Gap Remediation Session
-Report created by: Claude Sonnet 4.6
-Git branch: `main`
-Git checkpoint: `a15ec07` — fix(pipeline): correct source_name truncation, diagnostics bloat, raw_text slice, and ocr provenance
-
-### Findings
-
-All items below were identified from the pipeline code trace and existing open audit findings.
-
-1. ~~**Critical / Partially open → now fixed for text path:** Pass 1 extraction had zero JSON parse retries.~~
-   `_run_pipeline` text-extraction path (line 1424): the single `try/except` terminated the job on the first malformed JSON response. Pass 2 annotation already had 3-attempt retry (line 1577). Parity gap.
-   - **Fixed:** Wrapped the Pass 1 `complete()` + `extract_json_from_text()` call in a 3-attempt retry loop with exponential backoff (`0.5s`, `1s`). On final failure the job is marked `failed` with the last exception. VLM fused path (finding #6 below) still has no retry — that remains open.
-   - `backend/app/routers/ingest.py` (Pass 1 block)
-
-2. ~~**Low:** `_normalize_extracted_questions` passed empty-text questions through to Pass 2, wasting an LLM call before failing validation.~~
-   - **Fixed:** Added `if not q_text_key: continue` guard with `logger.warning`. Cross-reference: finding #14 in the DB-Backed Run Trace section.
-
-3. ~~**Low/Feature:** `passage_group_id` was assigned as one UUID per batch regardless of actual passage content — all 33 questions in a module would share the same group even when spanning multiple distinct passages.~~
-   - **Fixed:** Replaced flat UUID with per-passage-text grouping using a `_passage_to_group` count map. Only passages appearing on 2+ questions get a group UUID; standalone-passage questions and passage-less questions get `None`. Cross-reference: finding #15.
-
-4. ~~**Medium:** `job.question_id` only linked the first question produced by a multi-question job. N-1 question links lived only in `pass1_json["_created_question_ids"]` with no FK.~~
-   - **Fixed:** Added `question_job_questions` junction table (migration `017`) and inserted a `QuestionJobQuestion` row per question in the pipeline loop. Cross-reference: finding #6 in the 2026-05-09 Current Backend Gap Review.
-
----
 
 ## 2026-05-15 - Ingest Pipeline DB-Backed Run Trace & Generation/Reporting Fragility
 Report created by: Claude Opus 4.7
@@ -2171,7 +1895,6 @@ Git checkpoint: `606f1e3` — fix(audit): harden json_parser, CORS, filename san
 - **Still separate from this organized ingestion entry:** student-facing security findings in the 2026-05-10 backend audit (#1, #4, #5), insecure deployment defaults, and list-endpoint N+1 query behavior. They are not ingestion workflow defects and should stay tracked independently.
 
 ---
-
 
 ## 2026-05-11 - VLM Provider Quality Audit (OCR Loop)
 Report created by: Claude Sonnet 4.6
@@ -2493,81 +2216,6 @@ Git branch: `main`
 - The suite is still mostly unit/mock based around router behavior.
 - Real database FK behavior for incoming self-references, complete stimulus persistence for reading/graphic items, multi-question asset provenance, and long-source truncation behavior need integration coverage.
 
----
-
-## 2026-05-09 - Backend Bug Audit
-Report created by: Claude Sonnet 4.6
-Git branch: `main`
-Git checkpoint: `36583f3` — Fix backend audit findings
-
-### Findings
-
-1. ~~**High:** `POST /api/submit` accepted draft/retired questions — students could record answers against non-active questions. Affected: `backend/app/routers/student.py`.~~
-   - **Fixed:** Added `practice_status != "active"` → 400 guard before user lookup in `submit_answer`.
-
-2. ~~**High:** `POST /api/users` (student router) had no username validation — empty strings and oversized usernames were accepted. Affected: `backend/app/routers/student.py` (inline `UserCreate` model).~~
-   - **Fixed:** Removed inline `UserCreate`/`UserResponse` models; now imports from `app.models.payload` which enforces `min_length=1, max_length=100`. Consistent with the canonical `/users` router.
-
-3. ~~**Medium:** `POST /admin/relations` allowed self-referential relations (`from_question_id == to_question_id`). Affected: `backend/app/routers/admin.py`.~~
-   - **Fixed:** Added `from_id == to_id` → 400 guard before relation creation.
-
-4. ~~**Medium:** `GET /admin/relations` returned all rows without pagination — unbounded query at scale. Affected: `backend/app/routers/admin.py`.~~
-   - **Fixed:** Added `limit` (default 100, max 500) and `offset` Query params.
-
----
-
-## 2026-05-09 - Backend Review
-
-Report created by: GPT-5 Codex
-
-### Findings
-
-1. ~~Critical: student APIs expose and trust the answer key.~~
-   - ~~`/api/questions` returns `current_correct_option_label`.~~
-   - ~~`/api/submit` persists client-supplied `is_correct` instead of deriving correctness server-side.~~
-   - ~~Relevant files: `backend/app/routers/student.py`, `backend/app/models/payload.py`.~~
-   - **Fixed:** Added `StudentQuestionResponse` (no answer key). Server now computes `is_correct` from `q.current_correct_option_label` vs submitted label.
-
-2. ~~High: admin answer-key edits can leave option rows stale.~~
-   - ~~`edit_question` creates a new `QuestionVersion` and updates `current_correct_option_label`, but does not create or update matching `QuestionOption` rows for the new version.~~
-   - ~~Detail reads options by `question_id`, so API output can disagree with the current answer key.~~
-   - ~~Relevant files: `backend/app/routers/admin.py`, `backend/app/routers/questions.py`.~~
-   - **Fixed:** `edit_question` now clones `QuestionOption` rows for each new version with corrected `is_correct`/`option_role`. All option queries in admin and detail endpoints scoped to `latest_version_id`.
-
-3. ~~High: `/users/{user_id}` delete can fail when the user has progress.~~
-   - ~~The `/users` router deletes only the user row.~~
-   - ~~`user_progress.user_id` has a normal foreign key with no cascade.~~
-   - ~~Relevant files: `backend/app/routers/users.py`, `backend/app/models/db.py`.~~
-   - **Already fixed in codebase:** `delete_user` deletes `UserProgress` rows before the user row.
-
-4. ~~High: generated questions bypass official-overlap detection.~~
-   - ~~Generation sets `official_overlap_status` to `none` unconditionally.~~
-   - ~~Approval only blocks generated questions when overlap status is not `none`.~~
-   - ~~Relevant files: `backend/app/routers/generate.py`, `backend/app/routers/admin.py`.~~
-   - **Fixed:** Generation pipeline now runs `detect_overlaps` + `persist_overlap_relations` post-commit. Questions with similarity to official passages/questions are flagged `possible`, blocking approval until admin reviews.
-
-5. ~~Medium: hard-delete can fail on incoming self-references.~~
-   - ~~Question delete clears only the deleted question's own self-reference fields.~~
-   - ~~Other questions may still point to the deleted question through `canonical_official_question_id` or `derived_from_question_id`.~~
-   - ~~Relevant files: `backend/app/routers/admin.py`, `backend/app/models/db.py`.~~
-   - **Fixed:** `delete_question` now bulk-nulls incoming `canonical_official_question_id` and `derived_from_question_id` references before deleting.
-
-6. ~~**High / Deployment:** default API keys are live credentials.
-   - `admin-key-change-me` and `student-key-change-me` are accepted if environment variables are missing. Startup warning exists, but startup does not fail.
-   - Relevant files: `backend/app/config.py`, `backend/app/main.py`.~~
-   - **Fixed:** See 2026-05-10 Backend Gap Audit #6. Startup now raises `RuntimeError` when `env=production` and default keys are active.
-
-### Verification
-
-- Ran `uv run pytest` in `backend/`.
-- Result: 176 passed, 2 skipped.
-
-### Coverage Gap
-
-Many router tests use mocked database sessions, so real foreign-key behavior, delete cascades, and stale versioned option rows are not covered by integration tests.
-
----
-
 ## 2026-05-09 - Full Backend Audit
 
 Report created by: Claude Sonnet 4.6
@@ -2678,7 +2326,6 @@ ERROR: FastAPI server failed to start within 30s
 - **Job ID**: `3bd8c445-f12a-442f-a6d2-3ef482487402`
 - **Status**: annotating
 - **Errors/Warnings**: 0
-
 
 #### LLM
 - Extract latency: ?ms
@@ -2834,65 +2481,6 @@ The isolated test passes validation with 0 blocking errors. But the full pipelin
 5. **Reduce annotation prompt size**: The 88K-char system prompt is the main bottleneck. Consider trimming the rules reference or using a two-pass approach where the domain is detected first, then only the relevant rules section is included.
 
 6. **Fix question count over-extraction**: Investigate why the LLM extracts 33 questions from a 27-question module.
-
----
-
-## 2026-05-17 — Bug: option_label/option_text vs label/text Format Mismatch
-
-### Bug Description
-
-The annotation rules markdown (`rules_agent_dsat_grammar_ingestion_generation_v7.md`) defines the output schema for options using `option_label` and `option_text` keys (see Section B.12 examples). However, the extraction pipeline and internal code use `label` and `text` keys. The validator (`validator.py`) checks for `label` and `text`, causing ALL questions to fail with:
-
-```
-Option labels must be exactly {A, B, C, D}, got ['']
-```
-
-### Root Cause
-
-The `_merge_for_validation()` function protects extraction-owned keys (including `options`) by restoring `q_data["options"]` after the `{**q_data, **annotate_json}` merge. In isolated testing, this works correctly. However, in production runs, all 33 questions failed with empty option labels, suggesting a subtle mutation or edge case that bypasses the protection.
-
-### Fix Applied
-
-1. **`backend/app/pipeline/validator.py`** — Added option key normalization before validation:
-   ```python
-   for opt in options:
-       if isinstance(opt, dict):
-           if "label" not in opt or not opt["label"]:
-               opt["label"] = opt.get("option_label", "")
-           if "text" not in opt or not opt["text"]:
-               opt["text"] = opt.get("option_text", "")
-   ```
-
-2. **`backend/app/routers/ingest.py`** (`_merge_for_validation`) — Added the same normalization after the merge:
-   ```python
-   for opt in merged.get("options", []):
-       if isinstance(opt, dict):
-           if "label" not in opt or not opt["label"]:
-               opt["label"] = opt.get("option_label", "")
-           if "text" not in opt or not opt["text"]:
-               opt["text"] = opt.get("option_text", "")
-   ```
-
-3. **`backend/app/models/ontology.py`** — Added missing values:
-   - `STEM_TYPE_KEYS`: `conform_to_standard_english`, `most_logically_completes`, `synthesize_information`, `compare_contributions`
-   - `STIMULUS_MODE_KEYS`: `notes_summary`
-
-### Why Both Locations
-
-- **Validator** is the last line of defense — it must handle whatever format arrives
-- **`_merge_for_validation`** normalizes early so downstream code (persistence, etc.) also sees consistent keys
-- The `option_hydration.py` module already handles both formats at persist time, so this is a belt-and-suspenders approach
-
-### Dual-Key Reference
-
-| Internal Key | Rules v7 Key | Used In | Normalized By |
-|---|---|---|---|
-| `label` | `option_label` | Extraction, Validator, DB | validator.py, ingest.py merge |
-| `text` | `option_text` | Extraction, Validator, DB | validator.py, ingest.py merge |
-| `correct_option_label` | `correct_option_label` | Both stages | Already consistent |
-| `source_question_number` | `source_question_number` | Both stages | Already consistent |
-
----
 
 ## 2026-05-17 — Full Codebase Schema Inconsistency Audit
 
