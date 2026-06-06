@@ -1,0 +1,12 @@
+# Ignore generated graph artifacts (large, rebuilt on demand)
+graph.json
+graph.html
+GRAPH_REPORT.md
+cost.json
+obsidian/
+wiki/
+*.svg
+*.graphml
+cypher.txt
+# Keep dot-files (interpreter path, root) out of version control too
+.graphify_*
