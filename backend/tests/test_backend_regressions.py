@@ -1818,6 +1818,60 @@ def test_official_question_uuid_differs_by_release_metadata():
     assert len({base_2024, base_2025, different_name}) == 3
 
 
+@pytest.mark.asyncio
+async def test_suspect_official_qnum_still_skips_existing_source_identity():
+    existing_id = uuid.uuid4()
+    db = _FakeDB()
+    db.execute_results.append(_ScalarResult(first_item=existing_id))
+    job = SimpleNamespace(
+        content_origin="official",
+        provider_name="test-provider",
+        model_name="test-model",
+        prompt_version="test-prompt",
+        rules_version="test-rules",
+        raw_asset_id=None,
+        question_id=None,
+        id=uuid.uuid4(),
+    )
+
+    q_data = {
+        "source_release_year": 2025,
+        "source_test_name": "Test 6",
+        "source_exam_code": "6",
+        "source_subject_code": "verbal",
+        "source_section_code": "01",
+        "source_module_code": "02",
+        "source_question_number": 12,
+        "question_text": "Which choice completes the text?",
+        "passage_text": "A passage.",
+        "options": [
+            {"label": "A", "text": "A"},
+            {"label": "B", "text": "B"},
+            {"label": "C", "text": "C"},
+            {"label": "D", "text": "D"},
+        ],
+        "correct_option_label": "A",
+    }
+
+    question_id = await ingest_router._persist_single_question(
+        db=db,
+        job=job,
+        q_data=q_data,
+        annotate_json={"explanation_short": "Because A."},
+        passage_text=None,
+        passage_group_id=None,
+        overlaps=[],
+        section_code="01",
+        question_index=0,
+        suspect_question_indices={0},
+    )
+
+    assert question_id == existing_id
+    assert db.executed
+    assert db.added == []
+    assert db.flush_count == 0
+
+
 # ── _scan_qnums_from_ocr ──────────────────────────────────────────────────────
 
 def test_scan_qnums_glm_format():

@@ -18,6 +18,44 @@ def _extract_fenced_blocks(text: str) -> list[str]:
     return [match.group(1).strip() for match in fence_pattern.finditer(text)]
 
 
+def _extract_last_braced_candidate(text: str) -> str | None:
+    """Find the last complete JSON object in text.
+
+    Useful when a reasoning model emits a long thinking preamble followed by
+    the actual JSON answer — the standard first-brace scan picks up the wrong
+    opening brace inside the reasoning text.
+    """
+    last_close = text.rfind("}")
+    if last_close == -1:
+        return None
+    depth = 0
+    in_string = False
+    escape = False
+    quote_char = ""
+    for i in range(last_close, -1, -1):
+        ch = text[i]
+        if escape:
+            escape = False
+            continue
+        if in_string:
+            if ch == "\\" :
+                escape = True
+            elif ch == quote_char:
+                in_string = False
+            continue
+        if ch in {'"', "'"}:
+            in_string = True
+            quote_char = ch
+            continue
+        if ch == "}":
+            depth += 1
+        elif ch == "{":
+            depth -= 1
+            if depth == 0:
+                return text[i : last_close + 1]
+    return None
+
+
 def _extract_first_braced_candidate(text: str) -> str | None:
     in_string = False
     escape = False
@@ -122,9 +160,11 @@ def _extract_with_kimi_strategy(text: str) -> dict | None:
 
     stripped = _strip_reasoning_wrappers(text)
     braced = _extract_first_braced_candidate(stripped)
-    for candidate in [stripped, braced] + _extract_fenced_blocks(stripped):
-        if not candidate:
-            continue
+    # Also try the last braced candidate — handles reasoning models that emit a
+    # long thinking preamble before the actual JSON answer.
+    last_braced = _extract_last_braced_candidate(stripped)
+    candidates = [c for c in [stripped, braced, last_braced] + _extract_fenced_blocks(stripped) if c]
+    for candidate in candidates:
         repaired = _repair_json_like_object(candidate)
         parsed = _parse_direct_json(repaired)
         if isinstance(parsed, dict):

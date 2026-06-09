@@ -2,6 +2,8 @@
 
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
+| 19:32 | Ingestion test for Test_6_digital_sec01_mod01 Run 3 — BLOCKED by duplicate checksum; backend rejected submission before job_id assigned. Logged to DEBUG_LOG.md Run 3 section. No new bug (existing known issue). | DEBUG_LOG.md | blocked (duplicate checksum) | ~200 |
+| 19:29 | Ingestion test for Test_6_digital_sec01_mod01 BLOCKED — run.sh regex case mismatch (Sec/Mod vs sec/mod) causes EXAM/SECTION/MODULE to all receive the full stem; API rejected with HTTP 422. No job created. Logged bug-252, DEBUG_LOG.md Run 2. | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md, .wolf/buglog.json | blocked (regex-case-mismatch) | ~500 |
 | 05:22 | Data fix: prepended passage intro to Q6 (Austen), Q7 (Chesnutt), Q8 (Shakespeare/Sonnet 27) in PT1 sec01 mod01. Updated questions + question_versions tables directly. bug-245. | DB | success |\n| 05:13 | Bug fix: passage intro/attribution sentence missing from passage_text during extraction. Updated EXTRACT_SYSTEM_PROMPT with explicit rule. Logged bug-244, DEBUG_LOG.md. | backend/app/prompts/extract_prompt.py | fixed | ~300 |
 | 21:53:44 | Ingestion test for Test01_ENG_Sec01_Mod01 SUCCESS — job bd072449, Phase 1 extracted 27 questions (~6 min), Phase 2 annotation completed in ~13m46s (13m46s vs prior 7m31s hang), status=approved, 27/27 created. One non-blocking amendment_proposal warning (affected_vocab="grammar_focus_key" not an ontology constant). No option-label cascade. Fix 1 (passage truncation) credited with enabling completion. Logged bug-243, DEBUG_LOG.md Run #3. | DEBUG_LOG.md, .wolf/buglog.json | success (first full completion) | ~1k |
 | 21:30:42 | Ingestion test for Test01_ENG_Sec01_Mod01 BLOCKED — duplicate-checksum blocker; submission rejected with no job_id. Prior job row still in question_jobs. Logged bug-241. DEBUG_LOG.md updated (Run #2). | .wolf/buglog.json, DEBUG_LOG.md | blocked (duplicate-checksum) | ~500 |
@@ -2641,6 +2643,201 @@
 | 21:22 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 1 reads | ~59914 tok |
 
 ## Session: 2026-06-02 12:07
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-03 23:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-03 09:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-05 14:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:28 | Edited .claude/skills/ingestion-status/SKILL.md | 24→25 lines | ~369 |
+| 15:29 | Edited .claude/skills/ingestion-status/SKILL.md | 6→8 lines | ~135 |
+| 15:29 | Session end: 2 writes across 1 files (SKILL.md) | 2 reads | ~2998 tok |
+| 15:41 | Session end: 2 writes across 1 files (SKILL.md) | 2 reads | ~2998 tok |
+
+## Session: 2026-06-06 21:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-06 21:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-06 21:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-08 19:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:28 | Edited .claude/skills/ingestion-test/run.sh | "$ROOT/TESTS/DATA_SRC/2024" → "$ROOT/TESTS/DATA_SRC/2025" | ~17 |
+| 19:28 | Edited DEBUG_LOG.md | modified chore() | ~255 |
+| 19:29 | Fixed ingestion-test run.sh PDF_DIR stale path (2024-2025 → 2025-2026/VERBAL) | .claude/skills/ingestion-test/run.sh | Fixed + re-dispatched Test_6_digital_sec01_mod01 ingestion | ~800 |
+| 19:29 | Session end: 2 writes across 2 files (run.sh, DEBUG_LOG.md) | 2 reads | ~46874 tok |
+| 19:30 | Edited DEBUG_LOG.md | modified chore() | ~339 |
+| 19:31 | Edited .claude/skills/ingestion-test/run.sh | 3→3 lines | ~50 |
+| 19:31 | Edited .claude/skills/ingestion-test/run.sh | 2→2 lines | ~29 |
+| 19:32 | Session end: 5 writes across 2 files (run.sh, DEBUG_LOG.md) | 3 reads | ~89412 tok |
+| 19:32 | Edited DEBUG_LOG.md | modified chore() | ~354 |
+| 19:34 | Session end: 6 writes across 2 files (run.sh, DEBUG_LOG.md) | 3 reads | ~90089 tok |
+| 20:00 | Session end: 6 writes across 2 files (run.sh, DEBUG_LOG.md) | 5 reads | ~90089 tok |
+| 20:04 | Edited DEBUG_LOG.md | modified chore() | ~340 |
+| 20:04 | Ingestion test for Test_6_digital_sec01_mod01 Run 4 — job_id c5eaeee0, extracted 33/33, 0 validation errors, status=annotating at collection time (runner timing, not pipeline failure). Logged to DEBUG_LOG.md Run 4 section. | DEBUG_LOG.md | clean run (0 validation errors) | ~150 |
+| 20:05 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 5 reads | ~90766 tok |
+| 20:14 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 5 reads | ~90766 tok |
+| 20:16 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 5 reads | ~90766 tok |
+| 20:18 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 6 reads | ~92280 tok |
+| 20:20 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 6 reads | ~92280 tok |
+| 20:22 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 6 reads | ~92280 tok |
+| 20:32 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 6 reads | ~92280 tok |
+| 20:43 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 6 reads | ~92280 tok |
+| 20:44 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 6 reads | ~92280 tok |
+| 20:48 | Session end: 7 writes across 2 files (run.sh, DEBUG_LOG.md) | 7 reads | ~94323 tok |
+| 20:51 | Edited backend/app/config.py | inline fix | ~35 |
+| 20:51 | Edited backend/app/config.py | inline fix | ~28 |
+| 20:51 | Edited backend/app/routers/ingest.py | modified _annotate_one() | ~507 |
+| 20:51 | Edited backend/app/config.py | "../TESTS/DATA_SRC/2024-20" → "../TESTS/DATA_SRC/2025-20" | ~25 |
+| 20:53 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 9 reads | ~96964 tok |
+| 20:58 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 9 reads | ~96964 tok |
+| 21:20 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 10 reads | ~99080 tok |
+| 21:22 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 10 reads | ~99080 tok |
+| 21:53 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 10 reads | ~99080 tok |
+| 22:04 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 10 reads | ~99080 tok |
+| 22:23 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 10 reads | ~99080 tok |
+| 22:38 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 10 reads | ~99080 tok |
+| 22:47 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 10 reads | ~99080 tok |
+| 22:58 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 12 reads | ~99080 tok |
+| 23:02 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 12 reads | ~99080 tok |
+| 23:03 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 12 reads | ~99080 tok |
+| 23:04 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 23:12 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 23:17 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 23:19 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 23:22 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 23:27 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 23:28 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 23:55 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 00:05 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 00:23 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 00:31 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 00:42 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 01:42 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 07:46 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 07:46 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 07:57 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 08:00 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 08:01 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 08:04 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 08:06 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 08:11 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 08:33 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 08:59 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 09:02 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 09:14 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 13 reads | ~99080 tok |
+| 09:16 | Session end: 11 writes across 4 files (run.sh, DEBUG_LOG.md, config.py, ingest.py) | 14 reads | ~99080 tok |
+| 09:19 | Edited backend/app/prompts/extract_prompt.py | 11→13 lines | ~218 |
+| 09:20 | Edited backend/app/prompts/extract_prompt.py | expanded (+6 lines) | ~238 |
+| 09:20 | Edited backend/app/routers/ingest.py | 2→3 lines | ~41 |
+| 09:20 | Edited backend/app/routers/ingest.py | modified get() | ~96 |
+| 09:22 | Session end: 15 writes across 5 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 16 reads | ~104173 tok |
+| 09:28 | Session end: 15 writes across 5 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 16 reads | ~104173 tok |
+| 09:29 | Session end: 15 writes across 5 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 16 reads | ~104173 tok |
+| 09:48 | Session end: 15 writes across 5 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 16 reads | ~104173 tok |
+| 09:49 | Session end: 15 writes across 5 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 16 reads | ~104173 tok |
+| 09:50 | Session end: 15 writes across 5 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 16 reads | ~104173 tok |
+| 10:00 | Session end: 15 writes across 5 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 16 reads | ~104173 tok |
+| 10:05 | Session end: 15 writes across 5 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 16 reads | ~104173 tok |
+| 10:06 | Session end: 15 writes across 5 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 16 reads | ~104173 tok |
+| 10:09 | Edited FUTURE_FEATURES.md | modified SUM() | ~1323 |
+| 10:09 | Session end: 16 writes across 6 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 17 reads | ~117913 tok |
+| 10:16 | Session end: 16 writes across 6 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 17 reads | ~117913 tok |
+| 10:18 | Session end: 16 writes across 6 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 17 reads | ~117913 tok |
+| 10:20 | Session end: 16 writes across 6 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 17 reads | ~117913 tok |
+| 10:23 | Edited backend/app/routers/ingest.py | 2→2 lines | ~30 |
+| 10:27 | Session end: 17 writes across 6 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 17 reads | ~118004 tok |
+| 10:39 | Session end: 17 writes across 6 files (run.sh, DEBUG_LOG.md, config.py, ingest.py, extract_prompt.py) | 17 reads | ~118004 tok |
+
+## Session: 2026-06-08 10:40
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-08 11:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-08 11:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:43 | Created backend/migrations/versions/030_dedup_test1_mod02_old_ingest.py | — | ~1347 |
+| 11:43 | Edited backend/migrations/versions/030_dedup_test1_mod02_old_ingest.py | modified delete() | ~138 |
+| 11:43 | Edited backend/migrations/versions/030_dedup_test1_mod02_old_ingest.py | expanded (+15 lines) | ~186 |
+| 11:43 | Edited backend/migrations/versions/030_dedup_test1_mod02_old_ingest.py | 14→15 lines | ~165 |
+| 11:44 | Created backend/migrations/versions/030_dedup_test1_mod02_old_ingest.py | — | ~1128 |
+| 11:44 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 11:45 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 11:45 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 11:47 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 12:18 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 12:21 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 12:22 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 12:26 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 12:32 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 13:04 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 13:13 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 14:05 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 14:40 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 14:58 | Session end: 5 writes across 1 files (030_dedup_test1_mod02_old_ingest.py) | 24 reads | ~79122 tok |
+| 14:59 | Edited DEBUG_LOG.md | modified chore() | ~448 |
+| 14:59 | Session end: 6 writes across 2 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md) | 25 reads | ~125827 tok |
+| 15:19 | Edited DEBUG_LOG.md | 2→2 lines | ~178 |
+| 15:19 | Session end: 7 writes across 2 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md) | 25 reads | ~126017 tok |
+| 15:21 | Session end: 7 writes across 2 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md) | 25 reads | ~126017 tok |
+| 15:22 | Session end: 7 writes across 2 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md) | 25 reads | ~126017 tok |
+| 16:11 | Session end: 7 writes across 2 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md) | 25 reads | ~126017 tok |
+| 16:20 | Session end: 7 writes across 2 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md) | 25 reads | ~126017 tok |
+| 16:40 | Edited backend/app/llm/ollama_provider.py | modified complete_cached() | ~82 |
+| 16:40 | Edited backend/app/llm/ollama_provider.py | inline fix | ~29 |
+| 16:41 | Edited backend/app/routers/ingest.py | 5→5 lines | ~75 |
+| 16:41 | Edited backend/app/routers/ingest.py | 3→4 lines | ~54 |
+| 16:45 | Edited backend/app/parsers/json_parser.py | modified _extract_last_braced_candidate() | ~322 |
+| 16:45 | Edited backend/app/parsers/json_parser.py | modified _extract_with_kimi_strategy() | ~256 |
+| 16:51 | Edited backend/app/routers/ingest.py | 4→4 lines | ~54 |
+| 17:01 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 27 reads | ~131568 tok |
+| 17:07 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+| 17:12 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+| 17:15 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+| 17:25 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+| 17:30 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+| 17:40 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+| 17:54 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+| 18:10 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+| 18:32 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+| 19:08 | Session end: 14 writes across 5 files (030_dedup_test1_mod02_old_ingest.py, DEBUG_LOG.md, ollama_provider.py, ingest.py, json_parser.py) | 28 reads | ~131568 tok |
+
+## Session: 2026-06-09 19:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-09 19:09
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|

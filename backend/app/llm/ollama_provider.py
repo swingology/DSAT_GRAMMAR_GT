@@ -84,6 +84,7 @@ class OllamaProvider:
         model: Optional[str] = None,
         max_tokens: int = 4096,
         temperature: float = 0.2,
+        disable_thinking: bool = False,
     ) -> LLMResponse:
         """Annotate with KV-cache prefix locking for the static rules block.
 
@@ -109,7 +110,7 @@ class OllamaProvider:
                 {"role": "system", "content": combined_system},
                 {"role": "user", "content": user},
             ],
-            "options": {"num_keep": num_keep},
+            "options": {"num_keep": num_keep, **({"thinking": False} if disable_thinking else {})},
         }
         response = await self.client.post("/v1/chat/completions", json=payload)
         latency_ms = int((time.time() - start) * 1000)

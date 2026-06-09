@@ -56,50 +56,290 @@ reading calls run in contiguous batches — this maximises cache hits within a j
 
 ---
 
+## Admin Dashboard — Ingestion LLM Token & Cost Telemetry
+
+Add per-job LLM token and latency telemetry to the ingestion status report so an
+operator can answer "how much did this ingestion cost, how long did each phase
+take, and where is the bottleneck?" without running raw SQL.
+
+### Motivation
+
+A full ingestion analysis of Test02 ENG (3 modules × 27 questions) surfaced the
+following through manual SQL queries — none of it is visible in the current
+dashboard:
+
+| Phase | What it revealed |
+|---|---|
+| Pass 1 (extraction) | ~6–8K tokens in / ~10K tokens out per module; ~200s per call |
+| Pass 2 (annotation) | ~400–585K tokens in per module; ~15–22K avg tokens in per question; 85–120s avg per call; 38–54 min total wall-clock per module |
+| Cost structure | Annotation input tokens are ~73× more than extraction per module; the static rules block (~10–17K tokens) is re-sent on every call, making it the dominant cost driver |
+
+This analysis drove the `pipeline_timeout_s` fix, the `annotation_max_concurrent`
+correction, and validates the prompt-caching optimization described in
+"Pass 2 Annotation Efficiency Optimization."
+
+### Proposed API Extension
+
+Extend `GET /admin/ingestion/status/{job_id}` to include a `llm_telemetry` block:
+
+```json
+{
+  "llm_telemetry": {
+    "pass1": {
+      "provider": "ollama",
+      "model": "deepseek-v4-pro:cloud",
+      "tokens_in": 7784,
+      "tokens_out": 9810,
+      "latency_ms": 204367
+    },
+    "pass2": {
+      "provider": "ollama",
+      "model": "deepseek-v4-pro:cloud",
+      "annotation_calls": 27,
+      "total_tokens_in": 519226,
+      "total_tokens_out": 138010,
+      "avg_tokens_in": 19970,
+      "avg_tokens_out": 5308,
+      "avg_latency_ms": 98500,
+      "total_wall_clock_ms": 2657250,
+      "estimated_cost_usd": null
+    }
+  }
+}
+```
+
+Source columns:
+- `pass1_json._llm_meta` → Pass 1 extraction token/latency data
+- `pass2_json._pass2_meta[]` → array of per-question annotation call metadata
+
+### Aggregate Report Extension
+
+Extend `GET /admin/ingestion/status` (the list view) to include per-module
+summary token stats alongside question counts:
+
+| New column | Source |
+|---|---|
+| `p1_tokens_in` / `p1_tokens_out` | `pass1_json._llm_meta.token_usage` |
+| `p2_total_tokens_in` | Sum of `pass2_json._pass2_meta[*].token_usage.input` |
+| `p2_total_tokens_out` | Sum of `pass2_json._pass2_meta[*].token_usage.output` |
+| `p2_annotation_calls` | Length of `pass2_json._pass2_meta` |
+| `p2_avg_latency_s` | Avg of `pass2_json._pass2_meta[*].latency_ms` / 1000 |
+| `p2_wall_clock_min` | Sum of latencies / 60000 |
+
+### Dashboard UX
+
+Add a collapsible **LLM Telemetry** section to the job detail panel:
+
+- **Pass 1 card:** model, tokens in/out, latency
+- **Pass 2 summary card:** total tokens in/out, call count, avg latency, total
+  wall-clock time
+- **Per-call breakdown table** (collapsed by default): question index, tokens
+  in/out, latency — lets operators identify slow or expensive individual
+  annotation calls
+- **Cost estimate row** (when provider pricing is configured): estimated USD
+  cost for Pass 1 + Pass 2 based on per-token rates
+
+In the aggregate list view, add a **Token Cost** column showing
+`p2_total_tokens_in` with a hover tooltip breaking down avg per-question cost
+and total wall-clock time.
+
+### Query
+
+```sql
+SELECT
+  qa.source_name,
+  qj.model_name,
+  qj.provider_name,
+  (qj.pass1_json->'_llm_meta'->'token_usage'->>'input')::int  AS p1_tokens_in,
+  (qj.pass1_json->'_llm_meta'->'token_usage'->>'output')::int AS p1_tokens_out,
+  (qj.pass1_json->'_llm_meta'->>'latency_ms')::int            AS p1_latency_ms,
+  COUNT(m)                                                     AS p2_calls,
+  SUM((m->'token_usage'->>'input')::int)                      AS p2_tokens_in,
+  SUM((m->'token_usage'->>'output')::int)                     AS p2_tokens_out,
+  ROUND(AVG((m->'token_usage'->>'input')::int))               AS p2_avg_tokens_in,
+  ROUND(AVG((m->'token_usage'->>'output')::int))              AS p2_avg_tokens_out,
+  ROUND(AVG((m->>'latency_ms')::int) / 1000.0, 1)             AS p2_avg_latency_s,
+  ROUND(SUM((m->>'latency_ms')::int) / 60000.0, 1)            AS p2_wall_clock_min
+FROM question_jobs qj
+JOIN question_assets qa ON qa.id = qj.raw_asset_id,
+     jsonb_array_elements(qj.pass2_json->'_pass2_meta') AS m
+WHERE qj.job_type = 'ingest'
+GROUP BY qa.source_name, qj.id, qj.model_name, qj.provider_name
+ORDER BY qa.source_name;
+```
+
+### Acceptance Criteria
+
+- An operator can see Pass 1 and Pass 2 token usage for any ingest job without
+  running SQL.
+- Pass 2 total wall-clock time is visible in the job detail panel.
+- The aggregate list shows per-module token totals so high-cost modules are
+  immediately identifiable.
+- All values are derived from persisted `pass1_json._llm_meta` and
+  `pass2_json._pass2_meta` — no new columns required.
+- The feature is read-only and does not change ingestion behavior.
+
+---
+
 ## Admin Dashboard — Ingestion Status Overview
 
-There is currently no admin API endpoint or dashboard view that surfaces the health of the full practice test ingestion pipeline. Assessment is only possible by querying the database directly with raw SQL. This feature would expose that data through a dedicated endpoint.
+Add a read-only ingestion health report to the Admin Dashboard so an operator can
+answer "what is in the database, what is still running, and what needs attention?"
+without asking an agent to run SQL.
 
-### Why It Matters
+### Current Baseline
 
-- The ingestion pipeline processes 16+ modules across 9 tests, each with its own job status, question count, and data-quality signals.
-- Without a dashboard view, identifying failed jobs, short-count modules, duplicate jobs, and null question numbers requires direct DB queries — not suitable for non-technical reviewers.
-- Post-ingest QA (question count vs. expected, annotation coverage, stimulus attachment rate) is currently manual.
+The dashboard already provides:
 
-### Proposed Endpoint
+- a recent-jobs table at `GET /dashboard/jobs`, limited to the latest 30 jobs;
+- five-second polling of that table;
+- status, origin, source subject/section/module, and the first linked question;
+- single-job inspection through `GET /ingest/jobs/{job_id}`.
 
-`GET /admin/ingestion/status`
+Those surfaces are useful for watching individual runs, but they do not provide
+aggregate ingestion counts, complete job history, produced-question counts, or
+data-quality signals. The new feature should extend the dashboard rather than
+replace the recent-jobs table.
 
-Returns a per-module summary row for every `question_jobs` entry tied to an official test asset, including:
+### Operator Questions
 
-| Field | Description |
+The report must answer:
+
+1. How many ingest jobs are active, approved, awaiting review, or failed?
+2. Which source test/module did each job process, and when was it last updated?
+3. How many questions did each job create?
+4. Are linked questions missing source numbers, annotations, correct answers, or
+   required stimulus assets?
+5. Which jobs contain validation warnings or errors?
+6. Are multiple non-failed jobs associated with the same source test/module?
+
+### Proposed Admin API
+
+Add `GET /admin/ingestion/status`, protected by `admin_required`.
+
+Supported filters:
+
+- `status`: one job status;
+- `source_test_name`, `source_section_code`, and `source_module_code`;
+- `active_only`: jobs outside `approved`, `needs_review`, and `failed`;
+- `attention_only`: jobs with warnings, failures, duplicate-source flags, or
+  incomplete question data;
+- `limit` and `offset`, with a stable newest-first default order.
+
+The response should contain top-level summary counts and paginated job rows:
+
+```json
+{
+  "summary": {
+    "total": 0,
+    "active": 0,
+    "approved": 0,
+    "needs_review": 0,
+    "failed": 0,
+    "questions_linked": 0
+  },
+  "items": [],
+  "limit": 50,
+  "offset": 0
+}
+```
+
+Each item should expose:
+
+| Field | Source / meaning |
 |---|---|
-| `source_name` | PDF filename (`Test_N_digital_sec01_modM.pdf`) |
-| `job_id` | UUID of the ingestion job |
-| `status` | `approved`, `needs_review`, `failed` |
-| `question_count` | Questions linked to this job |
-| `expected_count` | Expected question count (configurable per module, default 33) |
-| `count_delta` | `question_count - expected_count` (negative = short) |
-| `with_correct_answer` | Questions with at least one `is_correct=TRUE` option |
-| `annotated` | Questions with a `latest_annotation_id` |
-| `with_stimulus` | Questions with at least one stimulus asset attached |
-| `null_qnum_count` | Questions missing `source_question_number` in annotation JSONB |
-| `duplicate_job` | `true` if multiple non-failed jobs exist for this source |
-| `ingested_at` | Job creation date |
+| `job_id` | `question_jobs.id` |
+| `status` | Current persisted pipeline status |
+| `content_origin` | Official or unofficial ingestion |
+| `source_test_name` | Source metadata from linked questions, falling back to `pass1_json.source_metadata` |
+| `source_subject_code` | Normalized source subject |
+| `source_section_code` | Normalized source section |
+| `source_module_code` | Normalized source module, including split modules such as `02A` / `02B` |
+| `created_at`, `updated_at` | Job timestamps |
+| `questions_linked` | Count from `question_job_questions` |
+| `questions_annotated` | Linked questions with `latest_annotation_id` |
+| `questions_missing_source_number` | Linked questions with null `source_question_number` |
+| `questions_missing_correct_answer` | Linked questions without a valid current correct-option label |
+| `questions_with_stimulus` | Linked questions represented in `question_stimulus_assets` |
+| `validation_error_count` | Length of `validation_errors_jsonb` |
+| `validation_errors` | Structured errors, included only in the job-detail response or when explicitly requested |
+| `duplicate_source` | Multiple non-failed ingest jobs share the same normalized source identity |
+| `attention_reasons` | Machine-readable reasons used to highlight the row |
 
-### Optional Dashboard Panel
+Use `(source_test_name, source_subject_code, source_section_code,
+source_module_code)` as the normalized source identity. Do not use filename alone:
+ingestion currently stores the durable source identity on questions and in job
+JSON metadata.
 
-A read-only admin UI table (sortable by status, delta, test number) with color-coded rows:
-- Green: `approved`, count == expected
-- Yellow: `needs_review` or count within 1–2 of expected
-- Red: `failed` or count short by more than 2, or duplicate job detected
+### Dashboard UX
 
-### Implementation Notes
+Add an **Ingestion Health** panel above **Recent jobs** on `/dashboard`.
 
-- Query joins `question_jobs → question_assets → question_job_questions → questions → question_annotations → question_options → question_stimulus_assets`
-- Duplicate detection: group by `source_name`, flag if `COUNT(job_id) > 1` for non-failed jobs
-- Expected count per module could be stored in a config table or hardcoded as 33 (standard SAT module size)
-- Should support an optional `?test=4&module=1` filter for targeted polling
+- Summary cards: Active, Approved, Needs Review, Failed, Linked Questions.
+- Filter controls: status, test, section, module, and "attention only."
+- Read-only table with source identity, status, linked-question count, quality
+  warnings, error count, and last-updated time.
+- Rows refresh every five seconds while any job is active; otherwise refresh
+  manually or every 30 seconds.
+- Clicking a row opens a detail panel showing the existing job payload,
+  validation errors, OCR/LLM metadata, and linked question IDs.
+- Preserve the existing Recent jobs table as the compact cross-job activity feed.
+
+Visual severity:
+
+- **Blue:** active pipeline state;
+- **Green:** terminal and no attention reasons;
+- **Yellow:** `needs_review` or incomplete quality signals;
+- **Red:** `failed`, duplicate source, or no questions linked after a terminal run.
+
+### Backend Implementation Plan
+
+1. Add ingestion-status response models in `backend/app/models/payload.py`.
+2. Add a query/service module that aggregates `question_jobs`,
+   `question_job_questions`, `questions`, and stimulus links without multiplying
+   counts across joins.
+3. Add `GET /admin/ingestion/status` for the aggregate report.
+4. Extend `GET /ingest/jobs/{job_id}` or add
+   `GET /admin/ingestion/status/{job_id}` for linked-question IDs and full detail.
+5. Add `/dashboard/ingestion-status` as an HTML fragment and render it from the
+   existing dashboard with HTMX.
+6. Keep all report actions read-only. Retry, cancel, delete, and approval controls
+   are separate future work.
+
+### Query and Performance Requirements
+
+- Aggregate related-table counts in subqueries or CTEs before joining them to
+  `question_jobs`; a flat multi-table join will inflate counts.
+- Filter to `QuestionJob.job_type == "ingest"` by default.
+- Treat `approved`, `needs_review`, and `failed` as terminal states.
+- Compute active jobs from the shared pipeline status definitions, not a second
+  dashboard-only status list.
+- Add indexes only after checking the report query with `EXPLAIN ANALYZE`.
+- The default 50-row report should complete in under 500 ms on the development
+  dataset.
+
+### Test Plan
+
+- API authentication and filter tests.
+- Aggregate-count regression tests covering zero, one, and many linked questions.
+- Regression test proving stimulus and option joins do not multiply question
+  counts.
+- Duplicate-source detection tests, including split module codes.
+- Attention-reason tests for failed, terminal-with-zero-questions, missing source
+  number, missing annotation, and validation errors.
+- Dashboard fragment tests for empty, active, healthy, and failed states.
+- Page-load test proving the Ingestion Health panel is present.
+
+### Acceptance Criteria
+
+- An admin can see current ingestion totals without running SQL.
+- Every displayed value is derived from persisted database state.
+- The report distinguishes active jobs from terminal jobs.
+- A job row shows all questions linked through `question_job_questions`, not only
+  `question_jobs.question_id`.
+- Validation failures and incomplete ingestion outputs are visible and filterable.
+- Existing ingestion submission, recent-jobs polling, and job inspection behavior
+  continue to work.
 
 
 

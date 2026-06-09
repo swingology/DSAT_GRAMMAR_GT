@@ -708,6 +708,7 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
     as validation errors so silent loss is visible in ``validation_errors_jsonb``.
     """
     shared_passage = extract_root.get("passage_text")
+    shared_paired_passage = extract_root.get("paired_passage_text")
     shared_source = {
         "source_release_year": extract_root.get("source_release_year"),
         "source_test_name": extract_root.get("source_test_name"),
@@ -737,6 +738,8 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
                 enriched[k] = v
         if shared_passage and not enriched.get("passage_text"):
             enriched["passage_text"] = shared_passage
+        if shared_paired_passage and not enriched.get("paired_passage_text"):
+            enriched["paired_passage_text"] = shared_paired_passage
 
         # Post-extraction: separate passage from question_text when VLM
         # dumps passage content into the stem field.
@@ -852,12 +855,12 @@ async def _persist_single_question(
             q_num_int = None
 
     is_suspect = bool(suspect_question_indices and question_index in suspect_question_indices)
-    has_complete_official_identity = (
-        not is_suspect
-        and job.content_origin == "official"
+    can_lookup_official_identity = (
+        job.content_origin == "official"
         and all([exam, subject, section, module])
         and q_num_int is not None
     )
+    has_complete_official_identity = can_lookup_official_identity and not is_suspect
     if has_complete_official_identity:
         question_id = _official_question_uuid(
             exam,
@@ -882,7 +885,7 @@ async def _persist_single_question(
         if existing_q:
             logger.info("Official question %s already exists — skipping re-insert", question_id)
             return question_id
-        if has_complete_official_identity:
+        if can_lookup_official_identity:
             identity_stmt = (
                 select(Question.id)
                 .where(Question.content_origin == "official")
@@ -1389,7 +1392,7 @@ def _store_page_render(
     b64: str,
     ext: str,
 ) -> dict:
-    decoded = base64.b64decode(b64)
+    decoded = base64.b64decode(b64 + "=" * (-len(b64) % 4))
     if len(decoded) > MAX_PAGE_RENDER_BYTES:
         logger.warning(
             "Page render for job %s page %d is %d bytes (limit %d); skipping",
@@ -2492,44 +2495,38 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     _annot_semaphore = asyncio.Semaphore(settings.annotation_max_concurrent)
 
     async def _annotate_one(idx: int) -> tuple[int, dict | None, Exception | None, dict | None]:
-        """Annotate a single question with retry. Returns (idx, annotate_json, last_err, meta)."""
+        """Annotate a single question. Returns (idx, annotate_json, last_err, meta).
+
+        Retry logic is handled by @with_retry on complete_cached. The outer loop
+        was removed to avoid double-retrying and holding the semaphore across redundant
+        attempts against a serial GPU backend.
+        """
         from app.prompts.annotate_prompt import build_annotate_prompt_parts
         q_data = questions_data[idx]
         prompt_q_data = {**q_data, "content_origin": job.content_origin}
         sys_static, sys_dynamic, user = build_annotate_prompt_parts(prompt_q_data)
-        last_err: Exception | None = None
-        for attempt in range(3):
-            try:
-                async with _annot_semaphore:
-                    result = await provider.complete_cached(
-                        system_static=sys_static, system_dynamic=sys_dynamic,
-                        user=user, max_tokens=8192,
-                    )
-                parsed = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
-                if not parsed:
-                    raise ValueError("LLM returned empty or un-parseable annotation JSON")
-                annotate_json = normalize_annotation(parsed)
-                annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
-                meta = {
-                    "question_index": idx,
-                    "provider": result.provider,
-                    "model": result.model,
-                    "latency_ms": result.latency_ms,
-                    "token_usage": getattr(result, "token_usage", None) or {},
-                }
-                return idx, annotate_json, None, meta
-            except ValueError as json_err:
-                last_err = json_err
-                logger.warning(
-                    "Annotation JSON parse failed (attempt %d/3) for question_index %d: %s",
-                    attempt + 1, idx, json_err,
+        try:
+            async with _annot_semaphore:
+                result = await provider.complete_cached(
+                    system_static=sys_static, system_dynamic=sys_dynamic,
+                    user=user, max_tokens=8192, disable_thinking=True,
                 )
-                if attempt < 2:
-                    await asyncio.sleep(0.3 * (2 ** attempt))
-            except Exception as exc:
-                last_err = exc
-                break
-        return idx, None, last_err, None
+            parsed = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
+            if not parsed:
+                raise ValueError("LLM returned empty or un-parseable annotation JSON")
+            annotate_json = normalize_annotation(parsed)
+            annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
+            meta = {
+                "question_index": idx,
+                "provider": result.provider,
+                "model": result.model,
+                "latency_ms": result.latency_ms,
+                "token_usage": getattr(result, "token_usage", None) or {},
+            }
+            return idx, annotate_json, None, meta
+        except Exception as exc:
+            logger.warning("Annotation failed for question_index %d: %s", idx, exc)
+            return idx, None, exc, None
 
     # Pre-warm the provider's KV / prompt cache with the static rules block for
     # each distinct domain present in this batch. The rules block is 10-17K tokens;
@@ -3143,7 +3140,8 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     )
     try:
         result = await provider.complete_cached(
-            system_static=sys_static, system_dynamic=sys_dynamic, user=user, max_tokens=8192,
+            system_static=sys_static, system_dynamic=sys_dynamic, user=user, max_tokens=32000,
+            disable_thinking=True,
         )
         annotate_json = normalize_annotation(
             extract_json_from_text(result.raw_text, job.provider_name, job.model_name)

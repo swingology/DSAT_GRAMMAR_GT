@@ -23,10 +23,10 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
     ollama_max_concurrent: int = 8  # max parallel requests to Ollama (429 at ~20)
-    annotation_max_concurrent: int = 3  # concurrent LLM annotation calls per ingestion job
+    annotation_max_concurrent: int = 1  # Ollama serializes GPU inference; >1 adds queue pressure with no throughput gain
 
     # Official test data
-    official_test_verbal_dir: str = "../TESTS/DATA_SRC/2024-2025 Tests Answers"
+    official_test_verbal_dir: str = "../TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL"
 
     # Storage
     raw_asset_storage_backend: str = "local"
@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     db_max_overflow: int = 10
     # Hard ceiling for a single ingestion pipeline run; a slow/hung model is
     # aborted so it cannot occupy a job-semaphore slot indefinitely.
-    pipeline_timeout_s: int = 1800
+    pipeline_timeout_s: int = 10800  # 3 hours — covers 33-question annotation at ~3.9 min/call
     # Output token budget for Pass 1 extraction. A full 27-question module of
     # JSON exceeds 16K tokens for large modules; too low a cap truncates the
     # JSON mid-array and the parse fails.

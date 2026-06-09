@@ -21,6 +21,8 @@ You must output valid JSON matching this schema:
     {
       "question_text": "The prompt/stem text",
       "source_question_number": 1 or null,
+      "passage_text": "The passage for this question (Text 1 for cross-text questions), or null",
+      "paired_passage_text": "For cross-text (Text 1 / Text 2) questions ONLY: put Text 2 here. Null for all other question types.",
       "options": [
         {"label": "A", "text": "option A text"},
         {"label": "B", "text": "option B text"},
@@ -28,8 +30,8 @@ You must output valid JSON matching this schema:
         {"label": "D", "text": "option D text"}
       ],
       "correct_option_label": "A or B or C or D",
-      "stimulus_mode_key": "sentence_only or passage_excerpt etc.",
-      "stem_type_key": "complete_the_text or choose_main_idea etc.",
+      "stimulus_mode_key": "sentence_only or passage_excerpt or prose_paired etc.",
+      "stem_type_key": "complete_the_text or choose_main_idea or compare_texts etc.",
       "stimulus_assets": [
         {
           "type": "table, chart, graph, or figure",
@@ -69,6 +71,12 @@ Rules:
     include it as the first line(s) of passage_text — do NOT omit it.
   • passage_text should be the complete block: intro/attribution sentence(s) + passage body.
   • If no passage, set passage_text to null
+- CROSS-TEXT (Text 1 / Text 2) QUESTIONS — when a question refers to two labeled texts:
+  • Put the full Text 1 block in passage_text for that question
+  • Put the full Text 2 block in paired_passage_text for that question
+  • Set stimulus_mode_key to "prose_paired"
+  • Set stem_type_key to "compare_texts"
+  • paired_passage_text must NEVER be null for these questions
 - For a single question, return a questions array with one element
 - If a question is accompanied by a table, chart, graph, or figure, populate stimulus_assets for that question with one entry per distinct visual element. If there are no visual elements, set stimulus_assets to []
 - For tables: extract headers and rows into structured_data. For charts/graphs: extract axis labels and data series into structured_data. For figures: provide a text description

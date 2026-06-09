@@ -4063,6 +4063,157 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-01T16:32:09.095Z"
+    },
+    {
+      "id": "bug-250",
+      "timestamp": "2026-06-08T02:28:21.971Z",
+      "error_message": "Incorrect value in code",
+      "file": ".claude/skills/ingestion-test/run.sh",
+      "root_cause": "Had \"$ROOT/TESTS/DATA_SRC/2024-2025 Tests Answers\"",
+      "fix": "Changed to \"$ROOT/TESTS/DATA_SRC/2025-2026 Tests Answers/VERB",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-06-08T02:31:42.482Z"
+    },
+    {
+      "id": "bug-251",
+      "timestamp": "2026-06-07T00:00:00Z",
+      "error_message": "RESULT_JSON:{\"error\":\"pdf not found: .../2024-2025 Tests Answers/Test_6_digital_sec01_mod01.pdf\"}",
+      "file": ".claude/skills/ingestion-test/run.sh",
+      "root_cause": "PDF_DIR on line 18 was hardcoded to TESTS/DATA_SRC/2024-2025 Tests Answers. The canonical verbal PDF directory is TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL (per CLAUDE.md and backend/app/config.py official_test_verbal_dir). Runner exited before submitting any job.",
+      "fix": "Changed PDF_DIR to TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL on line 18 of run.sh.",
+      "tags": [
+        "ingestion-test",
+        "stale-path",
+        "runner",
+        "pdf-not-found"
+      ],
+      "related_bugs": [
+        "bug-080"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-07"
+    },
+    {
+      "id": "bug-252",
+      "timestamp": "2026-06-07T19:29:26Z",
+      "error_message": "RESULT_JSON:{\"error\":\"no job_id\",\"response\":\"{\\\"detail\\\":\\\"source_section_code must be '01', '02'\\\"}\\n\"}",
+      "file": ".claude/skills/ingestion-test/run.sh",
+      "root_cause": "run.sh lines 83-85 use case-sensitive sed regexes (Sec, Mod, Test[0-9]+) but all PDF stems on disk use lowercase (sec, mod, Test_N). All three extraction regexes fail to match, so EXAM/SECTION/MODULE all receive the full stem string. The API then rejects source_section_code=Test_6_digital_sec01_mod01 with HTTP 422.",
+      "fix": "Update regexes to lowercase: 's/Test_([0-9]+).*/\\1/', 's/.*_sec([0-9]+).*/\\1/', 's/.*_mod([0-9]+).*/\\1/' on lines 83-85 of run.sh.",
+      "tags": [
+        "ingestion-test",
+        "regex",
+        "case-mismatch",
+        "runner",
+        "422-error"
+      ],
+      "related_bugs": [
+        "bug-251"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-07"
+    },
+    {
+      "id": "bug-253",
+      "timestamp": "2026-06-08T03:51:31.451Z",
+      "error_message": "Wrong reference: 1800 should be 10800",
+      "file": "backend/app/config.py",
+      "root_cause": "Used \"1800\" instead of \"10800\"",
+      "fix": "Changed 1800 → 10800",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T03:51:31.451Z"
+    },
+    {
+      "id": "bug-254",
+      "timestamp": "2026-06-08T03:51:55.313Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/app/config.py",
+      "root_cause": "Had \"../TESTS/DATA_SRC/2024-2025 Tests Answers\"",
+      "fix": "Changed to \"../TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T03:51:55.313Z"
+    },
+    {
+      "id": "bug-255",
+      "timestamp": "2026-06-08T16:19:47.550Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/prompts/extract_prompt.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 11→13 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T16:19:47.550Z"
+    },
+    {
+      "id": "bug-256",
+      "timestamp": "2026-06-08T16:20:09.646Z",
+      "error_message": "Wrong reference: shared_source should be shared_paired_passage",
+      "file": "backend/app/routers/ingest.py",
+      "root_cause": "Used \"shared_source\" instead of \"shared_paired_passage\"",
+      "fix": "Changed shared_source → shared_paired_passage",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T16:20:09.646Z"
+    },
+    {
+      "id": "bug-257",
+      "timestamp": "2026-06-08T22:19:06.391Z",
+      "error_message": "Incorrect value in code",
+      "file": "DEBUG_LOG.md",
+      "root_cause": "Had `deepseek-v4-pro:cloud`",
+      "fix": "Changed to `{ \"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T22:19:06.391Z"
+    },
+    {
+      "id": "bug-258",
+      "timestamp": "2026-06-08T23:45:39.102Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/parsers/json_parser.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 18→20 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T23:45:39.102Z"
     }
   ]
 }

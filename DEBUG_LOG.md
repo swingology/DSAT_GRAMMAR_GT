@@ -1,5 +1,79 @@
 # Debug Log
 
+## 2026-06-08 - Annotation JSON Parse Failure on Manually Inserted Questions
+Report created by: Claude Sonnet 4.6
+Git branch: `frontend`
+Git checkpoint: `fe1b64c` — chore(graphify): add knowledge graph tooling config and output dir
+
+### Findings
+
+1. **Medium: Annotation LLM returns nested `{ "question": {...} }` wrapper instead of flat annotation JSON — `extract_json_from_text` fails to parse.**
+   - Affected questions: Q1 of Test01_ENG_Sec01_Mod02A (job `9b9a1034`), Q1 of multiple other modules
+   - Error: `No valid JSON found in text (provider='ollama', model='deepseek-v4-pro:cloud', input_len=4918–8589, preview='{ "question": { "source_exam": "PT1", ...' )`
+   - Root cause: The model returned a response beginning with `{ "question": {...} }` that was likely **truncated mid-JSON** (response cut off before the closing `}`). `_extract_first_braced_candidate` tracks brace depth and returns `None` if it never reaches depth 0 — a truncated response never closes, so all four parsing strategies in `extract_json_from_text` fail and raise "No valid JSON found." The preview showing `"stem_type_key": "choo'` (cut off) is consistent with truncation.
+   - Pattern: Occurs non-deterministically — retry produces a complete response and succeeds. Likely a transient model output truncation rather than a persistent schema error.
+   - **Fixed (workaround):** Retried reannotation up to 3 times; succeeded on attempt 2. No code change applied.
+   - **Long-term fix:** Add a normalization step in `extract_json_from_text` or the annotation path to unwrap a `{ "question": {...} }` envelope before attempting to parse the annotation schema.
+
+## 2026-06-07 - Ingestion Test Run (Test_6_digital_sec01_mod01) — Run 4
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `frontend`
+Git checkpoint: `fe1b64c` — chore(graphify): add knowledge graph tooling config and output dir
+
+### Findings
+
+1. **Medium: Job completed extraction (33/33) with zero validation errors but status remained `annotating` when the runner stopped the server.**
+   - job_id: `c5eaeee0-660c-457a-83e2-8374420731f2`
+   - Extracted: 33 questions. Created: 0 (module was already in DB from prior runs).
+   - Validation error counts by step: none (0 rows).
+   - The "Option labels must be exactly {A, B, C, D}, got ['']" cascade did **not** appear.
+   - Status `annotating` at collection time indicates the annotation phase was still running when `run.sh` polled and then shut down the server — this is a runner timing issue, not a pipeline failure. The 33 questions extracted cleanly with no per-question validation failures.
+   - **No action required on pipeline.** If a clean `approved`/`needs_review` terminal state is needed, delete the duplicate-checksum DB record (see 2026-06-01 Finding #7) and re-run with a longer server uptime window.
+
+## 2026-06-07 - Ingestion Test Run (Test_6_digital_sec01_mod01) — Run 3
+
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `frontend`
+Git checkpoint: `fe1b64c` — chore(graphify): add knowledge graph tooling config and output dir
+
+### Findings
+
+1. **Medium: Prerequisite failure — duplicate checksum blocks re-submission.**
+   - `run.sh` submitted `Test_6_digital_sec01_mod01.pdf` but the backend returned HTTP 400: `"This file has already been ingested (duplicate checksum)."` before a `job_id` was assigned.
+   - RESULT_JSON: `{"error":"no job_id","response":"{\"detail\":\"This file has already been ingested (duplicate checksum).\"}\n"}`.
+   - No new job created; 0 questions extracted or created in this run.
+   - Prior ingestion runs (Run 1 / Run 2 entries in this log) already exercised the pipeline for this module. The existing job(s) in the DB are the canonical record — see the 2026-06-01 audit entry (Finding #7) which notes two duplicate needs_review jobs for Test_6 mod01, each with only 17/33 questions.
+   - **Action required:** To re-ingest cleanly, delete the duplicate jobs and reset the file checksum in the DB, then re-run the pipeline. This is a known operational gap (duplicate-checksum blocker) not a new bug.
+
+## 2026-06-07 - Ingestion Test Run (Test_6_digital_sec01_mod01) — Run 2
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `frontend`
+Git checkpoint: `fe1b64c` — chore(graphify): add knowledge graph tooling config and output dir
+
+### Findings
+
+1. **High: Prerequisite failure — run.sh regex case mismatch prevents job submission.**
+   - `run.sh` lines 83–85 use `sed -E 's/Test([0-9]+).*/\1/'`, `'.*Sec([0-9]+).*/\1/'`, `'.*Mod([0-9]+).*/\1/'` to parse EXAM/SECTION/MODULE from the PDF stem.
+   - All PDF stems on disk use lowercase: `Test_6_digital_sec01_mod01`. The `Sec` and `Mod` patterns never match, so all three variables receive the full stem string instead of a numeric code.
+   - The API received `source_section_code=Test_6_digital_sec01_mod01` and rejected with HTTP 422: `"source_section_code must be '01', '02'"`.
+   - RESULT_JSON: `{"error":"no job_id","response":"{\"detail\":\"source_section_code must be '01', '02'\"}\n"}`.
+   - No job created; 0 questions extracted or created; no validation errors collected.
+   - **Fix required:** Update `run.sh` regexes to lowercase: `'s/Test_([0-9]+).*/\1/'`, `'s/.*_sec([0-9]+).*/\1/'`, `'s/.*_mod([0-9]+).*/\1/'`.
+
+## 2026-06-07 - Ingestion Test Run (Test_6_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `frontend`
+Git checkpoint: `fe1b64c` — chore(graphify): add knowledge graph tooling config and output dir
+
+### Findings
+
+1. **High: Prerequisite failure — PDF not found at hardcoded runner path.**
+   - `run.sh` line 18 had `PDF_DIR` hardcoded to `TESTS/DATA_SRC/2024-2025 Tests Answers`.
+   - `Test_6_digital_sec01_mod01.pdf` lives at `TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL/`.
+   - Runner emitted `RESULT_JSON:{"error":"pdf not found: ..."}` and exited before submitting any job.
+   - No job created; 0 questions extracted or created; no validation errors collected.
+   - **Fixed:** Updated `PDF_DIR` in `run.sh` to `TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL` (matches `official_test_verbal_dir` in `backend/app/config.py`). Re-ingestion dispatched.
+
 ## 2026-06-01 — DB Ingestion Validation Audit
 Report created by: Claude Sonnet 4.6
 Git branch: `frontend`
