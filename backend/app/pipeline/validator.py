@@ -70,9 +70,12 @@ def validate_question(
             })
 
     # Valid correct answer label
-    correct = question_data.get("correct_option_label", "")
-    if correct not in ("A", "B", "C", "D"):
-        errors.append({"severity": "blocking", "field": "correct_option_label", "message": f"Invalid correct_option_label: {correct}"})
+    correct = question_data.get("correct_option_label")  # None when LLM returned null
+    if correct is None or correct == "":
+        # No answer marker in source (question-only PDFs, Bluebook exports) — save for human review
+        errors.append({"severity": "warning", "field": "correct_option_label", "message": "correct_option_label not found in source; question saved for human review"})
+    elif correct not in ("A", "B", "C", "D"):
+        errors.append({"severity": "blocking", "field": "correct_option_label", "message": f"Invalid correct_option_label: {correct!r}"})
 
     # correct_option_label must actually exist among the option rows
     if correct in ("A", "B", "C", "D"):

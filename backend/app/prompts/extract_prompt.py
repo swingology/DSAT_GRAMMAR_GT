@@ -63,7 +63,7 @@ Rules:
   • If a question has no visible printed number, set source_question_number to
     null — do NOT invent a number to fill the sequence.
   • Do not renumber questions based on their position in your output array.
-- Identify the correct answer from the answer key or context
+- Identify the correct answer from the answer key, a circled/checked/highlighted/underlined option, bold formatting, or any other visual marker in the source. If NO answer marker is visible in the source (question-only documents with no selection indicated), set correct_option_label to null — do NOT guess
 - Preserve the original wording as closely as possible
 - PASSAGE TEXT — include the full passage exactly as presented in the source:
   • If there is an introductory or attribution sentence before the passage body

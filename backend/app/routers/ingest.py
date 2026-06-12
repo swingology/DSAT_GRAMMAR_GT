@@ -608,6 +608,8 @@ def _split_passage_from_question(q_data: dict) -> None:
     if best_pos > 0:
         passage = qt[:best_pos].strip()
         stem = qt[best_pos:].strip()
+        if len(stem) < 15:
+            return  # stem too short after split — revert, keep full text in question_text
         q_data["passage_text"] = passage
         q_data["question_text"] = stem
 
@@ -1992,6 +1994,17 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         max_concurrency=ocr_page_concurrency,
                     )
                     raw_text = ocr_result["raw_text"]
+                    _page_chars = [
+                        len(p.get("text", "").strip())
+                        for p in ocr_result.get("pages", [])
+                    ]
+                    if _page_chars:
+                        _sparse = sum(1 for c in _page_chars if c < 100)
+                        if _sparse > len(_page_chars) // 2:
+                            raise ValueError(
+                                f"GLM-OCR soft failure: {_sparse}/{len(_page_chars)} pages "
+                                f"have <100 chars (mean={sum(_page_chars)//len(_page_chars)})"
+                            )
                     ocr_text_path = _store_ocr_text(job, raw_text, "glm")
                     job.pass1_json = {
                         **(job.pass1_json or {}),
@@ -2054,6 +2067,17 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         max_concurrency=ocr_page_concurrency,
                     )
                     raw_text = ocr_result["raw_text"]
+                    _page_chars = [
+                        len(p.get("text", "").strip())
+                        for p in ocr_result.get("pages", [])
+                    ]
+                    if _page_chars:
+                        _sparse = sum(1 for c in _page_chars if c < 100)
+                        if _sparse > len(_page_chars) // 2:
+                            raise ValueError(
+                                f"DeepSeek-OCR soft failure: {_sparse}/{len(_page_chars)} pages "
+                                f"have <100 chars (mean={sum(_page_chars)//len(_page_chars)})"
+                            )
                     ocr_text_path = _store_ocr_text(job, raw_text, "deepseek")
                     job.pass1_json = {
                         **(job.pass1_json or {}),
@@ -2505,28 +2529,40 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         q_data = questions_data[idx]
         prompt_q_data = {**q_data, "content_origin": job.content_origin}
         sys_static, sys_dynamic, user = build_annotate_prompt_parts(prompt_q_data)
-        try:
-            async with _annot_semaphore:
-                result = await provider.complete_cached(
-                    system_static=sys_static, system_dynamic=sys_dynamic,
-                    user=user, max_tokens=8192, disable_thinking=True,
-                )
-            parsed = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
-            if not parsed:
-                raise ValueError("LLM returned empty or un-parseable annotation JSON")
-            annotate_json = normalize_annotation(parsed)
-            annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
-            meta = {
-                "question_index": idx,
-                "provider": result.provider,
-                "model": result.model,
-                "latency_ms": result.latency_ms,
-                "token_usage": getattr(result, "token_usage", None) or {},
-            }
-            return idx, annotate_json, None, meta
-        except Exception as exc:
-            logger.warning("Annotation failed for question_index %d: %s", idx, exc)
-            return idx, None, exc, None
+        last_exc: Exception | None = None
+        for attempt in range(2):
+            try:
+                async with _annot_semaphore:
+                    result = await provider.complete_cached(
+                        system_static=sys_static, system_dynamic=sys_dynamic,
+                        user=user, max_tokens=8192, disable_thinking=True,
+                    )
+                parsed = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
+                if not parsed:
+                    raise ValueError(
+                        f"No valid JSON found in text (provider='{job.provider_name}', "
+                        f"model='{job.model_name}', input_len={len(result.raw_text)}, "
+                        f"preview='{result.raw_text[:200]}')"
+                    )
+                annotate_json = normalize_annotation(parsed)
+                annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
+                meta = {
+                    "question_index": idx,
+                    "provider": result.provider,
+                    "model": result.model,
+                    "latency_ms": result.latency_ms,
+                    "token_usage": getattr(result, "token_usage", None) or {},
+                }
+                return idx, annotate_json, None, meta
+            except Exception as exc:
+                last_exc = exc
+                if attempt == 0:
+                    logger.warning(
+                        "Annotation attempt 1 returned no JSON for question_index %d, retrying: %s",
+                        idx, exc,
+                    )
+        logger.warning("Annotation failed for question_index %d after 2 attempts: %s", idx, last_exc)
+        return idx, None, last_exc, None
 
     # Pre-warm the provider's KV / prompt cache with the static rules block for
     # each distinct domain present in this batch. The rules block is 10-17K tokens;
