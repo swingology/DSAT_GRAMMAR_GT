@@ -206,7 +206,7 @@ flowchart TD
     TwoStep{Strategy mode}
     GLM[GLM pagewise vision OCR]
     DeepSeek[DeepSeek pagewise OCR]
-    VlmPdf[VLM pagewise OCR for PDF]
+    VlmPdf[Explicit or allowed VLM pagewise OCR for PDF]
     VlmFused[VLM fused OCR plus extraction for non-PDF]
     Merge[Append OCR text to preserved embedded text for mixed PDF]
     Pass1[Continue to Pass 1 text extraction]
@@ -225,7 +225,7 @@ flowchart TD
     Resolve --> Chain --> Try --> TwoStep
     TwoStep -->|glm| GLM --> Merge
     TwoStep -->|deepseek| DeepSeek --> Merge
-    TwoStep -->|ollama, anthropic, openai and PDF| VlmPdf --> Merge
+    TwoStep -->|ollama, anthropic, openai and PDF when explicitly selected or enabled| VlmPdf --> Merge
     TwoStep -->|ollama, anthropic, openai and non-PDF| VlmFused --> SkipPass1
     Merge --> Pass1
     Try -->|all fail| FailOCR
@@ -237,27 +237,37 @@ flowchart TD
 |---|---|---|---|---|
 | `glm` | Temporary `OllamaProvider` using `glm_ocr_model` | One vision request per page, bounded concurrency, sequential retry for blank pages. | Same pagewise helper over available image entries. | Produces raw OCR text; Pass 1 still runs. |
 | `deepseek` | Cached `DeepSeekOCRClient` | One OCR request per page, bounded concurrency, sequential retry for blank pages. | Same helper over available image entries. | Produces raw OCR text; Pass 1 still runs. |
-| `ollama` | Cached LLM provider | Pagewise OCR, then text Pass 1. | Fused vision extraction with up to three JSON-parse attempts. | PDF produces raw text; non-PDF may populate extraction directly. |
-| `anthropic` | Cached LLM provider | Pagewise OCR, then text Pass 1. | Fused vision extraction. | Same mode distinction as Ollama. |
-| `openai` | Cached LLM provider | Pagewise OCR, then text Pass 1. | Fused vision extraction. | Same mode distinction as Ollama. |
+| `ollama` | Cached LLM provider | Pagewise OCR, then text Pass 1 only when explicitly resolved first or when `OCR_ALLOW_VLM_PDF_FALLBACK=true`. | Fused vision extraction with up to three JSON-parse attempts. | PDF produces raw text; non-PDF may populate extraction directly. |
+| `anthropic` | Cached LLM provider | Pagewise OCR, then text Pass 1 only when explicitly resolved first or when `OCR_ALLOW_VLM_PDF_FALLBACK=true`. | Fused vision extraction. | Same mode distinction as Ollama. |
+| `openai` | Cached LLM provider | Pagewise OCR, then text Pass 1 only when explicitly resolved first or when `OCR_ALLOW_VLM_PDF_FALLBACK=true`. | Fused vision extraction. | Same mode distinction as Ollama. |
 
 ### OCR Fallback Order
 
-The resolved strategy is attempted first. When `ocr_fallback` is enabled, the
-remaining configured strategies follow in this preference order:
+The resolved strategy is attempted first. When `ocr_fallback` is enabled for
+non-PDF inputs, the remaining configured strategies follow in this preference
+order:
 
 ```text
 glm -> deepseek -> anthropic -> openai -> ollama
 ```
 
+For PDF pagewise OCR, generic VLM strategies (`anthropic`, `openai`, `ollama`)
+are not appended as fallbacks by default. PDF fallback remains on document-OCR
+strategies (`glm`, `deepseek`) unless `OCR_ALLOW_VLM_PDF_FALLBACK=true`.
+An explicitly resolved VLM strategy still runs first for backwards
+compatibility, then falls back to configured document-OCR strategies.
+
 The chain is configuration-dependent. A strategy is omitted when its required
-model, key, or endpoint is unavailable.
+model, key, or endpoint is unavailable. The final resolved chain is recorded in
+`pass1_json._ocr_chain` before attempts start and in successful
+`pass1_json._ocr_meta.strategy_chain`.
 
 ### OCR Side Effects
 
 Successful OCR can write:
 
 - `pass1_json.raw_text`;
+- `pass1_json._ocr_chain`;
 - `pass1_json._ocr_meta`;
 - one `ocr_text` object-store artifact;
 - per-page latency, character count, and token usage;

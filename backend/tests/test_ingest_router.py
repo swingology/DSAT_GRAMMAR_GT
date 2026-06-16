@@ -475,6 +475,73 @@ def test_available_ocr_strategies_empty_when_nothing_configured():
     assert _available_ocr_strategies(settings) == []
 
 
+def test_build_ocr_chain_pdf_excludes_vlm_fallbacks_by_default():
+    from types import SimpleNamespace
+    from app.routers.ingest import _build_ocr_chain
+
+    settings = SimpleNamespace(
+        glm_ocr_model="glm-ocr:latest",
+        deepseek_ocr_base_url="http://localhost:8001",
+        ocr_vision_provider="ollama",
+        ollama_base_url="http://localhost:11434",
+        anthropic_api_key="sk-ant-key",
+        openai_api_key="sk-openai-key",
+        ocr_fallback=True,
+        ocr_allow_vlm_pdf_fallback=False,
+    )
+
+    assert _build_ocr_chain("glm", settings, pagewise_pdf_ocr=True) == [
+        "glm",
+        "deepseek",
+    ]
+
+
+def test_build_ocr_chain_pdf_allows_vlm_fallbacks_when_enabled():
+    from types import SimpleNamespace
+    from app.routers.ingest import _build_ocr_chain
+
+    settings = SimpleNamespace(
+        glm_ocr_model="glm-ocr:latest",
+        deepseek_ocr_base_url="http://localhost:8001",
+        ocr_vision_provider="ollama",
+        ollama_base_url="http://localhost:11434",
+        anthropic_api_key="sk-ant-key",
+        openai_api_key="sk-openai-key",
+        ocr_fallback=True,
+        ocr_allow_vlm_pdf_fallback=True,
+    )
+
+    assert _build_ocr_chain("glm", settings, pagewise_pdf_ocr=True) == [
+        "glm",
+        "deepseek",
+        "anthropic",
+        "openai",
+        "ollama",
+    ]
+
+
+def test_build_ocr_chain_pdf_keeps_explicit_vlm_first():
+    from types import SimpleNamespace
+    from app.routers.ingest import _build_ocr_chain
+
+    settings = SimpleNamespace(
+        glm_ocr_model="glm-ocr:latest",
+        deepseek_ocr_base_url="http://localhost:8001",
+        ocr_vision_provider="ollama",
+        ollama_base_url="http://localhost:11434",
+        anthropic_api_key="sk-ant-key",
+        openai_api_key="sk-openai-key",
+        ocr_fallback=True,
+        ocr_allow_vlm_pdf_fallback=False,
+    )
+
+    assert _build_ocr_chain("ollama", settings, pagewise_pdf_ocr=True) == [
+        "ollama",
+        "glm",
+        "deepseek",
+    ]
+
+
 def test_benchmark_ocr_rejects_no_strategies(client, monkeypatch):
     import app.routers.ingest as ingest_router
     from types import SimpleNamespace

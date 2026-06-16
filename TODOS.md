@@ -2,23 +2,7 @@
 
 ## Priority Ingestion Fixes
 
-### 1. Tighten OCR fallback model routing
-
-**Status:** operational risk.
-
-The OCR fallback chain can still reach a generic `ollama` VLM path
-(`qwen3-vl:235b-instruct-cloud`) for PDF OCR. Prior runs showed this path can
-fail on large or complex official pages.
-
-**Fix:**
-
-- Separate document-OCR-capable models from generic vision models.
-- Prefer `glm` / `deepseek` style document OCR fallbacks for PDFs.
-- Block generic VLM fallback for large multi-page PDFs unless explicitly
-  requested.
-- Record the final resolved fallback chain in job metadata for auditability.
-
-### 2. Resolve runner and pipeline timeout conflict
+### 1. Resolve runner and pipeline timeout conflict
 
 **Status:** operational conflict.
 
@@ -82,6 +66,8 @@ negatives) or over-loosening (false positives). No quick win guaranteed.
 
 ## Already Addressed Or Stale Debug-Log Items
 
+- PDF OCR fallback now defaults to document-OCR strategies and records the
+  resolved fallback chain; generic VLM PDF fallback requires an explicit flag.
 - Reannotation now shares the normal ingest annotation retry helper for
   malformed or empty JSON responses.
 - Amendment proposal aliases now normalize observed `skill_family` and

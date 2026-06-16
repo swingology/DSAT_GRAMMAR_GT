@@ -69,6 +69,7 @@ class Settings(BaseSettings):
     ocr_vision_model: str = "qwen3-vl:235b-instruct-cloud"
     ocr_strategy: str = "glm"  # glm | deepseek | ollama | anthropic | openai | auto
     ocr_fallback: bool = True
+    ocr_allow_vlm_pdf_fallback: bool = False
     # PDF OCR is pagewise. This bounds concurrent page OCR calls; values above 3
     # are clamped in the ingest pipeline to avoid overloading local vision models.
     ocr_page_concurrency: int = 1

@@ -66,6 +66,8 @@ OCR_PAGE_SYSTEM_PROMPT = (
 )
 OCR_PAGE_USER_PROMPT = "Extract all text from this image."
 MAX_OCR_PAGE_CONCURRENCY = 3
+DOCUMENT_OCR_STRATEGIES = ("glm", "deepseek")
+GENERIC_VLM_OCR_STRATEGIES = ("anthropic", "openai", "ollama")
 
 
 def _resolve_provider_and_model(
@@ -1949,16 +1951,23 @@ def _available_ocr_strategies(settings) -> list[str]:
     return available
 
 
-def _build_ocr_chain(resolved: str, settings) -> list[str]:
+def _build_ocr_chain(resolved: str, settings, *, pagewise_pdf_ocr: bool = False) -> list[str]:
     """Ordered OCR strategy fallback chain.
 
     The resolved strategy runs first; the remaining available strategies follow
-    with two-step OCR (``glm``, ``deepseek``) preferred over VLM-fused providers,
-    so a failed run falls back to a two-step path before a VLM path.
+    with document OCR providers preferred before generic VLM providers. For
+    PDF pagewise OCR, generic VLM providers are fallback candidates only when
+    ``ocr_allow_vlm_pdf_fallback`` is enabled; an explicitly resolved VLM
+    strategy still runs first for backwards compatibility.
     """
     if not getattr(settings, "ocr_fallback", True):
         return [resolved]
-    preference = ["glm", "deepseek", "anthropic", "openai", "ollama"]
+    preference = list(DOCUMENT_OCR_STRATEGIES)
+    if (
+        not pagewise_pdf_ocr
+        or getattr(settings, "ocr_allow_vlm_pdf_fallback", False)
+    ):
+        preference.extend(GENERIC_VLM_OCR_STRATEGIES)
     available = set(_available_ocr_strategies(settings))
     chain = [resolved]
     for candidate in preference:
@@ -2150,16 +2159,37 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             await db.commit()
             return
 
-        # Ordered fallback chain — the resolved strategy runs first, then the
-        # remaining available strategies with two-step OCR (glm, deepseek)
-        # preferred over VLM-fused providers.
-        _ocr_chain = _build_ocr_chain(resolved_strategy, settings)
+        # Ordered fallback chain — the resolved strategy runs first. PDF OCR
+        # fallback defaults to document OCR providers unless VLM fallback is
+        # explicitly enabled.
+        _ocr_chain = _build_ocr_chain(
+            resolved_strategy,
+            settings,
+            pagewise_pdf_ocr=pagewise_pdf_ocr,
+        )
+        _ocr_chain_meta = {
+            "requested_strategy": ocr_strategy_req or getattr(settings, "ocr_strategy", "auto"),
+            "resolved_strategy": resolved_strategy,
+            "strategy_chain": _ocr_chain,
+            "fallback_enabled": bool(getattr(settings, "ocr_fallback", True)),
+            "pagewise_pdf_ocr": pagewise_pdf_ocr,
+            "vlm_pdf_fallback_enabled": bool(
+                getattr(settings, "ocr_allow_vlm_pdf_fallback", False)
+            ),
+        }
+        job.pass1_json = {
+            **(job.pass1_json or {}),
+            "_ocr_chain": _ocr_chain_meta,
+        }
         _ocr_done = False
         _ocr_last_err: Exception | None = None
 
         logger.info(
-            "OCR chain for job %s: %s (fallback=%s)",
-            job.id, _ocr_chain, settings.ocr_fallback,
+            "OCR chain for job %s: %s (fallback=%s, pdf_vlm_fallback=%s)",
+            job.id,
+            _ocr_chain,
+            getattr(settings, "ocr_fallback", True),
+            _ocr_chain_meta["vlm_pdf_fallback_enabled"],
         )
 
         for _idx, _strategy in enumerate(_ocr_chain):
@@ -2215,6 +2245,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         "_ocr_meta": {
                             "strategy": "glm",
                             "model": glm_model,
+                            **_ocr_chain_meta,
                             "page_count": len(_strategy_images),
                             "pagewise": True,
                             "page_concurrency": ocr_page_concurrency,
@@ -2288,6 +2319,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                         "_ocr_meta": {
                             "strategy": "deepseek",
                             "model": settings.deepseek_ocr_model,
+                            **_ocr_chain_meta,
                             "page_count": len(_strategy_images),
                             "pagewise": True,
                             "page_concurrency": ocr_page_concurrency,
@@ -2365,6 +2397,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                             "_ocr_meta": {
                                 "strategy": _strategy,
                                 "model": vlm_model,
+                                **_ocr_chain_meta,
                                 "page_count": len(_strategy_images),
                                 "pagewise": True,
                                 "page_concurrency": ocr_page_concurrency,
@@ -2431,6 +2464,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                             "_ocr_meta": {
                                 "strategy": _strategy,
                                 "model": vlm_model,
+                                **_ocr_chain_meta,
                                 "page_count": len(_strategy_images),
                                 "latency_ms": vision_result.latency_ms,
                                 "token_usage": getattr(vision_result, "token_usage", None) or {},
