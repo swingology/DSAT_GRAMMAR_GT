@@ -2,20 +2,7 @@
 
 ## Priority Ingestion Fixes
 
-### 1. Resolve runner and pipeline timeout conflict
-
-**Status:** operational conflict.
-
-The ingestion test runner polls for 30 minutes, but `pipeline_timeout_s` is 3
-hours. If the runner starts the API server itself, cleanup can stop an in-process
-background ingestion while the job is still `annotating`.
-
-**Fix:**
-
-- Align runner polling duration with `pipeline_timeout_s`, or
-- Leave self-started servers alive until the job reaches a terminal status, or
-- Move long-running ingestion execution out of process so server cleanup cannot
-  kill the active job.
+No code-confirmed high-priority ingestion fixes remain from the current audit.
 
 ## OCR Stimulus Detection
 
@@ -66,6 +53,8 @@ negatives) or over-loosening (false positives). No quick win guaranteed.
 
 ## Already Addressed Or Stale Debug-Log Items
 
+- The ingestion test runner now polls through `pipeline_timeout_s` plus grace
+  time and leaves a self-started server alive if the job is still non-terminal.
 - PDF OCR fallback now defaults to document-OCR strategies and records the
   resolved fallback chain; generic VLM PDF fallback requires an explicit flag.
 - Reannotation now shares the normal ingest annotation retry helper for
