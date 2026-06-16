@@ -11,7 +11,7 @@ from app.auth import (
     decode_token,
     get_current_user,
     hash_password,
-    verify_password,
+    verify_and_update_password,
 )
 from app.config import get_settings
 from app.database import get_db
@@ -82,7 +82,11 @@ async def login(body: StudentLogin, db: AsyncSession = Depends(get_db)):
             detail="Invalid email or password",
         )
 
-    if not verify_password(body.password, user.password_hash):
+    password_ok, updated_password_hash = verify_and_update_password(
+        body.password,
+        user.password_hash,
+    )
+    if not password_ok:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
@@ -103,6 +107,8 @@ async def login(body: StudentLogin, db: AsyncSession = Depends(get_db)):
     user.refresh_token_expires = datetime.now(timezone.utc) + timedelta(
         days=settings.refresh_token_expire_days
     )
+    if updated_password_hash:
+        user.password_hash = updated_password_hash
     await db.commit()
 
     return TokenResponse(

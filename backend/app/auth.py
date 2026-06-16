@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 
+import bcrypt
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+from pwdlib import PasswordHash
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,15 +15,45 @@ from app.models.db import User
 
 # --- Password hashing -------------------------------------------------------
 
-_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+_password_hash = PasswordHash.recommended()
+_LEGACY_BCRYPT_PREFIXES = ("$2a$", "$2b$", "$2y$")
+
+
+def _bcrypt_password_bytes(plain: str) -> bytes:
+    """Match legacy bcrypt's 72-byte password limit for stored bcrypt hashes."""
+    return plain.encode("utf-8")[:72]
 
 
 def hash_password(plain: str) -> str:
-    return _pwd_context.hash(plain)
+    return _password_hash.hash(plain)
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return _pwd_context.verify(plain, hashed)
+    verified, _updated_hash = verify_and_update_password(plain, hashed)
+    return verified
+
+
+def verify_and_update_password(plain: str, hashed: str) -> tuple[bool, str | None]:
+    if not hashed:
+        return False, None
+
+    if hashed.startswith("$argon2"):
+        try:
+            return _password_hash.verify_and_update(plain, hashed)
+        except Exception:
+            return False, None
+
+    if hashed.startswith(_LEGACY_BCRYPT_PREFIXES):
+        try:
+            verified = bcrypt.checkpw(
+                _bcrypt_password_bytes(plain),
+                hashed.encode("utf-8"),
+            )
+        except ValueError:
+            return False, None
+        return verified, hash_password(plain) if verified else None
+
+    return False, None
 
 
 # --- JWT token utilities ----------------------------------------------------

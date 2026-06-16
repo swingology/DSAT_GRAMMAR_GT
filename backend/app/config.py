@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://localhost:11434"
     ollama_max_concurrent: int = 8  # max parallel requests to Ollama (429 at ~20)
     annotation_max_concurrent: int = 1  # Ollama serializes GPU inference; >1 adds queue pressure with no throughput gain
+    annotation_cache_prewarm_enabled: bool = True
 
     # Official test data
     official_test_verbal_dir: str = "../TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL"
@@ -58,7 +59,7 @@ class Settings(BaseSettings):
     # JSON exceeds 16K tokens for large modules; too low a cap truncates the
     # JSON mid-array and the parse fails.
     # For qwen3-vl cloud: cloud API may have lower limits than local models.
-    extraction_max_tokens: int = 16000
+    extraction_max_tokens: int = 32000
     # Background sweeper interval — marks jobs stuck in in-progress statuses
     # longer than pipeline_timeout_s as failed. 0 disables the sweeper.
     job_sweeper_interval_s: int = 300

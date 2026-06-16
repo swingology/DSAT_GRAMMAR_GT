@@ -58,6 +58,7 @@ MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 MAX_PAGE_RENDER_BYTES = 10 * 1024 * 1024  # 10 MB per decoded page image
 OCR_TEXT_EXTRACT_PROVIDER = "ollama"
 OCR_TEXT_EXTRACT_MODEL = "deepseek-v4-pro:cloud"  # Two-step extraction: GLM-OCR (text) + Deepseek (JSON)
+TERMINAL_JOB_STATUSES = {"approved", "needs_review", "failed"}
 OCR_PAGE_SYSTEM_PROMPT = (
     "You are a precise OCR engine. Extract all text from the image exactly as it "
     "appears. Preserve question numbers on their own lines, option labels (A/B/C/D), "
@@ -156,6 +157,20 @@ def _official_question_uuid(
     ])
     canonical = ":".join(parts)
     return uuid.uuid5(_OFFICIAL_Q_NAMESPACE, canonical)
+
+
+def _infer_release_year_from_filename(filename: str) -> int | None:
+    """Infer source_release_year from PDF filename conventions.
+
+    2025-2026 tests: Test_N_digital_sec01_modXX.pdf  → 2025
+    2024-2025 tests: TestXX_ENG_Sec01_ModXX.pdf      → 2024
+    """
+    stem = Path(filename).stem.lower()
+    if re.match(r"test_\d+_digital_", stem):
+        return 2025
+    if re.match(r"test\d+_eng_", stem):
+        return 2024
+    return None
 
 
 def _normalize_source_release_year(value: int | str | None) -> int | None:
@@ -279,6 +294,53 @@ _DSAT_QUESTION_RANGES: dict[tuple[str, str], tuple[int, int]] = {
     ("math",   "01"): (1, 22),
     ("math",   "02"): (1, 22),
 }
+
+
+def _expected_question_count(subject_code: str | None, module_code: str | None) -> int | None:
+    try:
+        subject = _normalize_source_subject_code(subject_code) if subject_code else None
+        module = _normalize_source_slot(module_code, "source_module_code") if module_code else None
+    except HTTPException:
+        return None
+    if not subject or not module:
+        return None
+    question_range = _DSAT_QUESTION_RANGES.get((subject, module))
+    if not question_range:
+        return None
+    low, high = question_range
+    return high - low + 1
+
+
+def _module_completeness_errors(
+    *,
+    expected_count: int | None,
+    extracted_count: int,
+    created_count: int,
+) -> list[dict]:
+    if expected_count is None:
+        return []
+    if extracted_count == expected_count and created_count == expected_count:
+        return []
+
+    issue = "question_count_mismatch"
+    if extracted_count < expected_count:
+        issue = "extraction_shortfall"
+    elif created_count < expected_count:
+        issue = "persistence_shortfall"
+
+    return [{
+        "step": "module_completeness",
+        "severity": "review",
+        "field": "question_count",
+        "issue": issue,
+        "expected_count": expected_count,
+        "extracted_count": extracted_count,
+        "created_count": created_count,
+        "detail": (
+            f"official module expected {expected_count} questions, "
+            f"extracted {extracted_count}, created {created_count}"
+        ),
+    }]
 
 
 # Keys produced by Pass 1 extraction that are the structural source of truth.
@@ -818,6 +880,43 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
     return questions, shared_passage, shared_source, norm_errors
 
 
+def _resolve_correct_option_label(q_data: dict, annotate_json: dict) -> str | None:
+    """Return the correct option label, falling back to annotation when extraction missed it.
+
+    Extraction (GLM-OCR) may return None/empty for question-only PDFs that don't
+    mark the answer key. The annotation pass (DeepSeek) independently identifies
+    the correct option via is_correct=True on its option list — use that as a
+    fallback. Returns None when neither source can determine the answer, so the
+    DB stores NULL rather than an empty string (column is nullable after migration 031).
+    """
+    label = _clean_option_label(q_data.get("correct_option_label") or "")
+    if label in ("A", "B", "C", "D"):
+        return label
+    # Fallback 1: annotation top-level correct_option_label (set by annotator rule 8)
+    ann_top = _clean_option_label(annotate_json.get("correct_option_label") or "")
+    if ann_top in ("A", "B", "C", "D"):
+        logger.info(
+            "_resolve_correct_option_label: derived label=%r from annotation top-level (extraction returned %r)",
+            ann_top, q_data.get("correct_option_label"),
+        )
+        return ann_top
+    # Fallback 2: annotation options where is_correct=True
+    for opt in annotate_json.get("options", []):
+        if isinstance(opt, dict) and opt.get("is_correct"):
+            ann_label = _clean_option_label(opt.get("option_label") or opt.get("label") or "")
+            if ann_label in ("A", "B", "C", "D"):
+                logger.info(
+                    "_resolve_correct_option_label: derived label=%r from annotation is_correct flag (extraction returned %r)",
+                    ann_label, q_data.get("correct_option_label"),
+                )
+                return ann_label
+    logger.warning(
+        "_resolve_correct_option_label: could not determine answer (extraction=%r, no is_correct in annotation) — storing NULL",
+        q_data.get("correct_option_label"),
+    )
+    return None
+
+
 async def _persist_single_question(
     db: AsyncSession,
     job: QuestionJob,
@@ -940,7 +1039,7 @@ async def _persist_single_question(
         current_passage_text=passage_text or q_data.get("passage_text"),
         current_paired_passage_text=q_data.get("paired_passage_text"),
         current_underlined_text=q_data.get("underlined_text"),
-        current_correct_option_label=q_data.get("correct_option_label", ""),
+        current_correct_option_label=_resolve_correct_option_label(q_data, annotate_json),
         current_explanation_text=annotate_json.get("explanation_short", ""),
         practice_status=practice_status,
         official_overlap_status=overlap_status,
@@ -962,7 +1061,7 @@ async def _persist_single_question(
         paired_passage_text=q_data.get("paired_passage_text"),
         underlined_text=q_data.get("underlined_text"),
         choices_jsonb=q_data.get("options", []),
-        correct_option_label=q_data.get("correct_option_label", ""),
+        correct_option_label=_resolve_correct_option_label(q_data, annotate_json),
         explanation_text=annotate_json.get("explanation_short"),
         created_at=now,
     ))
@@ -992,7 +1091,7 @@ async def _persist_single_question(
     question.latest_annotation_id = annotation_id
     question.latest_version_id = version_id
 
-    correct_label = q_data.get("correct_option_label", "")
+    correct_label = _resolve_correct_option_label(q_data, annotate_json)
     opt_analyses = option_analyses_by_label(annotate_json)
     for opt in q_data.get("options", []):
         label = opt.get("label", "")
@@ -2516,7 +2615,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         q_data.setdefault("source_section_code", section_code)
         q_data.setdefault("source_module_code", module_code)
 
-    _annot_semaphore = asyncio.Semaphore(settings.annotation_max_concurrent)
+    _annot_semaphore = asyncio.Semaphore(getattr(settings, "annotation_max_concurrent", 1))
 
     async def _annotate_one(idx: int) -> tuple[int, dict | None, Exception | None, dict | None]:
         """Annotate a single question. Returns (idx, annotate_json, last_err, meta).
@@ -2568,7 +2667,8 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     # each distinct domain present in this batch. The rules block is 10-17K tokens;
     # filling the cache once here means every subsequent concurrent annotation call
     # hits the warm cache instead of paying the full prefill cost.
-    await _prewarm_annotation_cache(provider, questions_data, job.content_origin)
+    if getattr(settings, "annotation_cache_prewarm_enabled", False):
+        await _prewarm_annotation_cache(provider, questions_data, job.content_origin)
 
     # Fire all annotation calls concurrently, bounded by semaphore
     job.status = "annotating"
@@ -2694,6 +2794,20 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
             })
             continue
 
+    if job.content_origin == "official":
+        completeness_errors = _module_completeness_errors(
+            expected_count=_expected_question_count(subject_code, module_code),
+            extracted_count=len(questions_data),
+            created_count=len(created_question_ids),
+        )
+        if completeness_errors:
+            logger.warning(
+                "Official module completeness issue for job %s: %s",
+                job.id,
+                completeness_errors,
+            )
+            all_errors.extend(completeness_errors)
+
     # ---- Final job status ----
     pass2_payload: dict = {}
     if len(pass2_annotation_records) == 1:
@@ -2772,6 +2886,76 @@ async def _safe_read(file: UploadFile, max_bytes: int) -> bytes:
     if len(content) > max_bytes:
         raise HTTPException(status_code=413, detail="File too large (max 50MB)")
     return content
+
+
+def _created_count_from_job_payload(job: QuestionJob) -> int | None:
+    pass1 = getattr(job, "pass1_json", None)
+    if not isinstance(pass1, dict):
+        return None
+    created_ids = pass1.get("_created_question_ids")
+    if isinstance(created_ids, list):
+        return len(created_ids)
+    return None
+
+
+async def _linked_question_count(db: AsyncSession, job_id: uuid.UUID) -> int:
+    result = await db.execute(
+        select(QuestionJobQuestion).where(QuestionJobQuestion.job_id == job_id)
+    )
+    return len(result.scalars().all())
+
+
+async def _duplicate_checksum_conflict_detail(
+    db: AsyncSession,
+    checksum: str,
+    *,
+    expected_question_count: int | None,
+) -> str | None:
+    existing_assets_result = await db.execute(
+        select(QuestionAsset).where(QuestionAsset.checksum == checksum)
+    )
+    existing_assets = existing_assets_result.scalars().all()
+    if not existing_assets:
+        return None
+
+    if expected_question_count is None:
+        return "This file has already been ingested (duplicate checksum)."
+
+    asset_ids = [asset.id for asset in existing_assets]
+    jobs_result = await db.execute(
+        select(QuestionJob).where(QuestionJob.raw_asset_id.in_(asset_ids))
+    )
+    prior_jobs = jobs_result.scalars().all()
+    if not prior_jobs:
+        return (
+            "This file has already been uploaded, but no ingest job history was found. "
+            "Manual cleanup is required before retrying this checksum."
+        )
+
+    active_jobs = [job for job in prior_jobs if job.status not in TERMINAL_JOB_STATUSES]
+    if active_jobs:
+        return (
+            "This file is already being ingested or has an in-progress job "
+            f"({active_jobs[0].id})."
+        )
+
+    for job in prior_jobs:
+        created_count = _created_count_from_job_payload(job)
+        if created_count is None:
+            created_count = await _linked_question_count(db, job.id)
+        if created_count >= expected_question_count:
+            return (
+                "This file has already produced a complete ingest "
+                f"({created_count}/{expected_question_count} questions)."
+            )
+
+    logger.info(
+        "Allowing duplicate-checksum retry for checksum %s: prior jobs are terminal "
+        "and incomplete for expected_count=%s",
+        checksum,
+        expected_question_count,
+    )
+    return None
 
 
 def _normalize_mime(mime: str | None) -> str:
@@ -2856,12 +3040,19 @@ async def ingest_official_pdf(
         source_module_code,
     )
     source_release_year = _normalize_source_release_year(source_release_year)
+    if source_release_year is None and file.filename:
+        source_release_year = _infer_release_year_from_filename(file.filename)
     source_test_name = _normalize_source_test_name(source_test_name)
+    expected_question_count = _expected_question_count(source_subject_code, source_module_code)
 
     checksum = compute_checksum(content)
-    existing = await db.execute(select(QuestionAsset).where(QuestionAsset.checksum == checksum))
-    if existing.scalars().first():
-        raise HTTPException(status_code=409, detail="This file has already been ingested (duplicate checksum).")
+    duplicate_detail = await _duplicate_checksum_conflict_detail(
+        db,
+        checksum,
+        expected_question_count=expected_question_count,
+    )
+    if duplicate_detail:
+        raise HTTPException(status_code=409, detail=duplicate_detail)
 
     now = datetime.now(timezone.utc)
     asset_id = uuid.uuid4()

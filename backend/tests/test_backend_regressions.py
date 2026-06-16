@@ -230,6 +230,107 @@ async def test_run_pipeline_auto_activates_official_questions_when_testing_flag_
 
 
 @pytest.mark.asyncio
+async def test_run_pipeline_marks_incomplete_official_module_needs_review(monkeypatch):
+    db = _FakeDB()
+    job = SimpleNamespace(
+        id=uuid.uuid4(),
+        content_origin="official",
+        job_type="ingest",
+        provider_name="anthropic",
+        model_name="model",
+        prompt_version="v3.0",
+        rules_version="rules",
+        pass1_json={
+            "raw_text": "raw official text",
+            "source_metadata": {
+                "source_subject_code": "verbal",
+                "source_module_code": "01",
+            },
+        },
+        validation_errors_jsonb=None,
+        raw_asset_id=None,
+        status="parsing",
+        question_id=None,
+    )
+
+    extract_json = {
+        "questions": [{
+            "question_text": "What is the answer?",
+            "passage_text": "A passage",
+            "correct_option_label": "A",
+            "options": [
+                {"label": "A", "text": "Correct"},
+                {"label": "B", "text": "Wrong"},
+                {"label": "C", "text": "Wrong"},
+                {"label": "D", "text": "Wrong"},
+            ],
+            "source_exam_code": "PT01",
+            "source_subject_code": "verbal",
+            "source_module_code": "01",
+            "source_question_number": 1,
+            "stimulus_mode_key": "sentence_only",
+            "stem_type_key": "complete_the_text",
+        }],
+    }
+    annotate_json = {
+        "explanation_short": "Because A is correct.",
+        "explanation_full": "Long explanation",
+        "annotation_confidence": 0.9,
+        "needs_human_review": False,
+    }
+    responses = iter([extract_json, annotate_json])
+    provider = SimpleNamespace(
+        complete=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        ),
+        complete_cached=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
+                SimpleNamespace(raw_text="annotate", provider="anthropic", model="m1", latency_ms=10),
+            ]
+        ),
+    )
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+    monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(
+        ingest_router,
+        "get_settings",
+        lambda: SimpleNamespace(
+            anthropic_api_key="k",
+            openai_api_key=None,
+            ollama_base_url="http://localhost:11434",
+            local_archive_mirror="/tmp/test_archive",
+            official_auto_activate_for_testing=True,
+            layout_detection_enabled=False,
+            ollama_max_concurrent=8,
+            annotation_max_concurrent=1,
+        ),
+    )
+
+    await ingest_router._run_pipeline(job, db)
+
+    assert job.status == "needs_review"
+    assert job.validation_errors_jsonb == [
+        {
+            "step": "module_completeness",
+            "severity": "review",
+            "field": "question_count",
+            "issue": "extraction_shortfall",
+            "expected_count": 33,
+            "extracted_count": 1,
+            "created_count": 1,
+            "detail": "official module expected 33 questions, extracted 1, created 1",
+        }
+    ]
+
+
+@pytest.mark.asyncio
 async def test_run_pipeline_persists_overlap_after_question_creation(monkeypatch):
     db = _FakeDB()
     job = SimpleNamespace(
@@ -531,6 +632,80 @@ def test_provider_api_key_selection():
     assert generate_router._provider_api_key(settings, "anthropic") == "anthropic-key"
     assert generate_router._provider_api_key(settings, "openai") == "openai-key"
     assert generate_router._provider_api_key(settings, "ollama") == ""
+
+
+@pytest.mark.asyncio
+async def test_duplicate_checksum_allows_retry_for_terminal_partial_official_job():
+    db = _FakeDB()
+    asset_id = uuid.uuid4()
+    job_id = uuid.uuid4()
+    db.execute_results = [
+        _ScalarResult(items=[SimpleNamespace(id=asset_id)]),
+        _ScalarResult(items=[
+            SimpleNamespace(
+                id=job_id,
+                status="approved",
+                pass1_json={"_created_question_ids": [str(uuid.uuid4()) for _ in range(27)]},
+            )
+        ]),
+    ]
+
+    detail = await ingest_router._duplicate_checksum_conflict_detail(
+        db,
+        "checksum",
+        expected_question_count=33,
+    )
+
+    assert detail is None
+
+
+@pytest.mark.asyncio
+async def test_duplicate_checksum_blocks_complete_prior_official_job():
+    db = _FakeDB()
+    asset_id = uuid.uuid4()
+    db.execute_results = [
+        _ScalarResult(items=[SimpleNamespace(id=asset_id)]),
+        _ScalarResult(items=[
+            SimpleNamespace(
+                id=uuid.uuid4(),
+                status="needs_review",
+                pass1_json={"_created_question_ids": [str(uuid.uuid4()) for _ in range(33)]},
+            )
+        ]),
+    ]
+
+    detail = await ingest_router._duplicate_checksum_conflict_detail(
+        db,
+        "checksum",
+        expected_question_count=33,
+    )
+
+    assert "complete ingest" in detail
+
+
+@pytest.mark.asyncio
+async def test_duplicate_checksum_blocks_active_prior_official_job():
+    db = _FakeDB()
+    asset_id = uuid.uuid4()
+    active_job_id = uuid.uuid4()
+    db.execute_results = [
+        _ScalarResult(items=[SimpleNamespace(id=asset_id)]),
+        _ScalarResult(items=[
+            SimpleNamespace(
+                id=active_job_id,
+                status="extracting",
+                pass1_json={"_created_question_ids": []},
+            )
+        ]),
+    ]
+
+    detail = await ingest_router._duplicate_checksum_conflict_detail(
+        db,
+        "checksum",
+        expected_question_count=33,
+    )
+
+    assert str(active_job_id) in detail
 
 
 @pytest.mark.asyncio
