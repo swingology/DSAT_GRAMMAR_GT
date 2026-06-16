@@ -2,22 +2,7 @@
 
 ## Priority Ingestion Fixes
 
-### 1. Fix unofficial non-PDF ingest crash
-
-**Status:** code-confirmed gap.
-
-`backend/app/routers/ingest.py` builds `pass1_json` for unofficial uploads using
-`pdf_result`, but `pdf_result` is only assigned inside the PDF branch. Text,
-JSON, markdown, or image uploads can hit an unbound variable error.
-
-**Fix:**
-
-- Initialize `pdf_result` or, preferably, build a separate `page_texts` list.
-- Use `page_texts` in `pass1_json["_page_texts"]` instead of referencing
-  `pdf_result` outside the PDF branch.
-- Add regression tests for unofficial text, JSON, markdown, and image uploads.
-
-### 2. Retry official extraction shortfalls before annotation
+### 1. Retry official extraction shortfalls before annotation
 
 **Status:** partially mitigated, still operationally expensive.
 
@@ -33,7 +18,7 @@ annotation work on an incomplete module before reporting the shortfall.
 - Store missing expected question numbers in `validation_errors_jsonb`.
 - Keep final `module_completeness` review routing as the safety net.
 
-### 3. Normalize amendment proposal aliases
+### 2. Normalize amendment proposal aliases
 
 **Status:** code-confirmed gap from ingestion runs.
 
@@ -50,7 +35,7 @@ become warnings instead of pending amendment files.
   - `distractor_type_key` -> `DISTRACTOR_TYPE_KEYS`
 - Add tests for both observed warning cases.
 
-### 4. Share annotation retry logic with reannotation
+### 3. Share annotation retry logic with reannotation
 
 **Status:** code-confirmed inconsistency.
 
@@ -63,7 +48,7 @@ one annotation call and marks the job failed on parse errors.
 - Use it from both normal ingest and `_run_reannotate_pipeline`.
 - Preserve existing metadata capture and `enforce_nullability` behavior.
 
-### 5. Tighten OCR fallback model routing
+### 4. Tighten OCR fallback model routing
 
 **Status:** operational risk.
 
@@ -79,7 +64,7 @@ fail on large or complex official pages.
   requested.
 - Record the final resolved fallback chain in job metadata for auditability.
 
-### 6. Resolve runner and pipeline timeout conflict
+### 5. Resolve runner and pipeline timeout conflict
 
 **Status:** operational conflict.
 
@@ -143,6 +128,8 @@ negatives) or over-loosening (false positives). No quick win guaranteed.
 
 ## Already Addressed Or Stale Debug-Log Items
 
+- Unofficial non-PDF ingest crash from `pdf_result` leaking outside the PDF
+  branch.
 - Duplicate checksum retry for terminal partial official jobs.
 - Official module completeness routing to `needs_review`.
 - `{ "question": {...} }` JSON envelope unwrapping.

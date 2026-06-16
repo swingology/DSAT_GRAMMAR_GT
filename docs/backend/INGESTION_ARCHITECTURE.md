@@ -716,13 +716,10 @@ These are current-code facts, not target architecture:
 4. `ingest_unofficial_batch()` calls the single-file HTTP route function directly.
 5. File intake stores only a 100,000-character raw-text preview in the seeded
    job envelope.
-6. Current working-tree code references `pdf_result` while constructing
-   unofficial non-PDF jobs even though that variable is assigned only in the PDF
-   branch.
-7. External enrichment and export work is interleaved with persistence processing.
-8. Layout detection is broad and non-blocking; missing layout output can leave
+6. External enrichment and export work is interleaved with persistence processing.
+7. Layout detection is broad and non-blocking; missing layout output can leave
    visual stimuli without crops.
-9. Background tasks are in-process. Startup recovery marks interrupted jobs
+8. Background tasks are in-process. Startup recovery marks interrupted jobs
    failed rather than resuming them.
 
 Track proposed fixes outside this document. Remove an inconsistency from this

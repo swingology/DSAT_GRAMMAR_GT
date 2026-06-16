@@ -366,6 +366,66 @@ def test_ingest_unofficial_file_rejects_invalid_ocr_strategy(client):
     assert resp.status_code == 422
 
 
+@pytest.mark.asyncio
+async def test_ingest_unofficial_text_upload_seeds_empty_page_texts(monkeypatch):
+    from app.models.db import QuestionJob
+    from app.routers import ingest
+
+    added = []
+
+    class _Result:
+        def scalars(self):
+            return self
+
+        def first(self):
+            return None
+
+    class _Db:
+        async def execute(self, _stmt):
+            return _Result()
+
+        def add(self, obj):
+            added.append(obj)
+
+        async def commit(self):
+            pass
+
+    class _Upload:
+        filename = "notes.txt"
+        content_type = "text/plain"
+        headers = {}
+
+        async def read(self):
+            return b"plain text content"
+
+    class _Task:
+        def add_done_callback(self, _callback):
+            return None
+
+    def _fake_create_task(coro):
+        coro.close()
+        return _Task()
+
+    monkeypatch.setattr(ingest, "_store_raw_upload", lambda **_kwargs: "local-s3://raw/notes.txt")
+    monkeypatch.setattr(ingest.asyncio, "create_task", _fake_create_task)
+
+    response = await ingest.ingest_unofficial_file(
+        file=_Upload(),
+        provider_name=None,
+        model_name=None,
+        ocr_strategy=None,
+        db=_Db(),
+        _auth="admin-test-key",
+    )
+
+    job = next(obj for obj in added if isinstance(obj, QuestionJob))
+    assert response.status == "parsing"
+    assert job.input_format == "text"
+    assert job.pass1_json["raw_text"] == "plain text content"
+    assert job.pass1_json["_page_images"] == []
+    assert job.pass1_json["_page_texts"] == []
+
+
 # ── Benchmark endpoint tests ──────────────────────────────────────────────────
 
 def test_available_ocr_strategies_all_configured():

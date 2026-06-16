@@ -3199,9 +3199,14 @@ async def ingest_unofficial_file(
 
     raw_text = ""
     page_images: list = []
+    page_texts: list[dict] = []
     if asset_type == "pdf":
         pdf_result = _parse_pdf_content(content)
         raw_text = "\n\n".join(p["text"] for p in pdf_result["pages"])
+        page_texts = [
+            {"page_number": p["page_number"], "text": p.get("text", "")}
+            for p in pdf_result["pages"]
+        ]
         page_images = _store_pdf_page_renders(
             pdf_result=pdf_result,
             asset_id=asset_id,
@@ -3259,7 +3264,13 @@ async def ingest_unofficial_file(
         prompt_version="v8.0",
         rules_version=settings.rules_version,
         raw_asset_id=asset_id,
-        pass1_json={"raw_text": raw_text[:100000], "_truncated": len(raw_text) > 100000, "_page_images": page_images, "_page_texts": [{"page_number": p["page_number"], "text": p.get("text", "")} for p in pdf_result["pages"]] if pdf_result else [], "_ocr_strategy": ocr_strategy},
+        pass1_json={
+            "raw_text": raw_text[:100000],
+            "_truncated": len(raw_text) > 100000,
+            "_page_images": page_images,
+            "_page_texts": page_texts,
+            "_ocr_strategy": ocr_strategy,
+        },
         created_at=now,
         updated_at=now,
     )
