@@ -2,20 +2,7 @@
 
 ## Priority Ingestion Fixes
 
-### 1. Share annotation retry logic with reannotation
-
-**Status:** code-confirmed inconsistency.
-
-Normal ingest retries annotation JSON parse failures once. Reannotation performs
-one annotation call and marks the job failed on parse errors.
-
-**Fix:**
-
-- Extract a shared `annotate_with_retry()` helper.
-- Use it from both normal ingest and `_run_reannotate_pipeline`.
-- Preserve existing metadata capture and `enforce_nullability` behavior.
-
-### 2. Tighten OCR fallback model routing
+### 1. Tighten OCR fallback model routing
 
 **Status:** operational risk.
 
@@ -31,7 +18,7 @@ fail on large or complex official pages.
   requested.
 - Record the final resolved fallback chain in job metadata for auditability.
 
-### 3. Resolve runner and pipeline timeout conflict
+### 2. Resolve runner and pipeline timeout conflict
 
 **Status:** operational conflict.
 
@@ -95,6 +82,8 @@ negatives) or over-loosening (false positives). No quick win guaranteed.
 
 ## Already Addressed Or Stale Debug-Log Items
 
+- Reannotation now shares the normal ingest annotation retry helper for
+  malformed or empty JSON responses.
 - Amendment proposal aliases now normalize observed `skill_family` and
   parenthetical vocab-field forms before schema validation.
 - Unofficial non-PDF ingest crash from `pdf_result` leaking outside the PDF

@@ -1499,7 +1499,7 @@ async def test_reannotate_updates_current_explanation_text():
     monkeypatch = pytest.MonkeyPatch()
     monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
-    monkeypatch.setattr("app.parsers.json_parser.extract_json_from_text", lambda *_: {
+    monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: {
         "explanation_short": "Fresh explanation",
         "explanation_full": "Fresh full explanation",
         "annotation_confidence": 0.95,
@@ -1516,6 +1516,81 @@ async def test_reannotate_updates_current_explanation_text():
     assert question.current_explanation_text == "Fresh explanation"
     assert question.latest_version_id is not None
     assert question.latest_annotation_id is not None
+
+
+@pytest.mark.asyncio
+async def test_reannotate_retries_annotation_json_parse_failure(monkeypatch):
+    db = _FakeDB()
+    question_id = uuid.uuid4()
+    job = SimpleNamespace(
+        id=uuid.uuid4(),
+        question_id=question_id,
+        content_origin="official",
+        provider_name="anthropic",
+        model_name="model",
+        prompt_version="v3.0",
+        rules_version="rules",
+        pass1_json={
+            "question_text": "Original question",
+            "passage_text": "Passage",
+            "correct_option_label": "C",
+            "options": [],
+        },
+        pass2_json=None,
+        status="annotating",
+        validation_errors_jsonb=None,
+    )
+    question = Question(
+        id=question_id,
+        content_origin="official",
+        current_question_text="Original question",
+        current_passage_text="Passage",
+        current_correct_option_label="C",
+        current_explanation_text="Old explanation",
+        practice_status="draft",
+        official_overlap_status="none",
+        is_admin_edited=False,
+        metadata_managed_by_llm=True,
+    )
+    db.get_map[(Question, question_id)] = question
+
+    provider = SimpleNamespace(
+        complete_cached=AsyncMock(
+            side_effect=[
+                SimpleNamespace(raw_text="not json", provider="anthropic", model="m1", latency_ms=10),
+                SimpleNamespace(raw_text="valid json", provider="anthropic", model="m1", latency_ms=11),
+            ]
+        )
+    )
+    parsed = iter([
+        None,
+        {
+            "explanation_short": "Fresh explanation",
+            "explanation_full": "Fresh full explanation",
+            "annotation_confidence": 0.95,
+            "needs_human_review": False,
+        },
+    ])
+
+    monkeypatch.setattr("app.llm.factory.get_provider", lambda *args, **kwargs: provider)
+    monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
+    monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(parsed))
+    monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
+        anthropic_api_key="k",
+        openai_api_key=None,
+        ollama_base_url="http://localhost:11434",
+        local_archive_mirror="/tmp/test_archive",
+        layout_detection_enabled=False,
+        ollama_max_concurrent=8,
+    ))
+
+    await ingest_router._run_reannotate_pipeline(job, db)
+
+    assert provider.complete_cached.await_count == 2
+    assert job.status == "approved"
+    assert question.current_explanation_text == "Fresh explanation"
+    assert job.pass2_json["_llm_meta"]["latency_ms"] == 11
 
 
 def test_question_relation_detection_method_is_unbounded_text():

@@ -2000,10 +2000,82 @@ async def _prewarm_annotation_cache(provider, questions_data: list[dict], conten
             logger.warning("Annotation cache pre-warm failed for domain=%s: %s", domain, exc)
 
 
+async def _annotate_with_retry(
+    provider,
+    *,
+    q_data: dict,
+    content_origin: str,
+    provider_name: str,
+    model_name: str,
+    max_tokens: int,
+    semaphore: asyncio.Semaphore | None = None,
+    question_index: int | None = None,
+    log_context: str = "question",
+) -> tuple[dict, dict]:
+    """Run Pass 2 annotation with one retry for malformed/empty JSON output."""
+    from app.prompts.annotate_prompt import build_annotate_prompt_parts, enforce_nullability, _detect_domain
+
+    prompt_q_data = {**q_data, "content_origin": content_origin}
+    sys_static, sys_dynamic, user = build_annotate_prompt_parts(prompt_q_data)
+    last_exc: Exception | None = None
+
+    for attempt in range(2):
+        try:
+            if semaphore is None:
+                result = await provider.complete_cached(
+                    system_static=sys_static,
+                    system_dynamic=sys_dynamic,
+                    user=user,
+                    max_tokens=max_tokens,
+                    disable_thinking=True,
+                )
+            else:
+                async with semaphore:
+                    result = await provider.complete_cached(
+                        system_static=sys_static,
+                        system_dynamic=sys_dynamic,
+                        user=user,
+                        max_tokens=max_tokens,
+                        disable_thinking=True,
+                    )
+
+            parsed = extract_json_from_text(result.raw_text, provider_name, model_name)
+            if not parsed:
+                raise ValueError(
+                    f"No valid JSON found in text (provider='{provider_name}', "
+                    f"model='{model_name}', input_len={len(result.raw_text)}, "
+                    f"preview='{result.raw_text[:200]}')"
+                )
+            annotate_json = normalize_annotation(parsed)
+            annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
+            meta = {
+                "provider": result.provider,
+                "model": result.model,
+                "latency_ms": result.latency_ms,
+                "token_usage": getattr(result, "token_usage", None) or {},
+            }
+            if question_index is not None:
+                meta["question_index"] = question_index
+            return annotate_json, meta
+        except Exception as exc:
+            last_exc = exc
+            if attempt == 0:
+                logger.warning(
+                    "Annotation attempt 1 returned no JSON for %s, retrying: %s",
+                    log_context,
+                    exc,
+                )
+
+    logger.warning("Annotation failed for %s after 2 attempts: %s", log_context, last_exc)
+    if last_exc is not None:
+        raise last_exc
+    raise RuntimeError(f"Annotation failed for {log_context} after 2 attempts")
+
+
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     from app.llm.factory import get_provider
     from app.prompts.extract_prompt import build_extract_prompt
-    from app.prompts.annotate_prompt import build_annotate_prompt_parts, enforce_nullability, _detect_domain
+    from app.prompts.annotate_prompt import _detect_domain
 
     settings = get_settings()
     provider = get_provider(
@@ -2685,48 +2757,25 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     async def _annotate_one(idx: int) -> tuple[int, dict | None, Exception | None, dict | None]:
         """Annotate a single question. Returns (idx, annotate_json, last_err, meta).
 
-        Retry logic is handled by @with_retry on complete_cached. The outer loop
-        was removed to avoid double-retrying and holding the semaphore across redundant
-        attempts against a serial GPU backend.
+        Retry logic is shared with reannotation so both paths recover once from
+        malformed/empty JSON before marking the job for review.
         """
-        from app.prompts.annotate_prompt import build_annotate_prompt_parts
         q_data = questions_data[idx]
-        prompt_q_data = {**q_data, "content_origin": job.content_origin}
-        sys_static, sys_dynamic, user = build_annotate_prompt_parts(prompt_q_data)
-        last_exc: Exception | None = None
-        for attempt in range(2):
-            try:
-                async with _annot_semaphore:
-                    result = await provider.complete_cached(
-                        system_static=sys_static, system_dynamic=sys_dynamic,
-                        user=user, max_tokens=8192, disable_thinking=True,
-                    )
-                parsed = extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
-                if not parsed:
-                    raise ValueError(
-                        f"No valid JSON found in text (provider='{job.provider_name}', "
-                        f"model='{job.model_name}', input_len={len(result.raw_text)}, "
-                        f"preview='{result.raw_text[:200]}')"
-                    )
-                annotate_json = normalize_annotation(parsed)
-                annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
-                meta = {
-                    "question_index": idx,
-                    "provider": result.provider,
-                    "model": result.model,
-                    "latency_ms": result.latency_ms,
-                    "token_usage": getattr(result, "token_usage", None) or {},
-                }
-                return idx, annotate_json, None, meta
-            except Exception as exc:
-                last_exc = exc
-                if attempt == 0:
-                    logger.warning(
-                        "Annotation attempt 1 returned no JSON for question_index %d, retrying: %s",
-                        idx, exc,
-                    )
-        logger.warning("Annotation failed for question_index %d after 2 attempts: %s", idx, last_exc)
-        return idx, None, last_exc, None
+        try:
+            annotate_json, meta = await _annotate_with_retry(
+                provider,
+                q_data=q_data,
+                content_origin=job.content_origin,
+                provider_name=job.provider_name,
+                model_name=job.model_name,
+                max_tokens=8192,
+                semaphore=_annot_semaphore,
+                question_index=idx,
+                log_context=f"question_index {idx}",
+            )
+            return idx, annotate_json, None, meta
+        except Exception as exc:
+            return idx, None, exc, None
 
     # Pre-warm the provider's KV / prompt cache with the static rules block for
     # each distinct domain present in this batch. The rules block is 10-17K tokens;
@@ -3419,8 +3468,6 @@ async def ingest_text(
 async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     """Reannotation pipeline — skips extraction and goes straight to annotation."""
     from app.llm.factory import get_provider
-    from app.prompts.annotate_prompt import build_annotate_prompt_parts
-    from app.parsers.json_parser import extract_json_from_text, normalize_annotation
 
     settings = get_settings()
     provider = get_provider(
@@ -3437,22 +3484,17 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     job.status = "annotating"
     await db.commit()
 
-    from app.prompts.annotate_prompt import enforce_nullability, _detect_domain
-    sys_static, sys_dynamic, user = build_annotate_prompt_parts(
-        {**extract_json, "content_origin": job.content_origin}
-    )
     try:
-        result = await provider.complete_cached(
-            system_static=sys_static, system_dynamic=sys_dynamic, user=user, max_tokens=32000,
-            disable_thinking=True,
+        annotate_json, meta = await _annotate_with_retry(
+            provider,
+            q_data=extract_json,
+            content_origin=job.content_origin,
+            provider_name=job.provider_name,
+            model_name=job.model_name,
+            max_tokens=32000,
+            log_context=f"reannotation job {job.id}",
         )
-        annotate_json = normalize_annotation(
-            extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
-        )
-        # Hard-enforce domain nullability rules after LLM output
-        domain = _detect_domain(extract_json)
-        annotate_json = enforce_nullability(annotate_json, domain)
-        job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms, "token_usage": getattr(result, "token_usage", None) or {}}}
+        job.pass2_json = {**annotate_json, "_llm_meta": meta}
     except Exception as e:
         job.status = "failed"
         job.validation_errors_jsonb = [error_payload("annotating", e)]
