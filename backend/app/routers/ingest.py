@@ -297,6 +297,11 @@ _DSAT_QUESTION_RANGES: dict[tuple[str, str], tuple[int, int]] = {
 
 
 def _expected_question_count(subject_code: str | None, module_code: str | None) -> int | None:
+    question_numbers = _expected_question_numbers(subject_code, module_code)
+    return len(question_numbers) if question_numbers else None
+
+
+def _expected_question_numbers(subject_code: str | None, module_code: str | None) -> list[int] | None:
     try:
         subject = _normalize_source_subject_code(subject_code) if subject_code else None
         module = _normalize_source_slot(module_code, "source_module_code") if module_code else None
@@ -308,7 +313,34 @@ def _expected_question_count(subject_code: str | None, module_code: str | None) 
     if not question_range:
         return None
     low, high = question_range
-    return high - low + 1
+    return list(range(low, high + 1))
+
+
+def _extraction_shortfall_retry_detail(
+    questions: list[dict],
+    expected_numbers: list[int] | None,
+) -> dict | None:
+    if not expected_numbers or len(questions) >= len(expected_numbers):
+        return None
+
+    seen_numbers: set[int] = set()
+    for q in questions:
+        raw = q.get("source_question_number")
+        try:
+            seen_numbers.add(int(raw))
+        except (TypeError, ValueError):
+            continue
+
+    missing_numbers = [n for n in expected_numbers if n not in seen_numbers]
+    return {
+        "expected_count": len(expected_numbers),
+        "extracted_count": len(questions),
+        "missing_question_numbers": missing_numbers,
+        "detail": (
+            f"official extraction returned {len(questions)}/{len(expected_numbers)} "
+            f"questions; missing printed question numbers {missing_numbers}"
+        ),
+    }
 
 
 def _module_completeness_errors(
@@ -2395,6 +2427,14 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         await db.commit()
 
         system, user = build_extract_prompt(raw_text[:100000], form_meta)
+        expected_numbers = (
+            _expected_question_numbers(
+                form_meta.get("source_subject_code"),
+                form_meta.get("source_module_code"),
+            )
+            if job.content_origin == "official"
+            else None
+        )
         extract_root = None
         _last_p1_err: Exception | None = None
         for _p1_attempt in range(3):
@@ -2433,6 +2473,31 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 ):
                     raise ValueError(
                         "extraction returned no questions with non-empty question_text"
+                    )
+                _probe_questions, _, _, _ = _normalize_extracted_questions(
+                    extract_root,
+                    raw_text=raw_text,
+                )
+                _shortfall = _extraction_shortfall_retry_detail(
+                    _probe_questions,
+                    expected_numbers,
+                )
+                if _shortfall and _p1_attempt < 2:
+                    user = (
+                        f"{user}\n\nRETRY INSTRUCTION:\n"
+                        f"The previous extraction returned "
+                        f"{_shortfall['extracted_count']}/{_shortfall['expected_count']} "
+                        "official questions. Re-scan the entire source and return the missing "
+                        "printed question numbers too. Missing question numbers from the prior "
+                        f"attempt: {_shortfall['missing_question_numbers']}. Return the full "
+                        "questions array, not only the missing questions."
+                    )
+                    raise ValueError(_shortfall["detail"])
+                if _shortfall:
+                    logger.warning(
+                        "Pass 1 extraction still incomplete after retries for job %s: %s",
+                        job.id,
+                        _shortfall["detail"],
                     )
                 prior_pass1 = job.pass1_json or {}
                 job.pass1_json = {

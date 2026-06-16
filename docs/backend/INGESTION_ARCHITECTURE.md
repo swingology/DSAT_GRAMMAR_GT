@@ -364,7 +364,12 @@ sequenceDiagram
 Pass 1 converts usable raw text into one question object or a `questions` array.
 It retries JSON/structural failures up to three attempts with backoff. Parsed
 JSON that contains no non-empty `question_text` is treated as a retryable
-failure.
+failure. For official jobs with known subject/module counts, parsed extractions
+that return too few questions are also retried before annotation; retry prompts
+include the missing printed question numbers inferred from the expected module
+range. If the final attempt is still short, the pipeline continues with the
+partial extraction and the module-completeness safety net routes the job to
+`needs_review`.
 
 Pass 1 stores:
 

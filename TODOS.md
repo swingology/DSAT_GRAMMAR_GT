@@ -2,23 +2,7 @@
 
 ## Priority Ingestion Fixes
 
-### 1. Retry official extraction shortfalls before annotation
-
-**Status:** partially mitigated, still operationally expensive.
-
-Official module completeness now routes short modules to `needs_review`, but the
-check happens after annotation and persistence. A 27/33 extraction still spends
-annotation work on an incomplete module before reporting the shortfall.
-
-**Fix:**
-
-- After `_normalize_extracted_questions`, compare extracted count to the known
-  official module expected count.
-- If count is low, retry Pass 1 with a corrective prompt before annotation.
-- Store missing expected question numbers in `validation_errors_jsonb`.
-- Keep final `module_completeness` review routing as the safety net.
-
-### 2. Normalize amendment proposal aliases
+### 1. Normalize amendment proposal aliases
 
 **Status:** code-confirmed gap from ingestion runs.
 
@@ -35,7 +19,7 @@ become warnings instead of pending amendment files.
   - `distractor_type_key` -> `DISTRACTOR_TYPE_KEYS`
 - Add tests for both observed warning cases.
 
-### 3. Share annotation retry logic with reannotation
+### 2. Share annotation retry logic with reannotation
 
 **Status:** code-confirmed inconsistency.
 
@@ -48,7 +32,7 @@ one annotation call and marks the job failed on parse errors.
 - Use it from both normal ingest and `_run_reannotate_pipeline`.
 - Preserve existing metadata capture and `enforce_nullability` behavior.
 
-### 4. Tighten OCR fallback model routing
+### 3. Tighten OCR fallback model routing
 
 **Status:** operational risk.
 
@@ -64,7 +48,7 @@ fail on large or complex official pages.
   requested.
 - Record the final resolved fallback chain in job metadata for auditability.
 
-### 5. Resolve runner and pipeline timeout conflict
+### 4. Resolve runner and pipeline timeout conflict
 
 **Status:** operational conflict.
 
@@ -130,6 +114,8 @@ negatives) or over-loosening (false positives). No quick win guaranteed.
 
 - Unofficial non-PDF ingest crash from `pdf_result` leaking outside the PDF
   branch.
+- Official extraction shortfalls now retry before annotation when subject/module
+  metadata gives a known expected question count.
 - Duplicate checksum retry for terminal partial official jobs.
 - Official module completeness routing to `needs_review`.
 - `{ "question": {...} }` JSON envelope unwrapping.

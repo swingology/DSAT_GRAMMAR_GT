@@ -278,10 +278,12 @@ async def test_run_pipeline_marks_incomplete_official_module_needs_review(monkey
         "annotation_confidence": 0.9,
         "needs_human_review": False,
     }
-    responses = iter([extract_json, annotate_json])
+    responses = iter([extract_json, extract_json, extract_json, annotate_json])
     provider = SimpleNamespace(
         complete=AsyncMock(
             side_effect=[
+                SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
+                SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
                 SimpleNamespace(raw_text="extract", provider="anthropic", model="m1", latency_ms=10),
             ]
         ),
@@ -315,6 +317,11 @@ async def test_run_pipeline_marks_incomplete_official_module_needs_review(monkey
 
     await ingest_router._run_pipeline(job, db)
 
+    assert provider.complete.await_count == 3
+    assert (
+        "previous extraction returned 1/33 official questions"
+        in provider.complete.await_args_list[1].kwargs["user"]
+    )
     assert job.status == "needs_review"
     assert job.validation_errors_jsonb == [
         {
