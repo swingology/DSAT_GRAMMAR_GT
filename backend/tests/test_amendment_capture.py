@@ -205,6 +205,41 @@ def test_capture_amendment_proposal_maps_additional_ontology_fields(tmp_path):
     assert second.affected_vocab == "TRANSITION_SUBTYPE_KEYS"
 
 
+def test_capture_amendment_proposal_normalizes_affected_vocab_aliases(tmp_path):
+    skill_family = {
+        "affected_vocab": "skill_family",
+        "proposed_value": "new_skill_family",
+        "definition": "A new reading skill family.",
+        "official_evidence": "Official evidence.",
+    }
+    distractor = {
+        "affected_vocab": "distractor_type_key (option-level)",
+        "proposed_value": "new_distractor_type",
+        "definition": "A new distractor type.",
+        "official_evidence": "Official evidence.",
+    }
+
+    first = capture_amendment_proposal(
+        job=_job(job_id="job-skill-family"),
+        q_data=_q_data(),
+        annotate_json={"reasoning": {"amendment_proposal": skill_family}},
+        pending_dir=tmp_path / "pending",
+        candidates_path=tmp_path / "missing_candidates.json",
+    )
+    second = capture_amendment_proposal(
+        job=_job(job_id="job-distractor"),
+        q_data=_q_data(7),
+        annotate_json={"reasoning": {"amendment_proposal": distractor}},
+        pending_dir=tmp_path / "pending",
+        candidates_path=tmp_path / "missing_candidates.json",
+    )
+
+    assert first is not None
+    assert first.affected_vocab == "READING_SKILL_FAMILY_KEYS"
+    assert second is not None
+    assert second.affected_vocab == "DISTRACTOR_TYPE_KEYS"
+
+
 def test_capture_amendment_proposal_ignores_non_official_jobs(tmp_path):
     job = _job(content_origin="generated")
     result = capture_amendment_proposal(

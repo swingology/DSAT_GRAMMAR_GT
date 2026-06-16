@@ -2,24 +2,7 @@
 
 ## Priority Ingestion Fixes
 
-### 1. Normalize amendment proposal aliases
-
-**Status:** code-confirmed gap from ingestion runs.
-
-The annotator can emit amendment fields like `skill_family` or
-`distractor_type_key (option-level)`. Current amendment capture expects clean
-ontology vocabulary names or known `affected_field` names, so useful proposals
-become warnings instead of pending amendment files.
-
-**Fix:**
-
-- Strip parenthetical suffixes from amendment proposal vocab fields.
-- Map common aliases:
-  - `skill_family` -> `READING_SKILL_FAMILY_KEYS`
-  - `distractor_type_key` -> `DISTRACTOR_TYPE_KEYS`
-- Add tests for both observed warning cases.
-
-### 2. Share annotation retry logic with reannotation
+### 1. Share annotation retry logic with reannotation
 
 **Status:** code-confirmed inconsistency.
 
@@ -32,7 +15,7 @@ one annotation call and marks the job failed on parse errors.
 - Use it from both normal ingest and `_run_reannotate_pipeline`.
 - Preserve existing metadata capture and `enforce_nullability` behavior.
 
-### 3. Tighten OCR fallback model routing
+### 2. Tighten OCR fallback model routing
 
 **Status:** operational risk.
 
@@ -48,7 +31,7 @@ fail on large or complex official pages.
   requested.
 - Record the final resolved fallback chain in job metadata for auditability.
 
-### 4. Resolve runner and pipeline timeout conflict
+### 3. Resolve runner and pipeline timeout conflict
 
 **Status:** operational conflict.
 
@@ -112,6 +95,8 @@ negatives) or over-loosening (false positives). No quick win guaranteed.
 
 ## Already Addressed Or Stale Debug-Log Items
 
+- Amendment proposal aliases now normalize observed `skill_family` and
+  parenthetical vocab-field forms before schema validation.
 - Unofficial non-PDF ingest crash from `pdf_result` leaking outside the PDF
   branch.
 - Official extraction shortfalls now retry before annotation when subject/module

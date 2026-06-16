@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Any
 
@@ -33,6 +34,11 @@ CANDIDATES_PATH = REPO_ROOT / "vocabulary" / "candidates.json"
 COMPLETED_INGEST_STATUSES = ("approved", "needs_review")
 
 FIELD_TO_VOCAB = BASE_FIELD_TO_VOCAB
+
+_PARENTHETICAL_SUFFIX_RE = re.compile(r"\s*\([^)]*\)\s*$")
+_AFFECTED_VOCAB_ALIASES = {
+    "skill_family": "READING_SKILL_FAMILY_KEYS",
+}
 
 
 def extract_amendment_proposal(annotate_json: dict[str, Any] | None) -> dict[str, Any] | None:
@@ -307,7 +313,10 @@ def _affected_doc(subject: str, proposal: dict[str, Any], q_data: dict[str, Any]
 def _affected_vocab(proposal: dict[str, Any]) -> str:
     vocab = proposal.get("affected_vocab")
     if vocab:
-        return str(vocab)
+        normalized = _normalize_affected_vocab(str(vocab))
+        if normalized != str(vocab).strip():
+            logger.info("affected_vocab normalized from %r to %s", vocab, normalized)
+        return normalized
     field = proposal.get("affected_field")
     if field and field in FIELD_TO_VOCAB:
         logger.info("affected_vocab inferred from affected_field=%s → %s", field, FIELD_TO_VOCAB[field])
@@ -319,6 +328,19 @@ def _affected_vocab(proposal: dict[str, Any]) -> str:
         logger.info("affected_vocab inferred from proposed_parent_skill_key → READING_FOCUS_BY_SKILL_FAMILY")
         return "READING_FOCUS_BY_SKILL_FAMILY"
     raise ValueError("missing affected_vocab")
+
+
+def _normalize_affected_vocab(value: str) -> str:
+    cleaned = _PARENTHETICAL_SUFFIX_RE.sub("", value.strip())
+    if cleaned.upper() == cleaned:
+        return cleaned
+
+    alias = cleaned.lower()
+    if alias in _AFFECTED_VOCAB_ALIASES:
+        return _AFFECTED_VOCAB_ALIASES[alias]
+    if alias in FIELD_TO_VOCAB:
+        return FIELD_TO_VOCAB[alias]
+    return cleaned
 
 
 def _proposed_value(proposal: dict[str, Any]) -> str:
