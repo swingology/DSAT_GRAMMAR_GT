@@ -28,7 +28,6 @@ export function useRecommendations() {
     queryKey: ['recommendations'],
     queryFn: () => api.getStudyRecommendations(USER_TOKEN),
     staleTime: 5 * 60 * 1000,
-    retry: 2,
   })
 }
 
@@ -55,7 +54,6 @@ export function useMissedQuestions(params: { domain?: string; sort_by?: string }
   return useQuery<MissedQuestionsResponse>({
     queryKey: ['missed', params],
     queryFn: () => api.getMissedQuestions({ user_token: USER_TOKEN, ...params }),
-    enabled: !!USER_TOKEN,
     staleTime: 2 * 60 * 1000,
     retry: 1,
   })

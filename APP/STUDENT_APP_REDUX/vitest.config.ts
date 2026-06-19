@@ -7,5 +7,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['src/vitest.setup.ts'],
+    env: {
+      VITE_TEST_USER_TOKEN: 'test-token-vitest',
+    },
   },
 })
