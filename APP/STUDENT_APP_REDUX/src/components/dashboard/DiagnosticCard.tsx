@@ -24,13 +24,9 @@ export function DiagnosticCard() {
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-bold text-gray-900 text-base">Diagnostic Test</h3>
-            {isLoading ? (
-              <div className="h-3 w-32 bg-gray-100 rounded animate-pulse mt-1" />
-            ) : (
-              <p className="text-gray-500 text-sm">
-                {mode === 'baseline' ? 'First-time baseline' : 'Adaptive · weak areas'}
-              </p>
-            )}
+            <p className="text-gray-500 text-sm">
+              {isLoading ? 'Loading your profile…' : mode === 'baseline' ? 'First-time baseline' : 'Adaptive · weak areas'}
+            </p>
           </div>
         </div>
 
@@ -56,8 +52,7 @@ export function DiagnosticCard() {
 
         <button
           onClick={() => navigate('/diagnostic')}
-          disabled={isLoading}
-          className="w-full py-2.5 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-200 text-white font-semibold rounded-xl text-sm transition"
+          className="w-full py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl text-sm transition"
         >
           Start Diagnostic
         </button>

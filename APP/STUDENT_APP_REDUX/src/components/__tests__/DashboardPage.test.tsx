@@ -1,14 +1,20 @@
+import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { DashboardPage } from '../../pages/DashboardPage'
 
+const motionEl = (tag: string) =>
+  ({ children, ...props }: any) => {
+    const { initial, animate, transition, ...rest } = props
+    return React.createElement(tag, rest, children)
+  }
+
 vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  },
+  motion: new Proxy({}, { get: (_t, tag: string) => motionEl(tag) }),
   AnimatePresence: ({ children }: any) => <>{children}</>,
+  type: undefined,
 }))
 
 vi.mock('../../hooks/useDashboardData', () => ({

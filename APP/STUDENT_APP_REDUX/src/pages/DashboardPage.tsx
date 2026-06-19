@@ -1,9 +1,18 @@
+import { motion, type Easing } from 'framer-motion'
 import { HeroBanner } from '../components/dashboard/HeroBanner'
 import { PracticeCard } from '../components/dashboard/PracticeCard'
 import { DiagnosticCard } from '../components/dashboard/DiagnosticCard'
 import { PracticeTestCard } from '../components/dashboard/PracticeTestCard'
 import { RecentSessions } from '../components/dashboard/RecentSessions'
 import { ConceptWeaknessChart } from '../components/dashboard/ConceptWeaknessChart'
+
+const EASE: Easing = 'easeOut'
+
+const fadeUp = (delay: number) => ({
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay, duration: 0.28, ease: EASE },
+})
 
 export function DashboardPage() {
   return (
@@ -18,33 +27,39 @@ export function DashboardPage() {
         <HeroBanner />
 
         {/* Quick-start action cards */}
-        <section>
+        <motion.section {...fadeUp(0.05)}>
           <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-1">
             Start a session
           </h2>
           <div className="space-y-3">
-            <PracticeCard />
-            <DiagnosticCard />
-            <PracticeTestCard />
+            <motion.div {...fadeUp(0.10)}>
+              <PracticeCard />
+            </motion.div>
+            <motion.div {...fadeUp(0.16)}>
+              <DiagnosticCard />
+            </motion.div>
+            <motion.div {...fadeUp(0.22)}>
+              <PracticeTestCard />
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
         {/* Progress section */}
-        <section className="pt-2">
+        <motion.section className="pt-2" {...fadeUp(0.30)}>
           <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-1">
             Progress
           </h2>
 
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 mb-3">
+          <motion.div {...fadeUp(0.36)} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 mb-3">
             <h3 className="text-sm font-semibold text-gray-700 mb-3">Recent Activity</h3>
             <RecentSessions />
-          </div>
+          </motion.div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+          <motion.div {...fadeUp(0.42)} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
             <h3 className="text-sm font-semibold text-gray-700 mb-3">Concept Weakness</h3>
             <ConceptWeaknessChart />
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
       </div>
     </div>
   )
