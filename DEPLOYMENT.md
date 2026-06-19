@@ -28,15 +28,17 @@ The student app and admin app are fully static after `npm run build`. They call 
 
 ## Before You Deploy — Required Code Change
 
+> ⚠️ **WARNING: This code change has NOT been made yet.** Do this before building for production or API calls will silently hit the wrong URL.
+
 The frontend API client currently uses a relative base path (`/api`), which works when both apps are on the same domain. For separate deployments you must point it at the VPS.
 
 **`APP/STUDENT_APP_REDUX/src/api/client.ts`** — change line 3:
 
 ```ts
-// Before
+// Before (current — do not use in production)
 const API_BASE = '/api'
 
-// After
+// After (required for separate domain deploy)
 const API_BASE = (import.meta as any).env.VITE_API_BASE || '/api'
 ```
 
