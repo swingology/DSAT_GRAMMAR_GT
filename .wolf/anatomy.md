@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-19T15:52:56.569Z
-> Files: 934 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-19T16:27:47.837Z
+> Files: 944 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -174,6 +174,34 @@
 - `batch-9.json` (~4392 tok)
 - `scan-result.json` (~12785 tok)
 - `tour.json` — Declares defined (~2484 tok)
+
+## APP/ADMIN_APP/
+
+- `vite.config.ts` (~82 tok)
+
+## APP/ADMIN_APP/src/
+
+- `App.tsx` — queryClient (~330 tok)
+- `index.css` — Styles: 2 rules (~63 tok)
+
+## APP/ADMIN_APP/src/api/
+
+- `client.ts` — Exports apiCall, adminApi (~1018 tok)
+
+## APP/ADMIN_APP/src/components/
+
+- `Layout.tsx` — NAV (~762 tok)
+
+## APP/ADMIN_APP/src/pages/
+
+- `DataManagement.tsx` — StatusBadge — renders table (~2975 tok)
+- `PipelinePerformance.tsx` — StatCard — renders table (~3288 tok)
+- `StudentPerformance.tsx` — AccuracyBar (~1986 tok)
+- `UserManagement.tsx` — StatCard — renders table (~1912 tok)
+
+## APP/ADMIN_APP/src/types/
+
+- `index.ts` — Exports User, Question, QuestionOption, GenerationAnalytics + 6 more (~552 tok)
 
 ## APP/STUDENT_APP_REDUX/
 

@@ -4272,3 +4272,37 @@ _branch:_ `main` · _commit:_ `fc96655` · _ram:_ `11Gi/30Gi`
 _( 5 files changed, 1954 insertions(+), 16 deletions(-))_
 
 ---
+
+## Session snapshot — 2026-06-19 09:02:16 (session-end)
+_branch:_ `main` · _commit:_ `7a8dbf2` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json 
+_( 1 file changed, 239 insertions(+), 8 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 09:05:03 (session-end)
+_branch:_ `main` · _commit:_ `7a8dbf2` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 465 insertions(+), 14 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 09:27:47 (50kb-written)
+_branch:_ `main` · _commit:_ `7a8dbf2` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 823 insertions(+), 17 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/.env.example APP/ADMIN_APP/.gitignore APP/ADMIN_APP/README.md APP/ADMIN_APP/eslint.config.js APP/ADMIN_APP/index.html 
+
+---
+
+## Session snapshot — 2026-06-19 09:28:23 (session-end)
+_branch:_ `main` · _commit:_ `abe8ace` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 1124 insertions(+), 18 deletions(-))_
+
+---
