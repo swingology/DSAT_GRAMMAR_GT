@@ -4208,3 +4208,67 @@ _( 8 files changed, 6037 insertions(+), 314 deletions(-))_
 **Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
 
 ---
+
+## Session snapshot — 2026-06-19 08:40:30 (session-end)
+_branch:_ `main` · _commit:_ `5a87a15` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 
+_( 1 file changed, 227 insertions(+), 8 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 08:51:09 (session-end)
+_branch:_ `main` · _commit:_ `5a87a15` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 642 insertions(+), 14 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 08:53:10 (session-end)
+_branch:_ `main` · _commit:_ `fc96655` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 867 insertions(+), 16 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 08:55:20 (session-end)
+_branch:_ `main` · _commit:_ `fc96655` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 1081 insertions(+), 16 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 08:55:56 (session-end)
+_branch:_ `main` · _commit:_ `fc96655` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 1090 insertions(+), 16 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 08:56:40 (session-end)
+_branch:_ `main` · _commit:_ `fc96655` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 1509 insertions(+), 16 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 08:57:14 (session-end)
+_branch:_ `main` · _commit:_ `fc96655` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 1734 insertions(+), 16 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 09:00:10 (session-end)
+_branch:_ `main` · _commit:_ `fc96655` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 1954 insertions(+), 16 deletions(-))_
+
+---
