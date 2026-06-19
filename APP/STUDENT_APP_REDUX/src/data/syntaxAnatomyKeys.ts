@@ -1,0 +1,88 @@
+// Hardcoded Syntax Anatomy Keys (UI Reference, from grammar-app.html)
+// These help students understand WHERE in the sentence the rule applies
+// NOT the same as backend taxonomy keys (grammar_role_key, grammar_focus_key, etc.)
+
+import type { SyntaxAnatomyKey } from '../types/grammar'
+
+export const SYNTAX_ANATOMY_KEYS: SyntaxAnatomyKey[] = [
+  {
+    id: 'subordinate_clause',
+    label: 'Subordinate Clause',
+    group: 'Sentence Anatomy',
+    color: '#7c3aed',
+    lightBg: '#f5f3ff',
+    description: 'A dependent clause that begins with a subordinating conjunction. It cannot stand alone as a sentence.',
+    rule: 'A subordinate clause ("Although...", "Because...", "Since...") must attach to a main clause. Using one alone creates a sentence fragment - a classic SAT trap.',
+    priority: 10,
+  },
+  {
+    id: 'subject',
+    label: 'Primary Subject',
+    group: 'Sentence Anatomy',
+    color: '#1d4ed8',
+    lightBg: '#eff6ff',
+    description: 'The main noun phrase that performs the action of the main verb.',
+    rule: 'Subject-verb agreement: the verb must match the subject in number. Watch out for intervening phrases that can fool you into misidentifying the subject.',
+    priority: 10,
+  },
+  {
+    id: 'main_verb',
+    label: 'Main Verb',
+    group: 'Sentence Anatomy',
+    color: '#15803d',
+    lightBg: '#f0fdf4',
+    description: 'The primary action or state of the main independent clause.',
+    rule: 'Verb tense must be logical and consistent. Simple past ("reflected") is used for completed past actions. Past perfect ("had reflected") only applies when describing an action completed before another past event.',
+    priority: 20,
+  },
+  {
+    id: 'relative_clause',
+    label: 'Relative Clause',
+    group: 'Sentence Anatomy',
+    color: '#b45309',
+    lightBg: '#fffbeb',
+    description: 'A clause introduced by "which", "who", or "that" that modifies a noun.',
+    rule: 'Non-restrictive relative clauses use "which" and are set off by commas. They add extra info that can be removed without changing the core meaning.',
+    priority: 10,
+  },
+  {
+    id: 'subordinating_conj',
+    label: 'Sub. Conjunction',
+    group: 'Sentence Anatomy',
+    color: '#b91c1c',
+    lightBg: '#fff1f2',
+    description: 'A conjunction that introduces the subordinate clause and links it to the main clause.',
+    rule: '"Although" signals contrast; the main clause should present a result that seems unexpected given the subordinate clause.',
+    priority: 20,
+  },
+  {
+    id: 'modifier',
+    label: 'Modifier',
+    group: 'Sentence Anatomy',
+    color: '#0e7490',
+    lightBg: '#ecfeff',
+    description: 'A word or phrase that describes or qualifies another element in the sentence.',
+    rule: 'Modifiers must be placed close to what they modify. A misplaced modifier changes meaning entirely.',
+    priority: 10,
+  },
+  {
+    id: 'prepositional_phrase',
+    label: 'Prepositional Phrase',
+    group: 'Sentence Anatomy',
+    color: '#7e22ce',
+    lightBg: '#f3e8ff',
+    description: 'A phrase that begins with a preposition (at, by, for, in, of, with, etc.) and modifies another word.',
+    rule: 'Prepositional phrases often contain plural nouns that can trick you into misidentifying the subject. The subject of the sentence is not in the prepositional phrase.',
+    priority: 15,
+  },
+  {
+    id: 'appositive',
+    label: 'Appositive',
+    group: 'Sentence Anatomy',
+    color: '#059669',
+    lightBg: '#ecfdf5',
+    description: 'A noun or noun phrase that renames another noun right beside it.',
+    rule: 'Non-restrictive appositives (extra info) are set off by commas. Restrictive appositives (essential info) are not.',
+    priority: 12,
+  },
+]

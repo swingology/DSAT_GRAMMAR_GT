@@ -31,6 +31,8 @@ from app.models.payload import (
     StudyGenerationResponse,
     StudyBatchStatusResponse,
     GenerationBatchRequest,
+    MissedQuestionItem,
+    MissedQuestionsResponse,
 )
 from app.models.ontology import GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
 
@@ -1410,3 +1412,101 @@ async def get_study_batch_status(
         created_at=batch.created_at,
         updated_at=batch.updated_at,
     )
+
+
+@router.get("/study/missed", response_model=MissedQuestionsResponse)
+async def get_missed_questions(
+    user_token: str = Query(..., description="Student user token"),
+    domain: Optional[str] = Query(None, description="Filter by domain: 'grammar' or 'reading'"),
+    sort_by: str = Query("date", description="Sort field: 'date', 'miss_count', or 'domain'"),
+    limit: int = Query(50, ge=1, le=200),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return questions the student has missed, grouped by question with miss counts."""
+    user = await _resolve_user_by_token(user_token, db)
+
+    stmt = (
+        select(
+            UserProgress.question_id,
+            func.count(UserProgress.id).label("miss_count"),
+            func.max(UserProgress.timestamp).label("last_missed_at"),
+            func.max(UserProgress.missed_grammar_focus_key).label("focus_key_grammar"),
+            func.max(UserProgress.missed_reading_focus_key).label("focus_key_reading"),
+            func.max(UserProgress.question_domain).label("question_domain"),
+            func.max(UserProgress.question_difficulty).label("question_difficulty"),
+            func.max(UserProgress.selected_option_label).label("last_selected"),
+        )
+        .where(
+            UserProgress.user_id == user.id,
+            UserProgress.is_correct == False,  # noqa: E712
+        )
+        .group_by(UserProgress.question_id)
+    )
+
+    if domain:
+        stmt = stmt.where(UserProgress.question_domain == domain)
+
+    if sort_by == "miss_count":
+        stmt = stmt.order_by(func.count(UserProgress.id).desc())
+    elif sort_by == "domain":
+        stmt = stmt.order_by(func.max(UserProgress.question_domain).asc(), func.max(UserProgress.timestamp).desc())
+    else:
+        stmt = stmt.order_by(func.max(UserProgress.timestamp).desc())
+
+    stmt = stmt.limit(limit)
+
+    rows = (await db.execute(stmt)).all()
+
+    if not rows:
+        return MissedQuestionsResponse(user_id=user.id, items=[], total=0)
+
+    question_ids = [r.question_id for r in rows]
+    q_result = await db.execute(
+        select(Question).where(Question.id.in_(question_ids))
+    )
+    questions_by_id = {q.id: q for q in q_result.scalars().all()}
+
+    # Fetch explanations from annotations for each question
+    ann_result = await db.execute(
+        select(QuestionAnnotation).where(
+            QuestionAnnotation.question_id.in_(question_ids)
+        )
+    )
+    annotations_by_question: dict = {}
+    for ann in ann_result.scalars().all():
+        annotations_by_question.setdefault(ann.question_id, ann)
+
+    items: list[MissedQuestionItem] = []
+    for row in rows:
+        q = questions_by_id.get(row.question_id)
+        if not q:
+            continue
+        ann = annotations_by_question.get(row.question_id)
+        explanation: Optional[str] = None
+        if ann:
+            expl = ann.explanation_jsonb or {}
+            explanation = (
+                expl.get("explanation_short")
+                or expl.get("short")
+                or expl.get("explanation")
+                or (ann.annotation_jsonb or {}).get("explanation_short")
+            )
+
+        domain_val = row.question_domain
+        focus_key = row.focus_key_grammar if domain_val == "grammar" else row.focus_key_reading
+
+        items.append(MissedQuestionItem(
+            question_id=str(row.question_id),
+            question_text=q.current_question_text,
+            domain=domain_val,
+            focus_key=focus_key,
+            difficulty=row.question_difficulty,
+            user_answer=row.last_selected,
+            correct_answer=q.current_correct_option_label,
+            explanation=explanation,
+            miss_count=row.miss_count,
+            last_missed_at=row.last_missed_at,
+        ))
+
+    return MissedQuestionsResponse(user_id=user.id, items=items, total=len(items))

@@ -578,6 +578,25 @@ class WeaknessTarget(BaseModel):
     inventory_below_threshold: bool
 
 
+class MissedQuestionItem(BaseModel):
+    question_id: str
+    question_text: str
+    domain: Optional[str] = None
+    focus_key: Optional[str] = None
+    difficulty: Optional[str] = None
+    user_answer: Optional[str] = None
+    correct_answer: Optional[str] = None
+    explanation: Optional[str] = None
+    miss_count: int
+    last_missed_at: Optional[datetime] = None
+
+
+class MissedQuestionsResponse(BaseModel):
+    user_id: int
+    items: List[MissedQuestionItem]
+    total: int
+
+
 class StudyRecommendationsRequest(BaseModel):
     user_token: str
 
