@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { WeakConceptsTab } from '../components/dashboard/WeakConceptsTab'
 import { DiagnosticTab } from '../components/dashboard/DiagnosticTab'
 import { TestModeTab } from '../components/dashboard/TestModeTab'
@@ -53,12 +54,20 @@ export function DashboardPage() {
         </div>
 
         {/* Tab content */}
-        <div>
-          {activeTab === 'weak' && <WeakConceptsTab />}
-          {activeTab === 'diagnostic' && <DiagnosticTab />}
-          {activeTab === 'test' && <TestModeTab />}
-          {activeTab === 'missed' && <MissedQuestionsTab />}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+          >
+            {activeTab === 'weak' && <WeakConceptsTab />}
+            {activeTab === 'diagnostic' && <DiagnosticTab />}
+            {activeTab === 'test' && <TestModeTab />}
+            {activeTab === 'missed' && <MissedQuestionsTab />}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   )

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { useRecommendations } from '../../hooks/useDashboardData'
 import type { WeaknessTarget } from '../../types'
 
@@ -93,7 +94,14 @@ export function WeakConceptsTab() {
         </h3>
       </div>
       {targets.map((t, i) => (
-        <ConceptCard key={`${t.domain}-${t.focus_key}`} target={t} rank={i + 1} />
+        <motion.div
+          key={`${t.domain}-${t.focus_key}`}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.06, duration: 0.22, ease: 'easeOut' }}
+        >
+          <ConceptCard target={t} rank={i + 1} />
+        </motion.div>
       ))}
     </div>
   )

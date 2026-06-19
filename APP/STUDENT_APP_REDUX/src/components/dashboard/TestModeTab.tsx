@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api/client'
 import { useSubmitAnswer } from '../../hooks/useDashboardData'
@@ -181,8 +182,20 @@ function TestResults({
 
   return (
     <div className="space-y-4">
-      <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-        <div className="text-5xl font-bold text-blue-600 mb-2">{pct}%</div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.28, ease: 'easeOut' }}
+        className="bg-white border border-gray-200 rounded-xl p-6 text-center"
+      >
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.12, duration: 0.35, type: 'spring', bounce: 0.4 }}
+          className="text-5xl font-bold text-blue-600 mb-2"
+        >
+          {pct}%
+        </motion.div>
         <p className="text-gray-600 text-lg">
           {numCorrect} / {questions.length} correct
         </p>
@@ -200,11 +213,14 @@ function TestResults({
             {showAll ? 'Show wrong only' : 'Review all'}
           </button>
         </div>
-      </div>
+      </motion.div>
 
-      {display.map(({ q, userAnswer, correct }) => (
-        <div
+      {display.map(({ q, userAnswer, correct }, i) => (
+        <motion.div
           key={q.id}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 + i * 0.04, duration: 0.2, ease: 'easeOut' }}
           className={`bg-white border rounded-xl p-4 ${correct ? 'border-emerald-200' : 'border-red-200'}`}
         >
           <div className="flex items-start gap-2 mb-2">
@@ -230,7 +246,7 @@ function TestResults({
           {q.explanation && (
             <p className="text-xs text-gray-500 mt-2 pl-6 italic">{q.explanation}</p>
           )}
-        </div>
+        </motion.div>
       ))}
     </div>
   )

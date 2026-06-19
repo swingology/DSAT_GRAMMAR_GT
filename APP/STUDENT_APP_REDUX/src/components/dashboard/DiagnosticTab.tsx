@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useRecommendations, useSubmitAnswer } from '../../hooks/useDashboardData'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api/client'
@@ -172,8 +173,20 @@ export function DiagnosticTab() {
   if (state === 'done' && results) {
     const pct = Math.round((results.correct / results.total) * 100)
     return (
-      <div className="bg-white border border-gray-200 rounded-xl p-8 text-center">
-        <div className="text-5xl font-bold text-blue-600 mb-2">{pct}%</div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        className="bg-white border border-gray-200 rounded-xl p-8 text-center"
+      >
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.15, duration: 0.35, type: 'spring', bounce: 0.4 }}
+          className="text-5xl font-bold text-blue-600 mb-2"
+        >
+          {pct}%
+        </motion.div>
         <p className="text-gray-600 text-lg mb-1">
           {results.correct} / {results.total} correct
         </p>
@@ -192,7 +205,7 @@ export function DiagnosticTab() {
             Practice grammar
           </button>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
