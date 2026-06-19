@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T20:45:18.819Z
-> Files: 877 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-19T15:32:41.343Z
+> Files: 933 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -25,12 +25,14 @@
 ## ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/
 
 - `feedback_debug-log-workflow.md` — YYYY-MM-DD - <Audit Title> (~208 tok)
+- `feedback_frequent-memory-saves.md` — Frequent memory saves to survive crashes (~357 tok)
 - `feedback_generation-seeding.md` (~375 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~283 tok)
+- `MEMORY.md` — Memory Index (~361 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_dual-user-routers.md` (~210 tok)
+- `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
 
 ## ../.claude/skills/ramlog/
 
@@ -45,6 +47,10 @@
 - `.codex` (~0 tok)
 - `.gitattributes` — Git attributes (~12 tok)
 - `.gitignore` — Git ignore rules (~52 tok)
+- `ADMIN_DASHBOARD_DESIGN.md` — DSAT Admin Dashboard — Design & Implementation Plan (~6347 tok)
+- `ADMIN_DASHBOARD_README.md` — DSAT Admin Dashboard — Complete Design Package (~4151 tok)
+- `ADMIN_DASHBOARD_TASKS.md` — DSAT Admin Dashboard — Implementation Task Breakdown (~13530 tok)
+- `ADMIN_DASHBOARD_WIREFRAMES.md` — DSAT Admin Dashboard — Wireframes & Component Guide (~7794 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~45962 tok)
@@ -54,7 +60,7 @@
 - `docker-compose.yml` — Docker Compose services (~133 tok)
 - `FUTURE_FEATURES.md` — Future Features (~12323 tok)
 - `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
-- `grammar-app.html` — SAT Grammar Practice (~8803 tok)
+- `grammar-app.html` — SAT Grammar Practice (~11817 tok)
 - `INCONSISTENT_KEYS_LIST.md` — Inconsistent Taxonomy Keys in Official Question Annotations (~1473 tok)
 - `ingestion_generation_summary.md` — Ingestion & Generation Pipeline — Step-by-Step Summary (~1281 tok)
 - `ingestion_generation_summary.md` — Step-by-step breakdown of ingestion and generation pipelines, including all sub-steps, key differences, and shared components (~680 tok)
@@ -76,6 +82,7 @@
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
 - `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~5330 tok)
+- `STUDENT_UI_TASKS.md` — Student UI React Rebuild — Task Tracker (~3980 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
@@ -166,6 +173,93 @@
 - `batch-9.json` (~4392 tok)
 - `scan-result.json` (~12785 tok)
 - `tour.json` — Declares defined (~2484 tok)
+
+## APP/STUDENT_APP_REDUX/
+
+- `.gitignore` — Git ignore rules (~76 tok)
+- `eslint.config.js` (~202 tok)
+- `GRAMMAR_COMPONENT_TAXONOMY_ALIGNMENT.md` — Grammar Component — Taxonomy Alignment with Backend (v8 Rules) (~2138 tok)
+- `index.html` — Student App Redux (~98 tok)
+- `package.json` — Node.js package manifest (~408 tok)
+- `PHASE_1_COMPONENT_BREAKDOWN.md` — Phase 1: Grammar Practice Page — Component Breakdown (~4881 tok)
+- `PHASE_1_IMPLEMENTATION_SUMMARY.md` — Phase 1 Implementation Summary (~2434 tok)
+- `PHASE_1_VALIDATION_REPORT.md` — Phase 1 Validation Report (Tasks 1.6–1.8) (~2273 tok)
+- `postcss.config.js` (~23 tok)
+- `README.md` — Project documentation (~340 tok)
+- `tailwind.config.js` (~76 tok)
+- `tsconfig.json` — TypeScript configuration (~211 tok)
+- `tsconfig.node.json` (~61 tok)
+- `vite.config.ts` (~96 tok)
+- `vitest.config.ts` (~89 tok)
+
+## APP/STUDENT_APP_REDUX/src/
+
+- `App.tsx` — queryClient (~179 tok)
+- `index.css` — Styles: 3 rules (~17 tok)
+- `main.tsx` (~68 tok)
+- `vite-env.d.ts` — / <reference types="vite/client" /> (~33 tok)
+- `vitest.setup.ts` (~10 tok)
+
+## APP/STUDENT_APP_REDUX/src/__tests__/integration/
+
+- `grammar-page.test.tsx` — Mock the API (~3954 tok)
+
+## APP/STUDENT_APP_REDUX/src/api/
+
+- `client.ts` — API client for communication with backend (~536 tok)
+
+## APP/STUDENT_APP_REDUX/src/components/
+
+- `.keep` (~0 tok)
+- `GrammarPractice.css` — Styles: 66 rules (~2333 tok)
+- `GrammarPractice.tsx` — GrammarPractice (~339 tok)
+
+## APP/STUDENT_APP_REDUX/src/components/__tests__/
+
+- `.keep` (~0 tok)
+- `DashboardPage.test.tsx` — Mock framer-motion to avoid animation complexity in tests (~1347 tok)
+- `GrammarPractice.test.tsx` — Mock the API (~1835 tok)
+- `MissedQuestionsTab.test.tsx` — mockedUseMissedQuestions (~1562 tok)
+- `WeakConceptsTab.test.tsx` — mockedUseRecommendations (~1110 tok)
+
+## APP/STUDENT_APP_REDUX/src/components/dashboard/
+
+- `DiagnosticTab.tsx` — DiagnosticQuestion (~2464 tok)
+- `MissedQuestionsTab.tsx` — MissedCard (~1604 tok)
+- `TestModeTab.tsx` — TEST_DURATION_SECONDS (~3037 tok)
+- `WeakConceptsTab.tsx` — scoreBar (~1135 tok)
+
+## APP/STUDENT_APP_REDUX/src/components/grammar/
+
+- `GrammarAnalysisSection.tsx` — GrammarAnalysisSection (~1057 tok)
+- `Header.tsx` — Header (~283 tok)
+- `QuestionSection.tsx` — QuestionSection (~549 tok)
+
+## APP/STUDENT_APP_REDUX/src/data/
+
+- `syntaxAnatomyKeys.ts` — Hardcoded Syntax Anatomy Keys (UI Reference, from grammar-app.html) (~1049 tok)
+
+## APP/STUDENT_APP_REDUX/src/hooks/
+
+- `.keep` (~0 tok)
+- `useDashboardData.ts` — Exports MissedQuestionItem, MissedQuestionsResponse, useRecommendations, useQuestions + 2 more (~474 tok)
+- `useGrammarSession.ts` — 1. renderSentence() (~2251 tok)
+
+## APP/STUDENT_APP_REDUX/src/hooks/__tests__/
+
+- `.keep` (~0 tok)
+- `useDashboardData.test.ts` — mockedApi: makeWrapper (~1663 tok)
+- `useGrammarSession.test.ts` — Mock the API (~1899 tok)
+
+## APP/STUDENT_APP_REDUX/src/pages/
+
+- `.keep` (~0 tok)
+- `DashboardPage.tsx` — TABS (~821 tok)
+
+## APP/STUDENT_APP_REDUX/src/types/
+
+- `grammar.ts` — Grammar-specific type definitions (aligned with rules_agent_v8.md) (~589 tok)
+- `index.ts` — Type definitions for Student App (~210 tok)
 
 ## FRONTEND/
 
@@ -1080,7 +1174,7 @@
 - `db.py` — Declares QuestionJob (~8762 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5620 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~6976 tok)
+- `payload.py` — HTTP request/response models. (~7238 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1123,7 +1217,7 @@
 - `generate.py` (~15836 tok)
 - `ingest.py` (~41864 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
-- `student.py` — API: 1 endpoints (~14086 tok)
+- `student.py` — API: 1 endpoints (~16444 tok)
 
 ## backend/app/storage/
 
@@ -1214,6 +1308,7 @@
 ## docs/superpowers/plans/
 
 - `2026-05-23-grammar-rules-v7-to-v8-subpatterns.md` — Grammar Rules v7 → v8 Sub-Pattern Expansion Implementation Plan (~7452 tok)
+- `2026-06-18-student-app-react-rebuild.md` — Student App React Rebuild — Implementation Plan (~2797 tok)
 
 ## local_object_store/stimulus-assets/charts/e22a6533-19c8-5b62-b511-b254be102401/
 

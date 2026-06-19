@@ -46,6 +46,9 @@
 
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
+- [2026-06-18] Node 24.8.0 hits WASM compilation crash in V8 when running Vite/npm dev with esbuild. Switch to Node 22.12.0 via NVM. The crash is CPU/environment-specific, not code-related; use `source ~/.nvm/nvm.sh && nvm use 22.12.0` before npm commands.
+- [2026-06-18] Vitest requires both setup file inclusion AND tsconfig.json types declaration for testing-library matchers. Missing either causes `toBeInTheDocument` to fail TS compilation. Fix: (1) create `src/vitest.setup.ts` with `import '@testing-library/jest-dom'`, (2) add `"types": ["vitest/globals", "@testing-library/jest-dom"]` to tsconfig.json compiler options, (3) reference setup file in vitest.config.ts `setupFiles: ['src/vitest.setup.ts']`.
+- [2026-06-18] Hook tests with API mocks fail when the mock is set up via `vi.mock()` module-level but the hook's fetch call doesn't resolve in test time. Root cause: hook fetches in useEffect, but test awaits only `setTimeout(0)`. Solution: either skip hook-level API fetch tests and test via component (where async resolve is more visible), or rewrite hook to accept injected API client. Chose skip for Phase 1 since component tests are reliable.
 - [2026-05-14] Do not assume root `INGESTION_PRD.md` exists from stale anatomy output; use `docs/PRD/INGESTION_PRD.md` for backend PRD audits.
 - [2026-05-14] When inserting new numbered sections into long rule docs, immediately rg the affected heading prefix (e.g. `^### 16\.`) to catch duplicate/out-of-order numbering.
 - [2026-05-16] When replacing text in DEBUG_LOG.md with python `content.replace()`, double-check that variable names (`old5` vs `new9`) match — a typo caused finding #5's text to be replaced with finding #9's text instead of finding #5's strikethrough version.

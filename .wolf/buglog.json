@@ -4214,6 +4214,358 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-08T23:45:39.102Z"
+    },
+    {
+      "id": "bug-259",
+      "timestamp": "2026-06-18T23:42:14.117Z",
+      "error_message": "Significant refactor of ",
+      "file": "STUDENT_UI_TASKS.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 13→16 lines (3 removed) | Also: - [ ] **1.4** Test grammar component; - Verify all 11 functions work correctly | Also: ## Summary; | Phase | Scope | Est. Time | | Also: - Start date: ___________; - Phase 1 complete: ___________",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-06-18T23:42:56.083Z"
+    },
+    {
+      "id": "bug-260",
+      "timestamp": "2026-06-18T23:43:09.046Z",
+      "error_message": "Significant refactor of ",
+      "file": "../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_student-app-react-rebuild.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 5→9 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-18T23:43:09.046Z"
+    },
+    {
+      "id": "bug-261",
+      "timestamp": "2026-06-19T00:00:14.427Z",
+      "error_message": "Significant refactor of ",
+      "file": "APP/STUDENT_APP_REDUX/PHASE_1_COMPONENT_BREAKDOWN.md",
+      "root_cause": "18 lines replaced/restructured",
+      "fix": "Rewrote 50→93 lines (18 removed) | Also: 1. `GET /api/questions?domain=verbal&focus=grammar; - Returns: `GrammarQuestion[]` | Also: 3. **`renderGrammarKeys()`**; - Takes all GRAMMAR_KEYS (from API response) | Also: 10. **`findTraps()`**; - Automatically activates grammar keys related to  | Also: ### Data Flow; ├── Fetch sentence data on mount | Also: 1. **Data source:** Will GRAMMAR_KEYS come from AP; 2. **Routing:** Should each sentence be a separate",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 6,
+      "last_seen": "2026-06-19T00:01:06.157Z"
+    },
+    {
+      "id": "bug-262",
+      "timestamp": "2026-06-19T00:09:58.936Z",
+      "error_message": "Significant refactor of ",
+      "file": "STUDENT_UI_TASKS.md",
+      "root_cause": "12 lines replaced/restructured",
+      "fix": "Rewrote 14→23 lines (12 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:09:58.936Z"
+    },
+    {
+      "id": "bug-263",
+      "timestamp": "2026-06-19T00:16:24.557Z",
+      "error_message": "CSS fix: grammar",
+      "file": "APP/STUDENT_APP_REDUX/src/components/grammar/GrammarAnalysisSection.tsx",
+      "root_cause": "grammar: ReturnType<typeof useGrammarSession> → GrammarSessionReturn",
+      "fix": "Changed grammar: ReturnType<typeof useGrammarSession> → GrammarSessionReturn",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:16:24.557Z"
+    },
+    {
+      "id": "bug-264",
+      "timestamp": "2026-06-19T00:16:29.176Z",
+      "error_message": "CSS fix: grammar",
+      "file": "APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx",
+      "root_cause": "grammar: ReturnType<typeof useGrammarSession> → GrammarSessionReturn",
+      "fix": "Changed grammar: ReturnType<typeof useGrammarSession> → GrammarSessionReturn",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:16:29.176Z"
+    },
+    {
+      "id": "bug-265",
+      "timestamp": "2026-06-19T00:17:35.393Z",
+      "error_message": "Type error",
+      "file": "APP/STUDENT_APP_REDUX/src/api/client.ts",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:17:35.393Z"
+    },
+    {
+      "id": "bug-266",
+      "timestamp": "2026-06-19T00:24:43.874Z",
+      "error_message": "Incorrect value in code",
+      "file": "APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.test.tsx",
+      "root_cause": "Had 'The researcher, who had spent years, _______ find",
+      "fix": "Changed to 'The researcher, who had spent years, [BLANK] find",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:24:43.874Z"
+    },
+    {
+      "id": "bug-267",
+      "timestamp": "2026-06-19T00:24:47.112Z",
+      "error_message": "Null/undefined access in ",
+      "file": "APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.test.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:24:47.112Z"
+    },
+    {
+      "id": "bug-268",
+      "timestamp": "2026-06-19T00:26:01.243Z",
+      "error_message": "Incorrect value in code",
+      "file": "APP/STUDENT_APP_REDUX/src/__tests__/integration/grammar-page.test.tsx",
+      "root_cause": "Had 'The researcher, who had spent years on this proje",
+      "fix": "Changed to 'The researcher, who had spent years on this proje",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:26:01.243Z"
+    },
+    {
+      "id": "bug-269",
+      "timestamp": "2026-06-19T00:26:10.301Z",
+      "error_message": "Null/undefined access in ",
+      "file": "APP/STUDENT_APP_REDUX/src/__tests__/integration/grammar-page.test.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: const buttons = screen.getAllByRole('button'); const sharedButton = buttons.find((btn) => btn.textContent?.",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-19T00:26:13.955Z"
+    },
+    {
+      "id": "bug-270",
+      "timestamp": "2026-06-19T00:26:46.566Z",
+      "error_message": "Significant refactor of ",
+      "file": "APP/STUDENT_APP_REDUX/src/hooks/__tests__/useGrammarSession.test.ts",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 11→12 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:26:46.566Z"
+    },
+    {
+      "id": "bug-271",
+      "timestamp": "2026-06-19T00:28:48.004Z",
+      "error_message": "Significant refactor of ",
+      "file": "../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_student-app-react-rebuild.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 11→20 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:28:48.004Z"
+    },
+    {
+      "id": "bug-272",
+      "timestamp": "2026-06-19T00:28:53.098Z",
+      "error_message": "Significant refactor of ",
+      "file": "STUDENT_UI_TASKS.md",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 10→11 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T00:28:53.098Z"
+    },
+    {
+      "id": "bug-273",
+      "timestamp": "2026-06-19T14:23:02.615Z",
+      "error_message": "Significant refactor of ",
+      "file": "APP/STUDENT_APP_REDUX/src/App.tsx",
+      "root_cause": "16 lines replaced/restructured",
+      "fix": "Rewrote 37→19 lines (16 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T14:23:02.615Z"
+    },
+    {
+      "id": "bug-274",
+      "timestamp": "2026-06-19T14:46:02.642Z",
+      "error_message": "Missing await",
+      "file": "backend/app/routers/student.py",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T14:46:02.642Z"
+    },
+    {
+      "id": "bug-275",
+      "timestamp": "2026-06-19T14:46:25.224Z",
+      "error_message": "Significant refactor of ",
+      "file": "APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 42→62 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T14:46:25.224Z"
+    },
+    {
+      "id": "bug-276",
+      "timestamp": "2026-06-19T15:24:41.518Z",
+      "error_message": "Significant refactor of ",
+      "file": "APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→15 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T15:24:41.518Z"
+    },
+    {
+      "id": "bug-277",
+      "timestamp": "2026-06-19T15:24:51.271Z",
+      "error_message": "Incorrect value in code",
+      "file": "APP/STUDENT_APP_REDUX/src/components/dashboard/WeakConceptsTab.tsx",
+      "root_cause": "Had '../../hooks/useDashboardData'",
+      "fix": "Changed to 'framer-motion'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T15:24:51.271Z"
+    },
+    {
+      "id": "bug-278",
+      "timestamp": "2026-06-19T15:25:16.981Z",
+      "error_message": "Significant refactor of ",
+      "file": "APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 26→38 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T15:25:16.981Z"
+    },
+    {
+      "id": "bug-279",
+      "timestamp": "2026-06-19T15:25:29.327Z",
+      "error_message": "Significant refactor of ",
+      "file": "APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→19 lines (2 removed) | Also: {display.map(({ q, userAnswer, correct }) => (; <div",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-19T15:25:46.860Z"
+    },
+    {
+      "id": "bug-280",
+      "timestamp": "2026-06-19T15:31:34.297Z",
+      "error_message": "Significant refactor of ",
+      "file": "APP/STUDENT_APP_REDUX/src/components/__tests__/MissedQuestionsTab.test.tsx",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 9→10 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-19T15:31:34.297Z"
     }
   ]
 }

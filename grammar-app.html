@@ -5,6 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SAT Grammar Practice</title>
   <style>
+    /* ──────────────────────────────────────────────────────────────────────────
+       CSS Variables & Foundation
+       ────────────────────────────────────────────────────────────────────────── */
+    :root {
+      --color-primary: #667eea;
+      --color-primary-dark: #764ba2;
+      --color-success: #16a34a;
+      --color-error: #ef4444;
+      --color-warning: #d97706;
+      --color-info: #2563eb;
+
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 12px;
+      --space-lg: 16px;
+      --space-xl: 24px;
+      --space-2xl: 32px;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+
+      --transition-fast: 150ms ease;
+      --transition-base: 200ms ease;
+      --transition-slow: 300ms ease;
+    }
+
+    /* ──────────────────────────────────────────────────────────────────────────
+       Reset & Baseline
+       ────────────────────────────────────────────────────────────────────────── */
     * {
       margin: 0;
       padding: 0;
@@ -12,219 +59,269 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+      color: var(--gray-900);
       min-height: 100vh;
-      padding: 20px;
+      padding: var(--space-lg);
+      line-height: 1.6;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
     }
 
-    /* Header */
+    /* ──────────────────────────────────────────────────────────────────────────
+       Header
+       ────────────────────────────────────────────────────────────────────────── */
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
+      gap: var(--space-xl);
+      margin-bottom: var(--space-2xl);
       background: white;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      padding: var(--space-2xl);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: var(--space-lg);
+      flex: 1;
     }
 
     .header-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 12px;
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 24px;
-      font-weight: bold;
+      font-size: 28px;
+      font-weight: 600;
     }
 
     .header-text h1 {
-      font-size: 22px;
-      color: #1a202c;
-      margin-bottom: 4px;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: var(--space-xs);
+      letter-spacing: -0.5px;
     }
 
     .header-text p {
       font-size: 13px;
-      color: #718096;
+      color: var(--gray-500);
       font-weight: 500;
     }
 
-    .progress-bar {
+    .progress-container {
+      flex-shrink: 0;
       width: 200px;
-      height: 6px;
-      background: #e2e8f0;
-      border-radius: 10px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--gray-200);
+      border-radius: var(--radius-full);
       overflow: hidden;
-      margin-left: auto;
+      margin-bottom: var(--space-sm);
     }
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
       width: 10%;
-      transition: width 0.3s ease;
+      transition: width var(--transition-base);
+      border-radius: var(--radius-full);
     }
 
-    /* Main Card */
+    .progress-text {
+      font-size: 12px;
+      color: var(--gray-500);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* ──────────────────────────────────────────────────────────────────────────
+       Question Card
+       ────────────────────────────────────────────────────────────────────────── */
     .card {
       background: white;
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      margin-bottom: 24px;
+      border-radius: var(--radius-lg);
+      padding: var(--space-2xl);
+      box-shadow: var(--shadow-md);
+      margin-bottom: var(--space-xl);
     }
 
     .question-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #e2e8f0;
+      align-items: flex-start;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .question-meta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
     }
 
     .question-number {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      color: #a0aec0;
+      color: var(--gray-400);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.5px;
     }
 
     .question-badges {
       display: flex;
-      gap: 8px;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
     }
 
     .badge {
-      font-size: 12px;
-      padding: 4px 12px;
-      border-radius: 20px;
+      font-size: 11px;
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--radius-full);
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     .badge-difficulty {
       background: #fef3c7;
-      color: #92400e;
+      color: #b45309;
     }
 
     .badge-topic {
-      background: #e9d5ff;
-      color: #6b21a8;
+      background: #f3e8ff;
+      color: #7e22ce;
     }
 
     .instruction {
       font-size: 15px;
-      color: #4a5568;
-      line-height: 1.6;
-      margin-bottom: 24px;
+      color: var(--gray-600);
+      line-height: 1.7;
+      margin-bottom: var(--space-xl);
+      font-weight: 500;
     }
 
-    /* Sentence Display */
+    /* ──────────────────────────────────────────────────────────────────────────
+       Sentence Display & Tokenization
+       ────────────────────────────────────────────────────────────────────────── */
     .sentence-box {
-      background: #f8fafc;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
-      font-size: 17px;
-      line-height: 1.8;
-      color: #2d3748;
+      background: var(--gray-50);
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      font-size: 18px;
+      line-height: 1.9;
+      color: var(--gray-800);
+      word-spacing: 0.05em;
     }
 
     .token {
       display: inline;
-      padding: 2px 4px;
-      border-radius: 3px;
-      transition: all 0.2s ease;
+      padding: var(--space-xs) 2px;
+      border-radius: 2px;
+      transition: all var(--transition-base);
       cursor: default;
+      position: relative;
     }
 
     .blank {
-      background: #e2e8f0;
-      color: #718096;
+      background: var(--gray-200);
+      color: var(--gray-600);
       font-weight: 700;
-      border: 2px dashed #a0aec0;
+      border: 2px dashed var(--gray-400);
       padding: 4px 8px;
       border-radius: 4px;
+      display: inline-block;
+      min-width: 80px;
+      text-align: center;
     }
 
     .blank.filled-correct {
-      background: #f0fdf4;
+      background: #dcfce7;
       color: #15803d;
-      border: 2px solid #16a34a;
+      border: 2px solid var(--color-success);
       font-weight: 700;
     }
 
     .blank.filled-wrong {
-      background: #fef2f2;
+      background: #fee2e2;
       color: #dc2626;
-      border: 2px solid #ef4444;
+      border: 2px solid var(--color-error);
       font-weight: 700;
     }
 
-    /* Options */
+    /* ──────────────────────────────────────────────────────────────────────────
+       Answer Options
+       ────────────────────────────────────────────────────────────────────────── */
     .options {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 24px;
+      gap: var(--space-md);
+      margin-bottom: var(--space-xl);
     }
 
     .option {
-      border: 2px solid #e2e8f0;
+      border: 2px solid var(--gray-200);
       background: white;
-      padding: 16px;
-      border-radius: 12px;
+      padding: var(--space-lg);
+      border-radius: var(--radius-md);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all var(--transition-base);
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--space-md);
       font-family: inherit;
-      font-size: 14px;
-      color: #2d3748;
+      font-size: 15px;
+      color: var(--gray-800);
       font-weight: 500;
     }
 
     .option:hover:not(:disabled) {
-      border-color: #667eea;
-      background: #f8fafc;
+      border-color: var(--color-primary);
+      background: var(--gray-50);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
     }
 
     .option.selected {
-      border-color: #667eea;
-      background: #eef2ff;
-      color: #667eea;
+      border-color: var(--color-primary);
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.04) 100%);
+      color: var(--color-primary);
+      font-weight: 600;
     }
 
     .option.correct {
-      border-color: #16a34a;
+      border-color: var(--color-success);
       background: #f0fdf4;
       color: #15803d;
+      font-weight: 600;
     }
 
     .option.incorrect {
-      border-color: #ef4444;
+      border-color: var(--color-error);
       background: #fef2f2;
       color: #dc2626;
+      font-weight: 600;
     }
 
     .option:disabled {
@@ -232,34 +329,36 @@
     }
 
     .option-label {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      border: 2px solid #cbd5e0;
+      border: 2px solid var(--gray-300);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
       flex-shrink: 0;
-      font-size: 13px;
+      font-size: 14px;
+      font-family: 'Menlo', 'Monaco', monospace;
+      background: white;
     }
 
     .option.selected .option-label {
-      background: #667eea;
+      background: var(--color-primary);
       color: white;
-      border-color: #667eea;
+      border-color: var(--color-primary);
     }
 
     .option.correct .option-label {
-      background: #16a34a;
+      background: var(--color-success);
       color: white;
-      border-color: #16a34a;
+      border-color: var(--color-success);
     }
 
     .option.incorrect .option-label {
-      background: #ef4444;
+      background: var(--color-error);
       color: white;
-      border-color: #ef4444;
+      border-color: var(--color-error);
     }
 
     .option-text {
@@ -269,34 +368,50 @@
     .checkmark {
       margin-left: auto;
       font-size: 18px;
+      font-weight: 700;
     }
 
-    /* Feedback */
+    /* ──────────────────────────────────────────────────────────────────────────
+       Feedback Box
+       ────────────────────────────────────────────────────────────────────────── */
     .feedback {
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 24px;
+      padding: var(--space-lg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-xl);
       display: none;
+      border-left: 4px solid transparent;
     }
 
     .feedback.show {
       display: block;
+      animation: slideIn var(--transition-base);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .feedback.correct {
       background: #f0fdf4;
-      border: 1px solid #bbf7d0;
+      border-left-color: var(--color-success);
     }
 
     .feedback.incorrect {
       background: #fef2f2;
-      border: 1px solid #fecaca;
+      border-left-color: var(--color-error);
     }
 
     .feedback-title {
       font-weight: 700;
-      margin-bottom: 8px;
-      font-size: 14px;
+      margin-bottom: var(--space-md);
+      font-size: 15px;
     }
 
     .feedback.correct .feedback-title {
@@ -309,332 +424,412 @@
 
     .feedback-text {
       font-size: 14px;
-      color: #374151;
+      color: var(--gray-700);
       line-height: 1.6;
+      margin-bottom: var(--space-md);
     }
 
     .correct-answer {
-      margin-top: 12px;
       font-size: 13px;
-      color: #6b7280;
+      color: var(--gray-600);
+      padding-top: var(--space-md);
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .correct-answer strong {
       color: #15803d;
+      font-weight: 700;
     }
 
-    /* Grammar Key Section */
+    /* ──────────────────────────────────────────────────────────────────────────
+       Grammar Analysis Section
+       ────────────────────────────────────────────────────────────────────────── */
     .grammar-section {
       background: white;
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      margin-bottom: 24px;
+      border-radius: var(--radius-lg);
+      padding: var(--space-2xl);
+      box-shadow: var(--shadow-md);
+      margin-bottom: var(--space-xl);
     }
 
     .section-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+      align-items: flex-start;
+      gap: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--gray-200);
     }
 
     .section-header h2 {
-      font-size: 18px;
-      color: #1a202c;
+      font-size: 20px;
+      color: var(--gray-900);
+      font-weight: 700;
+      letter-spacing: -0.5px;
     }
 
     .section-header p {
       font-size: 13px;
-      color: #a0aec0;
-      margin-top: 4px;
-    }
-
-    .clear-btn {
-      background: none;
-      border: 1px solid #e2e8f0;
-      color: #a0aec0;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-      transition: all 0.2s ease;
+      color: var(--gray-500);
+      margin-top: var(--space-xs);
     }
 
     .section-actions {
       display: flex;
-      gap: 8px;
+      gap: var(--space-md);
+      flex-shrink: 0;
     }
 
-    .find-btn {
-      background: #1a202c;
-      border: 1px solid #1a202c;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
+    .btn-action {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid;
       cursor: pointer;
       font-size: 12px;
       font-weight: 700;
-      transition: all 0.2s ease;
+      transition: all var(--transition-base);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .find-btn {
+      background: var(--gray-900);
+      border-color: var(--gray-900);
+      color: white;
     }
 
     .find-btn:hover {
-      background: #2d3748;
-      border-color: #2d3748;
+      background: var(--gray-800);
+      border-color: var(--gray-800);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .clear-btn {
+      background: white;
+      border-color: var(--gray-300);
+      color: var(--gray-500);
     }
 
     .clear-btn:hover {
-      border-color: #cbd5e0;
-      color: #718096;
+      border-color: var(--gray-400);
+      color: var(--gray-600);
+      background: var(--gray-50);
     }
 
+    /* ──────────────────────────────────────────────────────────────────────────
+       Grammar Keys Grid
+       ────────────────────────────────────────────────────────────────────────── */
     .grammar-keys {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 24px;
+      flex-direction: column;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
     }
 
     .key-group {
-      width: 100%;
-      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
     }
 
     .key-group-title {
-      color: #4a5568;
-      font-size: 12px;
+      color: var(--gray-600);
+      font-size: 11px;
       font-weight: 800;
-      letter-spacing: 0.06em;
-      margin: 14px 0 4px;
+      letter-spacing: 0.5px;
+      margin: var(--space-lg) 0 var(--space-sm);
       text-transform: uppercase;
     }
 
+    .key-group-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+
     .key-btn {
-      padding: 8px 16px;
-      border-radius: 24px;
+      padding: 8px 14px;
+      border-radius: var(--radius-full);
       border: 2px solid;
       background: white;
       cursor: pointer;
       font-size: 13px;
       font-weight: 700;
-      transition: all 0.2s ease;
+      transition: all var(--transition-base);
       font-family: inherit;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: var(--space-sm);
+      white-space: nowrap;
     }
 
     .key-btn:hover {
       transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
 
     .key-btn.active {
       color: white;
+      background-color: currentColor;
+      border-color: currentColor;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .key-btn::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
+    /* ──────────────────────────────────────────────────────────────────────────
+       Trap Summary Card
+       ────────────────────────────────────────────────────────────────────────── */
+    .trap-summary {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-xl);
+      padding: var(--space-lg);
     }
 
+    .trap-summary-title {
+      color: var(--gray-900);
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: var(--space-md);
+    }
+
+    .trap-summary-grid {
+      display: grid;
+      gap: var(--space-md);
+      grid-template-columns: repeat(3, 1fr);
+      margin-bottom: var(--space-md);
+    }
+
+    .trap-summary-item {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+    }
+
+    .trap-summary-label {
+      color: var(--gray-500);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      margin-bottom: var(--space-xs);
+      text-transform: uppercase;
+    }
+
+    .trap-summary-value {
+      color: var(--gray-800);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .trap-summary-note {
+      color: var(--gray-600);
+      font-size: 13px;
+      line-height: 1.6;
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    /* ──────────────────────────────────────────────────────────────────────────
+       Explanations Panel
+       ────────────────────────────────────────────────────────────────────────── */
     .key-explanations {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: var(--space-lg);
     }
 
     .key-card {
-      padding: 18px 20px;
-      border-radius: 12px;
+      padding: var(--space-lg);
+      border-radius: var(--radius-md);
       border: 1px solid;
+      border-left: 4px solid;
+      animation: slideIn var(--transition-base);
     }
 
     .key-card-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
     }
 
     .key-card-dot {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       flex-shrink: 0;
     }
 
     .key-card-title {
       font-weight: 800;
-      font-size: 14px;
+      font-size: 15px;
     }
 
     .key-card-description {
       font-size: 14px;
       line-height: 1.6;
-      margin-bottom: 12px;
+      margin-bottom: var(--space-md);
+      color: var(--gray-700);
     }
 
     .key-card-rule {
       background: white;
-      padding: 12px 14px;
-      border-radius: 8px;
-      border-left: 4px solid;
+      padding: var(--space-md);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid;
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.7;
+      color: var(--gray-700);
     }
 
     .key-card-rule strong {
       font-weight: 700;
     }
 
-    .trap-summary {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      margin-bottom: 18px;
-      padding: 16px;
-    }
-
-    .trap-summary-title {
-      color: #1a202c;
-      font-size: 14px;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .trap-summary-grid {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .trap-summary-note {
-      color: #4a5568;
-      font-size: 13px;
-      line-height: 1.5;
-      margin-top: 12px;
-    }
-
-    .trap-summary-item {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 10px;
-    }
-
-    .trap-summary-label {
-      color: #718096;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
-      text-transform: uppercase;
-    }
-
-    .trap-summary-value {
-      color: #2d3748;
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.4;
-    }
-
     .empty-state {
       text-align: center;
-      padding: 40px 20px;
-      border: 2px dashed #e2e8f0;
-      border-radius: 12px;
-      color: #a0aec0;
+      padding: 48px var(--space-lg);
+      border: 2px dashed var(--gray-200);
+      border-radius: var(--radius-md);
+      color: var(--gray-400);
     }
 
     .empty-state-icon {
-      font-size: 32px;
-      margin-bottom: 12px;
+      font-size: 40px;
+      margin-bottom: var(--space-md);
     }
 
     .empty-state-text {
       font-size: 14px;
-      color: #718096;
+      color: var(--gray-500);
       font-weight: 600;
     }
 
-    /* Footer */
+    /* ──────────────────────────────────────────────────────────────────────────
+       Footer
+       ────────────────────────────────────────────────────────────────────────── */
     .footer {
       display: flex;
       justify-content: flex-end;
-      margin-top: 20px;
+      gap: var(--space-md);
+      padding-top: var(--space-lg);
+      border-top: 1px solid var(--gray-200);
     }
 
     .btn-next {
-      padding: 12px 32px;
-      border-radius: 12px;
+      padding: 12px 28px;
+      border-radius: var(--radius-md);
       border: none;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
       color: white;
       font-weight: 700;
       font-size: 14px;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      transition: all var(--transition-base);
       font-family: inherit;
     }
 
     .btn-next:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
 
     .btn-next:active {
       transform: translateY(0);
     }
 
+    /* ──────────────────────────────────────────────────────────────────────────
+       Responsive Design
+       ────────────────────────────────────────────────────────────────────────── */
     @media (max-width: 768px) {
-      .options {
-        grid-template-columns: 1fr;
+      :root {
+        --space-xl: 16px;
+        --space-2xl: 20px;
+      }
+
+      body {
+        padding: var(--space-md);
       }
 
       .header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
+        gap: var(--space-lg);
       }
 
-      .progress-bar {
+      .progress-container {
         width: 100%;
-        margin-left: 0;
+      }
+
+      .options {
+        grid-template-columns: 1fr;
       }
 
       .question-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
+        gap: var(--space-md);
       }
 
-      .question-badges {
-        align-self: flex-start;
-      }
-
-      .card {
-        padding: 20px;
-      }
-
+      .card,
       .grammar-section {
-        padding: 20px;
+        padding: var(--space-lg);
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-md);
+      }
+
+      .section-actions {
+        width: 100%;
       }
 
       .trap-summary-grid {
         grid-template-columns: 1fr;
+      }
+
+      .key-group-buttons {
+        gap: var(--space-sm);
+      }
+
+      .key-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-text h1 {
+        font-size: 20px;
+      }
+
+      .sentence-box {
+        font-size: 16px;
+      }
+
+      .option {
+        padding: var(--space-md);
+        font-size: 14px;
+      }
+
+      .btn-next {
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
+    <!-- ──────────────────────────────────────────────────────────────────────
+         Header
+         ────────────────────────────────────────────────────────────────────── -->
     <div class="header">
       <div class="header-left">
         <div class="header-icon">✦</div>
@@ -643,34 +838,35 @@
           <p>Reading & Writing · Master verb forms and sentence boundaries</p>
         </div>
       </div>
-      <div class="progress-bar">
-        <div class="progress-fill"></div>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="progress-text"><span id="currentQuestion">1</span> of 10</div>
       </div>
     </div>
 
-    <!-- Question Card -->
+    <!-- ──────────────────────────────────────────────────────────────────────
+         Question Card
+         ────────────────────────────────────────────────────────────────────── -->
     <div class="card">
       <div class="question-header">
-        <div>
-          <div class="question-number">Question <span id="currentQuestion">1</span> of 10</div>
-        </div>
-        <div class="question-badges">
-          <span class="badge badge-difficulty">Medium</span>
-          <span class="badge badge-topic">Verb Tense</span>
+        <div class="question-meta">
+          <div class="question-number">Question <span id="questionNum">1</span></div>
+          <div class="question-badges">
+            <span class="badge badge-difficulty">Medium</span>
+            <span class="badge badge-topic">Verb Tense</span>
+          </div>
         </div>
       </div>
 
       <p class="instruction">Which choice completes the text so that it conforms to the conventions of Standard English?</p>
 
-      <!-- Sentence -->
-      <div class="sentence-box" id="sentenceBox">
-        <!-- Populated by JS -->
-      </div>
+      <!-- Sentence with blank -->
+      <div class="sentence-box" id="sentenceBox"></div>
 
       <!-- Answer Options -->
-      <div class="options" id="optionsContainer">
-        <!-- Populated by JS -->
-      </div>
+      <div class="options" id="optionsContainer"></div>
 
       <!-- Feedback -->
       <div class="feedback" id="feedbackBox">
@@ -680,27 +876,28 @@
       </div>
     </div>
 
-    <!-- Grammar Keys Section -->
+    <!-- ──────────────────────────────────────────────────────────────────────
+         Grammar Analysis Section
+         ────────────────────────────────────────────────────────────────────── -->
     <div class="grammar-section">
       <div class="section-header">
         <div>
           <h2>Grammar Analysis Key</h2>
-          <p>Find traps from approved grammar, syntax, and writing-style keys</p>
+          <p>Highlight grammar rules, traps, and writing style cues</p>
         </div>
         <div class="section-actions">
-          <button class="find-btn" id="findTrapsBtn">Find traps</button>
-          <button class="clear-btn" id="clearBtn">Clear all</button>
+          <button class="btn-action find-btn" id="findTrapsBtn">Find Traps</button>
+          <button class="btn-action clear-btn" id="clearBtn">Clear All</button>
         </div>
       </div>
 
-      <div class="grammar-keys" id="grammarKeysContainer">
-        <!-- Populated by JS -->
-      </div>
+      <!-- Grammar Keys -->
+      <div class="grammar-keys" id="grammarKeysContainer"></div>
 
-      <div class="trap-summary" id="trapSummary">
-        <!-- Populated by JS -->
-      </div>
+      <!-- Trap Summary -->
+      <div class="trap-summary" id="trapSummary"></div>
 
+      <!-- Explanations -->
       <div class="key-explanations" id="explanationsContainer">
         <div class="empty-state">
           <div class="empty-state-icon">✦</div>
@@ -709,13 +906,26 @@
       </div>
     </div>
 
-    <!-- Footer -->
+    <!-- ──────────────────────────────────────────────────────────────────────
+         Footer
+         ────────────────────────────────────────────────────────────────────── -->
     <div class="footer">
       <button class="btn-next">Next Question →</button>
     </div>
   </div>
 
+  <!-- ────────────────────────────────────────────────────────────────────────
+       JavaScript
+       ──────────────────────────────────────────────────────────────────────── -->
   <script>
+    /* ════════════════════════════════════════════════════════════════════════
+       DATA STRUCTURES
+       ════════════════════════════════════════════════════════════════════════ */
+
+    /**
+     * Grammar keys with categorization, styling, and explanations
+     * Each key maps to sentence tokens for visual highlighting
+     */
     const GRAMMAR_KEYS = [
       {
         id: "subordinate_clause",
@@ -851,6 +1061,9 @@
       },
     ];
 
+    /**
+     * Trap profile: maps question to its grammar keys and trap mechanisms
+     */
     const TRAP_ANALYSIS = {
       grammarRoleKey: "verb_form",
       grammarFocusKey: "verb_tense_consistency",
@@ -861,6 +1074,9 @@
       trapMechanism: "The opening subordinate clause and the formal SAT style make past perfect sound attractive, but the main clause 'reflected' sets a completed-past frame with no earlier-past sequence.",
     };
 
+    /**
+     * Sentence tokens with tagged grammar keys
+     */
     const TOKENS = [
       { text: "Although",    tags: ["subordinating_conj", "subordinate_clause", "early_clause_anchor", "contrast_signal"] },
       { text: " the",        tags: ["subordinate_clause"] },
@@ -888,6 +1104,9 @@
       { text: ".",           tags: [] },
     ];
 
+    /**
+     * Answer options with correctness, trap info, and explanations
+     */
     const OPTIONS = [
       {
         id: "A",
@@ -921,10 +1140,20 @@
       },
     ];
 
+    /* ════════════════════════════════════════════════════════════════════════
+       STATE MANAGEMENT
+       ════════════════════════════════════════════════════════════════════════ */
     let activeKeys = new Set();
     let selectedAnswer = null;
     let answered = false;
 
+    /* ════════════════════════════════════════════════════════════════════════
+       RENDER FUNCTIONS (ALL ORIGINAL NAMES PRESERVED)
+       ════════════════════════════════════════════════════════════════════════ */
+
+    /**
+     * Render sentence with token highlighting based on active keys
+     */
     function renderSentence() {
       const box = document.getElementById("sentenceBox");
       box.innerHTML = "";
@@ -962,6 +1191,9 @@
       });
     }
 
+    /**
+     * Render answer options with visual states
+     */
     function renderOptions() {
       const container = document.getElementById("optionsContainer");
       container.innerHTML = "";
@@ -998,6 +1230,9 @@
       });
     }
 
+    /**
+     * Render grammar keys grouped by category
+     */
     function renderGrammarKeys() {
       const container = document.getElementById("grammarKeysContainer");
       container.innerHTML = "";
@@ -1006,8 +1241,14 @@
       groups.forEach((group) => {
         const groupWrap = document.createElement("div");
         groupWrap.className = "key-group";
-        groupWrap.innerHTML = `<div class="key-group-title">${group}</div>`;
-        container.appendChild(groupWrap);
+
+        const groupTitle = document.createElement("div");
+        groupTitle.className = "key-group-title";
+        groupTitle.textContent = group;
+        groupWrap.appendChild(groupTitle);
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "key-group-buttons";
 
         GRAMMAR_KEYS.filter(key => (key.group || "Other") === group).forEach((key) => {
           const button = document.createElement("button");
@@ -1018,14 +1259,20 @@
           button.style.color = activeKeys.has(key.id) ? "white" : key.color;
           button.style.backgroundColor = activeKeys.has(key.id) ? key.color : key.lightBg;
 
-          button.innerHTML = `${key.label}${activeKeys.has(key.id) ? ' ✕' : ''}`;
+          button.textContent = key.label + (activeKeys.has(key.id) ? ' ✕' : '');
 
           button.addEventListener("click", () => toggleKey(key.id));
-          container.appendChild(button);
+          buttonContainer.appendChild(button);
         });
+
+        groupWrap.appendChild(buttonContainer);
+        container.appendChild(groupWrap);
       });
     }
 
+    /**
+     * Render trap summary showing grammar role, traps, and style cues
+     */
     function renderTrapSummary() {
       const container = document.getElementById("trapSummary");
       const grammarFocus = getKey(TRAP_ANALYSIS.grammarFocusKey);
@@ -1033,14 +1280,14 @@
       const styleLabels = TRAP_ANALYSIS.writingStyleKeys.map(id => getKey(id)?.label || id).join(", ");
 
       container.innerHTML = `
-        <div class="trap-summary-title">Detected trap profile</div>
+        <div class="trap-summary-title">Detected Trap Profile</div>
         <div class="trap-summary-grid">
           <div class="trap-summary-item">
-            <div class="trap-summary-label">Rule</div>
+            <div class="trap-summary-label">Grammar Rule</div>
             <div class="trap-summary-value">${grammarFocus?.label || TRAP_ANALYSIS.grammarFocusKey}</div>
           </div>
           <div class="trap-summary-item">
-            <div class="trap-summary-label">Trap</div>
+            <div class="trap-summary-label">Trap Mechanism</div>
             <div class="trap-summary-value">${trapLabels}</div>
           </div>
           <div class="trap-summary-item">
@@ -1049,11 +1296,14 @@
           </div>
         </div>
         <div class="trap-summary-note">
-          <strong>Trap mechanism:</strong> ${TRAP_ANALYSIS.trapMechanism}
+          <strong>Why the trap works:</strong> ${TRAP_ANALYSIS.trapMechanism}
         </div>
       `;
     }
 
+    /**
+     * Render explanation cards for active grammar keys
+     */
     function renderExplanations() {
       const container = document.getElementById("explanationsContainer");
 
@@ -1074,6 +1324,7 @@
         const card = document.createElement("div");
         card.className = "key-card";
         card.style.borderColor = key.midBg;
+        card.style.borderLeftColor = key.color;
         card.style.backgroundColor = key.lightBg;
 
         card.innerHTML = `
@@ -1082,7 +1333,7 @@
             <div class="key-card-title" style="color: ${key.color}">${key.label}</div>
           </div>
           <div class="key-card-description">${key.description}</div>
-          <div class="key-card-rule" style="border-left-color: ${key.color}">
+          <div class="key-card-rule" style="border-left-color: ${key.color}; background-color: white">
             <strong style="color: ${key.color}">SAT Rule: </strong>${key.rule}
           </div>
         `;
@@ -1091,6 +1342,9 @@
       });
     }
 
+    /**
+     * Record answer selection, enable feedback, lock options
+     */
     function selectAnswer(optionId) {
       if (answered) return;
 
@@ -1101,10 +1355,13 @@
       renderOptions();
       renderFeedback();
 
-      // Update progress bar
+      // Update progress (static for now, would be dynamic with backend)
       document.querySelector(".progress-fill").style.width = "10%";
     }
 
+    /**
+     * Display feedback based on correctness of selected answer
+     */
     function renderFeedback() {
       const selected = OPTIONS.find(o => o.id === selectedAnswer);
       const feedbackBox = document.getElementById("feedbackBox");
@@ -1115,7 +1372,7 @@
       feedbackBox.classList.add("show");
       feedbackBox.className = "feedback show " + (selected.correct ? "correct" : "incorrect");
 
-      feedbackTitle.textContent = selected.correct ? "✓  Correct!" : "✗  Not quite";
+      feedbackTitle.textContent = selected.correct ? "✓ Correct!" : "✗ Not quite";
       feedbackText.textContent = selected.explanation;
 
       if (!selected.correct) {
@@ -1125,6 +1382,9 @@
       }
     }
 
+    /**
+     * Toggle a grammar key on/off, re-render affected elements
+     */
     function toggleKey(keyId) {
       if (activeKeys.has(keyId)) {
         activeKeys.delete(keyId);
@@ -1138,6 +1398,9 @@
       renderExplanations();
     }
 
+    /**
+     * Clear all active grammar keys
+     */
     function clearKeys() {
       activeKeys.clear();
       renderGrammarKeys();
@@ -1146,6 +1409,9 @@
       renderExplanations();
     }
 
+    /**
+     * Auto-populate trap-relevant keys ("Find Traps" button)
+     */
     function findTraps() {
       [
         TRAP_ANALYSIS.grammarRoleKey,
@@ -1160,21 +1426,34 @@
       renderExplanations();
     }
 
+    /* ════════════════════════════════════════════════════════════════════════
+       UTILITY FUNCTIONS
+       ════════════════════════════════════════════════════════════════════════ */
+
+    /**
+     * Fetch a grammar key by ID
+     */
     function getKey(keyId) {
       return GRAMMAR_KEYS.find(key => key.id === keyId);
     }
 
+    /**
+     * Find the highest-priority active key among a list of tags
+     */
     function findActiveKey(tags) {
       return GRAMMAR_KEYS
         .filter(key => tags.includes(key.id) && activeKeys.has(key.id))
         .sort((a, b) => (b.priority || 0) - (a.priority || 0))[0];
     }
 
-    // Event listeners
+    /* ════════════════════════════════════════════════════════════════════════
+       EVENT LISTENERS & INITIALIZATION
+       ════════════════════════════════════════════════════════════════════════ */
+
     document.getElementById("clearBtn").addEventListener("click", clearKeys);
     document.getElementById("findTrapsBtn").addEventListener("click", findTraps);
 
-    // Initial render
+    // Initial render on page load
     renderSentence();
     renderOptions();
     renderGrammarKeys();

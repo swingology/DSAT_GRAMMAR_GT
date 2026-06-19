@@ -3668,3 +3668,543 @@ _( 59 files changed, 12906 insertions(+), 67623 deletions(-))_
 **Untracked:** .wolf/hooks/journal-changelog.sh .wolf/hooks/journal-post.sh .wolf/hooks/journal-pre.sh .wolf/hooks/journal-stop.sh TESTS/DATA_SRC/2024-2025 Tests Answers/Answer Keys/TEST_05_Answer_Key.pdf 
 
 ---
+
+## Session snapshot — 2026-06-18 09:38:45 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 
+_( 3 files changed, 14 insertions(+), 4 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-18 09:38:52 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 22 insertions(+), 4 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-18 09:40:33 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 38 insertions(+), 6 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-18 09:49:52 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 687 insertions(+), 307 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-18 09:53:03 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 725 insertions(+), 307 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-18 09:58:10 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 774 insertions(+), 310 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:01:38 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 793 insertions(+), 310 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:04:16 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 897 insertions(+), 312 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:05:30 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 987 insertions(+), 312 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:07:07 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1075 insertions(+), 312 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:17:39 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1017 insertions(+), 306 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:28:32 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1032 insertions(+), 306 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:29:39 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.4Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1042 insertions(+), 306 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:31:05 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.3Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1052 insertions(+), 306 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:37:12 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1072 insertions(+), 306 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:41:49 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1082 insertions(+), 306 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:46:22 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1102 insertions(+), 306 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:47:48 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1112 insertions(+), 306 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:49:03 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1122 insertions(+), 306 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-18 10:54:00 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1194 insertions(+), 311 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md docs/superpowers/plans/2026-06-18-student-app-react-rebuild.md 
+
+---
+
+## Session snapshot — 2026-06-18 11:06:22 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1221 insertions(+), 307 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md docs/superpowers/plans/2026-06-18-student-app-react-rebuild.md 
+
+---
+
+## Session snapshot — 2026-06-18 16:32:30 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1271 insertions(+), 309 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md docs/superpowers/plans/2026-06-18-student-app-react-rebuild.md 
+
+---
+
+## Session snapshot — 2026-06-18 16:33:49 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1334 insertions(+), 312 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md docs/superpowers/plans/2026-06-18-student-app-react-rebuild.md 
+
+---
+
+## Session snapshot — 2026-06-18 16:34:17 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1390 insertions(+), 312 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md docs/superpowers/plans/2026-06-18-student-app-react-rebuild.md 
+
+---
+
+## Session snapshot — 2026-06-18 16:35:23 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1463 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md docs/superpowers/plans/2026-06-18-student-app-react-rebuild.md 
+
+---
+
+## Session snapshot — 2026-06-18 16:39:58 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1537 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md STUDENT_UI_TASKS.md 
+
+---
+
+## Session snapshot — 2026-06-18 16:41:39 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 6 files changed, 1613 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md STUDENT_UI_TASKS.md 
+
+---
+
+## Session snapshot — 2026-06-18 16:42:37 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 1668 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md STUDENT_UI_TASKS.md 
+
+---
+
+## Session snapshot — 2026-06-18 16:43:14 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 1811 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md STUDENT_UI_TASKS.md 
+
+---
+
+## Session snapshot — 2026-06-18 16:48:40 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 2211 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 16:50:45 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 2445 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 16:54:27 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 2688 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:00:46 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 2748 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:01:24 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 3040 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:04:27 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 3207 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:05:34 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 3613 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:07:34 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 3623 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:12:17 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 3635 insertions(+), 309 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:21:47 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 3975 insertions(+), 312 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:25:58 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `8.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 4086 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:26:52 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 4179 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:29:00 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 7 files changed, 4482 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:30:29 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 8 files changed, 4504 insertions(+), 313 deletions(-))_
+
+**Untracked:** ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md APP/STUDENT_APP_REDUX/.env.example 
+
+---
+
+## Session snapshot — 2026-06-18 17:30:50 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 8 files changed, 4758 insertions(+), 313 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 07:18:27 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 8 files changed, 5011 insertions(+), 313 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 07:36:47 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 8 files changed, 4942 insertions(+), 311 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 07:43:51 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 8 files changed, 4886 insertions(+), 307 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 07:45:44 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/models/payload.py backend/app/routers/student.py grammar-app.html 
+_( 10 files changed, 4958 insertions(+), 314 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 07:46:02 (50kb-written)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/models/payload.py backend/app/routers/student.py grammar-app.html 
+_( 10 files changed, 5089 insertions(+), 314 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 08:21:14 (session-end)
+_branch:_ `main` · _commit:_ `05c67d7` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/models/payload.py backend/app/routers/student.py grammar-app.html 
+_( 10 files changed, 5227 insertions(+), 314 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 08:22:28 (session-end)
+_branch:_ `main` · _commit:_ `9d6829b` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 8 files changed, 5196 insertions(+), 314 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 08:25:40 (50kb-written)
+_branch:_ `main` · _commit:_ `9d6829b` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/package-lock.json APP/STUDENT_APP_REDUX/package.json APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/WeakConceptsTab.tsx APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx CHANGELOG.md grammar-app.html 
+_( 14 files changed, 5448 insertions(+), 330 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 08:26:38 (session-end)
+_branch:_ `main` · _commit:_ `9d6829b` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/package-lock.json APP/STUDENT_APP_REDUX/package.json APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/WeakConceptsTab.tsx APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx CHANGELOG.md grammar-app.html 
+_( 14 files changed, 5623 insertions(+), 333 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 08:33:18 (session-end)
+_branch:_ `main` · _commit:_ `da92ff3` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 8 files changed, 5826 insertions(+), 314 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
+
+## Session snapshot — 2026-06-19 08:39:03 (session-end)
+_branch:_ `main` · _commit:_ `da92ff3` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md grammar-app.html 
+_( 8 files changed, 6037 insertions(+), 314 deletions(-))_
+
+**Untracked:** .wolf/PHASE_1_RESUMPTION_GUIDE.md ADMIN_DASHBOARD_DESIGN.md ADMIN_DASHBOARD_README.md ADMIN_DASHBOARD_TASKS.md ADMIN_DASHBOARD_WIREFRAMES.md 
+
+---
