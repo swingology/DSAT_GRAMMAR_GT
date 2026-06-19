@@ -87,92 +87,165 @@ Port `grammar-app.html` into a React component + custom hook. This is the testin
 
 ---
 
-## Phase 2: Dashboard Consolidation
+## Phase 2: Student Dashboard
 
-🚫 **BLOCKED UNTIL PHASE 1 COMPLETE**
+✅ **PHASE 1 COMPLETE — Phase 2 unblocked**
 
-Build consolidated Student Dashboard with Diagnostic, Test Mode, Weak Concepts, Missed Questions as tabs/sections.
+Build the Student Dashboard home page. This is the first screen a student sees after login.
 
-### 2.1 Dashboard Layout & Navigation
-- [ ] **2.1.1** Create `StudentDashboard` component (main page)
-  - Route: `/`
-  - Tab/section structure: Diagnostic, Test Mode, Weak Concepts, Missed Questions, Practice Recommendations
-  - Navigation: sidebar or tab bar
-  - **File:** `FRONTEND/src/pages/StudentDashboard.tsx`
+---
 
-- [ ] **2.1.2** Set up dashboard state management
-  - Track active tab/section
-  - Store dashboard data (recommendations, stats, progress)
-  - Use React Query for data fetching and caching
-  - **File:** `FRONTEND/src/hooks/useDashboardData.ts`
+### Dashboard Spec (approved 2026-06-19)
 
-### 2.2 Diagnostic Section
-- [ ] **2.2.1** Create `DiagnosticTab` component
-  - Fetch `/study/recommendations` to get ranked weak concepts
-  - Display concept ranking with weakness score, miss rate, attempt history
-  - Button to start adaptive diagnostic test
-  - **File:** `FRONTEND/src/components/dashboard/DiagnosticTab.tsx`
+**Layout:** Hero banner at top → three quick-start action cards → progress section below the fold.
 
-- [ ] **2.2.2** Create `AdaptiveDiagnosticFlow` component
-  - Start diagnostic flow from top weakness targets
-  - Serve questions from those targets (via `/questions` API)
-  - Submit answers (via `/submit` API)
-  - Adapt difficulty/targets based on performance
-  - Display results and recommendations after completion
-  - **File:** `FRONTEND/src/components/dashboard/AdaptiveDiagnosticFlow.tsx`
+#### Hero Banner
+Displays for all logged-in students. Shows four stats:
+- **Streak** — consecutive days active
+- **Questions this week** — rolling 7-day attempt count
+- **Overall accuracy %** — correct / total across all sessions
+- **Top weak concept** — single line: "Your weakest area: {focus_key label}"
 
-- [ ] **2.2.3** Diagnostic result display
-  - Show updated weakness profile post-diagnostic
-  - Highlight improvements/new weaknesses detected
-  - Suggest next study targets
+For first-time users (no history): show a welcome message + prompt to start the Diagnostic.
 
-### 2.3 Test Mode Section
-- [ ] **2.3.1** Create `TestModeTab` component
-  - Display recent tests / available test modes
-  - Button to start a timed test session
-  - Show test history with scores
-  - **File:** `FRONTEND/src/components/dashboard/TestModeTab.tsx`
+Data source: `/study/recommendations` (weakness data) + `/stats/{user_id}` (accuracy, weekly count).
 
-- [ ] **2.3.2** Create `TimedTestFlow` component
-  - Fetch a set of questions for a full test
-  - Render with timer, question counter, progress bar
-  - Handle submission and answer review
-  - Calculate score and performance breakdown
-  - **File:** `FRONTEND/src/components/dashboard/TimedTestFlow.tsx`
+#### Three Quick-Start Action Cards
 
-### 2.4 Weak Concepts Section
-- [ ] **2.4.1** Create `WeakConceptsTab` component
-  - Fetch `/study/recommendations` → display `top_targets` ranked by weakness_score
-  - For each concept: weakness score, miss rate, days since last attempt, inventory status
-  - Click to drill into concept-specific study materials
-  - **File:** `FRONTEND/src/components/dashboard/WeakConceptsTab.tsx`
+**1. Practice**
+- Sub-options the student chooses from before starting:
+  - **Grammar Practice** → routes to existing `/practice/grammar`
+  - **Pick a Concept** → concept selector list → drill questions for that concept
+  - **Mixed Practice** → system serves random queue across all concepts
+- Card shows: last practice date, questions answered lifetime
 
-- [ ] **2.4.2** Create `ConceptDetailView` component
-  - Show detailed performance metrics for a single concept
-  - Link to practice questions for that concept
-  - Show generation queue status if applicable
-  - **File:** `FRONTEND/src/components/dashboard/ConceptDetailView.tsx`
+**2. Diagnostic Test**
+- Routing logic:
+  - **First-time student** (no attempt history) → baseline diagnostic: fixed-length, covers all concept areas evenly (~20–30 questions)
+  - **Returning student** (has history) → adaptive diagnostic: pulls from `/study/recommendations` top targets, adapts as they go
+- Before starting: show what mode will run and why (transparent to student)
+- After completion: show updated weakness profile + next recommended targets
+- Card shows: last diagnostic date, current top weak concept
 
-### 2.5 Missed Questions Section
-- [ ] **2.5.1** Create `MissedQuestionsTab` component
-  - Call `/study/missed/{user_id}` (backend endpoint to be added)
-  - Display list of missed questions with explanations
-  - Filter by domain, concept, difficulty
-  - Sort by date missed, miss rate
-  - **File:** `FRONTEND/src/components/dashboard/MissedQuestionsTab.tsx`
+**3. Practice Test**
+- Student configures before starting:
+  - Question count (e.g. 10, 20, 33 — full module)
+  - Time limit (student sets or uses SAT-standard ~32 min per module)
+- Timed session with countdown timer, question counter, progress bar
+- After completion: score + performance breakdown by concept area
+- Card shows: last test date, last score
 
-- [ ] **2.5.2** Create `MissedQuestionDetail` component
-  - Show question, user's answer, correct answer, explanation
-  - Link to similar practice questions
-  - Mark as reviewed / flag for later
+#### Progress Section (below fold)
+- **Recent Sessions** — last 3–5 sessions with date, mode (Practice / Diagnostic / Test), score/accuracy
+- **Concept Weakness Chart** — mini horizontal bar chart of top 5–8 concepts ranked by `weakness_score` from `/study/recommendations`
 
-### 2.6 Practice Recommendations Section
-- [ ] **2.6.1** Create `PracticeRecommendationsTab` component
-  - Fetch `/study/generation-requests` to show generated questions queue
-  - Fetch `/study/recommendations` to suggest practice targets
-  - Display recommended study path based on weakness profile
-  - Buttons to start practice for each recommendation
-  - **File:** `FRONTEND/src/components/dashboard/PracticeRecommendationsTab.tsx`
+---
+
+### 2.1 Dashboard Layout & State
+
+- [x] **2.1.1** Create `StudentDashboard` page component
+  - Route: `/` (home after login)
+  - Sections: HeroBanner, ActionCards (3), ProgressSection
+  - **File:** `APP/STUDENT_APP_REDUX/src/pages/StudentDashboard.tsx`
+
+- [x] **2.1.2** Create `useDashboardData` hook
+  - Fetch `/stats/{user_id}` → streak, weekly count, accuracy
+  - Fetch `/study/recommendations` → top_targets (weakness data)
+  - Derive first-time vs returning student status (no attempts = first-time)
+  - Cache with React Query; expose loading/error states
+  - **File:** `APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts`
+
+### 2.2 Hero Banner
+
+- [x] **2.2.1** Create `HeroBanner` component
+  - Show 4 stat chips: Streak, Questions this week, Overall accuracy %, Top weak concept
+  - First-time variant: welcome message + "Start your Diagnostic" CTA
+  - Skeleton loaders while data fetches
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/dashboard/HeroBanner.tsx`
+
+### 2.3 Practice Card
+
+- [x] **2.3.1** Create `PracticeCard` component
+  - Show last practice date + lifetime question count
+  - On click: open sub-option picker (Grammar / Pick a Concept / Mixed)
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx`
+
+- [x] **2.3.2** Create `PracticeSubOptionModal` (or inline picker)
+  - Three options: Grammar Practice → `/practice/grammar`; Pick a Concept → concept selector; Mixed → `/practice/mixed`
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeSubOptionModal.tsx`
+
+- [x] **2.3.3** Create `ConceptSelectorPage` for "Pick a Concept" flow
+  - Fetch concept list (from `/study/recommendations` top_targets + full concept registry)
+  - Student picks one → routes to focused practice session for that concept
+  - **File:** `APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx`
+
+- [x] **2.3.4** Create `MixedPracticePage`
+  - Fetch mixed queue of questions across all concepts via `/questions`
+  - Same UI as GrammarPractice but serves any domain/focus_key
+  - **File:** `APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx`
+
+### 2.4 Diagnostic Card
+
+- [x] **2.4.1** Create `DiagnosticCard` component
+  - Show last diagnostic date, current top weak concept
+  - Show which mode will run (first-time baseline vs adaptive) with brief explanation
+  - "Start Diagnostic" button
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx`
+
+- [ ] **2.4.2** Create `BaselineDiagnosticFlow` component (first-time path)
+  - Fixed ~20–30 questions spread evenly across concept areas
+  - No timer; progress bar only
+  - On complete: renders DiagnosticResultsView
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/diagnostic/BaselineDiagnosticFlow.tsx`
+
+- [ ] **2.4.3** Create `AdaptiveDiagnosticFlow` component (returning student path)
+  - Pulls questions targeting top weakness targets from `/study/recommendations`
+  - Adapts concept targets as student answers
+  - On complete: renders DiagnosticResultsView
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/diagnostic/AdaptiveDiagnosticFlow.tsx`
+
+- [ ] **2.4.4** Create `DiagnosticResultsView` component
+  - Updated weakness profile post-diagnostic
+  - Highlight improvements / newly detected weaknesses
+  - Suggest next study targets with "Practice Now" shortcuts
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticResultsView.tsx`
+
+### 2.5 Practice Test Card
+
+- [x] **2.5.1** Create `PracticeTestCard` component
+  - Show last test date, last score
+  - "Configure & Start" button
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx`
+
+- [x] **2.5.2** Create `TestConfigModal` component
+  - Student picks: question count (10 / 20 / 33) and time limit (custom or SAT-standard)
+  - Confirm → launches TimedTestFlow
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/test/TestConfigModal.tsx`
+
+- [x] **2.5.3** Create `TimedTestFlow` component
+  - Countdown timer, question counter, progress bar
+  - Fetch question set via `/questions` based on config
+  - Submit answers; on complete → renders TestResultsView
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/test/TimedTestFlow.tsx`
+
+- [x] **2.5.4** Create `TestResultsView` component
+  - Score summary + accuracy
+  - Performance breakdown by concept area
+  - "Practice weak areas" shortcut
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/test/TestResultsView.tsx`
+
+### 2.6 Progress Section
+
+- [x] **2.6.1** Create `RecentSessions` component
+  - List last 3–5 sessions: date, mode label, score/accuracy
+  - Data source: needs a sessions history endpoint or derived from `/stats/{user_id}`
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/dashboard/RecentSessions.tsx`
+
+- [x] **2.6.2** Create `ConceptWeaknessChart` component
+  - Horizontal bar chart (top 5–8 concepts ranked by weakness_score)
+  - Data from `/study/recommendations` top_targets
+  - Use Recharts or a lightweight chart lib already in the project
+  - **File:** `APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx`
 
 ---
 

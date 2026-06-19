@@ -4,19 +4,21 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api/client'
 import { useSubmitAnswer } from '../../hooks/useDashboardData'
 
-const TEST_DURATION_SECONDS = 32 * 60 // 32 minutes (one verbal module)
-const QUESTIONS_PER_TEST = 27
+const DEFAULT_DURATION_SECONDS = 32 * 60
+const DEFAULT_QUESTIONS = 27
 
 type TestState = 'idle' | 'running' | 'review' | 'done'
 
 interface TestQuestion {
   id: string
-  text: string
-  options: Array<{ id: string; text: string }>
-  correct_answer_id?: string
-  explanation?: string
-  focus_key?: string
+  current_question_text: string
+  options: Array<{ label: string; text: string }>
+  explanation_short?: string
+  grammar_focus_key?: string
+  reading_focus_key?: string
   domain?: string
+  // is_correct populated after submit
+  _isCorrect?: boolean
 }
 
 function Timer({ seconds, onExpire }: { seconds: number; onExpire: () => void }) {
@@ -49,9 +51,11 @@ function Timer({ seconds, onExpire }: { seconds: number; onExpire: () => void })
 
 function TestRunner({
   questions,
+  durationSeconds,
   onSubmit,
 }: {
   questions: TestQuestion[]
+  durationSeconds: number
   onSubmit: (answers: Record<string, string>) => void
 }) {
   const [current, setCurrent] = useState(0)
@@ -59,10 +63,16 @@ function TestRunner({
   const submitAnswer = useSubmitAnswer()
   const q = questions[current]
 
-  function selectOption(optionId: string) {
-    const newAnswers = { ...answers, [q.id]: optionId }
+  function selectOption(label: string) {
+    if (answers[q.id]) return
+    const newAnswers = { ...answers, [q.id]: label }
     setAnswers(newAnswers)
-    submitAnswer.mutate({ question_id: q.id, answer_id: optionId, mode: 'test' })
+    submitAnswer.mutate({
+      question_id: q.id,
+      selected_option_label: label,
+      missed_grammar_focus_key: q.grammar_focus_key,
+      missed_reading_focus_key: q.reading_focus_key,
+    })
   }
 
   const answered = Object.keys(answers).length
@@ -75,7 +85,7 @@ function TestRunner({
         <span className="text-sm text-gray-500">
           {current + 1} / {questions.length}
         </span>
-        <Timer seconds={TEST_DURATION_SECONDS} onExpire={() => onSubmit(answers)} />
+        <Timer seconds={durationSeconds} onExpire={() => onSubmit(answers)} />
         <button
           onClick={() => onSubmit(answers)}
           className="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-600 font-medium transition"
@@ -97,14 +107,14 @@ function TestRunner({
         {q.domain && (
           <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">{q.domain}</p>
         )}
-        <p className="text-gray-800 leading-relaxed mb-5">{q.text}</p>
+        <p className="text-gray-800 leading-relaxed mb-5">{q.current_question_text}</p>
         <div className="space-y-2">
           {q.options.map((opt) => {
-            const isSelected = answers[q.id] === opt.id
+            const isSelected = answers[q.id] === opt.label
             return (
               <button
-                key={opt.id}
-                onClick={() => selectOption(opt.id)}
+                key={opt.label}
+                onClick={() => selectOption(opt.label)}
                 className={[
                   'w-full text-left p-3 rounded-lg border text-sm transition-all',
                   isSelected
@@ -174,7 +184,8 @@ function TestResults({
   const scored = questions.map((q) => ({
     q,
     userAnswer: answers[q.id] ?? null,
-    correct: answers[q.id] === q.correct_answer_id,
+    // is_correct is stored on the question after submit; fall back to false if missing
+    correct: q._isCorrect ?? false,
   }))
   const numCorrect = scored.filter((s) => s.correct).length
   const pct = Math.round((numCorrect / questions.length) * 100)
@@ -227,24 +238,22 @@ function TestResults({
             <span className={`text-lg ${correct ? 'text-emerald-500' : 'text-red-500'}`}>
               {correct ? '✓' : '✗'}
             </span>
-            <p className="text-sm text-gray-700 leading-relaxed">{q.text}</p>
+            <p className="text-sm text-gray-700 leading-relaxed">{q.current_question_text}</p>
           </div>
           {!correct && q.options.map((opt) => {
-            const isUser = opt.id === userAnswer
-            const isCorrect = opt.id === q.correct_answer_id
-            if (!isUser && !isCorrect) return null
+            const isUser = opt.label === userAnswer
+            if (!isUser) return null
             return (
               <p
-                key={opt.id}
-                className={`text-xs mt-1 pl-6 ${isCorrect ? 'text-emerald-700' : 'text-red-600 line-through'}`}
+                key={opt.label}
+                className="text-xs mt-1 pl-6 text-red-600 line-through"
               >
-                {isCorrect ? '✓ ' : '✗ '}
-                {opt.text}
+                ✗ {opt.label}. {opt.text}
               </p>
             )
           })}
-          {q.explanation && (
-            <p className="text-xs text-gray-500 mt-2 pl-6 italic">{q.explanation}</p>
+          {q.explanation_short && (
+            <p className="text-xs text-gray-500 mt-2 pl-6 italic">{q.explanation_short}</p>
           )}
         </motion.div>
       ))}
@@ -252,15 +261,21 @@ function TestResults({
   )
 }
 
-export function TestModeTab() {
+export function TestModeTab({
+  questionCount = DEFAULT_QUESTIONS,
+  durationSeconds = DEFAULT_DURATION_SECONDS,
+}: {
+  questionCount?: number
+  durationSeconds?: number
+}) {
   const [state, setState] = useState<TestState>('idle')
   const [answers, setAnswers] = useState<Record<string, string>>({})
 
   const { data: qData, isLoading, refetch } = useQuery({
-    queryKey: ['test-questions'],
+    queryKey: ['test-questions', questionCount],
     queryFn: () =>
       api.getQuestions({
-        limit: QUESTIONS_PER_TEST,
+        limit: questionCount,
         mode: 'test',
         randomize: true,
       }),
@@ -284,7 +299,7 @@ export function TestModeTab() {
     if (isLoading || questions.length === 0) {
       return <div className="h-64 bg-gray-100 rounded-xl animate-pulse" />
     }
-    return <TestRunner questions={questions} onSubmit={handleSubmit} />
+    return <TestRunner questions={questions} durationSeconds={durationSeconds} onSubmit={handleSubmit} />
   }
 
   if (state === 'done') {
@@ -302,13 +317,13 @@ export function TestModeTab() {
       <div className="bg-white border border-gray-200 rounded-xl p-5">
         <h3 className="font-semibold text-gray-800 mb-1">Timed Practice Module</h3>
         <p className="text-gray-500 text-sm">
-          {QUESTIONS_PER_TEST} verbal questions · {TEST_DURATION_SECONDS / 60} minutes · mirrors real DSAT
+          {questionCount} verbal questions · {Math.round(durationSeconds / 60)} minutes · mirrors real DSAT
         </p>
       </div>
       <div className="grid grid-cols-3 gap-3 text-center">
         {[
-          { label: 'Questions', value: QUESTIONS_PER_TEST },
-          { label: 'Time limit', value: `${TEST_DURATION_SECONDS / 60}m` },
+          { label: 'Questions', value: questionCount },
+          { label: 'Time limit', value: `${Math.round(durationSeconds / 60)}m` },
           { label: 'Format', value: 'Verbal' },
         ].map(({ label, value }) => (
           <div key={label} className="bg-gray-50 rounded-xl p-3">

@@ -1,73 +1,50 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
-import { WeakConceptsTab } from '../components/dashboard/WeakConceptsTab'
-import { DiagnosticTab } from '../components/dashboard/DiagnosticTab'
-import { TestModeTab } from '../components/dashboard/TestModeTab'
-import { MissedQuestionsTab } from '../components/dashboard/MissedQuestionsTab'
-
-type Tab = 'weak' | 'diagnostic' | 'test' | 'missed'
-
-const TABS: Array<{ id: Tab; label: string; icon: string }> = [
-  { id: 'weak', label: 'Weak Concepts', icon: '📊' },
-  { id: 'diagnostic', label: 'Diagnostic', icon: '🎯' },
-  { id: 'test', label: 'Test Mode', icon: '⏱' },
-  { id: 'missed', label: 'Missed', icon: '📋' },
-]
+import { HeroBanner } from '../components/dashboard/HeroBanner'
+import { PracticeCard } from '../components/dashboard/PracticeCard'
+import { DiagnosticCard } from '../components/dashboard/DiagnosticCard'
+import { PracticeTestCard } from '../components/dashboard/PracticeTestCard'
+import { RecentSessions } from '../components/dashboard/RecentSessions'
+import { ConceptWeaknessChart } from '../components/dashboard/ConceptWeaknessChart'
 
 export function DashboardPage() {
-  const [activeTab, setActiveTab] = useState<Tab>('weak')
-
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top nav */}
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-blue-600 font-bold text-lg">DSAT Prep</span>
-        </div>
-        <Link
-          to="/practice/grammar"
-          className="text-sm px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
-        >
-          Grammar Practice
-        </Link>
+        <span className="text-blue-600 font-bold text-lg">DSAT Prep</span>
+        <span className="text-xs text-gray-400">Student Portal</span>
       </header>
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        {/* Tab bar */}
-        <div className="flex bg-white border border-gray-200 rounded-xl p-1 mb-6 gap-1">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={[
-                'flex-1 flex flex-col items-center gap-0.5 py-2 px-1 rounded-lg text-xs font-medium transition-all',
-                activeTab === tab.id
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
-              ].join(' ')}
-            >
-              <span className="text-base">{tab.icon}</span>
-              <span className="leading-tight text-center">{tab.label}</span>
-            </button>
-          ))}
-        </div>
+      <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
+        {/* Hero */}
+        <HeroBanner />
 
-        {/* Tab content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-          >
-            {activeTab === 'weak' && <WeakConceptsTab />}
-            {activeTab === 'diagnostic' && <DiagnosticTab />}
-            {activeTab === 'test' && <TestModeTab />}
-            {activeTab === 'missed' && <MissedQuestionsTab />}
-          </motion.div>
-        </AnimatePresence>
+        {/* Quick-start action cards */}
+        <section>
+          <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-1">
+            Start a session
+          </h2>
+          <div className="space-y-3">
+            <PracticeCard />
+            <DiagnosticCard />
+            <PracticeTestCard />
+          </div>
+        </section>
+
+        {/* Progress section */}
+        <section className="pt-2">
+          <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-1">
+            Progress
+          </h2>
+
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 mb-3">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Recent Activity</h3>
+            <RecentSessions />
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Concept Weakness</h3>
+            <ConceptWeaknessChart />
+          </div>
+        </section>
       </div>
     </div>
   )

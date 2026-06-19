@@ -149,15 +149,14 @@ describe('useSubmitAnswer', () => {
 
     result.current.mutate({
       question_id: 'q-1',
-      answer_id: 'opt-a',
-      mode: 'practice',
+      selected_option_label: 'A',
     })
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(mockedApi.submitAnswer).toHaveBeenCalledWith({
       question_id: 'q-1',
-      answer_id: 'opt-a',
-      mode: 'practice',
+      selected_option_label: 'A',
+      user_token: '',
     })
   })
 
@@ -166,7 +165,7 @@ describe('useSubmitAnswer', () => {
 
     const { result } = renderHook(() => useSubmitAnswer(), { wrapper: makeWrapper() })
 
-    result.current.mutate({ question_id: 'q-1', answer_id: 'opt-a', mode: 'test' })
+    result.current.mutate({ question_id: 'q-1', selected_option_label: 'B' })
 
     await waitFor(() => expect(result.current.isError).toBe(true))
   })

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-19T16:27:47.837Z
-> Files: 944 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-19T22:09:08.509Z
+> Files: 955 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -58,6 +58,7 @@
 - `DEBUG_LOG.md` — Debug Log (~45092 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `docker-compose.yml` — Docker Compose services (~133 tok)
+- `future_features.md` — Future Features & Outstanding Work (~1111 tok)
 - `FUTURE_FEATURES.md` — Future Features (~12323 tok)
 - `future_tasks.md` — Future Tasks (~219 tok)
 - `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
@@ -83,7 +84,7 @@
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
 - `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~5330 tok)
-- `STUDENT_UI_TASKS.md` — Student UI React Rebuild — Task Tracker (~3980 tok)
+- `STUDENT_UI_TASKS.md` — Student UI React Rebuild — Task Tracker (~4864 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
@@ -223,7 +224,7 @@
 
 ## APP/STUDENT_APP_REDUX/src/
 
-- `App.tsx` — queryClient (~179 tok)
+- `App.tsx` — queryClient (~331 tok)
 - `index.css` — Styles: 3 rules (~17 tok)
 - `main.tsx` (~68 tok)
 - `vite-env.d.ts` — / <reference types="vite/client" /> (~33 tok)
@@ -235,7 +236,7 @@
 
 ## APP/STUDENT_APP_REDUX/src/api/
 
-- `client.ts` — API client for communication with backend (~536 tok)
+- `client.ts` — API client for communication with backend (~582 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/
 
@@ -246,16 +247,22 @@
 ## APP/STUDENT_APP_REDUX/src/components/__tests__/
 
 - `.keep` (~0 tok)
-- `DashboardPage.test.tsx` — Mock framer-motion to avoid animation complexity in tests (~1347 tok)
+- `DashboardPage.test.tsx` — renderDashboard (~638 tok)
 - `GrammarPractice.test.tsx` — Mock the API (~1835 tok)
-- `MissedQuestionsTab.test.tsx` — mockedUseMissedQuestions (~1562 tok)
-- `WeakConceptsTab.test.tsx` — mockedUseRecommendations (~1110 tok)
+- `MissedQuestionsTab.test.tsx` — mockedUseMissedQuestions (~1563 tok)
+- `WeakConceptsTab.test.tsx` — mockedUseRecommendations (~1111 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/dashboard/
 
-- `DiagnosticTab.tsx` — DiagnosticQuestion (~2464 tok)
+- `ConceptWeaknessChart.tsx` — ConceptWeaknessChart (~487 tok)
+- `DiagnosticCard.tsx` — DiagnosticCard (~723 tok)
+- `DiagnosticTab.tsx` — DiagnosticQuestionCard (~2688 tok)
+- `HeroBanner.tsx` — StatChip (~868 tok)
 - `MissedQuestionsTab.tsx` — MissedCard (~1604 tok)
-- `TestModeTab.tsx` — TEST_DURATION_SECONDS (~3037 tok)
+- `PracticeCard.tsx` — OPTIONS (~850 tok)
+- `PracticeTestCard.tsx` — QUESTION_COUNTS (~1244 tok)
+- `RecentSessions.tsx` — RecentSessions (~504 tok)
+- `TestModeTab.tsx` — DEFAULT_DURATION_SECONDS (~3159 tok)
 - `WeakConceptsTab.tsx` — scoreBar (~1135 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/grammar/
@@ -271,19 +278,23 @@
 ## APP/STUDENT_APP_REDUX/src/hooks/
 
 - `.keep` (~0 tok)
-- `useDashboardData.ts` — Exports MissedQuestionItem, MissedQuestionsResponse, useRecommendations, useQuestions + 2 more (~474 tok)
+- `useDashboardData.ts` — Exports StudentStats, useStats, MissedQuestionItem, MissedQuestionsResponse + 4 more (~640 tok)
 - `useGrammarSession.ts` — 1. renderSentence() (~2251 tok)
 
 ## APP/STUDENT_APP_REDUX/src/hooks/__tests__/
 
 - `.keep` (~0 tok)
-- `useDashboardData.test.ts` — mockedApi: makeWrapper (~1663 tok)
+- `useDashboardData.test.ts` — mockedApi: makeWrapper (~1659 tok)
 - `useGrammarSession.test.ts` — Mock the API (~1899 tok)
 
 ## APP/STUDENT_APP_REDUX/src/pages/
 
 - `.keep` (~0 tok)
-- `DashboardPage.tsx` — TABS (~821 tok)
+- `ConceptSelectorPage.tsx` — ConceptSelectorPage (~1170 tok)
+- `DashboardPage.tsx` — DashboardPage (~567 tok)
+- `DiagnosticPage.tsx` — DiagnosticPage (~208 tok)
+- `MixedPracticePage.tsx` — QuestionCard (~1668 tok)
+- `PracticeTestPage.tsx` — PracticeTestPage (~314 tok)
 
 ## APP/STUDENT_APP_REDUX/src/types/
 

@@ -4306,3 +4306,191 @@ _branch:_ `main` · _commit:_ `abe8ace` · _ram:_ `11Gi/30Gi`
 _( 5 files changed, 1124 insertions(+), 18 deletions(-))_
 
 ---
+
+## Session snapshot — 2026-06-19 09:33:27 (session-end)
+_branch:_ `main` · _commit:_ `fc91c1b` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json 
+_( 1 file changed, 336 insertions(+), 9 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 09:34:03 (session-end)
+_branch:_ `main` · _commit:_ `fc91c1b` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 932 insertions(+), 16 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 10:02:10 (session-end)
+_branch:_ `main` · _commit:_ `fc91c1b` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 941 insertions(+), 16 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 11:01:59 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 1256 insertions(+), 18 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 11:12:15 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 1867 insertions(+), 18 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 13:34:59 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 2177 insertions(+), 18 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-19 14:22:42 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 2520 insertions(+), 18 deletions(-))_
+
+**Untracked:** screenshot.png 
+
+---
+
+## Session snapshot — 2026-06-19 14:28:38 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 2850 insertions(+), 18 deletions(-))_
+
+**Untracked:** screenshot.png 
+
+---
+
+## Session snapshot — 2026-06-19 14:28:51 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 3180 insertions(+), 18 deletions(-))_
+
+**Untracked:** screenshot.png 
+
+---
+
+## Session snapshot — 2026-06-19 14:36:14 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 2837 insertions(+), 13 deletions(-))_
+
+**Untracked:** screenshot.png 
+
+---
+
+## Session snapshot — 2026-06-19 14:37:53 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 2889 insertions(+), 16 deletions(-))_
+
+**Untracked:** screenshot.png 
+
+---
+
+## Session snapshot — 2026-06-19 14:52:22 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md STUDENT_UI_TASKS.md 
+_( 7 files changed, 3123 insertions(+), 106 deletions(-))_
+
+**Untracked:** screenshot.png 
+
+---
+
+## Session snapshot — 2026-06-19 14:56:15 (50kb-written)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx CHANGELOG.md STUDENT_UI_TASKS.md 
+_( 10 files changed, 3381 insertions(+), 176 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/HeroBanner.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx 
+
+---
+
+## Session snapshot — 2026-06-19 14:57:01 (50kb-written)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/WeakConceptsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md STUDENT_UI_TASKS.md 
+_( 14 files changed, 3506 insertions(+), 187 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/HeroBanner.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx 
+
+---
+
+## Session snapshot — 2026-06-19 15:01:23 (50kb-written)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/MissedQuestionsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/WeakConceptsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md STUDENT_UI_TASKS.md 
+_( 15 files changed, 3570 insertions(+), 260 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/page-2026-06-19T21-59-42-518Z.yml .playwright-mcp/page-2026-06-19T22-00-46-173Z.yml APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx 
+
+---
+
+## Session snapshot — 2026-06-19 15:01:32 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/MissedQuestionsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/WeakConceptsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md STUDENT_UI_TASKS.md 
+_( 15 files changed, 3801 insertions(+), 260 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/page-2026-06-19T21-59-42-518Z.yml .playwright-mcp/page-2026-06-19T22-00-46-173Z.yml APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx 
+
+---
+
+## Session snapshot — 2026-06-19 15:04:32 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/MissedQuestionsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/WeakConceptsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md STUDENT_UI_TASKS.md 
+_( 15 files changed, 4034 insertions(+), 260 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/page-2026-06-19T21-59-42-518Z.yml .playwright-mcp/page-2026-06-19T22-00-46-173Z.yml APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx 
+
+---
+
+## Session snapshot — 2026-06-19 15:07:47 (50kb-written)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/MissedQuestionsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/WeakConceptsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md STUDENT_UI_TASKS.md 
+_( 17 files changed, 4258 insertions(+), 317 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/page-2026-06-19T21-59-42-518Z.yml .playwright-mcp/page-2026-06-19T22-00-46-173Z.yml APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx 
+
+---
+
+## Session snapshot — 2026-06-19 15:08:20 (50kb-written)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/MissedQuestionsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/WeakConceptsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md STUDENT_UI_TASKS.md 
+_( 17 files changed, 4356 insertions(+), 332 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/page-2026-06-19T21-59-42-518Z.yml .playwright-mcp/page-2026-06-19T22-00-46-173Z.yml APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx 
+
+---
+
+## Session snapshot — 2026-06-19 15:09:41 (session-end)
+_branch:_ `main` · _commit:_ `79f71ed` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/MissedQuestionsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/WeakConceptsTab.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md STUDENT_UI_TASKS.md 
+_( 18 files changed, 4732 insertions(+), 338 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/page-2026-06-19T21-59-42-518Z.yml .playwright-mcp/page-2026-06-19T22-00-46-173Z.yml APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx 
+
+---

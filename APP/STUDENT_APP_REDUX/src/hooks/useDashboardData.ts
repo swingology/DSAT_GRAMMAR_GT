@@ -4,6 +4,24 @@ import type { StudyRecommendationsResponse } from '../types'
 
 const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || ''
 
+export interface StudentStats {
+  user_id: number
+  total_attempts: number
+  correct_count: number
+  accuracy: number
+  weekly_attempts?: number
+  streak_days?: number
+}
+
+export function useStats(userId: number | undefined) {
+  return useQuery<StudentStats>({
+    queryKey: ['stats', userId],
+    queryFn: () => api.getStats(userId!),
+    enabled: !!userId,
+    staleTime: 2 * 60 * 1000,
+  })
+}
+
 export interface MissedQuestionItem {
   question_id: string
   question_text: string
@@ -43,7 +61,13 @@ export function useQuestions(params: Record<string, any>, enabled = true) {
 export function useSubmitAnswer() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (data: any) => api.submitAnswer(data),
+    mutationFn: (data: {
+      question_id: string
+      selected_option_label: string
+      missed_grammar_focus_key?: string
+      missed_reading_focus_key?: string
+    }) =>
+      api.submitAnswer({ ...data, user_token: USER_TOKEN }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['recommendations'] })
     },

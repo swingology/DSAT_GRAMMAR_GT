@@ -35,7 +35,7 @@ const mockTarget = {
   inventory_below_threshold: false,
 }
 
-beforeEach(() => vi.clearAllMocks())
+beforeEach(() => { vi.clearAllMocks() })
 
 describe('WeakConceptsTab', () => {
   it('shows loading skeletons while fetching', () => {

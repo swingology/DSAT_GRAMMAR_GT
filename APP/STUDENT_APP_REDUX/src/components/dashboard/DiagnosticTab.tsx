@@ -10,65 +10,90 @@ type DiagnosticState = 'idle' | 'running' | 'done'
 
 interface DiagnosticQuestion {
   id: string
-  text: string
-  options: Array<{ id: string; text: string }>
-  focus_key: string
+  current_question_text: string
+  options: Array<{ label: string; text: string }>
+  grammar_focus_key?: string
+  reading_focus_key?: string
   domain: string
-  correct_answer_id?: string
-  explanation?: string
+  explanation_short?: string
+  // correct_answer revealed after submit via is_correct response
+  _selectedLabel?: string
+  _isCorrect?: boolean
 }
 
-function DiagnosticQuestion({
+function DiagnosticQuestionCard({
   question,
   onAnswer,
 }: {
   question: DiagnosticQuestion
-  onAnswer: (optionId: string) => void
+  onAnswer: (label: string, isCorrect: boolean) => void
 }) {
   const [selected, setSelected] = useState<string | null>(null)
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const submitAnswer = useSubmitAnswer()
 
-  function choose(id: string) {
+  function choose(label: string) {
     if (selected) return
-    setSelected(id)
-    onAnswer(id)
+    setSelected(label)
+    submitAnswer.mutate(
+      {
+        question_id: question.id,
+        selected_option_label: label,
+        missed_grammar_focus_key: question.grammar_focus_key,
+        missed_reading_focus_key: question.reading_focus_key,
+      },
+      {
+        onSuccess: (res) => {
+          setIsCorrect(res.is_correct)
+          onAnswer(label, res.is_correct)
+        },
+        onError: () => {
+          // Optimistic: treat as answered, correctness unknown
+          onAnswer(label, false)
+        },
+      }
+    )
   }
+
+  const focusKey = (question.grammar_focus_key || question.reading_focus_key || '').replace(/_/g, ' ')
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6">
       <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide font-medium">
-        {question.domain} · {question.focus_key.replace(/_/g, ' ')}
+        {question.domain}{focusKey ? ` · ${focusKey}` : ''}
       </p>
-      <p className="text-gray-800 mb-5 leading-relaxed">{question.text}</p>
+      <p className="text-gray-800 mb-5 leading-relaxed">{question.current_question_text}</p>
       <div className="space-y-2">
         {question.options.map((opt) => {
-          const isSelected = selected === opt.id
-          const isCorrect = selected && opt.id === question.correct_answer_id
-          const isWrong = isSelected && opt.id !== question.correct_answer_id
+          const isSelected = selected === opt.label
+          const showCorrect = isCorrect === true && isSelected
+          const showWrong = isCorrect === false && isSelected
           return (
             <button
-              key={opt.id}
-              onClick={() => choose(opt.id)}
+              key={opt.label}
+              onClick={() => choose(opt.label)}
               disabled={!!selected}
               className={[
                 'w-full text-left p-3 rounded-lg border text-sm transition-all',
                 !selected ? 'hover:bg-blue-50 hover:border-blue-300 border-gray-200' : '',
-                isCorrect ? 'bg-emerald-50 border-emerald-400 text-emerald-800' : '',
-                isWrong ? 'bg-red-50 border-red-400 text-red-800' : '',
-                isSelected && !isWrong && !isCorrect ? 'bg-blue-50 border-blue-400' : '',
-                !isSelected && selected ? 'opacity-50 border-gray-200' : '',
+                showCorrect ? 'bg-emerald-50 border-emerald-400 text-emerald-800' : '',
+                showWrong ? 'bg-red-50 border-red-400 text-red-800' : '',
+                isSelected && isCorrect === null ? 'bg-blue-50 border-blue-400' : '',
+                !isSelected && !!selected ? 'opacity-50 border-gray-200' : '',
               ]
                 .filter(Boolean)
                 .join(' ')}
             >
+              <span className="font-mono text-gray-400 mr-2">{opt.label}.</span>
               {opt.text}
             </button>
           )
         })}
       </div>
-      {selected && question.explanation && (
+      {selected && question.explanation_short && (
         <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
           <p className="text-xs text-gray-500 font-medium mb-1">Explanation</p>
-          <p className="text-sm text-gray-700">{question.explanation}</p>
+          <p className="text-sm text-gray-700">{question.explanation_short}</p>
         </div>
       )}
     </div>
@@ -83,44 +108,31 @@ function DiagnosticRunner({
   onDone: (results: { correct: number; total: number }) => void
 }) {
   const [qIndex, setQIndex] = useState(0)
-  const [answers, setAnswers] = useState<string[]>([])
-  const submitAnswer = useSubmitAnswer()
+  const [correctCount, setCorrectCount] = useState(0)
 
   const currentTarget = targets[Math.min(qIndex, targets.length - 1)]
+  const totalQuestions = Math.min(targets.length, 8)
 
   const { data: qData, isLoading } = useQuery({
     queryKey: ['diagnostic-q', currentTarget?.focus_key, qIndex],
     queryFn: () =>
       api.getQuestions({
-        focus_key: currentTarget.focus_key,
-        domain: currentTarget.domain,
+        grammar_focus_key: currentTarget.domain === 'grammar' ? currentTarget.focus_key : undefined,
+        reading_focus_key: currentTarget.domain === 'reading' ? currentTarget.focus_key : undefined,
         limit: 1,
-        mode: 'diagnostic',
       }),
     enabled: !!currentTarget,
   })
 
   const question: DiagnosticQuestion | null = qData?.questions?.[0] ?? null
-  const totalQuestions = Math.min(targets.length, 8)
 
-  function handleAnswer(optionId: string) {
-    if (!question) return
-
-    submitAnswer.mutate({
-      question_id: question.id,
-      answer_id: optionId,
-      mode: 'diagnostic',
-    })
-
-    const newAnswers = [...answers, optionId]
-    setAnswers(newAnswers)
+  function handleAnswer(_label: string, isCorrect: boolean) {
+    const newCorrect = correctCount + (isCorrect ? 1 : 0)
+    setCorrectCount(newCorrect)
 
     setTimeout(() => {
       if (qIndex + 1 >= totalQuestions) {
-        const correct = newAnswers.filter(
-          (a, i) => a === (qData?.questions?.[i]?.correct_answer_id ?? '__none__')
-        ).length
-        onDone({ correct, total: totalQuestions })
+        onDone({ correct: newCorrect, total: totalQuestions })
       } else {
         setQIndex(qIndex + 1)
       }
@@ -153,7 +165,7 @@ function DiagnosticRunner({
           ))}
         </div>
       </div>
-      <DiagnosticQuestion question={question} onAnswer={handleAnswer} />
+      <DiagnosticQuestionCard question={question} onAnswer={handleAnswer} />
     </div>
   )
 }

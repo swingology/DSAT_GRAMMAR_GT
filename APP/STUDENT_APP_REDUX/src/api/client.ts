@@ -44,7 +44,13 @@ export const api = {
   getQuestions: (params: Record<string, any>) =>
     apiCall(`/questions?${new URLSearchParams(params).toString()}`),
 
-  submitAnswer: (data: any) =>
+  submitAnswer: (data: {
+    question_id: string
+    selected_option_label: string
+    user_token: string
+    missed_grammar_focus_key?: string
+    missed_reading_focus_key?: string
+  }) =>
     apiCall('/submit', {
       method: 'POST',
       body: data,

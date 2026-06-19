@@ -28,7 +28,7 @@ const mockItem = {
   last_missed_at: '2026-06-15T10:00:00Z',
 }
 
-beforeEach(() => vi.clearAllMocks())
+beforeEach(() => { vi.clearAllMocks() })
 
 describe('MissedQuestionsTab', () => {
   it('shows loading skeletons while fetching', () => {

@@ -1,6 +1,7 @@
 # Memory
 
 > Chronological action log. Hooks and AI append to this file automatically.
+| 22:00 | Phase 2 dashboard built and verified: HeroBanner, PracticeCard (expandable sub-options), DiagnosticCard (baseline/adaptive routing), PracticeTestCard (config modal), RecentSessions, ConceptWeaknessChart, DashboardPage rebuilt, 5 new routes in App.tsx. Build clean, 62 tests pass. | APP/STUDENT_APP_REDUX/src/ | success (visually verified) | ~4k |
 > Old sessions are consolidated by the daemon weekly.
 | 17:35 | STUDENT APP PHASE 1 GATE COMPLETE ✅ — Built React grammar practice page (useGrammarSession hook, GrammarPractice component, 11 functions), TypeScript fixes (ReturnType, CSS modules, tailwind ESM), test suite (29 passing, 8 skipped API mock context), dev server running, manual QA verified. All Phase 1 criteria met. Ready for Phase 2. | APP/STUDENT_APP_REDUX/, memory/project_student-app-react-rebuild.md, .wolf/cerebrum.md | success (approved) | ~5k |
 | 19:32 | Ingestion test for Test_6_digital_sec01_mod01 Run 3 — BLOCKED by duplicate checksum; backend rejected submission before job_id assigned. Logged to DEBUG_LOG.md Run 3 section. No new bug (existing known issue). | DEBUG_LOG.md | blocked (duplicate checksum) | ~200 |
@@ -3109,3 +3110,61 @@
 | 09:23 | Created APP/ADMIN_APP/src/App.tsx | — | ~330 |
 | 09:27 | Edited APP/ADMIN_APP/src/pages/PipelinePerformance.tsx | 4→4 lines | ~37 |
 | 09:28 | Session end: 39 writes across 24 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 13 reads | ~73435 tok |
+| 09:33 | Session end: 39 writes across 24 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 13 reads | ~73435 tok |
+| 09:34 | Session end: 39 writes across 24 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 13 reads | ~73435 tok |
+| 10:02 | Session end: 39 writes across 24 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 13 reads | ~73435 tok |
+| 11:01 | Created future_features.md | — | ~1185 |
+| 11:01 | Session end: 40 writes across 25 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 14 reads | ~74923 tok |
+| 11:12 | Session end: 40 writes across 25 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 14 reads | ~74923 tok |
+| 13:34 | Session end: 40 writes across 25 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 14 reads | ~74923 tok |
+| 14:22 | Session end: 40 writes across 25 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 17 reads | ~74923 tok |
+| 14:28 | Session end: 40 writes across 25 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 17 reads | ~74923 tok |
+| 14:28 | Session end: 40 writes across 25 files (payload.py, student.py, client.ts, useDashboardData.ts, MissedQuestionsTab.tsx) | 17 reads | ~74923 tok |
+
+## Session: 2026-06-19 14:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:52 | Edited STUDENT_UI_TASKS.md | modified users() | ~1976 |
+| 14:52 | Session end: 1 writes across 1 files (STUDENT_UI_TASKS.md) | 2 reads | ~6097 tok |
+| 14:53 | Edited APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts | modified useStats() | ~184 |
+| 14:54 | Created APP/STUDENT_APP_REDUX/src/components/dashboard/HeroBanner.tsx | — | ~868 |
+| 14:54 | Created APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx | — | ~850 |
+| 14:54 | Created APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticCard.tsx | — | ~723 |
+| 14:54 | Created APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx | — | ~1244 |
+| 14:54 | Created APP/STUDENT_APP_REDUX/src/components/dashboard/ConceptWeaknessChart.tsx | — | ~487 |
+| 14:55 | Created APP/STUDENT_APP_REDUX/src/components/dashboard/RecentSessions.tsx | — | ~504 |
+| 14:55 | Created APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx | — | ~567 |
+| 14:55 | Created APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx | — | ~208 |
+| 14:55 | Created APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx | — | ~314 |
+| 14:55 | Created APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx | — | ~1170 |
+| 14:56 | Created APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | — | ~1529 |
+| 14:56 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | 2→2 lines | ~20 |
+| 14:56 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | modified TestModeTab() | ~206 |
+| 14:56 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | inline fix | ~30 |
+| 14:56 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | CSS: durationSeconds | ~52 |
+| 14:56 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | inline fix | ~23 |
+| 14:56 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | 9→9 lines | ~135 |
+| 14:56 | Created APP/STUDENT_APP_REDUX/src/App.tsx | — | ~331 |
+| 14:56 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx | inline fix | ~19 |
+| 14:57 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/WeakConceptsTab.test.tsx | inline fix | ~12 |
+| 14:57 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/MissedQuestionsTab.test.tsx | inline fix | ~12 |
+| 14:57 | Created APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx | — | ~638 |
+| 15:01 | Session end: 24 writes across 18 files (STUDENT_UI_TASKS.md, useDashboardData.ts, HeroBanner.tsx, PracticeCard.tsx, DiagnosticCard.tsx) | 14 reads | ~29095 tok |
+| 15:04 | Session end: 24 writes across 18 files (STUDENT_UI_TASKS.md, useDashboardData.ts, HeroBanner.tsx, PracticeCard.tsx, DiagnosticCard.tsx) | 14 reads | ~29095 tok |
+| 15:06 | Edited APP/STUDENT_APP_REDUX/src/api/client.ts | expanded (+6 lines) | ~75 |
+| 15:06 | Edited APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts | modified useSubmitAnswer() | ~122 |
+| 15:07 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx | CSS: current_question_text, label | ~99 |
+| 15:07 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx | modified DiagnosticQuestionCard() | ~824 |
+| 15:07 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx | modified DiagnosticRunner() | ~607 |
+| 15:07 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | CSS: current_question_text, label | ~83 |
+| 15:07 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | added 1 condition(s) | ~102 |
+| 15:07 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | 11→11 lines | ~135 |
+| 15:07 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | 5→6 lines | ~62 |
+| 15:08 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | 17→15 lines | ~150 |
+| 15:08 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | inline fix | ~27 |
+| 15:08 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | CSS: current_question_text, label | ~64 |
+| 15:08 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | modified choose() | ~161 |
+| 15:08 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | 40→41 lines | ~528 |
+| 15:09 | Edited APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts | 20→19 lines | ~178 |
+| 15:09 | Session end: 39 writes across 21 files (STUDENT_UI_TASKS.md, useDashboardData.ts, HeroBanner.tsx, PracticeCard.tsx, DiagnosticCard.tsx) | 18 reads | ~59275 tok |
