@@ -5,6 +5,7 @@ import { DiagnosticCard } from '../components/dashboard/DiagnosticCard'
 import { PracticeTestCard } from '../components/dashboard/PracticeTestCard'
 import { RecentSessions } from '../components/dashboard/RecentSessions'
 import { ConceptWeaknessChart } from '../components/dashboard/ConceptWeaknessChart'
+import { SpacedRepetitionWidget } from '../components/dashboard/SpacedRepetitionWidget'
 
 const EASE: Easing = 'easeOut'
 
@@ -44,18 +45,26 @@ export function DashboardPage() {
           </div>
         </motion.section>
 
+        {/* Spaced Review */}
+        <motion.section {...fadeUp(0.30)}>
+          <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-1">
+            Spaced review
+          </h2>
+          <SpacedRepetitionWidget />
+        </motion.section>
+
         {/* Progress section */}
-        <motion.section className="pt-2" {...fadeUp(0.30)}>
+        <motion.section className="pt-2" {...fadeUp(0.38)}>
           <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-1">
             Progress
           </h2>
 
-          <motion.div {...fadeUp(0.36)} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 mb-3">
+          <motion.div {...fadeUp(0.44)} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 mb-3">
             <h3 className="text-sm font-semibold text-gray-700 mb-3">Recent Activity</h3>
             <RecentSessions />
           </motion.div>
 
-          <motion.div {...fadeUp(0.42)} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+          <motion.div {...fadeUp(0.50)} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
             <h3 className="text-sm font-semibold text-gray-700 mb-3">Concept Weakness</h3>
             <ConceptWeaknessChart />
           </motion.div>

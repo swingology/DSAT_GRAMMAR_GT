@@ -119,6 +119,7 @@ class Question(Base):
     outgoing_relations = relationship("QuestionRelation", back_populates="from_question", foreign_keys="[QuestionRelation.from_question_id]")
     incoming_relations = relationship("QuestionRelation", back_populates="to_question", foreign_keys="[QuestionRelation.to_question_id]")
     progress_records = relationship("UserProgress", back_populates="question", foreign_keys="[UserProgress.question_id]")
+    spaced_repetition_records = relationship("SpacedRepetitionState", back_populates="question", foreign_keys="[SpacedRepetitionState.question_id]")
 
 
 class QuestionVersion(Base):
@@ -490,6 +491,7 @@ class User(Base):
 
     progress_records = relationship("UserProgress", back_populates="user")
     diagnostic_sessions = relationship("DiagnosticSession", back_populates="user")
+    spaced_repetition_records = relationship("SpacedRepetitionState", back_populates="user")
 
 
 class UserProgress(Base):
@@ -546,6 +548,37 @@ class DiagnosticSession(Base):
 
     user = relationship("User", back_populates="diagnostic_sessions")
     progress_records = relationship("UserProgress", back_populates="diagnostic_session")
+
+
+class SpacedRepetitionState(Base):
+    """SM-2 spaced repetition state per (user, question) pair."""
+    __tablename__ = "spaced_repetition_state"
+    __table_args__ = (
+        UniqueConstraint("user_id", "question_id", name="uq_sr_user_question"),
+        Index("ix_sr_user_id", "user_id"),
+        Index("ix_sr_next_review_at", "next_review_at"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id"), nullable=False)
+
+    # SM-2 algorithm state
+    easiness_factor = Column(Float, nullable=False, default=2.5)
+    interval_days = Column(Float, nullable=False, default=1.0)
+    repetition_count = Column(Integer, nullable=False, default=0)
+    last_reviewed_at = Column(DateTime(timezone=True), nullable=True)
+    next_review_at = Column(DateTime(timezone=True), nullable=True)
+
+    # Cumulative tracking
+    total_attempts = Column(Integer, nullable=False, default=0)
+    correct_attempts = Column(Integer, nullable=False, default=0)
+
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+    user = relationship("User", back_populates="spaced_repetition_records")
+    question = relationship("Question", back_populates="spaced_repetition_records", foreign_keys=[question_id])
 
 
 class AdminQuestionAuditLog(Base):

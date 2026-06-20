@@ -82,3 +82,19 @@ export function useMissedQuestions(params: { domain?: string; sort_by?: string }
     retry: 1,
   })
 }
+
+export function useSRProgress() {
+  return useQuery({
+    queryKey: ['sr-progress'],
+    queryFn: () => api.srProgress(USER_TOKEN),
+    staleTime: 60_000,
+  })
+}
+
+export function useSRDue(limit = 20) {
+  return useQuery({
+    queryKey: ['sr-due', limit],
+    queryFn: () => api.srDueQuestions(USER_TOKEN, limit),
+    staleTime: 60_000,
+  })
+}

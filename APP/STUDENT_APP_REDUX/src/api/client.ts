@@ -93,4 +93,16 @@ export const api = {
 
   diagnosticDetail: (sessionId: string, userToken: string) =>
     apiCall(`/diagnostic/${sessionId}?user_token=${encodeURIComponent(userToken)}`),
+
+  srReview: (questionId: string, data: { user_token: string; quality: number }) =>
+    apiCall(`/spaced-repetition/${questionId}/review`, { method: 'POST', body: data }),
+
+  srDueQuestions: (userToken: string, limit = 20, domain?: string) => {
+    const q = new URLSearchParams({ user_token: userToken, limit: String(limit) })
+    if (domain) q.set('domain', domain)
+    return apiCall(`/spaced-repetition/due?${q.toString()}`)
+  },
+
+  srProgress: (userToken: string) =>
+    apiCall(`/spaced-repetition/progress?user_token=${encodeURIComponent(userToken)}`),
 }

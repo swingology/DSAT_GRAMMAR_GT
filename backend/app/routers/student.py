@@ -16,7 +16,7 @@ from app.database import get_db
 from app.auth import student_required, admin_or_student_required, student_jwt_required, admin_or_student_jwt_required
 from app.models.db import (
     Question, User, UserProgress, QuestionAnnotation, QuestionOption,
-    GenerationBatch, QuestionJob, DiagnosticSession,
+    GenerationBatch, QuestionJob, DiagnosticSession, SpacedRepetitionState,
 )
 from app.models.payload import (
     StudentQuestionResponse,
@@ -42,6 +42,11 @@ from app.models.payload import (
     DiagnosticHistoryResponse,
     DiagnosticQuestionResult,
     DiagnosticSessionDetailResponse,
+    SRReviewRequest,
+    SRReviewResponse,
+    SRDueQuestion,
+    SRDueQuestionsResponse,
+    SRProgressResponse,
 )
 from app.models.ontology import GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
 
@@ -1810,4 +1815,241 @@ async def diagnostic_detail(
         accuracy=session.accuracy,
         question_results=question_results,
         focus_breakdown=focus_breakdown,
+    )
+
+
+# ── Spaced Repetition Helpers ────────────────────────────────────────────────
+
+def _sm2_update(sr: SpacedRepetitionState, quality: int, now: datetime) -> None:
+    """Apply SM-2 algorithm to update spaced repetition state in-place.
+
+    quality: 0-5 (0=complete blackout, 5=perfect recall)
+    SM-2 spec: https://www.supermemo.com/en/blog/application-of-a-computer-to-improve-the-results-obtained-in-working-with-the-super-memo-method
+    """
+    sr.total_attempts += 1
+    if quality >= 3:
+        sr.correct_attempts += 1
+
+    if quality >= 3:
+        if sr.repetition_count == 0:
+            new_interval = 1.0
+        elif sr.repetition_count == 1:
+            new_interval = 6.0
+        else:
+            new_interval = round(sr.interval_days * sr.easiness_factor, 2)
+        sr.interval_days = new_interval
+        sr.repetition_count += 1
+    else:
+        # Incorrect recall — reset the repetition count and interval
+        sr.repetition_count = 0
+        sr.interval_days = 1.0
+
+    # Update easiness factor (EF); clamp to [1.3, 5.0]
+    new_ef = sr.easiness_factor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
+    sr.easiness_factor = max(1.3, min(5.0, round(new_ef, 4)))
+
+    sr.last_reviewed_at = now
+    sr.next_review_at = now + timedelta(days=sr.interval_days)
+
+
+def _sr_confidence_level(sr: SpacedRepetitionState) -> str:
+    """Classify the confidence level based on SM-2 state."""
+    ef = sr.easiness_factor
+    reps = sr.repetition_count
+    if ef >= 3.5 and reps >= 5:
+        return "mastered"
+    elif ef >= 2.5 and reps >= 3:
+        return "proficient"
+    elif reps >= 1:
+        return "developing"
+    return "novice"
+
+
+# ── Spaced Repetition Endpoints ──────────────────────────────────────────────
+
+@router.post("/spaced-repetition/{question_id}/review", response_model=SRReviewResponse)
+async def sr_review(
+    question_id: str,
+    body: SRReviewRequest,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Record a review result and update SM-2 state for a question."""
+    try:
+        qid = UUID(question_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid question_id")
+
+    user = await _resolve_user_by_token(body.user_token, db)
+
+    q = await db.get(Question, qid)
+    if not q:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    # Get or create SR state for this (user, question) pair
+    existing = await db.execute(
+        select(SpacedRepetitionState).where(
+            SpacedRepetitionState.user_id == user.id,
+            SpacedRepetitionState.question_id == qid,
+        )
+    )
+    sr = existing.scalars().first()
+
+    now = datetime.now(timezone.utc)
+    if sr is None:
+        sr = SpacedRepetitionState(
+            user_id=user.id,
+            question_id=qid,
+        )
+        db.add(sr)
+
+    _sm2_update(sr, body.quality, now)
+    await db.commit()
+    await db.refresh(sr)
+
+    return SRReviewResponse(
+        question_id=question_id,
+        next_review_at=sr.next_review_at,
+        interval_days=sr.interval_days,
+        easiness_factor=sr.easiness_factor,
+        repetition_count=sr.repetition_count,
+        confidence_level=_sr_confidence_level(sr),
+    )
+
+
+@router.get("/spaced-repetition/due", response_model=SRDueQuestionsResponse)
+async def sr_due_questions(
+    user_token: str = Query(...),
+    limit: int = Query(20, ge=1, le=100),
+    domain: Optional[str] = Query(None),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return questions due for spaced repetition review, ordered by most overdue first."""
+    user = await _resolve_user_by_token(user_token, db)
+    now = datetime.now(timezone.utc)
+
+    stmt = (
+        select(SpacedRepetitionState)
+        .where(
+            SpacedRepetitionState.user_id == user.id,
+            SpacedRepetitionState.next_review_at <= now,
+        )
+        .order_by(SpacedRepetitionState.next_review_at.asc())
+        .limit(limit)
+    )
+    result = await db.execute(stmt)
+    due = result.scalars().all()
+
+    # Count total due across all records (ignoring the limit)
+    count_res = await db.execute(
+        select(func.count()).select_from(SpacedRepetitionState).where(
+            SpacedRepetitionState.user_id == user.id,
+            SpacedRepetitionState.next_review_at <= now,
+        )
+    )
+    total_due = count_res.scalars().first() or 0
+
+    items = []
+    for sr in due:
+        days_overdue = max(0.0, (now - sr.next_review_at).total_seconds() / 86400)
+
+        # Fetch annotation metadata for focus area and domain classification
+        ann_data: dict = {}
+        q = await db.get(Question, sr.question_id)
+        if q and q.latest_annotation_id:
+            ann_res = await db.execute(
+                select(QuestionAnnotation).where(QuestionAnnotation.id == q.latest_annotation_id)
+            )
+            ann = ann_res.scalars().first()
+            if ann:
+                ann_data = ann.annotation_jsonb or {}
+
+        focus = ann_data.get("grammar_focus_key") or ann_data.get("reading_focus_key")
+        q_domain = (
+            "reading" if (ann_data.get("reading_skill_family_key") or ann_data.get("reading_focus_key"))
+            else ("grammar" if ann_data.get("grammar_focus_key") else None)
+        )
+
+        # Apply optional domain filter; skip items that don't match
+        if domain and q_domain != domain:
+            continue
+
+        items.append(SRDueQuestion(
+            question_id=str(sr.question_id),
+            days_overdue=round(days_overdue, 2),
+            confidence_level=_sr_confidence_level(sr),
+            last_reviewed_at=sr.last_reviewed_at,
+            next_review_at=sr.next_review_at,
+            focus_area=focus,
+            domain=q_domain,
+        ))
+
+    # Rough time estimate: 3 minutes per question, bounded [5, 20] minutes
+    suggested = min(20, max(5, len(items) * 3))
+
+    return SRDueQuestionsResponse(
+        due_questions=items,
+        total_due=total_due,
+        suggested_session_length_minutes=suggested,
+    )
+
+
+@router.get("/spaced-repetition/progress", response_model=SRProgressResponse)
+async def sr_progress(
+    user_token: str = Query(...),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return spaced repetition progress summary for a user."""
+    user = await _resolve_user_by_token(user_token, db)
+    now = datetime.now(timezone.utc)
+
+    result = await db.execute(
+        select(SpacedRepetitionState).where(SpacedRepetitionState.user_id == user.id)
+    )
+    records = result.scalars().all()
+
+    if not records:
+        return SRProgressResponse(
+            total_tracked=0,
+            mastered_count=0,
+            proficient_count=0,
+            developing_count=0,
+            novice_count=0,
+            due_for_review=0,
+            average_easiness_factor=2.5,
+            retention_rate=0.0,
+        )
+
+    mastered = proficient = developing = novice = due = 0
+    total_attempts = total_correct = 0
+
+    for sr in records:
+        level = _sr_confidence_level(sr)
+        if level == "mastered":
+            mastered += 1
+        elif level == "proficient":
+            proficient += 1
+        elif level == "developing":
+            developing += 1
+        else:
+            novice += 1
+        if sr.next_review_at and sr.next_review_at <= now:
+            due += 1
+        total_attempts += sr.total_attempts
+        total_correct += sr.correct_attempts
+
+    avg_ef = round(sum(r.easiness_factor for r in records) / len(records), 4)
+    retention = round(total_correct / total_attempts, 4) if total_attempts > 0 else 0.0
+
+    return SRProgressResponse(
+        total_tracked=len(records),
+        mastered_count=mastered,
+        proficient_count=proficient,
+        developing_count=developing,
+        novice_count=novice,
+        due_for_review=due,
+        average_easiness_factor=avg_ef,
+        retention_rate=retention,
     )

@@ -803,4 +803,47 @@ class DiagnosticSessionDetailResponse(BaseModel):
     question_results: List[DiagnosticQuestionResult]
     focus_breakdown: Dict[str, Any] = Field(default_factory=dict)
 
+
+# ── Spaced Repetition Models ─────────────────────────────────────────────────
+
+class SRReviewRequest(BaseModel):
+    user_token: str
+    quality: int = Field(ge=0, le=5, description="0=blackout, 5=perfect recall")
+
+
+class SRReviewResponse(BaseModel):
+    question_id: str
+    next_review_at: datetime
+    interval_days: float
+    easiness_factor: float
+    repetition_count: int
+    confidence_level: str  # "novice" | "developing" | "proficient" | "mastered"
+
+
+class SRDueQuestion(BaseModel):
+    question_id: str
+    days_overdue: float
+    confidence_level: str
+    last_reviewed_at: Optional[datetime] = None
+    next_review_at: Optional[datetime] = None
+    focus_area: Optional[str] = None
+    domain: Optional[str] = None
+
+
+class SRDueQuestionsResponse(BaseModel):
+    due_questions: List[SRDueQuestion]
+    total_due: int
+    suggested_session_length_minutes: int
+
+
+class SRProgressResponse(BaseModel):
+    total_tracked: int
+    mastered_count: int
+    proficient_count: int
+    developing_count: int
+    novice_count: int
+    due_for_review: int
+    average_easiness_factor: float
+    retention_rate: float  # correct_attempts / total_attempts across all SR records
+
     model_config = {"from_attributes": True}
