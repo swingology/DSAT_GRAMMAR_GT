@@ -6,6 +6,8 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api/client'
 import type { WeaknessTarget } from '../../types'
 
+const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || ''
+
 type DiagnosticState = 'idle' | 'running' | 'done'
 
 interface DiagnosticQuestion {
@@ -24,9 +26,11 @@ interface DiagnosticQuestion {
 function DiagnosticQuestionCard({
   question,
   onAnswer,
+  sessionId,
 }: {
   question: DiagnosticQuestion
   onAnswer: (label: string, isCorrect: boolean) => void
+  sessionId: string | null
 }) {
   const [selected, setSelected] = useState<string | null>(null)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
@@ -35,24 +39,37 @@ function DiagnosticQuestionCard({
   function choose(label: string) {
     if (selected) return
     setSelected(label)
-    submitAnswer.mutate(
-      {
+    if (sessionId) {
+      api.diagnosticSubmit(sessionId, {
+        user_token: USER_TOKEN,
         question_id: question.id,
         selected_option_label: label,
         missed_grammar_focus_key: question.grammar_focus_key,
         missed_reading_focus_key: question.reading_focus_key,
-      },
-      {
-        onSuccess: (res) => {
-          setIsCorrect(res.is_correct)
-          onAnswer(label, res.is_correct)
+      }).then((res) => {
+        setIsCorrect(res.is_correct)
+        onAnswer(label, res.is_correct)
+      }).catch(() => onAnswer(label, false))
+    } else {
+      submitAnswer.mutate(
+        {
+          question_id: question.id,
+          selected_option_label: label,
+          missed_grammar_focus_key: question.grammar_focus_key,
+          missed_reading_focus_key: question.reading_focus_key,
         },
-        onError: () => {
-          // Optimistic: treat as answered, correctness unknown
-          onAnswer(label, false)
-        },
-      }
-    )
+        {
+          onSuccess: (res) => {
+            setIsCorrect(res.is_correct)
+            onAnswer(label, res.is_correct)
+          },
+          onError: () => {
+            // Optimistic: treat as answered, correctness unknown
+            onAnswer(label, false)
+          },
+        }
+      )
+    }
   }
 
   const focusKey = (question.grammar_focus_key || question.reading_focus_key || '').replace(/_/g, ' ')
@@ -103,9 +120,11 @@ function DiagnosticQuestionCard({
 function DiagnosticRunner({
   targets,
   onDone,
+  sessionId,
 }: {
   targets: WeaknessTarget[]
   onDone: (results: { correct: number; total: number }) => void
+  sessionId: string | null
 }) {
   const [qIndex, setQIndex] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)
@@ -165,7 +184,7 @@ function DiagnosticRunner({
           ))}
         </div>
       </div>
-      <DiagnosticQuestionCard question={question} onAnswer={handleAnswer} />
+      <DiagnosticQuestionCard question={question} onAnswer={handleAnswer} sessionId={sessionId} />
     </div>
   )
 }
@@ -173,6 +192,7 @@ function DiagnosticRunner({
 export function DiagnosticTab() {
   const [state, setState] = useState<DiagnosticState>('idle')
   const [results, setResults] = useState<{ correct: number; total: number } | null>(null)
+  const [sessionId, setSessionId] = useState<string | null>(null)
   const { data: recs, isLoading } = useRecommendations()
   const navigate = useNavigate()
 
@@ -203,7 +223,7 @@ export function DiagnosticTab() {
           {results.correct} / {results.total} correct
         </p>
         <p className="text-gray-400 text-sm mb-6">Diagnostic complete — weak concept profile updated</p>
-        <div className="flex gap-3 justify-center">
+        <div className="flex gap-3 justify-center flex-wrap">
           <button
             onClick={() => setState('idle')}
             className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition"
@@ -216,6 +236,12 @@ export function DiagnosticTab() {
           >
             Practice grammar
           </button>
+          <button
+            onClick={() => navigate('/diagnostic/history')}
+            className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition"
+          >
+            View History
+          </button>
         </div>
       </motion.div>
     )
@@ -225,7 +251,11 @@ export function DiagnosticTab() {
     return (
       <DiagnosticRunner
         targets={targets}
-        onDone={(r) => {
+        sessionId={sessionId}
+        onDone={async (r) => {
+          if (sessionId) {
+            await api.diagnosticComplete(sessionId, { user_token: USER_TOKEN }).catch(() => {})
+          }
           setResults(r)
           setState('done')
         }}
@@ -260,7 +290,11 @@ export function DiagnosticTab() {
         </div>
       )}
       <button
-        onClick={() => setState('running')}
+        onClick={async () => {
+          const res = await api.diagnosticStart({ user_token: USER_TOKEN, diagnostic_type: 'adaptive' }).catch(() => null)
+          setSessionId(res?.session_id ?? null)
+          setState('running')
+        }}
         disabled={targets.length === 0}
         className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition"
       >

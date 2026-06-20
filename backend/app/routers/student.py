@@ -16,7 +16,7 @@ from app.database import get_db
 from app.auth import student_required, admin_or_student_required, student_jwt_required, admin_or_student_jwt_required
 from app.models.db import (
     Question, User, UserProgress, QuestionAnnotation, QuestionOption,
-    GenerationBatch, QuestionJob,
+    GenerationBatch, QuestionJob, DiagnosticSession,
 )
 from app.models.payload import (
     StudentQuestionResponse,
@@ -33,6 +33,15 @@ from app.models.payload import (
     GenerationBatchRequest,
     MissedQuestionItem,
     MissedQuestionsResponse,
+    DiagnosticSessionStartRequest,
+    DiagnosticSessionStartResponse,
+    DiagnosticAnswerRequest,
+    DiagnosticAnswerResponse,
+    DiagnosticSessionResult,
+    DiagnosticHistoryItem,
+    DiagnosticHistoryResponse,
+    DiagnosticQuestionResult,
+    DiagnosticSessionDetailResponse,
 )
 from app.models.ontology import GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
 
@@ -1510,3 +1519,295 @@ async def get_missed_questions(
         ))
 
     return MissedQuestionsResponse(user_id=user.id, items=items, total=len(items))
+
+
+# ── Diagnostic Session Endpoints ─────────────────────────────────────────────
+
+@router.post("/diagnostic/start", response_model=DiagnosticSessionStartResponse)
+async def diagnostic_start(
+    body: DiagnosticSessionStartRequest,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Create a new diagnostic session and return its ID."""
+    user = await _resolve_user_by_token(body.user_token, db)
+    session = DiagnosticSession(
+        user_id=user.id,
+        started_at=datetime.now(timezone.utc),
+        diagnostic_type=body.diagnostic_type or "standard",
+        focus_areas=body.focus_areas or [],
+        question_ids=[],
+    )
+    db.add(session)
+    await db.commit()
+    await db.refresh(session)
+    return DiagnosticSessionStartResponse(session_id=str(session.id))
+
+
+@router.post("/diagnostic/{session_id}/submit", response_model=DiagnosticAnswerResponse)
+async def diagnostic_submit(
+    session_id: str,
+    body: DiagnosticAnswerRequest,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Submit one answer within a diagnostic session."""
+    try:
+        sess_uuid = UUID(session_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid session_id")
+
+    session = await db.get(DiagnosticSession, sess_uuid)
+    if not session:
+        raise HTTPException(status_code=404, detail="Diagnostic session not found")
+    if session.completed_at:
+        raise HTTPException(status_code=400, detail="Session already completed")
+
+    user = await _resolve_user_by_token(body.user_token, db)
+    if session.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Session does not belong to this user")
+
+    try:
+        qid = UUID(body.question_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid question_id")
+
+    q = await db.get(Question, qid)
+    if not q or q.practice_status != "active":
+        raise HTTPException(status_code=404, detail="Question not found or inactive")
+
+    # Fetch annotation for denormalized fields
+    ann_data: dict = {}
+    if q.latest_annotation_id:
+        ann_res = await db.execute(
+            select(QuestionAnnotation).where(QuestionAnnotation.id == q.latest_annotation_id)
+        )
+        ann = ann_res.scalars().first()
+        if ann:
+            ann_data = ann.annotation_jsonb or {}
+
+    question_domain = (
+        "reading" if ann_data.get("reading_skill_family_key") or ann_data.get("reading_focus_key")
+        else ("grammar" if ann_data.get("grammar_role_key") or ann_data.get("grammar_focus_key") else None)
+    )
+    question_difficulty = ann_data.get("difficulty_overall")
+
+    is_correct = q.current_correct_option_label == body.selected_option_label
+
+    progress = UserProgress(
+        user_id=user.id,
+        question_id=qid,
+        diagnostic_session_id=sess_uuid,
+        is_correct=is_correct,
+        selected_option_label=body.selected_option_label,
+        missed_grammar_focus_key=body.missed_grammar_focus_key or (None if is_correct else ann_data.get("grammar_focus_key")),
+        missed_syntactic_trap_key=body.missed_syntactic_trap_key if not is_correct else None,
+        missed_reading_focus_key=body.missed_reading_focus_key or (None if is_correct else ann_data.get("reading_focus_key")),
+        missed_reading_skill_family_key=body.missed_reading_skill_family_key or (None if is_correct else ann_data.get("reading_skill_family_key")),
+        question_domain=question_domain,
+        question_difficulty=question_difficulty,
+    )
+    db.add(progress)
+
+    # Update session counters
+    qids = list(session.question_ids or [])
+    qids.append(str(qid))
+    session.question_ids = qids
+    session.total_questions = len(qids)
+    if is_correct:
+        session.correct_count = (session.correct_count or 0) + 1
+
+    await db.commit()
+    await db.refresh(progress)
+
+    return DiagnosticAnswerResponse(
+        is_correct=is_correct,
+        progress_id=progress.id,
+        question_number=len(qids),
+        total_questions=8,
+        correct_so_far=session.correct_count,
+    )
+
+
+@router.post("/diagnostic/{session_id}/complete", response_model=DiagnosticSessionResult)
+async def diagnostic_complete(
+    session_id: str,
+    body: DiagnosticSessionStartRequest,  # reuse: only needs user_token
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Mark a diagnostic session complete and return results."""
+    try:
+        sess_uuid = UUID(session_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid session_id")
+
+    session = await db.get(DiagnosticSession, sess_uuid)
+    if not session:
+        raise HTTPException(status_code=404, detail="Diagnostic session not found")
+
+    user = await _resolve_user_by_token(body.user_token, db)
+    if session.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Session does not belong to this user")
+
+    now = datetime.now(timezone.utc)
+    session.completed_at = now
+    session.accuracy = (
+        round(session.correct_count / session.total_questions, 4)
+        if session.total_questions > 0 else 0.0
+    )
+
+    await db.commit()
+    await db.refresh(session)
+
+    # Compute weakest focus areas from progress records
+    prog_res = await db.execute(
+        select(UserProgress).where(UserProgress.diagnostic_session_id == sess_uuid)
+    )
+    records = prog_res.scalars().all()
+    miss_counts: dict = {}
+    for rec in records:
+        if not rec.is_correct:
+            key = rec.missed_grammar_focus_key or rec.missed_reading_focus_key
+            if key:
+                miss_counts[key] = miss_counts.get(key, 0) + 1
+    weakest = sorted(
+        [{"focus_key": k, "miss_count": v} for k, v in miss_counts.items()],
+        key=lambda x: x["miss_count"],
+        reverse=True,
+    )[:3]
+
+    duration = None
+    if session.started_at:
+        duration = int((now - session.started_at).total_seconds())
+
+    return DiagnosticSessionResult(
+        session_id=str(session.id),
+        total_questions=session.total_questions,
+        correct_count=session.correct_count,
+        accuracy=session.accuracy,
+        duration_seconds=duration,
+        weakest_focus_areas=weakest,
+    )
+
+
+@router.get("/diagnostic/history", response_model=DiagnosticHistoryResponse)
+async def diagnostic_history(
+    user_token: str = Query(...),
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return all diagnostic sessions for a user, most recent first."""
+    user = await _resolve_user_by_token(user_token, db)
+
+    result = await db.execute(
+        select(DiagnosticSession)
+        .where(DiagnosticSession.user_id == user.id)
+        .where(DiagnosticSession.is_archived == False)  # noqa: E712
+        .order_by(DiagnosticSession.created_at.desc())
+        .limit(limit)
+        .offset(offset)
+    )
+    sessions = result.scalars().all()
+
+    count_res = await db.execute(
+        select(func.count()).select_from(DiagnosticSession).where(DiagnosticSession.user_id == user.id)
+    )
+    total = count_res.scalars().first() or 0
+
+    items = []
+    accuracies = []
+    for s in sessions:
+        duration = None
+        if s.started_at and s.completed_at:
+            duration = int((s.completed_at - s.started_at).total_seconds())
+        items.append(DiagnosticHistoryItem(
+            session_id=str(s.id),
+            created_at=s.created_at,
+            completed_at=s.completed_at,
+            accuracy=s.accuracy,
+            total_questions=s.total_questions,
+            correct_count=s.correct_count,
+            diagnostic_type=s.diagnostic_type,
+            duration_seconds=duration,
+        ))
+        if s.accuracy is not None:
+            accuracies.append(s.accuracy)
+
+    avg_accuracy = round(sum(accuracies) / len(accuracies), 4) if accuracies else None
+
+    # Simple improvement trend: compare first half vs second half accuracy
+    improvement_trend = None
+    if len(accuracies) >= 4:
+        mid = len(accuracies) // 2
+        # sessions are newest-first, so recent = first half
+        recent_avg = sum(accuracies[:mid]) / mid
+        older_avg = sum(accuracies[mid:]) / (len(accuracies) - mid)
+        improvement_trend = round(recent_avg - older_avg, 4)
+
+    return DiagnosticHistoryResponse(
+        sessions=items,
+        total_sessions=total,
+        average_accuracy=avg_accuracy,
+        improvement_trend=improvement_trend,
+    )
+
+
+@router.get("/diagnostic/{session_id}", response_model=DiagnosticSessionDetailResponse)
+async def diagnostic_detail(
+    session_id: str,
+    user_token: str = Query(...),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return full detail for one diagnostic session."""
+    try:
+        sess_uuid = UUID(session_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid session_id")
+
+    session = await db.get(DiagnosticSession, sess_uuid)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    user = await _resolve_user_by_token(user_token, db)
+    if session.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Session does not belong to this user")
+
+    prog_res = await db.execute(
+        select(UserProgress)
+        .where(UserProgress.diagnostic_session_id == sess_uuid)
+        .order_by(UserProgress.timestamp.asc())
+    )
+    records = prog_res.scalars().all()
+
+    question_results = []
+    focus_breakdown: dict = {}
+    for i, rec in enumerate(records):
+        focus = rec.missed_grammar_focus_key or rec.missed_reading_focus_key
+        question_results.append(DiagnosticQuestionResult(
+            question_number=i + 1,
+            question_id=str(rec.question_id),
+            selected_option=rec.selected_option_label,
+            is_correct=rec.is_correct,
+            focus_area=focus,
+        ))
+        if focus:
+            entry = focus_breakdown.setdefault(focus, {"attempted": 0, "correct": 0})
+            entry["attempted"] += 1
+            if rec.is_correct:
+                entry["correct"] += 1
+
+    return DiagnosticSessionDetailResponse(
+        session_id=str(session.id),
+        user_id=session.user_id,
+        created_at=session.created_at,
+        completed_at=session.completed_at,
+        total_questions=session.total_questions,
+        correct_count=session.correct_count,
+        accuracy=session.accuracy,
+        question_results=question_results,
+        focus_breakdown=focus_breakdown,
+    )

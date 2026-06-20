@@ -489,6 +489,7 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
     progress_records = relationship("UserProgress", back_populates="user")
+    diagnostic_sessions = relationship("DiagnosticSession", back_populates="user")
 
 
 class UserProgress(Base):
@@ -511,9 +512,40 @@ class UserProgress(Base):
     question_domain = Column(String(20), nullable=True, index=True)
     question_difficulty = Column(String(20), nullable=True)
     timestamp = Column(DateTime(timezone=True), default=_utcnow, index=True)
+    diagnostic_session_id = Column(UUID(as_uuid=True), ForeignKey("diagnostic_sessions.id"), nullable=True, index=True)
 
     user = relationship("User", back_populates="progress_records")
     question = relationship("Question", back_populates="progress_records", foreign_keys=[question_id])
+    diagnostic_session = relationship("DiagnosticSession", back_populates="progress_records")
+
+
+class DiagnosticSession(Base):
+    __tablename__ = "diagnostic_sessions"
+    __table_args__ = (
+        Index("ix_diagnostic_sessions_user_id", "user_id"),
+        Index("ix_diagnostic_sessions_created_at", "created_at"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+    total_questions = Column(Integer, nullable=False, default=0)
+    correct_count = Column(Integer, nullable=False, default=0)
+    accuracy = Column(Float, nullable=True)
+
+    question_ids = Column(JSONB, nullable=False, default=list)  # ordered list of UUID strings
+
+    diagnostic_type = Column(String(20), nullable=True)  # "adaptive","standard","focused"
+    focus_areas = Column(JSONB, nullable=True)  # list of focus key strings
+
+    is_archived = Column(Boolean, nullable=False, default=False)
+
+    user = relationship("User", back_populates="diagnostic_sessions")
+    progress_records = relationship("UserProgress", back_populates="diagnostic_session")
 
 
 class AdminQuestionAuditLog(Base):

@@ -723,3 +723,84 @@ class TrendAnalyticsResponse(BaseModel):
     days: int
     granularity: str
     points: List[GenerationTrendPoint]
+
+
+# ── Diagnostic Session Models ────────────────────────────────────────────────
+
+class DiagnosticSessionStartRequest(BaseModel):
+    user_token: str
+    diagnostic_type: Optional[str] = "standard"
+    focus_areas: Optional[List[str]] = None
+
+
+class DiagnosticSessionStartResponse(BaseModel):
+    session_id: str
+    max_questions: int = 8
+    estimated_duration_minutes: int = 12
+
+
+class DiagnosticAnswerRequest(BaseModel):
+    user_token: str
+    question_id: str
+    selected_option_label: str = Field(pattern=r"^[A-D]$")
+    missed_grammar_focus_key: Optional[str] = None
+    missed_syntactic_trap_key: Optional[str] = None
+    missed_reading_focus_key: Optional[str] = None
+    missed_reading_skill_family_key: Optional[str] = None
+
+
+class DiagnosticAnswerResponse(BaseModel):
+    is_correct: bool
+    progress_id: int
+    question_number: int
+    total_questions: int
+    correct_so_far: int
+
+
+class DiagnosticSessionResult(BaseModel):
+    session_id: str
+    total_questions: int
+    correct_count: int
+    accuracy: float
+    duration_seconds: Optional[int] = None
+    weakest_focus_areas: List[Dict[str, Any]] = Field(default_factory=list)
+
+
+class DiagnosticHistoryItem(BaseModel):
+    session_id: str
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    accuracy: Optional[float] = None
+    total_questions: int
+    correct_count: int
+    diagnostic_type: Optional[str] = None
+    duration_seconds: Optional[int] = None
+
+
+class DiagnosticHistoryResponse(BaseModel):
+    sessions: List[DiagnosticHistoryItem]
+    total_sessions: int
+    average_accuracy: Optional[float] = None
+    improvement_trend: Optional[float] = None  # positive = improving
+
+
+class DiagnosticQuestionResult(BaseModel):
+    question_number: int
+    question_id: str
+    selected_option: str
+    is_correct: bool
+    focus_area: Optional[str] = None
+
+
+class DiagnosticSessionDetailResponse(BaseModel):
+    session_id: str
+    user_id: int
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    total_questions: int
+    correct_count: int
+    accuracy: Optional[float] = None
+    question_results: List[DiagnosticQuestionResult]
+    focus_breakdown: Dict[str, Any] = Field(default_factory=dict)
+
+    model_config = {"from_attributes": True}

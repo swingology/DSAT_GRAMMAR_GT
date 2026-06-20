@@ -16,6 +16,9 @@ export async function apiCall(endpoint: string, options: ApiOptions = {}) {
     ...headers,
   }
 
+  const apiKey = (import.meta as any).env.VITE_STUDENT_API_KEY || 'student-test-key'
+  requestHeaders['X-API-Key'] = apiKey
+
   const token = (import.meta as any).env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token')
   if (token) {
     requestHeaders['Authorization'] = `Bearer ${token}`
@@ -69,4 +72,25 @@ export const api = {
 
   getGenerationRequests: () =>
     apiCall('/study/generation-requests'),
+
+  diagnosticStart: (data: { user_token: string; diagnostic_type?: string }) =>
+    apiCall('/diagnostic/start', { method: 'POST', body: data }),
+
+  diagnosticSubmit: (sessionId: string, data: {
+    user_token: string
+    question_id: string
+    selected_option_label: string
+    missed_grammar_focus_key?: string
+    missed_reading_focus_key?: string
+  }) =>
+    apiCall(`/diagnostic/${sessionId}/submit`, { method: 'POST', body: data }),
+
+  diagnosticComplete: (sessionId: string, data: { user_token: string }) =>
+    apiCall(`/diagnostic/${sessionId}/complete`, { method: 'POST', body: data }),
+
+  diagnosticHistory: (userToken: string, limit = 20) =>
+    apiCall(`/diagnostic/history?user_token=${encodeURIComponent(userToken)}&limit=${limit}`),
+
+  diagnosticDetail: (sessionId: string, userToken: string) =>
+    apiCall(`/diagnostic/${sessionId}?user_token=${encodeURIComponent(userToken)}`),
 }
