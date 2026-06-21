@@ -160,6 +160,9 @@ class QuestionAnnotation(Base):
     explanation_jsonb = Column(JSONB, nullable=False, default=dict)
     generation_profile_jsonb = Column(JSONB, nullable=True)
     confidence_jsonb = Column(JSONB, nullable=False, default=dict)
+    passage_spans = Column(JSONB, nullable=True)
+    span_annotated_at = Column(DateTime(timezone=True), nullable=True)
+    span_model_name = Column(String(100), nullable=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
     question = relationship("Question", back_populates="annotations", foreign_keys=[question_id])
@@ -666,3 +669,25 @@ class TestSessionResults(Base):
     completed_at = Column(DateTime(timezone=True), nullable=True)
 
     user = relationship("User", foreign_keys=[user_id])
+
+
+class SpanReviewQueue(Base):
+    __tablename__ = "span_review_queue"
+    __table_args__ = (
+        Index("ix_srq_question_id", "question_id"),
+        Index("ix_srq_error_type", "error_type"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id", ondelete="CASCADE"), nullable=False)
+    annotation_id = Column(UUID(as_uuid=True), ForeignKey("question_annotations.id", ondelete="SET NULL"), nullable=True)
+    error_type = Column(String(80), nullable=False)
+    error_detail = Column(Text, nullable=True)
+    raw_llm_output = Column(JSONB, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
+    resolved_at = Column(DateTime(timezone=True), nullable=True)
+    resolved_by = Column(String(100), nullable=True)
+    resolution_note = Column(Text, nullable=True)
+
+    question = relationship("Question", foreign_keys=[question_id])
+    annotation = relationship("QuestionAnnotation", foreign_keys=[annotation_id])

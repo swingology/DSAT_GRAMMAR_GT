@@ -2550,3 +2550,29 @@ async def cohort_trap_analytics(
         most_common_traps=most_common,
         most_effective_traps=most_effective,
     )
+
+
+@router.post("/questions/{question_id}/annotate-spans")
+async def trigger_span_annotation(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    _: str = Depends(admin_required),
+):
+    """Run Pass 3 span annotation for a single grammar question.
+
+    Tokenizes the passage, assigns anatomy + concept_tag arrays to each token,
+    validates the result, and writes passage_spans to question_annotations.
+    On validation failure the question is added to span_review_queue.
+    """
+    from app.services.span_annotator import annotate_spans
+    qid = _parse_uuid(question_id)
+    q = await db.get(Question, qid)
+    if not q:
+        raise HTTPException(status_code=404, detail="Question not found")
+    try:
+        result = await annotate_spans(qid, db)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    if result.get("status") == "failed":
+        raise HTTPException(status_code=422, detail=result)
+    return result
