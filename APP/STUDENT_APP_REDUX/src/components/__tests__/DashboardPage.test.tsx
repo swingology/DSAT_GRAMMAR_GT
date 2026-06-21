@@ -30,6 +30,9 @@ vi.mock('../../hooks/useDashboardData', () => ({
   useMissedQuestions: vi.fn().mockReturnValue({ isLoading: false, data: undefined }),
   useSRProgress: vi.fn().mockReturnValue({ isLoading: false, data: undefined }),
   useSRDue: vi.fn().mockReturnValue({ isLoading: false, data: undefined }),
+  useTrapSusceptibility: vi.fn().mockReturnValue({ isLoading: false, isError: false, data: undefined, refetch: vi.fn() }),
+  useQuestionTypePerformance: vi.fn().mockReturnValue({ isLoading: false, data: undefined }),
+  useTrapDetails: vi.fn().mockReturnValue({ isLoading: false, data: undefined }),
 }))
 
 function renderDashboard() {
