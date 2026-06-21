@@ -7,40 +7,6 @@ import type {
 } from '../types/grammar'
 import { api } from '../api/client'
 
-// Patterns that mark the start of the question stem (after the passage body)
-const STEM_STARTERS = [
-  /Which choice\b/,
-  /Which finding\b/,
-  /Which quotation\b/,
-  /Which statement\b/,
-  /As used in the text\b/,
-  /According to the text\b/,
-  /Based on the text\b/,
-  /It can (?:most )?reasonably be inferred\b/,
-  /The (?:student|researcher|author|narrator|speaker)\b.*\?$/,
-  /Compared to\b/,
-]
-
-/**
- * Split a combined passage+stem string into [passage, stem].
- * Returns [full, null] if no stem pattern is found.
- */
-function splitPassageAndStem(text: string): [string, string | null] {
-  // Walk backwards through sentences to find where the stem begins
-  const sentences = text.split(/(?<=[.?!])\s+/)
-  for (let i = sentences.length - 1; i >= 1; i--) {
-    const candidate = sentences.slice(i).join(' ')
-    if (STEM_STARTERS.some((re) => re.test(candidate))) {
-      const passage = sentences.slice(0, i).join(' ').trim()
-      // Only split if the passage is non-empty — if the whole text is the stem,
-      // keep the full text as passage so the grammar keys panel still works.
-      if (passage.length > 0) {
-        return [passage, candidate.trim()]
-      }
-    }
-  }
-  return [text, null]
-}
 
 export function useGrammarSession() {
   const [state, setState] = useState<GrammarSessionState>({
@@ -99,15 +65,18 @@ export function useGrammarSession() {
     }))
   }, [state.question?.id])
 
-  // Split the combined passage+stem into two parts for display
+  // Passage and stem are now stored in separate DB fields.
+  // Fall back to current_question_text as passage for the one question type
+  // that has no passage body (e.g. "As used in the text...").
   const [passageText, stemText] = useMemo(() => {
     const q = state.question as any
-    const raw = q?.current_passage_text ?? q?.current_question_text ?? q?.text ?? ''
-    // If there's a separate passage field, the stem is in question_text
-    if (q?.current_passage_text && q?.current_question_text) {
-      return [q.current_passage_text as string, q.current_question_text as string]
+    const passage = q?.current_passage_text || ''
+    const stem = q?.current_question_text ?? q?.text ?? ''
+    if (passage) {
+      return [passage as string, stem as string]
     }
-    return splitPassageAndStem(raw)
+    // No separate passage — use full question text for tokenization, no stem shown
+    return [stem, null]
   }, [state.question])
 
   // Exact Pass 2 spans win. The local tokenizer keeps older rows interactive.
