@@ -6006,6 +6006,102 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-21T21:14:57.063Z"
+    },
+    {
+      "id": "bug-371",
+      "timestamp": "2026-06-21T21:25:58.266Z",
+      "error_message": "Null/undefined access in ",
+      "file": "APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: * Auto-highlights keys from passage_spans.concepts_present w; * falls back to focus/role/trap keys + anatomy heuristics.",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-21T21:26:12.420Z"
+    },
+    {
+      "id": "bug-372",
+      "timestamp": "2026-06-21T21:26:25.258Z",
+      "error_message": "Null/undefined access in ",
+      "file": "APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-21T21:26:25.258Z"
+    },
+    {
+      "id": "bug-373",
+      "timestamp": "2026-06-21T21:35:31.263Z",
+      "error_message": "Significant refactor of ",
+      "file": "APP/STUDENT_APP_REDUX/src/utils/__tests__/sentenceTokenizer.spans.test.ts",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 8→10 lines (2 removed) | Also: it('handles tokens with only concept_tags (no anat; const raw = [{ text: 'however', concept_tags: ['co",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-21T21:35:37.548Z"
+    },
+    {
+      "id": "bug-374",
+      "timestamp": "2026-06-21T21:36:21.387Z",
+      "error_message": "Type error",
+      "file": "APP/STUDENT_APP_REDUX/src/utils/__tests__/sentenceTokenizer.spans.test.ts",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-21T21:36:21.387Z"
+    },
+    {
+      "id": "bug-375",
+      "timestamp": "2026-06-21T21:37:24.656Z",
+      "error_message": "Incorrect value in code",
+      "file": "APP/STUDENT_APP_REDUX/src/hooks/__tests__/useGrammarSession.test.ts",
+      "root_cause": "Had 'Primary Subject'",
+      "fix": "Changed to 'Subject'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-21T21:37:24.656Z"
+    },
+    {
+      "id": "bug-376",
+      "timestamp": "2026-06-21T21:37:58.047Z",
+      "error_message": "Incorrect value in code",
+      "file": "APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx",
+      "root_cause": "Had 'Backend Grammar Keys'",
+      "fix": "Changed to 'Grammar Concepts'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-21T21:37:58.047Z"
     }
   ]
 }

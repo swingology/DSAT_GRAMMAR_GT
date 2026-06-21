@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-21T21:14:57.051Z
-> Files: 1016 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-21T21:37:58.035Z
+> Files: 1021 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -277,6 +277,7 @@
 - `DiagnosticCard.test.tsx` — mockNavigate (~898 tok)
 - `DiagnosticDetail.test.tsx` — --------------------------------------------------------------------------- (~1496 tok)
 - `DiagnosticHistory.test.tsx` — --------------------------------------------------------------------------- (~1522 tok)
+- `GrammarPractice.backendTokens.test.tsx` — taggedSpan (~499 tok)
 - `GrammarPractice.test.tsx` — Mock the API (~1909 tok)
 - `HeroBanner.test.tsx` — actual (~1249 tok)
 - `MissedQuestionsTab.test.tsx` — mockedUseMissedQuestions (~1563 tok)
@@ -309,8 +310,8 @@
 
 ## APP/STUDENT_APP_REDUX/src/components/grammar/
 
-- `GrammarAnalysisSection.tsx` — GrammarAnalysisSection (~1161 tok)
-- `Header.tsx` — Header (~452 tok)
+- `GrammarAnalysisSection.tsx` — GROUP_META (~1407 tok)
+- `Header.tsx` — Header (~545 tok)
 - `QuestionSection.tsx` — QuestionSection (~1327 tok)
 
 ## APP/STUDENT_APP_REDUX/src/data/
@@ -321,13 +322,13 @@
 
 - `.keep` (~0 tok)
 - `useDashboardData.ts` — Exports StudentStats, useStats, MissedQuestionItem, MissedQuestionsResponse + 12 more (~1095 tok)
-- `useGrammarSession.ts` — 1. renderSentence() (~3861 tok)
+- `useGrammarSession.ts` — 1. renderSentence() (~3971 tok)
 
 ## APP/STUDENT_APP_REDUX/src/hooks/__tests__/
 
 - `.keep` (~0 tok)
 - `useDashboardData.test.ts` — mockedApi: makeWrapper (~1659 tok)
-- `useGrammarSession.test.ts` — Mock the API (~2044 tok)
+- `useGrammarSession.test.ts` — Mock the API (~2042 tok)
 
 ## APP/STUDENT_APP_REDUX/src/pages/
 
@@ -350,6 +351,11 @@
 
 - `keyColors.ts` — Exports assignKeyColor, activeKeyStyle, inactiveKeyStyle (~291 tok)
 - `sentenceTokenizer.ts` — Prefer exact backend spans and tags; tokenize locally only for legacy rows. (~3340 tok)
+
+## APP/STUDENT_APP_REDUX/src/utils/__tests__/
+
+- `keyColors.test.ts` — Declares a (~817 tok)
+- `sentenceTokenizer.spans.test.ts` — Declares raw (~944 tok)
 
 ## FRONTEND/
 
@@ -1397,6 +1403,8 @@
 - `test_review_runner.py` — Phase 4 (review swarm runner) — runner, provider config, concurrency, (~6058 tok)
 - `test_self_study.py` — Phase 8 — Self-Study Agent Request Layer tests. (~7550 tok)
 - `test_spaced_repetition.py` — Phase 2 — Spaced Repetition endpoint and algorithm tests. (~5925 tok)
+- `test_span_label.py` — TASK-026 — span_label.py unit tests. (~1012 tok)
+- `test_span_validator.py` — TASK-025 — span_validator.py unit tests. (~2583 tok)
 - `test_student_api_contracts.py` — Student-facing API contract tests. (~5172 tok)
 - `test_student_retrieval.py` — Phase 7 — Student Retrieval API Expansion tests. (~4606 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~510 tok)
