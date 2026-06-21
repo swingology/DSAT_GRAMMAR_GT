@@ -953,3 +953,53 @@ class FocusSummaryResponse(BaseModel):
     user_id: int
     top_focus_areas: List[FocusAreaStat]   # top 8 by volume
     weakest_focus_areas: List[FocusAreaStat]  # bottom 5 by accuracy (min 3 attempts)
+
+
+# ── Phase 4: Adaptive Module 2 Routing ───────────────────────────────────────
+
+class Module1CompleteRequest(BaseModel):
+    user_token: str
+    module_1_accuracy: float
+    module_1_duration_seconds: Optional[int] = None
+    focus_breakdown: Optional[Dict[str, Any]] = None
+    test_mode: str = "practice"
+
+
+class Module1CompleteResponse(BaseModel):
+    test_session_id: str
+    module_2_difficulty: str      # "higher" | "lower"
+    routing_rationale: str
+    module_1_accuracy: float
+
+
+class Module2BlueprintQuestion(BaseModel):
+    id: str
+    current_question_text: str
+    current_passage_text: Optional[str] = None
+    options: List[Dict[str, Any]]
+    domain: Optional[str] = None
+    grammar_focus_key: Optional[str] = None
+    reading_focus_key: Optional[str] = None
+
+
+class Module2BlueprintResponse(BaseModel):
+    test_session_id: str
+    module_2_difficulty: str
+    routing_rationale: str
+    question_count: int
+    questions: List[Module2BlueprintQuestion]
+
+
+class TestSessionHistoryItem(BaseModel):
+    test_session_id: str
+    module_1_accuracy: float
+    module_2_difficulty: str
+    estimated_score: Optional[int] = None
+    test_mode: str
+    created_at: str
+    completed_at: Optional[str] = None
+
+
+class TestSessionHistoryResponse(BaseModel):
+    user_id: int
+    sessions: List[TestSessionHistoryItem]

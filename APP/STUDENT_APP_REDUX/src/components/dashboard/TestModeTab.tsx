@@ -6,8 +6,16 @@ import { useSubmitAnswer } from '../../hooks/useDashboardData'
 
 const DEFAULT_DURATION_SECONDS = 32 * 60
 const DEFAULT_QUESTIONS = 27
+const DEFAULT_USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token') || ''
 
-type TestState = 'idle' | 'running' | 'review' | 'done'
+type TestState = 'idle' | 'running' | 'routing' | 'module2' | 'review' | 'done'
+
+interface RoutingResult {
+  test_session_id: string
+  module_2_difficulty: 'higher' | 'lower'
+  routing_rationale: string
+  module_1_accuracy: number
+}
 
 interface TestQuestion {
   id: string
@@ -264,12 +272,21 @@ function TestResults({
 export function TestModeTab({
   questionCount = DEFAULT_QUESTIONS,
   durationSeconds = DEFAULT_DURATION_SECONDS,
+  adaptive = true,
+  userToken = DEFAULT_USER_TOKEN,
 }: {
   questionCount?: number
   durationSeconds?: number
+  adaptive?: boolean
+  userToken?: string
 }) {
   const [state, setState] = useState<TestState>('idle')
   const [answers, setAnswers] = useState<Record<string, string>>({})
+  const [module2Answers, setModule2Answers] = useState<Record<string, string>>({})
+  const [routingResult, setRoutingResult] = useState<RoutingResult | null>(null)
+  const [module2Questions, setModule2Questions] = useState<TestQuestion[]>([])
+  const [routingError, setRoutingError] = useState<string | null>(null)
+  const startTimeRef = useRef<number | null>(null)
 
   const { data: qData, isLoading, refetch } = useQuery({
     queryKey: ['test-questions', questionCount],
@@ -286,45 +303,189 @@ export function TestModeTab({
 
   async function startTest() {
     setAnswers({})
+    setModule2Answers({})
+    setRoutingResult(null)
+    setModule2Questions([])
+    setRoutingError(null)
+    startTimeRef.current = Date.now()
     await refetch()
     setState('running')
   }
 
-  function handleSubmit(finalAnswers: Record<string, string>) {
+  async function handleModule1Submit(finalAnswers: Record<string, string>) {
     setAnswers(finalAnswers)
-    setState('done')
+
+    if (!adaptive || !userToken) {
+      setState('done')
+      return
+    }
+
+    // Compute accuracy from answered questions
+    const answeredQs = questions.filter((q) => finalAnswers[q.id] !== undefined)
+    const correct = answeredQs.filter((q) => q._isCorrect === true).length
+    const accuracy = answeredQs.length > 0 ? correct / answeredQs.length : 0
+    const durationSeconds = startTimeRef.current
+      ? Math.round((Date.now() - startTimeRef.current) / 1000)
+      : undefined
+
+    setState('routing')
+
+    try {
+      const result = await api.module1Complete({
+        user_token: userToken,
+        module_1_accuracy: accuracy,
+        module_1_duration_seconds: durationSeconds,
+        focus_breakdown: _buildFocusBreakdown(questions, finalAnswers),
+      })
+      setRoutingResult(result as RoutingResult)
+    } catch {
+      // Degrade gracefully — show results without routing
+      setRoutingError('Could not connect to routing service.')
+      setState('done')
+    }
   }
 
-  if (state === 'running') {
-    if (isLoading || questions.length === 0) {
+  async function startModule2() {
+    if (!routingResult || !userToken) return
+    try {
+      const blueprint = await api.module2Blueprint(
+        routingResult.test_session_id,
+        userToken,
+        questionCount,
+      )
+      const bpQs: TestQuestion[] = (blueprint.questions ?? []).map((q: any) => ({
+        id: q.id,
+        current_question_text: q.current_question_text,
+        options: q.options ?? [],
+        grammar_focus_key: q.grammar_focus_key,
+        reading_focus_key: q.reading_focus_key,
+        domain: q.domain,
+      }))
+      setModule2Questions(bpQs)
+      startTimeRef.current = Date.now()
+      setState('module2')
+    } catch {
+      setState('done')
+    }
+  }
+
+  // ── Routing screen ────────────────────────────────────────────────────────
+  if (state === 'routing') {
+    if (!routingResult) {
+      return (
+        <div className="space-y-4 text-center py-8">
+          <div className="h-10 bg-gray-100 rounded-xl animate-pulse mx-auto w-40" />
+          <p className="text-gray-500 text-sm">Calculating your module 2…</p>
+        </div>
+      )
+    }
+
+    const isHigher = routingResult.module_2_difficulty === 'higher'
+    const pct = Math.round(routingResult.module_1_accuracy * 100)
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="space-y-4"
+      >
+        <div className={`rounded-2xl p-6 text-center ${isHigher ? 'bg-blue-50 border border-blue-200' : 'bg-amber-50 border border-amber-200'}`}>
+          <div className={`text-4xl font-bold mb-2 ${isHigher ? 'text-blue-600' : 'text-amber-600'}`}>
+            {pct}%
+          </div>
+          <p className="text-gray-700 font-semibold mb-1">Module 1 Complete</p>
+          <p className={`text-sm ${isHigher ? 'text-blue-700' : 'text-amber-700'}`}>
+            {isHigher ? '↑ Advanced Module 2' : '↓ Foundation Module 2'}
+          </p>
+          <p className="text-xs text-gray-400 mt-3">{routingResult.routing_rationale}</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => setState('done')}
+            className="py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl text-sm transition"
+          >
+            Review Module 1
+          </button>
+          <button
+            onClick={startModule2}
+            className={`py-3 font-semibold text-white rounded-xl text-sm transition ${isHigher ? 'bg-blue-600 hover:bg-blue-700' : 'bg-amber-500 hover:bg-amber-600'}`}
+          >
+            Start Module 2 →
+          </button>
+        </div>
+      </motion.div>
+    )
+  }
+
+  // ── Module 2 running ──────────────────────────────────────────────────────
+  if (state === 'module2') {
+    if (module2Questions.length === 0) {
       return <div className="h-64 bg-gray-100 rounded-xl animate-pulse" />
     }
-    return <TestRunner questions={questions} durationSeconds={durationSeconds} onSubmit={handleSubmit} />
-  }
-
-  if (state === 'done') {
     return (
-      <TestResults
-        questions={questions}
-        answers={answers}
-        onRetry={() => setState('idle')}
+      <TestRunner
+        questions={module2Questions}
+        durationSeconds={durationSeconds}
+        onSubmit={(ans) => {
+          setModule2Answers(ans)
+          setState('done')
+        }}
       />
     )
   }
 
+  // ── Module 1 running ──────────────────────────────────────────────────────
+  if (state === 'running') {
+    if (isLoading || questions.length === 0) {
+      return <div className="h-64 bg-gray-100 rounded-xl animate-pulse" />
+    }
+    return <TestRunner questions={questions} durationSeconds={durationSeconds} onSubmit={handleModule1Submit} />
+  }
+
+  // ── Results ───────────────────────────────────────────────────────────────
+  if (state === 'done') {
+    const showModule2 = module2Questions.length > 0
+    return (
+      <div>
+        {routingResult && (
+          <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-xl text-center">
+            <span className="text-xs text-gray-500">
+              Module 1: {Math.round(routingResult.module_1_accuracy * 100)}% ·{' '}
+              {routingResult.module_2_difficulty === 'higher' ? '↑ Advanced' : '↓ Foundation'} Module 2
+            </span>
+          </div>
+        )}
+        {routingError && (
+          <p className="text-xs text-red-500 mb-3 text-center">{routingError}</p>
+        )}
+        <TestResults
+          questions={showModule2 ? module2Questions : questions}
+          answers={showModule2 ? module2Answers : answers}
+          onRetry={() => setState('idle')}
+        />
+      </div>
+    )
+  }
+
+  // ── Idle / start screen ───────────────────────────────────────────────────
   return (
     <div className="space-y-4">
       <div className="bg-white border border-gray-200 rounded-xl p-5">
-        <h3 className="font-semibold text-gray-800 mb-1">Timed Practice Module</h3>
+        <h3 className="font-semibold text-gray-800 mb-1">
+          {adaptive ? 'Adaptive Practice Test' : 'Timed Practice Module'}
+        </h3>
         <p className="text-gray-500 text-sm">
-          {questionCount} verbal questions · {Math.round(durationSeconds / 60)} minutes · mirrors real DSAT
+          {questionCount} verbal questions · {Math.round(durationSeconds / 60)} minutes
+          {adaptive ? ' · adaptive module 2 routing' : ' · mirrors real DSAT'}
         </p>
       </div>
       <div className="grid grid-cols-3 gap-3 text-center">
         {[
           { label: 'Questions', value: questionCount },
           { label: 'Time limit', value: `${Math.round(durationSeconds / 60)}m` },
-          { label: 'Format', value: 'Verbal' },
+          { label: 'Format', value: adaptive ? 'Adaptive' : 'Verbal' },
         ].map(({ label, value }) => (
           <div key={label} className="bg-gray-50 rounded-xl p-3">
             <div className="text-xl font-bold text-gray-800">{value}</div>
@@ -332,12 +493,32 @@ export function TestModeTab({
           </div>
         ))}
       </div>
+      {adaptive && (
+        <p className="text-xs text-gray-400 text-center">
+          Based on your module 1 score, you'll be routed to a higher or lower difficulty module 2
+        </p>
+      )}
       <button
         onClick={startTest}
         className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition"
       >
-        Start Test
+        {adaptive ? 'Start Adaptive Test' : 'Start Test'}
       </button>
     </div>
   )
+}
+
+function _buildFocusBreakdown(
+  questions: TestQuestion[],
+  answers: Record<string, string>
+): Record<string, { attempts: number; correct: number }> {
+  const breakdown: Record<string, { attempts: number; correct: number }> = {}
+  for (const q of questions) {
+    if (!answers[q.id]) continue
+    const key = q.grammar_focus_key || q.reading_focus_key || 'unknown'
+    if (!breakdown[key]) breakdown[key] = { attempts: 0, correct: 0 }
+    breakdown[key].attempts++
+    if (q._isCorrect) breakdown[key].correct++
+  }
+  return breakdown
 }

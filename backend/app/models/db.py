@@ -642,3 +642,27 @@ class AutoReleaseAuditLog(Base):
     # Human-readable explanation of every gate that was checked
     reasons_jsonb = Column(JSONB, nullable=True)
     released_at = Column(DateTime(timezone=True), nullable=False, default=_utcnow)
+
+
+class TestSessionResults(Base):
+    """Adaptive two-module test session with module-2 difficulty routing."""
+    __tablename__ = "test_session_results"
+    __table_args__ = (
+        Index("ix_test_session_results_user_id", "user_id"),
+        Index("ix_test_session_results_created_at", "created_at"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    module_1_results = Column(JSONB, nullable=False)
+    module_1_accuracy = Column(Float, nullable=False)
+    module_1_duration_seconds = Column(Integer, nullable=True)
+    module_2_difficulty = Column(String(20), nullable=False)   # "higher" | "lower"
+    routing_rationale = Column(Text, nullable=True)
+    module_2_results = Column(JSONB, nullable=True)
+    estimated_score = Column(Integer, nullable=True)
+    test_mode = Column(String(20), nullable=False, default="practice")
+    created_at = Column(DateTime(timezone=True), nullable=False, default=_utcnow)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+
+    user = relationship("User", foreign_keys=[user_id])

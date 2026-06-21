@@ -973,10 +973,11 @@ Returns questions for module 2 at selected difficulty
 
 ### Phase 4 Deliverables
 - [ ] Routing algorithm implementation
-- [ ] `TestSessionResults` table
-- [ ] 2 API endpoints
-- [ ] Frontend integration in test flow
-- [ ] Tests: Routing correctness for various scenarios
+- [x] `TestSessionResults` table (migration 032, db model)
+- [x] 3 API endpoints (module-1-complete, module-2-blueprint, history)
+- [x] Routing algorithm: ≥70% → higher, <70% → lower
+- [x] Frontend integration in TestModeTab (adaptive two-phase flow)
+- [x] Tests: 21 backend + 6 frontend (routing boundary cases + UI states)
 
 ---
 

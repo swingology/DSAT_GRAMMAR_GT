@@ -12,7 +12,12 @@ vi.mock('../../hooks/useDashboardData', () => ({
 }))
 
 const EMPTY_TREND = {
-  user_id: 1, days: 30, points: [], overall_accuracy: 0, total_attempts: 0, streak_days: 0,
+  user_id: 1,
+  days: 30,
+  points: [] as Array<{ date: string; attempts: number; correct: number; accuracy: number }>,
+  overall_accuracy: 0,
+  total_attempts: 0,
+  streak_days: 0,
 }
 const SAMPLE_TREND = {
   user_id: 1,

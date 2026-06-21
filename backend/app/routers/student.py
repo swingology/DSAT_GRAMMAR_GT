@@ -15,7 +15,7 @@ from app.config import get_settings
 from app.database import get_db
 from app.auth import student_required, admin_or_student_required, student_jwt_required, admin_or_student_jwt_required
 from app.models.db import (
-    Question, User, UserProgress, QuestionAnnotation, QuestionOption,
+    Question, User, UserProgress, QuestionAnnotation, QuestionOption, TestSessionResults,
     GenerationBatch, QuestionJob, DiagnosticSession, SpacedRepetitionState,
 )
 from app.models.payload import (
@@ -59,6 +59,12 @@ from app.models.payload import (
     DomainTrendResponse,
     FocusAreaStat,
     FocusSummaryResponse,
+    Module1CompleteRequest,
+    Module1CompleteResponse,
+    Module2BlueprintResponse,
+    Module2BlueprintQuestion,
+    TestSessionHistoryItem,
+    TestSessionHistoryResponse,
 )
 from app.models.ontology import GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
 
@@ -2473,4 +2479,220 @@ async def get_focus_summary(
         user_id=user.id,
         top_focus_areas=top,
         weakest_focus_areas=weakest,
+    )
+
+
+# ── Phase 4: Adaptive Module 2 Routing ───────────────────────────────────────
+
+def _route_module_2(accuracy: float, duration_seconds: int | None) -> tuple[str, str]:
+    """
+    Return (difficulty, rationale).
+    Threshold: >= 0.70 accuracy → "higher", else → "lower".
+    """
+    if accuracy >= 0.70:
+        rationale = f"Accuracy {accuracy:.0%} ≥ 70% threshold — routing to higher difficulty"
+        return "higher", rationale
+    else:
+        rationale = f"Accuracy {accuracy:.0%} < 70% threshold — routing to lower difficulty"
+        return "lower", rationale
+
+
+@router.post("/test-session/module-1-complete", response_model=Module1CompleteResponse)
+async def module_1_complete(
+    body: Module1CompleteRequest,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Record module 1 results and determine module 2 difficulty."""
+    user = await _resolve_user_by_token(body.user_token, db)
+
+    difficulty, rationale = _route_module_2(
+        body.module_1_accuracy, body.module_1_duration_seconds
+    )
+
+    session = TestSessionResults(
+        user_id=user.id,
+        module_1_results=body.focus_breakdown or {},
+        module_1_accuracy=round(body.module_1_accuracy, 4),
+        module_1_duration_seconds=body.module_1_duration_seconds,
+        module_2_difficulty=difficulty,
+        routing_rationale=rationale,
+        test_mode=body.test_mode,
+    )
+    db.add(session)
+    await db.commit()
+    await db.refresh(session)
+
+    return Module1CompleteResponse(
+        test_session_id=str(session.id),
+        module_2_difficulty=difficulty,
+        routing_rationale=rationale,
+        module_1_accuracy=body.module_1_accuracy,
+    )
+
+
+@router.get("/test-session/{test_session_id}/module-2-blueprint", response_model=Module2BlueprintResponse)
+async def module_2_blueprint(
+    test_session_id: str,
+    user_token: str = Query(...),
+    limit: int = Query(default=27, ge=5, le=40),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return a set of questions for module 2 based on routed difficulty."""
+    from fastapi import HTTPException
+    import uuid as _uuid
+
+    user = await _resolve_user_by_token(user_token, db)
+
+    try:
+        session_uuid = _uuid.UUID(test_session_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Invalid test_session_id format")
+
+    session_r = await db.execute(
+        select(TestSessionResults).where(
+            TestSessionResults.id == session_uuid,
+            TestSessionResults.user_id == user.id,
+        )
+    )
+    session = session_r.scalars().first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Test session not found")
+
+    # For "higher" difficulty: prioritise focus areas where user accuracy is lowest
+    # For "lower" difficulty: serve a balanced active question set
+    # Both paths pull from active questions the user hasn't answered recently.
+    recently_answered_r = await db.execute(
+        select(UserProgress.question_id)
+        .where(
+            UserProgress.user_id == user.id,
+            UserProgress.timestamp >= datetime.now(timezone.utc) - timedelta(days=3),
+        )
+    )
+    recently_answered = {str(r) for r in recently_answered_r.scalars().all()}
+
+    if session.module_2_difficulty == "higher":
+        # Pull questions tied to the user's weakest focus areas (target their gaps)
+        weak_focus_r = await db.execute(
+            select(
+                UserProgress.missed_grammar_focus_key,
+                func.count().label("total"),
+                func.sum(case((UserProgress.is_correct == True, 1), else_=0)).label("correct"),  # noqa: E712
+            )
+            .where(
+                UserProgress.user_id == user.id,
+                UserProgress.missed_grammar_focus_key.isnot(None),
+            )
+            .group_by(UserProgress.missed_grammar_focus_key)
+            .order_by(func.sum(case((UserProgress.is_correct == True, 1), else_=0)).asc())
+            .limit(5)
+        )
+        weak_focus_keys = [r.missed_grammar_focus_key for r in weak_focus_r.all()]
+    else:
+        weak_focus_keys = []
+
+    # Fetch active questions, prefer weak focus areas first
+    q_result = await db.execute(
+        select(Question)
+        .join(
+            QuestionAnnotation,
+            Question.latest_annotation_id == QuestionAnnotation.id,
+            isouter=True,
+        )
+        .where(
+            Question.practice_status == "active",
+            Question.id.notin_(
+                [_uuid.UUID(qid) for qid in recently_answered if _is_valid_uuid(qid)]
+            ) if recently_answered else True,
+        )
+        .order_by(
+            # Prioritise weak focus area matches for "higher" difficulty
+            case(
+                *[(QuestionAnnotation.grammar_focus_key == fk, i) for i, fk in enumerate(weak_focus_keys)],
+                else_=len(weak_focus_keys),
+            ) if weak_focus_keys else func.random(),
+            func.random(),
+        )
+        .limit(limit)
+    )
+    questions = q_result.scalars().all()
+
+    # Load options for each question
+    if questions:
+        q_ids = [q.id for q in questions]
+        opts_r = await db.execute(
+            select(QuestionOption)
+            .where(
+                QuestionOption.question_id.in_(q_ids),
+                QuestionOption.version_id == Question.latest_version_id,
+            )
+        )
+        opts_by_q: dict[str, list] = {}
+        for opt in opts_r.scalars().all():
+            qid = str(opt.question_id)
+            opts_by_q.setdefault(qid, []).append({"label": opt.label, "text": opt.text})
+    else:
+        opts_by_q = {}
+
+    blueprint_questions = [
+        Module2BlueprintQuestion(
+            id=str(q.id),
+            current_question_text=q.current_question_text,
+            current_passage_text=q.current_passage_text,
+            options=sorted(opts_by_q.get(str(q.id), []), key=lambda o: o["label"]),
+        )
+        for q in questions
+    ]
+
+    return Module2BlueprintResponse(
+        test_session_id=test_session_id,
+        module_2_difficulty=session.module_2_difficulty,
+        routing_rationale=session.routing_rationale or "",
+        question_count=len(blueprint_questions),
+        questions=blueprint_questions,
+    )
+
+
+def _is_valid_uuid(s: str) -> bool:
+    try:
+        import uuid as _u
+        _u.UUID(s)
+        return True
+    except ValueError:
+        return False
+
+
+@router.get("/test-session/history", response_model=TestSessionHistoryResponse)
+async def test_session_history(
+    user_token: str = Query(...),
+    limit: int = Query(default=10, ge=1, le=50),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return the user's past adaptive test sessions."""
+    user = await _resolve_user_by_token(user_token, db)
+
+    result = await db.execute(
+        select(TestSessionResults)
+        .where(TestSessionResults.user_id == user.id)
+        .order_by(TestSessionResults.created_at.desc())
+        .limit(limit)
+    )
+    sessions = result.scalars().all()
+
+    return TestSessionHistoryResponse(
+        user_id=user.id,
+        sessions=[
+            TestSessionHistoryItem(
+                test_session_id=str(s.id),
+                module_1_accuracy=s.module_1_accuracy,
+                module_2_difficulty=s.module_2_difficulty,
+                estimated_score=s.estimated_score,
+                test_mode=s.test_mode,
+                created_at=s.created_at.isoformat(),
+                completed_at=s.completed_at.isoformat() if s.completed_at else None,
+            )
+            for s in sessions
+        ],
     )

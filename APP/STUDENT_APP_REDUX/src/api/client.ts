@@ -117,6 +117,24 @@ export const api = {
   getTrapDetails: (trapType: string, userToken: string) =>
     apiCall(`/student/trap-details/${encodeURIComponent(trapType)}?user_token=${encodeURIComponent(userToken)}`),
 
+  module1Complete: (data: {
+    user_token: string
+    module_1_accuracy: number
+    module_1_duration_seconds?: number
+    focus_breakdown?: Record<string, unknown>
+    test_mode?: string
+  }) =>
+    apiCall('/test-session/module-1-complete', { method: 'POST', body: data }),
+
+  module2Blueprint: (testSessionId: string, userToken: string, limit = 27) =>
+    apiCall(
+      `/test-session/${encodeURIComponent(testSessionId)}/module-2-blueprint` +
+      `?user_token=${encodeURIComponent(userToken)}&limit=${limit}`
+    ),
+
+  testSessionHistory: (userToken: string) =>
+    apiCall(`/test-session/history?user_token=${encodeURIComponent(userToken)}`),
+
   getProgressTrend: (userToken: string, days = 30) =>
     apiCall(`/progress/trend?user_token=${encodeURIComponent(userToken)}&days=${days}`),
 
