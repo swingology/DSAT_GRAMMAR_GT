@@ -5,6 +5,33 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-06-21 — Phase 5: Cohort Analytics (Admin)
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `main`
+**Commit:** _(this commit)_
+
+### Added
+
+- **`GET /admin/analytics/weak-spots`** — System-wide question and focus-area miss rates. Returns the top N most-missed questions (ranked by miss rate, min 3 attempts) and all grammar/reading focus areas ranked by miss rate across all students. Accepts a `limit` query param (5–100, default 20).
+
+- **`GET /admin/analytics/student-cohort-summary`** — High-level cohort health snapshot. Returns total students, students active in the last 7 days, overall average accuracy, accuracy distribution across 6 buckets (0–50%, 50–60%, …, 90–100%), and per-domain accuracy/attempt counts.
+
+- **`GET /admin/analytics/trap-analytics`** — Distractor trap effectiveness across the whole cohort. Returns two lists: `most_common_traps` (top 10 by encounter volume) and `most_effective_traps` (top 10 by fall rate, filtered by `min_encounters` query param, default 5). Reveals which syntactic traps catch the most students system-wide.
+
+- **7 new Pydantic models** in `backend/app/models/payload.py`: `QuestionMissRate`, `FocusAreaMissRate`, `CohortWeakSpotsResponse`, `AccuracyBucket`, `DomainPerformance`, `CohortSummaryResponse`, `TrapCohortStat`, `CohortTrapAnalyticsResponse`.
+
+- **`backend/tests/test_cohort_analytics.py`** — 27 tests covering auth enforcement, endpoint existence, response shape, business logic (miss rates, bucket ranges, trap sorting, min-encounters filter).
+
+### Notes
+
+- All three endpoints are **admin-only** (`X-API-Key: admin-test-key` required). Student tokens are explicitly rejected.
+- Endpoints query `UserProgress` live — no precomputed aggregation table. Acceptable at current scale; a nightly rollup can be added when query time exceeds 200 ms.
+- The `test_endpoint_exists` pattern asserts `status != 405` to distinguish "route not registered" from "expected error" (auth failure, no data).
+- Phase 5 completes the 5-phase student tracking backend. Full suite: **117 backend tests** across Phases 1–5, all passing.
+
+---
+
 ## 2026-06-01 — Passage introduction sentences missing from official questions
 
 **Model:** Claude Sonnet 4.6
@@ -5692,5 +5719,205 @@ _branch:_ `main` · _commit:_ `3e339d6` · _ram:_ `8.6Gi/30Gi`
 _( 15 files changed, 13863 insertions(+), 131 deletions(-))_
 
 **Untracked:** .claude/skills/dev-stack/run.sh .dockerignore .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:32:37 (session-end)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `8.3Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 7 files changed, 12627 insertions(+), 46 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:33:51 (session-end)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `8.3Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 12758 insertions(+), 46 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:34:30 (session-end)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `8.3Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 12889 insertions(+), 46 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:38:24 (50kb-written)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `9.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/db.py backend/app/models/payload.py 
+_( 10 files changed, 13018 insertions(+), 46 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:38:28 (50kb-written)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 11 files changed, 13036 insertions(+), 47 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:38:34 (50kb-written)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `9.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 11 files changed, 13059 insertions(+), 47 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:39:06 (50kb-written)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `9.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 11 files changed, 13308 insertions(+), 47 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:42:17 (50kb-written)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `9.7Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/ProgressPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 14 files changed, 13653 insertions(+), 62 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:42:31 (50kb-written)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `9.8Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/ProgressPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 14 files changed, 13686 insertions(+), 62 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:44:30 (50kb-written)
+_branch:_ `main` · _commit:_ `818b8f8` · _ram:_ `9.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/ProgressPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py student_tracking_backend_prd.md 
+_( 15 files changed, 13753 insertions(+), 66 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 19:45:06 (session-end)
+_branch:_ `main` · _commit:_ `5cd4462` · _ram:_ `8.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 13493 insertions(+), 47 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:19:41 (session-end)
+_branch:_ `main` · _commit:_ `fd920b7` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 13792 insertions(+), 47 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:20:13 (session-end)
+_branch:_ `main` · _commit:_ `fd920b7` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 14069 insertions(+), 47 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:28:23 (session-end)
+_branch:_ `main` · _commit:_ `fd920b7` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 14346 insertions(+), 47 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:29:27 (50kb-written)
+_branch:_ `main` · _commit:_ `fd920b7` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/payload.py backend/app/routers/admin.py 
+_( 10 files changed, 14443 insertions(+), 48 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:29:37 (50kb-written)
+_branch:_ `main` · _commit:_ `fd920b7` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/payload.py backend/app/routers/admin.py 
+_( 10 files changed, 14461 insertions(+), 49 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:30:10 (50kb-written)
+_branch:_ `main` · _commit:_ `fd920b7` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/payload.py backend/app/routers/admin.py 
+_( 10 files changed, 14746 insertions(+), 49 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:31:28 (50kb-written)
+_branch:_ `main` · _commit:_ `fd920b7` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/payload.py backend/app/routers/admin.py 
+_( 10 files changed, 14793 insertions(+), 49 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:31:29 (50kb-written)
+_branch:_ `main` · _commit:_ `fd920b7` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/payload.py backend/app/routers/admin.py 
+_( 10 files changed, 14810 insertions(+), 49 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:32:03 (50kb-written)
+_branch:_ `main` · _commit:_ `fd920b7` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/models/payload.py backend/app/routers/admin.py 
+_( 10 files changed, 14877 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
 
 ---

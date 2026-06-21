@@ -17,7 +17,7 @@ from app.models.db import (
     QuestionRelation, QuestionJob, QuestionAsset, LlmEvaluation, UserProgress,
     QuestionStimulusAsset, GenerationBatch, ReviewRun, LlmReviewResult,
     ConsensusVerdict, ReviewerAdminOverride, AutoReleaseAuditLog,
-    AdminQuestionAuditLog,
+    AdminQuestionAuditLog, User,
 )
 from app.config import get_settings
 from app.models.ontology import RELATION_TYPES
@@ -27,6 +27,9 @@ from app.models.payload import (
     GenerationTrendPoint, RejectionReasonCount,
     GenerationAnalyticsResponse, ReviewAnalyticsResponse,
     BatchAnalyticsResponse, TrendAnalyticsResponse,
+    QuestionMissRate, FocusAreaMissRate, CohortWeakSpotsResponse,
+    AccuracyBucket, DomainPerformance, CohortSummaryResponse,
+    TrapCohortStat, CohortTrapAnalyticsResponse,
 )
 from app.pipeline import amendment_review
 
@@ -2295,3 +2298,255 @@ async def list_auto_release_audit(
             for r in rows
         ],
     }
+
+
+# ── Phase 5: Cohort Analytics ─────────────────────────────────────────────────
+
+@router.get("/analytics/weak-spots", response_model=CohortWeakSpotsResponse)
+async def cohort_weak_spots(
+    limit: int = Query(default=20, ge=5, le=100),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """
+    System-wide question and focus-area miss rates across all students.
+    Returns the top N most-missed questions and all focus areas ranked by miss rate.
+    """
+    now = datetime.now(timezone.utc).isoformat()
+
+    # Per-question miss rates
+    q_result = await db.execute(
+        select(
+            UserProgress.question_id,
+            UserProgress.question_domain,
+            func.count().label("total"),
+            func.sum(case((UserProgress.is_correct == False, 1), else_=0)).label("misses"),  # noqa: E712
+        )
+        .group_by(UserProgress.question_id, UserProgress.question_domain)
+        .having(func.count() >= 3)  # minimum 3 attempts to surface
+        .order_by(
+            (func.sum(case((UserProgress.is_correct == False, 1), else_=0)) /
+             cast(func.count(), Float)).desc()
+        )
+        .limit(limit)
+    )
+    q_rows = q_result.all()
+
+    # Pull focus keys for those questions via annotation join
+    question_ids = [str(r.question_id) for r in q_rows]
+    focus_map: dict[str, str] = {}
+    if question_ids:
+        ann_result = await db.execute(
+            select(Question.id, QuestionAnnotation.grammar_focus_key)
+            .join(QuestionAnnotation, Question.latest_annotation_id == QuestionAnnotation.id)
+            .where(Question.id.in_([r.question_id for r in q_rows]))
+        )
+        for qid, fk in ann_result.all():
+            focus_map[str(qid)] = fk or ""
+
+    question_misses = [
+        QuestionMissRate(
+            question_id=str(r.question_id),
+            focus_key=focus_map.get(str(r.question_id)),
+            domain=r.question_domain,
+            total_attempts=r.total,
+            miss_count=int(r.misses or 0),
+            miss_rate=round(int(r.misses or 0) / r.total, 4) if r.total else 0.0,
+            rank=i + 1,
+        )
+        for i, r in enumerate(q_rows)
+    ]
+
+    # Per-focus-area miss rates (grammar)
+    g_result = await db.execute(
+        select(
+            UserProgress.missed_grammar_focus_key,
+            func.count().label("total"),
+            func.count(UserProgress.user_id.distinct()).label("unique_students"),
+            func.sum(case((UserProgress.is_correct == False, 1), else_=0)).label("misses"),  # noqa: E712
+        )
+        .where(UserProgress.missed_grammar_focus_key.isnot(None))
+        .group_by(UserProgress.missed_grammar_focus_key)
+    )
+
+    r_result = await db.execute(
+        select(
+            UserProgress.missed_reading_focus_key,
+            func.count().label("total"),
+            func.count(UserProgress.user_id.distinct()).label("unique_students"),
+            func.sum(case((UserProgress.is_correct == False, 1), else_=0)).label("misses"),  # noqa: E712
+        )
+        .where(UserProgress.missed_reading_focus_key.isnot(None))
+        .group_by(UserProgress.missed_reading_focus_key)
+    )
+
+    focus_misses: list[FocusAreaMissRate] = []
+    for row in g_result.all():
+        total = row.total
+        misses = int(row.misses or 0)
+        focus_misses.append(FocusAreaMissRate(
+            focus_key=row.missed_grammar_focus_key,
+            domain="grammar",
+            total_attempts=total,
+            unique_students=row.unique_students,
+            miss_count=misses,
+            miss_rate=round(misses / total, 4) if total else 0.0,
+        ))
+    for row in r_result.all():
+        total = row.total
+        misses = int(row.misses or 0)
+        focus_misses.append(FocusAreaMissRate(
+            focus_key=row.missed_reading_focus_key,
+            domain="reading",
+            total_attempts=total,
+            unique_students=row.unique_students,
+            miss_count=misses,
+            miss_rate=round(misses / total, 4) if total else 0.0,
+        ))
+    focus_misses.sort(key=lambda f: f.miss_rate, reverse=True)
+
+    return CohortWeakSpotsResponse(
+        generated_at=now,
+        question_wise_misses=question_misses,
+        focus_area_misses=focus_misses,
+    )
+
+
+@router.get("/analytics/student-cohort-summary", response_model=CohortSummaryResponse)
+async def student_cohort_summary(
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """
+    High-level cohort health: student counts, accuracy distribution, domain breakdown.
+    """
+    now = datetime.now(timezone.utc)
+
+    # Total distinct students with any progress
+    total_r = await db.execute(
+        select(func.count(UserProgress.user_id.distinct()))
+    )
+    total_students = total_r.scalars().first() or 0
+
+    # Active this week
+    week_ago = now - __import__("datetime").timedelta(days=7)
+    active_r = await db.execute(
+        select(func.count(UserProgress.user_id.distinct()))
+        .where(UserProgress.timestamp >= week_ago)
+    )
+    active_this_week = active_r.scalars().first() or 0
+
+    # Per-student accuracy — needed for distribution
+    per_student_r = await db.execute(
+        select(
+            UserProgress.user_id,
+            func.count().label("total"),
+            func.sum(case((UserProgress.is_correct == True, 1), else_=0)).label("correct"),  # noqa: E712
+        )
+        .group_by(UserProgress.user_id)
+    )
+    per_student = per_student_r.all()
+
+    accuracies = [
+        int(r.correct or 0) / r.total for r in per_student if r.total > 0
+    ]
+    avg_accuracy = round(sum(accuracies) / len(accuracies), 4) if accuracies else 0.0
+
+    buckets_def = [
+        ("0–50%", 0.0, 0.5),
+        ("50–60%", 0.5, 0.6),
+        ("60–70%", 0.6, 0.7),
+        ("70–80%", 0.7, 0.8),
+        ("80–90%", 0.8, 0.9),
+        ("90–100%", 0.9, 1.01),
+    ]
+    distribution = [
+        AccuracyBucket(
+            range=label,
+            student_count=sum(1 for a in accuracies if lo <= a < hi),
+        )
+        for label, lo, hi in buckets_def
+    ]
+
+    # Domain breakdown
+    domain_r = await db.execute(
+        select(
+            UserProgress.question_domain,
+            func.count().label("total"),
+            func.count(UserProgress.user_id.distinct()).label("unique_students"),
+            func.sum(case((UserProgress.is_correct == True, 1), else_=0)).label("correct"),  # noqa: E712
+        )
+        .where(UserProgress.question_domain.isnot(None))
+        .group_by(UserProgress.question_domain)
+    )
+    domain_perf: dict[str, DomainPerformance] = {}
+    for row in domain_r.all():
+        total = row.total
+        correct = int(row.correct or 0)
+        domain_perf[row.question_domain] = DomainPerformance(
+            accuracy=round(correct / total, 4) if total else 0.0,
+            attempts=total,
+            unique_students=row.unique_students,
+        )
+
+    return CohortSummaryResponse(
+        generated_at=now.isoformat(),
+        total_students=total_students,
+        active_this_week=active_this_week,
+        average_accuracy=avg_accuracy,
+        accuracy_distribution=distribution,
+        domain_performance=domain_perf,
+    )
+
+
+@router.get("/analytics/trap-analytics", response_model=CohortTrapAnalyticsResponse)
+async def cohort_trap_analytics(
+    min_encounters: int = Query(default=5, ge=1, le=50),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """
+    System-wide trap effectiveness: which distractor traps catch the most students.
+    Returns most common traps by volume and most effective traps by fall rate.
+    """
+    now = datetime.now(timezone.utc).isoformat()
+
+    result = await db.execute(
+        select(
+            UserProgress.missed_syntactic_trap_key,
+            func.count().label("encounters"),
+            func.count(UserProgress.user_id.distinct()).label("unique_students"),
+            func.sum(case((UserProgress.is_correct == False, 1), else_=0)).label("falls"),  # noqa: E712
+        )
+        .where(UserProgress.missed_syntactic_trap_key.isnot(None))
+        .group_by(UserProgress.missed_syntactic_trap_key)
+    )
+    rows = result.all()
+
+    stats: list[TrapCohortStat] = []
+    for row in rows:
+        encounters = row.encounters
+        falls = int(row.falls or 0)
+        stats.append(TrapCohortStat(
+            trap_type=row.missed_syntactic_trap_key,
+            total_encounters=encounters,
+            unique_students=row.unique_students,
+            total_fall_count=falls,
+            fall_rate=round(falls / encounters, 4) if encounters else 0.0,
+        ))
+
+    total_encounters = sum(s.total_encounters for s in stats)
+
+    most_common = sorted(stats, key=lambda s: s.total_encounters, reverse=True)[:10]
+    most_effective = sorted(
+        [s for s in stats if s.total_encounters >= min_encounters],
+        key=lambda s: s.fall_rate,
+        reverse=True,
+    )[:10]
+
+    return CohortTrapAnalyticsResponse(
+        generated_at=now,
+        total_trap_encounters=total_encounters,
+        most_common_traps=most_common,
+        most_effective_traps=most_effective,
+    )

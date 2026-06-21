@@ -1003,3 +1003,65 @@ class TestSessionHistoryItem(BaseModel):
 class TestSessionHistoryResponse(BaseModel):
     user_id: int
     sessions: List[TestSessionHistoryItem]
+
+
+# ── Phase 5: Cohort Analytics ─────────────────────────────────────────────────
+
+class QuestionMissRate(BaseModel):
+    question_id: str
+    focus_key: Optional[str] = None
+    domain: Optional[str] = None
+    total_attempts: int
+    miss_count: int
+    miss_rate: float
+    rank: int
+
+
+class FocusAreaMissRate(BaseModel):
+    focus_key: str
+    domain: str
+    total_attempts: int
+    unique_students: int
+    miss_count: int
+    miss_rate: float
+
+
+class CohortWeakSpotsResponse(BaseModel):
+    generated_at: str
+    question_wise_misses: List[QuestionMissRate]    # top 20 by miss rate
+    focus_area_misses: List[FocusAreaMissRate]       # all focus areas, sorted miss_rate desc
+
+
+class AccuracyBucket(BaseModel):
+    range: str
+    student_count: int
+
+
+class DomainPerformance(BaseModel):
+    accuracy: float
+    attempts: int
+    unique_students: int
+
+
+class CohortSummaryResponse(BaseModel):
+    generated_at: str
+    total_students: int
+    active_this_week: int
+    average_accuracy: float
+    accuracy_distribution: List[AccuracyBucket]
+    domain_performance: Dict[str, DomainPerformance]
+
+
+class TrapCohortStat(BaseModel):
+    trap_type: str
+    total_encounters: int
+    unique_students: int
+    total_fall_count: int
+    fall_rate: float
+
+
+class CohortTrapAnalyticsResponse(BaseModel):
+    generated_at: str
+    total_trap_encounters: int
+    most_common_traps: List[TrapCohortStat]    # top 10 by encounter count
+    most_effective_traps: List[TrapCohortStat]  # top 10 by fall rate (min 5 encounters)
