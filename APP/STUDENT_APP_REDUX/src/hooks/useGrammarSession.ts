@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SYNTAX_ANATOMY_KEYS } from '../data/syntaxAnatomyKeys'
 import { normalizePassageTokens } from '../utils/sentenceTokenizer'
+import { assignKeyColor } from '../utils/keyColors'
 import type {
   GrammarSessionState,
   SyntaxAnatomyKey,
@@ -102,25 +103,34 @@ export function useGrammarSession() {
   }, [state.question, passageText])
 
   const passageKeyIds = useMemo((): Set<string> => {
+    const q = state.question as any
+    const spans = q?.passage_spans
+    if (spans) {
+      return new Set<string>([
+        ...(spans.anatomy_present  as string[] ?? []),
+        ...(spans.concepts_present as string[] ?? []),
+      ])
+    }
+    // Fallback: derive from flat passage_tokens tags
     const ids = new Set<string>()
     passageTokens.forEach((token) => token.tags.forEach((tag) => ids.add(tag)))
     return ids
-  }, [passageTokens])
+  }, [state.question, passageTokens])
 
   const allKeys = useMemo((): SyntaxAnatomyKey[] => {
     const knownIds = new Set(SYNTAX_ANATOMY_KEYS.map((key) => key.id))
     const backendKeys = [...passageKeyIds]
       .filter((id) => !knownIds.has(id))
-      .map((id, index) => {
-        const hue = (index * 67 + 215) % 360
+      .map((id) => {
+        const { color, lightBg } = assignKeyColor(id, 'concept')
         return {
           id,
-          label: id.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()),
-          group: 'Backend Grammar Keys',
-          color: `hsl(${hue} 65% 38%)`,
-          lightBg: `hsl(${hue} 75% 94%)`,
-          description: `Backend annotation for ${id.replace(/_/g, ' ')}.`,
-          rule: 'Highlighted spans come from the stored passage-token annotation.',
+          label: id.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+          group: 'Grammar Concepts',
+          color,
+          lightBg,
+          description: `Grammar concept: ${id.replace(/_/g, ' ')}.`,
+          rule: 'Highlighted spans come from the stored span annotation.',
           priority: 30,
         }
       })

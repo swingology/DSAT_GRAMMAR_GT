@@ -18,6 +18,8 @@ interface BackendPassageToken {
   text?: unknown
   word?: unknown
   tags?: unknown
+  anatomy?: unknown
+  concept_tags?: unknown
   is_blank?: unknown
   isBlank?: unknown
 }
@@ -303,11 +305,19 @@ export function normalizePassageTokens(
             : ''
       if (!text) return null
 
-      const tags = Array.isArray(token.tags)
-        ? token.tags.filter(
-            (tag): tag is string => typeof tag === 'string' && tag.length > 0
+      const anatomy = Array.isArray(token.anatomy)
+        ? (token.anatomy as unknown[]).filter((t): t is string => typeof t === 'string')
+        : []
+      const conceptTags = Array.isArray(token.concept_tags)
+        ? (token.concept_tags as unknown[]).filter((t): t is string => typeof t === 'string')
+        : []
+      const legacyTags = Array.isArray(token.tags)
+        ? (token.tags as unknown[]).filter(
+            (t): t is string => typeof t === 'string' && t.length > 0
           )
         : []
+
+      const tags = [...new Set([...anatomy, ...conceptTags, ...legacyTags])]
 
       return {
         text,
