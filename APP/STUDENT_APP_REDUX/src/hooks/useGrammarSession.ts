@@ -128,13 +128,18 @@ export function useGrammarSession() {
   const renderOptions = useCallback(() => {
     if (!state.question) return []
 
-    return (state.question as any).options.map((option: any) => {
+    const q = state.question as any
+    const correctLabel = q.current_correct_option_label
+
+    return q.options.map((option: any) => {
       const isSelected = option.label === state.selectedAnswer
+      const isTheCorrectAnswer = state.feedbackVisible && option.label === correctLabel
       return {
         id: option.label,
         text: option.text,
         isSelected,
-        isCorrect: isSelected && state.isCorrect === true,
+        // Green: selected and correct, OR the correct answer revealed after a wrong pick
+        isCorrect: (isSelected && state.isCorrect === true) || (state.isCorrect === false && isTheCorrectAnswer),
         isIncorrect: isSelected && state.isCorrect === false,
       }
     })
@@ -202,27 +207,10 @@ export function useGrammarSession() {
   const selectAnswer = useCallback(async (optionId: string) => {
     if (!state.question) return
 
-    // Optimistically show the selection immediately
-    setState((prev) => ({ ...prev, selectedAnswer: optionId }))
+    const q = state.question as any
 
-    const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token') || ''
-    let isCorrect: boolean | null = null
-
-    try {
-      const selectedOption = ((state.question as any).options as any[])?.find(
-        (o: any) => o.label === optionId
-      )
-      const result = await api.submitAnswer({
-        question_id: (state.question as any).id,
-        selected_option_label: optionId,
-        user_token: USER_TOKEN,
-        missed_grammar_focus_key: (state.question as any).grammar_focus_key,
-        missed_syntactic_trap_key: selectedOption?.distractor_type_key ?? undefined,
-      })
-      isCorrect = result?.is_correct ?? null
-    } catch {
-      // Submit failed (e.g. backend down) — degrade gracefully, no correctness shown
-    }
+    // Evaluate correctness immediately from the question payload — no network wait
+    const isCorrect: boolean = optionId === q.current_correct_option_label
 
     setState((prev) => ({
       ...prev,
@@ -230,6 +218,19 @@ export function useGrammarSession() {
       isCorrect,
       feedbackVisible: true,
     }))
+
+    // Submit to backend in the background for progress tracking
+    const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token') || ''
+    const selectedOption = (q.options as any[])?.find((o: any) => o.label === optionId)
+    api.submitAnswer({
+      question_id: q.id,
+      selected_option_label: optionId,
+      user_token: USER_TOKEN,
+      missed_grammar_focus_key: q.grammar_focus_key,
+      missed_syntactic_trap_key: selectedOption?.distractor_type_key ?? undefined,
+    }).catch(() => {
+      // Backend submission failed — feedback already shown, nothing to undo
+    })
   }, [state.question])
 
   /**

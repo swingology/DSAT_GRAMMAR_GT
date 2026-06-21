@@ -24,7 +24,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://dsat:dsat_dev@db:5432/dsat_dev
+      DATABASE_URL: postgresql+asyncpg://dsat:dsat_dev@db:5432/dsat_dev
       PYTHONUNBUFFERED: "1"
     depends_on:
       db:
@@ -51,6 +51,7 @@ services:
       - /app/node_modules
     environment:
       VITE_API_BASE: http://backend:8000
+      BACKEND_PROXY_URL: http://backend:8000
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5173/"]
       interval: 5s

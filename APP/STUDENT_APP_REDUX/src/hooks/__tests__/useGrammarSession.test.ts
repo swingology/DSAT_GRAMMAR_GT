@@ -22,6 +22,7 @@ describe('useGrammarSession', () => {
     id: 'q-1',
     text: 'The researcher, who had spent years, [BLANK] findings.',
     current_question_text: 'The researcher, who had spent years, [BLANK] findings.',
+    current_correct_option_label: 'B',
     options: [
       { label: 'A', text: 'shares' },
       { label: 'B', text: 'shared' },

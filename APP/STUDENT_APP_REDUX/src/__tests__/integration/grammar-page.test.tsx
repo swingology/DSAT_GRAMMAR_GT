@@ -17,6 +17,7 @@ const mockQuestion = {
   id: 'q-123',
   text: 'The researcher, who had spent years on this project, [BLANK] their findings with the team.',
   current_question_text: 'The researcher, who had spent years on this project, [BLANK] their findings with the team.',
+  current_correct_option_label: 'B',
   options: [
     { label: 'A', text: 'shares' },
     { label: 'B', text: 'shared' },
