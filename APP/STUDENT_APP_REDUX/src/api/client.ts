@@ -53,6 +53,7 @@ export const api = {
     user_token: string
     missed_grammar_focus_key?: string
     missed_reading_focus_key?: string
+    missed_syntactic_trap_key?: string
   }) =>
     apiCall('/submit', {
       method: 'POST',
@@ -82,6 +83,7 @@ export const api = {
     selected_option_label: string
     missed_grammar_focus_key?: string
     missed_reading_focus_key?: string
+    missed_syntactic_trap_key?: string
   }) =>
     apiCall(`/diagnostic/${sessionId}/submit`, { method: 'POST', body: data }),
 
@@ -105,4 +107,7 @@ export const api = {
 
   srProgress: (userToken: string) =>
     apiCall(`/spaced-repetition/progress?user_token=${encodeURIComponent(userToken)}`),
+
+  getTrapSusceptibility: (userToken: string) =>
+    apiCall(`/student/trap-susceptibility?user_token=${encodeURIComponent(userToken)}`),
 }

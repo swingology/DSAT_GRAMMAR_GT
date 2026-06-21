@@ -815,18 +815,18 @@
 
 | Task ID | Task Name | Effort | Dependency | Status |
 |---------|-----------|--------|------------|--------|
-| TASK-001 | Extract trap in useGrammarSession | 1d | None | ☐ |
-| TASK-002 | Extract trap in DiagnosticTab | 0.5d | 001 | ☐ |
-| TASK-003 | Update API client types | 0.5d | 001,002 | ☐ |
-| TASK-004 | Backend type updates | 0.5d | None | ☐ |
-| **TASK-005** | **Manual integration test** | **1d** | **001-004** | **☐** |
-| TASK-006 | GET /api/student/trap-susceptibility | 1.5d | 005 | ☐ |
-| TASK-007 | Test trap susceptibility endpoint | 1d | 006 | ☐ |
+| TASK-001 | Extract trap in useGrammarSession | 1d | None | ✅ |
+| TASK-002 | Extract trap in DiagnosticTab | 0.5d | 001 | ✅ |
+| TASK-003 | Update API client types | 0.5d | 001,002 | ✅ |
+| TASK-004 | Backend type updates | 0.5d | None | ✅ (pre-existing) |
+| **TASK-005** | **Manual integration test** | **1d** | **001-004** | **⏳ needs live stack** |
+| TASK-006 | GET /api/student/trap-susceptibility | 1.5d | 005 | ✅ |
+| TASK-007 | Test trap susceptibility endpoint | 1d | 006 | ✅ |
 | TASK-008 | GET question-type-performance | 1d | 006 | ☐ |
 | TASK-009 | GET trap-details/{trap_type} | 0.5d | 008 | ☐ |
-| TASK-010 | TrapSusceptibilityDashboard component | 1.5d | 006 | ☐ |
+| TASK-010 | TrapSusceptibilityDashboard component | 1.5d | 006 | ✅ |
 | TASK-011 | TrapDetailView component | 1.5d | 009 | ☐ |
-| TASK-012 | Update dashboard navigation | 0.5d | 010,011 | ☐ |
+| TASK-012 | Update dashboard navigation | 0.5d | 010,011 | ✅ |
 | **TASK-013** | **End-to-end dashboard test** | **1d** | **010-012** | **☐** |
 | TASK-014 | Create StudentTrapSusceptibility table (OPT) | 1d | 006 | ☐ |
 | TASK-015 | Backfill historical trap data (OPT) | 0.5d | 014 | ☐ |

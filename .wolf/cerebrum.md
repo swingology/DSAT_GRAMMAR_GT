@@ -10,6 +10,9 @@
 
 ## Key Learnings
 
+- **/dev-stack uses Docker Compose** — The `/dev-stack` skill orchestrates the full development environment (PostgreSQL + FastAPI + React) via `docker-compose up`. It handles image building, service health checks, and dependency ordering. Node.js v22 runs in the frontend container (Alpine Linux). No local `uv`, `npm`, or Node.js installation needed if using containers. Run `/dev-stack` to start, `/dev-stack stop` to stop, `/dev-stack logs` to stream.
+- **Official Student App — APP/STUDENT_APP_REDUX/** — The canonical React student application is `APP/STUDENT_APP_REDUX/`. All student-facing UI, grammar practice features, dashboards, and components target this location. The deprecated `grammar-app.html` at root is archived in `_deprecated/`. All student app development is React-based in STUDENT_APP_REDUX.
+- **Grammar Practice App — STUDENT_APP_REDUX is canonical** — The official grammar practice implementation is `APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx` (React). The standalone `grammar-app.html` at root was replaced and is archived in `_deprecated/`. All grammar UI development targets the React component only.
 - **VLM-fused extraction (qwen3-vl) drops `passage_text`** — the model ignores the schema field and dumps passage content into `question_text` instead. `_split_passage_from_question()` (stem-opener regex) and `_recover_passage_from_raw_text()` (pymupdf fallback) in `_normalize_extracted_questions()` fix this. The stem openers must be high-confidence only (not "the author"/"the narrator" which appear in passages); `_______` blanks count as sentence boundaries.
 - **Pymupdf raw_text recovery requires 2000-char lookback** — SAT passages can be 600+ chars between question number and stem. The 500-char window was too small for Q1.
 
@@ -44,9 +47,15 @@
 
 ## Do-Not-Repeat
 
+- [2026-06-20] Do NOT use `SpacedRepetitionState.__new__(SpacedRepetitionState)` to build fake SR objects in unit tests. SQLAlchemy InstrumentedAttribute descriptors require a properly initialised mapper context; assigning attributes on a `__new__` instance raises `AttributeError: 'NoneType' object has not attribute 'set'`. Use a plain Python class (`class _FakeSR`) with the same fields instead.
+- [2026-06-20] SM-2 interval grows exponentially — applying quality=5 thirty times causes `OverflowError: date value out of range` when computing `now + timedelta(days=interval_days)`. In EF-cap tests, reset `repetition_count` and `interval_days` before each iteration to keep dates in range while still exercising the EF formula.
+- [2026-06-20] Vitest WASM/V8 segfault occurs on Node.js > 22.12.0 (native Ubuntu, not WSL2). Always run `nvm use 22.12.0` before `npx vitest run`. Running multiple test files in parallel can also trigger transient segfaults; if a test segfaults, re-run it individually — the code is fine, it's V8 multi-worker instability.
+
+
+
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
-- [2026-06-18] Node 24.8.0 hits WASM compilation crash in V8 when running Vite/npm dev with esbuild. Switch to Node 22.12.0 via NVM. The crash is CPU/environment-specific, not code-related; use `source ~/.nvm/nvm.sh && nvm use 22.12.0` before npm commands.
+- [2026-06-18] Node 24.8.0 hits WASM compilation crash in V8 when running Vite/npm dev with esbuild on this machine (native Ubuntu, not WSL2). Switch to Node 22.12.0 via NVM. Use `source ~/.nvm/nvm.sh && nvm use 22.12.0` before npm commands.
 - [2026-06-18] Vitest requires both setup file inclusion AND tsconfig.json types declaration for testing-library matchers. Missing either causes `toBeInTheDocument` to fail TS compilation. Fix: (1) create `src/vitest.setup.ts` with `import '@testing-library/jest-dom'`, (2) add `"types": ["vitest/globals", "@testing-library/jest-dom"]` to tsconfig.json compiler options, (3) reference setup file in vitest.config.ts `setupFiles: ['src/vitest.setup.ts']`.
 - [2026-06-18] Hook tests with API mocks fail when the mock is set up via `vi.mock()` module-level but the hook's fetch call doesn't resolve in test time. Root cause: hook fetches in useEffect, but test awaits only `setTimeout(0)`. Solution: either skip hook-level API fetch tests and test via component (where async resolve is more visible), or rewrite hook to accept injected API client. Chose skip for Phase 1 since component tests are reliable.
 - [2026-05-14] Do not assume root `INGESTION_PRD.md` exists from stale anatomy output; use `docs/PRD/INGESTION_PRD.md` for backend PRD audits.

@@ -66,6 +66,7 @@ export function useSubmitAnswer() {
       selected_option_label: string
       missed_grammar_focus_key?: string
       missed_reading_focus_key?: string
+      missed_syntactic_trap_key?: string
     }) =>
       api.submitAnswer({ ...data, user_token: USER_TOKEN }),
     onSuccess: () => {
@@ -96,5 +97,13 @@ export function useSRDue(limit = 20) {
     queryKey: ['sr-due', limit],
     queryFn: () => api.srDueQuestions(USER_TOKEN, limit),
     staleTime: 60_000,
+  })
+}
+
+export function useTrapSusceptibility() {
+  return useQuery({
+    queryKey: ['trap-susceptibility'],
+    queryFn: () => api.getTrapSusceptibility(USER_TOKEN),
+    staleTime: 5 * 60_000,
   })
 }

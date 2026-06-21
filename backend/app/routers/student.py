@@ -47,6 +47,9 @@ from app.models.payload import (
     SRDueQuestion,
     SRDueQuestionsResponse,
     SRProgressResponse,
+    TrapMetric,
+    TrapImprovement,
+    TrapSusceptibilityResponse,
 )
 from app.models.ontology import GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
 
@@ -2052,4 +2055,116 @@ async def sr_progress(
         due_for_review=due,
         average_easiness_factor=avg_ef,
         retention_rate=retention,
+    )
+
+
+@router.get("/student/trap-susceptibility", response_model=TrapSusceptibilityResponse)
+async def get_trap_susceptibility(
+    user_token: str = Query(...),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return per-trap fall rates and improvement trends for the authenticated user."""
+    user = await _resolve_user_by_token(user_token, db)
+
+    result = await db.execute(
+        select(
+            UserProgress.missed_syntactic_trap_key,
+            func.count().label("total"),
+            func.sum(case((UserProgress.is_correct == True, 1), else_=0)).label("correct"),  # noqa: E712
+        )
+        .where(
+            UserProgress.user_id == user.id,
+            UserProgress.missed_syntactic_trap_key.isnot(None),
+        )
+        .group_by(UserProgress.missed_syntactic_trap_key)
+    )
+    rows = result.all()
+
+    trap_encounters: dict[str, int] = {}
+    trap_correct_counts: dict[str, int] = {}
+    trap_fall_rates: dict[str, float] = {}
+
+    for row in rows:
+        trap_type = row.missed_syntactic_trap_key
+        total = row.total
+        correct = int(row.correct or 0)
+        trap_encounters[trap_type] = total
+        trap_correct_counts[trap_type] = correct
+        trap_fall_rates[trap_type] = round(1.0 - correct / total, 4) if total > 0 else 0.0
+
+    def _severity(fall_rate: float) -> str:
+        if fall_rate >= 0.8:
+            return "critical"
+        if fall_rate >= 0.6:
+            return "high"
+        if fall_rate >= 0.4:
+            return "moderate"
+        return "low"
+
+    all_metrics = [
+        TrapMetric(
+            trap_type=t,
+            fall_rate=trap_fall_rates[t],
+            occurrences=trap_encounters[t],
+            correct_count=trap_correct_counts[t],
+            severity=_severity(trap_fall_rates[t]),
+        )
+        for t in trap_encounters
+    ]
+    most_susceptible = sorted(all_metrics, key=lambda m: m.fall_rate, reverse=True)[:5]
+
+    # Improvement trends: compare first 5 vs last 5 attempts per trap
+    improvement: dict[str, TrapImprovement] = {}
+    overcoming: list[TrapMetric] = []
+    persistent: list[TrapMetric] = []
+
+    for metric in all_metrics:
+        trap_type = metric.trap_type
+
+        early_rows = await db.execute(
+            select(UserProgress.is_correct)
+            .where(UserProgress.user_id == user.id, UserProgress.missed_syntactic_trap_key == trap_type)
+            .order_by(UserProgress.timestamp.asc())
+            .limit(5)
+        )
+        early = early_rows.scalars().all()
+
+        late_rows = await db.execute(
+            select(UserProgress.is_correct)
+            .where(UserProgress.user_id == user.id, UserProgress.missed_syntactic_trap_key == trap_type)
+            .order_by(UserProgress.timestamp.desc())
+            .limit(5)
+        )
+        late = late_rows.scalars().all()
+
+        first_acc = sum(1 for x in early if x) / len(early) if early else 0.0
+        recent_acc = sum(1 for x in late if x) / len(late) if late else 0.0
+        trend = round(recent_acc - first_acc, 4)
+        improvement[trap_type] = TrapImprovement(
+            first_accuracy=round(first_acc, 4),
+            recent_accuracy=round(recent_acc, 4),
+            trend=trend,
+        )
+
+        if recent_acc >= 0.6 and recent_acc > first_acc:
+            overcoming.append(metric)
+        elif recent_acc < 0.4 and metric.fall_rate > 0.6:
+            persistent.append(metric)
+
+    total_attempted_result = await db.execute(
+        select(func.count()).select_from(UserProgress).where(UserProgress.user_id == user.id)
+    )
+    total_attempted = total_attempted_result.scalars().first() or 0
+
+    return TrapSusceptibilityResponse(
+        user_id=user.id,
+        total_questions_attempted=total_attempted,
+        trap_encounters=trap_encounters,
+        trap_fall_rates=trap_fall_rates,
+        trap_correct_counts=trap_correct_counts,
+        most_susceptible_traps=most_susceptible,
+        overcoming_traps=overcoming,
+        persistent_traps=persistent,
+        trap_improvement=improvement,
     )

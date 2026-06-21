@@ -13,7 +13,7 @@ type DiagnosticState = 'idle' | 'running' | 'done'
 interface DiagnosticQuestion {
   id: string
   current_question_text: string
-  options: Array<{ label: string; text: string }>
+  options: Array<{ label: string; text: string; distractor_type_key?: string }>
   grammar_focus_key?: string
   reading_focus_key?: string
   domain: string
@@ -39,6 +39,8 @@ function DiagnosticQuestionCard({
   function choose(label: string) {
     if (selected) return
     setSelected(label)
+    const selectedOpt = question.options.find((o) => o.label === label)
+    const trapType = selectedOpt?.distractor_type_key ?? undefined
     if (sessionId) {
       api.diagnosticSubmit(sessionId, {
         user_token: USER_TOKEN,
@@ -46,6 +48,7 @@ function DiagnosticQuestionCard({
         selected_option_label: label,
         missed_grammar_focus_key: question.grammar_focus_key,
         missed_reading_focus_key: question.reading_focus_key,
+        missed_syntactic_trap_key: trapType,
       }).then((res) => {
         setIsCorrect(res.is_correct)
         onAnswer(label, res.is_correct)
@@ -57,6 +60,7 @@ function DiagnosticQuestionCard({
           selected_option_label: label,
           missed_grammar_focus_key: question.grammar_focus_key,
           missed_reading_focus_key: question.reading_focus_key,
+          missed_syntactic_trap_key: trapType,
         },
         {
           onSuccess: (res) => {

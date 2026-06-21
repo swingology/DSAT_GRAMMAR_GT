@@ -6,6 +6,7 @@ import { PracticeTestCard } from '../components/dashboard/PracticeTestCard'
 import { RecentSessions } from '../components/dashboard/RecentSessions'
 import { ConceptWeaknessChart } from '../components/dashboard/ConceptWeaknessChart'
 import { SpacedRepetitionWidget } from '../components/dashboard/SpacedRepetitionWidget'
+import { TrapSusceptibilityDashboard } from '../components/dashboard/TrapSusceptibilityDashboard'
 
 const EASE: Easing = 'easeOut'
 
@@ -67,6 +68,10 @@ export function DashboardPage() {
           <motion.div {...fadeUp(0.50)} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
             <h3 className="text-sm font-semibold text-gray-700 mb-3">Concept Weakness</h3>
             <ConceptWeaknessChart />
+          </motion.div>
+
+          <motion.div {...fadeUp(0.56)} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+            <TrapSusceptibilityDashboard />
           </motion.div>
         </motion.section>
       </div>

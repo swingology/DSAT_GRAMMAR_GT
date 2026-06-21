@@ -847,3 +847,29 @@ class SRProgressResponse(BaseModel):
     retention_rate: float  # correct_attempts / total_attempts across all SR records
 
     model_config = {"from_attributes": True}
+
+
+class TrapMetric(BaseModel):
+    trap_type: str
+    fall_rate: float          # 0.0–1.0
+    occurrences: int
+    correct_count: int
+    severity: str             # "critical" | "high" | "moderate" | "low"
+
+
+class TrapImprovement(BaseModel):
+    first_accuracy: float
+    recent_accuracy: float
+    trend: float              # positive = improving, negative = regressing
+
+
+class TrapSusceptibilityResponse(BaseModel):
+    user_id: int
+    total_questions_attempted: int
+    trap_encounters: Dict[str, int]
+    trap_fall_rates: Dict[str, float]
+    trap_correct_counts: Dict[str, int]
+    most_susceptible_traps: List[TrapMetric]
+    overcoming_traps: List[TrapMetric]
+    persistent_traps: List[TrapMetric]
+    trap_improvement: Dict[str, TrapImprovement]

@@ -12,34 +12,21 @@ vi.mock('../../api/client', () => ({
   },
 }))
 
+// Mock question using the current backend API shape (flat fields, label-keyed options)
 const mockQuestion = {
   id: 'q-123',
   text: 'The researcher, who had spent years on this project, [BLANK] their findings with the team.',
+  current_question_text: 'The researcher, who had spent years on this project, [BLANK] their findings with the team.',
   options: [
-    { id: 'A', text: 'shares', correct: false, student_failure_mode_key: 'tense_proximity_pull' },
-    { id: 'B', text: 'shared', correct: true },
-    { id: 'C', text: 'had shared', correct: false, student_failure_mode_key: 'tense_proximity_pull' },
-    { id: 'D', text: 'is sharing', correct: false, student_failure_mode_key: 'tense_proximity_pull' },
+    { label: 'A', text: 'shares' },
+    { label: 'B', text: 'shared' },
+    { label: 'C', text: 'had shared', why_plausible: 'Options A and D use present tense; option C uses past perfect, which is only for actions completed before another past event.' },
+    { label: 'D', text: 'is sharing' },
   ],
-  source_exam: 'PT4',
-  source_question_number: 23,
-  classification: {
-    grammar_role_key: 'verb_form',
-    grammar_focus_key: 'verb_tense_consistency',
-    syntactic_trap_key: ['temporal_sequence_ambiguity', 'early_clause_anchor'],
-    syntactic_trap_intensity: 'medium' as const,
-    student_failure_mode_key: 'tense_proximity_pull',
-  },
-  reasoning: {
-    primary_rule:
-      'Choose the verb tense required by the sentence\'s time frame, not the tense that sounds more formal.',
-    trap_mechanism:
-      'The opening subordinate clause and the formal SAT style make past perfect sound attractive, but the main clause "reflected" sets a completed-past frame with no earlier-past sequence.',
-    correct_answer_reasoning:
-      'The main verb must be simple past (shared) to match the time frame established by the opening phrase.',
-    distractor_analysis_summary:
-      'Options A and D use present tense; option C uses past perfect, which is only for actions completed before another past event.',
-  },
+  grammar_role_key: 'verb_form',
+  grammar_focus_key: 'verb_tense_consistency',
+  syntactic_trap_key: 'temporal_sequence_ambiguity',
+  explanation_short: 'Choose the verb tense required by the sentence\'s time frame, not the tense that sounds more formal.',
 }
 
 describe('Grammar Practice Page — Integration Tests', () => {
@@ -57,7 +44,8 @@ describe('Grammar Practice Page — Integration Tests', () => {
 
   describe('Full User Journey: Load → Answer → Feedback → Analyze', () => {
     it.skip('completes happy path: load question → select answer → view feedback → toggle keys → find traps → clear keys', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
+      vi.mocked(api.submitAnswer).mockResolvedValueOnce({ is_correct: true })
 
       renderComponent()
 
@@ -67,8 +55,6 @@ describe('Grammar Practice Page — Integration Tests', () => {
       })
 
       expect(screen.getByText(/Standard English Conventions/i)).toBeInTheDocument()
-      expect(screen.getByText('PT4')).toBeInTheDocument()
-      expect(screen.getByText('23')).toBeInTheDocument()
 
       // Step 2: Verify question loads with full text
       expect(
@@ -87,7 +73,6 @@ describe('Grammar Practice Page — Integration Tests', () => {
       expect(screen.getByText(/Detected Trap Profile/i)).toBeInTheDocument()
       expect(screen.getByText('verb_form')).toBeInTheDocument()
       expect(screen.getByText('verb_tense_consistency')).toBeInTheDocument()
-      expect(screen.getByText('medium')).toBeInTheDocument()
 
       // Step 5: Verify syntax anatomy keys are displayed
       expect(screen.getByText(/Sentence Anatomy/i)).toBeInTheDocument()
@@ -108,46 +93,35 @@ describe('Grammar Practice Page — Integration Tests', () => {
       // Step 8: Verify explanation is displayed
       expect(
         screen.getByText(
-          /simple past.*time frame/i
+          /time frame/i
         )
       ).toBeInTheDocument()
 
-      // Step 9: Verify trap mechanism is shown
-      expect(
-        screen.getByText(
-          /subordinate clause.*past perfect/i
-        )
-      ).toBeInTheDocument()
-
-      // Step 10: Toggle a key manually
+      // Step 9: Toggle a key manually
       const subjectButton = screen.getByRole('button', { name: /Primary Subject/i })
       fireEvent.click(subjectButton)
 
-      // Step 11: Verify key is highlighted and explanation appears
+      // Step 10: Verify key is highlighted and explanation appears
       await waitFor(() => {
         expect(screen.getByText(/Active Grammar Keys/i)).toBeInTheDocument()
       })
 
       expect(screen.getByText('Primary Subject')).toBeInTheDocument()
 
-      // Step 12: Click Find Traps
+      // Step 11: Click Find Traps
       const findTrapsButton = screen.getByRole('button', { name: /Find Traps/i })
       fireEvent.click(findTrapsButton)
 
-      // Step 13: Verify multiple keys are now highlighted
+      // Step 12: Verify multiple keys are now highlighted
       await waitFor(() => {
         expect(screen.getByText(/Active Grammar Keys/i)).toBeInTheDocument()
       })
 
-      // Main Verb should be in active keys (from grammar_focus_key mapping)
-      expect(screen.getByText('Main Verb')).toBeInTheDocument()
-
-      // Step 14: Click Clear Keys
+      // Step 13: Click Clear Keys
       const clearKeysButton = screen.getByRole('button', { name: /Clear Keys/i })
       fireEvent.click(clearKeysButton)
 
-      // Step 15: Verify active keys explanation disappears
-      // (After clearing, "Active Grammar Keys" section should not be visible)
+      // Active keys section should disappear
       const activeKeysSections = screen.queryAllByText(/Active Grammar Keys/i)
       expect(activeKeysSections.length).toBe(0)
     })
@@ -155,7 +129,8 @@ describe('Grammar Practice Page — Integration Tests', () => {
 
   describe('Correct Answer Selection', () => {
     it('shows correct feedback when correct answer is selected', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
+      vi.mocked(api.submitAnswer).mockResolvedValueOnce({ is_correct: true })
 
       renderComponent()
 
@@ -171,13 +146,14 @@ describe('Grammar Practice Page — Integration Tests', () => {
         expect(screen.getByText(/✓ Correct/i)).toBeInTheDocument()
       })
 
-      expect(screen.getByText(/simple past.*time frame/i)).toBeInTheDocument()
+      expect(screen.getByText(/time frame/i)).toBeInTheDocument()
     })
   })
 
   describe('Incorrect Answer Selection', () => {
     it('shows incorrect feedback when wrong answer is selected', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
+      vi.mocked(api.submitAnswer).mockResolvedValueOnce({ is_correct: false })
 
       renderComponent()
 
@@ -188,7 +164,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
       fireEvent.click(screen.getByRole('button', { name: /had shared/i }))
 
       await waitFor(() => {
-        expect(screen.getByText(/✗ Incorrect/i)).toBeInTheDocument()
+        expect(screen.getByText(/✗ Not quite/i)).toBeInTheDocument()
       })
 
       expect(
@@ -201,15 +177,17 @@ describe('Grammar Practice Page — Integration Tests', () => {
 
   describe('Grammar Key Interactions', () => {
     it('toggles keys on and off correctly', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
       renderComponent()
 
+      // renderGrammarKeys() only shows keys that tag actual passage tokens.
+      // The mock question produces main_verb and relative_clause tokens, so use Main Verb.
       await waitFor(() => {
-        expect(screen.getByText('Primary Subject')).toBeInTheDocument()
+        expect(screen.getByText('Main Verb')).toBeInTheDocument()
       })
 
-      const subjectButton = screen.getByRole('button', { name: /Primary Subject/i })
+      const subjectButton = screen.getByRole('button', { name: /Main Verb/i })
 
       // First click: activate
       fireEvent.click(subjectButton)
@@ -227,7 +205,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
     })
 
     it.skip('Find Traps auto-highlights keys based on grammar_focus_key', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
       renderComponent()
 
@@ -246,7 +224,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
     })
 
     it('Clear Keys removes all active keys', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
       renderComponent()
 
@@ -272,7 +250,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
 
   describe('Sentence Rendering', () => {
     it.skip('displays sentence with blank before answer selection', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
       renderComponent()
 
@@ -284,7 +262,8 @@ describe('Grammar Practice Page — Integration Tests', () => {
     })
 
     it.skip('replaces blank with selected answer text', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
+      vi.mocked(api.submitAnswer).mockResolvedValueOnce({ is_correct: true })
 
       renderComponent()
 
@@ -305,7 +284,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
 
   describe('Trap Summary Display', () => {
     it('displays all trap summary fields', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
       renderComponent()
 
@@ -313,25 +292,16 @@ describe('Grammar Practice Page — Integration Tests', () => {
         expect(screen.getByText(/Detected Trap Profile/i)).toBeInTheDocument()
       })
 
-      // Check all fields
+      // Check grammar role and focus
       expect(screen.getByText('Grammar Role')).toBeInTheDocument()
       expect(screen.getByText('verb_form')).toBeInTheDocument()
 
       expect(screen.getByText('Grammar Focus')).toBeInTheDocument()
       expect(screen.getByText('verb_tense_consistency')).toBeInTheDocument()
 
+      // Syntactic trap key (single string in new API)
       expect(screen.getByText('Syntactic Trap')).toBeInTheDocument()
-      expect(
-        screen.getByText(/temporal_sequence_ambiguity.*early_clause_anchor/i)
-      ).toBeInTheDocument()
-
-      expect(screen.getByText('Trap Intensity')).toBeInTheDocument()
-      expect(screen.getByText('medium')).toBeInTheDocument()
-
-      // Check trap mechanism description
-      expect(
-        screen.getByText(/subordinate clause.*past perfect.*sound attractive/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText('temporal_sequence_ambiguity')).toBeInTheDocument()
     })
   })
 
@@ -349,7 +319,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
     })
 
     it.skip('displays error when no questions available', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [] })
 
       renderComponent()
 
@@ -373,7 +343,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
 
   describe('Accessibility & Interaction', () => {
     it('all buttons are keyboard accessible', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
       renderComponent()
 
@@ -392,7 +362,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
     })
 
     it('option buttons have proper labels', async () => {
-      vi.mocked(api.getQuestions).mockResolvedValueOnce([mockQuestion])
+      vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
       renderComponent()
 
