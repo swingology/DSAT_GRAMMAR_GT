@@ -7,6 +7,38 @@ import type {
 } from '../types/grammar'
 import { api } from '../api/client'
 
+// Patterns that mark the start of the question stem (after the passage body)
+const STEM_STARTERS = [
+  /Which choice\b/,
+  /Which finding\b/,
+  /Which quotation\b/,
+  /Which statement\b/,
+  /As used in the text\b/,
+  /According to the text\b/,
+  /Based on the text\b/,
+  /It can (?:most )?reasonably be inferred\b/,
+  /The (?:student|researcher|author|narrator|speaker)\b.*\?$/,
+  /Compared to\b/,
+]
+
+/**
+ * Split a combined passage+stem string into [passage, stem].
+ * Returns [full, null] if no stem pattern is found.
+ */
+function splitPassageAndStem(text: string): [string, string | null] {
+  // Walk backwards through sentences to find where the stem begins
+  const sentences = text.split(/(?<=[.?!])\s+/)
+  for (let i = sentences.length - 1; i >= 1; i--) {
+    const candidate = sentences.slice(i).join(' ')
+    if (STEM_STARTERS.some((re) => re.test(candidate))) {
+      const passage = sentences.slice(0, i).join(' ').trim()
+      const stem = candidate.trim()
+      return [passage, stem]
+    }
+  }
+  return [text, null]
+}
+
 export function useGrammarSession() {
   const [state, setState] = useState<GrammarSessionState>({
     question: null,
@@ -64,9 +96,15 @@ export function useGrammarSession() {
     }))
   }, [state.question?.id])
 
-  const passageText = useMemo(() => {
+  // Split the combined passage+stem into two parts for display
+  const [passageText, stemText] = useMemo(() => {
     const q = state.question as any
-    return q?.current_passage_text ?? q?.current_question_text ?? q?.text ?? ''
+    const raw = q?.current_passage_text ?? q?.current_question_text ?? q?.text ?? ''
+    // If there's a separate passage field, the stem is in question_text
+    if (q?.current_passage_text && q?.current_question_text) {
+      return [q.current_passage_text as string, q.current_question_text as string]
+    }
+    return splitPassageAndStem(raw)
   }, [state.question])
 
   // Exact Pass 2 spans win. The local tokenizer keeps older rows interactive.
@@ -115,10 +153,8 @@ export function useGrammarSession() {
   }, [passageText])
 
   const renderQuestionPrompt = useCallback(() => {
-    const q = state.question as any
-    if (!q?.current_passage_text) return null
-    return q.current_question_text ?? q.text ?? null
-  }, [state.question])
+    return stemText ?? null
+  }, [stemText])
 
   /**
    * 2. renderOptions()
