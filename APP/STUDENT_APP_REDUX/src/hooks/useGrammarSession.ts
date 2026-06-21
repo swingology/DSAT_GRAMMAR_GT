@@ -9,6 +9,10 @@ import { api } from '../api/client'
 
 
 export function useGrammarSession() {
+  const [questions, setQuestions] = useState<any[]>([])
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [totalAvailable, setTotalAvailable] = useState(0)
+
   const [state, setState] = useState<GrammarSessionState>({
     question: null,
     selectedAnswer: null,
@@ -19,20 +23,23 @@ export function useGrammarSession() {
     error: null,
   })
 
-  // Fetch initial question on mount
+  // Fetch a batch of questions on mount
   useEffect(() => {
-    const fetchQuestion = async () => {
+    const fetchQuestions = async () => {
       try {
         setState((prev) => ({ ...prev, isLoading: true, error: null }))
         const resp = await api.getQuestions({
           domain: 'grammar',
-          limit: 1,
+          limit: 50,
         })
-        const questions = resp?.items ?? []
-        if (questions.length > 0) {
+        const items = resp?.items ?? []
+        const total = resp?.matching_target_total ?? items.length
+        if (items.length > 0) {
+          setQuestions(items)
+          setTotalAvailable(total)
           setState((prev) => ({
             ...prev,
-            question: questions[0],
+            question: items[0],
             isLoading: false,
           }))
         } else {
@@ -51,8 +58,15 @@ export function useGrammarSession() {
       }
     }
 
-    fetchQuestion()
+    fetchQuestions()
   }, [])
+
+  // Sync current question to state when index changes
+  useEffect(() => {
+    if (questions.length > 0 && questions[currentIndex]) {
+      setState((prev) => ({ ...prev, question: questions[currentIndex] }))
+    }
+  }, [currentIndex, questions])
 
   // Reset interactive state whenever a new question loads
   useEffect(() => {
@@ -80,9 +94,11 @@ export function useGrammarSession() {
   }, [state.question])
 
   // Exact Pass 2 spans win. The local tokenizer keeps older rows interactive.
+  // grammar_focus_key tells the tokenizer what the blank slot actually is
+  // (verb, transition word, pronoun, etc.) so it tags it correctly.
   const passageTokens = useMemo(() => {
     const q = state.question as any
-    return normalizePassageTokens(q?.passage_tokens, passageText)
+    return normalizePassageTokens(q?.passage_tokens, passageText, q?.grammar_focus_key)
   }, [state.question, passageText])
 
   const passageKeyIds = useMemo((): Set<string> => {
@@ -155,19 +171,26 @@ export function useGrammarSession() {
 
   /**
    * 3. renderGrammarKeys()
-   * Returns grouped syntax anatomy keys — only those that tag at least one
-   * token in the current passage, so no irrelevant pills are shown.
+   * Always shows all SYNTAX_ANATOMY_KEYS (structural reference), plus any
+   * backend grammar keys that have actual highlighted spans in the passage.
+   * Clicking an anatomy key highlights tagged tokens; if none are tagged,
+   * the pill is still visible but nothing lights up.
    */
   const renderGrammarKeys = useCallback(() => {
-    const presentKeys = allKeys.filter((key) => passageKeyIds.has(key.id))
-    const groups = [...new Set(presentKeys.map((key) => key.group))]
+    const knownIds = new Set(SYNTAX_ANATOMY_KEYS.map((k) => k.id))
+    // Backend keys that have real tagged spans (not the static anatomy keys)
+    const backendSpanKeys = allKeys.filter(
+      (key) => !knownIds.has(key.id) && passageKeyIds.has(key.id)
+    )
+    const visibleKeys = [...SYNTAX_ANATOMY_KEYS, ...backendSpanKeys]
+    const groups = [...new Set(visibleKeys.map((key) => key.group))]
 
     return groups.map((group) => ({
       group,
-      keys: presentKeys.filter((key) => key.group === group).sort(
+      keys: visibleKeys.filter((key) => key.group === group).sort(
         (a, b) => b.priority - a.priority
       ),
-      activeKeys: presentKeys.filter(
+      activeKeys: visibleKeys.filter(
         (key) => key.group === group && state.activeKeys.has(key.id)
       ),
     }))
@@ -332,6 +355,18 @@ export function useGrammarSession() {
     return allKeys.filter((key) => state.activeKeys.has(key.id))
   }, [state.activeKeys, allKeys])
 
+  const nextQuestion = useCallback(() => {
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex((i) => i + 1)
+    }
+  }, [currentIndex, questions.length])
+
+  const prevQuestion = useCallback(() => {
+    if (currentIndex > 0) {
+      setCurrentIndex((i) => i - 1)
+    }
+  }, [currentIndex])
+
   return {
     // State
     state,
@@ -350,6 +385,15 @@ export function useGrammarSession() {
     renderTrapSummary,
     renderExplanations,
     renderFeedback,
+
+    // Navigation
+    currentIndex,
+    totalQuestions: questions.length,
+    totalAvailable,
+    nextQuestion,
+    prevQuestion,
+    hasNext: currentIndex < questions.length - 1,
+    hasPrev: currentIndex > 0,
 
     // Event handlers
     selectAnswer,

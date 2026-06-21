@@ -117,6 +117,26 @@ export function QuestionSection({ grammar }: QuestionSectionProps) {
           )}
         </div>
       )}
+
+      <div className="question-nav">
+        <button
+          className="nav-btn"
+          onClick={grammar.prevQuestion}
+          disabled={!grammar.hasPrev}
+        >
+          ← Prev
+        </button>
+        <span className="question-counter">
+          {grammar.currentIndex + 1} / {grammar.totalQuestions}
+        </span>
+        <button
+          className="nav-btn"
+          onClick={grammar.nextQuestion}
+          disabled={!grammar.hasNext}
+        >
+          Next →
+        </button>
+      </div>
     </div>
   )
 }

@@ -37,7 +37,12 @@ export function GrammarPractice({}: GrammarPracticeProps) {
 
   return (
     <div className="grammar-practice">
-      <Header question={grammar.question} />
+      <Header
+        question={grammar.question}
+        currentIndex={grammar.currentIndex}
+        totalQuestions={grammar.totalQuestions}
+        totalAvailable={grammar.totalAvailable}
+      />
 
       <QuestionSection
         grammar={grammar}
