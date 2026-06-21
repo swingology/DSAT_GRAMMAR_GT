@@ -23,10 +23,26 @@ export interface GrammarOption {
   student_failure_mode_key?: string  // Why this distractor is tempting (D.7)
 }
 
+export interface PassageToken {
+  text?: string
+  word?: string
+  tags?: string[]
+  is_blank?: boolean
+  isBlank?: boolean
+}
+
 export interface GrammarQuestion {
   id: string
   text: string                        // Full question prompt
   options: GrammarOption[]
+
+  // Current student API fields. Legacy fixtures still use `text` above.
+  current_question_text?: string
+  current_passage_text?: string | null
+  passage_tokens?: PassageToken[] | null
+  grammar_role_key?: string | null
+  grammar_focus_key?: string | null
+  syntactic_trap_key?: string | null
 
   // Backend classification (from rules_v8, Part D)
   classification: BackendGrammarClassification
@@ -54,6 +70,7 @@ export interface SyntaxAnatomyKey {
 export interface GrammarSessionState {
   question: GrammarQuestion | null
   selectedAnswer: string | null
+  isCorrect: boolean | null            // null = not yet answered
   activeKeys: Set<string>              // Syntax Anatomy keys, NOT backend keys
   feedbackVisible: boolean
   isLoading: boolean

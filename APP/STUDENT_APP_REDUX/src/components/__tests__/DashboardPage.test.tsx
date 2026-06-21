@@ -28,6 +28,8 @@ vi.mock('../../hooks/useDashboardData', () => ({
     data: undefined,
   }),
   useMissedQuestions: vi.fn().mockReturnValue({ isLoading: false, data: undefined }),
+  useSRProgress: vi.fn().mockReturnValue({ isLoading: false, data: undefined }),
+  useSRDue: vi.fn().mockReturnValue({ isLoading: false, data: undefined }),
 }))
 
 function renderDashboard() {

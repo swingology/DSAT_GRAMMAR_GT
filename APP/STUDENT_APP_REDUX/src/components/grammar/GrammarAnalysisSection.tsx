@@ -95,12 +95,19 @@ export function GrammarAnalysisSection({ grammar }: GrammarAnalysisSectionProps)
       {grammar.activeKeys.size > 0 && (
         <div className="active-keys-explanation">
           <h3>Active Grammar Keys</h3>
-          {grammar.findActiveKey().map((key) => (
-            <div key={key.id} className="key-explanation">
-              <h4>{key.label}</h4>
-              <p>{key.rule}</p>
-            </div>
-          ))}
+          {grammar.findActiveKey()
+            .filter((key) => grammar.passageKeyIds.has(key.id))
+            .map((key) => (
+              <div
+                key={key.id}
+                className="key-explanation"
+                style={{ borderLeftColor: key.color, backgroundColor: key.lightBg }}
+              >
+                <h4 style={{ color: key.color }}>{key.label}</h4>
+                <p>{key.description}</p>
+                <p className="key-rule"><strong style={{ color: key.color }}>SAT Rule: </strong>{key.rule}</p>
+              </div>
+            ))}
         </div>
       )}
     </div>

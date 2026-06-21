@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:16
+    container_name: dsat-db
     environment:
       POSTGRES_USER: dsat
       POSTGRES_PASSWORD: dsat_dev
@@ -11,6 +12,47 @@ services:
       - dsat_pgdata_linux:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dsat -d dsat_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: dsat-backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://dsat:dsat_dev@db:5432/dsat_dev
+      PYTHONUNBUFFERED: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: dsat-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./APP/STUDENT_APP_REDUX:/app
+      - /app/node_modules
+    environment:
+      VITE_API_BASE: http://backend:8000
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5173/"]
       interval: 5s
       timeout: 5s
       retries: 10
