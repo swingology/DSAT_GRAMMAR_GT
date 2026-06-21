@@ -1,4 +1,5 @@
 import { motion, type Easing } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { HeroBanner } from '../components/dashboard/HeroBanner'
 import { PracticeCard } from '../components/dashboard/PracticeCard'
 import { DiagnosticCard } from '../components/dashboard/DiagnosticCard'
@@ -72,6 +73,15 @@ export function DashboardPage() {
 
           <motion.div {...fadeUp(0.56)} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
             <TrapSusceptibilityDashboard />
+          </motion.div>
+
+          <motion.div {...fadeUp(0.62)} className="mt-3">
+            <Link
+              to="/progress"
+              className="block w-full text-center py-3 rounded-2xl border border-gray-200 bg-white text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors"
+            >
+              View full progress →
+            </Link>
           </motion.div>
         </motion.section>
       </div>

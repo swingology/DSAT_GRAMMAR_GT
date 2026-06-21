@@ -8,6 +8,7 @@ import { ConceptSelectorPage } from './pages/ConceptSelectorPage'
 import { MixedPracticePage } from './pages/MixedPracticePage'
 import { DiagnosticHistoryPage } from './pages/DiagnosticHistoryPage'
 import { DiagnosticDetailPage } from './pages/DiagnosticDetailPage'
+import { ProgressPage } from './pages/ProgressPage'
 
 const queryClient = new QueryClient()
 
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/diagnostic/history" element={<DiagnosticHistoryPage />} />
           <Route path="/diagnostic/:sessionId" element={<DiagnosticDetailPage />} />
           <Route path="/test" element={<PracticeTestPage />} />
+          <Route path="/progress" element={<ProgressPage />} />
         </Routes>
       </Router>
     </QueryClientProvider>

@@ -906,3 +906,50 @@ class TrapDetailResponse(BaseModel):
     trend: float
     severity: str
     example_mistakes: List[TrapDetailExample]
+
+
+# ── Phase 3: Progress Analytics ──────────────────────────────────────────────
+
+class DailyAccuracyPoint(BaseModel):
+    date: str          # YYYY-MM-DD
+    attempts: int
+    correct: int
+    accuracy: float    # 0.0–1.0
+
+
+class ProgressTrendResponse(BaseModel):
+    user_id: int
+    days: int
+    points: List[DailyAccuracyPoint]
+    overall_accuracy: float
+    total_attempts: int
+    streak_days: int   # consecutive days with at least 1 attempt
+
+
+class DomainDailyPoint(BaseModel):
+    date: str
+    domain: str
+    attempts: int
+    correct: int
+    accuracy: float
+
+
+class DomainTrendResponse(BaseModel):
+    user_id: int
+    days: int
+    grammar: List[DailyAccuracyPoint]
+    reading: List[DailyAccuracyPoint]
+
+
+class FocusAreaStat(BaseModel):
+    focus_key: str
+    domain: str
+    total_attempts: int
+    correct_count: int
+    accuracy: float
+
+
+class FocusSummaryResponse(BaseModel):
+    user_id: int
+    top_focus_areas: List[FocusAreaStat]   # top 8 by volume
+    weakest_focus_areas: List[FocusAreaStat]  # bottom 5 by accuracy (min 3 attempts)

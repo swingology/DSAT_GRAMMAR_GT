@@ -116,4 +116,13 @@ export const api = {
 
   getTrapDetails: (trapType: string, userToken: string) =>
     apiCall(`/student/trap-details/${encodeURIComponent(trapType)}?user_token=${encodeURIComponent(userToken)}`),
+
+  getProgressTrend: (userToken: string, days = 30) =>
+    apiCall(`/progress/trend?user_token=${encodeURIComponent(userToken)}&days=${days}`),
+
+  getDomainTrend: (userToken: string, days = 30) =>
+    apiCall(`/progress/domain-trend?user_token=${encodeURIComponent(userToken)}&days=${days}`),
+
+  getFocusSummary: (userToken: string) =>
+    apiCall(`/progress/focus-summary?user_token=${encodeURIComponent(userToken)}`),
 }

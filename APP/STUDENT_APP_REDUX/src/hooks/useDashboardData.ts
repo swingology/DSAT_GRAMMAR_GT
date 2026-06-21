@@ -124,3 +124,27 @@ export function useTrapDetails(trapType: string) {
     enabled: !!trapType,
   })
 }
+
+export function useProgressTrend(days = 30) {
+  return useQuery({
+    queryKey: ['progress-trend', days],
+    queryFn: () => api.getProgressTrend(USER_TOKEN, days),
+    staleTime: 5 * 60_000,
+  })
+}
+
+export function useDomainTrend(days = 30) {
+  return useQuery({
+    queryKey: ['domain-trend', days],
+    queryFn: () => api.getDomainTrend(USER_TOKEN, days),
+    staleTime: 5 * 60_000,
+  })
+}
+
+export function useFocusSummary() {
+  return useQuery({
+    queryKey: ['focus-summary'],
+    queryFn: () => api.getFocusSummary(USER_TOKEN),
+    staleTime: 5 * 60_000,
+  })
+}

@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Optional, Tuple
 
 from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlalchemy import select, func, and_, or_, text, case
+from sqlalchemy import select, func, and_, or_, text, case, cast, Date
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
@@ -54,6 +54,11 @@ from app.models.payload import (
     QuestionTypePerformanceResponse,
     TrapDetailExample,
     TrapDetailResponse,
+    DailyAccuracyPoint,
+    ProgressTrendResponse,
+    DomainTrendResponse,
+    FocusAreaStat,
+    FocusSummaryResponse,
 )
 from app.models.ontology import GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
 
@@ -2290,4 +2295,182 @@ async def get_trap_details(
         trend=round(recent_acc - first_acc, 4),
         severity=_severity(fall_rate),
         example_mistakes=examples,
+    )
+
+
+# ── Phase 3: Progress Analytics ──────────────────────────────────────────────
+
+def _streak(daily_points: list[DailyAccuracyPoint]) -> int:
+    """Count consecutive trailing days that have at least 1 attempt."""
+    from datetime import date as date_type, timedelta as td
+    today = datetime.now(timezone.utc).date()
+    streak = 0
+    dates_with_attempts = {p.date for p in daily_points if p.attempts > 0}
+    check = today
+    while str(check) in dates_with_attempts:
+        streak += 1
+        check -= td(days=1)
+    return streak
+
+
+@router.get("/progress/trend", response_model=ProgressTrendResponse)
+async def get_progress_trend(
+    user_token: str = Query(...),
+    days: int = Query(default=30, ge=7, le=90),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Daily accuracy trend for the last N days."""
+    user = await _resolve_user_by_token(user_token, db)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+
+    result = await db.execute(
+        select(
+            cast(UserProgress.timestamp, Date).label("day"),
+            func.count().label("total"),
+            func.sum(case((UserProgress.is_correct == True, 1), else_=0)).label("correct"),  # noqa: E712
+        )
+        .where(UserProgress.user_id == user.id, UserProgress.timestamp >= cutoff)
+        .group_by(cast(UserProgress.timestamp, Date))
+        .order_by(cast(UserProgress.timestamp, Date))
+    )
+    rows = result.all()
+
+    points = [
+        DailyAccuracyPoint(
+            date=str(row.day),
+            attempts=row.total,
+            correct=int(row.correct or 0),
+            accuracy=round(int(row.correct or 0) / row.total, 4) if row.total else 0.0,
+        )
+        for row in rows
+    ]
+
+    total_att = sum(p.attempts for p in points)
+    total_cor = sum(p.correct for p in points)
+    overall = round(total_cor / total_att, 4) if total_att else 0.0
+
+    return ProgressTrendResponse(
+        user_id=user.id,
+        days=days,
+        points=points,
+        overall_accuracy=overall,
+        total_attempts=total_att,
+        streak_days=_streak(points),
+    )
+
+
+@router.get("/progress/domain-trend", response_model=DomainTrendResponse)
+async def get_domain_trend(
+    user_token: str = Query(...),
+    days: int = Query(default=30, ge=7, le=90),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Daily accuracy split by domain (grammar / reading) for the last N days."""
+    user = await _resolve_user_by_token(user_token, db)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+
+    result = await db.execute(
+        select(
+            cast(UserProgress.timestamp, Date).label("day"),
+            UserProgress.question_domain,
+            func.count().label("total"),
+            func.sum(case((UserProgress.is_correct == True, 1), else_=0)).label("correct"),  # noqa: E712
+        )
+        .where(
+            UserProgress.user_id == user.id,
+            UserProgress.timestamp >= cutoff,
+            UserProgress.question_domain.isnot(None),
+        )
+        .group_by(cast(UserProgress.timestamp, Date), UserProgress.question_domain)
+        .order_by(cast(UserProgress.timestamp, Date))
+    )
+    rows = result.all()
+
+    grammar: list[DailyAccuracyPoint] = []
+    reading: list[DailyAccuracyPoint] = []
+    for row in rows:
+        point = DailyAccuracyPoint(
+            date=str(row.day),
+            attempts=row.total,
+            correct=int(row.correct or 0),
+            accuracy=round(int(row.correct or 0) / row.total, 4) if row.total else 0.0,
+        )
+        if row.question_domain == "grammar":
+            grammar.append(point)
+        elif row.question_domain in ("reading", "verbal"):
+            reading.append(point)
+
+    return DomainTrendResponse(user_id=user.id, days=days, grammar=grammar, reading=reading)
+
+
+@router.get("/progress/focus-summary", response_model=FocusSummaryResponse)
+async def get_focus_summary(
+    user_token: str = Query(...),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Accuracy per grammar/reading focus key across all time."""
+    user = await _resolve_user_by_token(user_token, db)
+
+    # Grammar focus keys
+    g_result = await db.execute(
+        select(
+            UserProgress.missed_grammar_focus_key.label("focus_key"),
+            func.count().label("total"),
+            func.sum(case((UserProgress.is_correct == True, 1), else_=0)).label("correct"),  # noqa: E712
+        )
+        .where(
+            UserProgress.user_id == user.id,
+            UserProgress.missed_grammar_focus_key.isnot(None),
+        )
+        .group_by(UserProgress.missed_grammar_focus_key)
+    )
+
+    # Reading focus keys
+    r_result = await db.execute(
+        select(
+            UserProgress.missed_reading_focus_key.label("focus_key"),
+            func.count().label("total"),
+            func.sum(case((UserProgress.is_correct == True, 1), else_=0)).label("correct"),  # noqa: E712
+        )
+        .where(
+            UserProgress.user_id == user.id,
+            UserProgress.missed_reading_focus_key.isnot(None),
+        )
+        .group_by(UserProgress.missed_reading_focus_key)
+    )
+
+    all_stats: list[FocusAreaStat] = []
+    for row in g_result.all():
+        total = row.total
+        correct = int(row.correct or 0)
+        all_stats.append(FocusAreaStat(
+            focus_key=row.focus_key,
+            domain="grammar",
+            total_attempts=total,
+            correct_count=correct,
+            accuracy=round(correct / total, 4) if total else 0.0,
+        ))
+    for row in r_result.all():
+        total = row.total
+        correct = int(row.correct or 0)
+        all_stats.append(FocusAreaStat(
+            focus_key=row.focus_key,
+            domain="reading",
+            total_attempts=total,
+            correct_count=correct,
+            accuracy=round(correct / total, 4) if total else 0.0,
+        ))
+
+    all_stats.sort(key=lambda s: s.total_attempts, reverse=True)
+    top = all_stats[:8]
+    qualified = [s for s in all_stats if s.total_attempts >= 3]
+    weakest = sorted(qualified, key=lambda s: s.accuracy)[:5]
+
+    return FocusSummaryResponse(
+        user_id=user.id,
+        top_focus_areas=top,
+        weakest_focus_areas=weakest,
     )
