@@ -194,7 +194,7 @@ describe('useGrammarSession', () => {
 
     const key = result.current.getKey('subject')
     expect(key).toBeDefined()
-    expect(key?.label).toBe('Primary Subject')
+    expect(key?.label).toBe('Subject')
   })
 
   it('renderFeedback returns explanation data', async () => {

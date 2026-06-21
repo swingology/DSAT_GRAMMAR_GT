@@ -6,6 +6,14 @@ interface GrammarAnalysisSectionProps {
   grammar: GrammarSessionReturn
 }
 
+const GROUP_META: Record<string, { badge?: string; badgeColor?: string }> = {
+  'Sentence Anatomy': {},
+  'Grammar Concepts': {
+    badge: '✓ annotated in this passage',
+    badgeColor: '#16a34a',
+  },
+}
+
 export function GrammarAnalysisSection({ grammar }: GrammarAnalysisSectionProps) {
   if (!grammar.question) return null
 
@@ -65,31 +73,49 @@ export function GrammarAnalysisSection({ grammar }: GrammarAnalysisSectionProps)
       )}
 
       <div className="grammar-keys">
-        {groupedKeys.map((group) => (
-          <div key={group.group} className="key-group">
-            <div className="key-group-title">{group.group}</div>
-            <div className="key-group-buttons">
-              {group.keys.map((key) => (
-                <button
-                  key={key.id}
-                  className={`key-btn ${
-                    grammar.activeKeys.has(key.id) ? 'active' : ''
-                  }`}
-                  onClick={() => grammar.toggleKey(key.id)}
-                  title={key.rule}
-                  style={{
-                    backgroundColor: grammar.activeKeys.has(key.id)
-                      ? key.color
-                      : key.lightBg,
-                    color: grammar.activeKeys.has(key.id) ? 'white' : key.color,
-                  }}
-                >
-                  {key.label}
-                </button>
-              ))}
+        {groupedKeys.map((group) => {
+          const meta = GROUP_META[group.group] ?? {}
+          const isConcepts = group.group === 'Grammar Concepts'
+          return (
+            <div
+              key={group.group}
+              className={`key-group${isConcepts ? ' key-group--concepts' : ''}`}
+            >
+              <div className="key-group-title">
+                {group.group}
+                {meta.badge && (
+                  <span
+                    className="key-group-badge"
+                    style={{ color: meta.badgeColor }}
+                  >
+                    {meta.badge}
+                  </span>
+                )}
+              </div>
+              <div className="key-group-buttons">
+                {group.keys.map((key) => (
+                  <button
+                    key={key.id}
+                    className={`key-btn ${
+                      grammar.activeKeys.has(key.id) ? 'active' : ''
+                    }${isConcepts ? ' key-btn--concept' : ''}`}
+                    onClick={() => grammar.toggleKey(key.id)}
+                    title={key.rule}
+                    style={{
+                      backgroundColor: grammar.activeKeys.has(key.id)
+                        ? key.color
+                        : key.lightBg,
+                      color: grammar.activeKeys.has(key.id) ? 'white' : key.color,
+                      borderColor: key.color,
+                    }}
+                  >
+                    {key.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {grammar.activeKeys.size > 0 && (

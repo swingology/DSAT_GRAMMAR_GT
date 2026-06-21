@@ -181,29 +181,33 @@ export function useGrammarSession() {
 
   /**
    * 3. renderGrammarKeys()
-   * Always shows all SYNTAX_ANATOMY_KEYS (structural reference), plus any
-   * backend grammar keys that have actual highlighted spans in the passage.
-   * Clicking an anatomy key highlights tagged tokens; if none are tagged,
-   * the pill is still visible but nothing lights up.
+   * Returns two explicit groups:
+   *   Group 1 "Sentence Anatomy" — all anatomy keys, always shown
+   *   Group 2 "Grammar Concepts" — only concept keys with actual passage spans
    */
   const renderGrammarKeys = useCallback(() => {
     const knownIds = new Set(SYNTAX_ANATOMY_KEYS.map((k) => k.id))
-    // Backend keys that have real tagged spans (not the static anatomy keys)
-    const backendSpanKeys = allKeys.filter(
-      (key) => !knownIds.has(key.id) && passageKeyIds.has(key.id)
-    )
-    const visibleKeys = [...SYNTAX_ANATOMY_KEYS, ...backendSpanKeys]
-    const groups = [...new Set(visibleKeys.map((key) => key.group))]
 
-    return groups.map((group) => ({
-      group,
-      keys: visibleKeys.filter((key) => key.group === group).sort(
-        (a, b) => b.priority - a.priority
-      ),
-      activeKeys: visibleKeys.filter(
-        (key) => key.group === group && state.activeKeys.has(key.id)
-      ),
-    }))
+    const sortedAnatomy = [...SYNTAX_ANATOMY_KEYS].sort((a, b) => b.priority - a.priority)
+    const anatomyGroup = {
+      group: 'Sentence Anatomy',
+      keys: sortedAnatomy,
+      activeKeys: sortedAnatomy.filter((k) => state.activeKeys.has(k.id)),
+    }
+
+    const conceptKeys = [...passageKeyIds]
+      .filter((id) => !knownIds.has(id))
+      .map((id) => allKeys.find((k) => k.id === id))
+      .filter((k): k is SyntaxAnatomyKey => k !== undefined)
+      .sort((a, b) => b.priority - a.priority)
+
+    const conceptGroup = {
+      group: 'Grammar Concepts',
+      keys: conceptKeys,
+      activeKeys: conceptKeys.filter((k) => state.activeKeys.has(k.id)),
+    }
+
+    return conceptKeys.length > 0 ? [anatomyGroup, conceptGroup] : [anatomyGroup]
   }, [state.activeKeys, passageKeyIds, allKeys])
 
   /**
@@ -311,25 +315,33 @@ export function useGrammarSession() {
 
   /**
    * 10. findTraps()
-   * Auto-highlights relevant syntax anatomy keys based on backend classification
+   * Auto-highlights keys from passage_spans.concepts_present when available;
+   * falls back to focus/role/trap keys + anatomy heuristics.
    */
   const findTraps = useCallback(() => {
     if (!state.question) return
 
     const question = state.question as any
-    const grammar_focus_key = question.grammar_focus_key
 
-    // Mapping from backend grammar_focus_key to relevant syntax anatomy keys
+    // Prefer span annotation concepts — these are accurate and pre-computed
+    const spans = question?.passage_spans
+    if (spans?.concepts_present?.length) {
+      setState((prev) => ({ ...prev, activeKeys: new Set<string>(spans.concepts_present) }))
+      return
+    }
+
+    // Fallback: derive from classification keys + anatomy heuristics
+    const grammar_focus_key = question.grammar_focus_key
     const focusKeyToAnatomyKeys: Record<string, string[]> = {
-      subject_verb_agreement: ['subject', 'main_verb', 'prepositional_phrase'],
-      verb_tense_consistency: ['main_verb', 'subordinate_clause'],
+      subject_verb_agreement:      ['subject', 'main_verb', 'prepositional_phrase'],
+      verb_tense_consistency:      ['main_verb', 'subordinate_clause'],
       pronoun_antecedent_agreement: ['subject', 'relative_clause'],
-      modifier_placement: ['modifier', 'subject'],
-      parallel_structure: ['subject', 'main_verb'],
-      punctuation_comma: ['appositive', 'relative_clause', 'prepositional_phrase'],
-      sentence_fragment: ['subordinate_clause'],
-      comma_splice: ['subordinate_clause', 'main_verb'],
-      run_on_sentence: ['subordinate_clause', 'main_verb'],
+      modifier_placement:          ['modifier', 'subject'],
+      parallel_structure:          ['subject', 'main_verb'],
+      punctuation_comma:           ['appositive', 'relative_clause', 'prepositional_phrase'],
+      sentence_fragment:           ['subordinate_clause'],
+      comma_splice:                ['subordinate_clause', 'main_verb'],
+      run_on_sentence:             ['subordinate_clause', 'main_verb'],
     }
 
     const backendKeys = [
@@ -341,12 +353,8 @@ export function useGrammarSession() {
       ...backendKeys,
       ...(focusKeyToAnatomyKeys[grammar_focus_key] || []),
     ].filter((id) => passageKeyIds.has(id))
-    const newKeys = new Set(relevantKeys)
 
-    setState((prev) => ({
-      ...prev,
-      activeKeys: newKeys,
-    }))
+    setState((prev) => ({ ...prev, activeKeys: new Set(relevantKeys) }))
   }, [state.question, passageKeyIds])
 
   /**

@@ -41,7 +41,7 @@ describe('GrammarPractice backend passage tokens', () => {
 
     const taggedSpan = await screen.findByText('had spent years')
     expect(screen.getByText('Which choice completes the text?')).toBeInTheDocument()
-    expect(screen.getByText('Backend Grammar Keys')).toBeInTheDocument()
+    expect(screen.getByText('Grammar Concepts')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Verb Tense Consistency' }))
 

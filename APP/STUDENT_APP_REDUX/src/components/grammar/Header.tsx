@@ -8,6 +8,9 @@ interface HeaderProps {
 }
 
 export function Header({ question, currentIndex, totalQuestions, totalAvailable }: HeaderProps) {
+  const q = question as any
+  const spanLabel: string | null = q?.passage_spans?.label ?? null
+
   return (
     <div className="grammar-header">
       <div className="header-left">
@@ -40,6 +43,12 @@ export function Header({ question, currentIndex, totalQuestions, totalAvailable 
           <div className="progress-info">
             <span className="label">Q#:</span>
             <span className="value">{question.source_question_number}</span>
+          </div>
+        )}
+        {spanLabel && (
+          <div className="progress-info span-label-badge">
+            <span className="label">Pattern:</span>
+            <span className="value span-label">{spanLabel}</span>
           </div>
         )}
       </div>
