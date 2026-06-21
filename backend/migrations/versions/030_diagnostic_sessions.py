@@ -29,7 +29,7 @@ def upgrade() -> None:
                   server_default="0"),
         sa.Column("accuracy", sa.Float(), nullable=True),
         sa.Column("question_ids", JSONB, nullable=False,
-                  server_default="'[]'"),
+                  server_default=sa.text("'[]'")),
         sa.Column("diagnostic_type", sa.String(20), nullable=True),
         sa.Column("focus_areas", JSONB, nullable=True),
         sa.Column("is_archived", sa.Boolean(), nullable=False,

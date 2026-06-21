@@ -186,8 +186,25 @@ def _find_span(passage: str, span: str) -> tuple[int, int] | None:
 def _fallback_passage_tokens(
     question: Question,
     ann_data: dict[str, Any],
+    annotation: "QuestionAnnotation | None" = None,
 ) -> list[dict[str, Any]] | None:
     """Build minimal student highlight tokens when Pass 2 did not provide them."""
+    # Step 0: prefer stored passage_spans — word-level, anatomy + concept_tags
+    if annotation is not None and annotation.passage_spans:
+        tokens = annotation.passage_spans.get("tokens", [])
+        if tokens:
+            result = []
+            for t in tokens:
+                merged_tags = list(t.get("anatomy", [])) + list(t.get("concept_tags", []))
+                result.append({
+                    "text":         t["text"],
+                    "tags":         merged_tags,
+                    "anatomy":      t.get("anatomy", []),
+                    "concept_tags": t.get("concept_tags", []),
+                    "is_blank":     t.get("is_blank", False),
+                })
+            return result
+
     passage_tokens = ann_data.get("passage_tokens")
     if isinstance(passage_tokens, list) and passage_tokens:
         return passage_tokens
@@ -450,7 +467,7 @@ async def student_recall(
 
         # Merge per-option annotation data (distractor analysis) keyed by option_label.
         # Omit distractor_type_key=="correct" so the answer is not revealed before submission.
-        ann_opts = {o["option_label"]: o for o in ann_data.get("options", []) if isinstance(o, dict)}
+        ann_opts = {o["option_label"]: o for o in ann_data.get("options", []) if isinstance(o, dict) and "option_label" in o}
         enriched_options = []
         for opt in opts_by_qid.get(q.id, []):
             ao = ann_opts.get(opt.option_label, {})
@@ -469,7 +486,12 @@ async def student_recall(
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
             current_correct_option_label=q.current_correct_option_label,
-            passage_tokens=_fallback_passage_tokens(q, ann_data),
+            passage_tokens=_fallback_passage_tokens(q, ann_data, annotation=ann),
+            passage_spans={
+                "label":            ann.passage_spans.get("label"),
+                "anatomy_present":  ann.passage_spans.get("anatomy_present", []),
+                "concepts_present": ann.passage_spans.get("concepts_present", []),
+            } if ann is not None and ann.passage_spans else None,
             practice_status=q.practice_status,
             grammar_role_key=ann_data.get("grammar_role_key"),
             grammar_focus_key=ann_data.get("grammar_focus_key"),
@@ -1218,7 +1240,12 @@ async def _fetch_pool_questions(
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
             current_correct_option_label=q.current_correct_option_label,
-            passage_tokens=_fallback_passage_tokens(q, ann_data),
+            passage_tokens=_fallback_passage_tokens(q, ann_data, annotation=ann),
+            passage_spans={
+                "label":            ann.passage_spans.get("label"),
+                "anatomy_present":  ann.passage_spans.get("anatomy_present", []),
+                "concepts_present": ann.passage_spans.get("concepts_present", []),
+            } if ann is not None and ann.passage_spans else None,
             practice_status=q.practice_status,
             grammar_role_key=ann_data.get("grammar_role_key"),
             grammar_focus_key=ann_data.get("grammar_focus_key"),

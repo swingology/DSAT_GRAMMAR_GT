@@ -13,6 +13,7 @@ class StudentQuestionResponse(BaseModel):
     current_passage_text: Optional[str] = None
     current_correct_option_label: Optional[str] = None
     passage_tokens: Optional[List[dict]] = None
+    passage_spans: Optional[dict] = None
     practice_status: str
     source_release_year: Optional[int] = None
     source_test_name: Optional[str] = None
