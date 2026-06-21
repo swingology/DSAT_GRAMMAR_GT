@@ -79,7 +79,12 @@ export function QuestionSection({ grammar }: QuestionSectionProps) {
         })}
       </div>
 
-      {questionPrompt && <div className="question-prompt">{questionPrompt}</div>}
+      {questionPrompt && (
+        <div className="question-prompt-wrapper">
+          <div className="question-prompt-label">Question</div>
+          <div className="question-prompt">{questionPrompt}</div>
+        </div>
+      )}
 
       {/* Answer Options */}
       <div className="options">
