@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { TrapSusceptibilityDashboard } from '../dashboard/TrapSusceptibilityDashboard'
 import * as dashboardHooks from '../../hooks/useDashboardData'
 
 vi.mock('../../hooks/useDashboardData', () => ({
   useTrapSusceptibility: vi.fn(),
+  useTrapDetails: vi.fn(),
 }))
 
 const EMPTY_DATA = {
@@ -105,5 +106,25 @@ describe('TrapSusceptibilityDashboard', () => {
     } as any)
     wrap(<TrapSusceptibilityDashboard />)
     expect(screen.getByText(/42 questions answered/i)).toBeInTheDocument()
+  })
+
+  it('navigates to trap detail view when card is clicked', () => {
+    vi.mocked(dashboardHooks.useTrapSusceptibility).mockReturnValue({
+      isLoading: false, isError: false, data: SAMPLE_DATA, refetch: vi.fn(),
+    } as any)
+    vi.mocked(dashboardHooks.useTrapDetails).mockReturnValue({
+      isLoading: true, isError: false, data: undefined, refetch: vi.fn(),
+    } as any)
+
+    wrap(<TrapSusceptibilityDashboard />)
+
+    // Click the first trap card button
+    const cardButtons = screen.getAllByRole('button')
+    const trapCardBtn = cardButtons.find(b => b.textContent?.includes('Subject Number Mismatch'))
+    expect(trapCardBtn).toBeTruthy()
+    fireEvent.click(trapCardBtn!)
+
+    // Should now show the detail view (loading state)
+    expect(screen.getByText(/loading trap details/i)).toBeInTheDocument()
   })
 })

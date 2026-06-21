@@ -873,3 +873,36 @@ class TrapSusceptibilityResponse(BaseModel):
     overcoming_traps: List[TrapMetric]
     persistent_traps: List[TrapMetric]
     trap_improvement: Dict[str, TrapImprovement]
+
+
+class QuestionTypeMetric(BaseModel):
+    question_type: str
+    total_attempts: int
+    correct_count: int
+    accuracy: float
+
+
+class QuestionTypePerformanceResponse(BaseModel):
+    user_id: int
+    total_attempts: int
+    by_question_type: List[QuestionTypeMetric]
+    easiest_types: List[str]
+    hardest_types: List[str]
+
+
+class TrapDetailExample(BaseModel):
+    question_text: str
+    selected_option: str
+    is_correct: bool
+    grammar_focus: Optional[str] = None
+
+
+class TrapDetailResponse(BaseModel):
+    trap_type: str
+    user_encounters: int
+    user_fall_rate: float
+    first_accuracy: float
+    recent_accuracy: float
+    trend: float
+    severity: str
+    example_mistakes: List[TrapDetailExample]

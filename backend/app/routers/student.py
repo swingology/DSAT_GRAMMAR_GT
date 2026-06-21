@@ -50,6 +50,10 @@ from app.models.payload import (
     TrapMetric,
     TrapImprovement,
     TrapSusceptibilityResponse,
+    QuestionTypeMetric,
+    QuestionTypePerformanceResponse,
+    TrapDetailExample,
+    TrapDetailResponse,
 )
 from app.models.ontology import GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
 
@@ -2167,4 +2171,123 @@ async def get_trap_susceptibility(
         overcoming_traps=overcoming,
         persistent_traps=persistent,
         trap_improvement=improvement,
+    )
+
+
+@router.get("/student/question-type-performance", response_model=QuestionTypePerformanceResponse)
+async def get_question_type_performance(
+    user_token: str = Query(...),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return accuracy broken down by question stem_type_key."""
+    user = await _resolve_user_by_token(user_token, db)
+
+    result = await db.execute(
+        select(
+            Question.stem_type_key,
+            func.count().label("total"),
+            func.sum(case((UserProgress.is_correct == True, 1), else_=0)).label("correct"),  # noqa: E712
+        )
+        .join(Question, UserProgress.question_id == Question.id)
+        .where(
+            UserProgress.user_id == user.id,
+            Question.stem_type_key.isnot(None),
+        )
+        .group_by(Question.stem_type_key)
+    )
+    rows = result.all()
+
+    metrics: list[QuestionTypeMetric] = []
+    for row in rows:
+        total = row.total
+        correct = int(row.correct or 0)
+        metrics.append(QuestionTypeMetric(
+            question_type=row.stem_type_key,
+            total_attempts=total,
+            correct_count=correct,
+            accuracy=round(correct / total, 4) if total > 0 else 0.0,
+        ))
+
+    metrics.sort(key=lambda m: m.accuracy, reverse=True)
+    easiest = [m.question_type for m in metrics[:3]]
+    hardest = [m.question_type for m in reversed(metrics[-3:])]
+
+    total_attempted_r = await db.execute(
+        select(func.count()).select_from(UserProgress).where(UserProgress.user_id == user.id)
+    )
+    total_attempted = total_attempted_r.scalars().first() or 0
+
+    return QuestionTypePerformanceResponse(
+        user_id=user.id,
+        total_attempts=total_attempted,
+        by_question_type=metrics,
+        easiest_types=easiest,
+        hardest_types=hardest,
+    )
+
+
+@router.get("/student/trap-details/{trap_type}", response_model=TrapDetailResponse)
+async def get_trap_details(
+    trap_type: str,
+    user_token: str = Query(...),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return detailed breakdown and examples for a specific trap type."""
+    user = await _resolve_user_by_token(user_token, db)
+
+    rows_r = await db.execute(
+        select(UserProgress)
+        .where(
+            UserProgress.user_id == user.id,
+            UserProgress.missed_syntactic_trap_key == trap_type,
+        )
+        .order_by(UserProgress.timestamp.asc())
+    )
+    rows = rows_r.scalars().all()
+
+    if not rows:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail=f"No data found for trap: {trap_type}")
+
+    total = len(rows)
+    correct = sum(1 for r in rows if r.is_correct)
+    fall_rate = round(1.0 - correct / total, 4)
+
+    early = rows[:5]
+    late = rows[-5:]
+    first_acc = round(sum(1 for r in early if r.is_correct) / len(early), 4)
+    recent_acc = round(sum(1 for r in late if r.is_correct) / len(late), 4)
+
+    def _severity(fr: float) -> str:
+        if fr >= 0.8:
+            return "critical"
+        if fr >= 0.6:
+            return "high"
+        if fr >= 0.4:
+            return "moderate"
+        return "low"
+
+    # Collect up to 5 wrong-answer examples
+    examples: list[TrapDetailExample] = []
+    for row in rows:
+        if not row.is_correct and len(examples) < 5:
+            q = await db.get(Question, row.question_id)
+            examples.append(TrapDetailExample(
+                question_text=(q.current_question_text or q.current_passage_text or "")[:300] if q else "",
+                selected_option=row.selected_option_label or "",
+                is_correct=False,
+                grammar_focus=row.missed_grammar_focus_key,
+            ))
+
+    return TrapDetailResponse(
+        trap_type=trap_type,
+        user_encounters=total,
+        user_fall_rate=fall_rate,
+        first_accuracy=first_acc,
+        recent_accuracy=recent_acc,
+        trend=round(recent_acc - first_acc, 4),
+        severity=_severity(fall_rate),
+        example_mistakes=examples,
     )

@@ -107,3 +107,20 @@ export function useTrapSusceptibility() {
     staleTime: 5 * 60_000,
   })
 }
+
+export function useQuestionTypePerformance() {
+  return useQuery({
+    queryKey: ['question-type-performance'],
+    queryFn: () => api.getQuestionTypePerformance(USER_TOKEN),
+    staleTime: 5 * 60_000,
+  })
+}
+
+export function useTrapDetails(trapType: string) {
+  return useQuery({
+    queryKey: ['trap-details', trapType],
+    queryFn: () => api.getTrapDetails(trapType, USER_TOKEN),
+    staleTime: 5 * 60_000,
+    enabled: !!trapType,
+  })
+}

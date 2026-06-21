@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useTrapSusceptibility } from '../../hooks/useDashboardData'
+import { TrapDetailView } from './TrapDetailView'
 
 interface TrapMetric {
   trap_type: string
@@ -61,7 +63,12 @@ function TrapCard({ metric, onClick }: { metric: TrapMetric; onClick: () => void
 }
 
 export function TrapSusceptibilityDashboard() {
+  const [selectedTrap, setSelectedTrap] = useState<string | null>(null)
   const { data, isLoading, isError, refetch } = useTrapSusceptibility()
+
+  if (selectedTrap) {
+    return <TrapDetailView trapType={selectedTrap} onBack={() => setSelectedTrap(null)} />
+  }
 
   if (isLoading) {
     return (
@@ -116,9 +123,7 @@ export function TrapSusceptibilityDashboard() {
             <TrapCard
               key={metric.trap_type}
               metric={metric}
-              onClick={() => {
-                // Navigation to detail view can be wired when TrapDetailView is added
-              }}
+              onClick={() => setSelectedTrap(metric.trap_type)}
             />
           ))}
         </div>

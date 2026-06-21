@@ -110,4 +110,10 @@ export const api = {
 
   getTrapSusceptibility: (userToken: string) =>
     apiCall(`/student/trap-susceptibility?user_token=${encodeURIComponent(userToken)}`),
+
+  getQuestionTypePerformance: (userToken: string) =>
+    apiCall(`/student/question-type-performance?user_token=${encodeURIComponent(userToken)}`),
+
+  getTrapDetails: (trapType: string, userToken: string) =>
+    apiCall(`/student/trap-details/${encodeURIComponent(trapType)}?user_token=${encodeURIComponent(userToken)}`),
 }
