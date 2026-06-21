@@ -6,11 +6,12 @@ from uuid import UUID
 
 
 class StudentQuestionResponse(BaseModel):
-    """Student-facing question payload — answer key excluded."""
+    """Student-facing question payload."""
     id: str
     content_origin: str
     current_question_text: str
     current_passage_text: Optional[str] = None
+    current_correct_option_label: Optional[str] = None
     passage_tokens: Optional[List[dict]] = None
     practice_status: str
     source_release_year: Optional[int] = None
