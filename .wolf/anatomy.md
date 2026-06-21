@@ -1,11 +1,15 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-19T22:09:08.509Z
-> Files: 955 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-21T21:14:57.051Z
+> Files: 1016 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
 - `v8-subpatterns-handoff-2026-05-24.md` — Handoff — DSAT Grammar Rules v7 → v8 Sub-Pattern Expansion (~2967 tok)
+
+## ../../../tmp/
+
+- `mock_api.py` — Handler: do_GET, do_POST, do_OPTIONS, log_message (~608 tok)
 
 ## ../.agents/skills/generation-test/
 
@@ -27,11 +31,14 @@
 - `feedback_debug-log-workflow.md` — YYYY-MM-DD - <Audit Title> (~208 tok)
 - `feedback_frequent-memory-saves.md` — Frequent memory saves to survive crashes (~357 tok)
 - `feedback_generation-seeding.md` (~375 tok)
+- `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~361 tok)
+- `MEMORY.md` — Memory Index (~690 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_dual-user-routers.md` (~210 tok)
+- `project_node-wasm-linux-fix.md` (~397 tok)
+- `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
 
 ## ../.claude/skills/ramlog/
@@ -45,6 +52,7 @@
 ## ./
 
 - `.codex` (~0 tok)
+- `.dockerignore` (~62 tok)
 - `.gitattributes` — Git attributes (~12 tok)
 - `.gitignore` — Git ignore rules (~52 tok)
 - `ADMIN_DASHBOARD_DESIGN.md` — DSAT Admin Dashboard — Design & Implementation Plan (~6347 tok)
@@ -53,15 +61,22 @@
 - `ADMIN_DASHBOARD_WIREFRAMES.md` — DSAT Admin Dashboard — Wireframes & Component Guide (~7794 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~45962 tok)
-- `CLAUDE.md` — OpenWolf (~378 tok)
+- `CHANGELOG.md` — CHANGELOG (~96518 tok)
+- `CLAUDE.md` — OpenWolf (~850 tok)
 - `DEBUG_LOG.md` — Debug Log (~45092 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
-- `docker-compose.yml` — Docker Compose services (~133 tok)
-- `future_features.md` — Future Features & Outstanding Work (~1111 tok)
+- `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
+- `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
+- `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
+- `docker-compose.yml` — Docker Compose services (~443 tok)
+- `Dockerfile.backend` (~180 tok)
+- `Dockerfile.frontend` (~123 tok)
+- `future_features.md` — Future Features & Outstanding Work (~8022 tok)
 - `FUTURE_FEATURES.md` — Future Features (~12323 tok)
 - `future_tasks.md` — Future Tasks (~219 tok)
 - `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
+- `GRAMMAR_REDUX_PRD.md` — GRAMMAR_REDUX_PRD.md (~6945 tok)
+- `GRAMMAR_REDUX_TASKS.md` — GRAMMAR_REDUX_TASKS.md (~19210 tok)
 - `grammar-app.html` — SAT Grammar Practice (~11817 tok)
 - `INCONSISTENT_KEYS_LIST.md` — Inconsistent Taxonomy Keys in Official Question Annotations (~1473 tok)
 - `ingestion_generation_summary.md` — Ingestion & Generation Pipeline — Step-by-Step Summary (~1281 tok)
@@ -77,14 +92,18 @@
 - `qwen3_test01_q01.md` — Test 01 - Question 1 (~329 tok)
 - `Reading_v1_rules_report.md` — Reading_v1 Rules Impact Report (~4265 tok)
 - `rules_agent_dsat_grammar_ingestion_generation_v7.md` — v7 frozen as audit trail (~36396 tok)
-- `rules_agent_dsat_grammar_ingestion_generation_v8.md` — rules_agent_dsat_grammar_ingestion_generation_v8.md (~76462 tok)
+- `rules_agent_dsat_grammar_ingestion_generation_v8.md` — rules_agent_dsat_grammar_ingestion_generation_v8.md (~80076 tok)
 - `rules_agent_dsat_reading_v2.md` — rules_agent_dsat_reading_v2.md (~30080 tok)
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
 - `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~5330 tok)
+- `STUDENT_TRACKING_AUDIT.md` — Student Tracking Backend — Implementation Audit (~4635 tok)
+- `student_tracking_backend_prd.md` — Student Tracking Backend PRD (~9107 tok)
 - `STUDENT_UI_TASKS.md` — Student UI React Rebuild — Task Tracker (~4864 tok)
+- `student-tracking-agent-plan.md` — Student Tracking — Serial Execution with Subagents (~3121 tok)
+- `student-tracking-tasks.md` — Student Tracking Backend — Detailed Task List (~7808 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
@@ -103,6 +122,11 @@
 
 - `debug-log.md` — DEBUG_LOG.md Rule (~376 tok)
 - `openwolf.md` (~313 tok)
+
+## .claude/skills/dev-stack/
+
+- `run.sh` — dev-stack — Full development stack runner (Docker Compose) (~1276 tok)
+- `SKILL.md` — dev-stack (~540 tok)
 
 ## .claude/skills/generation-status/
 
@@ -219,12 +243,13 @@
 - `tailwind.config.js` (~76 tok)
 - `tsconfig.json` — TypeScript configuration (~211 tok)
 - `tsconfig.node.json` (~61 tok)
-- `vite.config.ts` (~96 tok)
+- `vite.config.js` — Declares backendTarget (~129 tok)
+- `vite.config.ts` — Declares backendTarget (~114 tok)
 - `vitest.config.ts` (~89 tok)
 
 ## APP/STUDENT_APP_REDUX/src/
 
-- `App.tsx` — queryClient (~331 tok)
+- `App.tsx` — queryClient (~451 tok)
 - `index.css` — Styles: 3 rules (~17 tok)
 - `main.tsx` (~68 tok)
 - `vite-env.d.ts` — / <reference types="vite/client" /> (~33 tok)
@@ -232,74 +257,99 @@
 
 ## APP/STUDENT_APP_REDUX/src/__tests__/integration/
 
-- `grammar-page.test.tsx` — Mock the API (~3954 tok)
+- `grammar-page.test.tsx` — Mock the API (~3720 tok)
 
 ## APP/STUDENT_APP_REDUX/src/api/
 
-- `client.ts` — API client for communication with backend (~582 tok)
+- `client.ts` — API client for communication with backend (~1494 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/
 
 - `.keep` (~0 tok)
-- `GrammarPractice.css` — Styles: 66 rules (~2333 tok)
-- `GrammarPractice.tsx` — GrammarPractice (~339 tok)
+- `GrammarPractice.css` — Styles: 82 rules (~3060 tok)
+- `GrammarPractice.tsx` — GrammarPractice (~383 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/__tests__/
 
 - `.keep` (~0 tok)
-- `DashboardPage.test.tsx` — renderDashboard (~638 tok)
-- `GrammarPractice.test.tsx` — Mock the API (~1835 tok)
+- `ConceptWeaknessChart.test.tsx` — mockedUseRecommendations (~883 tok)
+- `DashboardPage.test.tsx` — motionEl (~828 tok)
+- `DiagnosticCard.test.tsx` — mockNavigate (~898 tok)
+- `DiagnosticDetail.test.tsx` — --------------------------------------------------------------------------- (~1496 tok)
+- `DiagnosticHistory.test.tsx` — --------------------------------------------------------------------------- (~1522 tok)
+- `GrammarPractice.test.tsx` — Mock the API (~1909 tok)
+- `HeroBanner.test.tsx` — actual (~1249 tok)
 - `MissedQuestionsTab.test.tsx` — mockedUseMissedQuestions (~1563 tok)
+- `PracticeCard.test.tsx` — mockNavigate (~967 tok)
+- `PracticeTestCard.test.tsx` — mockNavigate (~1053 tok)
+- `ProgressPage.test.tsx` — EMPTY_TREND (~1316 tok)
+- `SpacedRepetitionWidget.test.tsx` — --------------------------------------------------------------------------- (~1915 tok)
+- `TestModeTabAdaptive.test.tsx` — MOCK_QUESTION (~1449 tok)
+- `TrapDetailView.test.tsx` — SAMPLE_DETAIL (~1115 tok)
+- `TrapSusceptibilityDashboard.test.tsx` — EMPTY_DATA (~1531 tok)
 - `WeakConceptsTab.test.tsx` — mockedUseRecommendations (~1111 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/dashboard/
 
 - `ConceptWeaknessChart.tsx` — ConceptWeaknessChart (~487 tok)
-- `DiagnosticCard.tsx` — DiagnosticCard (~723 tok)
-- `DiagnosticTab.tsx` — DiagnosticQuestionCard (~2688 tok)
-- `HeroBanner.tsx` — StatChip (~868 tok)
+- `DiagnosticCard.tsx` — DiagnosticCard (~676 tok)
+- `DiagnosticDetail.tsx` — USER_TOKEN (~1368 tok)
+- `DiagnosticHistory.tsx` — USER_TOKEN (~1094 tok)
+- `DiagnosticTab.tsx` — USER_TOKEN (~3152 tok)
+- `HeroBanner.tsx` — StatChip (~981 tok)
 - `MissedQuestionsTab.tsx` — MissedCard (~1604 tok)
-- `PracticeCard.tsx` — OPTIONS (~850 tok)
+- `PracticeCard.tsx` — OPTIONS (~907 tok)
 - `PracticeTestCard.tsx` — QUESTION_COUNTS (~1244 tok)
 - `RecentSessions.tsx` — RecentSessions (~504 tok)
-- `TestModeTab.tsx` — DEFAULT_DURATION_SECONDS (~3159 tok)
+- `SpacedRepetitionWidget.tsx` — Dashboard card: mastery-tier badges (mastered/proficient/developing/novice), due-question list with days_overdue, CTA button to /practice/grammar; uses useSRProgress + useSRDue hooks (~1400 tok)
+- `TestModeTab.tsx` — DEFAULT_DURATION_SECONDS (~5121 tok)
+- `TrapDetailView.tsx` — trapLabel (~1760 tok)
+- `TrapSusceptibilityDashboard.tsx` — SEVERITY_COLORS (~1665 tok)
 - `WeakConceptsTab.tsx` — scoreBar (~1135 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/grammar/
 
-- `GrammarAnalysisSection.tsx` — GrammarAnalysisSection (~1057 tok)
-- `Header.tsx` — Header (~283 tok)
-- `QuestionSection.tsx` — QuestionSection (~549 tok)
+- `GrammarAnalysisSection.tsx` — GrammarAnalysisSection (~1161 tok)
+- `Header.tsx` — Header (~452 tok)
+- `QuestionSection.tsx` — QuestionSection (~1327 tok)
 
 ## APP/STUDENT_APP_REDUX/src/data/
 
-- `syntaxAnatomyKeys.ts` — Hardcoded Syntax Anatomy Keys (UI Reference, from grammar-app.html) (~1049 tok)
+- `syntaxAnatomyKeys.ts` — Colors are derived deterministically from each key's id via assignKeyColor. (~4335 tok)
 
 ## APP/STUDENT_APP_REDUX/src/hooks/
 
 - `.keep` (~0 tok)
-- `useDashboardData.ts` — Exports StudentStats, useStats, MissedQuestionItem, MissedQuestionsResponse + 4 more (~640 tok)
-- `useGrammarSession.ts` — 1. renderSentence() (~2251 tok)
+- `useDashboardData.ts` — Exports StudentStats, useStats, MissedQuestionItem, MissedQuestionsResponse + 12 more (~1095 tok)
+- `useGrammarSession.ts` — 1. renderSentence() (~3861 tok)
 
 ## APP/STUDENT_APP_REDUX/src/hooks/__tests__/
 
 - `.keep` (~0 tok)
 - `useDashboardData.test.ts` — mockedApi: makeWrapper (~1659 tok)
-- `useGrammarSession.test.ts` — Mock the API (~1899 tok)
+- `useGrammarSession.test.ts` — Mock the API (~2044 tok)
 
 ## APP/STUDENT_APP_REDUX/src/pages/
 
 - `.keep` (~0 tok)
 - `ConceptSelectorPage.tsx` — ConceptSelectorPage (~1170 tok)
-- `DashboardPage.tsx` — DashboardPage (~567 tok)
-- `DiagnosticPage.tsx` — DiagnosticPage (~208 tok)
+- `DashboardPage.tsx` — EASE (~1035 tok)
+- `DiagnosticDetailPage.tsx` — DiagnosticDetailPage (~142 tok)
+- `DiagnosticHistoryPage.tsx` — DiagnosticHistoryPage (~275 tok)
+- `DiagnosticPage.tsx` — DiagnosticPage (~268 tok)
 - `MixedPracticePage.tsx` — QuestionCard (~1668 tok)
-- `PracticeTestPage.tsx` — PracticeTestPage (~314 tok)
+- `PracticeTestPage.tsx` — PracticeTestPage (~374 tok)
+- `ProgressPage.tsx` — ── Inline SVG line chart ────────────────────────────────────────────────── (~2974 tok)
 
 ## APP/STUDENT_APP_REDUX/src/types/
 
-- `grammar.ts` — Grammar-specific type definitions (aligned with rules_agent_v8.md) (~589 tok)
+- `grammar.ts` — Grammar-specific type definitions (aligned with rules_agent_v8.md) (~608 tok)
 - `index.ts` — Type definitions for Student App (~210 tok)
+
+## APP/STUDENT_APP_REDUX/src/utils/
+
+- `keyColors.ts` — Exports assignKeyColor, activeKeyStyle, inactiveKeyStyle (~291 tok)
+- `sentenceTokenizer.ts` — Prefer exact backend spans and tags; tokenize locally only for legacy rows. (~3340 tok)
 
 ## FRONTEND/
 
@@ -1196,7 +1246,7 @@
 ## backend/app/
 
 - `auth.py` — --- Password hashing ------------------------------------------------------- (~2644 tok)
-- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2046 tok)
+- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2142 tok)
 - `main.py` — lifespan (~1514 tok)
 
 ## backend/app/llm/
@@ -1211,10 +1261,10 @@
 ## backend/app/models/
 
 - `annotation.py` — Pass 2 Pydantic schema — Question annotation output. (~1452 tok)
-- `db.py` — Declares QuestionJob (~8762 tok)
+- `db.py` — Declares QuestionJob (~10429 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5620 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~7238 tok)
+- `payload.py` — HTTP request/response models. (~9781 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1241,6 +1291,7 @@
 - `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~2308 tok)
 - `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
 - `review_prompt.py` — Review prompt — composes rubric + grammar canon + optional reading rules + question context. (~2278 tok)
+- `span_prompt.py` — Pass 3 prompt — sentence span annotation for grammar practice highlighting. (~5401 tok)
 - `stimulus_prompt.py` — Vision prompt for annotating cropped stimulus regions (tables, charts, figures). (~543 tok)
 
 ## backend/app/review/
@@ -1252,12 +1303,19 @@
 
 ## backend/app/routers/
 
-- `admin.py` — API: 7 endpoints (~24627 tok)
+- `admin.py` — API: 7 endpoints (~28180 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` (~15836 tok)
 - `ingest.py` (~41864 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
-- `student.py` — API: 1 endpoints (~16444 tok)
+- `student.py` (~28816 tok)
+
+## backend/app/services/
+
+- `span_annotator.py` — Pass 3 span annotation service. (~1689 tok)
+- `span_label.py` — Generate a human-readable label for a passage span annotation. (~1680 tok)
+- `span_validator.py` — Validate LLM-produced token arrays against the passage text and vocabulary. (~1190 tok)
+- `span_vocab.py` — Single source of truth for all approved span annotation key sets. (~1244 tok)
 
 ## backend/app/storage/
 
@@ -1278,6 +1336,10 @@
 
 - `storage_layout.yaml` — Local object-store layout used to mimic Supabase Storage/S3 during local (~1710 tok)
 
+## backend/docs/
+
+- `adaptive_test_sessions.md` — Adaptive Test Sessions API (~1758 tok)
+
 ## backend/migrations/versions/
 
 - `014_add_comparison_group_index.py` — Add index on question_jobs.comparison_group_id for benchmark poll queries. (~126 tok)
@@ -1292,14 +1354,20 @@
 - `026_phase10_auto_release_audit.py` — Phase 10: auto_release_audit_logs table for controlled auto-release audit trail. (~678 tok)
 - `027_admin_question_audit_log.py` — Admin question audit log table. (~518 tok)
 - `028_student_auth.py` — Student auth — add email, password_hash, role, is_active, refresh_token columns. (~350 tok)
+- `030_diagnostic_sessions.py` — Add diagnostic_sessions table and diagnostic_session_id FK on user_progress. (~714 tok)
+- `031_spaced_repetition.py` — Add spaced_repetition_state table for SM-2 algorithm. (~540 tok)
+- `032_test_session_results.py` — Add test_session_results table for adaptive module 2 routing. (~471 tok)
+- `033_passage_spans.py` — Add passage_spans columns to question_annotations and span_review_queue table. (~706 tok)
 
 ## backend/scripts/
 
 - `normalize_source_labels.py` — run (~1932 tok)
+- `split_passage_from_question_text.py` — split_passage_and_stem, main (~1336 tok)
 
 ## backend/tests/
 
 - `conftest.py` — Force test env before any app imports — use assignment, not setdefault (~385 tok)
+- `test_adaptive_routing.py` — Tests for Phase 4: Adaptive Module 2 Routing. (~1410 tok)
 - `test_admin_router.py` — FakeQuestion: test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, (~5520 tok)
 - `test_amendment_capture.py` — Tests for extracting and storing Pass 2 amendment proposals. (~3724 tok)
 - `test_amendment_review.py` — Tests for admin amendment review and promotion operations. (~5112 tok)
@@ -1308,10 +1376,12 @@
 - `test_analytics.py` — Phase 9: Generation Quality Analytics endpoint tests. (~2351 tok)
 - `test_auto_release.py` — Phase 10: Controlled auto-release tests. (~3253 tok)
 - `test_backend_regressions.py` — _ScalarResult: unique, scalars, all, first + 12 more (~19437 tok)
+- `test_cohort_analytics.py` — Tests for Phase 5 cohort analytics endpoints. (~2051 tok)
 - `test_config.py` — test_settings_loads_from_env, test_settings_default_values (~601 tok)
 - `test_consensus.py` — Phase 5 (consensus gate) — deterministic verdict computation tests. (~4251 tok)
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
 - `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)
+- `test_diagnostic_sessions.py` — Phase 1 — Diagnostic Session Management endpoint tests. (~5668 tok)
 - `test_generate_batches.py` — Phase 1 (generation factory) — batch endpoint, request validation, (~5374 tok)
 - `test_generate_router.py` — test_generate_questions_valid_body, test_generate_compare_valid_body, test_generate_run_invalid_uuid (~1404 tok)
 - `test_generate_runner.py` — Phase 2 (generation factory) — runner, failure classification, batch (~7607 tok)
@@ -1320,13 +1390,17 @@
 - `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
 - `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~2181 tok)
 - `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~10512 tok)
+- `test_progress_analytics.py` — Tests for Phase 3 progress analytics endpoints. (~1473 tok)
 - `test_prompts.py` — test_extract_prompt_contains_instructions, test_annotate_prompt_loads_current_rules, test_annotate_p (~1029 tok)
 - `test_review_parser.py` — Tests for the review JSON parser and validator. (~2144 tok)
 - `test_review_prompt.py` — Tests for the review prompt composer. (~2061 tok)
 - `test_review_runner.py` — Phase 4 (review swarm runner) — runner, provider config, concurrency, (~6058 tok)
 - `test_self_study.py` — Phase 8 — Self-Study Agent Request Layer tests. (~7550 tok)
+- `test_spaced_repetition.py` — Phase 2 — Spaced Repetition endpoint and algorithm tests. (~5925 tok)
+- `test_student_api_contracts.py` — Student-facing API contract tests. (~5172 tok)
 - `test_student_retrieval.py` — Phase 7 — Student Retrieval API Expansion tests. (~4606 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~510 tok)
+- `test_trap_susceptibility.py` — Tests for GET /api/student/trap-susceptibility endpoint. (~1077 tok)
 - `test_vocab_sync.py` — Tests for the controlled-vocabulary source-of-truth system. (~925 tok)
 
 ## docs/
@@ -1363,6 +1437,8 @@
 - `export_review.py` — Export ingested questions to a markdown review file with tables and passages. (~1399 tok)
 - `gen_vocab.py` — Controlled-vocabulary generation and review-queue tooling. (~7489 tok)
 - `reannotate_official_v7.py` — fetch_official_question_ids, submit_reannotate, poll_job, main (~2059 tok)
+- `reannotate_spans.py` — Bulk span-annotate grammar questions that are missing passage_spans. (~2654 tok)
+- `review_span_queue.py` — View and resolve entries in the span_review_queue table. (~1461 tok)
 
 ## scripts/v8/
 

@@ -1,12 +1,88 @@
 {
-  "session_id": "session-2026-06-02-1207",
-  "started": "2026-06-02T19:07:02.391Z",
-  "files_read": {},
+  "session_id": "session-2026-06-21-1415",
+  "started": "2026-06-21T21:15:28.996Z",
+  "files_read": {
+    "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/student-tracking-tasks.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-21T21:15:46.186Z"
+    },
+    "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/student-tracking-agent-plan.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-21T21:15:50.309Z"
+    },
+    "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_student_tracking_prd.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-21T21:16:06.519Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts": {
+      "count": 1,
+      "tokens": 3861,
+      "first_read": "2026-06-21T21:18:06.504Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/GRAMMAR_REDUX_TASKS.md": {
+      "count": 7,
+      "tokens": 19210,
+      "first_read": "2026-06-21T21:18:06.909Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_student_tracking_prd.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-21T21:18:27.382Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/utils/keyColors.ts": {
+      "count": 1,
+      "tokens": 291,
+      "first_read": "2026-06-21T21:18:49.810Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts": {
+      "count": 1,
+      "tokens": 3340,
+      "first_read": "2026-06-21T21:19:37.325Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/components/dashboard/TrapSusceptibilityDashboard.tsx": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-06-21T21:19:48.483Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx": {
+      "count": 1,
+      "tokens": 828,
+      "first_read": "2026-06-21T21:19:48.532Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts": {
+      "count": 1,
+      "tokens": 1095,
+      "first_read": "2026-06-21T21:20:17.054Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/components/__tests__/TrapSusceptibilityDashboard.test.tsx": {
+      "count": 1,
+      "tokens": 1531,
+      "first_read": "2026-06-21T21:21:00.465Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx": {
+      "count": 1,
+      "tokens": 383,
+      "first_read": "2026-06-21T21:23:41.342Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/components/grammar/GrammarAnalysisSection.tsx": {
+      "count": 1,
+      "tokens": 1161,
+      "first_read": "2026-06-21T21:23:48.518Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx": {
+      "count": 1,
+      "tokens": 452,
+      "first_read": "2026-06-21T21:23:48.770Z"
+    }
+  },
   "files_written": [],
   "edit_counts": {},
-  "anatomy_hits": 0,
-  "anatomy_misses": 0,
-  "repeated_reads_warned": 0,
+  "anatomy_hits": 13,
+  "anatomy_misses": 2,
+  "repeated_reads_warned": 6,
   "cerebrum_warnings": 0,
-  "stop_count": 0
+  "stop_count": 1
 }

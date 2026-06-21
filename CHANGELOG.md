@@ -5921,3 +5921,873 @@ _( 10 files changed, 14877 insertions(+), 50 deletions(-))_
 **Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
 
 ---
+
+## Session snapshot — 2026-06-20 20:32:30 (session-end)
+_branch:_ `main` · _commit:_ `1e1123a` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 7 files changed, 14342 insertions(+), 49 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 20:57:37 (session-end)
+_branch:_ `main` · _commit:_ `1e1123a` · _ram:_ `9.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 15019 insertions(+), 49 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:02:23 (session-end)
+_branch:_ `main` · _commit:_ `1e1123a` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md docker-compose.yml 
+_( 9 files changed, 15399 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:08:57 (session-end)
+_branch:_ `main` · _commit:_ `1e1123a` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.js APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md docker-compose.yml 
+_( 11 files changed, 15895 insertions(+), 55 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:13:42 (session-end)
+_branch:_ `main` · _commit:_ `f21a8d8` · _ram:_ `9.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 16417 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:18:26 (session-end)
+_branch:_ `main` · _commit:_ `f21a8d8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 16875 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:19:53 (50kb-written)
+_branch:_ `main` · _commit:_ `f21a8d8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/routers/student.py 
+_( 9 files changed, 16894 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:20:04 (50kb-written)
+_branch:_ `main` · _commit:_ `f21a8d8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/routers/student.py 
+_( 9 files changed, 16913 insertions(+), 51 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:20:24 (50kb-written)
+_branch:_ `main` · _commit:_ `f21a8d8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/routers/student.py 
+_( 9 files changed, 16945 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:21:42 (session-end)
+_branch:_ `main` · _commit:_ `cdf6431` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 16960 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:24:16 (session-end)
+_branch:_ `main` · _commit:_ `ddd4ffa` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 17970 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-20 21:27:06 (session-end)
+_branch:_ `main` · _commit:_ `f5dd91e` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 18521 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 08:09:13 (session-end)
+_branch:_ `main` · _commit:_ `f5dd91e` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 19035 insertions(+), 50 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 08:12:53 (session-end)
+_branch:_ `main` · _commit:_ `e218f4b` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 18493 insertions(+), 44 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 08:18:42 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 18593 insertions(+), 48 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 08:21:21 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 18642 insertions(+), 48 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 08:21:58 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 18691 insertions(+), 48 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 10:12:26 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 8 files changed, 18674 insertions(+), 44 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 10:22:26 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 13 files changed, 18943 insertions(+), 60 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 10:24:41 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 13 files changed, 18954 insertions(+), 60 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 10:24:49 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 13 files changed, 18964 insertions(+), 60 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 10:44:05 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 13 files changed, 19152 insertions(+), 61 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 10:46:23 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md 
+_( 13 files changed, 19251 insertions(+), 61 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 10:56:20 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/migrations/versions/030_diagnostic_sessions.py 
+_( 14 files changed, 19375 insertions(+), 62 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 10:59:37 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/migrations/versions/030_diagnostic_sessions.py 
+_( 14 files changed, 19485 insertions(+), 62 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:01:47 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py 
+_( 15 files changed, 19510 insertions(+), 63 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:01:57 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py 
+_( 15 files changed, 19630 insertions(+), 63 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:02:49 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py 
+_( 15 files changed, 19751 insertions(+), 63 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:09:09 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py 
+_( 15 files changed, 19732 insertions(+), 60 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:11:43 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py 
+_( 16 files changed, 19819 insertions(+), 64 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:17:04 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py 
+_( 17 files changed, 19947 insertions(+), 64 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:21:50 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py 
+_( 17 files changed, 20086 insertions(+), 70 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:25:59 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py 
+_( 17 files changed, 20097 insertions(+), 70 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:32:29 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 20500 insertions(+), 85 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:34:17 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 20532 insertions(+), 85 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 11:55:07 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 20794 insertions(+), 85 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:01:39 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 20963 insertions(+), 85 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:04:08 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 21128 insertions(+), 85 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:10:33 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 21407 insertions(+), 85 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:14:50 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 21660 insertions(+), 85 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:17:41 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 21922 insertions(+), 90 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:21:45 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 22119 insertions(+), 90 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:25:41 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 22382 insertions(+), 90 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:29:26 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md 
+_( 18 files changed, 22620 insertions(+), 90 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:32:29 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 22790 insertions(+), 91 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:32:36 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 22809 insertions(+), 91 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:32:41 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 22827 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:32:56 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23020 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:35:22 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23214 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:39:21 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23433 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:46:17 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23458 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:46:33 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23673 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 12:59:55 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.2Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23511 insertions(+), 88 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:00:54 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23556 insertions(+), 90 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:01:29 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23594 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:01:38 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23611 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:01:45 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23628 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:02:01 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23711 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:02:45 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23729 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:02:51 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23762 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:03:06 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23802 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:03:13 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23881 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:04:01 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23904 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:04:09 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 23994 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:05:56 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `6.8Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 19 files changed, 24096 insertions(+), 92 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:07:47 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `8.2Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 20 files changed, 24132 insertions(+), 94 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:07:57 (session-end)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `8.2Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 20 files changed, 24244 insertions(+), 94 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:08:52 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 20 files changed, 24288 insertions(+), 94 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:09:19 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 20 files changed, 24305 insertions(+), 94 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:09:31 (50kb-written)
+_branch:_ `main` · _commit:_ `b7a88a5` · _ram:_ `7.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 20 files changed, 24322 insertions(+), 94 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:41:24 (50kb-written)
+_branch:_ `main` · _commit:_ `293afa4` · _ram:_ `9.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/models/db.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 14 files changed, 23959 insertions(+), 56 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:44:13 (session-end)
+_branch:_ `main` · _commit:_ `293afa4` · _ram:_ `9.3Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/models/db.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 14 files changed, 24095 insertions(+), 56 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:46:58 (50kb-written)
+_branch:_ `main` · _commit:_ `293afa4` · _ram:_ `9.2Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/models/db.py backend/app/routers/admin.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 15 files changed, 24171 insertions(+), 57 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:49:27 (session-end)
+_branch:_ `main` · _commit:_ `d844de7` · _ram:_ `9.2Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 13 files changed, 24240 insertions(+), 57 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:51:37 (session-end)
+_branch:_ `main` · _commit:_ `d844de7` · _ram:_ `9.3Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 13 files changed, 24361 insertions(+), 57 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:54:12 (session-end)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 13 files changed, 24325 insertions(+), 55 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 13:57:01 (session-end)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 13 files changed, 24383 insertions(+), 57 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:00:10 (session-end)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 13 files changed, 24369 insertions(+), 52 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:02:58 (session-end)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 13 files changed, 24379 insertions(+), 52 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:03:50 (50kb-written)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 13 files changed, 24432 insertions(+), 57 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:04:01 (50kb-written)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 13 files changed, 24455 insertions(+), 58 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:04:09 (50kb-written)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 13 files changed, 24478 insertions(+), 59 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:04:35 (session-end)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/models/payload.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 14 files changed, 24546 insertions(+), 59 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:07:18 (session-end)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/models/payload.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 14 files changed, 24661 insertions(+), 59 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:09:06 (50kb-written)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/data/syntaxAnatomyKeys.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/models/payload.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 16 files changed, 25018 insertions(+), 122 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:12:08 (session-end)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/data/syntaxAnatomyKeys.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/models/payload.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 16 files changed, 25169 insertions(+), 122 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:16:34 (session-end)
+_branch:_ `main` · _commit:_ `9cb45b8` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/data/syntaxAnatomyKeys.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts CHANGELOG.md Dockerfile.backend backend/app/config.py backend/app/models/payload.py backend/app/routers/student.py backend/migrations/versions/030_diagnostic_sessions.py future_features.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 17 files changed, 25169 insertions(+), 122 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
