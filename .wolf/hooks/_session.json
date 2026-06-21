@@ -23,7 +23,7 @@
       "first_read": "2026-06-21T21:18:06.504Z"
     },
     "/home/jb/DSAT_REDUX_MD/GRAMMAR_REDUX_TASKS.md": {
-      "count": 7,
+      "count": 8,
       "tokens": 19210,
       "first_read": "2026-06-21T21:18:06.909Z"
     },
@@ -222,7 +222,7 @@
   },
   "anatomy_hits": 21,
   "anatomy_misses": 3,
-  "repeated_reads_warned": 7,
+  "repeated_reads_warned": 8,
   "cerebrum_warnings": 0,
-  "stop_count": 1
+  "stop_count": 3
 }

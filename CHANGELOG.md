@@ -6791,3 +6791,33 @@ _( 17 files changed, 25169 insertions(+), 122 deletions(-))_
 **Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
 
 ---
+
+## Session snapshot — 2026-06-21 14:28:34 (50kb-written)
+_branch:_ `main` · _commit:_ `12c3880` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md APP/STUDENT_APP_REDUX/src/components/grammar/GrammarAnalysisSection.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 9 files changed, 367 insertions(+), 70 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:39:24 (session-end)
+_branch:_ `main` · _commit:_ `354af62` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 3 files changed, 147 insertions(+), 2 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-21 14:40:23 (session-end)
+_branch:_ `main` · _commit:_ `354af62` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/scheduled_tasks.lock .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md rules_agent_dsat_grammar_ingestion_generation_v8.md 
+_( 6 files changed, 399 insertions(+), 12 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---

@@ -5894,6 +5894,140 @@ The agent must return:
 
 ---
 
+## D.10 Sentence Anatomy Keys for Span Annotation
+
+Anatomy keys describe **structural sentence elements** — things you can physically point to
+in the passage. They are distinct from `grammar_focus_key` (the rule being tested) and
+`syntactic_trap_key` (the difficulty mechanism). Anatomy keys are used in `passage_spans`
+token annotations to support word-level highlighting in the student UI.
+
+**When this section applies:** Pass 3 span annotation (future pipeline). Current ingestion
+(Passes 1–2) does not produce anatomy keys. Do not add anatomy tags to existing annotation
+output fields. See `future_features.md §Grammar Practice — Anatomy Highlighting` for the
+full implementation plan and DB schema.
+
+**Two arrays per token** — each span in `passage_spans.tokens` carries:
+- `anatomy` — what the span structurally IS (keys from this section)
+- `concept_tags` — why the span matters for the question (keys from D.2 and D.5)
+
+A single span may carry both: a prepositional phrase that is the SVA distractor gets
+`anatomy: ["prepositional_phrase"]` AND `concept_tags: ["subject_verb_agreement"]`.
+
+---
+
+### D.10.1 Core clause and predicate elements
+
+| Key | Description |
+|---|---|
+| `independent_clause` | A subject-predicate unit that can stand alone as a complete sentence. The fundamental unit in Boundaries questions — comma splices and run-ons are two independent clauses joined incorrectly. |
+| `subject` | The primary noun phrase that performs the action of the main verb. Tag the full noun phrase, not just the head noun. |
+| `predicate` | The main verb plus all its objects, complements, and adverbials. Broader than `main_verb` (which marks the head verb only). |
+| `main_verb` | The head verb of the independent clause. Also used as the anatomy tag for a blank slot when the blank tests a verb. |
+| `verb_phrase` | The full verb group including all auxiliaries (e.g. "would have been studying"). Expands `main_verb` for complex tenses. |
+| `object` | Direct or indirect object of the main verb. |
+| `complement` | Subject complement or object complement following a linking verb (e.g. "a scientist" in "She became a scientist"). |
+
+---
+
+### D.10.2 Subordinate and dependent clause types
+
+| Key | Description |
+|---|---|
+| `subordinate_clause` | A dependent clause opened by a subordinating conjunction; functions as an adverbial. Cannot stand alone. The first comma after the clause closes it. |
+| `adverbial_clause` | A subordinate clause that answers when/where/why/how/under what condition. Use instead of the generic `subordinate_clause` when the function is clearly adverbial. |
+| `relative_clause` | A clause modifying a noun, introduced by a relative pronoun (who/which/whom/whose/that). |
+| `restrictive_clause` | A relative clause introduced by **that** with **no comma**. Identifies which specific noun is meant; removing it changes the sentence's core meaning. |
+| `nonrestrictive_clause` | A relative clause introduced by **which** (or who/whom for persons) WITH commas. Adds extra information about an already-identified noun; removable without changing core meaning. |
+| `noun_clause` | A subordinate clause functioning as a noun — as subject, object, or complement. Introduced by that/what/whether/who/whoever. E.g. "that she won" in "He believes that she won." |
+
+---
+
+### D.10.3 Phrase types
+
+| Key | Description |
+|---|---|
+| `prepositional_phrase` | A phrase beginning with a preposition (of/in/at/by/with/from/during/despite…). The most frequent SVA distractor — a PP between subject and verb can attract incorrect verb agreement. |
+| `participial_phrase` | A phrase headed by a present (−ing) or past (−ed/−en) participle, functioning as an adjective. Must immediately follow the noun it modifies, OR appear as an introductory element followed by a comma — then the very next noun after the comma is what it modifies. Violating this rule creates a dangling modifier. |
+| `infinitive_phrase` | A "to + verb" phrase functioning as noun, adjective, or adverb (e.g. "to complete the study"). |
+| `gerund_phrase` | An "−ing verb" phrase functioning as a **noun** (subject, object, or complement). Distinct from a participial phrase, which functions as an adjective. E.g. "Running every day" as sentence subject. |
+| `absolute_phrase` | A nominative absolute: noun + participial phrase modifying the entire main clause (not just one noun). Requires a comma boundary. E.g. "The experiment complete, the team published their findings." |
+| `adverbial_phrase` | A non-clause phrase modifying a verb, adjective, or adverb. Includes prepositional phrases used adverbially. Tag with both `prepositional_phrase` (structure) and `adverbial_phrase` (function) when both apply. |
+| `noun_phrase` | A noun and its full set of pre- and post-modifiers. Use when a noun phrase functions as subject, object, or complement and no more specific key applies. |
+
+---
+
+### D.10.4 Modifier elements
+
+| Key | Description |
+|---|---|
+| `modifier` | A word or phrase that qualifies another element (adjective, adverb, participial). Use as a catch-all when no more specific modifier key applies. |
+| `appositive` | A noun phrase that renames an adjacent noun and is set off by matching delimiters (comma–comma, dash–dash, or parenthesis–parenthesis). Non-restrictive: removable without changing core meaning. |
+| `nonrestrictive_element` | The content inside a parenthetical — can be an appositive, a nonrestrictive clause, or a supplementary phrase. Non-essential to the sentence's core meaning. |
+
+---
+
+### D.10.5 Position-defined and punctuation-defined structures
+
+| Key | Description |
+|---|---|
+| `introductory_element` | Any phrase or clause at the start of a sentence that must be followed by a comma before the main clause. Includes: adverbial clauses ("Although X,"), participial phrases ("Having completed Y,"), prepositional phrases ("In 2013,"), and transitional words/phrases ("However,", "For example,"). |
+| `parenthetical` | Any interrupting element set off by a **matching** pair of delimiters: comma–comma, dash–dash, or parenthesis–parenthesis. Mixing delimiter types (opening comma + closing dash) is always wrong on the DSAT. |
+| `series_item` | One element in a parallel list or series of two or more items joined by a coordinating conjunction. All items in a series must share the same grammatical form (parallel structure rule). |
+
+---
+
+### D.10.6 Conjunction and connector elements
+
+| Key | Description |
+|---|---|
+| `subordinating_conj` | The conjunction that opens a subordinate clause (although/because/since/while/when/unless/if/though/after/before/until/as/once/whereas/whether). |
+| `coordinating_conjunction` | and/but/or/nor/yet/so/for. Links two grammatically equal elements — words, phrases, or independent clauses. When joining two independent clauses, requires a comma before it. |
+| `correlative_conjunction` | Paired conjunctions requiring parallel structure on both sides: either/or, neither/nor, both/and, not only/but also, as/as, more/than. Tag each half of the pair separately. |
+| `conjunctive_adverb` | however/therefore/moreover/consequently/furthermore/nevertheless etc. Connects two independent clauses; requires a **semicolon** before it and a **comma** after it. |
+| `transition_word` | A conjunctive adverb or transitional phrase filling the blank slot on a transition logic question. Use `transition_word` as the anatomy tag and `transition_logic` as the concept tag. |
+
+---
+
+### D.10.7 Pronoun and reference elements
+
+| Key | Description |
+|---|---|
+| `pronoun` | The pronoun word itself as a structural element (he/she/it/they/their/its/who/whom/whose etc.). Distinct from its antecedent. |
+| `antecedent` | The noun or noun phrase a pronoun refers back to. Tag the full antecedent noun phrase. |
+
+---
+
+### D.10.8 Blank slot anatomy — `grammar_focus_key` → anatomy tag
+
+The blank (`_______`) is not always a verb. Assign the anatomy tag that reflects what the
+tested word actually is. This mapping is the authoritative reference for both the local
+frontend tokenizer and future Pass 3 span annotation.
+
+| `grammar_focus_key` group | Blank anatomy tag(s) |
+|---|---|
+| `verb_tense_consistency`, `verb_form`, `subject_verb_agreement`, `voice_active_passive` | `main_verb`, `verb_form`, `verb_tense_consistency` |
+| `transition_logic`, `conjunctive_adverb_usage`, `logical_relationships` | `transition_word`, `conjunctive_adverb` |
+| `pronoun_antecedent_agreement`, `pronoun_case`, `pronoun_clarity` | `pronoun` |
+| `determiners_articles`, `noun_countability` | `determiner` |
+| `punctuation_comma`, `semicolon_use`, `colon_dash_use`, `apostrophe_use`, `appositive_punctuation` | `punctuation_mark` |
+| all others / default | `main_verb`, `verb_form`, `verb_tense_consistency` |
+
+Any new `grammar_focus_key` added to D.2 must be assigned a blank anatomy tag in this
+table before Pass 3 span annotation can produce correct output for that key.
+
+---
+
+### D.10.9 Additional blank-slot anatomy keys
+
+These anatomy tags only appear on blank slots, not on ordinary word spans.
+
+| Key | Description |
+|---|---|
+| `determiner` | An article or determiner filling the blank slot (a/an/the/this/these/those/some/any). |
+| `punctuation_mark` | A punctuation character filling the blank slot (comma, semicolon, colon, dash). |
+
+---
+
 # PART E — QUALITY PROTOCOLS
 
 ---
@@ -6110,6 +6244,8 @@ If any fail: regenerate.
 | Frequency table | D.8.3 |
 | Evidence span rules | D.8.4 |
 | Final output field requirements | D.9 |
+| Sentence anatomy keys for span annotation | D.10 |
+| Blank slot anatomy — focus key → anatomy tag mapping | D.10.8 |
 | SAT realism / distractor competition | E.1 |
 | Robust distractor engineering | E.2 |
 | Ground truth comparison | E.3 |
@@ -6121,7 +6257,7 @@ If any fail: regenerate.
 
 ---
 
-*Document version: v7.0 — 2026-04-29*
+*Document version: v8.1 — 2026-06-21 — D.10 added: sentence anatomy keys for span annotation*
 *Taxonomy audit and corrections vs official College Board documentation*
 *Extends v6.0 (which merged v3.md + v3_1.md)*
 *Agent: Claude Sonnet 4.6 (`claude-sonnet-4-6`)*
