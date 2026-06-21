@@ -32,8 +32,11 @@ function splitPassageAndStem(text: string): [string, string | null] {
     const candidate = sentences.slice(i).join(' ')
     if (STEM_STARTERS.some((re) => re.test(candidate))) {
       const passage = sentences.slice(0, i).join(' ').trim()
-      const stem = candidate.trim()
-      return [passage, stem]
+      // Only split if the passage is non-empty — if the whole text is the stem,
+      // keep the full text as passage so the grammar keys panel still works.
+      if (passage.length > 0) {
+        return [passage, candidate.trim()]
+      }
     }
   }
   return [text, null]
