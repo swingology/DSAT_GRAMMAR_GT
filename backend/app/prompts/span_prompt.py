@@ -92,10 +92,10 @@ Use this table to assign anatomy to a blank (_______) token:
 
   grammar_focus_key                  → blank anatomy
   ─────────────────────────────────────────────────────
-  verb_tense_consistency             → ["main_verb", "verb_form", "verb_tense_consistency"]
-  verb_form                          → ["main_verb", "verb_form", "verb_tense_consistency"]
-  subject_verb_agreement             → ["main_verb", "verb_form", "verb_tense_consistency"]
-  voice_active_passive               → ["main_verb", "verb_form", "verb_tense_consistency"]
+  verb_tense_consistency             → ["main_verb"]
+  verb_form                          → ["main_verb"]
+  subject_verb_agreement             → ["main_verb"]
+  voice_active_passive               → ["main_verb"]
   transition_logic                   → ["transition_word", "conjunctive_adverb"]
   conjunctive_adverb_usage           → ["transition_word", "conjunctive_adverb"]
   logical_relationships              → ["transition_word", "conjunctive_adverb"]
@@ -109,7 +109,7 @@ Use this table to assign anatomy to a blank (_______) token:
   colon_dash_use                     → ["punctuation_mark"]
   apostrophe_use                     → ["punctuation_mark"]
   appositive_punctuation             → ["punctuation_mark"]
-  (all other keys)                   → ["main_verb", "verb_form", "verb_tense_consistency"]
+  (all other keys)                   → use only anatomy keys from the ANATOMY KEY VOCABULARY above; "verb_form" and "verb_tense_consistency" are CONCEPT keys, not anatomy keys — never put them in anatomy
 
 
 === ABSOLUTE PHRASE vs. PARTICIPIAL PHRASE DISAMBIGUATION ===
@@ -140,7 +140,7 @@ Output:
   {"text": " ", "anatomy": [], "concept_tags": [], "is_blank": false},
   {"text": "enrolled in the program", "anatomy": ["participial_phrase"], "concept_tags": ["subject_verb_agreement"], "is_blank": false},
   {"text": " ", "anatomy": [], "concept_tags": [], "is_blank": false},
-  {"text": "_______", "anatomy": ["main_verb", "verb_form", "verb_tense_consistency"], "concept_tags": ["subject_verb_agreement"], "is_blank": true},
+  {"text": "_______", "anatomy": ["main_verb"], "concept_tags": ["subject_verb_agreement"], "is_blank": true},
   {"text": " ", "anatomy": [], "concept_tags": [], "is_blank": false},
   {"text": "dramatically", "anatomy": ["modifier"], "concept_tags": [], "is_blank": false},
   {"text": " ", "anatomy": [], "concept_tags": [], "is_blank": false},
@@ -158,7 +158,7 @@ Output:
   {"text": " ", "anatomy": [], "concept_tags": [], "is_blank": false},
   {"text": "the results", "anatomy": ["subject"], "concept_tags": ["verb_tense_consistency"], "is_blank": false},
   {"text": " ", "anatomy": [], "concept_tags": [], "is_blank": false},
-  {"text": "_______", "anatomy": ["main_verb", "verb_form", "verb_tense_consistency"], "concept_tags": ["verb_tense_consistency"], "is_blank": true},
+  {"text": "_______", "anatomy": ["main_verb"], "concept_tags": ["verb_tense_consistency"], "is_blank": true},
   {"text": " ", "anatomy": [], "concept_tags": [], "is_blank": false},
   {"text": "published,", "anatomy": ["verb_phrase"], "concept_tags": ["verb_tense_consistency"], "is_blank": false},
   {"text": " ", "anatomy": [], "concept_tags": [], "is_blank": false},

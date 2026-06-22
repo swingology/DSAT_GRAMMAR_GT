@@ -6950,3 +6950,13 @@ _( 9 files changed, 8257 insertions(+), 6340 deletions(-))_
 **Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
 
 ---
+
+## Session snapshot — 2026-06-22 16:29:28 (50kb-written)
+_branch:_ `main` · _commit:_ `d21e97b` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md backend/app/prompts/span_prompt.py backend/app/services/span_validator.py backend/app/services/span_vocab.py 
+_( 6 files changed, 95 insertions(+), 35 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---

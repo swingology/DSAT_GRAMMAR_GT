@@ -34,6 +34,62 @@ def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
+_LOOKALIKE_MAP: dict[str, str] = {
+    # LLM output char → canonical ASCII equivalent used for comparison
+    "‘": "'",   # LEFT SINGLE QUOTATION MARK
+    "’": "'",   # RIGHT SINGLE QUOTATION MARK (also used as apostrophe)
+    "‚": ",",   # SINGLE LOW-9 QUOTATION MARK
+    "“": '"',   # LEFT DOUBLE QUOTATION MARK
+    "”": '"',   # RIGHT DOUBLE QUOTATION MARK
+    "–": "-",   # EN DASH
+    "—": "-",   # EM DASH
+    "…": "...", # HORIZONTAL ELLIPSIS
+}
+
+
+def _flatten_lookalikes(text: str) -> str:
+    """Replace all known LLM lookalike chars with their ASCII equivalents."""
+    for src, dst in _LOOKALIKE_MAP.items():
+        text = text.replace(src, dst)
+    return text
+
+
+def _repair_unicode_tokens(tokens: list[dict], passage_text: str) -> list[dict]:
+    """Patch LLM Unicode-normalization substitutions back to passage_text's actual chars.
+
+    LLMs routinely substitute typographic quotes (U+201C/D, U+2018/9), apostrophes,
+    and dashes with ASCII equivalents. Reconstructs the passage char by char using
+    lookalike-flattened comparison, then rewrites token texts to match the original.
+    """
+    reconstructed = "".join(t.get("text", "") for t in tokens)
+    if reconstructed == passage_text:
+        return tokens
+
+    # Only attempt repair when lengths match and lookalike-flattened forms are equal
+    if len(reconstructed) != len(passage_text):
+        return tokens
+    if _flatten_lookalikes(reconstructed) != _flatten_lookalikes(passage_text):
+        return tokens
+
+    # Build position → correct char map (passage wins)
+    fix_map: dict[int, str] = {
+        i: p_ch
+        for i, (r_ch, p_ch) in enumerate(zip(reconstructed, passage_text))
+        if r_ch != p_ch
+    }
+    if not fix_map:
+        return tokens
+
+    repaired: list[dict] = []
+    pos = 0
+    for token in tokens:
+        text = token.get("text", "")
+        chars = [fix_map.get(pos + j, ch) for j, ch in enumerate(text)]
+        pos += len(text)
+        repaired.append({**token, "text": "".join(chars)})
+    return repaired
+
+
 async def _log_failure(
     db: AsyncSession,
     question_id: UUID,
@@ -142,6 +198,9 @@ async def annotate_spans(
 
     if tokens is None:
         return {"status": "failed", "error_type": "parse_error"}
+
+    # 3b. Repair Unicode lookalike substitutions (typographic quotes → passage chars)
+    tokens = _repair_unicode_tokens(tokens, passage_text)
 
     # 4. Validate
     errors = validate_tokens(tokens, passage_text, grammar_focus_key)

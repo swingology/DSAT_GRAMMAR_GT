@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T09:47:47.604Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T23:30:49.734Z
 > Files: 1024 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -1298,7 +1298,7 @@
 - `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~2308 tok)
 - `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
 - `review_prompt.py` — Review prompt — composes rubric + grammar canon + optional reading rules + question context. (~2278 tok)
-- `span_prompt.py` — Pass 3 prompt — sentence span annotation for grammar practice highlighting. (~5401 tok)
+- `span_prompt.py` — Pass 3 prompt — sentence span annotation for grammar practice highlighting. (~5366 tok)
 - `stimulus_prompt.py` — Vision prompt for annotating cropped stimulus regions (tables, charts, figures). (~543 tok)
 
 ## backend/app/review/
@@ -1319,10 +1319,10 @@
 
 ## backend/app/services/
 
-- `span_annotator.py` — Pass 3 span annotation service. (~1750 tok)
+- `span_annotator.py` — Pass 3 span annotation service. (~2370 tok)
 - `span_label.py` — Generate a human-readable label for a passage span annotation. (~1680 tok)
-- `span_validator.py` — Validate LLM-produced token arrays against the passage text and vocabulary. (~1190 tok)
-- `span_vocab.py` — Single source of truth for all approved span annotation key sets. (~1244 tok)
+- `span_validator.py` — Validate LLM-produced token arrays against the passage text and vocabulary. (~1246 tok)
+- `span_vocab.py` — Single source of truth for all approved span annotation key sets. (~1258 tok)
 
 ## backend/app/storage/
 

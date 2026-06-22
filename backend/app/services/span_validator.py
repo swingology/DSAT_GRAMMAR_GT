@@ -77,21 +77,23 @@ def validate_tokens(
             error_detail="Passage contains blank placeholder but no token has is_blank=true",
         ))
 
-    # 6. wrong_blank_anatomy — blank token's anatomy doesn't match expected mapping
+    # 6. wrong_blank_anatomy — blank token must contain at least one expected anatomy key.
+    # If expected is empty (unknown focus key), skip the check entirely.
     expected_blank_anatomy = blank_anatomy_for(grammar_focus_key)
-    for t in tokens:
-        if t.get("is_blank"):
-            actual = sorted(t.get("anatomy", []))
-            expected = sorted(expected_blank_anatomy)
-            if actual != expected:
-                errors.append(SpanValidationError(
-                    error_type="wrong_blank_anatomy",
-                    error_detail=(
-                        f"Blank token anatomy mismatch. "
-                        f"Expected {expected}, got {actual}"
-                    ),
-                ))
-            break  # only check the first blank token
+    if expected_blank_anatomy:
+        expected_set = set(expected_blank_anatomy)
+        for t in tokens:
+            if t.get("is_blank"):
+                actual = set(t.get("anatomy", []))
+                if not actual.intersection(expected_set):
+                    errors.append(SpanValidationError(
+                        error_type="wrong_blank_anatomy",
+                        error_detail=(
+                            f"Blank token anatomy mismatch. "
+                            f"Expected one of {sorted(expected_set)}, got {sorted(actual)}"
+                        ),
+                    ))
+                break  # only check the first blank token
 
     return errors
 

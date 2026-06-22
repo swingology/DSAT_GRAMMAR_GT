@@ -59,13 +59,15 @@ CONCEPT_KEYS: frozenset[str] = frozenset({
     "temporal_sequence_ambiguity",
 })
 
-# Maps grammar_focus_key → anatomy tags to assign the blank token
+# Maps grammar_focus_key → anatomy tags expected on the blank token.
+# Only use keys from ANATOMY_KEYS — concept keys (verb_form, verb_tense_consistency, etc.)
+# belong in concept_tags, not anatomy.
 BLANK_ANATOMY_MAP: dict[str, list[str]] = {
-    # Verb keys
-    "verb_tense_consistency":       ["main_verb", "verb_form", "verb_tense_consistency"],
-    "verb_form":                    ["main_verb", "verb_form", "verb_tense_consistency"],
-    "subject_verb_agreement":       ["main_verb", "verb_form", "verb_tense_consistency"],
-    "voice_active_passive":         ["main_verb", "verb_form", "verb_tense_consistency"],
+    # Verb keys — blank is structurally a main_verb
+    "verb_tense_consistency":       ["main_verb"],
+    "verb_form":                    ["main_verb"],
+    "subject_verb_agreement":       ["main_verb"],
+    "voice_active_passive":         ["main_verb"],
     # Transition keys
     "transition_logic":             ["transition_word", "conjunctive_adverb"],
     "conjunctive_adverb_usage":     ["transition_word", "conjunctive_adverb"],
@@ -85,7 +87,8 @@ BLANK_ANATOMY_MAP: dict[str, list[str]] = {
     "appositive_punctuation":       ["punctuation_mark"],
 }
 
-BLANK_ANATOMY_DEFAULT: list[str] = ["main_verb", "verb_form", "verb_tense_consistency"]
+# Empty default: unknown focus keys have no prescribed blank anatomy — skip the check.
+BLANK_ANATOMY_DEFAULT: list[str] = []
 
 
 def blank_anatomy_for(grammar_focus_key: str | None) -> list[str]:
