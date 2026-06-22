@@ -21,7 +21,7 @@ import asyncio
 import sys
 from uuid import UUID
 
-from sqlalchemy import case, select
+from sqlalchemy import case, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 # When run as `cd backend && uv run python ../scripts/reannotate_spans.py`,
@@ -54,10 +54,14 @@ def build_query(
         stmt = stmt.where(Question.id == question_id)
         return stmt
 
-    # Grammar family filter (stored in annotation_jsonb)
+    # Grammar family filter: match explicit family OR presence of grammar_focus_key
+    # (older annotations may have null/wrong question_family_key but a valid gfk)
     stmt = stmt.where(
-        QuestionAnnotation.annotation_jsonb["question_family_key"].astext
-        == "conventions_grammar"
+        or_(
+            QuestionAnnotation.annotation_jsonb["question_family_key"].astext
+            == "conventions_grammar",
+            QuestionAnnotation.annotation_jsonb["grammar_focus_key"].astext.isnot(None),
+        )
     )
 
     # Status filter

@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T23:32:06.221Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T23:49:55.605Z
 > Files: 1024 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -1322,7 +1322,7 @@
 - `span_annotator.py` — Pass 3 span annotation service. (~2370 tok)
 - `span_label.py` — Generate a human-readable label for a passage span annotation. (~1680 tok)
 - `span_validator.py` — Validate LLM-produced token arrays against the passage text and vocabulary. (~1246 tok)
-- `span_vocab.py` — Single source of truth for all approved span annotation key sets. (~1258 tok)
+- `span_vocab.py` — Single source of truth for all approved span annotation key sets. (~1284 tok)
 
 ## backend/app/storage/
 
@@ -1448,7 +1448,7 @@
 - `export_review.py` — Export ingested questions to a markdown review file with tables and passages. (~1399 tok)
 - `gen_vocab.py` — Controlled-vocabulary generation and review-queue tooling. (~7489 tok)
 - `reannotate_official_v7.py` — fetch_official_question_ids, submit_reannotate, poll_job, main (~2059 tok)
-- `reannotate_spans.py` — Bulk span-annotate grammar questions that are missing passage_spans. (~2654 tok)
+- `reannotate_spans.py` — Bulk span-annotate grammar questions that are missing passage_spans. (~2722 tok)
 - `review_span_queue.py` — View and resolve entries in the span_review_queue table. (~1461 tok)
 
 ## scripts/v8/

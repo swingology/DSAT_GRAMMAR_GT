@@ -84,7 +84,8 @@ BLANK_ANATOMY_MAP: dict[str, list[str]] = {
     "semicolon_use":                ["punctuation_mark"],
     "colon_dash_use":               ["punctuation_mark"],
     "apostrophe_use":               ["punctuation_mark"],
-    "appositive_punctuation":       ["punctuation_mark"],
+    # appositive_punctuation omitted: blank can be punctuation_mark OR
+    # a verb/other role inside the appositive body; skip the anatomy check.
 }
 
 # Empty default: unknown focus keys have no prescribed blank anatomy — skip the check.

@@ -3868,3 +3868,28 @@
 | 16:32 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md | modified 9() | ~257 |
 | 16:32 | Session end: 9 writes across 5 files (span_vocab.py, span_validator.py, span_prompt.py, span_annotator.py, project_grammar_redux_status.md) | 6 reads | ~14725 tok |
 | 16:33 | Session end: 9 writes across 5 files (span_vocab.py, span_validator.py, span_prompt.py, span_annotator.py, project_grammar_redux_status.md) | 6 reads | ~14725 tok |
+| 16:34 | Session end: 9 writes across 5 files (span_vocab.py, span_validator.py, span_prompt.py, span_annotator.py, project_grammar_redux_status.md) | 6 reads | ~14725 tok |
+| 16:34 | Session end: 9 writes across 5 files (span_vocab.py, span_validator.py, span_prompt.py, span_annotator.py, project_grammar_redux_status.md) | 6 reads | ~14725 tok |
+
+## Session: 2026-06-22 16:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:39 | Edited scripts/reannotate_spans.py | inline fix | ~12 |
+| 16:39 | Edited scripts/reannotate_spans.py | 5→9 lines | ~121 |
+
+## Session: 2026-06-22 16:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-22 16:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:49 | Edited backend/app/services/span_vocab.py | 3→4 lines | ~59 |
+
+## Session: 2026-06-22 16:51
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
