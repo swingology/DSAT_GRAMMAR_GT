@@ -520,3 +520,130 @@ class TestStudyMissed:
         assert item.correct_answer == "B"
         assert item.miss_count == 3
         assert "comma" in item.explanation.lower()
+
+
+# ---------------------------------------------------------------------------
+# TASK-029 — passage_spans contract in /api/questions response
+#
+# The student-facing response must surface Pass 3 span *summaries* (label,
+# anatomy_present, concepts_present) but must NEVER leak the raw word-level
+# `tokens` (answer-revealing detail) or `passage_text_source`. These three
+# tests pin that contract by calling student_recall() directly with a
+# queued mock DB.
+# ---------------------------------------------------------------------------
+
+
+def _make_annotation(ann_id, passage_spans):
+    """Annotation stand-in with the fields student_recall() touches."""
+    return SimpleNamespace(
+        id=ann_id,
+        annotation_jsonb={"grammar_focus_key": "subject_verb_agreement"},
+        passage_spans=passage_spans,
+        span_annotated_at=None,
+        span_model_name=None,
+    )
+
+
+# Full Pass 3 shape as written by annotate_spans() — includes tokens +
+# passage_text_source that the response MUST strip.
+_FULL_PASS3_SPANS = {
+    "label": "SVA: subject + main_verb",
+    "anatomy_present": ["subject", "main_verb"],
+    "concepts_present": ["subject_verb_agreement"],
+    "tokens": [
+        {"text": "cat", "anatomy": ["subject"],
+         "concept_tags": [], "is_blank": False},
+    ],
+    "passage_text_source": "current_passage_text",
+}
+
+
+def _recall_db(question, annotation):
+    """Queue results in the exact order student_recall(exclude_seen=False)
+    executes them: count_total → count_unseen → fetch questions → anns.
+    Options query is skipped (question has no latest_version_id)."""
+    return _QueueDB([
+        _ScalarResult(first_item=5),            # count_total (matching_target_total)
+        _ScalarResult(first_item=5),            # count_unseen (matching_unseen)
+        _ScalarResult(items=[question]),         # fetch_stmt → questions
+        _ScalarResult(items=[annotation]),       # QuestionAnnotation batch
+    ])
+
+
+class TestPassageSpansContract:
+    @pytest.mark.asyncio
+    async def test_passage_spans_includes_summary_fields(self):
+        """When annotation has passage_spans, the response item exposes
+        label, anatomy_present, and concepts_present with correct values."""
+        ann_id = uuid.uuid4()
+        question = _make_question(qid=uuid.uuid4())
+        question.latest_annotation_id = ann_id
+        question.latest_version_id = None  # skip options query
+        annotation = _make_annotation(ann_id, _FULL_PASS3_SPANS)
+
+        db = _recall_db(question, annotation)
+
+        result = await student_router.student_recall(
+            exclude_seen=False,
+            user_token=None,
+            limit=20,
+            offset=0,
+            db=db,
+            auth=("student", "student-test-key"),
+        )
+
+        spans = result.items[0].passage_spans
+        assert spans is not None
+        assert spans["label"] == "SVA: subject + main_verb"
+        assert spans["anatomy_present"] == ["subject", "main_verb"]
+        assert spans["concepts_present"] == ["subject_verb_agreement"]
+
+    @pytest.mark.asyncio
+    async def test_passage_spans_does_not_leak_tokens(self):
+        """The raw word-level `tokens` (and passage_text_source) must NOT
+        be sent to the student — only the summaries. This is the answer-
+        revealing detail that the endpoint must strip."""
+        ann_id = uuid.uuid4()
+        question = _make_question(qid=uuid.uuid4())
+        question.latest_annotation_id = ann_id
+        question.latest_version_id = None
+        annotation = _make_annotation(ann_id, _FULL_PASS3_SPANS)
+
+        db = _recall_db(question, annotation)
+
+        result = await student_router.student_recall(
+            exclude_seen=False,
+            user_token=None,
+            limit=20,
+            offset=0,
+            db=db,
+            auth=("student", "student-test-key"),
+        )
+
+        spans = result.items[0].passage_spans
+        assert spans is not None
+        assert "tokens" not in spans
+        assert "passage_text_source" not in spans
+
+    @pytest.mark.asyncio
+    async def test_passage_spans_null_when_annotation_has_none(self):
+        """When the annotation has no passage_spans (Pass 3 not yet run),
+        the response field must be null, not an empty dict."""
+        ann_id = uuid.uuid4()
+        question = _make_question(qid=uuid.uuid4())
+        question.latest_annotation_id = ann_id
+        question.latest_version_id = None
+        annotation = _make_annotation(ann_id, None)  # no passage_spans
+
+        db = _recall_db(question, annotation)
+
+        result = await student_router.student_recall(
+            exclude_seen=False,
+            user_token=None,
+            limit=20,
+            offset=0,
+            db=db,
+            auth=("student", "student-test-key"),
+        )
+
+        assert result.items[0].passage_spans is None

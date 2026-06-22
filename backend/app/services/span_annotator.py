@@ -124,7 +124,10 @@ async def annotate_spans(
                 "Return ONLY a JSON array, nothing else. No prose, no markdown."
             )
         try:
-            raw = await provider.complete(system=system, user=user_msg, max_tokens=4096)
+            resp = await provider.complete(system=system, user=user_msg, max_tokens=4096)
+            # AnthropicProvider.complete returns a LLMResponse dataclass; older/test
+            # mocks may return a plain str. Accept both.
+            raw = resp.raw_text if hasattr(resp, "raw_text") else resp
             tokens = parse_llm_span_response(raw)
             break
         except ValueError:

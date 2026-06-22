@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-21T21:37:58.035Z
-> Files: 1021 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T09:47:47.604Z
+> Files: 1024 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -34,9 +34,10 @@
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~690 tok)
+- `MEMORY.md` — Memory Index (~724 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_dual-user-routers.md` (~210 tok)
+- `project_grammar_redux_status.md` (~1283 tok)
 - `project_node-wasm-linux-fix.md` (~397 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
@@ -277,7 +278,7 @@
 - `DiagnosticCard.test.tsx` — mockNavigate (~898 tok)
 - `DiagnosticDetail.test.tsx` — --------------------------------------------------------------------------- (~1496 tok)
 - `DiagnosticHistory.test.tsx` — --------------------------------------------------------------------------- (~1522 tok)
-- `GrammarPractice.backendTokens.test.tsx` — taggedSpan (~499 tok)
+- `GrammarPractice.backendTokens.test.tsx` — taggedSpan (~2466 tok)
 - `GrammarPractice.test.tsx` — Mock the API (~1909 tok)
 - `HeroBanner.test.tsx` — actual (~1249 tok)
 - `MissedQuestionsTab.test.tsx` — mockedUseMissedQuestions (~1563 tok)
@@ -1318,7 +1319,7 @@
 
 ## backend/app/services/
 
-- `span_annotator.py` — Pass 3 span annotation service. (~1689 tok)
+- `span_annotator.py` — Pass 3 span annotation service. (~1750 tok)
 - `span_label.py` — Generate a human-readable label for a passage span annotation. (~1680 tok)
 - `span_validator.py` — Validate LLM-produced token arrays against the passage text and vocabulary. (~1190 tok)
 - `span_vocab.py` — Single source of truth for all approved span annotation key sets. (~1244 tok)
@@ -1388,6 +1389,7 @@
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
 - `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)
 - `test_diagnostic_sessions.py` — Phase 1 — Diagnostic Session Management endpoint tests. (~5668 tok)
+- `test_fallback_passage_tokens.py` — TASK-028 — _fallback_passage_tokens priority chain tests. (~1546 tok)
 - `test_generate_batches.py` — Phase 1 (generation factory) — batch endpoint, request validation, (~5374 tok)
 - `test_generate_router.py` — test_generate_questions_valid_body, test_generate_compare_valid_body, test_generate_run_invalid_uuid (~1404 tok)
 - `test_generate_runner.py` — Phase 2 (generation factory) — runner, failure classification, batch (~7607 tok)
@@ -1403,9 +1405,10 @@
 - `test_review_runner.py` — Phase 4 (review swarm runner) — runner, provider config, concurrency, (~6058 tok)
 - `test_self_study.py` — Phase 8 — Self-Study Agent Request Layer tests. (~7550 tok)
 - `test_spaced_repetition.py` — Phase 2 — Spaced Repetition endpoint and algorithm tests. (~5925 tok)
+- `test_span_annotator.py` — TASK-027 — span_annotator.py integration tests for annotate_spans(). (~3276 tok)
 - `test_span_label.py` — TASK-026 — span_label.py unit tests. (~1012 tok)
 - `test_span_validator.py` — TASK-025 — span_validator.py unit tests. (~2583 tok)
-- `test_student_api_contracts.py` — Student-facing API contract tests. (~5172 tok)
+- `test_student_api_contracts.py` — Student-facing API contract tests. (~6554 tok)
 - `test_student_retrieval.py` — Phase 7 — Student Retrieval API Expansion tests. (~4606 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~510 tok)
 - `test_trap_susceptibility.py` — Tests for GET /api/student/trap-susceptibility endpoint. (~1077 tok)

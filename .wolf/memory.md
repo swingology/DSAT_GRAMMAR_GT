@@ -3793,3 +3793,67 @@
 | 14:37 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx | "Backend Grammar Keys" → "Grammar Concepts" | ~20 |
 | 14:39 | Session end: 14 writes across 9 files (useGrammarSession.ts, Header.tsx, GrammarAnalysisSection.tsx, test_span_validator.py, test_span_label.py) | 24 reads | ~87003 tok |
 | 14:40 | Session end: 14 writes across 9 files (useGrammarSession.ts, Header.tsx, GrammarAnalysisSection.tsx, test_span_validator.py, test_span_label.py) | 24 reads | ~87003 tok |
+| 14:41 | Session end: 14 writes across 9 files (useGrammarSession.ts, Header.tsx, GrammarAnalysisSection.tsx, test_span_validator.py, test_span_label.py) | 24 reads | ~87003 tok |
+| 14:42 | Session end: 14 writes across 9 files (useGrammarSession.ts, Header.tsx, GrammarAnalysisSection.tsx, test_span_validator.py, test_span_label.py) | 24 reads | ~87003 tok |
+| 14:42 | Session end: 14 writes across 9 files (useGrammarSession.ts, Header.tsx, GrammarAnalysisSection.tsx, test_span_validator.py, test_span_label.py) | 24 reads | ~87003 tok |
+| 14:43 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md | — | ~648 |
+| 14:43 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→3 lines | ~40 |
+| 14:43 | Session end: 16 writes across 11 files (useGrammarSession.ts, Header.tsx, GrammarAnalysisSection.tsx, test_span_validator.py, test_span_label.py) | 24 reads | ~87739 tok |
+
+## Session: 2026-06-22 18:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-22 19:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-22 20:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 01:18 | Edited backend/app/services/span_annotator.py | 4→7 lines | ~110 |
+| 01:21 | Created backend/tests/test_span_annotator.py | — | ~3132 |
+| 01:25 | Edited backend/tests/test_span_annotator.py | added 1 import(s) | ~90 |
+| 01:26 | Edited backend/tests/test_span_annotator.py | 2→3 lines | ~38 |
+| 01:26 | Edited backend/tests/test_span_annotator.py | 3→1 lines | ~17 |
+| 01:36 | Edited backend/tests/test_span_annotator.py | 10→12 lines | ~204 |
+| 01:36 | Edited backend/tests/test_span_annotator.py | modified error() | ~229 |
+| 01:40 | Ran pytest test_span_annotator.py | 6/6 pass; full span suite 42/42 pass | ~1200 |
+| 01:41 | Logged bug-379 to .wolf/buglog.json | LLMResponse.strip() latent crash fixed in span_annotator.py | ~60 |
+| 01:43 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md | modified first() | ~451 |
+| 01:44 | Session end: 8 writes across 3 files (span_annotator.py, test_span_annotator.py, project_grammar_redux_status.md) | 8 reads | ~17827 tok |
+| 01:46 | Created backend/tests/test_fallback_passage_tokens.py | — | ~1546 |
+| 01:49 | Ran pytest test_fallback_passage_tokens.py | 3/3 pass; span suite 45/45 pass | ~900 |
+| 01:48 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md | modified 9() | ~494 |
+| 01:49 | Session end: 10 writes across 4 files (span_annotator.py, test_span_annotator.py, project_grammar_redux_status.md, test_fallback_passage_tokens.py) | 9 reads | ~48718 tok |
+| 02:10 | Edited backend/tests/test_student_api_contracts.py | modified _make_annotation() | ~1407 |
+| 02:05 | Edited backend/tests/test_student_api_contracts.py | TASK-029 +3 passage_spans contract tests | ~2100 |
+| 02:06 | Ran pytest test_student_api_contracts.py | 3/3 new pass; full suite 35/35 | ~1100 |
+| 02:13 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md | modified 9() | ~600 |
+| 02:14 | Session end: 12 writes across 5 files (span_annotator.py, test_span_annotator.py, project_grammar_redux_status.md, test_fallback_passage_tokens.py, test_student_api_contracts.py) | 11 reads | ~65721 tok |
+| 02:27 | Created APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx | — | ~2443 |
+| 02:31 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx | 6→6 lines | ~41 |
+| 02:42 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx | CSS: timeout | ~35 |
+| 02:42 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx | CSS: timeout | ~60 |
+| 02:30 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx | TASK-032 +5 integration tests | ~5200 |
+| 02:33 | Ran vitest GrammarPractice.backendTokens (node 20) | 6/6 pass; node 20 avoids WSL2 WASM crash | ~2200 |
+| 02:47 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md | modified 9() | ~853 |
+| 02:48 | Session end: 17 writes across 6 files (span_annotator.py, test_span_annotator.py, project_grammar_redux_status.md, test_fallback_passage_tokens.py, test_student_api_contracts.py) | 13 reads | ~73684 tok |
+
+## Session: 2026-06-22 16:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-22 16:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-22 16:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
