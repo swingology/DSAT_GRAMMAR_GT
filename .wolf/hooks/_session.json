@@ -1,104 +1,32 @@
 {
-  "session_id": "session-2026-06-22-1615",
-  "started": "2026-06-22T23:15:24.474Z",
+  "session_id": "session-2026-06-22-1651",
+  "started": "2026-06-22T23:51:55.764Z",
   "files_read": {
     "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md": {
       "count": 1,
       "tokens": 0,
-      "first_read": "2026-06-22T23:15:42.439Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py": {
-      "count": 2,
-      "tokens": 1750,
-      "first_read": "2026-06-22T23:16:26.645Z"
+      "first_read": "2026-06-22T23:52:25.654Z"
     },
     "/home/jb/DSAT_REDUX_MD/scripts/reannotate_spans.py": {
       "count": 1,
-      "tokens": 2654,
-      "first_read": "2026-06-22T23:16:30.214Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py": {
-      "count": 1,
-      "tokens": 1190,
-      "first_read": "2026-06-22T23:25:31.114Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py": {
-      "count": 1,
-      "tokens": 1244,
-      "first_read": "2026-06-22T23:25:33.677Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py": {
-      "count": 1,
-      "tokens": 5401,
-      "first_read": "2026-06-22T23:28:59.676Z"
+      "tokens": 2722,
+      "first_read": "2026-06-22T23:56:30.464Z"
     }
   },
   "files_written": [
     {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py",
-      "action": "edit",
-      "tokens": 426,
-      "at": "2026-06-22T23:27:00.193Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py",
-      "action": "edit",
-      "tokens": 256,
-      "at": "2026-06-22T23:27:07.649Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
-      "action": "edit",
-      "tokens": 349,
-      "at": "2026-06-22T23:29:20.989Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
-      "action": "edit",
-      "tokens": 78,
-      "at": "2026-06-22T23:29:25.937Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
-      "action": "edit",
-      "tokens": 32,
-      "at": "2026-06-22T23:29:28.925Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
-      "action": "edit",
-      "tokens": 401,
-      "at": "2026-06-22T23:29:44.167Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
-      "action": "edit",
-      "tokens": 92,
-      "at": "2026-06-22T23:29:48.736Z"
-    },
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
-      "action": "edit",
-      "tokens": 577,
-      "at": "2026-06-22T23:30:49.744Z"
-    },
-    {
       "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
       "action": "edit",
-      "tokens": 275,
-      "at": "2026-06-22T23:32:06.233Z"
+      "tokens": 26,
+      "at": "2026-06-22T23:57:40.188Z"
     }
   ],
   "edit_counts": {
-    "backend/app/services/span_vocab.py": 1,
-    "backend/app/services/span_validator.py": 1,
-    "backend/app/prompts/span_prompt.py": 3,
-    "backend/app/services/span_annotator.py": 3,
     "../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md": 1
   },
-  "anatomy_hits": 5,
+  "anatomy_hits": 1,
   "anatomy_misses": 1,
-  "repeated_reads_warned": 1,
+  "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 4
+  "stop_count": 2
 }

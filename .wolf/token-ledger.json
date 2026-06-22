@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "",
   "lifetime": {
-    "total_tokens_estimated": 27303728,
-    "total_reads": 3630,
-    "total_writes": 4257,
-    "total_sessions": 70,
-    "anatomy_hits": 2499,
-    "anatomy_misses": 1129,
-    "repeated_reads_blocked": 9862,
-    "estimated_savings_vs_bare_cli": 50323959
+    "total_tokens_estimated": 27403796,
+    "total_reads": 3661,
+    "total_writes": 4294,
+    "total_sessions": 74,
+    "anatomy_hits": 2522,
+    "anatomy_misses": 1137,
+    "repeated_reads_blocked": 9866,
+    "estimated_savings_vs_bare_cli": 50335559
   },
   "sessions": [
     {
@@ -50677,6 +50677,510 @@
         "writes_count": 0,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-06-22-1615",
+      "started": "2026-06-22T23:15:24.474Z",
+      "ended": "2026-06-22T23:32:13.714Z",
+      "reads": [
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 1750,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/scripts/reannotate_spans.py",
+          "tokens_estimated": 2654,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py",
+          "tokens_estimated": 1190,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py",
+          "tokens_estimated": 1244,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 5401,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py",
+          "tokens_estimated": 426,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py",
+          "tokens_estimated": 256,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 349,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 401,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 92,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 577,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 275,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 12239,
+        "output_tokens_estimated": 2486,
+        "reads_count": 6,
+        "writes_count": 9,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-22-1615",
+      "started": "2026-06-22T23:15:24.474Z",
+      "ended": "2026-06-22T23:33:33.617Z",
+      "reads": [
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 1750,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/scripts/reannotate_spans.py",
+          "tokens_estimated": 2654,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py",
+          "tokens_estimated": 1190,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py",
+          "tokens_estimated": 1244,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 5401,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py",
+          "tokens_estimated": 426,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py",
+          "tokens_estimated": 256,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 349,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 401,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 92,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 577,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 275,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 12239,
+        "output_tokens_estimated": 2486,
+        "reads_count": 6,
+        "writes_count": 9,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-22-1615",
+      "started": "2026-06-22T23:15:24.474Z",
+      "ended": "2026-06-22T23:34:21.616Z",
+      "reads": [
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 1750,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/scripts/reannotate_spans.py",
+          "tokens_estimated": 2654,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py",
+          "tokens_estimated": 1190,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py",
+          "tokens_estimated": 1244,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 5401,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py",
+          "tokens_estimated": 426,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py",
+          "tokens_estimated": 256,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 349,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 401,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 92,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 577,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 275,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 12239,
+        "output_tokens_estimated": 2486,
+        "reads_count": 6,
+        "writes_count": 9,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-22-1615",
+      "started": "2026-06-22T23:15:24.474Z",
+      "ended": "2026-06-22T23:34:51.957Z",
+      "reads": [
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 1750,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/scripts/reannotate_spans.py",
+          "tokens_estimated": 2654,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py",
+          "tokens_estimated": 1190,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py",
+          "tokens_estimated": 1244,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 5401,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_vocab.py",
+          "tokens_estimated": 426,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_validator.py",
+          "tokens_estimated": 256,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 349,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 78,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/prompts/span_prompt.py",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 401,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 92,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/backend/app/services/span_annotator.py",
+          "tokens_estimated": 577,
+          "action": "edit"
+        },
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 275,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 12239,
+        "output_tokens_estimated": 2486,
+        "reads_count": 6,
+        "writes_count": 9,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-06-22-1635",
+      "started": "2026-06-22T23:35:24.714Z",
+      "ended": "2026-06-22T23:36:29.769Z",
+      "reads": [
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/GRAMMAR_REDUX_TASKS.md",
+          "tokens_estimated": 19210,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 19210,
+        "output_tokens_estimated": 0,
+        "reads_count": 2,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-22-1641",
+      "started": "2026-06-22T23:41:56.578Z",
+      "ended": "2026-06-22T23:42:56.556Z",
+      "reads": [
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/GRAMMAR_REDUX_TASKS.md",
+          "tokens_estimated": 19210,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 19210,
+        "output_tokens_estimated": 0,
+        "reads_count": 2,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-06-22-1651",
+      "started": "2026-06-22T23:51:55.764Z",
+      "ended": "2026-06-22T23:52:42.073Z",
+      "reads": [
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-06-22-1651",
+      "started": "2026-06-22T23:51:55.764Z",
+      "ended": "2026-06-22T23:57:43.773Z",
+      "reads": [
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/jb/DSAT_REDUX_MD/scripts/reannotate_spans.py",
+          "tokens_estimated": 2722,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_grammar_redux_status.md",
+          "tokens_estimated": 26,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 2722,
+        "output_tokens_estimated": 26,
+        "reads_count": 2,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
       }
     }
   ],
