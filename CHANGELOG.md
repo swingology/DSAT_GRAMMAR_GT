@@ -6960,3 +6960,23 @@ _( 6 files changed, 95 insertions(+), 35 deletions(-))_
 **Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
 
 ---
+
+## Session snapshot — 2026-06-22 16:32:13 (session-end)
+_branch:_ `main` · _commit:_ `06d6c4b` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md 
+_( 3 files changed, 11 insertions(+), 3 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-22 16:33:33 (session-end)
+_branch:_ `main` · _commit:_ `06d6c4b` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 128 insertions(+), 11 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---

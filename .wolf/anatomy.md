@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T23:30:49.734Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T23:32:06.221Z
 > Files: 1024 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -37,7 +37,7 @@
 - `MEMORY.md` — Memory Index (~724 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_dual-user-routers.md` (~210 tok)
-- `project_grammar_redux_status.md` (~1283 tok)
+- `project_grammar_redux_status.md` (~1470 tok)
 - `project_node-wasm-linux-fix.md` (~397 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
