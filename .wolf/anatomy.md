@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-23T15:30:20.728Z
-> Files: 1028 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-23T15:46:45.386Z
+> Files: 1031 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -70,7 +70,7 @@
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
-- `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7270 tok)
+- `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7379 tok)
 - `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~3740 tok)
 - `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
 - `docker-compose.yml` — Docker Compose services (~443 tok)
@@ -1263,6 +1263,11 @@
 - `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2142 tok)
 - `main.py` — lifespan (~1514 tok)
 
+## backend/app/diagnostic/
+
+- `__init__.py` — Diagnostic test assembly (blueprint-driven, official-bank v1). (~40 tok)
+- `queries.py` — Diagnostic question-pool queries and domain classification. (~1175 tok)
+
 ## backend/app/llm/
 
 - `anthropic_provider.py` — AnthropicProvider: complete, complete_cached, complete_vision (~1751 tok)
@@ -1322,7 +1327,7 @@
 - `generate.py` (~15836 tok)
 - `ingest.py` (~41864 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
-- `student.py` (~28816 tok)
+- `student.py` (~28838 tok)
 
 ## backend/app/services/
 
@@ -1395,6 +1400,7 @@
 - `test_consensus.py` — Phase 5 (consensus gate) — deterministic verdict computation tests. (~4251 tok)
 - `test_crop_detector.py` — Unit tests for layout detection, region matching, and image cropping. (~3785 tok)
 - `test_dashboard_router.py` — test_dashboard_page_loads, test_dashboard_page_requires_auth, test_dashboard_jobs_requires_auth (~185 tok)
+- `test_diagnostic_api.py` — TASK-B0A — diagnostic domain classification + question-pool query. (~953 tok)
 - `test_diagnostic_sessions.py` — Phase 1 — Diagnostic Session Management endpoint tests. (~5668 tok)
 - `test_fallback_passage_tokens.py` — TASK-028 — _fallback_passage_tokens priority chain tests. (~1546 tok)
 - `test_generate_batches.py` — Phase 1 (generation factory) — batch endpoint, request validation, (~5374 tok)
@@ -1471,3 +1477,6 @@
 
 - `candidates.json` (~348 tok)
 - `master.json` (~31436 tok)
+
+## backend/app/diagnostic/queries.py (~0.4k tokens)
+derive_domain(ann) classifies reading via skill_family_key / grammar via grammar_role_key; build_pool_stmt(...) builds the diagnostic question-pool Select using the keys the v8 bank actually populates (active+non-dry-run guards, optional difficulty, exclude seen/chosen). Fixes bug-761.

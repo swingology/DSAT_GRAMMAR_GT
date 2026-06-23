@@ -176,7 +176,13 @@ the numbers it would print are already captured. Original spec retained for refe
 
 ## PHASE P1 — Key-fix, blueprint + selector
 
-### TASK-B0A — Fix domain/reading classification to match the v8 bank  *(NEW — prerequisite for B02/B04)*
+### TASK-B0A — Fix domain/reading classification to match the v8 bank  ✅ DONE (2026-06-23)
+Implemented `app/diagnostic/queries.py` (`derive_domain`, `build_pool_stmt`); switched both
+`/submit` and `diagnostic_submit` domain logic to `derive_domain`. 10 DB-free tests pass
+(`tests/test_diagnostic_api.py`); existing diagnostic+contract suites still green (55). Live-verified:
+`skill_family_key='inferences'` → 5 active questions; legacy `reading_skill_family_key` → 0.
+Commit `fix(diagnostic): classify reading via skill_family_key (bug-761)`.
+
 **Depends:** none. **Files:** new `backend/app/diagnostic/queries.py`,
 `backend/app/routers/student.py` (`diagnostic_submit` domain logic),
 `backend/tests/test_diagnostic_api.py` (new). **Root cause:** bug-761.

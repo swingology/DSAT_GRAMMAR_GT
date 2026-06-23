@@ -6194,7 +6194,7 @@
     "error_message": "Reading questions are unqueryable/misclassified: /questions reading filter and diagnostic_submit domain-derivation key off annotation_jsonb['reading_skill_family_key'] / ['reading_focus_key'], but the live v8 bank populates reading classification under 'skill_family_key' (singular) and leaves reading_skill_family_key NULL on all 60 active questions.",
     "file": "backend/app/routers/student.py (_build_question_filter_stmt domain=='reading'; diagnostic_submit domain derivation)",
     "root_cause": "Grammar v8 ingestion pipeline annotates ALL questions (incl. reading) and emits 'skill_family_key' + 'grammar_role_key' + 'stem_type_key'; it never sets 'reading_skill_family_key'/'reading_focus_key' which the student/diagnostic query path expects.",
-    "fix": "PLANNED (diagnostic_task.md TASK-B0A): classify domain via grammar_role_key (grammar) vs skill_family_key (reading); add skill_family_key/stem_type_key filters to the question filter helper; treat reading_skill_family_key as legacy/empty.",
+    "fix": "FIXED: added app/diagnostic/queries.py (derive_domain + build_pool_stmt reading\u2192skill_family_key); diagnostic_submit & /submit now use derive_domain. 10 tests + live-verified (inferences\u21925).",
     "tags": [
       "annotation-schema",
       "reading",

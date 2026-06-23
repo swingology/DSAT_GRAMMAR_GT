@@ -4008,3 +4008,11 @@
 | 08:30 | Edited diagnostic_task.md | 17→19 lines | ~268 |
 | 08:30 | Ran TASK-B00 against live DB; found generated bank empty, no hard tier, reading classified via skill_family_key not reading_skill_family_key (bug-761); revised plan+tasks to official-bank 16-Q v1 | DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, .wolf/buglog.json | docs revised | ~12k |
 | 08:30 | Session end: 17 writes across 2 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md) | 9 reads | ~60770 tok |
+| 08:44 | Created backend/app/diagnostic/__init__.py | — | ~40 |
+| 08:44 | Created backend/app/diagnostic/queries.py | — | ~1175 |
+| 08:44 | Edited backend/app/routers/student.py | 5→5 lines | ~89 |
+| 08:45 | Edited backend/app/routers/student.py | added 1 import(s) | ~34 |
+| 08:45 | Created backend/tests/test_diagnostic_api.py | — | ~918 |
+| 08:46 | Edited backend/tests/test_diagnostic_api.py | modified _sql() | ~81 |
+| 08:46 | Edited diagnostic_task.md | modified fix() | ~164 |
+| 08:46 | TASK-B0A: added diagnostic/queries.py (derive_domain, build_pool_stmt) classifying reading via skill_family_key; fixed bug-761 in /submit + diagnostic_submit; 10 tests pass, 55 existing green, live-verified | backend/app/diagnostic/queries.py, app/routers/student.py, tests/test_diagnostic_api.py | done | ~7k |

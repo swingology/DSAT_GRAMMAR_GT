@@ -13,6 +13,7 @@ from uuid import UUID
 
 from app.config import get_settings
 from app.database import get_db
+from app.diagnostic.queries import derive_domain
 from app.auth import student_required, admin_or_student_required, student_jwt_required, admin_or_student_jwt_required
 from app.models.db import (
     Question, User, UserProgress, QuestionAnnotation, QuestionOption, TestSessionResults,
@@ -576,10 +577,10 @@ async def submit_answer(
         if ann:
             ann_data = ann.annotation_jsonb or {}
 
-    question_domain = (
-        "reading" if ann_data.get("reading_skill_family_key") or ann_data.get("reading_focus_key")
-        else ("grammar" if ann_data.get("grammar_role_key") or ann_data.get("grammar_focus_key") else None)
-    )
+    # bug-761: the v8 bank classifies reading via skill_family_key (singular);
+    # reading_skill_family_key/reading_focus_key are NULL, so derive_domain reads
+    # the keys the bank actually populates.
+    question_domain = derive_domain(ann_data)
     question_difficulty = ann_data.get("difficulty_overall")
 
     missed_reading_focus_key = (
@@ -1638,10 +1639,10 @@ async def diagnostic_submit(
         if ann:
             ann_data = ann.annotation_jsonb or {}
 
-    question_domain = (
-        "reading" if ann_data.get("reading_skill_family_key") or ann_data.get("reading_focus_key")
-        else ("grammar" if ann_data.get("grammar_role_key") or ann_data.get("grammar_focus_key") else None)
-    )
+    # bug-761: the v8 bank classifies reading via skill_family_key (singular);
+    # reading_skill_family_key/reading_focus_key are NULL, so derive_domain reads
+    # the keys the bank actually populates.
+    question_domain = derive_domain(ann_data)
     question_difficulty = ann_data.get("difficulty_overall")
 
     is_correct = q.current_correct_option_label == body.selected_option_label
