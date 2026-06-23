@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-23T05:12:56.547Z
-> Files: 1026 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-23T15:30:20.728Z
+> Files: 1028 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -70,6 +70,8 @@
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
+- `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7270 tok)
+- `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~3740 tok)
 - `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
 - `docker-compose.yml` — Docker Compose services (~443 tok)
 - `Dockerfile.backend` (~180 tok)
@@ -359,6 +361,9 @@
 
 - `keyColors.test.ts` — Declares a (~817 tok)
 - `sentenceTokenizer.spans.test.ts` — Declares raw (~944 tok)
+
+## DIAGNOSTIC_TEST_PLAN.md (~1.6k tokens)
+
 
 ## FRONTEND/
 
@@ -1415,6 +1420,9 @@
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~510 tok)
 - `test_trap_susceptibility.py` — Tests for GET /api/student/trap-susceptibility endpoint. (~1077 tok)
 - `test_vocab_sync.py` — Tests for the controlled-vocabulary source-of-truth system. (~925 tok)
+
+## diagnostic_task.md (~2.5k tokens)
+
 
 ## docs/
 

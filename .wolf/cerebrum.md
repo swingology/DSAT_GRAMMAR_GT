@@ -82,3 +82,9 @@
   because warnings on auto-approved jobs were otherwise invisible. Trigger is
   any entry in `all_errors`; `defer_activation` flag in `_run_pipeline` is
   computed before the persist loop and passed to `_persist_single_question`.
+
+## Key Learnings (diagnostic bank, 2026-06-23)
+- The active question bank is 60 OFFICIAL questions only; the generated bank is empty (1 draft, 0 generation_batches). DB name is `dsat_dev` (not `dsat`), container `dsat-db` on port 5434.
+- `annotation_jsonb.difficulty_overall` in the live bank only ever holds `low`/`medium` (+ null). No `high` exists despite ontology DIFFICULTY_KEYS including it.
+- CRITICAL: grammar-v8 pipeline annotated ALL questions. Reading is classified via `skill_family_key` (singular); `reading_skill_family_key`/`reading_focus_key` are NULL on all 60. The student `/questions` reading filter and `diagnostic_submit` domain-derivation key off the empty fields → reading is unqueryable through that path (bug-761). Classify: reading if skill_family_key set, else grammar if grammar_role_key set.
+- Student `/questions` (student_recall) leaks `current_correct_option_label` to clients (bug-760).

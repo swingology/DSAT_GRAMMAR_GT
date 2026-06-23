@@ -6170,5 +6170,43 @@
     "related_bugs": [],
     "occurrences": 1,
     "last_seen": "2026-06-22T21:38:16.003873"
+  },
+  {
+    "id": "bug-760",
+    "timestamp": "2026-06-23T05:43:58.372112+00:00",
+    "error_message": "Student-facing GET /questions (student_recall) populates current_correct_option_label=q.current_correct_option_label, leaking the answer key to the client.",
+    "file": "backend/app/routers/student.py (~line 487)",
+    "root_cause": "StudentQuestionResponse.current_correct_option_label is set from the question row in the student recall path; intended only for admin recall (QuestionRecallResponse).",
+    "fix": "PLANNED (diagnostic_task.md TASK-B03): diagnostic uses a stripped payload with no answer key; add contract test asserting current_correct_option_label is null in the student/diagnostic path. Broader fix: null the field in student_recall.",
+    "tags": [
+      "security",
+      "answer-key-leak",
+      "student-api",
+      "diagnostic"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-06-23T05:43:58.372112+00:00"
+  },
+  {
+    "id": "bug-761",
+    "timestamp": "2026-06-23T15:26:56.689273+00:00",
+    "error_message": "Reading questions are unqueryable/misclassified: /questions reading filter and diagnostic_submit domain-derivation key off annotation_jsonb['reading_skill_family_key'] / ['reading_focus_key'], but the live v8 bank populates reading classification under 'skill_family_key' (singular) and leaves reading_skill_family_key NULL on all 60 active questions.",
+    "file": "backend/app/routers/student.py (_build_question_filter_stmt domain=='reading'; diagnostic_submit domain derivation)",
+    "root_cause": "Grammar v8 ingestion pipeline annotates ALL questions (incl. reading) and emits 'skill_family_key' + 'grammar_role_key' + 'stem_type_key'; it never sets 'reading_skill_family_key'/'reading_focus_key' which the student/diagnostic query path expects.",
+    "fix": "PLANNED (diagnostic_task.md TASK-B0A): classify domain via grammar_role_key (grammar) vs skill_family_key (reading); add skill_family_key/stem_type_key filters to the question filter helper; treat reading_skill_family_key as legacy/empty.",
+    "tags": [
+      "annotation-schema",
+      "reading",
+      "domain-classification",
+      "v8",
+      "diagnostic",
+      "query"
+    ],
+    "related_bugs": [
+      "bug-760"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-23T15:26:56.689273+00:00"
   }
 ]

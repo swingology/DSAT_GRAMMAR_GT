@@ -3985,3 +3985,26 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 22:39 | Created DIAGNOSTIC_TEST_PLAN.md | — | ~2845 |
+| 22:40 | Drafted diagnostic test redesign plan (replace adaptive, generated bank, fixed easy→hard blueprint) | DIAGNOSTIC_TEST_PLAN.md | plan doc created | ~6k |
+| 22:40 | Session end: 1 writes across 1 files (DIAGNOSTIC_TEST_PLAN.md) | 7 reads | ~40904 tok |
+| 22:44 | Edited DIAGNOSTIC_TEST_PLAN.md | modified leak() | ~229 |
+| 22:46 | Created diagnostic_task.md | — | ~6535 |
+| 22:46 | Refined diagnostic plan + wrote detailed LLM-executable task doc (P0–P5, 14 tasks); logged answer-key leak bug-760 | DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, .wolf/buglog.json | docs created | ~9k |
+| 22:46 | Session end: 3 writes across 2 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md) | 8 reads | ~49644 tok |
+| 08:07 | Edited DIAGNOSTIC_TEST_PLAN.md | modified DB() | ~307 |
+| 08:27 | Edited DIAGNOSTIC_TEST_PLAN.md | modified DECISION() | ~719 |
+| 08:27 | Edited diagnostic_task.md | expanded (+16 lines) | ~406 |
+| 08:27 | Edited diagnostic_task.md | 4→9 lines | ~167 |
+| 08:28 | Edited diagnostic_task.md | modified uses() | ~551 |
+| 08:29 | Edited diagnostic_task.md | modified roles() | ~638 |
+| 08:29 | Edited diagnostic_task.md | added 1 import(s) | ~236 |
+| 08:29 | Edited diagnostic_task.md | 1→3 lines | ~74 |
+| 08:29 | Edited diagnostic_task.md | 9→9 lines | ~179 |
+| 08:29 | Edited diagnostic_task.md | 2→2 lines | ~49 |
+| 08:29 | Edited diagnostic_task.md | 27 → 16 | ~16 |
+| 08:30 | Edited diagnostic_task.md | 27 → 16 | ~16 |
+| 08:30 | Edited diagnostic_task.md | inline fix | ~26 |
+| 08:30 | Edited diagnostic_task.md | 17→19 lines | ~268 |
+| 08:30 | Ran TASK-B00 against live DB; found generated bank empty, no hard tier, reading classified via skill_family_key not reading_skill_family_key (bug-761); revised plan+tasks to official-bank 16-Q v1 | DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, .wolf/buglog.json | docs revised | ~12k |
+| 08:30 | Session end: 17 writes across 2 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md) | 9 reads | ~60770 tok |
