@@ -10,3 +10,7 @@ local_object_store/**
 .understand-anything/
 **/__pycache__/
 .wolf/agent.log
+node_modules/
+.playwright-mcp/
+screenshot.png
+*.tmp
