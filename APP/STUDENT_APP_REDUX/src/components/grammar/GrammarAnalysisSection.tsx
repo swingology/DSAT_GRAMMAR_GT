@@ -101,13 +101,22 @@ export function GrammarAnalysisSection({ grammar }: GrammarAnalysisSectionProps)
                     }${isConcepts ? ' key-btn--concept' : ''}`}
                     onClick={() => grammar.toggleKey(key.id)}
                     title={key.rule}
-                    style={{
-                      backgroundColor: grammar.activeKeys.has(key.id)
-                        ? key.color
-                        : key.lightBg,
-                      color: grammar.activeKeys.has(key.id) ? 'white' : key.color,
-                      borderColor: key.color,
-                    }}
+                    style={
+                      isConcepts
+                        ? {
+                            backgroundColor: key.color,
+                            color: 'white',
+                            borderColor: key.color,
+                            opacity: grammar.activeKeys.has(key.id) ? 1 : 0.65,
+                          }
+                        : {
+                            backgroundColor: grammar.activeKeys.has(key.id)
+                              ? key.color
+                              : key.lightBg,
+                            color: grammar.activeKeys.has(key.id) ? 'white' : key.color,
+                            borderColor: key.color,
+                          }
+                    }
                   >
                     {key.label}
                   </button>

@@ -7040,3 +7040,182 @@ _( 4 files changed, 491 insertions(+), 92 deletions(-))_
 **Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
 
 ---
+
+## Session snapshot — 2026-06-22 17:00:04 (session-end)
+_branch:_ `main` · _commit:_ `365a87b` · _ram:_ `13Gi/30Gi`
+
+_No uncommitted changes._
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-22 17:02:39 (session-end)
+_branch:_ `main` · _commit:_ `365a87b` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 85 insertions(+), 7 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-22 17:04:08 (session-end)
+_branch:_ `main` · _commit:_ `365a87b` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 102 insertions(+), 8 deletions(-))_
+
+**Untracked:** .playwright-mcp/console-2026-06-19T21-59-41-832Z.log .playwright-mcp/console-2026-06-19T22-17-59-361Z.log .playwright-mcp/console-2026-06-19T22-20-16-715Z.log .playwright-mcp/console-2026-06-20T02-30-31-200Z.log .playwright-mcp/console-2026-06-20T02-51-44-743Z.log 
+
+---
+
+## Session snapshot — 2026-06-22 17:26:53 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 170 insertions(+), 12 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 17:31:52 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 283 insertions(+), 12 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 17:33:49 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 318 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 17:34:12 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 396 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 17:36:41 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 474 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 17:37:36 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 552 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+## Session snapshot — 2026-06-22 18:05:56 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `9.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 6 files changed, 711 insertions(+), 41 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 21:32:33 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `6.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 6 files changed, 740 insertions(+), 41 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 22:01:21 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `7.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.node.tsbuildinfo APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.d.ts APP/STUDENT_APP_REDUX/vite.config.js APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 17 files changed, 1089 insertions(+), 187 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 22:02:46 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `7.4Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.node.tsbuildinfo APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.d.ts APP/STUDENT_APP_REDUX/vite.config.js APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 17 files changed, 1217 insertions(+), 188 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 22:04:20 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `7.4Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.node.tsbuildinfo APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.d.ts APP/STUDENT_APP_REDUX/vite.config.js APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 18 files changed, 1302 insertions(+), 188 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 22:06:02 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `7.4Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/keyColors.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.node.tsbuildinfo APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.d.ts APP/STUDENT_APP_REDUX/vite.config.js APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 19 files changed, 1338 insertions(+), 196 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 22:07:49 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `7.4Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/keyColors.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.node.tsbuildinfo APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.d.ts APP/STUDENT_APP_REDUX/vite.config.js APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 19 files changed, 1510 insertions(+), 196 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 22:12:28 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx APP/STUDENT_APP_REDUX/src/components/grammar/GrammarAnalysisSection.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/keyColors.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.node.tsbuildinfo APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.d.ts APP/STUDENT_APP_REDUX/vite.config.js APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 20 files changed, 1631 insertions(+), 204 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 22:13:00 (session-end)
+_branch:_ `main` · _commit:_ `56163e4` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/GrammarPractice.css APP/STUDENT_APP_REDUX/src/components/__tests__/GrammarPractice.backendTokens.test.tsx APP/STUDENT_APP_REDUX/src/components/grammar/GrammarAnalysisSection.tsx APP/STUDENT_APP_REDUX/src/components/grammar/Header.tsx APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/utils/keyColors.ts APP/STUDENT_APP_REDUX/src/utils/sentenceTokenizer.ts APP/STUDENT_APP_REDUX/tsconfig.node.tsbuildinfo APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.d.ts APP/STUDENT_APP_REDUX/vite.config.js APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 20 files changed, 1748 insertions(+), 207 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---

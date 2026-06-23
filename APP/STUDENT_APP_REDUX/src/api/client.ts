@@ -1,6 +1,6 @@
 // API client for communication with backend
 
-const API_BASE = '/api'
+const API_BASE = (import.meta as any).env.VITE_API_BASE || '/api'
 
 interface ApiOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
@@ -31,7 +31,14 @@ export async function apiCall(endpoint: string, options: ApiOptions = {}) {
   })
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status} ${response.statusText}`)
+    let detail = ''
+    try {
+      const payload = await response.clone().json()
+      detail = typeof payload?.detail === 'string' ? `: ${payload.detail}` : ''
+    } catch {
+      detail = ''
+    }
+    throw new Error(`API error: ${response.status} ${response.statusText}${detail}`)
   }
 
   return response.json()

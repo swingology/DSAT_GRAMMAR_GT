@@ -9,7 +9,10 @@ interface HeaderProps {
 
 export function Header({ question, currentIndex, totalQuestions, totalAvailable }: HeaderProps) {
   const q = question as any
-  const spanLabel: string | null = q?.passage_spans?.label ?? null
+  const spanLabel: string | null =
+    q?.grammar_focus_key
+      ? q.grammar_focus_key.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
+      : (q?.passage_spans?.label ?? null)
 
   return (
     <div className="grammar-header">

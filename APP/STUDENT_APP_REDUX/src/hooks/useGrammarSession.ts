@@ -181,14 +181,19 @@ export function useGrammarSession() {
 
   /**
    * 3. renderGrammarKeys()
-   * Returns two explicit groups:
-   *   Group 1 "Sentence Anatomy" — all anatomy keys, always shown
+   * Returns up to two groups, each filtered to keys actually present in the
+   * passage (via passageKeyIds, sourced from passage_spans anatomy_present /
+   * concepts_present, with a token-tag fallback):
+   *   Group 1 "Sentence Anatomy" — only anatomy keys represented in the passage
    *   Group 2 "Grammar Concepts" — only concept keys with actual passage spans
+   * Empty groups are omitted so we never render a group header with no pills.
    */
   const renderGrammarKeys = useCallback(() => {
     const knownIds = new Set(SYNTAX_ANATOMY_KEYS.map((k) => k.id))
 
-    const sortedAnatomy = [...SYNTAX_ANATOMY_KEYS].sort((a, b) => b.priority - a.priority)
+    const sortedAnatomy = [...SYNTAX_ANATOMY_KEYS]
+      .filter((k) => passageKeyIds.has(k.id))
+      .sort((a, b) => b.priority - a.priority)
     const anatomyGroup = {
       group: 'Sentence Anatomy',
       keys: sortedAnatomy,
@@ -207,7 +212,7 @@ export function useGrammarSession() {
       activeKeys: conceptKeys.filter((k) => state.activeKeys.has(k.id)),
     }
 
-    return conceptKeys.length > 0 ? [anatomyGroup, conceptGroup] : [anatomyGroup]
+    return [anatomyGroup, conceptGroup].filter((g) => g.keys.length > 0)
   }, [state.activeKeys, passageKeyIds, allKeys])
 
   /**

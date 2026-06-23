@@ -123,21 +123,29 @@ describe('GrammarPractice passage_spans highlighting (TASK-032)', () => {
     ).toBeInTheDocument()
   })
 
-  // 2. anatomy pills are always shown, even with passage_spans: null
-  it('test_anatomy_key_pills_always_shown', async () => {
+  // 2. anatomy pills are filtered to only those represented in the passage.
+  //    With passage_spans omitted, the local tokenizer fallback tags "The cat
+  //    sat." with only `subject` (no prepositional phrase), so only the Subject
+  //    pill renders — never the full SYNTAX_ANATOMY_KEYS catalog.
+  it('test_anatomy_pills_filtered_to_passage', async () => {
     vi.mocked(api.getQuestions).mockResolvedValueOnce({
-      // passage_spans omitted -> null; passage_tokens omitted -> local tokenizer,
-      // no flat tags -> no Grammar Concepts group. Anatomy group is always shown.
+      // passage_spans omitted -> null; passage_tokens omitted -> local
+      // tokenizer. No concept tags -> no Grammar Concepts group.
       items: [makeSpanQuestion({ passage_spans: null, passage_tokens: undefined })],
     })
 
     await renderPractice()
 
-    // Sentence Anatomy group always renders with the full SYNTAX_ANATOMY_KEYS set
+    // Sentence Anatomy group renders because `subject` is present
     expect(screen.getByText('Sentence Anatomy')).toBeInTheDocument()
+    // The Subject pill (present in the passage) is rendered
     expect(
-      screen.getByRole('button', { name: 'Prepositional Phrase' })
+      screen.getByRole('button', { name: 'Subject' })
     ).toBeInTheDocument()
+    // Prepositional Phrase is NOT in this passage -> pill is omitted
+    expect(
+      screen.queryByRole('button', { name: 'Prepositional Phrase' })
+    ).not.toBeInTheDocument()
     // No concept keys derived -> Grammar Concepts group is absent
     expect(screen.queryByText('Grammar Concepts')).not.toBeInTheDocument()
   })

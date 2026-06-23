@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T23:57:40.178Z
-> Files: 1024 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-23T05:12:56.547Z
+> Files: 1026 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -17,6 +17,7 @@
 
 ## ../.claude/plans/
 
+- `floofy-splashing-globe.md` — Plan: Fix Frontend and Run Dev Stack (~264 tok)
 - `foamy-watching-zephyr.md` — Student Auth System — Implementation Plan (~2359 tok)
 - `generic-rolling-parnas.md` — Crop / Layout Provenance Implementation Plan (~3582 tok)
 - `squishy-giggling-dolphin.md` — Plan: Separate Passage Text from Question Text in Extraction Pipeline (~1307 tok)
@@ -34,13 +35,14 @@
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~724 tok)
+- `MEMORY.md` — Memory Index (~749 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_dual-user-routers.md` (~210 tok)
 - `project_grammar_redux_status.md` (~1463 tok)
 - `project_node-wasm-linux-fix.md` (~397 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
+- `user_platform.md` (~128 tok)
 
 ## ../.claude/skills/ramlog/
 
@@ -55,7 +57,7 @@
 - `.codex` (~0 tok)
 - `.dockerignore` (~62 tok)
 - `.gitattributes` — Git attributes (~12 tok)
-- `.gitignore` — Git ignore rules (~52 tok)
+- `.gitignore` — Git ignore rules (~70 tok)
 - `ADMIN_DASHBOARD_DESIGN.md` — DSAT Admin Dashboard — Design & Implementation Plan (~6347 tok)
 - `ADMIN_DASHBOARD_README.md` — DSAT Admin Dashboard — Complete Design Package (~4151 tok)
 - `ADMIN_DASHBOARD_TASKS.md` — DSAT Admin Dashboard — Implementation Task Breakdown (~13530 tok)
@@ -235,7 +237,7 @@
 - `eslint.config.js` (~202 tok)
 - `GRAMMAR_COMPONENT_TAXONOMY_ALIGNMENT.md` — Grammar Component — Taxonomy Alignment with Backend (v8 Rules) (~2138 tok)
 - `index.html` — Student App Redux (~98 tok)
-- `package.json` — Node.js package manifest (~408 tok)
+- `package.json` — Node.js package manifest (~430 tok)
 - `PHASE_1_COMPONENT_BREAKDOWN.md` — Phase 1: Grammar Practice Page — Component Breakdown (~4881 tok)
 - `PHASE_1_IMPLEMENTATION_SUMMARY.md` — Phase 1 Implementation Summary (~2434 tok)
 - `PHASE_1_VALIDATION_REPORT.md` — Phase 1 Validation Report (Tasks 1.6–1.8) (~2273 tok)
@@ -245,7 +247,7 @@
 - `tsconfig.json` — TypeScript configuration (~211 tok)
 - `tsconfig.node.json` (~61 tok)
 - `vite.config.js` — Declares backendTarget (~129 tok)
-- `vite.config.ts` — Declares backendTarget (~114 tok)
+- `vite.config.ts` — Declares backendTarget (~168 tok)
 - `vitest.config.ts` (~89 tok)
 
 ## APP/STUDENT_APP_REDUX/src/
@@ -267,7 +269,7 @@
 ## APP/STUDENT_APP_REDUX/src/components/
 
 - `.keep` (~0 tok)
-- `GrammarPractice.css` — Styles: 82 rules (~3060 tok)
+- `GrammarPractice.css` — Styles: 66 rules, 22 vars (~4286 tok)
 - `GrammarPractice.tsx` — GrammarPractice (~383 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/__tests__/
@@ -278,7 +280,7 @@
 - `DiagnosticCard.test.tsx` — mockNavigate (~898 tok)
 - `DiagnosticDetail.test.tsx` — --------------------------------------------------------------------------- (~1496 tok)
 - `DiagnosticHistory.test.tsx` — --------------------------------------------------------------------------- (~1522 tok)
-- `GrammarPractice.backendTokens.test.tsx` — taggedSpan (~2466 tok)
+- `GrammarPractice.backendTokens.test.tsx` — taggedSpan (~2586 tok)
 - `GrammarPractice.test.tsx` — Mock the API (~1909 tok)
 - `HeroBanner.test.tsx` — actual (~1249 tok)
 - `MissedQuestionsTab.test.tsx` — mockedUseMissedQuestions (~1563 tok)
@@ -311,8 +313,8 @@
 
 ## APP/STUDENT_APP_REDUX/src/components/grammar/
 
-- `GrammarAnalysisSection.tsx` — GROUP_META (~1407 tok)
-- `Header.tsx` — Header (~545 tok)
+- `GrammarAnalysisSection.tsx` — GROUP_META (~1523 tok)
+- `Header.tsx` — Header (~583 tok)
 - `QuestionSection.tsx` — QuestionSection (~1327 tok)
 
 ## APP/STUDENT_APP_REDUX/src/data/
@@ -323,7 +325,7 @@
 
 - `.keep` (~0 tok)
 - `useDashboardData.ts` — Exports StudentStats, useStats, MissedQuestionItem, MissedQuestionsResponse + 12 more (~1095 tok)
-- `useGrammarSession.ts` — 1. renderSentence() (~3971 tok)
+- `useGrammarSession.ts` — 1. renderSentence() (~4059 tok)
 
 ## APP/STUDENT_APP_REDUX/src/hooks/__tests__/
 
@@ -350,7 +352,7 @@
 
 ## APP/STUDENT_APP_REDUX/src/utils/
 
-- `keyColors.ts` — Exports assignKeyColor, activeKeyStyle, inactiveKeyStyle (~291 tok)
+- `keyColors.ts` — Exports assignKeyColor, activeKeyStyle, inactiveKeyStyle (~328 tok)
 - `sentenceTokenizer.ts` — Prefer exact backend spans and tags; tokenize locally only for legacy rows. (~3340 tok)
 
 ## APP/STUDENT_APP_REDUX/src/utils/__tests__/

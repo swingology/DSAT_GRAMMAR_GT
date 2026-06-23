@@ -9,21 +9,26 @@ function djb2(str: string): number {
   return Math.abs(hash)
 }
 
+// Primary color wheel stops — evenly spaced, maximally distinct
+const PRIMARY_HUES = [0, 30, 60, 120, 180, 210, 270, 330]
+
 export function assignKeyColor(
   id: string,
   category: 'anatomy' | 'concept'
 ): { color: string; lightBg: string } {
   const hash = djb2(id)
-  const hue = category === 'anatomy'
-    ? 10 + (hash % 20) * 8
-    : 182 + (hash % 60) * 2.88
-  const [sat, light, bgSat, bgLight] =
-    category === 'anatomy'
-      ? [50, 32, 40, 93]
-      : [70, 26, 65, 89]
+  if (category === 'concept') {
+    const hue = PRIMARY_HUES[hash % PRIMARY_HUES.length]
+    return {
+      color:   `hsl(${hue}, 85%, 38%)`,
+      lightBg: `hsl(${hue}, 60%, 92%)`,
+    }
+  }
+  // Anatomy: full 360° wheel, high contrast
+  const hue = hash % 360
   return {
-    color:   `hsl(${Math.round(hue)}, ${sat}%, ${light}%)`,
-    lightBg: `hsl(${Math.round(hue)}, ${bgSat}%, ${bgLight}%)`,
+    color:   `hsl(${hue}, 75%, 30%)`,
+    lightBg: `hsl(${hue}, 60%, 92%)`,
   }
 }
 

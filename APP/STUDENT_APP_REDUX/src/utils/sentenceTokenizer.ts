@@ -281,10 +281,10 @@ export function tokenizeSentence(text: string, grammarFocusKey?: string): Senten
 export function normalizePassageTokens(
   passageTokens: BackendPassageToken[] | null | undefined,
   fallbackText: string,
-  grammarFocusKey?: string
+  grammarFocusKey?: string | null
 ): SentenceToken[] {
   if (!Array.isArray(passageTokens) || passageTokens.length === 0) {
-    return tokenizeSentence(fallbackText, grammarFocusKey)
+    return tokenizeSentence(fallbackText, grammarFocusKey ?? undefined)
   }
 
   // A single backend token means the backend couldn't identify a specific span
@@ -292,7 +292,7 @@ export function normalizePassageTokens(
   // tokenizer so we don't highlight the entire passage when a key is activated.
   // Multiple tokens mean the backend carved out real spans — use those.
   if (passageTokens.length === 1) {
-    return tokenizeSentence(fallbackText, grammarFocusKey)
+    return tokenizeSentence(fallbackText, grammarFocusKey ?? undefined)
   }
 
   return passageTokens
