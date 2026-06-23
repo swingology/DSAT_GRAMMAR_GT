@@ -16,8 +16,20 @@ vi.mock('../../api/client', () => ({
 const mockQuestion = {
   id: 'q-123',
   text: 'The researcher, who had spent years on this project, [BLANK] their findings with the team.',
-  current_question_text: 'The researcher, who had spent years on this project, [BLANK] their findings with the team.',
+  current_passage_text: 'The researcher, who had spent years on this project, ________ their findings with the team.',
+  current_question_text: 'Which choice completes the text so that it conforms to the conventions of Standard English?',
   current_correct_option_label: 'B',
+  passage_tokens: [
+    { text: 'The researcher', anatomy: ['subject'], concept_tags: [] },
+    { text: ', who had spent years on this project, ', anatomy: ['relative_clause'], concept_tags: [] },
+    { text: '________', anatomy: ['main_verb'], concept_tags: ['verb_tense_consistency'], is_blank: true },
+    { text: ' their findings with the team.', anatomy: [], concept_tags: [] },
+  ],
+  passage_spans: {
+    label: 'Verb tense: relative clause + main verb blank',
+    anatomy_present: ['subject', 'relative_clause', 'main_verb'],
+    concepts_present: ['verb_tense_consistency'],
+  },
   options: [
     { label: 'A', text: 'shares' },
     { label: 'B', text: 'shared' },
@@ -43,8 +55,11 @@ describe('Grammar Practice Page — Integration Tests', () => {
     )
   }
 
+  const sentenceBox = () => document.querySelector('.sentence-box') as HTMLElement
+  const activeKeysBox = () => document.querySelector('.active-keys-explanation') as HTMLElement
+
   describe('Full User Journey: Load → Answer → Feedback → Analyze', () => {
-    it.skip('completes happy path: load question → select answer → view feedback → toggle keys → find traps → clear keys', async () => {
+    it('completes happy path: load question → select answer → view feedback → toggle keys → find traps → clear keys', async () => {
       vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
       vi.mocked(api.submitAnswer).mockResolvedValueOnce({ is_correct: true })
 
@@ -58,11 +73,8 @@ describe('Grammar Practice Page — Integration Tests', () => {
       expect(screen.getByText(/Standard English Conventions/i)).toBeInTheDocument()
 
       // Step 2: Verify question loads with full text
-      expect(
-        screen.getByText(
-          /researcher.*had spent years.*findings.*team/i
-        )
-      ).toBeInTheDocument()
+      expect(sentenceBox()?.textContent).toContain('The researcher')
+      expect(sentenceBox()?.textContent).toContain('their findings with the team')
 
       // Step 3: Verify all options are visible
       expect(screen.getByText('shares')).toBeInTheDocument()
@@ -77,8 +89,8 @@ describe('Grammar Practice Page — Integration Tests', () => {
 
       // Step 5: Verify syntax anatomy keys are displayed
       expect(screen.getByText(/Sentence Anatomy/i)).toBeInTheDocument()
-      expect(screen.getByText('Primary Subject')).toBeInTheDocument()
-      expect(screen.getByText('Main Verb')).toBeInTheDocument()
+      expect(screen.getByText('Subject')).toBeInTheDocument()
+      expect(activeKeysBox()?.textContent).toContain('Main Verb')
 
       // Step 6: Select correct answer
       const buttons = screen.getAllByRole('button')
@@ -99,15 +111,15 @@ describe('Grammar Practice Page — Integration Tests', () => {
       ).toBeInTheDocument()
 
       // Step 9: Toggle a key manually
-      const subjectButton = screen.getByRole('button', { name: /Primary Subject/i })
-      fireEvent.click(subjectButton)
+      const mainVerbButton = screen.getByRole('button', { name: /Main Verb/i })
+      fireEvent.click(mainVerbButton)
 
       // Step 10: Verify key is highlighted and explanation appears
       await waitFor(() => {
         expect(screen.getByText(/Active Grammar Keys/i)).toBeInTheDocument()
       })
 
-      expect(screen.getByText('Primary Subject')).toBeInTheDocument()
+      expect(screen.getByText('Main Verb')).toBeInTheDocument()
 
       // Step 11: Click Find Traps
       const findTrapsButton = screen.getByRole('button', { name: /Find Traps/i })
@@ -117,6 +129,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
       await waitFor(() => {
         expect(screen.getByText(/Active Grammar Keys/i)).toBeInTheDocument()
       })
+      expect(activeKeysBox()?.textContent).toContain('Verb Tense Consistency')
 
       // Step 13: Click Clear Keys
       const clearKeysButton = screen.getByRole('button', { name: /Clear Keys/i })
@@ -205,7 +218,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
       expect(activeKeysSections.length).toBe(0)
     })
 
-    it.skip('Find Traps auto-highlights keys based on grammar_focus_key', async () => {
+    it('Find Traps auto-highlights backend concept keys from passage_spans', async () => {
       vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
       renderComponent()
@@ -220,8 +233,7 @@ describe('Grammar Practice Page — Integration Tests', () => {
         expect(screen.getByText(/Active Grammar Keys/i)).toBeInTheDocument()
       })
 
-      // For verb_tense_consistency, should highlight Main Verb
-      expect(screen.getByText('Main Verb')).toBeInTheDocument()
+      expect(activeKeysBox()?.textContent).toContain('Verb Tense Consistency')
     })
 
     it('Clear Keys removes all active keys', async () => {
@@ -250,19 +262,18 @@ describe('Grammar Practice Page — Integration Tests', () => {
   })
 
   describe('Sentence Rendering', () => {
-    it.skip('displays sentence with blank before answer selection', async () => {
+    it('displays sentence with blank before answer selection', async () => {
       vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
       renderComponent()
 
-      await waitFor(() => {
-        expect(
-          screen.getByText(/researcher.*had spent years.*_____.*findings.*team/i)
-        ).toBeInTheDocument()
-      })
+      await screen.findByText('________')
+      expect(sentenceBox()?.textContent).toContain('The researcher')
+      expect(sentenceBox()?.textContent).toContain('________')
+      expect(sentenceBox()?.textContent).toContain('their findings with the team')
     })
 
-    it.skip('replaces blank with selected answer text', async () => {
+    it('replaces blank with selected answer text', async () => {
       vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
       vi.mocked(api.submitAnswer).mockResolvedValueOnce({ is_correct: true })
 
@@ -274,12 +285,10 @@ describe('Grammar Practice Page — Integration Tests', () => {
 
       fireEvent.click(screen.getByRole('button', { name: /^shared$/i }))
 
-      // After selection, sentence should show the actual word
       await waitFor(() => {
-        expect(
-          screen.getByText(/researcher.*had spent years.*shared.*findings.*team/i)
-        ).toBeInTheDocument()
+        expect(sentenceBox()?.textContent).toContain('shared')
       })
+      expect(sentenceBox()?.textContent).not.toContain('________')
     })
   })
 
@@ -319,13 +328,13 @@ describe('Grammar Practice Page — Integration Tests', () => {
       })
     })
 
-    it.skip('displays error when no questions available', async () => {
+    it('displays error when no questions available', async () => {
       vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [] })
 
       renderComponent()
 
       await waitFor(() => {
-        expect(screen.getByText(/no question available/i)).toBeInTheDocument()
+        expect(screen.getByText(/no grammar questions available/i)).toBeInTheDocument()
       })
     })
   })

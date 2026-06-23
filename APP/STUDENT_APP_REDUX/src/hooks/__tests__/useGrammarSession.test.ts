@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { renderHook, act } from '@testing-library/react'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import { useGrammarSession } from '../useGrammarSession'
 import { api } from '../../api/client'
 
@@ -21,8 +21,20 @@ describe('useGrammarSession', () => {
   const mockQuestion = {
     id: 'q-1',
     text: 'The researcher, who had spent years, [BLANK] findings.',
-    current_question_text: 'The researcher, who had spent years, [BLANK] findings.',
+    current_passage_text: 'The researcher, who had spent years, ________ findings.',
+    current_question_text: 'Which choice completes the text?',
     current_correct_option_label: 'B',
+    passage_tokens: [
+      { text: 'The researcher', anatomy: ['subject'], concept_tags: [] },
+      { text: ', who had spent years, ', anatomy: ['relative_clause'], concept_tags: [] },
+      { text: '________', anatomy: ['main_verb'], concept_tags: ['verb_tense_consistency'], is_blank: true },
+      { text: ' findings.', anatomy: [], concept_tags: [] },
+    ],
+    passage_spans: {
+      label: 'Verb tense: relative clause + main verb blank',
+      anatomy_present: ['subject', 'relative_clause', 'main_verb'],
+      concepts_present: ['verb_tense_consistency'],
+    },
     options: [
       { label: 'A', text: 'shares' },
       { label: 'B', text: 'shared' },
@@ -44,18 +56,15 @@ describe('useGrammarSession', () => {
     expect(result.current.question).toBeNull()
   })
 
-  it.skip('loads question on mount', async () => {
-    // TODO: Fix API mock setup for hook tests
-    // The mock isn't being invoked properly in hook context
-    // Manual integration tests pass when testing via component
+  it('loads question on mount', async () => {
     vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
     const { result } = renderHook(() => useGrammarSession())
 
-    await new Promise((resolve) => setTimeout(resolve, 50))
-
-    expect(result.current.question).toEqual(mockQuestion)
-    expect(result.current.isLoading).toBe(false)
+    await waitFor(() => {
+      expect(result.current.question).toEqual(mockQuestion)
+      expect(result.current.isLoading).toBe(false)
+    })
   })
 
   it('selectAnswer sets selectedAnswer and shows feedback', async () => {
@@ -123,42 +132,35 @@ describe('useGrammarSession', () => {
     expect(result.current.activeKeys.size).toBe(0)
   })
 
-  it.skip('findTraps populates activeKeys based on grammar_focus_key', async () => {
+  it('findTraps populates activeKeys from backend passage_spans concepts', async () => {
     vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
     const { result } = renderHook(() => useGrammarSession())
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0))
+    await waitFor(() => {
+      expect(result.current.question).toEqual(mockQuestion)
     })
 
     act(() => {
       result.current.findTraps()
     })
 
-    // verb_tense_consistency should map to specific keys
-    expect(result.current.activeKeys.size).toBeGreaterThan(0)
-    expect(result.current.activeKeys.has('main_verb')).toBe(true)
+    expect(result.current.activeKeys).toEqual(new Set(['verb_tense_consistency']))
   })
 
-  it.skip('renderSentence returns sentence with selected answer', async () => {
+  it('renderSentence returns passage text while renderQuestionPrompt returns the stem', async () => {
     vi.mocked(api.getQuestions).mockResolvedValueOnce({ items: [mockQuestion] })
 
     const { result } = renderHook(() => useGrammarSession())
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0))
+    await waitFor(() => {
+      expect(result.current.question).toEqual(mockQuestion)
     })
 
-    let sentence = result.current.renderSentence()
-    expect(sentence).toContain('___')
-
-    await act(async () => {
-      await result.current.selectAnswer('B')
-    })
-
-    sentence = result.current.renderSentence()
-    expect(sentence).toContain('shared')
+    expect(result.current.renderSentence()).toBe(
+      'The researcher, who had spent years, ________ findings.'
+    )
+    expect(result.current.renderQuestionPrompt()).toBe('Which choice completes the text?')
   })
 
   it('renderOptions returns options with selection state', async () => {

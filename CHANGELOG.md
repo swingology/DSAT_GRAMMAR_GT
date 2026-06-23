@@ -7219,3 +7219,203 @@ _( 20 files changed, 1748 insertions(+), 207 deletions(-))_
 **Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
 
 ---
+
+## Session snapshot — 2026-06-22 22:27:47 (session-end)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json 
+_( 1 file changed, 1 insertion(+), 1 deletion(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-22 22:40:18 (session-end)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 69 insertions(+), 8 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 DIAGNOSTIC_TEST_PLAN.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-22 22:46:38 (session-end)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 6 files changed, 272 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 DIAGNOSTIC_TEST_PLAN.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:27:32 (50kb-written)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 6 files changed, 325 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 DIAGNOSTIC_TEST_PLAN.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:28:51 (50kb-written)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 6 files changed, 354 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 DIAGNOSTIC_TEST_PLAN.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:29:24 (50kb-written)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 6 files changed, 378 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 DIAGNOSTIC_TEST_PLAN.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:29:51 (50kb-written)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 6 files changed, 402 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 DIAGNOSTIC_TEST_PLAN.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:29:59 (50kb-written)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 6 files changed, 426 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 DIAGNOSTIC_TEST_PLAN.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:30:07 (50kb-written)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 6 files changed, 450 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 DIAGNOSTIC_TEST_PLAN.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:30:54 (session-end)
+_branch:_ `main` · _commit:_ `1b09012` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 7 files changed, 632 insertions(+), 16 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 DIAGNOSTIC_TEST_PLAN.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:44:57 (50kb-written)
+_branch:_ `main` · _commit:_ `732eb33` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/routers/student.py 
+_( 6 files changed, 606 insertions(+), 25 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:45:02 (50kb-written)
+_branch:_ `main` · _commit:_ `732eb33` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/routers/student.py 
+_( 6 files changed, 624 insertions(+), 25 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-23 08:47:14 (session-end)
+_branch:_ `main` · _commit:_ `866ebcf` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 3 files changed, 632 insertions(+), 14 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-23 10:34:46 (session-end)
+_branch:_ `main` · _commit:_ `866ebcf` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/__tests__/integration/grammar-page.test.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useGrammarSession.test.ts CHANGELOG.md 
+_( 6 files changed, 906 insertions(+), 70 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-23 10:39:37 (session-end)
+_branch:_ `main` · _commit:_ `866ebcf` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/__tests__/integration/grammar-page.test.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useGrammarSession.test.ts CHANGELOG.md 
+_( 6 files changed, 1114 insertions(+), 70 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-23 11:11:09 (50kb-written)
+_branch:_ `main` · _commit:_ `866ebcf` · _ram:_ `9.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/__tests__/integration/grammar-page.test.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useGrammarSession.test.ts CHANGELOG.md DIAGNOSTIC_TEST_PLAN.md diagnostic_task.md 
+_( 9 files changed, 1426 insertions(+), 77 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-23 11:13:13 (session-end)
+_branch:_ `main` · _commit:_ `866ebcf` · _ram:_ `9.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/__tests__/integration/grammar-page.test.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useGrammarSession.test.ts CHANGELOG.md DIAGNOSTIC_TEST_PLAN.md diagnostic_task.md 
+_( 10 files changed, 1445 insertions(+), 77 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-23 11:16:15 (session-end)
+_branch:_ `main` · _commit:_ `866ebcf` · _ram:_ `9.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/__tests__/integration/grammar-page.test.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useGrammarSession.test.ts CHANGELOG.md DIAGNOSTIC_TEST_PLAN.md diagnostic_task.md 
+_( 10 files changed, 1903 insertions(+), 77 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-23 11:24:54 (session-end)
+_branch:_ `main` · _commit:_ `866ebcf` · _ram:_ `9.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/__tests__/integration/grammar-page.test.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useGrammarSession.test.ts CHANGELOG.md DIAGNOSTIC_TEST_PLAN.md diagnostic_task.md 
+_( 10 files changed, 1914 insertions(+), 77 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-23 12:59:47 (session-end)
+_branch:_ `main` · _commit:_ `50ce3e4` · _ram:_ `9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/__tests__/integration/grammar-page.test.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useGrammarSession.test.ts CHANGELOG.md 
+_( 5 files changed, 2069 insertions(+), 70 deletions(-))_
+
+**Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
+
+---
