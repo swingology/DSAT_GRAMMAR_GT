@@ -388,6 +388,36 @@ the existing `top_targets`/recommendations path surfaces them. No new production
 - [ ] Test asserts ≥1 `UserProgress` row per wrong answer with populated miss keys.
 **Verify:** same as B05. **Commit:** `test(diagnostic): assert diagnostic seeds weakness profile`
 
+### TASK-B07 — ~~Weakness profile = diagnostics only~~  ❌ DROPPED (reverted 2026-06-23)
+Decision reverted: the weakness profile **includes practice** (pooled diagnostic + practice), which
+is the existing `_compute_weakness_targets` behavior. **No code change** — this task is cancelled.
+See §7c Stream 1.
+
+### TASK-B08 — Practice-only improvement endpoint  *(§7c Stream 2 — additive, optional)*
+**Depends:** none. **Files:** `backend/app/routers/student.py` (new endpoint),
+`backend/app/models/payload.py` (response model), `backend/tests/test_diagnostic_api.py`.
+
+**Spec:** Add `GET /study/practice-progress?user_token=...` (or POST with body, matching the
+existing study endpoints' auth pattern). Query `UserProgress` WHERE
+`diagnostic_session_id IS NULL` for the user; return a historical practice-improvement series:
+overall accuracy bucketed by day/week, plus per-domain (grammar/reading via `question_domain`) and
+optionally per-focus accuracy trend. Response model `PracticeProgressResponse{ buckets:
+[{period, attempts, correct, accuracy}], by_domain: {...}, total_attempts }`. **No diagnostic data
+mixed in.** This is the data source for the practice-track UI (a later frontend task, e.g. on
+`ProgressPage`).
+
+**Acceptance / Done-when:**
+- [ ] Endpoint returns practice-only rows; a diagnostic-only user gets empty/zeroed series.
+- [ ] Accuracy math reconciles (sum(correct)/sum(attempts) per bucket).
+- [ ] Auth boundary tested (403 missing key / 404 bad token), mirroring existing study endpoints.
+
+**Verify:** `.venv-jb/bin/python -m pytest tests/test_diagnostic_api.py -v`
+**Commit:** `feat(diagnostic): practice-only improvement endpoint (§7c)`
+
+> **Frontend follow-up (P4-adjacent):** add a practice-improvement view on `ProgressPage` consuming
+> `/study/practice-progress`, kept visually distinct from the diagnostic report/trend. Tracked as a
+> sub-item of TASK-F04/F05 scope; spec it when those land.
+
 ---
 
 ## PHASE P3 — Frontend test runner

@@ -4016,3 +4016,19 @@
 | 08:46 | Edited backend/tests/test_diagnostic_api.py | modified _sql() | ~81 |
 | 08:46 | Edited diagnostic_task.md | modified fix() | ~164 |
 | 08:46 | TASK-B0A: added diagnostic/queries.py (derive_domain, build_pool_stmt) classifying reading via skill_family_key; fixed bug-761 in /submit + diagnostic_submit; 10 tests pass, 55 existing green, live-verified | backend/app/diagnostic/queries.py, app/routers/student.py, tests/test_diagnostic_api.py | done | ~7k |
+| 08:47 | Session end: 24 writes across 6 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 9 reads | ~63283 tok |
+| 10:34 | Session end: 24 writes across 6 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 10 reads | ~63283 tok |
+| 10:39 | Session end: 24 writes across 6 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 10 reads | ~63283 tok |
+| 11:10 | Edited DIAGNOSTIC_TEST_PLAN.md | expanded (+28 lines) | ~468 |
+| 11:10 | Edited diagnostic_task.md | modified test() | ~858 |
+| 11:11 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_diagnostic_stats_architecture.md | — | ~451 |
+| 11:11 | Captured stats-architecture decision (weakness profile=diagnostics only, practice=isolated trend, keep lookback); added TASK-B07/B08 + plan §7c | DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md | docs+memory updated | ~5k |
+| 11:13 | Session end: 27 writes across 7 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 10 reads | ~65354 tok |
+| 11:15 | Edited DIAGNOSTIC_TEST_PLAN.md | 29→25 lines | ~412 |
+| 11:15 | Edited diagnostic_task.md | reduced (-16 lines) | ~127 |
+| 11:15 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_diagnostic_stats_architecture.md | 18→17 lines | ~344 |
+| 11:16 | Reverted stats decision: weakness profile includes practice again (pooled, existing behavior); dropped TASK-B07, B08 now optional; updated plan §7c + memory/cerebrum | DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, memory | reverted | ~3k |
+| 11:16 | Session end: 30 writes across 7 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 10 reads | ~66301 tok |
+| 11:24 | Session end: 30 writes across 7 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 10 reads | ~66301 tok |
+| 12:59 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_diagnostic_status.md | — | ~683 |
+| 12:59 | Created next-session resume memory (project_diagnostic_status) pointing at TASK-B01; indexed in MEMORY.md | memory/project_diagnostic_status.md, MEMORY.md | done | ~2k |

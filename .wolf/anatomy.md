@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-23T15:46:45.386Z
-> Files: 1031 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-23T19:59:21.558Z
+> Files: 1033 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -37,6 +37,8 @@
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
 - `MEMORY.md` — Memory Index (~749 tok)
 - `project_backend-option-versioning.md` (~244 tok)
+- `project_diagnostic_stats_architecture.md` (~439 tok)
+- `project_diagnostic_status.md` — Decisions locked (2026-06-23) (~660 tok)
 - `project_dual-user-routers.md` (~210 tok)
 - `project_grammar_redux_status.md` (~1463 tok)
 - `project_node-wasm-linux-fix.md` (~397 tok)
@@ -70,8 +72,8 @@
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
-- `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7379 tok)
-- `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~3740 tok)
+- `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7859 tok)
+- `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~4119 tok)
 - `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
 - `docker-compose.yml` — Docker Compose services (~443 tok)
 - `Dockerfile.backend` (~180 tok)
@@ -1268,6 +1270,9 @@
 - `__init__.py` — Diagnostic test assembly (blueprint-driven, official-bank v1). (~40 tok)
 - `queries.py` — Diagnostic question-pool queries and domain classification. (~1175 tok)
 
+## backend/app/diagnostic/queries.py (~0.4k tokens)
+
+
 ## backend/app/llm/
 
 - `anthropic_provider.py` — AnthropicProvider: complete, complete_cached, complete_vision (~1751 tok)
@@ -1477,6 +1482,3 @@
 
 - `candidates.json` (~348 tok)
 - `master.json` (~31436 tok)
-
-## backend/app/diagnostic/queries.py (~0.4k tokens)
-derive_domain(ann) classifies reading via skill_family_key / grammar via grammar_role_key; build_pool_stmt(...) builds the diagnostic question-pool Select using the keys the v8 bank actually populates (active+non-dry-run guards, optional difficulty, exclude seen/chosen). Fixes bug-761.

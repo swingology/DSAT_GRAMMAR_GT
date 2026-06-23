@@ -248,6 +248,30 @@ Clean split — **0 questions** have both `grammar_role_key` and `skill_family_k
 - **Trap variety:** soft-preference only; bank too thin to require specific traps.
 - **Time limit:** scale to length — ~19 min (16 Q × ~70s), constant `DIAGNOSTIC_TIME_LIMIT_SECONDS`.
 
+## 7c. Stats / tracking architecture (DECISION 2026-06-23, revised)
+
+Shared `UserProgress` table; rows tagged by `diagnostic_session_id` (non-null = diagnostic,
+null = practice).
+
+### Stream 1 — Weakness profile ("what to practice next") = DIAGNOSTIC **+ PRACTICE** (pooled)
+- **REVERTED to include practice** (2026-06-23). `_compute_weakness_targets` (student.py:669) pools
+  both diagnostic and practice rows — this is the **existing** behavior, so **no code change** is
+  required here. Both diagnostic and practice answers feed `top_targets` / recommendations.
+- **Keep `self_study_lookback_days`** rolling decay (unchanged). Diagnostic and practice rows both
+  age out of the window together.
+- Rationale: practice activity is real signal about current strengths/weaknesses; including it keeps
+  the profile responsive between diagnostics. A student can build a profile from practice alone
+  (does not strictly require a diagnostic first).
+
+### Stream 2 — Practice-only improvement view (additive display)
+- A separate, optional view that filters `UserProgress.diagnostic_session_id.is_(None)` and reports
+  practice-only historical improvement (accuracy over time, by domain). This is a **display**, not a
+  separation of the profile — the weakness profile still pools everything (Stream 1).
+
+### Stream 3 (already exists) — Diagnostic snapshot/trend
+- `DiagnosticSession` per-session `accuracy` + `/diagnostic/history` `improvement_trend` give the
+  diagnostic-over-diagnostic baseline progression. Unchanged.
+
 ## 8. Out of scope (future)
 - CAT / IRT adaptive difficulty.
 - Two-module SAT-authentic routing (the `TestSessionResults` table is already there for it).

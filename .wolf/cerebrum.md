@@ -88,3 +88,17 @@
 - `annotation_jsonb.difficulty_overall` in the live bank only ever holds `low`/`medium` (+ null). No `high` exists despite ontology DIFFICULTY_KEYS including it.
 - CRITICAL: grammar-v8 pipeline annotated ALL questions. Reading is classified via `skill_family_key` (singular); `reading_skill_family_key`/`reading_focus_key` are NULL on all 60. The student `/questions` reading filter and `diagnostic_submit` domain-derivation key off the empty fields → reading is unqueryable through that path (bug-761). Classify: reading if skill_family_key set, else grammar if grammar_role_key set.
 - Student `/questions` (student_recall) leaks `current_correct_option_label` to clients (bug-760).
+
+## Decision Log (2026-06-23) — diagnostic vs practice stats
+- Weakness profile / recommendations (top_targets) must be driven by DIAGNOSTIC rows only
+  (UserProgress.diagnostic_session_id IS NOT NULL). Practice answers do NOT feed it. Keep
+  self_study_lookback_days decay; diagnostics stack within the window. Practice gets its own
+  isolated improvement view (diagnostic_session_id IS NULL) via a new /study/practice-progress
+  endpoint. Rationale: diagnostic = comprehensive weakness measurement; practice = remediation.
+  Tasks: diagnostic_task.md TASK-B07 (profile filter) + TASK-B08 (practice endpoint).
+
+## Decision Log (2026-06-23) — REVERT: practice stays in weakness profile
+- Reverted the same-day "diagnostics only" decision. Weakness profile (top_targets) POOLS diagnostic
+  + practice — the existing _compute_weakness_targets behavior; do NOT add a diagnostic_session_id
+  filter. Practice-only improvement view (TASK-B08) is additive/optional, not a profile split.
+  TASK-B07 dropped.
