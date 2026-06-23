@@ -7428,3 +7428,18 @@ _No uncommitted changes._
 **Untracked:** .wolf/anatomy.md.tmp.44952.63ce58c10621 analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/summary.md analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-19_08c148f7-d23a-4b22-a167-bf0d56a7bb86/validation_failures.json 
 
 ---
+
+## Session snapshot — 2026-06-23 13:02:34 (session-end)
+_branch:_ `main` · _commit:_ `a8d11a4` · _ram:_ `10Gi/30Gi`
+
+_No uncommitted changes._
+
+---
+
+## Session snapshot — 2026-06-23 13:04:28 (session-end)
+_branch:_ `main` · _commit:_ `d36382a` · _ram:_ `9.4Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 248 insertions(+), 8 deletions(-))_
+
+---
