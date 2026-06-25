@@ -766,6 +766,7 @@ class DiagnosticSessionResult(BaseModel):
     accuracy: float
     duration_seconds: Optional[int] = None
     weakest_focus_areas: List[Dict[str, Any]] = Field(default_factory=list)
+    breakdown: Optional["DiagnosticBreakdown"] = None
 
 
 class DiagnosticHistoryItem(BaseModel):
@@ -1067,3 +1068,56 @@ class CohortTrapAnalyticsResponse(BaseModel):
     total_trap_encounters: int
     most_common_traps: List[TrapCohortStat]    # top 10 by encounter count
     most_effective_traps: List[TrapCohortStat]  # top 10 by fall rate (min 5 encounters)
+
+
+# ── Diagnostic v1 Blueprint Payloads ─────────────────────────────────────────
+
+class DiagnosticOptionPayload(BaseModel):
+    """Answer choice served during a diagnostic test — no correctness hint."""
+    label: str
+    text: str
+    distractor_type_key: Optional[str] = None
+
+
+class DiagnosticQuestionPayload(BaseModel):
+    """Question served during a blueprint diagnostic — intentionally strips the answer key (bug-760)."""
+    id: str
+    seq: int                                    # slot order within the module
+    current_question_text: str
+    current_passage_text: Optional[str] = None
+    passage_spans: Optional[dict] = None
+    options: List[DiagnosticOptionPayload] = Field(default_factory=list)
+    domain: Optional[str] = None
+    grammar_role_key: Optional[str] = None
+    grammar_focus_key: Optional[str] = None
+    reading_skill_family_key: Optional[str] = None
+    reading_focus_key: Optional[str] = None
+    difficulty_overall: Optional[str] = None
+    question_family_key: Optional[str] = None
+    stimulus_mode_key: Optional[str] = None
+    # NOTE: current_correct_option_label is intentionally absent
+
+
+class CorrectTotal(BaseModel):
+    correct: int
+    total: int
+
+
+class DiagnosticBreakdown(BaseModel):
+    by_family: Dict[str, CorrectTotal] = Field(default_factory=dict)
+    by_difficulty: Dict[str, CorrectTotal] = Field(default_factory=dict)
+    by_trap: Dict[str, CorrectTotal] = Field(default_factory=dict)
+    weakest_areas: List[Dict[str, Any]] = Field(default_factory=list)
+
+
+class DiagnosticStartV1Request(BaseModel):
+    user_token: str
+    diagnostic_type: str = "blueprint_v1"
+
+
+class DiagnosticStartV1Response(BaseModel):
+    session_id: str
+    total_questions: int
+    time_limit_seconds: int
+    questions: List[DiagnosticQuestionPayload]
+    coverage_report: Dict[str, Any] = Field(default_factory=dict)
