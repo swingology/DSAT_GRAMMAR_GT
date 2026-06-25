@@ -14,6 +14,8 @@ from uuid import UUID
 from app.config import get_settings
 from app.database import get_db
 from app.diagnostic.queries import derive_domain
+from app.diagnostic.selector import assemble_diagnostic
+from app.diagnostic.blueprint import BLUEPRINT_V1
 from app.auth import student_required, admin_or_student_required, student_jwt_required, admin_or_student_jwt_required
 from app.models.db import (
     Question, User, UserProgress, QuestionAnnotation, QuestionOption, TestSessionResults,
@@ -36,6 +38,12 @@ from app.models.payload import (
     MissedQuestionsResponse,
     DiagnosticSessionStartRequest,
     DiagnosticSessionStartResponse,
+    DiagnosticStartV1Request,
+    DiagnosticStartV1Response,
+    DiagnosticQuestionPayload,
+    DiagnosticOptionPayload,
+    CorrectTotal,
+    DiagnosticBreakdown,
     DiagnosticAnswerRequest,
     DiagnosticAnswerResponse,
     DiagnosticSessionResult,
@@ -1576,19 +1584,143 @@ async def get_missed_questions(
 
 # ── Diagnostic Session Endpoints ─────────────────────────────────────────────
 
-@router.post("/diagnostic/start", response_model=DiagnosticSessionStartResponse)
+# 16 questions × ~71 seconds each ≈ 19 minutes
+DIAGNOSTIC_TIME_LIMIT_SECONDS = 1140
+
+
+async def _build_diagnostic_question_payload(
+    q,
+    ann_data: dict,
+    ann,
+    seq: int,
+    db: AsyncSession,
+) -> DiagnosticQuestionPayload:
+    """Build a DiagnosticQuestionPayload (no answer key) for one question."""
+    # Fetch options for this question (latest version)
+    opts_res = await db.execute(
+        select(QuestionOption)
+        .where(QuestionOption.question_id == q.id)
+        .where(QuestionOption.question_version_id == q.latest_version_id)
+        .order_by(QuestionOption.option_label)
+    )
+    raw_opts = opts_res.scalars().all()
+
+    # Build option list — omit correctness markers
+    ann_opts = {
+        o["option_label"]: o
+        for o in ann_data.get("options", [])
+        if isinstance(o, dict) and "option_label" in o
+    }
+    options = []
+    for opt in raw_opts:
+        ao = ann_opts.get(opt.option_label, {})
+        d_key = ao.get("distractor_type_key")
+        options.append(DiagnosticOptionPayload(
+            label=opt.option_label,
+            text=opt.option_text,
+            distractor_type_key=d_key if d_key and d_key != "correct" else None,
+        ))
+
+    domain = derive_domain(ann_data)
+    passage_spans = (
+        {
+            "label": ann.passage_spans.get("label"),
+            "anatomy_present": ann.passage_spans.get("anatomy_present", []),
+            "concepts_present": ann.passage_spans.get("concepts_present", []),
+        }
+        if ann is not None and ann.passage_spans else None
+    )
+
+    return DiagnosticQuestionPayload(
+        id=str(q.id),
+        seq=seq,
+        current_question_text=q.current_question_text,
+        current_passage_text=q.current_passage_text,
+        passage_spans=passage_spans,
+        options=options,
+        domain=domain,
+        grammar_role_key=ann_data.get("grammar_role_key"),
+        grammar_focus_key=ann_data.get("grammar_focus_key"),
+        reading_skill_family_key=ann_data.get("reading_skill_family_key"),
+        reading_focus_key=ann_data.get("reading_focus_key"),
+        difficulty_overall=ann_data.get("difficulty_overall"),
+        question_family_key=ann_data.get("question_family_key"),
+        stimulus_mode_key=q.stimulus_mode_key,
+    )
+
+
+@router.post("/diagnostic/start")
 async def diagnostic_start(
-    body: DiagnosticSessionStartRequest,
+    body: DiagnosticStartV1Request,
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(student_required),
 ):
-    """Create a new diagnostic session and return its ID."""
+    """Create a new diagnostic session.
+
+    When diagnostic_type=='blueprint_v1' (default), assembles a full 16-question
+    blueprint module, persists question_ids in slot order, and returns all question
+    payloads in one shot (no answer key). Legacy types fall through to the old
+    minimal-start behaviour.
+    """
     user = await _resolve_user_by_token(body.user_token, db)
+
+    if body.diagnostic_type == "blueprint_v1":
+        assembled = await assemble_diagnostic(db, user_id=user.id, blueprint=BLUEPRINT_V1)
+
+        question_ids_ordered = [cq.question_id for cq in assembled.questions]
+        session = DiagnosticSession(
+            user_id=user.id,
+            started_at=datetime.now(timezone.utc),
+            diagnostic_type="blueprint_v1",
+            focus_areas=[],
+            question_ids=question_ids_ordered,
+            total_questions=len(question_ids_ordered),
+        )
+        db.add(session)
+        await db.commit()
+        await db.refresh(session)
+
+        # Fetch all questions + annotations in bulk
+        from uuid import UUID as _UUID
+
+        q_uuids = [_UUID(qid) for qid in question_ids_ordered]
+        q_res = await db.execute(
+            select(Question).where(Question.id.in_(q_uuids))
+        )
+        q_map = {str(q.id): q for q in q_res.scalars().all()}
+
+        ann_ids = [q.latest_annotation_id for q in q_map.values() if q.latest_annotation_id]
+        ann_map: dict = {}
+        if ann_ids:
+            ann_res = await db.execute(
+                select(QuestionAnnotation).where(QuestionAnnotation.id.in_(ann_ids))
+            )
+            ann_map = {str(a.id): a for a in ann_res.scalars().all()}
+
+        payloads = []
+        for cq in assembled.questions:
+            q = q_map.get(cq.question_id)
+            if not q:
+                continue
+            ann = ann_map.get(str(q.latest_annotation_id)) if q.latest_annotation_id else None
+            ann_data = ann.annotation_jsonb if ann else {}
+            payload = await _build_diagnostic_question_payload(q, ann_data, ann, cq.slot.seq, db)
+            payloads.append(payload)
+
+        return DiagnosticStartV1Response(
+            session_id=str(session.id),
+            total_questions=len(payloads),
+            time_limit_seconds=DIAGNOSTIC_TIME_LIMIT_SECONDS,
+            questions=payloads,
+            coverage_report=assembled.coverage_report,
+        )
+
+    # Legacy fallback — minimal start (existing behaviour for other diagnostic types)
     session = DiagnosticSession(
         user_id=user.id,
         started_at=datetime.now(timezone.utc),
         diagnostic_type=body.diagnostic_type or "standard",
-        focus_areas=body.focus_areas or [],
+        focus_areas=[],
         question_ids=[],
     )
     db.add(session)
@@ -1662,13 +1794,17 @@ async def diagnostic_submit(
     )
     db.add(progress)
 
-    # Update session counters
+    # Update session counters.
+    # Blueprint sessions pre-seed question_ids at start — don't duplicate.
     qids = list(session.question_ids or [])
-    qids.append(str(qid))
-    session.question_ids = qids
-    session.total_questions = len(qids)
+    if str(qid) not in qids:
+        qids.append(str(qid))
+        session.question_ids = qids
     if is_correct:
         session.correct_count = (session.correct_count or 0) + 1
+
+    # Always update total_questions to reflect pre-seeded set or running tally
+    session.total_questions = session.total_questions or len(qids)
 
     await db.commit()
     await db.refresh(progress)
@@ -1677,7 +1813,7 @@ async def diagnostic_submit(
         is_correct=is_correct,
         progress_id=progress.id,
         question_number=len(qids),
-        total_questions=8,
+        total_questions=session.total_questions,
         correct_so_far=session.correct_count,
     )
 
@@ -1713,22 +1849,72 @@ async def diagnostic_complete(
     await db.commit()
     await db.refresh(session)
 
-    # Compute weakest focus areas from progress records
+    # Compute weakest focus areas + breakdown from progress records
     prog_res = await db.execute(
         select(UserProgress).where(UserProgress.diagnostic_session_id == sess_uuid)
     )
     records = prog_res.scalars().all()
     miss_counts: dict = {}
+    by_family: dict = {}
+    by_difficulty: dict = {}
+    by_trap: dict = {}
+
     for rec in records:
+        # Weakest focus keys
         if not rec.is_correct:
             key = rec.missed_grammar_focus_key or rec.missed_reading_focus_key
             if key:
                 miss_counts[key] = miss_counts.get(key, 0) + 1
-    weakest = sorted(
-        [{"focus_key": k, "miss_count": v} for k, v in miss_counts.items()],
+
+        # Breakdown by question_domain (used as "family" proxy here)
+        domain_key = rec.question_domain or "unknown"
+        if domain_key not in by_family:
+            by_family[domain_key] = CorrectTotal(correct=0, total=0)
+        by_family[domain_key].total += 1
+        if rec.is_correct:
+            by_family[domain_key].correct += 1
+
+        # Breakdown by difficulty
+        diff_key = rec.question_difficulty or "unknown"
+        if diff_key not in by_difficulty:
+            by_difficulty[diff_key] = CorrectTotal(correct=0, total=0)
+        by_difficulty[diff_key].total += 1
+        if rec.is_correct:
+            by_difficulty[diff_key].correct += 1
+
+        # Breakdown by syntactic trap
+        trap_key = rec.missed_syntactic_trap_key
+        if trap_key and not rec.is_correct:
+            if trap_key not in by_trap:
+                by_trap[trap_key] = CorrectTotal(correct=0, total=0)
+            by_trap[trap_key].total += 1
+
+    weakest_raw = sorted(
+        [
+            {
+                "area_key": k,
+                "domain": "grammar" if "grammar" in k or any(
+                    k in v for v in [
+                        "sentence_boundary", "agreement", "verb_form", "modifier",
+                        "punctuation", "expression_of_ideas", "parallel_structure", "pronoun",
+                    ]
+                ) else "reading",
+                "miss_count": v,
+            }
+            for k, v in miss_counts.items()
+        ],
         key=lambda x: x["miss_count"],
         reverse=True,
-    )[:3]
+    )[:5]
+
+    weakest = [{"focus_key": w["area_key"], "miss_count": w["miss_count"]} for w in weakest_raw]
+
+    breakdown = DiagnosticBreakdown(
+        by_family=by_family,
+        by_difficulty=by_difficulty,
+        by_trap=by_trap,
+        weakest_areas=weakest_raw,
+    )
 
     duration = None
     if session.started_at:
@@ -1741,6 +1927,7 @@ async def diagnostic_complete(
         accuracy=session.accuracy,
         duration_seconds=duration,
         weakest_focus_areas=weakest,
+        breakdown=breakdown,
     )
 
 
