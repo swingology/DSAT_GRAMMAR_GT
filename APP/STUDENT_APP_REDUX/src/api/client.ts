@@ -84,6 +84,13 @@ export const api = {
   diagnosticStart: (data: { user_token: string; diagnostic_type?: string }) =>
     apiCall('/diagnostic/start', { method: 'POST', body: data }),
 
+  /** Blueprint v1 diagnostic — returns full 16-question module with no answer key. */
+  diagnosticStartV1: (userToken: string) =>
+    apiCall('/diagnostic/start', {
+      method: 'POST',
+      body: { user_token: userToken, diagnostic_type: 'blueprint_v1' },
+    }),
+
   diagnosticSubmit: (sessionId: string, data: {
     user_token: string
     question_id: string
