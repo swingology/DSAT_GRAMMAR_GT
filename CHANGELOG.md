@@ -5,6 +5,53 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-06-24 — Diagnostic Test Rebuild (Blueprint v1)
+
+**Model:** Claude Sonnet 4.6
+**Branch:** `main`
+**Commits:** `773a833`, `5c7c2d8`, `3064615`, `e1fb8b8`, `ecd9403`
+
+### Changed
+
+- **`/diagnostic/start`** — Accepts `diagnostic_type: "blueprint_v1"` (now the default). Returns a full 16-question ordered module with all questions, options, and metadata in one shot. No answer key is included in the response (bug-760 fix). Replaces the old minimal-start response that returned only a `session_id`.
+
+- **`/diagnostic/{id}/submit`** — Fixed hardcoded `total_questions=8`. Now uses the pre-seeded total from the session. Blueprint sessions no longer append duplicate question IDs when re-answering a question.
+
+- **`/diagnostic/{id}/complete`** — Extended response with a `breakdown` field: accuracy split by domain, difficulty tier, and syntactic trap type; top 5 weakest focus areas sorted by miss count.
+
+- **`DiagnosticPage`** — Replaced the adaptive 8-question reveal-mode runner with the blueprint test flow: intro screen → timed 16-question runner (answers hidden) → results report.
+
+### Added
+
+- **`backend/app/diagnostic/blueprint.py`** — Pure module defining `BLUEPRINT_V1` (16 `Slot`s, 6 low + 10 medium, alternating grammar/reading). Covers all 6 present grammar roles (`expression_of_ideas` ×3, `punctuation` ×2, `agreement`, `modifier`, `sentence_boundary`, `verb_form`) and all 5 present reading families (`inferences` ×2, `text_structure_and_purpose` ×2, `central_ideas_and_details`, `command_of_evidence_textual`, `words_in_context`). Includes `validate_blueprint()` and `blueprint_coverage()` helpers. 28 tests.
+
+- **`backend/app/diagnostic/selector.py`** — `assemble_diagnostic()` fills a blueprint from the live question bank using a 5-level fallback ladder (difficulty + role → drop difficulty → any in domain → drop seen-filter → any active). Never reuses a question within one assembly. Tracks `gap=True` when domain is exhausted. 11 tests.
+
+- **`backend/app/models/payload.py`** — `DiagnosticOptionPayload`, `DiagnosticQuestionPayload` (no `current_correct_option_label`), `DiagnosticStartV1Response`, `DiagnosticStartV1Request`, `CorrectTotal`, `DiagnosticBreakdown`. `DiagnosticSessionResult` extended with optional `breakdown` field.
+
+- **`src/components/diagnostic/DiagnosticIntro.tsx`** — Pre-test screen ("16 questions · ~19 min · answers shown at the end") with Start button that calls the blueprint_v1 endpoint.
+
+- **`src/components/diagnostic/DiagnosticTestRunner.tsx`** — Timed test runner: countdown timer (MM:SS, red under 5 min), one question at a time, Back/Next navigation, question palette (answered/flagged/unanswered states), flag-for-review toggle, confirm dialog showing unanswered count before submission. No correctness styling during test.
+
+- **`src/components/diagnostic/DiagnosticReport.tsx`** — Post-test results report with score %, three tabs (Summary / Breakdown / Review). Breakdown shows horizontal accuracy bars by domain, difficulty, and trap type. Summary shows top 5 weakest areas with "Practice →" CTAs. Review tab fetches session detail and shows per-question correct/incorrect.
+
+- **`src/hooks/useDiagnosticTimer.ts`** — `useDiagnosticTimer(seconds, onExpire)` countdown hook with auto-expire callback.
+
+- **`src/types/index.ts`** — `DiagnosticQuestion`, `DiagnosticOptionPayload`, `DiagnosticStartV1Response`, `CorrectTotal`, `DiagnosticBreakdown`, `DiagnosticResult`, `WeakestArea`.
+
+- **`src/api/client.ts`** — `api.diagnosticStartV1(userToken)` convenience method.
+
+- **`DiagnosticDetailPage`** — Reuses `DiagnosticReport` for past sessions fetched via `diagnosticDetail`.
+
+### Notes
+
+- Bank reality (v1): 60 active official questions, 27 grammar + 13 reading usable. Missing grammar roles (`parallel_structure`, `pronoun`) and reading families (`command_of_evidence_quantitative`, `cross_text_connections`) are explicitly excluded from the blueprint. The v1 selector expects frequent level-3/4 fallback on the thin bank.
+- `DIAGNOSTIC_TIME_LIMIT_SECONDS = 1140` (≈19 min, 16 Q × ~71s).
+- The old adaptive 8-question `DiagnosticTab` runner is no longer used by `DiagnosticPage` but the component file is preserved for now (Q02 cleanup will remove it).
+- Backend: 49 diagnostic tests pass (blueprint + selector + api); existing 263 tests still green. Frontend: TypeScript clean; pre-existing grammar test failures unchanged.
+
+---
+
 ## 2026-06-21 — Phase 5: Cohort Analytics (Admin)
 
 **Model:** Claude Sonnet 4.6
@@ -7441,5 +7488,216 @@ _branch:_ `main` · _commit:_ `d36382a` · _ram:_ `9.4Gi/30Gi`
 
 **Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
 _( 4 files changed, 248 insertions(+), 8 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-23 13:06:21 (session-end)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `9.6Gi/30Gi`
+
+_No uncommitted changes._
+
+---
+
+## Session snapshot — 2026-06-23 17:01:05 (session-end)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_(no changes)_
+
+---
+
+## Session snapshot — 2026-06-23 17:03:29 (session-end)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 270 insertions(+), 264 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-24 18:25:22 (session-end)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 288 insertions(+), 264 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-24 18:26:56 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `7.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 306 insertions(+), 252 deletions(-))_
+
+**Untracked:** start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:27:05 (session-end)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `7.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 318 insertions(+), 249 deletions(-))_
+
+**Untracked:** start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:30:10 (session-end)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 5 files changed, 394 insertions(+), 233 deletions(-))_
+
+**Untracked:** start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:35:13 (session-end)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md dev_server.py docker-compose.yml 
+_( 7 files changed, 546 insertions(+), 226 deletions(-))_
+
+**Untracked:** start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:41:11 (session-end)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 8 files changed, 656 insertions(+), 228 deletions(-))_
+
+**Untracked:** start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:42:18 (session-end)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 8 files changed, 738 insertions(+), 262 deletions(-))_
+
+**Untracked:** start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:47:40 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 8 files changed, 829 insertions(+), 226 deletions(-))_
+
+**Untracked:** backend/app/diagnostic/blueprint.py backend/app/diagnostic/selector.py backend/tests/test_diagnostic_blueprint.py start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:49:36 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend backend/app/models/payload.py dev_server.py docker-compose.yml 
+_( 9 files changed, 924 insertions(+), 217 deletions(-))_
+
+**Untracked:** backend/app/diagnostic/blueprint.py backend/app/diagnostic/selector.py backend/tests/test_diagnostic_blueprint.py backend/tests/test_diagnostic_selector.py start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:50:40 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend backend/app/models/payload.py backend/app/routers/student.py dev_server.py docker-compose.yml 
+_( 10 files changed, 946 insertions(+), 214 deletions(-))_
+
+**Untracked:** backend/app/diagnostic/blueprint.py backend/app/diagnostic/selector.py backend/tests/test_diagnostic_blueprint.py backend/tests/test_diagnostic_selector.py start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:50:45 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend backend/app/models/payload.py backend/app/routers/student.py dev_server.py docker-compose.yml 
+_( 10 files changed, 966 insertions(+), 211 deletions(-))_
+
+**Untracked:** backend/app/diagnostic/blueprint.py backend/app/diagnostic/selector.py backend/tests/test_diagnostic_blueprint.py backend/tests/test_diagnostic_selector.py start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:51:12 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend backend/app/models/payload.py backend/app/routers/student.py dev_server.py docker-compose.yml 
+_( 10 files changed, 1112 insertions(+), 212 deletions(-))_
+
+**Untracked:** backend/app/diagnostic/blueprint.py backend/app/diagnostic/selector.py backend/tests/test_diagnostic_blueprint.py backend/tests/test_diagnostic_selector.py start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:51:20 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend backend/app/models/payload.py backend/app/routers/student.py dev_server.py docker-compose.yml 
+_( 10 files changed, 1135 insertions(+), 214 deletions(-))_
+
+**Untracked:** backend/app/diagnostic/blueprint.py backend/app/diagnostic/selector.py backend/tests/test_diagnostic_blueprint.py backend/tests/test_diagnostic_selector.py start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:51:43 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend backend/app/models/payload.py backend/app/routers/student.py dev_server.py docker-compose.yml 
+_( 10 files changed, 1209 insertions(+), 212 deletions(-))_
+
+**Untracked:** backend/app/diagnostic/blueprint.py backend/app/diagnostic/selector.py backend/tests/test_diagnostic_blueprint.py backend/tests/test_diagnostic_selector.py start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:52:09 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend backend/app/models/payload.py backend/app/routers/student.py dev_server.py docker-compose.yml 
+_( 10 files changed, 1222 insertions(+), 209 deletions(-))_
+
+**Untracked:** backend/app/diagnostic/blueprint.py backend/app/diagnostic/selector.py backend/tests/test_diagnostic_blueprint.py backend/tests/test_diagnostic_selector.py start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:52:19 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend backend/app/models/payload.py backend/app/routers/student.py dev_server.py docker-compose.yml 
+_( 10 files changed, 1233 insertions(+), 206 deletions(-))_
+
+**Untracked:** backend/app/diagnostic/blueprint.py backend/app/diagnostic/selector.py backend/tests/test_diagnostic_blueprint.py backend/tests/test_diagnostic_selector.py start.sh 
+
+---
+
+## Session snapshot — 2026-06-24 18:56:51 (50kb-written)
+_branch:_ `main` · _commit:_ `f0e03cf` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md Dockerfile.frontend backend/app/models/payload.py backend/app/routers/student.py dev_server.py docker-compose.yml 
+_( 14 files changed, 1555 insertions(+), 203 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticIntro.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticReport.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-24 18:58:59 (session-end)
+_branch:_ `main` · _commit:_ `ecd9403` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 8 files changed, 1117 insertions(+), 167 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/validation_failures.json analysis/ingestion/PT01/run_2026-06-25_d3e4c669-7ebc-493d-a6e7-8ad895e21ed0/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-24 19:18:50 (50kb-written)
+_branch:_ `main` · _commit:_ `ecd9403` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 8 files changed, 1473 insertions(+), 168 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/validation_failures.json analysis/ingestion/PT01/run_2026-06-25_d3e4c669-7ebc-493d-a6e7-8ad895e21ed0/amendment_candidates.json 
 
 ---
