@@ -1,6 +1,7 @@
 # Memory
 
 > Chronological action log. Hooks and AI append to this file automatically.
+| 15:56 | Ingestion test for Test_4_digital_sec01_mod01 — status=needs_review, extracted 33, created 28 (5 blocked by syntactic_trap_key=None for verb_form questions). Logged bug-768, DEBUG_LOG.md. | DEBUG_LOG.md, .wolf/buglog.json | needs_review (5 questions unresolved) | ~300 |
 | 10:24 | Grammar nav: fetch batch of 50 questions; added nextQuestion/prevQuestion/currentIndex/totalQuestions/hasPrev/hasNext to useGrammarSession; added Prev/Next buttons + "N / total" counter to QuestionSection; added progress counter to Header; CSS for .question-nav/.nav-btn/.question-counter; tsc clean. | useGrammarSession.ts, QuestionSection.tsx, Header.tsx, GrammarPractice.tsx, GrammarPractice.css | success | ~800 |
 | 15:31 | Phase 2 SR tests: 23 backend tests in test_spaced_repetition.py (all pass) — 12 SM-2 algorithm unit tests + 11 endpoint tests for /review /due /progress; 8 frontend tests in SpacedRepetitionWidget.test.tsx (all pass) — loading/empty/due-count/caught-up/tiers/list/button/navigate. Key fixes: used plain _FakeSR class instead of SQLAlchemy.__new__ (descriptor init fails); capped ef_cap test iterations to prevent date overflow; used nvm 22.12.0 for WASM crash avoidance. | backend/tests/test_spaced_repetition.py, APP/STUDENT_APP_REDUX/src/components/__tests__/SpacedRepetitionWidget.test.tsx | 31/31 pass | ~2k |
 | 22:30 | Phase 2 frontend Spaced Repetition: 3 SR API methods added to client.ts (srReview, srDueQuestions, srProgress); useSRProgress + useSRDue hooks added to useDashboardData.ts; SpacedRepetitionWidget.tsx created with mastery tiers, due-questions list, CTA; wired into DashboardPage.tsx between "Start a session" and "Progress" sections; fadeUp delays recascaded; tsc --noEmit clean. | APP/STUDENT_APP_REDUX/src/api/client.ts, src/hooks/useDashboardData.ts, src/components/dashboard/SpacedRepetitionWidget.tsx, src/pages/DashboardPage.tsx | success | ~1.5k |
@@ -4406,3 +4407,36 @@
 | 14:32 | Annotation refactor Phase 6/7 bookkeeping: ticked T6.1-T6.4/T7.1-T7.3, fixed T5.1 path, wrote CHANGELOG + DEBUG_LOG entries | annotate_refactor_task.md, CHANGELOG.md, DEBUG_LOG.md | done | ~3k |
 | 14:32 | Session end: 11 writes across 4 files (SKILL.md, CHANGELOG.md, DEBUG_LOG.md, annotate_refactor_task.md) | 2 reads | ~185789 tok |
 | 14:36 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/607e54ac-9498-4651-8182-473f13bf4e6c/scratchpad/commit_msg.txt | — | ~364 |
+| 14:45 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/feedback_gitbutler-workflow.md | — | ~566 |
+| 14:45 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→2 lines | ~68 |
+
+## Session: 2026-06-26 14:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:54 | Created ../../../tmp/fix_diag_schema.sql | — | ~827 |
+| 14:55 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/607e54ac-9498-4651-8182-473f13bf4e6c/scratchpad/pgfwd.py | — | ~354 |
+| 14:58 | Edited DEBUG_LOG.md | modified around() | ~610 |
+| 15:01 | Ran ingestion-test for Test_1_digital_sec01_mod01. Runner aborted on false "postgres unavailable" (run.sh hardcodes DB port 5434; deployed db is 5437 per docker-compose.yml/.env/config.py). Bridged 5434->5437 with throwaway forwarder, re-ran unmodified. Backend idempotency-rejected (file already 33/33). Prior job 887ebddb (2026-05-23) approved, 33 extracted/33 created, 0 validation errors, no option-label cascade. Logged DEBUG_LOG section + bug-765. No pipeline source edited, nothing committed. | DEBUG_LOG.md, .wolf/buglog.json | clean run; 1 harness/config finding | ~1500 |
+| 15:03 | Session end: 3 writes across 3 files (fix_diag_schema.sql, pgfwd.py, DEBUG_LOG.md) | 9 reads | ~134501 tok |
+| 15:06 | Edited docker-compose.yml | inline fix | ~19 |
+| 21:55 | Fixed diagnostic 404 + 500. Root causes: (1) docker-compose.yml VITE_TEST_USER_TOKEN=92451633 (stale, pre-2026-05-29 seed) → frontend sent valid-but-unmatched UUID → 404 "User not found". (2) dev DB alembic stamped at 033 but missing tables from migrations 030/031/032 (diagnostic_sessions etc.) → 500 UndefinedTableError on /api/diagnostic/start. Fix: edited docker-compose.yml token → c76d24d2-5b59-4250-82f0-5874e5e1d826 + recreated frontend; applied /tmp/fix_diag_schema.sql (IF NOT EXISTS) to create diagnostic_sessions, spaced_repetition_state, test_session_results + user_progress.diagnostic_session_id. Restarted dsat-backend (was stuck in WatchFiles .venv reload storm). Verified: POST /api/diagnostic/start → 200, 16 questions. NOTE: prior session 14:54-15:06 created the SQL + edited compose but never applied/recreated, so bug persisted. | docker-compose.yml, .wolf/buglog.json (bug-766/767), DEBUG_LOG.md | diagnostic test works end-to-end | ~22000 |
+| 15:11 | Edited DEBUG_LOG.md | expanded (+18 lines) | ~814 |
+| 15:11 | Session end: 5 writes across 4 files (fix_diag_schema.sql, pgfwd.py, DEBUG_LOG.md, docker-compose.yml) | 10 reads | ~136440 tok |
+| 15:21 | Edited .claude/skills/ingestion-test/run.sh | 2→6 lines | ~97 |
+| 15:21 | Edited .claude/skills/ingestion-test/run.sh | inline fix | ~10 |
+| 15:22 | Edited DEBUG_LOG.md | inline fix | ~44 |
+| 15:22 | Edited DEBUG_LOG.md | 1→5 lines | ~112 |
+| 22:22 | Committed + pushed diagnostic fix via `but`. First two attempts on a new `diag-404-fix` lane produced EMPTY commits (0 files changed) — hunk dependency-lock: docker-compose.yml + DEBUG_LOG.md are already touched by commits in the `c-branch-1` lane (abff5a9, df16831), so they can't stage to a different lane. Fix: deleted empty lane, staged to c-branch-1, committed 48fac9d (2 files, +53/-1), pushed c-branch-1 -> origin (abff5a9 -> 48fac9d). Installed GitButler AI skill to .claude/skills/gitbutler via `but skill install --path .claude/skills/gitbutler` (repo scope, user choice). | docker-compose.yml, DEBUG_LOG.md, .claude/skills/gitbutler/, .wolf/cerebrum.md | committed+pushed; skill available as `gitbutler` | ~9000 |
+
+| 15:22 | Fixed ingestion-test runner DB-port drift (bug-765): DB_PORT from backend/.env, default 5437 | .claude/skills/ingestion-test/run.sh, DEBUG_LOG.md, .wolf/buglog.json | fixed+verified | ~2k |
+| 15:22 | Session end: 9 writes across 5 files (fix_diag_schema.sql, pgfwd.py, DEBUG_LOG.md, docker-compose.yml, run.sh) | 10 reads | ~137464 tok |
+| 15:22 | Session end: 9 writes across 5 files (fix_diag_schema.sql, pgfwd.py, DEBUG_LOG.md, docker-compose.yml, run.sh) | 10 reads | ~137464 tok |
+
+## Session: 2026-06-26 15:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:00 | Edited DEBUG_LOG.md | expanded (+13 lines) | ~313 |
+| 16:00 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 3 reads | ~52821 tok |
+| 16:10 | Session end: 1 writes across 1 files (DEBUG_LOG.md) | 4 reads | ~99752 tok |

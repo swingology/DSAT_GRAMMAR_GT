@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-26T21:36:48.832Z
-> Files: 1061 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-26T23:00:03.120Z
+> Files: 1064 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -10,11 +10,13 @@
 ## ../../../tmp/
 
 - `export_test1.py` — Export ingested Test_1 verbal sec01 mod01 questions + annotations to markdown. (~2100 tok)
+- `fix_diag_schema.sql` — Recreate objects from migrations 030/031/032 that are missing from the dev DB (~827 tok)
 - `mock_api.py` — Handler: do_GET, do_POST, do_OPTIONS, log_message (~608 tok)
 
 ## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/607e54ac-9498-4651-8182-473f13bf4e6c/scratchpad/
 
 - `commit_msg.txt` (~341 tok)
+- `pgfwd.py` — Throwaway TCP forwarder: localhost:5434 -> localhost:5437. (~354 tok)
 
 ## ../.agents/skills/generation-test/
 
@@ -46,10 +48,11 @@
 - `feedback_docker-compose-version.md` (~192 tok)
 - `feedback_frequent-memory-saves.md` — Frequent memory saves to survive crashes (~357 tok)
 - `feedback_generation-seeding.md` (~375 tok)
+- `feedback_gitbutler-workflow.md` (~551 tok)
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~869 tok)
+- `MEMORY.md` — Memory Index (~907 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_diagnostic_stats_architecture.md` (~439 tok)
 - `project_diagnostic_status.md` — Decisions locked (2026-06-23) (~677 tok)
@@ -83,14 +86,14 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~180107 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~49058 tok)
+- `DEBUG_LOG.md` — Debug Log (~50727 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
 - `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7859 tok)
 - `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~4119 tok)
 - `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
-- `docker-compose.yml` — Docker Compose services (~497 tok)
+- `docker-compose.yml` — Docker Compose services (~544 tok)
 - `Dockerfile.backend` (~180 tok)
 - `Dockerfile.frontend` (~123 tok)
 - `future_features.md` — Future Features & Outstanding Work (~8420 tok)
@@ -162,7 +165,7 @@
 
 ## .claude/skills/ingestion-test/
 
-- `run.sh` — Ingestion pipeline test runner — used by the /ingestion-test skill. (~1491 tok)
+- `run.sh` — Ingestion pipeline test runner — used by the /ingestion-test skill. (~2038 tok)
 
 ## .claude/skills/qa-question/
 

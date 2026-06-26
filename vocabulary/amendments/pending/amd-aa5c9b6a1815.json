@@ -1,0 +1,47 @@
+{
+  "amendment_id": "amd-aa5c9b6a1815",
+  "status": "pending",
+  "source_job_id": "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a",
+  "source_exam_code": "4",
+  "source_subject_code": "verbal",
+  "source_section_code": "01",
+  "source_module_code": "01",
+  "source_question_number": 19,
+  "content_origin": "official",
+  "affected_doc": "grammar",
+  "proposal_type": "new_controlled_vocab_key",
+  "affected_vocab": "GRAMMAR_FOCUS_BY_ROLE",
+  "proposed_value": "apostrophe_possessive_error",
+  "parent_key": "punctuation",
+  "definition": "Current semantic_relation_key list lacks a specific key for apostrophe errors in possessives. The closest key 'confused_word_substitution' is intended for non-homophone semantic confusion, not punctuation. A dedicated key would improve precision.",
+  "current_best_fit": "unknown",
+  "why_current_rules_are_insufficient": "Current semantic_relation_key list lacks a specific key for apostrophe errors in possessives. The closest key 'confused_word_substitution' is intended for non-homophone semantic confusion, not punctuation. A dedicated key would improve precision.",
+  "official_evidence": "Options B, C, D all contain apostrophe-related errors: 'peoples story's', 'peoples stories', 'people's story's'.",
+  "rule_doc_patch": {
+    "target_section": "Grammar taxonomy section",
+    "before": "TBD",
+    "after": "- `apostrophe_possessive_error` — Current semantic_relation_key list lacks a specific key for apostrophe errors in possessives. The closest key 'confused_word_substitution' is intended for non-homophone semantic confusion, not punctuation. A dedicated key would improve precision.",
+    "rationale": "Options B, C, D all contain apostrophe-related errors: 'peoples story's', 'peoples stories', 'people's story's'."
+  },
+  "master_json_patch": {
+    "affected_vocab": "GRAMMAR_FOCUS_BY_ROLE",
+    "proposed_value": "apostrophe_possessive_error",
+    "parent_key": "punctuation",
+    "description": "Current semantic_relation_key list lacks a specific key for apostrophe errors in possessives. The closest key 'confused_word_substitution' is intended for non-homophone semantic confusion, not punctuation. A dedicated key would improve precision."
+  },
+  "supporting_examples": [
+    {
+      "source_job_id": "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a",
+      "source_exam_code": "4",
+      "source_subject_code": "verbal",
+      "source_section_code": "01",
+      "source_module_code": "01",
+      "source_question_number": 19,
+      "official_evidence": "Options B, C, D all contain apostrophe-related errors: 'peoples story's', 'peoples stories', 'people's story's'."
+    }
+  ],
+  "review_notes": [],
+  "admin_decision": null,
+  "created_at": "2026-06-26T22:56:06.781244Z",
+  "updated_at": "2026-06-26T22:56:06.781246Z"
+}
