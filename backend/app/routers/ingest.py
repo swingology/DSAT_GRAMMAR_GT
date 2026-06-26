@@ -829,6 +829,7 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
     seen_keys: set[tuple[str, object]] = set()
     questions = []
     norm_errors: list[dict] = []
+    from app.prompts.extract_prompt import canonicalize_stem, canonicalize_stimulus_mode
     for raw_idx, q in enumerate(raw_questions):
         enriched = dict(q)
         for k, v in shared_source.items():
@@ -861,6 +862,19 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
         ):
             for idx, opt in enumerate(opts):
                 opt["label"] = "ABCD"[idx]
+
+        # Canonicalize stem_type_key / stimulus_mode_key against the controlled
+        # vocab. The extraction prompt now constrains these, but LLM drift still
+        # emits aliases; map known aliases so Pass 2 routing (_detect_domain)
+        # matches a real domain bucket instead of falling to "unknown" + Part D.
+        if enriched.get("stem_type_key"):
+            _canon_stem = canonicalize_stem(enriched["stem_type_key"])
+            if _canon_stem:
+                enriched["stem_type_key"] = _canon_stem
+        if enriched.get("stimulus_mode_key"):
+            _canon_mode = canonicalize_stimulus_mode(enriched["stimulus_mode_key"])
+            if _canon_mode:
+                enriched["stimulus_mode_key"] = _canon_mode
 
         # Drop blanks and surface as a validation error so silent loss is
         # visible. Most often triggers when _split_passage_from_question moves
@@ -1124,6 +1138,13 @@ async def _persist_single_question(
 
     question.latest_annotation_id = annotation_id
     question.latest_version_id = version_id
+
+    # Pass 2 canonicalizes stem_type_key (sanitize above enforces STEM_TYPE_KEYS);
+    # write it back so questions.stem_type_key reflects the validated annotation
+    # rather than the raw Pass 1 extraction label, which is frequently non-canonical.
+    _canonical_stem = annotate_json.get("stem_type_key")
+    if _canonical_stem:
+        question.stem_type_key = _canonical_stem
 
     correct_label = _resolve_correct_option_label(q_data, annotate_json)
     opt_analyses = option_analyses_by_label(annotate_json)
@@ -3609,6 +3630,10 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     )
     question.latest_annotation_id = annotation_id
     question.latest_version_id = version_id
+    # Write back the Pass 2 canonical stem_type_key (see _create_question).
+    _canonical_stem = annotate_json.get("stem_type_key")
+    if _canonical_stem:
+        question.stem_type_key = _canonical_stem
     question.annotation_stale = False
     question.updated_at = now
 
@@ -3691,6 +3716,13 @@ async def reannotate_question(
     )
     ver = ver_result.scalars().first()
     choices = ver.choices_jsonb if ver else []
+    # Canonicalize stem/stimulus against the controlled vocab as a safety net
+    # (older questions may still carry non-canonical Pass 1 labels). Ensures
+    # Pass 2 routing (_detect_domain) matches a real domain bucket.
+    from app.prompts.extract_prompt import canonicalize_stem, canonicalize_stimulus_mode
+    _canon_stem = canonicalize_stem(q.stem_type_key) or q.stem_type_key
+    _canon_mode = canonicalize_stimulus_mode(q.stimulus_mode_key) or q.stimulus_mode_key
+
     synthesized_pass1 = {
         "question_text": q.current_question_text,
         "passage_text": q.current_passage_text,
@@ -3698,8 +3730,8 @@ async def reannotate_question(
         "underlined_text": q.current_underlined_text,
         "options": choices,
         "correct_option_label": q.current_correct_option_label,
-        "stem_type_key": q.stem_type_key,
-        "stimulus_mode_key": q.stimulus_mode_key,
+        "stem_type_key": _canon_stem,
+        "stimulus_mode_key": _canon_mode,
         "source_exam_code": q.source_exam_code,
         "source_section_code": q.source_section_code,
         "source_module_code": q.source_module_code,

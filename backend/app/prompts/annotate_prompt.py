@@ -73,44 +73,63 @@ _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", 
 _GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generation_v8.md"
 _READING_FILE = "rules_agent_dsat_reading_v3.md"
 
-# stem_type_key values that unambiguously belong to grammar / SEC domain
-_GRAMMAR_STEMS = {
-    "complete_the_text",
-    "choose_transition",
-    "rhetorical_synthesis",
-    "choose_conjunction",
-    "fix_punctuation",
-    "fix_sentence_boundary",
-    "no_change",
+# stem_type_key → domain attribution. Single source of truth for Pass 2 prompt
+# routing. Every STEM_TYPE_KEYS value (from ontology.py) MUST appear here —
+# guarded by test_stem_domain_covers_all_vocab in test_prompts.py. Adding a stem
+# to the vocab without attributing a domain fails CI.
+#   "grammar"   → SEC / Expression of Ideas (loads grammar_v8 Parts A,C,D)
+#   "reading"   → Information & Ideas / Craft & Structure (loads reading_v3 §3-14)
+#   "ambiguous" → routed at runtime by _detect_domain (complete_the_text is
+#                 SEC/EOI sentence-completion OR vocabulary-in-context w/ passage)
+# Kept here (not in generated ontology.py) so the gen_vocab sync check stays clean.
+STEM_TYPE_DOMAIN = {
+    "complete_the_text": "ambiguous",
+    "conform_to_standard_english": "grammar",
+    "choose_best_grammar_revision": "grammar",
+    "choose_best_transition": "grammar",
+    "choose_best_notes_synthesis": "grammar",
+    "choose_main_idea": "reading",
+    "choose_main_purpose": "reading",
+    "choose_structure_description": "reading",
+    "choose_sentence_function": "reading",
+    "choose_likely_response": "reading",
+    "choose_best_support": "reading",
+    "choose_best_quote": "reading",
+    "choose_best_completion_from_data": "reading",
+    "choose_words_in_context": "reading",
+    "choose_word_in_context": "reading",
+    "choose_cross_text_connection": "reading",
+    "choose_text_relationship": "reading",
+    "choose_agreement_across_texts": "reading",
+    "choose_difference_across_texts": "reading",
+    "choose_best_inference": "reading",
+    "choose_command_of_evidence_textual": "reading",
+    "choose_command_of_evidence_quantitative": "reading",
+    "choose_central_detail": "reading",
+    "choose_detail": "reading",
+    "choose_best_illustration": "reading",
+    "choose_best_weakener": "reading",
+    "most_logically_completes": "reading",
+    "synthesize_information": "reading",
+    "compare_contributions": "reading",
 }
 
-# stem_type_key values that unambiguously belong to reading domains
-_READING_STEMS = {
-    "vocabulary_in_context",
-    "choose_words_in_context",
-    "describe_structure",
-    "state_main_purpose",
-    "state_main_idea",
-    "choose_main_idea",
-    "identify_main_purpose",
-    "support_claim",
-    "function_of_part",
-    "choose_function",
-    "interpret_graph",
-    "interpret_data",
-    "infer_author_opinion",
-    "infer_character",
-    "analyze_argument",
-    "choose_cross_text_connection",
-    "choose_command_of_evidence_textual",
-    "choose_command_of_evidence_quantitative",
-    "choose_best_support",
-    "synthesize_information",
-    "present_methods",
-    "emphasize_similarity",
-    "compare_hypotheses",
-    "most_logically_completes",
-}
+# Domain routing sets are DERIVED from the canonical STEM_TYPE_DOMAIN map in
+# ontology.py — never hand-maintained. This eliminates drift between the routing
+# sets and the STEM_TYPE_KEYS controlled vocabulary (the prior hand-maintained
+# sets contained dead aliases like "describe_structure" and were missing real
+# canonical keys like "choose_sentence_function", causing reading questions to
+# mis-route to "unknown" and pull in grammar Part D). Guarded by
+# test_stem_domain_covers_all_vocab.
+_GRAMMAR_STEMS = frozenset(
+    k for k, v in STEM_TYPE_DOMAIN.items() if v == "grammar"
+)
+_READING_STEMS = frozenset(
+    k for k, v in STEM_TYPE_DOMAIN.items() if v == "reading"
+)
+_AMBIGUOUS_STEMS = frozenset(
+    k for k, v in STEM_TYPE_DOMAIN.items() if v == "ambiguous"
+)
 
 # question text keywords that signal grammar domain for complete_the_text
 _GRAMMAR_QUESTION_SIGNALS = {
@@ -172,8 +191,9 @@ def _unknown_context() -> str:
 
 def _detect_domain(q_data: dict) -> str:
     stem = (q_data.get("stem_type_key") or "").strip().lower()
-    if stem in _GRAMMAR_STEMS:
-        # complete_the_text can be vocabulary (reading) — check question text
+    if stem in _AMBIGUOUS_STEMS:
+        # complete_the_text can be SEC/EOI (grammar) or vocabulary-in-context
+        # (reading) — disambiguate from question text + passage presence.
         if stem == "complete_the_text":
             q_text = (q_data.get("question_text") or "").lower()
             if any(sig in q_text for sig in _GRAMMAR_QUESTION_SIGNALS):
@@ -183,6 +203,8 @@ def _detect_domain(q_data: dict) -> str:
                 return "reading"
             # Sentence-only complete_the_text defaults to grammar unless overridden
             return "grammar"
+        return "unknown"
+    if stem in _GRAMMAR_STEMS:
         return "grammar"
     if stem in _READING_STEMS:
         return "reading"

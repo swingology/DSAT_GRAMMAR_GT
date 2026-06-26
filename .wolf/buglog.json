@@ -6208,5 +6208,71 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-06-23T15:26:56.689273+00:00"
+  },
+  {
+    "id": "bug-762",
+    "timestamp": "2026-06-26T05:40:00+00:00",
+    "error_message": "questions.stem_type_key held stale non-canonical Pass 1 extraction labels (e.g. 23x complete_the_text, support_claim, analyze_text_structure, synthesize_notes, retrieve_detail) while the validated Pass 2 canonical stem lived only in question_annotations.annotation_jsonb['stem_type_key']. Any code reading questions.stem_type_key directly (student practice, analytics, diagnostic) saw wrong/mis-classified stems.",
+    "file": "backend/app/routers/ingest.py (_create_question ~L1060-1126, _run_reannotate_pipeline ~L3607-3613)",
+    "root_cause": "Question row is created with stem_type_key=q_data['stem_type_key'] (raw Pass 1 extraction, frequently non-canonical). Pass 2 sanitize_annotation_keys() enforces STEM_TYPE_KEYS and stores the canonical stem in annotation_jsonb, but the canonical value was never written back to questions.stem_type_key. Validator only checks the annotation stem (canonical) so the job approved with questions.stem_type_key stale.",
+    "fix": "FIXED: after sanitize + latest_annotation_id assignment in both _create_question and _run_reannotate_pipeline (ingest.py), write back annotate_json['stem_type_key'] to question.stem_type_key (guarded `if _canonical_stem`). Backfilled globally: UPDATE across ALL questions (47 rows updated: 46 stale + 1 NULL) from annotation_jsonb->>'stem_type_key'; 0 disagreements post-verify across 94 questions. Future ingestions auto-corrected via code change.",
+    "tags": [
+      "annotation-schema",
+      "stem_type_key",
+      "ingestion",
+      "pass1-pass2",
+      "write-back",
+      "v8"
+    ],
+    "related_bugs": [
+      "bug-761",
+      "bug-760"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T05:48:00+00:00"
+  },
+  {
+    "id": "bug-763",
+    "timestamp": "2026-06-26T06:05:00+00:00",
+    "error_message": "Pass 2 prompt routing drifted from controlled vocab: _READING_STEMS/_GRAMMAR_STEMS in annotate_prompt.py were hand-maintained sets containing dead aliases (describe_structure, state_main_purpose, support_claim, function_of_part, rhetorical_synthesis, fix_punctuation) and MISSING canonical STEM_TYPE_KEYS (choose_structure_description, choose_text_relationship, choose_sentence_function, choose_detail, choose_best_inference, choose_best_notes_synthesis, choose_main_purpose, compare_contributions). Reading questions with canonical stems mis-routed to 'unknown' \u2192 loaded grammar Part D (taxonomy) + reading hybrid instead of reading-only \u00a73-14.",
+    "file": "backend/app/prompts/annotate_prompt.py (_GRAMMAR_STEMS/_READING_STEMS, _detect_domain)",
+    "root_cause": "Two hand-maintained stem sets duplicated the canonical STEM_TYPE_KEYS vocab from ontology.py and diverged over time. No guard ensured the sets covered the vocab.",
+    "fix": "FIXED: added STEM_TYPE_DOMAIN map (stem\u2192grammar/reading/ambiguous) in annotate_prompt.py (NOT ontology.py \u2014 ontology.py is gen_vocab-generated; adding there broke test_vocab_sync). _GRAMMAR_STEMS/_READING_STEMS/_AMBIGUOUS_STEMS now DERIVED from STEM_TYPE_DOMAIN via frozenset comprehensions. _detect_domain routes ambiguous complete_the_text via existing text-signal/passage disambiguation. Guard test test_stem_domain_covers_all_vocab in test_prompts.py asserts set(STEM_TYPE_KEYS)==set(STEM_TYPE_DOMAIN). Verified: 0 canonical stems route to unknown; all reading stems load Reading v3 with Part D absent. 93 tests pass.",
+    "tags": [
+      "annotation-schema",
+      "stem_type_key",
+      "routing",
+      "drift",
+      "pass2",
+      "v8"
+    ],
+    "related_bugs": [
+      "bug-762",
+      "bug-761"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T06:05:00+00:00"
+  },
+  {
+    "id": "bug-764",
+    "timestamp": "2026-06-26T06:42:00+00:00",
+    "error_message": "Pass 1 extraction emitted non-canonical stem_type_key values (analyze_text_structure, retrieve_detail, support_claim, synthesize_notes, compare_texts, etc.) because the extraction prompt had no controlled vocabulary and even instructed 'Set stem_type_key to compare_texts' for cross-text. Non-canonical stems mis-routed Pass 2 to 'unknown' \u2192 grammar Part D hybrid instead of reading-only context.",
+    "file": "backend/app/prompts/extract_prompt.py (EXTRACT_SYSTEM_PROMPT); backend/app/routers/ingest.py (_normalize_extracted_questions, reannotate_question synthesized_pass1)",
+    "root_cause": "Extraction prompt described stem_type_key with loose examples and no allowed-values list; no deterministic canonicalization of LLM output before Pass 2 routing.",
+    "fix": "FIXED: (1) extract_prompt.py now injects an ALLOWED stem_type_key / stimulus_mode_key vocab block (built from ontology STEM_TYPE_KEYS/STIMULUS_MODE_KEYS) + a CONTROLLED VOCABULARY rule; fixed cross-text rule to choose_cross_text_connection (was compare_texts). (2) Added canonicalize_stem/canonicalize_stimulus_mode + _STEM_ALIASES/_STIMULUS_ALIASES safety net, wired into _normalize_extracted_questions (new ingestions) and reannotate_question synthesized_pass1 (Pass-2-only reannotation). (3) Guard tests: test_extract_prompt_constrains_stem_vocab, test_canonicalize_stem_maps_known_aliases, test_stem_alias_targets_are_all_canonical. Verified live: reannotate Q8 \u2192 approved, clean reading annotation (grammar_focus_key null).",
+    "tags": [
+      "extraction",
+      "pass1",
+      "stem_type_key",
+      "controlled-vocab",
+      "routing",
+      "v8"
+    ],
+    "related_bugs": [
+      "bug-762",
+      "bug-763"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T06:42:00+00:00"
   }
 ]
