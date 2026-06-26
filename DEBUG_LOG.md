@@ -1,5 +1,57 @@
 # Debug Log
 
+## 2026-06-26 - Diagnostic Test 404/500 Fix
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `bc93bac` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: `POST /api/diagnostic/start` returned 404 `{"detail":"User not found"}` — stale test-user token in docker-compose.yml.**
+   - `docker-compose.yml:57` injected `VITE_TEST_USER_TOKEN: 92451633-1318-410a-8687-5b1ab59e4709`, a token from an earlier DB seed. The dev DB was re-seeded on 2026-05-29 and the only `users` row now has `user_token = c76d24d2-5b59-4250-82f0-5874e5e1d826`. `DiagnosticPage.tsx` resolves `USER_TOKEN` from `VITE_TEST_USER_TOKEN` → `localStorage` → `''`, so the frontend sent a valid-but-unmatched UUID; `_resolve_user_by_token` (`backend/app/routers/student.py:667`) parsed it but found no User → 404.
+   - **Fixed:** updated `VITE_TEST_USER_TOKEN` to `c76d24d2-5b59-4250-82f0-5874e5e1d826` in `docker-compose.yml` and recreated the frontend container (`docker compose up -d --no-deps frontend`) so Vite re-injects `import.meta.env`. Verified live: `POST /api/diagnostic/start` with `X-API-Key: student-test-key` + the token → 200. (bug-766)
+
+2. **High: `POST /api/diagnostic/start` returned 500 once a valid token was supplied — `diagnostic_sessions` table missing (alembic drift).**
+   - Backend traceback: `asyncpg.exceptions.UndefinedTableError: relation "diagnostic_sessions" does not exist`. `alembic_version` was stamped at 033 (head) but the schema was actually at ~029: migrations 030/031/032's standalone tables (`diagnostic_sessions`, `spaced_repetition_state`, `test_session_results`) and the `user_progress.diagnostic_session_id` column were never created. 033's `question_annotations` columns + `span_review_queue` + GIN indexes WERE present (mixed `create_all`+stamp baseline), so `alembic upgrade head` could not re-run 030–032 and a `stamp 029; upgrade head` would crash at 033 `add_column` on existing columns.
+   - **Fixed:** applied the missing DDL directly with `IF NOT EXISTS` guards (`/tmp/fix_diag_schema.sql` run via `docker exec dsat-db psql -f`) — created `diagnostic_sessions` (+ indexes + `user_progress.diagnostic_session_id` FK/index), `spaced_repetition_state` (+ unique `user_id/question_id` + indexes), `test_session_results` (+ indexes). Left `alembic_version` at 033 since the schema now matches head. Verified: diagnostic start returns 200 with 16 questions + coverage_report. (bug-767)
+
+3. **Medium: `dsat-backend` got stuck in a uvicorn `--reload` loop watching `.venv/lib/python3.12/site-packages/**`, rendering the container unhealthy.**
+   - WatchFiles detected churn under the venv and reloaded repeatedly without serving. Restarted `dsat-backend` to recover. Root cause is the reload watcher's include scope (pre-existing config issue, not caused by this fix); not addressed here. Note: dev stack host ports are backend **8002**, frontend **5174**, db **5437** — not the CLAUDE.md-documented 8000/5173/5434.
+
+## 2026-06-26 - Ingestion Test Run (Test_1_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `bc93bac` — GitButler Workspace Commit
+
+### Outcome summary
+
+- Target: `Test_1_digital_sec01_mod01` (official verbal, exam 1 / sec 01 / mod 01, year 2025).
+- New submission was a **no-op**: backend idempotency guard returned
+  `This file has already produced a complete ingest (33/33 questions).` (HTTP detail,
+  `_duplicate_checksum_conflict_detail` in `backend/app/routers/ingest.py:3161`), so the
+  runner created no new job (`RESULT_JSON:{"error":"no job_id", ...}`).
+- Canonical prior ingest of this target — job `887ebddb-6343-4096-a283-c6cf838388da`
+  (created 2026-05-23) — is **clean**: status **approved**, extracted **33** / created **33**,
+  `validation_errors_jsonb` is NULL (zero validation errors by step). The
+  `Option labels must be exactly {A, B, C, D}, got ['']` cascade did **not** appear
+  (0 matches). Pipeline run for this target is clean — no pipeline findings.
+
+### Findings
+
+1. **Medium: ingestion-test runner aborts on a false "postgres unavailable" due to a hardcoded DB-port drift.**
+   - `.claude/skills/ingestion-test/run.sh` hardcodes its prereq psql check and all
+     result-collection queries to host port **5434** (lines 45/49/53/143–148), but the
+     deployed stack publishes Postgres on host port **5437** (`docker-compose.yml:10`
+     `"5437:5432"`; `backend/.env` and `backend/app/config.py` both use `localhost:5437`).
+     Nothing listens on 5434, so the runner exits with
+     `RESULT_JSON:{"error":"postgres unavailable"}` even though the `dsat-db` container is
+     healthy and accepting connections. This blocks the runner out of the box.
+   - Not a pipeline defect — environmental/harness config drift. The application backend
+     itself connects correctly (5437); only the stale runner script is affected.
+   - **Worked around (not fixed):** ran a throwaway localhost TCP forwarder 5434→5437 so the
+     bundled runner could execute unmodified; no pipeline source was edited and nothing was
+     committed. Permanent fix = update `run.sh` to 5437 (or read the port from `.env`).
+
 ## 2026-06-26 - Annotation Pipeline Refactor (shape-mismatch hardening)
 Report created by: Claude Opus 4.8
 Git branch: `gitbutler/workspace`

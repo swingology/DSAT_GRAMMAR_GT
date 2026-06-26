@@ -54,7 +54,7 @@ services:
     environment:
       VITE_API_BASE: /api
       VITE_STUDENT_API_KEY: student-test-key
-      VITE_TEST_USER_TOKEN: 92451633-1318-410a-8687-5b1ab59e4709
+      VITE_TEST_USER_TOKEN: c76d24d2-5b59-4250-82f0-5874e5e1d826
       VITE_TEST_USER_ID: "1"
       BACKEND_PROXY_URL: http://backend:8000
       __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: jb-2410.tail0cecc1.ts.net
