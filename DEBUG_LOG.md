@@ -1,5 +1,18 @@
 # Debug Log
 
+## 2026-06-26 - Ingestion Test Run (Test_4_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `dc53ce4` — GitButler Workspace Commit
+
+### Findings
+
+1. **High:** Blocking `syntactic_trap_key` validation error — grammar_role_key='verb_form' annotation returned `None` for `syntactic_trap_key`; rule requires non-None/non-'none'. Affected 5 questions (validating|5 errors); 5 questions failed to persist (extracted 33, created 28). Representative: question index 19 / source question number "20", job `e8b32fc4-3fbd-4662-a2d0-8fe711b1365a`.
+
+2. **High:** `module_completeness` persistence shortfall — expected 33, extracted 33, created only 28. Directly caused by the 5 blocking `syntactic_trap_key` errors in finding #1.
+
+3. **Medium:** Question 20 (job `e8b32fc4`) additionally has `correct_option_label not found in source` (severity: warning) and `skill_family_key` populated on a grammar-domain question (severity: review). Both are non-blocking. The "Option labels must be exactly {A, B, C, D}, got ['']" cascade did **not** appear.
+
 ## 2026-06-26 - Diagnostic Test 404/500 Fix
 Report created by: Claude (glm-5.2:cloud)
 Git branch: `gitbutler/workspace`
@@ -38,7 +51,7 @@ Git checkpoint: `bc93bac` — GitButler Workspace Commit
 
 ### Findings
 
-1. **Medium: ingestion-test runner aborts on a false "postgres unavailable" due to a hardcoded DB-port drift.**
+1. ~~**Medium: ingestion-test runner aborts on a false "postgres unavailable" due to a hardcoded DB-port drift.**~~ — **Fixed 2026-06-26** (see Fixed bullet below)
    - `.claude/skills/ingestion-test/run.sh` hardcodes its prereq psql check and all
      result-collection queries to host port **5434** (lines 45/49/53/143–148), but the
      deployed stack publishes Postgres on host port **5437** (`docker-compose.yml:10`
@@ -51,6 +64,10 @@ Git checkpoint: `bc93bac` — GitButler Workspace Commit
    - **Worked around (not fixed):** ran a throwaway localhost TCP forwarder 5434→5437 so the
      bundled runner could execute unmodified; no pipeline source was edited and nothing was
      committed. Permanent fix = update `run.sh` to 5437 (or read the port from `.env`).
+   - **Fixed 2026-06-26:** `run.sh` now derives `DB_PORT` from `backend/.env`'s `DATABASE_URL`
+     (env override `DB_PORT`, default 5437); all 7 psql calls use `$DB_PORT` instead of the
+     hardcoded 5434. Verified: resolver yields 5437, DB reachable on it, `bash -n` clean. The
+     temporary TCP forwarder is no longer needed.
 
 ## 2026-06-26 - Annotation Pipeline Refactor (shape-mismatch hardening)
 Report created by: Claude Opus 4.8
