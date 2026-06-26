@@ -2,6 +2,7 @@ import uuid
 import re
 import asyncio
 import logging
+import random
 import tempfile
 import base64
 import json
@@ -28,9 +29,9 @@ from app.storage.local_store import compute_checksum
 from app.storage.object_store import put_object, read_object
 from app.storage.crop_detector import detect_layout, match_region_for_question, match_stimulus_regions_for_question, crop_and_store
 from app.parsers.pdf_parser import parse_pdf
-from app.parsers.json_parser import extract_json_from_text, normalize_annotation
+from app.parsers.json_parser import extract_json_from_text, normalize_annotation, canonicalize_annotation
 from app.pipeline.orchestrator import JobOrchestrator
-from app.pipeline.validator import validate_question
+from app.pipeline.validator import validate_question, validate_annotation_completeness
 from app.pipeline.annotation_sanitizer import sanitize_annotation_keys
 from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields, apply_option_annotations
 from app.models.payload import JobResponse, ReannotateRequest, OCRJobResult, OCRBenchmarkResponse
@@ -1080,7 +1081,7 @@ async def _persist_single_question(
         source_subject_code=q_data.get("source_subject_code"),
         source_section_code=q_data.get("source_section_code"),
         source_module_code=q_data.get("source_module_code"),
-        source_question_number=q_data.get("source_question_number"),
+        source_question_number=q_num_int,
         stimulus_mode_key=q_data.get("stimulus_mode_key"),
         stem_type_key=q_data.get("stem_type_key"),
         current_question_text=q_data.get("question_text", ""),
@@ -2030,6 +2031,14 @@ async def _prewarm_annotation_cache(provider, questions_data: list[dict], conten
             logger.warning("Annotation cache pre-warm failed for domain=%s: %s", domain, exc)
 
 
+def _is_rate_limit_error(exc: Exception) -> bool:
+    return "429" in str(exc)
+
+
+# Backoff delays for HTTP 429 rate-limit retries (seconds). Final slot has +jitter applied.
+_RATE_LIMIT_BACKOFF = [5, 15, 45]
+
+
 async def _annotate_with_retry(
     provider,
     *,
@@ -2042,14 +2051,21 @@ async def _annotate_with_retry(
     question_index: int | None = None,
     log_context: str = "question",
 ) -> tuple[dict, dict]:
-    """Run Pass 2 annotation with one retry for malformed/empty JSON output."""
+    """Run Pass 2 annotation with retries for malformed JSON and HTTP 429 rate limits.
+
+    - Up to 3 retries for 429 with exponential backoff (5s / 15s / 45s + jitter).
+    - 1 retry for empty/malformed JSON (no wait).
+    """
     from app.prompts.annotate_prompt import build_annotate_prompt_parts, enforce_nullability, _detect_domain
 
     prompt_q_data = {**q_data, "content_origin": content_origin}
     sys_static, sys_dynamic, user = build_annotate_prompt_parts(prompt_q_data)
+
+    rate_limit_attempts = 0
+    json_attempts = 0
     last_exc: Exception | None = None
 
-    for attempt in range(2):
+    while True:
         try:
             if semaphore is None:
                 result = await provider.complete_cached(
@@ -2076,7 +2092,7 @@ async def _annotate_with_retry(
                     f"model='{model_name}', input_len={len(result.raw_text)}, "
                     f"preview='{result.raw_text[:200]}')"
                 )
-            annotate_json = normalize_annotation(parsed)
+            annotate_json = canonicalize_annotation(parsed)
             annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
             meta = {
                 "provider": result.provider,
@@ -2087,19 +2103,44 @@ async def _annotate_with_retry(
             if question_index is not None:
                 meta["question_index"] = question_index
             return annotate_json, meta
+
         except Exception as exc:
             last_exc = exc
-            if attempt == 0:
+
+            if _is_rate_limit_error(exc):
+                if rate_limit_attempts >= len(_RATE_LIMIT_BACKOFF):
+                    logger.warning(
+                        "Annotation 429 rate-limit exhausted for %s after %d retries: %s",
+                        log_context,
+                        rate_limit_attempts,
+                        exc,
+                    )
+                    raise
+                delay = _RATE_LIMIT_BACKOFF[rate_limit_attempts] + random.uniform(0, 2)
                 logger.warning(
-                    "Annotation attempt 1 returned no JSON for %s, retrying: %s",
+                    "Annotation 429 for %s (attempt %d/%d), backing off %.1fs",
+                    log_context,
+                    rate_limit_attempts + 1,
+                    len(_RATE_LIMIT_BACKOFF),
+                    delay,
+                )
+                await asyncio.sleep(delay)
+                rate_limit_attempts += 1
+            else:
+                if json_attempts >= 1:
+                    logger.warning(
+                        "Annotation failed for %s after %d JSON attempts: %s",
+                        log_context,
+                        json_attempts + 1,
+                        exc,
+                    )
+                    raise
+                logger.warning(
+                    "Annotation attempt returned no JSON for %s, retrying: %s",
                     log_context,
                     exc,
                 )
-
-    logger.warning("Annotation failed for %s after 2 attempts: %s", log_context, last_exc)
-    if last_exc is not None:
-        raise last_exc
-    raise RuntimeError(f"Annotation failed for {log_context} after 2 attempts")
+                json_attempts += 1
 
 
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
@@ -2922,6 +2963,9 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         job.status = "validating"
         merged = _merge_for_validation(q_data, annotate_json)
         errors = validate_question(merged, content_origin=job.content_origin)
+        # Domain-aware completeness gate (post-canonicalization). Catches taxonomy
+        # gaps that validate_question's structural checks miss.
+        errors = errors + validate_annotation_completeness(annotate_json, job_id=str(job.id))
 
         if any(e["severity"] == "blocking" for e in errors):
             all_errors.append({"question_index": i, "step": "validating", "errors": errors, "source_question_number": q_data.get("source_question_number")})

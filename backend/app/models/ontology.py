@@ -296,6 +296,19 @@ READING_QUESTION_FAMILY_KEYS = (
     "craft_and_structure", "information_and_ideas",
 )
 
+# --- Grammar question families (subset of QUESTION_FAMILY_KEYS) ---
+GRAMMAR_QUESTION_FAMILY_KEYS = (
+    "conventions_grammar", "expression_of_ideas",
+)
+
+# Grammar roles that always carry a structural trap. When grammar_role_key is one
+# of these, syntactic_trap_key must be non-null ("none" is only valid for a
+# genuinely unambiguous sentence). Shared by the annotation prompt (HARD ROUTING
+# RULES §3) and validate_annotation_completeness so prompt and validator agree.
+SYNTACTIC_TRAP_REQUIRED_ROLES = (
+    "agreement", "pronoun", "modifier", "verb_form", "sentence_boundary",
+)
+
 # --- Reading skill families ---
 READING_SKILL_FAMILY_KEYS = (
     "command_of_evidence_textual", "command_of_evidence_quantitative",

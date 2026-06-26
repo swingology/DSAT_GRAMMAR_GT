@@ -308,7 +308,7 @@ Grammar-domain stem types (`choose_best_grammar_revision`, `choose_best_transiti
   "tone": "neutral",
   "difficulty_overall": "medium",
   "difficulty_reading": "medium",
-  "difficulty_grammar": "low",
+  "difficulty_grammar": null,
   "difficulty_inference": "medium",
   "difficulty_vocab": "low",
   "distractor_strength": "high",

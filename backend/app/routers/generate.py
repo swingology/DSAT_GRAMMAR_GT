@@ -26,8 +26,9 @@ from app.models.db import (
     QuestionJob, Question, QuestionVersion, QuestionAnnotation, QuestionOption,
     GenerationBatch, GenerationBatchIdempotencyKey,
 )
-from app.parsers.json_parser import extract_json_from_text, normalize_annotation
-from app.pipeline.validator import validate_question
+from app.parsers.json_parser import extract_json_from_text, normalize_annotation, canonicalize_annotation
+from app.pipeline.validator import validate_question, validate_annotation_completeness
+from app.pipeline.annotation_sanitizer import sanitize_annotation_keys
 from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields
 from app.pipeline.overlap import detect_overlaps, persist_overlap_relations
 from app.models.payload import (
@@ -627,9 +628,14 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
                 system_static=ann_static, system_dynamic=ann_dynamic,
                 user=ann_user, max_tokens=8192,
             )
-            annotate_json = normalize_annotation(
+            # Same canonicalize → enforce-nullability → sanitize path as official
+            # ingest, so generated practice data cannot drift from official ground truth.
+            from app.prompts.annotate_prompt import enforce_nullability, _detect_domain
+            annotate_json = canonicalize_annotation(
                 extract_json_from_text(result.raw_text, job.provider_name, job.model_name)
             )
+            annotate_json = enforce_nullability(annotate_json, _detect_domain(generated))
+            annotate_json = sanitize_annotation_keys(annotate_json, job_id=str(job.id))
             job.pass2_json = {**annotate_json, "_llm_meta": {"provider": result.provider, "model": result.model, "latency_ms": result.latency_ms}}
             break
         except ValueError as _json_err:
@@ -652,6 +658,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
     merged = {**generated, **annotate_json, "generation_source_set": request_data}
     try:
         errors = validate_question(merged, content_origin="generated")
+        errors = errors + validate_annotation_completeness(annotate_json, job_id=str(job.id))
     except Exception as exc:
         logger.error("Generate validation failed unexpectedly (job %s): %s", job.id, exc)
         return await _mark_job_failed(

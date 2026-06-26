@@ -1,5 +1,114 @@
 # Debug Log
 
+## 2026-06-26 - Annotation Pipeline Refactor (shape-mismatch hardening)
+Report created by: Claude Opus 4.8
+Git branch: `gitbutler/workspace`
+Git checkpoint: `bfc86ad` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: nested LLM reasoning shape did not reconcile to the flat schema consumed by practice/generation.**
+   - LLMs emitted canonical fields (`question_family_key`, `difficulty_overall`, `syntactic_trap_key`, etc.)
+     inside nested `question`/`classification`/`review`/`reasoning` blocks while top-level stayed null/`"none"`.
+     Live active rows showed `missing_question_family` 21, `missing_difficulty` 21. Reliance on LLM obedience
+     was the root cause — no deterministic reconciliation step existed.
+   - **Fixed:** Added `canonicalize_annotation()` (`backend/app/parsers/json_parser.py`) — deterministic
+     promotion of nested → top-level with null/empty/`"none"` repair, alias normalization, and a conflict
+     policy (top-level wins, clash recorded in `_annotation_quality.conflicts[]`, `needs_human_review` set).
+     Replaced `normalize_annotation` in the ingest annotate path and routed `generate.py` through the same
+     pipeline. Repair script (`backend/scripts/repair_annotation_canonical.py`) backfilled 30 active rows
+     (0 conflicts): `missing_question_family` 21 → 0, `missing_difficulty` 21 → 2.
+
+2. **Medium: no domain-complete validation gate — malformed taxonomy persisted silently.**
+   - Grammar rows could carry `skill_family_key`; reading rows could carry grammar role/focus keys; required
+     fields and valid role/focus pairings were never enforced before persistence.
+   - **Fixed:** Added `validate_annotation_completeness()` (`backend/app/pipeline/validator.py`) wired into
+     ingest (after sanitize) and generation. Grammar requires role/focus/family/difficulty + conditional
+     `syntactic_trap_key` and forbids `skill_family_key`; reading requires skill/focus/family/difficulty and
+     forbids grammar keys. Backed by `SYNTACTIC_TRAP_REQUIRED_ROLES` in `ontology.py` (single source shared
+     with the prompt). 11 completeness tests + 8 canonicalize tests; refactor scope green (40 passed, 2 skipped).
+
+3. **Low: prompt/ontology vocabulary contradiction — prompt allowed `very_high` difficulty.**
+   - `DIFFICULTY_KEYS` is `low/medium/high` in master.json + ontology + both rules-doc blocks; the prompt was
+     the lone outlier adding `very_high`.
+   - **Fixed:** Removed `very_high` from both prompt difficulty-calibration blocks (folded into `high`); set
+     cross-domain difficulty examples to `null` for not-applicable; stated grammar must not populate
+     `skill_family_key`.
+
+### Remaining (genuinely-missing data, not repairable)
+
+- 2 rows missing `difficulty_overall`, 2 reading rows missing `reading_focus_key`, plus grammar
+  `syntactic_trap_key` debt → require re-annotation, not deterministic repair. (Overlaps Finding #1 of the
+  Ingestion Pipeline Audit entry below.)
+
+## 2026-06-26 - Ingestion Pipeline Audit + Annotation Coverage Gaps
+Report created by: Claude Sonnet 4.6
+Git branch: `gitbutler/workspace`
+Git checkpoint: `bfc86ad` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: `syntactic_trap_key` coverage 2/43 (5%) for grammar questions despite grammar rules file defining it for structural roles.**
+   - `agreement`, `pronoun`, `modifier`, `verb_form`, `sentence_boundary` questions all have syntactic traps in grammar_v8 rules, but the LLM skips the field because the prompt never marks it as required.
+   - `reasoning_trap_key` (reading domain) and `syntactic_trap_key` (grammar domain) are separate vocabularies — neither is missing from the rules files; the prompt failed to enforce the grammar one.
+   - **Fixed:** Added explicit NULLABILITY ENFORCEMENT rule to `_SYSTEM_INSTRUCTIONS_TEMPLATE` and `_SYSTEM_BASE` in `backend/app/prompts/annotate_prompt.py`: `syntactic_trap_key` is now REQUIRED (non-null) whenever `grammar_role_key` is `agreement`, `pronoun`, `modifier`, `verb_form`, or `sentence_boundary`.
+
+2. **Medium: `grammar_role_key` echoing parent family name (e.g. `"expression_of_ideas"`) instead of a role value.**
+   - Exam 1 Q6: `grammar_role_key = "expression_of_ideas"` — this is a `question_family_key` value, not a role. The LLM falls back to the family name when it can't identify the correct role.
+   - Affects: precision word-choice / transition questions under `expression_of_ideas` where `grammar_role_key` is ambiguous.
+   - **Not fixed in code** — requires grammar_v8 rules file amendment adding explicit role values for EOI sub-types. See amendment process note below.
+   - **Action needed:** Add `## expression_of_ideas sub-roles` section to `rules_agent_dsat_grammar_ingestion_generation_v8.md` defining role keys for: transition/conjunction selection, precision word-choice, rhetorical synthesis.
+
+3. **High: `_FLAT_ANNOTATION_KEYS` in `backend/app/parsers/json_parser.py` missing all reading domain fields.**
+   - LLM inconsistently nests reading annotation under `"classification"` key. `normalize_annotation()` only promoted 8 grammar-domain keys; all reading fields stayed buried.
+   - Result: 23/93 official questions had `question_family_key = NULL` at top level even though data existed in nested dict.
+   - **Fixed:** Expanded `_FLAT_ANNOTATION_KEYS` to include all reading fields. Added `_SKILL_FAMILY_DISPLAY_TO_KEY` map to convert human-readable display names (e.g. `"Words in Context"`) to snake_case keys. Updated `normalize_annotation()` to promote both.
+   - **Fixed (DB):** One-time migration promoted nested `classification` fields to top-level `annotation_jsonb` for 22 existing unclassified questions. Exam 6 Q32 remains (grammar question misrouted to reading; needs re-annotation).
+
+4. **High: `source_question_number` passed as string to INTEGER DB column in `ingest.py:1083`.**
+   - `q_data.get("source_question_number")` returns raw LLM string. `q_num_int` (already computed) was not being used.
+   - Caused 2 hard `psycopg` errors per ingestion run.
+   - **Fixed:** `ingest.py:1083` now passes `q_num_int`.
+
+5. **Critical: `current_correct_option_label` exposed in `StudentQuestionResponse` API.**
+   - Field leaked the correct answer to the student-facing `/questions` endpoint.
+   - **Fixed:** Removed field from `StudentQuestionResponse` (payload.py) and both serializer call-sites in student.py. Submit endpoint (`/submit`) now returns `correct_option_label` in its response. Frontend `useGrammarSession.ts` updated to await submit result and derive `correctOptionLabel` from response instead of pre-loaded question data.
+
+6. **High: `reading_skill_family_key` key mismatch — DB stores `skill_family_key`, query used wrong name.**
+   - `student.py:312` and `328` queried `annotation_jsonb["reading_skill_family_key"]` which is always NULL; actual key is `skill_family_key`.
+   - Result: reading domain filtering returned zero questions; `skill_family_key` never populated in API response.
+   - **Fixed:** Updated DB filters (student.py:312, 328) and serializers (student.py:508, 1262, 1644) to use `skill_family_key`. Renamed field in `StudentQuestionResponse` and `DiagnosticQuestionPayload` (payload.py:22, 1092).
+
+7. **High: HTTP 429 rate-limit errors not retried — annotation pipeline fails on 30+ question modules.**
+   - `_annotate_with_retry()` only caught empty/malformed JSON. All 429 errors fell through as permanent failures.
+   - 32/34 annotation errors in Test 1 mod02 were 429s.
+   - **Fixed:** `_annotate_with_retry()` now has independent retry loops: up to 3 retries for 429 with exponential backoff (5s → 15s → 45s + up to 2s jitter); 1 retry for malformed JSON. Added `_is_rate_limit_error()` helper.
+
+---
+
+### Rules File Amendment Process (admin note)
+
+**The grammar and reading rules files are the single source of truth for all LLMs in this system.** Amendments to these files must go through the structured review process:
+
+**Flow:**
+```
+LLM proposes (annotation_jsonb['reasoning']['amendment_proposal'])
+  → capture_amendment_proposal() → vocabulary/amendments/pending/*.json
+  → Admin review: GET /api/admin/amendments
+  → Semantic duplicate check (now runs on approve)
+  → approve_amendment() → status = approved (still in pending/)
+  → promote_amendment() → patches master.json + rules files + moves to approved/
+```
+
+**Why this must be carefully controlled (multi-LLM context):**
+- Different LLM providers (DeepSeek, Qwen, Claude, GPT-4) independently annotate questions using the same rules files. If one model proposes `contextual_inference` and another proposes `context_clue_inference` for the same concept, and both get promoted, the vocabulary fragments — future models may use either name inconsistently.
+- The `validate_amendment_for_approval()` function now runs a semantic duplicate check (Jaccard token overlap ≥ 0.5) against: (a) active entries in `vocabulary/master.json`, and (b) other pending/approved amendments in the same vocabulary. Near-matches block approval and surface a `duplicate_warnings` list for human review.
+- Before adding any key to the rules files, verify: does a synonym already exist under a different name? Check `vocabulary/master.json` entries, `vocabulary/candidates.json`, and all pending amendments.
+
+**Two pending amendments require human decision:**
+- `rhetorical_synthesis` → `GRAMMAR_FOCUS_BY_ROLE` (pending): Exam 6 Q32. Likely correct — notes synthesis questions have no existing role key. Needs grammar_v8 section added.
+- `verb_form` → `READING_SKILL_FAMILY_KEYS` (pending): **REJECT.** `verb_form` is already a `grammar_role_key` value. The LLM misrouted a grammar question to reading and proposed adding a grammar concept to the reading taxonomy.
+
 ## 2026-06-08 - Annotation JSON Parse Failure on Manually Inserted Questions
 Report created by: Claude Sonnet 4.6
 Git branch: `frontend`

@@ -16,6 +16,9 @@ from app.models.ontology import (
     GRAMMAR_ROLE_KEYS,
     GRAMMAR_FOCUS_BY_ROLE,
     READING_FOCUS_BY_SKILL_FAMILY,
+    READING_QUESTION_FAMILY_KEYS,
+    GRAMMAR_QUESTION_FAMILY_KEYS,
+    READING_SKILL_FAMILY_KEYS,
     REASONING_TRAP_KEYS,
 )
 
@@ -225,6 +228,7 @@ _SYSTEM_INSTRUCTIONS_TEMPLATE = """You are a DSAT question annotation specialist
    • Standard English Conventions (SEC) / Expression of Ideas (grammar-adjacent):
      - grammar_focus_key: required, non-null
      - grammar_role_key: required, non-null
+     - skill_family_key: MUST be null (skill_family_key is reading-domain only)
      - Use grammar_v8 taxonomy keys only
    • Information and Ideas / Craft and Structure (reading):
      - grammar_focus_key: MUST be null
@@ -243,12 +247,21 @@ _SYSTEM_INSTRUCTIONS_TEMPLATE = """You are a DSAT question annotation specialist
    • difficulty_grammar: null for reading-domain questions
    • difficulty_reading: null for grammar-domain questions
    • syntactic_trap_key: null for reading-domain questions unless explicitly applicable
+   • syntactic_trap_key: REQUIRED and non-null when grammar_role_key is one of:
+       agreement, pronoun, modifier, verb_form, sentence_boundary
+     These roles always involve a structural trap. Use "none" only if the sentence is
+     genuinely unambiguous (no proximity confusion, no complex intervening clause).
+     Valid values: nearest_noun_attraction, nominalization_obscures_subject,
+     long_distance_dependency, interruption_breaks_subject_verb, pronoun_ambiguity,
+     modifier_attachment_ambiguity, temporal_sequence_ambiguity, garden_path,
+     early_clause_anchor, scope_of_negation, presupposition_trap, multiple, none
 
-4. DIFFICULTY CALIBRATION — do not default everything to "medium":
+4. DIFFICULTY CALIBRATION — valid values are exactly low, medium, high (no other value).
+   Do not default everything to "medium":
    • low: straightforward rule application, no trap
    • medium: one plausible trap, moderate passage complexity
-   • high: multiple traps, complex syntax, subtle distinction
-   • very_high: expert-level, rare construction, or cross-passage inference
+   • high: multiple traps, complex syntax, subtle distinction, expert-level rare
+     construction, or cross-passage inference
 
 5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
 
@@ -281,6 +294,7 @@ _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the gi
    • Standard English Conventions (SEC) / Expression of Ideas (grammar-adjacent):
      - grammar_focus_key: required, non-null
      - grammar_role_key: required, non-null
+     - skill_family_key: MUST be null (skill_family_key is reading-domain only)
      - Use grammar_v8 taxonomy keys only
    • Information and Ideas / Craft and Structure (reading):
      - grammar_focus_key: MUST be null
@@ -299,12 +313,21 @@ _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the gi
    • difficulty_grammar: null for reading-domain questions
    • difficulty_reading: null for grammar-domain questions
    • syntactic_trap_key: null for reading-domain questions unless explicitly applicable
+   • syntactic_trap_key: REQUIRED and non-null when grammar_role_key is one of:
+       agreement, pronoun, modifier, verb_form, sentence_boundary
+     These roles always involve a structural trap. Use "none" only if the sentence is
+     genuinely unambiguous (no proximity confusion, no complex intervening clause).
+     Valid values: nearest_noun_attraction, nominalization_obscures_subject,
+     long_distance_dependency, interruption_breaks_subject_verb, pronoun_ambiguity,
+     modifier_attachment_ambiguity, temporal_sequence_ambiguity, garden_path,
+     early_clause_anchor, scope_of_negation, presupposition_trap, multiple, none
 
-4. DIFFICULTY CALIBRATION — do not default everything to "medium":
+4. DIFFICULTY CALIBRATION — valid values are exactly low, medium, high (no other value).
+   Do not default everything to "medium":
    • low: straightforward rule application, no trap
    • medium: one plausible trap, moderate passage complexity
-   • high: multiple traps, complex syntax, subtle distinction
-   • very_high: expert-level, rare construction, or cross-passage inference
+   • high: multiple traps, complex syntax, subtle distinction, expert-level rare
+     construction, or cross-passage inference
 
 5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
 
@@ -339,6 +362,16 @@ def _infer_domain_from_annotation(annotation: dict) -> str:
     Checks top-level and 'classification' block.
     """
     def _check(d: dict) -> str | None:
+        # Most reliable signal: canonical question_family_key against ontology sets.
+        qfk = d.get("question_family_key")
+        if qfk in READING_QUESTION_FAMILY_KEYS:
+            return "reading"
+        if qfk in GRAMMAR_QUESTION_FAMILY_KEYS:
+            return "grammar"
+        # Canonical skill_family_key is reading-only.
+        sfk = d.get("skill_family_key")
+        if sfk in READING_SKILL_FAMILY_KEYS:
+            return "reading"
         gfk = d.get("grammar_focus_key")
         domain_str = (d.get("domain") or d.get("domain_key") or "").lower()
         if gfk and gfk not in ("null", "none", ""):
@@ -347,6 +380,7 @@ def _infer_domain_from_annotation(annotation: dict) -> str:
             return "grammar"
         if any(x in domain_str for x in ("information", "craft", "words in context", "reading")):
             return "reading"
+        # Fallback: display-name substrings (handles non-canonical LLM output).
         skill = (d.get("skill_family_key") or d.get("skill_family") or "").lower()
         if any(x in skill for x in ("words in context", "information", "craft", "central ideas", "command of evidence", "inferences", "cross-text")):
             return "reading"
