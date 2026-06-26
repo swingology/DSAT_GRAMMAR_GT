@@ -6,7 +6,7 @@ import asyncpg
 
 
 async def main():
-    conn = await asyncpg.connect("postgresql://dsat:dsat_dev@localhost:5434/dsat_dev")
+    conn = await asyncpg.connect("postgresql://dsat:dsat_dev@localhost:5437/dsat_dev")
 
     job = await conn.fetchrow(
         "SELECT id, status FROM question_jobs ORDER BY created_at DESC LIMIT 1"

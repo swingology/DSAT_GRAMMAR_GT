@@ -299,7 +299,7 @@ export function TestModeTab({
     enabled: false,
   })
 
-  const questions: TestQuestion[] = qData?.questions ?? []
+  const questions: TestQuestion[] = qData?.items ?? qData?.questions ?? []
 
   async function startTest() {
     setAnswers({})

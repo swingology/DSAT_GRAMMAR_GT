@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 import psycopg2
 import psycopg2.extras
 
-DB_DSN = "postgresql://dsat:dsat_dev@localhost:5434/dsat_dev"
+DB_DSN = "postgresql://dsat:dsat_dev@localhost:5437/dsat_dev"
 
 
 def _now_iso() -> str:

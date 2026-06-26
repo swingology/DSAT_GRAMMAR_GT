@@ -138,6 +138,7 @@ async def test_run_pipeline_keeps_official_questions_in_draft(monkeypatch):
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
 
     await ingest_router._run_pipeline(job, db)
@@ -208,6 +209,7 @@ async def test_run_pipeline_auto_activates_official_questions_when_testing_flag_
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(
         ingest_router,
         "get_settings",
@@ -300,6 +302,7 @@ async def test_run_pipeline_marks_incomplete_official_module_needs_review(monkey
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(
         ingest_router,
         "get_settings",
@@ -397,6 +400,7 @@ async def test_run_pipeline_persists_overlap_after_question_creation(monkeypatch
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
     monkeypatch.setattr("app.pipeline.overlap.detect_overlaps", AsyncMock(return_value=overlaps))
     monkeypatch.setattr("app.pipeline.overlap.persist_overlap_relations", persist_overlap_relations)
@@ -460,6 +464,7 @@ async def test_generate_pipeline_flushes_before_wiring_latest_pointers(monkeypat
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive"))
 
     # Use a lineage key (target_grammar_role_key) that should flow into
@@ -540,6 +545,7 @@ async def test_generate_pipeline_flattens_nested_question_payload(monkeypatch):
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda payload, **_kwargs: validated_payloads.append(payload) or [])
+    monkeypatch.setattr(generate_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive"))
 
     await generate_router._run_generate_pipeline(job, db, {"seed": "value"})
@@ -606,6 +612,7 @@ async def test_generate_pipeline_marks_overlap_candidates_for_review(monkeypatch
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(return_value=overlaps))
     monkeypatch.setattr(generate_router, "persist_overlap_relations", persist_overlap_relations)
     monkeypatch.setattr(generate_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive"))
@@ -1506,6 +1513,7 @@ async def test_reannotate_updates_current_explanation_text():
         "needs_human_review": False,
     })
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434", local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8))
 
     try:
@@ -1576,6 +1584,7 @@ async def test_reannotate_retries_annotation_json_parse_failure(monkeypatch):
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(parsed))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
         anthropic_api_key="k",
         openai_api_key=None,
@@ -1836,6 +1845,7 @@ async def test_run_pipeline_reassigns_pass1_json_with_created_ids(monkeypatch):
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "usr"))
     monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
     monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
         anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
         local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8,

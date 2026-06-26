@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: dsat_dev
       POSTGRES_DB: dsat_dev
     ports:
-      - "5434:5432"
+      - "5437:5432"
     volumes:
       - dsat_pgdata_linux:/var/lib/postgresql/data
     healthcheck:
@@ -22,9 +22,11 @@ services:
       dockerfile: Dockerfile.backend
     container_name: dsat-backend
     ports:
-      - "8000:8000"
+      - "8002:8000"
     environment:
       DATABASE_URL: postgresql+asyncpg://dsat:dsat_dev@db:5432/dsat_dev
+      STUDENT_API_KEYS: student-test-key,student-key-change-me
+      ADMIN_API_KEYS: admin-test-key,admin-key-change-me
       PYTHONUNBUFFERED: "1"
     depends_on:
       db:
@@ -43,17 +45,21 @@ services:
       dockerfile: Dockerfile.frontend
     container_name: dsat-frontend
     ports:
-      - "5173:5173"
+      - "5174:5173"
     depends_on:
       - backend
     volumes:
       - ./APP/STUDENT_APP_REDUX:/app
       - /app/node_modules
     environment:
-      VITE_API_BASE: http://backend:8000
+      VITE_API_BASE: /api
+      VITE_STUDENT_API_KEY: student-test-key
+      VITE_TEST_USER_TOKEN: 92451633-1318-410a-8687-5b1ab59e4709
+      VITE_TEST_USER_ID: "1"
       BACKEND_PROXY_URL: http://backend:8000
+      __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: jb-2410.tail0cecc1.ts.net
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5173/"]
+      test: ["CMD", "node", "-e", "fetch('http://localhost:5173/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 5s
       timeout: 5s
       retries: 10

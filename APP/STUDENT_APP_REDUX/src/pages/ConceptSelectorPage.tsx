@@ -1,9 +1,11 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useRecommendations } from '../hooks/useDashboardData'
 
 export function ConceptSelectorPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const limit = searchParams.get('limit') ?? '10'
   const { data, isLoading, isError } = useRecommendations()
   const targets = data?.top_targets ?? []
 
@@ -67,7 +69,7 @@ export function ConceptSelectorPage() {
                 transition={{ delay: i * 0.04, duration: 0.2, ease: 'easeOut' }}
                 onClick={() =>
                   navigate(
-                    `/practice/grammar?focus_key=${encodeURIComponent(t.focus_key)}&domain=${encodeURIComponent(t.domain)}`
+                    `/practice/grammar?focus_key=${encodeURIComponent(t.focus_key)}&domain=${encodeURIComponent(t.domain)}&limit=${limit}`
                   )
                 }
                 className="w-full text-left bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-blue-300 hover:shadow-sm transition-all group"

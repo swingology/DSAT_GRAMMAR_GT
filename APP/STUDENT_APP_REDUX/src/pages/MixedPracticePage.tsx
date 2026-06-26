@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../api/client'
@@ -107,6 +107,8 @@ function QuestionCard({
 
 export function MixedPracticePage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') ?? '10', 10) || 10))
   const [qIndex, setQIndex] = useState(0)
   const [answered, setAnswered] = useState(0)
 
@@ -123,9 +125,29 @@ export function MixedPracticePage() {
   const question: Question | null = data?.questions?.[0] ?? null
 
   function handleNext() {
-    setAnswered((n) => n + 1)
+    const newAnswered = answered + 1
+    setAnswered(newAnswered)
+    if (newAnswered >= limit) return
     setQIndex((n) => n + 1)
     refetch()
+  }
+
+  if (answered >= limit) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
+        <div className="bg-white border border-gray-200 rounded-2xl p-8 max-w-sm w-full text-center shadow-sm">
+          <div className="text-5xl mb-4">✓</div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Session Complete</h2>
+          <p className="text-gray-500 text-sm mb-6">You answered all {limit} questions.</p>
+          <button
+            onClick={() => navigate('/')}
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition"
+          >
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -138,7 +160,7 @@ export function MixedPracticePage() {
           ← Back
         </button>
         <span className="text-gray-800 font-semibold">Mixed Practice</span>
-        <span className="ml-auto text-xs text-gray-400">{answered} answered</span>
+        <span className="ml-auto text-xs text-gray-400">{answered} / {limit}</span>
       </header>
 
       <div className="max-w-lg mx-auto px-4 py-6">

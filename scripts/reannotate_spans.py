@@ -33,7 +33,7 @@ from app.services.span_annotator import annotate_spans
 # DB connection — standalone DSN so the script works without the full app
 # config/env setup. Matches the dev compose stack.
 # ---------------------------------------------------------------------------
-DB_DSN = "postgresql+asyncpg://dsat:dsat_dev@localhost:5434/dsat_dev"
+DB_DSN = "postgresql+asyncpg://dsat:dsat_dev@localhost:5437/dsat_dev"
 
 
 def build_query(

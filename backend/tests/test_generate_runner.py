@@ -313,6 +313,7 @@ async def test_pipeline_settles_overlap_exception(monkeypatch):
     monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_args, **_kwargs: ("sys_static", "sys_dynamic", "user"))
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(side_effect=ConnectionError("network down")))
 
     result = await generate_router._run_generate_pipeline(
@@ -362,6 +363,7 @@ async def test_pipeline_auto_runs_review_after_clean_save(monkeypatch):
     monkeypatch.setattr("app.storage.yaml_export.export_generated_question", lambda **_kwargs: None)
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(return_value=[]))
     monkeypatch.setattr(generate_router, "_run_auto_review_swarm", fake_auto_review)
 
@@ -410,6 +412,7 @@ async def test_pipeline_skip_review_suppresses_auto_review(monkeypatch):
     monkeypatch.setattr("app.storage.yaml_export.export_generated_question", lambda **_kwargs: None)
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(return_value=[]))
     monkeypatch.setattr(generate_router, "_run_auto_review_swarm", mock_auto_review)
 
@@ -476,6 +479,7 @@ async def test_pipeline_flushes_question_version_before_annotation(monkeypatch):
     monkeypatch.setattr("app.storage.yaml_export.export_generated_question", lambda **_kwargs: None)
     monkeypatch.setattr(generate_router, "extract_json_from_text", lambda *_args, **_kwargs: next(responses))
     monkeypatch.setattr(generate_router, "validate_question", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(generate_router, "validate_annotation_completeness", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(generate_router, "detect_overlaps", AsyncMock(return_value=[]))
 
     result = await generate_router._run_generate_pipeline(

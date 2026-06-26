@@ -26,7 +26,7 @@ export function DiagnosticTestRunner({
   const [flags, setFlags] = useState<Set<string>>(new Set())
   const [showConfirm, setShowConfirm] = useState(false)
 
-  const timer = useDiagnosticTimer(timeLimitSeconds, onComplete)
+  const timer = useDiagnosticTimer(timeLimitSeconds)
 
   const q = questions[current]
   const answered = Object.keys(answers).length
@@ -76,6 +76,9 @@ export function DiagnosticTestRunner({
   if (!q) return null
 
   const urgent = timer.remaining < 5 * 60
+  const timerLabel = timer.isOvertime
+    ? `Overtime: ${timer.formatted.slice(1)}`
+    : `Time remaining: ${timer.formatted}`
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -87,9 +90,15 @@ export function DiagnosticTestRunner({
         <div className="flex-1" />
         <span
           className={`font-mono text-sm font-bold tabular-nums ${
-            urgent ? 'text-red-600' : 'text-gray-700'
+            timer.isOvertime
+              ? 'text-red-600 animate-pulse'
+              : urgent
+                ? 'text-red-600'
+                : 'text-gray-700'
           }`}
-          aria-label={`Time remaining: ${timer.formatted}`}
+          style={timer.isOvertime ? { animationDuration: '2.4s' } : undefined}
+          aria-label={timerLabel}
+          title={timerLabel}
         >
           {timer.formatted}
         </span>

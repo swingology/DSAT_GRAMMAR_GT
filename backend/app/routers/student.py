@@ -309,7 +309,7 @@ def _build_question_filter_stmt(
             )
         elif domain == "reading":
             stmt = stmt.where(
-                QuestionAnnotation.annotation_jsonb["reading_skill_family_key"].astext.isnot(None)
+                QuestionAnnotation.annotation_jsonb["skill_family_key"].astext.isnot(None)
             )
         if difficulty:
             stmt = stmt.where(
@@ -325,7 +325,7 @@ def _build_question_filter_stmt(
             )
         if reading_skill_family_key:
             stmt = stmt.where(
-                QuestionAnnotation.annotation_jsonb["reading_skill_family_key"].astext
+                QuestionAnnotation.annotation_jsonb["skill_family_key"].astext
                 == reading_skill_family_key
             )
         if reading_focus_key:
@@ -494,7 +494,6 @@ async def student_recall(
             content_origin=q.content_origin,
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
-            current_correct_option_label=q.current_correct_option_label,
             passage_tokens=_fallback_passage_tokens(q, ann_data, annotation=ann),
             passage_spans={
                 "label":            ann.passage_spans.get("label"),
@@ -505,7 +504,7 @@ async def student_recall(
             grammar_role_key=ann_data.get("grammar_role_key"),
             grammar_focus_key=ann_data.get("grammar_focus_key"),
             syntactic_trap_key=ann_data.get("syntactic_trap_key"),
-            reading_skill_family_key=ann_data.get("reading_skill_family_key"),
+            skill_family_key=ann_data.get("skill_family_key"),
             reading_focus_key=ann_data.get("reading_focus_key"),
             difficulty_overall=ann_data.get("difficulty_overall"),
             stimulus_mode_key=q.stimulus_mode_key,
@@ -617,7 +616,11 @@ async def submit_answer(
     db.add(progress)
     await db.commit()
     await db.refresh(progress)
-    return {"id": progress.id, "is_correct": progress.is_correct}
+    return {
+        "id": progress.id,
+        "is_correct": progress.is_correct,
+        "correct_option_label": q.current_correct_option_label,
+    }
 
 
 @router.get("/stats/{user_id}", response_model=UserStats)
@@ -1248,7 +1251,6 @@ async def _fetch_pool_questions(
             content_origin=q.content_origin,
             current_question_text=q.current_question_text,
             current_passage_text=q.current_passage_text,
-            current_correct_option_label=q.current_correct_option_label,
             passage_tokens=_fallback_passage_tokens(q, ann_data, annotation=ann),
             passage_spans={
                 "label":            ann.passage_spans.get("label"),
@@ -1259,7 +1261,7 @@ async def _fetch_pool_questions(
             grammar_role_key=ann_data.get("grammar_role_key"),
             grammar_focus_key=ann_data.get("grammar_focus_key"),
             syntactic_trap_key=ann_data.get("syntactic_trap_key"),
-            reading_skill_family_key=ann_data.get("reading_skill_family_key"),
+            skill_family_key=ann_data.get("skill_family_key"),
             reading_focus_key=ann_data.get("reading_focus_key"),
             difficulty_overall=ann_data.get("difficulty_overall"),
             stimulus_mode_key=q.stimulus_mode_key,
@@ -1641,7 +1643,7 @@ async def _build_diagnostic_question_payload(
         domain=domain,
         grammar_role_key=ann_data.get("grammar_role_key"),
         grammar_focus_key=ann_data.get("grammar_focus_key"),
-        reading_skill_family_key=ann_data.get("reading_skill_family_key"),
+        skill_family_key=ann_data.get("skill_family_key"),
         reading_focus_key=ann_data.get("reading_focus_key"),
         difficulty_overall=ann_data.get("difficulty_overall"),
         question_family_key=ann_data.get("question_family_key"),

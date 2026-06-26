@@ -29,7 +29,7 @@ import psycopg2.extras
 import urllib.request
 import urllib.error
 
-DB_DSN = "postgresql://dsat:dsat_dev@localhost:5434/dsat_dev"
+DB_DSN = "postgresql://dsat:dsat_dev@localhost:5437/dsat_dev"
 DEFAULT_BASE_URL = "http://localhost:8000"
 DEFAULT_API_KEY = "admin-key-change-me"
 DEFAULT_PROVIDER = "ollama"

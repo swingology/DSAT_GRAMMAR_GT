@@ -28,7 +28,7 @@ import asyncio
 import asyncpg
 
 
-DB_DSN = "postgresql://dsat:dsat_dev@localhost:5434/dsat_dev"
+DB_DSN = "postgresql://dsat:dsat_dev@localhost:5437/dsat_dev"
 
 
 # ---------------------------------------------------------------------------

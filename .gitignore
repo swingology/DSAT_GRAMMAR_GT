@@ -17,3 +17,6 @@ screenshot.png
 
 # OpenWolf interrupted-write temp files
 .wolf/*.tmp.*
+
+# Auto Claude data directory
+.auto-claude/

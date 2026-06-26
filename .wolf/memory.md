@@ -4036,3 +4036,373 @@
 | 13:01 | Session end: 31 writes across 8 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 10 reads | ~67032 tok |
 | 13:02 | Session end: 31 writes across 8 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 10 reads | ~67032 tok |
 | 13:04 | Session end: 31 writes across 8 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 10 reads | ~67032 tok |
+| 13:06 | Session end: 31 writes across 8 files (DIAGNOSTIC_TEST_PLAN.md, diagnostic_task.md, __init__.py, queries.py, student.py) | 10 reads | ~67032 tok |
+
+## Session: 2026-06-23 14:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-25 18:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-25 18:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:26 | Created start.sh | — | ~867 |
+| 18:27 | Session end: 1 writes across 1 files (start.sh) | 3 reads | ~1372 tok |
+| 18:28 | Edited start.sh | 34→34 lines | ~236 |
+| 18:28 | Edited start.sh | modified cleanup() | ~39 |
+| 18:30 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/feedback_docker-compose-version.md | — | ~183 |
+| 18:30 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→3 lines | ~178 |
+| 18:30 | Session end: 5 writes across 3 files (start.sh, feedback_docker-compose-version.md, MEMORY.md) | 5 reads | ~2453 tok |
+| 18:31 | Created start.sh | — | ~1308 |
+| 18:32 | Edited start.sh | 56→56 lines | ~393 |
+| 18:35 | Session end: 7 writes across 3 files (start.sh, feedback_docker-compose-version.md, MEMORY.md) | 7 reads | ~5143 tok |
+| 18:41 | Session end: 7 writes across 3 files (start.sh, feedback_docker-compose-version.md, MEMORY.md) | 7 reads | ~5143 tok |
+
+## Session: 2026-06-25 18:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:44 | Created backend/app/diagnostic/blueprint.py | — | ~2002 |
+| 18:45 | Created backend/tests/test_diagnostic_blueprint.py | — | ~2131 |
+| 18:46 | Edited backend/tests/test_diagnostic_blueprint.py | modified test_validate_low_after_medium_raises() | ~97 |
+| 18:46 | Edited backend/tests/test_diagnostic_blueprint.py | modified test_validate_missing_grammar_role_raises() | ~374 |
+| 18:46 | Edited backend/tests/test_diagnostic_blueprint.py | modified test_blueprint_coverage_domain_split() | ~97 |
+| 18:47 | Edited backend/tests/test_diagnostic_blueprint.py | fails() → family() | ~319 |
+| 18:47 | Created backend/app/diagnostic/selector.py | — | ~1508 |
+| 18:48 | Created backend/tests/test_diagnostic_selector.py | — | ~2311 |
+| 18:48 | Edited backend/tests/test_diagnostic_selector.py | modified test_fallback_all_levels_gap() | ~116 |
+| 18:48 | Edited backend/tests/test_diagnostic_selector.py | modified test_coverage_report_with_gap() | ~74 |
+| 18:49 | Edited backend/app/models/payload.py | modified CohortTrapAnalyticsResponse() | ~604 |
+| 18:50 | Edited backend/app/routers/student.py | added 2 import(s) | ~44 |
+| 18:50 | Edited backend/app/routers/student.py | expanded (+6 lines) | ~128 |
+| 18:51 | Edited backend/app/routers/student.py | modified _build_diagnostic_question_payload() | ~1572 |
+| 18:51 | Edited backend/app/routers/student.py | 18→22 lines | ~220 |
+| 18:51 | Edited backend/app/models/payload.py | modified DiagnosticSessionResult() | ~87 |
+| 18:51 | Edited backend/app/routers/student.py | expanded (+51 lines) | ~804 |
+| 18:52 | Edited backend/app/routers/student.py | sa_select() → select() | ~192 |
+| 18:52 | Edited backend/app/routers/student.py | sa_select() → select() | ~56 |
+| 18:53 | Edited APP/STUDENT_APP_REDUX/src/types/index.ts | expanded (+66 lines) | ~516 |
+| 18:53 | Edited APP/STUDENT_APP_REDUX/src/api/client.ts | expanded (+7 lines) | ~118 |
+| 18:54 | Created APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts | — | ~300 |
+| 18:54 | Created APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | — | ~2842 |
+| 18:55 | Created APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticIntro.tsx | — | ~906 |
+| 18:55 | Created APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx | — | ~836 |
+| 18:55 | Created APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticReport.tsx | — | ~2629 |
+| 18:56 | Created APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx | — | ~730 |
+| 18:56 | Edited APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts | inline fix | ~15 |
+| 18:56 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | modified selectOption() | ~32 |
+| 18:56 | Edited APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx | 3→2 lines | ~27 |
+| 18:56 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticReport.tsx | added 1 import(s) | ~60 |
+| 18:56 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticReport.tsx | modified ReviewSection() | ~68 |
+| 18:58 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_diagnostic_status.md | 14→13 lines | ~286 |
+| 18:58 | Session end: 33 writes across 15 files (blueprint.py, test_diagnostic_blueprint.py, selector.py, test_diagnostic_selector.py, payload.py) | 17 reads | ~95945 tok |
+| 19:18 | Edited CHANGELOG.md | modified reality() | ~1186 |
+| 19:18 | Session end: 34 writes across 16 files (blueprint.py, test_diagnostic_blueprint.py, selector.py, test_diagnostic_selector.py, payload.py) | 18 reads | ~193734 tok |
+
+## Session: 2026-06-25 19:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-25 19:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-25 19:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-25 19:56
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:58 | Edited docker-compose.yml | "5434:5432" → "5437:5432" | ~6 |
+| 19:58 | Edited docker-compose.yml | "8000:8000" → "8002:8000" | ~6 |
+| 19:59 | Edited docker-compose.yml | "5173:5173" → "5174:5173" | ~6 |
+| 20:01 | Session end: 3 writes across 1 files (docker-compose.yml) | 1 reads | ~461 tok |
+
+## Session: 2026-06-25 20:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 20:41 | Created APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx | — | ~2902 |
+| 20:42 | Created APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx | — | ~1493 |
+| 20:44 | PracticeTestPage: replaced TestModeTab wrapper with idle/loading/running/done state machine; created PracticeTestRunner (mirrors DiagnosticTestRunner UI: sticky header, passage, flag, palette, confirm dialog); 32-min countdown timer, auto-submits via useEffect when remaining≤0; per-answer api.submitAnswer fire-and-forget; tsc clean, 15 tests pass. | PracticeTestPage.tsx, components/practice/PracticeTestRunner.tsx | success | ~600 |
+| 20:45 | Session end: 2 writes across 2 files (PracticeTestRunner.tsx, PracticeTestPage.tsx) | 9 reads | ~19114 tok |
+| 20:47 | Edited APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx | inline fix | ~27 |
+| 20:47 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | inline fix | ~22 |
+| 20:50 | Session end: 4 writes across 3 files (PracticeTestRunner.tsx, PracticeTestPage.tsx, TestModeTab.tsx) | 11 reads | ~60281 tok |
+
+## Session: 2026-06-25 20:58
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:21 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx | inline fix | ~8 |
+| 22:21 | Session end: 1 writes across 1 files (PracticeTestCard.tsx) | 7 reads | ~9628 tok |
+| 22:23 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx | modified PracticeCard() | ~1240 |
+| 22:34 | Session end: 2 writes across 2 files (PracticeTestCard.tsx, PracticeCard.tsx) | 11 reads | ~14478 tok |
+| 22:39 | Edited APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts | modified useGrammarSession() | ~70 |
+| 22:39 | Edited APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts | 4→4 lines | ~30 |
+| 22:39 | Edited APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx | added nullish coalescing | ~196 |
+| 22:40 | Edited APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx | added 1 condition(s) | ~400 |
+| 22:40 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | 2→2 lines | ~28 |
+| 22:40 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | added nullish coalescing | ~86 |
+| 22:40 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | added 2 condition(s) | ~414 |
+| 22:40 | Edited APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx | inline fix | ~18 |
+| 22:40 | Edited APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx | added nullish coalescing | ~65 |
+| 22:40 | Edited APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx | 5→5 lines | ~68 |
+| 22:41 | Session end: 12 writes across 6 files (PracticeTestCard.tsx, PracticeCard.tsx, useGrammarSession.ts, GrammarPractice.tsx, MixedPracticePage.tsx) | 17 reads | ~23375 tok |
+| 06:33 | Session end: 12 writes across 6 files (PracticeTestCard.tsx, PracticeCard.tsx, useGrammarSession.ts, GrammarPractice.tsx, MixedPracticePage.tsx) | 17 reads | ~23375 tok |
+| 06:56 | Session end: 12 writes across 6 files (PracticeTestCard.tsx, PracticeCard.tsx, useGrammarSession.ts, GrammarPractice.tsx, MixedPracticePage.tsx) | 17 reads | ~23375 tok |
+| 07:11 | Session end: 12 writes across 6 files (PracticeTestCard.tsx, PracticeCard.tsx, useGrammarSession.ts, GrammarPractice.tsx, MixedPracticePage.tsx) | 17 reads | ~23375 tok |
+
+## Session: 2026-06-25 07:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-25 08:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-25 08:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:40 | Edited backend/app/config.py | "postgresql+asyncpg://dsat" → "postgresql+asyncpg://dsat" | ~24 |
+| 08:41 | Session end: 1 writes across 1 files (config.py) | 3 reads | ~3483 tok |
+| 08:43 | Created scripts/quality_audit.py | — | ~3141 |
+| 08:44 | Edited scripts/quality_audit.py | added 1 import(s) | ~31 |
+| 08:45 | Edited scripts/quality_audit.py | modified main() | ~17 |
+| 08:45 | Session end: 4 writes across 2 files (config.py, quality_audit.py) | 4 reads | ~17101 tok |
+| 08:46 | Session end: 4 writes across 2 files (config.py, quality_audit.py) | 4 reads | ~17101 tok |
+| 08:47 | Session end: 4 writes across 2 files (config.py, quality_audit.py) | 4 reads | ~17101 tok |
+| 10:50 | Edited future_features.md | expanded (+21 lines) | ~490 |
+| 10:50 | Session end: 5 writes across 3 files (config.py, quality_audit.py, future_features.md) | 5 reads | ~25648 tok |
+| 13:30 | Session end: 5 writes across 3 files (config.py, quality_audit.py, future_features.md) | 5 reads | ~25648 tok |
+| 13:34 | Session end: 5 writes across 3 files (config.py, quality_audit.py, future_features.md) | 5 reads | ~25648 tok |
+| 13:34 | Session end: 5 writes across 3 files (config.py, quality_audit.py, future_features.md) | 5 reads | ~25648 tok |
+| 13:35 | Session end: 5 writes across 3 files (config.py, quality_audit.py, future_features.md) | 5 reads | ~25648 tok |
+| 13:40 | Session end: 5 writes across 3 files (config.py, quality_audit.py, future_features.md) | 5 reads | ~25648 tok |
+| 13:44 | Created scripts/backup_db.sh | — | ~284 |
+| 13:44 | Session end: 6 writes across 4 files (config.py, quality_audit.py, future_features.md, backup_db.sh) | 5 reads | ~25952 tok |
+| 20:40 | Session end: 6 writes across 4 files (config.py, quality_audit.py, future_features.md, backup_db.sh) | 5 reads | ~25952 tok |
+
+## Session: 2026-06-26 20:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-26 20:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:01 | Edited ../.claude/plugins/cache/superpowers-marketplace/superpowers/5.0.0/hooks/hooks.json | inline fix | ~39 |
+| 21:01 | Session end: 1 writes across 1 files (hooks.json) | 1 reads | ~39 tok |
+| 21:31 | Edited ../.claude/settings.json | inline fix | ~14 |
+| 21:32 | Edited ../.claude/plugins/cache/superpowers-marketplace/superpowers/5.0.0/hooks/hooks.json | inline fix | ~24 |
+| 21:32 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 2 reads | ~827 tok |
+| 21:41 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 2 reads | ~827 tok |
+| 21:41 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 2 reads | ~827 tok |
+| 21:42 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 3 reads | ~11256 tok |
+| 21:43 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 3 reads | ~11256 tok |
+| 22:04 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 3 reads | ~11256 tok |
+| 22:08 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 3 reads | ~11256 tok |
+| 22:09 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 3 reads | ~11256 tok |
+| 22:11 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 3 reads | ~11256 tok |
+| 22:21 | Session end: 3 writes across 2 files (hooks.json, settings.json) | 5 reads | ~11256 tok |
+| 22:26 | Created ../../../tmp/export_test1.py | — | ~2100 |
+| 22:27 | Session end: 4 writes across 3 files (hooks.json, settings.json, export_test1.py) | 6 reads | ~13356 tok |
+| 22:34 | Edited backend/app/routers/ingest.py | expanded (+7 lines) | ~157 |
+| 22:34 | Edited backend/app/routers/ingest.py | 4→8 lines | ~105 |
+| 22:35 | Session end: 6 writes across 4 files (hooks.json, settings.json, export_test1.py, ingest.py) | 7 reads | ~55482 tok |
+| 22:40 | Fixed stale questions.stem_type_key: wrote back canonical Pass 2 stem at both persist sites in ingest.py + backfilled 33 Test_1 rows (0 disagreements) | ingest.py, buglog.json, cerebrum.md, anatomy.md | fixed, verified | ~3500 |
+| 22:40 | Session end: 6 writes across 4 files (hooks.json, settings.json, export_test1.py, ingest.py) | 7 reads | ~55482 tok |
+| 22:48 | Global stem backfill: UPDATE 47 rows (46 stale + 1 NULL) across all 94 questions; 0 disagreements post-verify | buglog.json, memory.md | fixed, verified | ~1200 |
+| 22:48 | Session end: 6 writes across 4 files (hooks.json, settings.json, export_test1.py, ingest.py) | 7 reads | ~55482 tok |
+| 22:52 | Session end: 6 writes across 4 files (hooks.json, settings.json, export_test1.py, ingest.py) | 7 reads | ~55482 tok |
+| 22:56 | Edited backend/app/models/ontology.py | expanded (+43 lines) | ~614 |
+| 22:56 | Edited backend/app/prompts/annotate_prompt.py | 9→10 lines | ~68 |
+| 22:57 | Edited backend/app/prompts/annotate_prompt.py | reduced (-22 lines) | ~221 |
+| 22:57 | Edited backend/app/prompts/annotate_prompt.py | vocabulary() → EOI() | ~307 |
+| 22:57 | Edited backend/tests/test_ontology.py | inline fix | ~23 |
+| 22:57 | Edited backend/tests/test_ontology.py | modified test_shared_passage_architectures_include_guardrail_additions() | ~378 |
+| 22:59 | Edited backend/app/models/ontology.py | removed 46 lines | ~34 |
+| 23:00 | Edited backend/app/prompts/annotate_prompt.py | 10→9 lines | ~62 |
+| 23:00 | Edited backend/app/prompts/annotate_prompt.py | expanded (+41 lines) | ~620 |
+| 23:00 | Edited backend/tests/test_ontology.py | inline fix | ~18 |
+| 23:00 | Edited backend/tests/test_ontology.py | modified test_shared_passage_architectures_include_guardrail_additions() | ~84 |
+| 23:00 | Edited backend/tests/test_prompts.py | modified test_stem_domain_covers_all_vocab() | ~360 |
+| 23:05 | Eliminated Pass 2 routing drift: STEM_TYPE_DOMAIN map in annotate_prompt.py, derived _GRAMMAR/_READING/_AMBIGUOUS sets + guard test; 0 canonical stems route to unknown, Part D absent for reading stems, 93 tests pass | annotate_prompt.py, test_prompts.py, buglog.json | fixed, verified | ~3000 |
+| 23:02 | Session end: 18 writes across 8 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 11 reads | ~70537 tok |
+| 23:29 | Session end: 18 writes across 8 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 11 reads | ~74766 tok |
+| 23:36 | Created backend/app/prompts/extract_prompt.py | — | ~3388 |
+| 23:36 | Edited backend/app/routers/ingest.py | added 1 import(s) | ~68 |
+| 23:37 | Created backend/app/prompts/extract_prompt.py | — | ~3369 |
+| 23:37 | Edited backend/app/routers/ingest.py | modified enumerate() | ~281 |
+| 23:38 | Edited backend/app/routers/ingest.py | expanded (+7 lines) | ~316 |
+| 23:38 | Edited backend/tests/test_prompts.py | 3→8 lines | ~84 |
+| 23:39 | Edited backend/tests/test_prompts.py | modified test_extract_prompt_constrains_stem_vocab() | ~560 |
+| 23:40 | Edited backend/tests/test_prompts.py | modified test_canonicalize_stem_maps_known_aliases() | ~466 |
+| 23:42 | Pass 1 canonicalization: extract_prompt controlled-vocab + alias sanitizer wired into normalize + reannotate; 3 guard tests; live reannotate Q8 approved w/ clean reading annotation | extract_prompt.py, ingest.py, test_prompts.py, buglog.json | fixed, verified | ~3200 |
+| 23:41 | Session end: 26 writes across 9 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 12 reads | ~85379 tok |
+| 00:06 | Session end: 26 writes across 9 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 12 reads | ~85379 tok |
+| 00:10 | Session end: 26 writes across 9 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 12 reads | ~85379 tok |
+| 00:16 | Session end: 26 writes across 9 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 12 reads | ~85379 tok |
+| 00:43 | Session end: 26 writes across 9 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 12 reads | ~85379 tok |
+| 00:49 | Session end: 26 writes across 9 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 12 reads | ~85379 tok |
+| 00:51 | Session end: 26 writes across 9 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 12 reads | ~85379 tok |
+| 00:51 | Session end: 26 writes across 9 files (hooks.json, settings.json, export_test1.py, ingest.py, ontology.py) | 12 reads | ~85379 tok |
+
+## Session: 2026-06-26 07:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-26 07:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:24 | Edited backend/app/parsers/json_parser.py | modified normalize_annotation() | ~797 |
+| 08:31 | Edited backend/tests/test_parsers.py | modified test_normalize_annotation_ignores_unknown_nested_keys() | ~743 |
+
+## Session: 2026-06-26 08:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:01 | Edited backend/app/routers/ingest.py | inline fix | ~12 |
+| 09:01 | Edited backend/app/models/payload.py | 9→8 lines | ~95 |
+| 09:01 | Edited backend/app/routers/student.py | 3→3 lines | ~37 |
+| 09:01 | Edited backend/app/routers/student.py | 5→5 lines | ~59 |
+| 09:02 | Edited backend/app/routers/student.py | 28→27 lines | ~455 |
+| 09:02 | Edited backend/app/routers/student.py | 23→22 lines | ~372 |
+| 09:02 | Edited backend/app/models/payload.py | 6→6 lines | ~82 |
+| 09:02 | Edited backend/app/routers/student.py | 6→6 lines | ~86 |
+| 09:04 | Edited backend/app/routers/student.py | 6→10 lines | ~66 |
+| 09:04 | Edited APP/STUDENT_APP_REDUX/src/types/grammar.ts | 9→10 lines | ~118 |
+| 09:04 | Edited APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts | 9→10 lines | ~73 |
+| 09:05 | Edited APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts | 16→16 lines | ~218 |
+| 09:05 | Edited APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts | 28→29 lines | ~332 |
+| 09:05 | Edited APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts | 6→7 lines | ~51 |
+| 09:06 | Edited backend/app/routers/ingest.py | added 1 import(s) | ~24 |
+| 09:06 | Edited backend/app/routers/ingest.py | modified _is_rate_limit_error() | ~1195 |
+| 09:07 | Session end: 16 writes across 5 files (ingest.py, payload.py, student.py, grammar.ts, useGrammarSession.ts) | 6 reads | ~97129 tok |
+| 10:29 | Session end: 16 writes across 5 files (ingest.py, payload.py, student.py, grammar.ts, useGrammarSession.ts) | 6 reads | ~97129 tok |
+| 10:32 | Session end: 16 writes across 5 files (ingest.py, payload.py, student.py, grammar.ts, useGrammarSession.ts) | 7 reads | ~103272 tok |
+| 10:37 | Edited backend/app/prompts/annotate_prompt.py | expanded (+8 lines) | ~249 |
+| 10:38 | Edited backend/app/pipeline/amendment_review.py | modified validate_amendment_for_approval() | ~1922 |
+| 10:39 | Edited DEBUG_LOG.md | modified now() | ~1820 |
+| 10:39 | Session end: 19 writes across 8 files (ingest.py, payload.py, student.py, grammar.ts, useGrammarSession.ts) | 10 reads | ~162991 tok |
+| 11:25 | Session end: 19 writes across 8 files (ingest.py, payload.py, student.py, grammar.ts, useGrammarSession.ts) | 10 reads | ~162991 tok |
+| 11:44 | Created annotate_refactor_task.md | — | ~1442 |
+| 11:44 | Edited backend/app/parsers/json_parser.py | added 1 condition(s) | ~1731 |
+| 11:44 | Edited backend/app/routers/ingest.py | inline fix | ~30 |
+| 11:44 | Edited backend/app/routers/ingest.py | normalize_annotation() → canonicalize_annotation() | ~48 |
+| 12:01 | Edited annotate_refactor_task.md | modified policy() | ~399 |
+| 12:01 | Edited backend/app/models/ontology.py | expanded (+13 lines) | ~212 |
+| 12:01 | Edited backend/app/pipeline/validator.py | 12→14 lines | ~117 |
+| 12:01 | Edited backend/app/pipeline/validator.py | modified _empty() | ~1564 |
+| 12:01 | Edited backend/app/routers/ingest.py | inline fix | ~25 |
+| 12:02 | Edited backend/app/routers/ingest.py | modified any() | ~196 |
+| 12:04 | Edited annotate_refactor_task.md | modified Grammar() | ~358 |
+| 12:05 | Edited backend/app/routers/generate.py | added 1 import(s) | ~102 |
+| 12:05 | Edited backend/app/routers/generate.py | 5→10 lines | ~218 |
+| 12:05 | Edited backend/app/routers/generate.py | 5→6 lines | ~92 |
+| 12:05 | Edited annotate_refactor_task.md | 3→3 lines | ~73 |
+| 12:06 | Edited annotate_refactor_task.md | modified CORRECTION() | ~241 |
+| 12:06 | Edited backend/app/prompts/annotate_prompt.py | 5→6 lines | ~106 |
+| 12:06 | Edited backend/app/prompts/annotate_prompt.py | modified Ideas() | ~84 |
+| 12:07 | Edited rules_agent_dsat_reading_v3.md | 5→5 lines | ~44 |
+| 12:07 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 5→5 lines | ~41 |
+| 12:07 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 5→5 lines | ~44 |
+| 12:07 | Edited rules_agent_dsat_grammar_ingestion_generation_v8.md | 5→5 lines | ~44 |
+| 12:07 | Created backend/scripts/repair_annotation_canonical.py | — | ~903 |
+| 12:19 | Edited backend/scripts/repair_annotation_canonical.py | 11→13 lines | ~96 |
+| 12:19 | Edited backend/scripts/repair_annotation_canonical.py | async_session_maker() → async_session() | ~22 |
+| 12:19 | Edited backend/scripts/repair_annotation_canonical.py | added 1 import(s) | ~61 |
+| 12:19 | Edited backend/scripts/repair_annotation_canonical.py | 3→5 lines | ~95 |
+
+## Session: 2026-06-26 12:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-26 12:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:22 | Edited backend/app/prompts/annotate_prompt.py | 9→12 lines | ~90 |
+| 12:22 | Edited backend/app/prompts/annotate_prompt.py | modified _check() | ~374 |
+| 12:23 | Edited annotate_refactor_task.md | 4→4 lines | ~191 |
+| 12:23 | Edited backend/tests/test_parsers.py | 7→11 lines | ~89 |
+| 12:23 | Edited backend/tests/test_parsers.py | modified test_canonicalize_promotes_absent_top_level_from_nested() | ~990 |
+| 12:27 | Created backend/tests/test_validator_completeness.py | — | ~1354 |
+| 12:28 | Created backend/scripts/annotation_quality_audit.py | — | ~1203 |
+| 12:54 | Edited backend/tests/test_generate_runner.py | 1→2 lines | ~57 |
+| 12:54 | Edited backend/tests/test_backend_regressions.py | 2→3 lines | ~84 |
+| 12:54 | Edited backend/tests/test_backend_regressions.py | 1→2 lines | ~68 |
+| 12:54 | Edited backend/tests/test_backend_regressions.py | 1→2 lines | ~56 |
+| 12:59 | Edited backend/tests/test_pipeline.py | 1→2 lines | ~57 |
+| 13:00 | Edited backend/tests/test_pipeline.py | 2→3 lines | ~81 |
+
+## Session: 2026-06-26 13:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-26 13:02
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-26 13:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-26 13:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-26 13:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-26 13:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-26 14:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:28 | Created .claude/skills/start-app/SKILL.md | — | ~633 |
+
+| 14:28 | Created start-app skill (delegate app-start to Haiku subagent) | .claude/skills/start-app/SKILL.md | created | ~700 |
+| 14:28 | Session end: 1 writes across 1 files (SKILL.md) | 0 reads | ~678 tok |
+| 14:31 | Edited CHANGELOG.md | expanded (+64 lines) | ~1144 |
+| 14:31 | Edited DEBUG_LOG.md | modified rows() | ~809 |
+| 14:32 | Edited annotate_refactor_task.md | "scripts/repair_annotation" → "backend/scripts/repair_an" | ~21 |
+| 14:32 | Edited annotate_refactor_task.md | inline fix | ~4 |
+| 14:32 | Edited annotate_refactor_task.md | inline fix | ~4 |
+| 14:32 | Edited annotate_refactor_task.md | inline fix | ~4 |
+| 14:32 | Edited annotate_refactor_task.md | inline fix | ~4 |
+| 14:32 | Edited annotate_refactor_task.md | inline fix | ~60 |
+| 14:32 | Edited annotate_refactor_task.md | inline fix | ~15 |
+| 14:32 | Edited annotate_refactor_task.md | inline fix | ~9 |
+
+| 14:32 | Annotation refactor Phase 6/7 bookkeeping: ticked T6.1-T6.4/T7.1-T7.3, fixed T5.1 path, wrote CHANGELOG + DEBUG_LOG entries | annotate_refactor_task.md, CHANGELOG.md, DEBUG_LOG.md | done | ~3k |
+| 14:32 | Session end: 11 writes across 4 files (SKILL.md, CHANGELOG.md, DEBUG_LOG.md, annotate_refactor_task.md) | 2 reads | ~185789 tok |
+| 14:36 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/607e54ac-9498-4651-8182-473f13bf4e6c/scratchpad/commit_msg.txt | — | ~364 |
