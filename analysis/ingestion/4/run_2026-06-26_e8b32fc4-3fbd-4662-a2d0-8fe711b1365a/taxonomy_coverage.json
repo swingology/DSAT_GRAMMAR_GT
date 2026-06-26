@@ -1,0 +1,106 @@
+{
+  "job_id": "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a",
+  "source_exam_code": "4",
+  "created_at": "2026-06-26T22:56:07.589691+00:00",
+  "hashes": {
+    "master_json_hash": "44c26f2a7fb3e8d28ba151900144454cfa67921fa0c16e49652a53a30c669b52",
+    "reading_rules_hash": "767795f6a672591fa6134afde5f11503213a7bba6c1e7a9e9890e2c3ec001367",
+    "grammar_rules_hash": "8cbd1ea6e6ec1bfdfa2f5c2a0bd67b0983b53557517bed61ccb7abc361faf216",
+    "ontology_hash": "3453f3ec3923374c5fb2fb26c4db0b31528cd3dd1db62213118ff08c6dc2e446"
+  },
+  "question_count": 33,
+  "field_counts": {
+    "question_family_key": {
+      "craft_and_structure": 9,
+      "information_and_ideas": 9,
+      "conventions_grammar": 8,
+      "expression_of_ideas": 6
+    },
+    "grammar_role_key": {
+      "punctuation": 2,
+      "verb_form": 1,
+      "sentence_boundary": 3,
+      "agreement": 1,
+      "modifier": 1,
+      "expression_of_ideas": 5
+    },
+    "grammar_focus_key": {
+      "apostrophe_use": 1,
+      "verb_tense_consistency": 1,
+      "comma_splice": 2,
+      "subject_verb_agreement": 1,
+      "modifier_placement": 1,
+      "semicolon_use": 1,
+      "sentence_boundary": 1,
+      "transition_logic": 3,
+      "logical_relationships": 1,
+      "precision_word_choice": 1
+    },
+    "skill_family_key": {
+      "words_in_context": 4,
+      "text_structure_and_purpose": 4,
+      "cross_text_connections": 1,
+      "central_ideas_and_details": 3,
+      "command_of_evidence_quantitative": 3,
+      "command_of_evidence_textual": 2,
+      "inferences": 1,
+      "Form, Structure, and Sense": 5,
+      "Boundaries": 3,
+      "Transitions": 3,
+      "Rhetorical Synthesis": 3
+    },
+    "reading_focus_key": {
+      "contextual_meaning": 3,
+      "polarity_fit": 1,
+      "overall_purpose": 1,
+      "structural_pattern": 2,
+      "sentence_function": 1,
+      "text2_response_to_text1": 1,
+      "central_idea": 2,
+      "supporting_detail": 1,
+      "data_completes_example": 2,
+      "evidence_supports_claim": 1,
+      "evidence_illustrates_claim": 1,
+      "data_weakens_claim": 1,
+      "implication_inference": 1
+    },
+    "reasoning_trap_key": {
+      "semantic_relatedness_without_precision": 3,
+      "polarity_mismatch": 1,
+      "partial_purpose": 2,
+      "wrong_action_verb": 2,
+      "false_concession_trap": 1,
+      "detail_trap": 3,
+      "single_sector_focus": 1,
+      "topical_relevance_without_logical_connection": 2,
+      "data_context_mismatch": 2,
+      "inverted_logic": 1
+    },
+    "stimulus_mode_key": {
+      "passage_excerpt": 5,
+      "sentence_only": 11,
+      "prose_single": 9,
+      "prose_paired": 1,
+      "prose_plus_graph": 1,
+      "prose_plus_table": 2,
+      "notes_bullets": 3
+    },
+    "stem_type_key": {
+      "choose_words_in_context": 4,
+      "choose_main_purpose": 1,
+      "choose_structure_description": 2,
+      "choose_sentence_function": 1,
+      "choose_cross_text_connection": 1,
+      "choose_main_idea": 2,
+      "choose_detail": 1,
+      "choose_best_completion_from_data": 3,
+      "choose_best_support": 1,
+      "choose_best_illustration": 1,
+      "most_logically_completes": 1,
+      "conform_to_standard_english": 6,
+      "complete_the_text": 2,
+      "choose_best_transition": 3,
+      "choose_best_notes_synthesis": 3
+    }
+  }
+}

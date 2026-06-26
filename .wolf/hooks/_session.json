@@ -1,42 +1,18 @@
 {
-  "session_id": "session-2026-06-26-1526",
-  "started": "2026-06-26T22:26:37.710Z",
+  "session_id": "session-2026-06-26-1618",
+  "started": "2026-06-26T23:18:59.491Z",
   "files_read": {
-    "/home/jb/DSAT_REDUX_MD/.claude/skills/ingestion-test/run.sh": {
+    "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/3b1a47fd-78a5-47f7-93ad-a21ec3700b33/tool-results/b6mfxn12i.txt": {
       "count": 1,
-      "tokens": 2038,
-      "first_read": "2026-06-26T22:34:35.485Z"
-    },
-    "/tmp/claude-1000/-home-jb-DSAT-REDUX-MD/f77d9b50-721a-4b4c-b7f2-056f71b3924d/tasks/bkuvjbttt.output": {
-      "count": 154,
       "tokens": 0,
-      "first_read": "2026-06-26T22:49:22.521Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md": {
-      "count": 1,
-      "tokens": 50448,
-      "first_read": "2026-06-26T22:56:22.807Z"
-    },
-    "/home/jb/DSAT_REDUX_MD/backend/app/routers/ingest.py": {
-      "count": 2,
-      "tokens": 46931,
-      "first_read": "2026-06-26T23:08:29.708Z"
+      "first_read": "2026-06-26T23:19:20.500Z"
     }
   },
-  "files_written": [
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md",
-      "action": "edit",
-      "tokens": 335,
-      "at": "2026-06-26T23:00:03.131Z"
-    }
-  ],
-  "edit_counts": {
-    "DEBUG_LOG.md": 1
-  },
-  "anatomy_hits": 3,
+  "files_written": [],
+  "edit_counts": {},
+  "anatomy_hits": 0,
   "anatomy_misses": 1,
-  "repeated_reads_warned": 154,
+  "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 9
+  "stop_count": 0
 }

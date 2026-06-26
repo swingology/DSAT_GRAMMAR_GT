@@ -26,3 +26,7 @@
 [Fri Jun 26 12:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260625_140001.dump
 [Fri Jun 26 14:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260626_140001.dump
 Error response from daemon: container c1b3de49754d971fc65bf9c40f08821f91807d86854caff5cd93a4f3e6a48a6b is not running
+[Fri Jun 26 16:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260626_160001.dump
+[Fri Jun 26 16:00:03 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260626_160001.dump (14M)
+[Fri Jun 26 16:00:03 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260625_180001.dump
+[Fri Jun 26 16:00:03 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260625_160001.dump
