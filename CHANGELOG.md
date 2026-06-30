@@ -9189,3 +9189,538 @@ _( 13 files changed, 2490 insertions(+), 398 deletions(-))_
 **Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md analysis/ingestion/4/run_2026-06-26_e8b32fc4-3fbd-4662-a2d0-8fe711b1365a/amendment_candidates.json 
 
 ---
+
+## Session snapshot — 2026-06-26 16:24:53 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/token-ledger.json 
+_()_
+
+---
+
+## Session snapshot — 2026-06-26 16:26:07 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/token-ledger.json CHANGELOG.md 
+_( 3 files changed, 55 insertions(+), 3 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:20 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py 
+_( 6 files changed, 229 insertions(+), 19 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:27 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py 
+_( 6 files changed, 266 insertions(+), 20 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:30 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 7 files changed, 284 insertions(+), 22 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:34 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 7 files changed, 300 insertions(+), 23 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:41 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 7 files changed, 328 insertions(+), 31 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:31:45 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 9 files changed, 374 insertions(+), 32 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:31:50 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 9 files changed, 393 insertions(+), 33 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:32:13 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 856 insertions(+), 336 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:33:56 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 964 insertions(+), 336 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:42:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 1099 insertions(+), 338 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:46:07 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 1218 insertions(+), 338 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:51:39 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 1169 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 17:48:01 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py docker-compose.yml 
+_( 11 files changed, 1283 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 17:48:06 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py docker-compose.yml 
+_( 11 files changed, 1348 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:00:50 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1429 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:16:44 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1524 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:30:21 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1594 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:37:09 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1664 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:40:44 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1734 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:43:30 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1804 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:48:04 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1874 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:55:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1944 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:56:21 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2014 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 19:25:30 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2132 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 19:37:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2214 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 19:38:32 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2296 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 19:38:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2378 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 20:05:11 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2463 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:01:34 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2545 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:02:24 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2627 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:03:12 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2709 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:04:18 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2791 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:08:23 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2873 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:11:18 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2955 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:29:15 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2906 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:44:58 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2916 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 22:38:37 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump docker-compose.yml 
+_( 15 files changed, 2951 insertions(+), 339 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 22:50:27 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump docker-compose.yml 
+_( 15 files changed, 3003 insertions(+), 341 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-26 23:41:24 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump docker-compose.yml 
+_( 15 files changed, 3042 insertions(+), 341 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-27 07:58:01 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `9.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3056 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-29 14:56:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3115 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-29 15:07:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3158 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 15:20:34 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `4.9Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3190 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 15:20:58 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `5.0Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3222 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 15:34:28 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `5.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3254 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 17:04:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3262 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 17:05:08 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3272 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 17:05:46 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3282 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 17:06:11 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3292 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-30 10:00:18 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3325 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-30 10:01:00 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3360 insertions(+), 342 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-30 13:49:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `12Gi/30Gi`
+
+_No uncommitted changes._
+
+**Untracked:** TESTS/2024_TESTS_STATUS.md TESTS/2024_test3_answer_keys.md TESTS/DATA_SRC/2025-2026 Tests Answers/Answers and Explanations/TEST05 Generated Explanations/TEST05_sec01_mod02.md TESTS/DATA_SRC/2025-2026 Tests Answers/Answers and Explanations/TEST11 Generated Explanations/assets/q11_tennis_decay.png TESTS/DATA_SRC/2025-2026 Tests Answers/Answers and Explanations/TEST11 Generated Explanations/assets/q13_veterans_congress.png 
+
+---
+
+## Session snapshot — 2026-06-30 13:54:25 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bd9c335` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump 
+_( 11 files changed, 2583 insertions(+), 323 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260626_180001.dump backups/dsat_dev_20260626_200001.dump backups/dsat_dev_20260626_220001.dump backups/dsat_dev_20260627_000001.dump backups/dsat_dev_20260629_180001.dump 
+
+---

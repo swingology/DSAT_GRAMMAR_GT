@@ -1,5 +1,37 @@
 # Debug Log
 
+## 2026-06-26 - Backend container cannot reach host Ollama (extraction ConnectError)
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `24d9c95` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: ingestion jobs fail at `extracting` with `ConnectError: All connection attempts failed`.**
+   - Affected Test_4 math sec02 mod01 (job `2afed5ab…`) and Test_4 verbal sec01 mod01 (job `405895ab…`), both failing at the `extracting` step. The extraction client in `backend/app/routers/ingest.py` uses `base_url=settings.ollama_base_url`, which defaults to `http://localhost:11434`. The `dsat-backend` container's compose service set no `OLLAMA_BASE_URL` and no `extra_hosts`, so `localhost:11434` resolved to the container itself — Ollama runs on the host (binds `*:11434`) and was unreachable. Prior successful ingestions must have run the backend on the host, not in this container.
+   - **Fixed:** added `OLLAMA_BASE_URL: http://host.docker.internal:11434` and `extra_hosts: ["host.docker.internal:host-gateway"]` to the `backend` service in `docker-compose.yml`; recreated with `docker compose up -d backend`. Verified from inside the container via `docker exec dsat-backend python -c "import urllib.request; urllib.request.urlopen('http://host.docker.internal:11434/api/tags')"` — reachable, and `glm-ocr:latest` / `deepseek-v4-pro:cloud` / `deepseek-ocr:latest` all present. Re-submitted Test_4 verbal sec01 mod01 + mod02 (jobs `bb4ad1b0…` / `9278f496…`); both moved from instant-fail to `extracting`. Also logged as bug-770 in `.wolf/buglog.json`.
+
+## 2026-06-26 - Annotation Optimization (items 1-3)
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `24d9c95` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: grammar `syntactic_trap_key` truncation — flat `max_tokens=8192` cap too tight for grammar annotations.**
+   - Grammar annotations output 4.5–8K tokens (grammar_role_key + grammar_focus_key + secondary_grammar_focus_keys + syntactic_trap_key + reasoning). The 8192 cap cut off the JSON tail where `syntactic_trap_key` lives, producing `None`/missing values that failed the non-null validator rule for `agreement/pronoun/modifier/verb_form/sentence_boundary` roles. This is the root cause of the 5 blocking `syntactic_trap_key` errors in the Test_4 run (see prior entry, finding #1).
+   - **Fixed:** `annotation_max_tokens(q_data)` in `backend/app/prompts/annotate_prompt.py` returns 12288 for grammar/unknown, 8192 for reading. `_run_pipeline` annotation call site (`backend/app/routers/ingest.py`) now uses it instead of the hardcoded 8192. Reannotate path unchanged (already 32000).
+
+2. **Medium: annotation output ordered reasoning before classification keys, so truncation lost required fields.**
+   - **Fixed:** added an output-ordering instruction to rule 5 of both `_SYSTEM_INSTRUCTIONS_TEMPLATE` and `_SYSTEM_BASE` — emit classification fields FIRST (question_family_key, stem_type_key, grammar_role_key, grammar_focus_key, reading_focus_key, syntactic_trap_key, difficulty_*, etc.), reasoning/amendment_proposal LAST. Truncation now only loses reasoning, never a required key.
+
+3. **Medium: reading rules block sent ~18.3K input tokens to every reading annotation, most irrelevant to the question.**
+   - **Fixed:** `_reading_context(variant_key)` now trims per skill family via `_STEM_SKILL_FAMILY` → `_SKILL_SECTION_NUMBERS` — keeps shared §3-§12 + §14 + §17, selects only the matching §13 skill subsection + §19 failure-mode subsection (+ §19.7 summary), and drops §15 Passage Architecture (generation-only). Unmapped stems fall back to the full block (no accuracy regression). `lru_cache(maxsize=16)` caches each variant; `_prewarm_annotation_cache` dedups by `(domain, variant)` and pre-warms each. Measured: full ~64K chars → trimmed ~41-43K chars (~35% reduction; maps to ~18.3K→~12K tokens on real tokenization).
+
+### Verification
+- `tests/test_prompts.py` — 11/11 pass (rules loading, disambiguation presence, amendment guards, stem-vocab coverage).
+- Full backend suite: 1049 passed, 6 pre-existing failures unrelated to this change (`test_config` ocr_vision_model default drift, `test_vocab_sync` candidates/ontology drift, 4× `test_student_retrieval` DB-seed-state — none import `annotate_prompt`/`_annotate_with_retry`).
+
 ## 2026-06-26 - Ingestion Test Run (Test_4_digital_sec01_mod01)
 Report created by: Claude (ingestion-test skill subagent)
 Git branch: `gitbutler/workspace`
@@ -7,7 +39,8 @@ Git checkpoint: `dc53ce4` — GitButler Workspace Commit
 
 ### Findings
 
-1. **High:** Blocking `syntactic_trap_key` validation error — grammar_role_key='verb_form' annotation returned `None` for `syntactic_trap_key`; rule requires non-None/non-'none'. Affected 5 questions (validating|5 errors); 5 questions failed to persist (extracted 33, created 28). Representative: question index 19 / source question number "20", job `e8b32fc4-3fbd-4662-a2d0-8fe711b1365a`.
+1. ~~**High:** Blocking `syntactic_trap_key` validation error — grammar_role_key='verb_form' annotation returned `None` for `syntactic_trap_key`; rule requires non-None/non-'none'. Affected 5 questions (validating|5 errors); 5 questions failed to persist (extracted 33, created 28). Representative: question index 19 / source question number "20", job `e8b32fc4-3fbd-4662-a2d0-8fe711b1365a`.~~
+   - **Fixed (root cause):** the `None` values were truncation, not model refusal — the flat `max_tokens=8192` cap cut the JSON tail where `syntactic_trap_key` lives. Raised grammar cap to 12288 (domain-aware `annotation_max_tokens`) and reordered output so classification fields precede reasoning. See "Annotation Optimization (items 1-3)" entry above. Re-run the Test_4 ingestion to confirm the 5 questions now persist.
 
 2. **High:** `module_completeness` persistence shortfall — expected 33, extracted 33, created only 28. Directly caused by the 5 blocking `syntactic_trap_key` errors in finding #1.
 

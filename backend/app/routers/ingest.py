@@ -1999,24 +1999,29 @@ def _build_ocr_chain(resolved: str, settings, *, pagewise_pdf_ocr: bool = False)
 
 
 async def _prewarm_annotation_cache(provider, questions_data: list[dict], content_origin: str) -> None:
-    """Fire a minimal annotation call per distinct domain to fill the provider's KV cache.
+    """Fire a minimal annotation call per distinct (domain, variant) to fill the provider's KV cache.
 
     The rules block (system_static) is 10-17K tokens. Without pre-warming, the
     first real annotation call in asyncio.gather pays the full prefill cost while
     all other concurrent tasks wait behind the semaphore. Pre-warming fills the
     cache serially before the gather starts so every concurrent call gets a cache hit.
 
-    A failed pre-warm is non-fatal — the real annotation calls will still work,
-    just without the cache benefit on the first question of each domain.
-    """
-    from app.prompts.annotate_prompt import build_annotate_prompt_parts, _detect_domain
+    Reading questions trim the rules block per skill family, so each distinct
+    reading variant has its own static block and needs its own pre-warm call.
 
-    seen_domains: set[str] = set()
+    A failed pre-warm is non-fatal — the real annotation calls will still work,
+    just without the cache benefit on the first question of each variant.
+    """
+    from app.prompts.annotate_prompt import build_annotate_prompt_parts, _detect_domain, _reading_variant_key
+
+    seen: set[tuple[str, str | None]] = set()
     for q_data in questions_data:
         domain = _detect_domain(q_data)
-        if domain in seen_domains:
+        variant = _reading_variant_key(q_data) if domain == "reading" else None
+        key = (domain, variant)
+        if key in seen:
             continue
-        seen_domains.add(domain)
+        seen.add(key)
         try:
             prompt_q_data = {**q_data, "content_origin": content_origin}
             sys_static, sys_dynamic, _ = build_annotate_prompt_parts(prompt_q_data)
@@ -2026,9 +2031,9 @@ async def _prewarm_annotation_cache(provider, questions_data: list[dict], conten
                 user="Cache pre-warm — respond with exactly: {}",
                 max_tokens=4,
             )
-            logger.info("Annotation cache pre-warmed for domain=%s", domain)
+            logger.info("Annotation cache pre-warmed for domain=%s variant=%s", domain, variant)
         except Exception as exc:
-            logger.warning("Annotation cache pre-warm failed for domain=%s: %s", domain, exc)
+            logger.warning("Annotation cache pre-warm failed for domain=%s variant=%s: %s", domain, variant, exc)
 
 
 def _is_rate_limit_error(exc: Exception) -> bool:
@@ -2146,7 +2151,7 @@ async def _annotate_with_retry(
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     from app.llm.factory import get_provider
     from app.prompts.extract_prompt import build_extract_prompt
-    from app.prompts.annotate_prompt import _detect_domain
+    from app.prompts.annotate_prompt import _detect_domain, annotation_max_tokens
 
     settings = get_settings()
     provider = get_provider(
@@ -2864,7 +2869,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 content_origin=job.content_origin,
                 provider_name=job.provider_name,
                 model_name=job.model_name,
-                max_tokens=8192,
+                max_tokens=annotation_max_tokens(q_data),
                 semaphore=_annot_semaphore,
                 question_index=idx,
                 log_context=f"question_index {idx}",

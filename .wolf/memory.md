@@ -4445,3 +4445,93 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 16:29 | Edited backend/app/prompts/annotate_prompt.py | added 1 import(s) | ~18 |
+| 16:29 | Edited backend/app/prompts/annotate_prompt.py | expanded (+43 lines) | ~720 |
+| 16:29 | Edited backend/app/prompts/annotate_prompt.py | modified _extract_subsection() | ~1143 |
+| 16:29 | Edited backend/app/prompts/annotate_prompt.py | 7→7 lines | ~75 |
+| 16:29 | Edited backend/app/prompts/annotate_prompt.py | expanded (+7 lines) | ~159 |
+| 16:29 | Edited backend/app/routers/ingest.py | inline fix | ~24 |
+| 16:29 | Edited backend/app/routers/ingest.py | 11→11 lines | ~134 |
+| 16:29 | Edited backend/app/routers/ingest.py | modified _prewarm_annotation_cache() | ~548 |
+| 16:31 | Annotation optimization 1-3 | annotate_prompt.py, ingest.py | grammar max_tokens 8192→12288 (domain-aware via annotation_max_tokens); output ordering: classification fields first, reasoning last; reading rules trimmed per skill-family variant (full ~21K→~14K chars, §15 dropped, §13/§19 routed by stem) + prewarm dedups per (domain,variant); 11 prompt tests pass, 6 unrelated pre-existing failures | ~0 |
+| 16:31 | Edited DEBUG_LOG.md | expanded (+21 lines) | ~755 |
+| 16:31 | Edited DEBUG_LOG.md | modified Fixed() | ~218 |
+| 16:32 | Session end: 10 writes across 3 files (annotate_prompt.py, ingest.py, DEBUG_LOG.md) | 5 reads | ~110273 tok |
+| 16:33 | Session end: 10 writes across 3 files (annotate_prompt.py, ingest.py, DEBUG_LOG.md) | 5 reads | ~110273 tok |
+| 16:42 | Created ../../../tmp/ingest_test4_sec02.sh | — | ~512 |
+| 16:42 | Session end: 11 writes across 4 files (annotate_prompt.py, ingest.py, DEBUG_LOG.md, ingest_test4_sec02.sh) | 6 reads | ~110929 tok |
+| 16:46 | Session end: 11 writes across 4 files (annotate_prompt.py, ingest.py, DEBUG_LOG.md, ingest_test4_sec02.sh) | 6 reads | ~110929 tok |
+
+## Session: 2026-06-26 16:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:51 | Created ../../../tmp/ingest_test4_verbal_sec01.sh | — | ~526 |
+| 16:51 | Session end: 1 writes across 1 files (ingest_test4_verbal_sec01.sh) | 0 reads | ~564 tok |
+| 17:45 | Edited docker-compose.yml | 6→11 lines | ~160 |
+| 17:46 | Created ../../../tmp/ingest_test4_verbal_sec01.sh | — | ~599 |
+| 17:46 | Created ../../../tmp/poll_test4_verbal.sh | — | ~287 |
+| 17:47 | Fix dsat-backend→host-Ollama connectivity (ConnectError at extracting) — added OLLAMA_BASE_URL=http://host.docker.internal:11434 + extra_hosts host-gateway to compose; recreated backend; relaunched Test_4 verbal sec01 mod01+mod02 (jobs bb4ad1b0/9278f496, now extracting) | docker-compose.yml, .wolf/buglog.json(bug-770), .wolf/cerebrum.md | both jobs extracting (previously instant ConnectError) | ~6k |
+| 17:48 | Edited DEBUG_LOG.md | expanded (+11 lines) | ~443 |
+| 17:48 | Session end: 5 writes across 4 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md) | 2 reads | ~54213 tok |
+| 17:59 | Edited backend/app/prompts/annotate_prompt.py | 2→2 lines | ~34 |
+| 18:00 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 2 reads | ~54247 tok |
+| 18:14 | mod01 retry (job 93e6a596) FINAL needs_review — difficulty_overall fix validated: 33 blocking difficulty_overall errors → 0; 32/33 questions created+annotated (q20 dropped, residual 1 syntactic_trap_key = model omission, not truncation since output=20109 tok). Submitted mod02 (job 02c4c5d7, extracting). Logged bug-771. | backend/app/prompts/annotate_prompt.py, .wolf/buglog.json, .wolf/cerebrum.md | mod01 healthy; mod02 running | ~5k |
+| 18:16 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 2 reads | ~54247 tok |
+| 18:30 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 2 reads | ~54247 tok |
+| 18:37 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 2 reads | ~54247 tok |
+| 18:40 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 2 reads | ~54247 tok |
+| 18:43 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 2 reads | ~54247 tok |
+| 18:48 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 2 reads | ~54247 tok |
+| 18:55 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 2 reads | ~54247 tok |
+| 18:56 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 2 reads | ~54247 tok |
+| 19:24 | Test 5 verbal sec01 clean re-ingest: hard-deleted 94 dup questions (+children, detached jobs/assets), hit file-level dedup guard on mod02 (prior 33/33 job) — deleted prior QuestionJob+QuestionAsset to clear it; re-submitted mod01 (3e2f12e6) + mod02 (6f13130a), both extracting. Logged bug-772. | DB (questions + child tables), question_jobs/question_assets, .wolf/buglog.json, .wolf/cerebrum.md | Test5 sec01 cleared to 0; both modules ingesting | ~8k |
+| 19:25 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 19:37 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 19:38 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 19:38 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 20:05 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 21:01 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 21:02 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 21:03 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 21:04 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 21:08 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+| 21:11 | Session end: 6 writes across 5 files (ingest_test4_verbal_sec01.sh, docker-compose.yml, poll_test4_verbal.sh, DEBUG_LOG.md, annotate_prompt.py) | 4 reads | ~129466 tok |
+
+## Session: 2026-06-27 21:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:50 | Created 2024_TESTS_STATUS.md | — | ~1324 |
+| 22:50 | Session end: 1 writes across 1 files (2024_TESTS_STATUS.md) | 1 reads | ~1419 tok |
+| 23:41 | Session end: 1 writes across 1 files (2024_TESTS_STATUS.md) | 1 reads | ~1419 tok |
+
+## Session: 2026-06-27 03:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-29 14:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:07 | Created 2024_test3_answer_keys.md | — | ~523 |
+| 15:07 | Session end: 1 writes across 1 files (2024_test3_answer_keys.md) | 0 reads | ~560 tok |
+| 15:20 | Session end: 1 writes across 1 files (2024_test3_answer_keys.md) | 0 reads | ~560 tok |
+| 15:20 | Session end: 1 writes across 1 files (2024_test3_answer_keys.md) | 0 reads | ~560 tok |
+| 15:34 | Session end: 1 writes across 1 files (2024_test3_answer_keys.md) | 0 reads | ~560 tok |
+
+## Session: 2026-06-30 17:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-30 09:59
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-30 13:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

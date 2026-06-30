@@ -6,6 +6,7 @@ Domain routing:
   Unknown  → grammar_v8 Parts C+D + reading_v3 §3–7
 """
 import os
+import re
 import json
 from functools import lru_cache
 
@@ -140,6 +141,49 @@ _GRAMMAR_QUESTION_SIGNALS = {
     "period", "colon", "dash", "which choice most effectively",
 }
 
+# Pass 1 stem_type_key → reading skill family, used to trim the reading rules
+# block to only the relevant §13 skill-specific and §19 failure-mode subsections.
+# Unmapped stems fall back to the full §13/§19 block (no accuracy regression,
+# just no token savings). Kept conservative on purpose — a wrong routing here
+# would drop the section the annotator needs, so unmatched stems keep everything.
+_STEM_SKILL_FAMILY = {
+    "choose_best_support": "command_of_evidence_textual",
+    "choose_best_quote": "command_of_evidence_textual",
+    "choose_command_of_evidence_textual": "command_of_evidence_textual",
+    "choose_best_completion_from_data": "command_of_evidence_quantitative",
+    "choose_command_of_evidence_quantitative": "command_of_evidence_quantitative",
+    "choose_main_idea": "central_ideas_and_details",
+    "choose_central_detail": "central_ideas_and_details",
+    "choose_detail": "central_ideas_and_details",
+    "choose_best_inference": "inferences",
+    "most_logically_completes": "inferences",
+    "choose_best_illustration": "inferences",
+    "choose_best_weakener": "inferences",
+    "choose_words_in_context": "words_in_context",
+    "choose_word_in_context": "words_in_context",
+    "choose_main_purpose": "text_structure_and_purpose",
+    "choose_structure_description": "text_structure_and_purpose",
+    "choose_sentence_function": "text_structure_and_purpose",
+    "choose_cross_text_connection": "cross_text_connections",
+    "choose_text_relationship": "cross_text_connections",
+    "choose_agreement_across_texts": "cross_text_connections",
+    "choose_difference_across_texts": "cross_text_connections",
+    "synthesize_information": "cross_text_connections",
+    "compare_contributions": "cross_text_connections",
+}
+
+# skill family → (§13 subsection number, §19 failure-mode subsection number or
+# None). central_ideas_and_details has no dedicated §19 failure-mode subsection.
+_SKILL_SECTION_NUMBERS = {
+    "command_of_evidence_textual": ("13.1", "19.3"),
+    "command_of_evidence_quantitative": ("13.2", "19.2"),
+    "central_ideas_and_details": ("13.3", None),
+    "inferences": ("13.4", "19.4"),
+    "words_in_context": ("13.5", "19.1"),
+    "text_structure_and_purpose": ("13.6", "19.5"),
+    "cross_text_connections": ("13.7", "19.6"),
+}
+
 
 @lru_cache(maxsize=2)
 def _read_file(filename: str) -> str:
@@ -170,19 +214,86 @@ def _grammar_context() -> str:
     return f"Grammar v8 RULES REFERENCE:\n=== GRAMMAR v8: MODE ROUTING ===\n{routing}\n\n=== GRAMMAR v8: ANNOTATION + TAXONOMY (Parts C & D) ===\n{annotation}"
 
 
-@lru_cache(maxsize=1)
-def _reading_context() -> str:
+_SUBSECTION_END_RE = re.compile(r"\n(#{2,3}) ")
+
+
+def _extract_subsection(text: str, start_prefix: str) -> str:
+    """Extract a ### subsection from its heading to the next ## or ### heading.
+
+    start_prefix is a heading prefix like "### 13.5 ". Stops at the next level-2
+    or level-3 heading so any level-4 sub-subsections inside stay included.
+    """
+    start = text.find(start_prefix)
+    if start == -1:
+        return ""
+    rest = text[start + len(start_prefix):]
+    m = _SUBSECTION_END_RE.search(rest)
+    if m:
+        end = start + len(start_prefix) + m.start()
+        return text[start:end].rstrip() + "\n"
+    return text[start:].rstrip() + "\n"
+
+
+def _reading_variant_key(q_data: dict) -> str | None:
+    """Map a reading question's stem_type_key to a skill-family variant key.
+
+    Returns None when the stem is unknown/unmapped, which makes the caller load
+    the full §13/§19 block (safe fallback — no accuracy regression).
+    """
+    stem = (q_data.get("stem_type_key") or "").strip().lower()
+    return _STEM_SKILL_FAMILY.get(stem)
+
+
+# Domain-aware Pass 2 output caps. Grammar annotations carry a larger
+# classification payload (grammar_role_key, grammar_focus_key,
+# secondary_grammar_focus_keys, syntactic_trap_key) plus reasoning; observed
+# output is 4.5–8K tokens and the prior flat 8192 cap truncated
+# syntactic_trap_key on longer items. Reading output fits comfortably in 8K.
+# "unknown" loads grammar Part D, so it gets the grammar cap as well.
+ANNOTATION_MAX_TOKENS_GRAMMAR = 12288
+ANNOTATION_MAX_TOKENS_READING = 8192
+
+
+def annotation_max_tokens(q_data: dict) -> int:
+    """Return the domain-aware max output tokens for Pass 2 annotation."""
+    if _detect_domain(q_data) == "reading":
+        return ANNOTATION_MAX_TOKENS_READING
+    return ANNOTATION_MAX_TOKENS_GRAMMAR
+
+
+@lru_cache(maxsize=16)
+def _reading_context(variant_key: str | None = None) -> str:
     text = _read_file(_READING_FILE)
     if not text:
         return ""
-    core = _extract_between(text, "## 3. Question Fields", "## 16. Generation Rules")
-    # Always include disambiguation rules and student failure modes
-    extra = ""
-    for section in ("## 17. Disambiguation Rules", "## 19. Student Failure Mode Keys"):
-        chunk = _extract_between(text, section, "##" if section != "## 19. Student Failure Mode Keys" else "## 20.")
-        if chunk:
-            extra += f"\n{chunk}"
-    return f"Reading v3 RULES REFERENCE:\n=== READING v3: ANNOTATION REFERENCE (§3-14 + disambiguation) ===\n{core}{extra}"
+    # Shared reference for every reading question: §3 Question Fields → §12
+    # Option-Level Analysis (ends just before §13 skill-specific rules).
+    shared = _extract_between(text, "## 3. Question Fields", "## 13. Skill-Specific Annotation Rules")
+    # §13 Skill-Specific Annotation Rules: targeted subsection per variant, or
+    # the full §13 block when no variant is selected (safe fallback).
+    if variant_key and variant_key in _SKILL_SECTION_NUMBERS:
+        sec13_num, _sec19_num = _SKILL_SECTION_NUMBERS[variant_key]
+        skill_block = _extract_subsection(text, f"### {sec13_num} ")
+    else:
+        skill_block = _extract_between(text, "## 13. Skill-Specific Annotation Rules", "## 14. Difficulty Calibration")
+    # §14 Difficulty Calibration. §15 Passage Architecture Requirements is
+    # generation-only (the passage already exists at annotation time) so it is
+    # dropped from the annotation context.
+    difficulty = _extract_between(text, "## 14. Difficulty Calibration", "## 15. Passage Architecture Requirements")
+    # §17 Disambiguation Rules (always relevant for annotation).
+    disambig = _extract_between(text, "## 17. Disambiguation Rules", "## 18. Forbidden Patterns")
+    # §19 Student Failure Mode Keys: targeted subsection + the §19.7 summary
+    # list, or the full §19 block when no variant is selected.
+    if variant_key and variant_key in _SKILL_SECTION_NUMBERS:
+        _sec13_num, sec19_num = _SKILL_SECTION_NUMBERS[variant_key]
+        failure_block = _extract_subsection(text, f"### {sec19_num} ") if sec19_num else ""
+        summary = _extract_subsection(text, "### 19.7 ")
+        failure = (failure_block + "\n" + summary).strip()
+    else:
+        failure = _extract_between(text, "## 19. Student Failure Mode Keys", "## 20. Amendment Process")
+    parts = [shared, skill_block, difficulty, disambig, failure]
+    body = "\n".join(p for p in parts if p).strip()
+    return f"Reading v3 RULES REFERENCE:\n=== READING v3: ANNOTATION REFERENCE (§3-14 + §17 + §19) ===\n{body}"
 
 
 @lru_cache(maxsize=1)
@@ -264,6 +375,13 @@ _SYSTEM_INSTRUCTIONS_TEMPLATE = """You are a DSAT question annotation specialist
      construction, or cross-passage inference
 
 5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
+   Emit keys in this order: classification fields FIRST (question_family_key,
+   stimulus_mode_key, stem_type_key, skill_family_key, grammar_role_key,
+   grammar_focus_key, reading_focus_key, syntactic_trap_key, difficulty_overall, difficulty_grammar,
+   difficulty_reading), then option-level fields, then the
+   reasoning/amendment_proposal object LAST. This ordering makes truncation
+   harmless: if output is cut off, only reasoning is lost — never a required
+   classification key.
 
 6. CONTROLLED VOCABULARY: question_family_key, stimulus_mode_key, stem_type_key,
    grammar_role_key, grammar_focus_key, and reading_focus_key must be drawn
@@ -330,6 +448,13 @@ _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the gi
      construction, or cross-passage inference
 
 5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
+   Emit keys in this order: classification fields FIRST (question_family_key,
+   stimulus_mode_key, stem_type_key, skill_family_key, grammar_role_key,
+   grammar_focus_key, reading_focus_key, syntactic_trap_key, difficulty_overall, difficulty_grammar,
+   difficulty_reading), then option-level fields, then the
+   reasoning/amendment_proposal object LAST. This ordering makes truncation
+   harmless: if output is cut off, only reasoning is lost — never a required
+   classification key.
 
 6. CONTROLLED VOCABULARY: question_family_key, stimulus_mode_key, stem_type_key,
    grammar_role_key, grammar_focus_key, and reading_focus_key must be drawn
@@ -477,7 +602,7 @@ def build_annotate_prompt_parts(
     if domain == "grammar":
         system_static = _grammar_context()
     elif domain == "reading":
-        system_static = _reading_context()
+        system_static = _reading_context(_reading_variant_key(q_data))
     else:
         system_static = _unknown_context()
 

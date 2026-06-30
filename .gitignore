@@ -20,3 +20,4 @@ screenshot.png
 
 # Auto Claude data directory
 .auto-claude/
+backups/dsat_dev_20260627_020001.dump

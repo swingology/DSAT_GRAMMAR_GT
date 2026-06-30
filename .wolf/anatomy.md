@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-26T23:00:03.120Z
-> Files: 1064 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-29T22:07:55.999Z
+> Files: 1069 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -11,7 +11,10 @@
 
 - `export_test1.py` — Export ingested Test_1 verbal sec01 mod01 questions + annotations to markdown. (~2100 tok)
 - `fix_diag_schema.sql` — Recreate objects from migrations 030/031/032 that are missing from the dev DB (~827 tok)
+- `ingest_test4_sec02.sh` — Ingest Test 4 sec02 (math) mod01 + mod02 into the live dev API (port 8002). (~512 tok)
+- `ingest_test4_verbal_sec01.sh` — Ingest Test 4 verbal sec01 mod01 + mod02 (live dev API, port 8002). (~599 tok)
 - `mock_api.py` — Handler: do_GET, do_POST, do_OPTIONS, log_message (~608 tok)
+- `poll_test4_verbal.sh` — Poll the two in-flight Test 4 verbal sec01 jobs until terminal. (~287 tok)
 
 ## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/607e54ac-9498-4651-8182-473f13bf4e6c/scratchpad/
 
@@ -77,6 +80,8 @@
 - `.dockerignore` (~62 tok)
 - `.gitattributes` — Git attributes (~12 tok)
 - `.gitignore` — Git ignore rules (~70 tok)
+- `2024_test3_answer_keys.md` — 2024 DSAT Test 3 — Answer Keys (~490 tok)
+- `2024_TESTS_STATUS.md` — 2024 Bluebook Tests — Ingestion Status (~1241 tok)
 - `ADMIN_DASHBOARD_DESIGN.md` — DSAT Admin Dashboard — Design & Implementation Plan (~6347 tok)
 - `ADMIN_DASHBOARD_README.md` — DSAT Admin Dashboard — Complete Design Package (~4151 tok)
 - `ADMIN_DASHBOARD_TASKS.md` — DSAT Admin Dashboard — Implementation Task Breakdown (~13530 tok)
@@ -86,14 +91,14 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~180107 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~50727 tok)
+- `DEBUG_LOG.md` — Debug Log (~51920 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
 - `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7859 tok)
 - `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~4119 tok)
 - `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
-- `docker-compose.yml` — Docker Compose services (~544 tok)
+- `docker-compose.yml` — Docker Compose services (~632 tok)
 - `Dockerfile.backend` (~180 tok)
 - `Dockerfile.frontend` (~123 tok)
 - `future_features.md` — Future Features & Outstanding Work (~8420 tok)
@@ -1348,7 +1353,7 @@
 
 ## backend/app/prompts/
 
-- `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~6762 tok)
+- `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~8653 tok)
 - `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~3369 tok)
 - `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~2308 tok)
 - `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
@@ -1368,7 +1373,7 @@
 - `admin.py` — API: 7 endpoints (~28180 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` (~16107 tok)
-- `ingest.py` (~46931 tok)
+- `ingest.py` (~47039 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
 - `student.py` (~30758 tok)
 

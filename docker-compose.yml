@@ -28,6 +28,11 @@ services:
       STUDENT_API_KEYS: student-test-key,student-key-change-me
       ADMIN_API_KEYS: admin-test-key,admin-key-change-me
       PYTHONUNBUFFERED: "1"
+      # Extraction/annotation reach the host's Ollama daemon (glm-ocr + :cloud models).
+      # Inside the container `localhost:11434` is the container itself, so route via host-gateway.
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy
