@@ -5,6 +5,70 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-06-26 — Annotation Pipeline Refactor (deterministic canonicalize → enforce → validate)
+
+**Model:** Claude Opus 4.8
+**Branch:** `gitbutler/workspace`
+**Commits:** uncommitted working tree
+
+Replaces LLM-obedience dependence with a deterministic `canonicalize → enforce_nullability →
+sanitize → validate_completeness` pipeline so the nested LLM reasoning shape always reconciles
+to the flat schema consumed by practice/generation. Applied identically to ingestion and
+generated questions.
+
+### Added
+
+- **`canonicalize_annotation(raw)`** in `backend/app/parsers/json_parser.py` — single deterministic
+  step that promotes canonical fields from nested `question`/`classification`/`review`/`reasoning`/
+  `generation_profile` blocks to top level; repairs values that are missing, null, empty, or `"none"`
+  (when not a valid domain value) from valid nested values; normalizes aliases
+  (`reading_skill_family_key` → `skill_family_key`, `skill_family` display name → `skill_family_key`);
+  copies `classification.passage_tokens` as a soft fallback only. **Conflict policy:** when top-level
+  and nested disagree, top-level wins, the clash is recorded in `_annotation_quality.conflicts[]`, and
+  `needs_human_review` is set — never a silent winner. Attaches `_annotation_quality` metadata.
+- **`validate_annotation_completeness(annotation)`** in `backend/app/pipeline/validator.py` — domain-aware
+  gate. Grammar requires `question_family_key`/`grammar_role_key`/`grammar_focus_key` (valid pairing) +
+  `difficulty_overall`, requires `syntactic_trap_key` (`"none"` allowed only when role not in
+  `SYNTACTIC_TRAP_REQUIRED_ROLES`), and forbids `skill_family_key`. Reading requires
+  `question_family_key`/`skill_family_key`/`reading_focus_key` (valid pairing) + `difficulty_overall`,
+  forbids grammar role/focus keys, and flags missing `reasoning_trap_key` for review.
+- **`SYNTACTIC_TRAP_REQUIRED_ROLES`** in `backend/app/models/ontology.py` (`agreement`, `pronoun`,
+  `modifier`, `verb_form`, `sentence_boundary`) — single source shared with the prompt.
+- **`backend/scripts/repair_annotation_canonical.py`** — runs `canonicalize → enforce_nullability` over
+  existing active `annotation_jsonb` rows and writes back promoted top-level fields (no LLM calls).
+- **`backend/scripts/annotation_quality_audit.py`** — SQL audit of active rows for missing
+  question_family / difficulty / grammar-missing-trap / reading-missing-focus (with recoverable-from-nested count).
+- **Tests** — 8 `canonicalize_annotation` cases in `tests/test_parsers.py` (promotion, null repair, `"none"`
+  handling, conflict policy, alias/display-name normalization, passage_tokens fallback, flat no-op) and
+  11 cases in `tests/test_validator_completeness.py`.
+
+### Changed
+
+- **Ingest annotate path** (`backend/app/routers/ingest.py`) — `normalize_annotation(...)` replaced with
+  `canonicalize_annotation(...)`; completeness gate wired in after sanitize, before persistence.
+- **Generation** (`backend/app/routers/generate.py`) — now routes annotations through the identical
+  `canonicalize → completeness` pipeline (previously only called `normalize_annotation`).
+- **Prompt / rules vocabulary** — removed invalid `very_high` from the prompt difficulty calibration
+  (folded into `high`; `DIFFICULTY_KEYS` is `low/medium/high`); set cross-domain difficulty examples to
+  `null` for not-applicable in `rules_agent_dsat_reading_v3.md` and
+  `rules_agent_dsat_grammar_ingestion_generation_v8.md`; stated explicitly that grammar annotations must
+  not populate `skill_family_key`.
+
+### Repair run
+
+- 30 active rows changed, 0 conflicts. `missing_question_family` 21 → 0, `missing_difficulty` 21 → 2,
+  `reading_with_grammar_difficulty` 0. Remaining gaps (2 difficulty, 2 reading_focus, grammar trap debt)
+  are genuinely-missing data → flagged for re-annotation, not repairable deterministically.
+
+### Tests
+
+- Refactor scope green: `test_parsers.py` + `test_validator_completeness.py` → 40 passed, 2 skipped.
+  (Pre-existing full-suite failures in `test_student_retrieval`/`test_config`/`test_vocab_sync`/
+  `test_ingest_router` are unrelated in-flight work — passage_spans feature, model-default rename, vocab
+  drift — not caused by this refactor.)
+
+---
+
 ## 2026-06-24 — Diagnostic Test Rebuild (Blueprint v1)
 
 **Model:** Claude Sonnet 4.6
@@ -7699,5 +7763,2270 @@ _branch:_ `main` · _commit:_ `ecd9403` · _ram:_ `20Gi/30Gi`
 _( 8 files changed, 1473 insertions(+), 168 deletions(-))_
 
 **Untracked:** analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/validation_failures.json analysis/ingestion/PT01/run_2026-06-25_d3e4c669-7ebc-493d-a6e7-8ad895e21ed0/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-24 19:18:58 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 7 files changed, 1225 insertions(+), 168 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/validation_failures.json analysis/ingestion/PT01/run_2026-06-25_d3e4c669-7ebc-493d-a6e7-8ad895e21ed0/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-24 20:01:13 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 8 files changed, 1368 insertions(+), 268 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/validation_failures.json analysis/ingestion/PT01/run_2026-06-25_d3e4c669-7ebc-493d-a6e7-8ad895e21ed0/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-24 20:44:52 (50kb-written)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 15 files changed, 1633 insertions(+), 332 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 20:44:56 (50kb-written)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 15 files changed, 1647 insertions(+), 332 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 20:45:13 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 15 files changed, 1658 insertions(+), 332 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 20:50:39 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 16 files changed, 1870 insertions(+), 327 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 21:15:27 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 16 files changed, 1857 insertions(+), 347 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 21:17:25 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 16 files changed, 1925 insertions(+), 347 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 21:19:52 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 16 files changed, 2051 insertions(+), 347 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 22:21:33 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 16 files changed, 2065 insertions(+), 341 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 22:34:11 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 17 files changed, 2297 insertions(+), 345 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 22:40:29 (50kb-written)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py docker-compose.yml 
+_( 20 files changed, 2427 insertions(+), 330 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-24 22:41:00 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py 
+_( 21 files changed, 2458 insertions(+), 322 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 06:33:19 (session-end)
+_branch:_ `main` · _commit:_ `b7ca6d4` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo CHANGELOG.md Dockerfile.frontend dev_server.py 
+_( 21 files changed, 2648 insertions(+), 322 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 06:56:58 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md Dockerfile.frontend 
+_( 22 files changed, 2840 insertions(+), 322 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 07:11:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md Dockerfile.frontend 
+_( 22 files changed, 3030 insertions(+), 322 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 07:31:23 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md Dockerfile.frontend 
+_( 165 files changed, 3127 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 07:37:06 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 166 files changed, 3140 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 07:41:07 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 166 files changed, 3150 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 07:44:00 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 166 files changed, 3160 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 07:48:16 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 166 files changed, 3170 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 07:54:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 166 files changed, 3180 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 08:37:00 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `8.0Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 166 files changed, 3200 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 08:37:13 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `8.3Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 166 files changed, 3210 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 08:38:27 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 166 files changed, 3220 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 08:39:15 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `9.1Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 166 files changed, 3230 insertions(+), 8250 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 08:40:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 173 files changed, 3297 insertions(+), 8241 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 08:45:39 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `8.9Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 173 files changed, 3324 insertions(+), 8229 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 08:46:06 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `8.9Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 173 files changed, 3396 insertions(+), 8229 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 08:47:48 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `8.9Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 173 files changed, 3468 insertions(+), 8229 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 10:50:37 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `9.3Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 3570 insertions(+), 8225 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 13:30:16 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `4.0Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 3653 insertions(+), 8225 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 13:34:03 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `4.0Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 3736 insertions(+), 8225 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 13:34:36 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `4.0Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 3819 insertions(+), 8225 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 13:35:50 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `4.1Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 3902 insertions(+), 8225 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 13:40:39 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `4.1Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 3985 insertions(+), 8225 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 13:44:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `4.1Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 4073 insertions(+), 8221 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 20:40:09 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 4239 insertions(+), 8222 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 21:01:53 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 4264 insertions(+), 8246 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 21:32:13 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts CHANGELOG.md 
+_( 174 files changed, 4291 insertions(+), 8238 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 21:41:31 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 175 files changed, 4359 insertions(+), 8248 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 21:41:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 175 files changed, 4458 insertions(+), 8248 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 21:42:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 175 files changed, 4472 insertions(+), 8246 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 21:43:28 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 175 files changed, 4533 insertions(+), 8246 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:04:18 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 175 files changed, 4644 insertions(+), 8246 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:08:16 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 175 files changed, 4705 insertions(+), 8246 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:09:10 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 175 files changed, 4716 insertions(+), 8246 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:11:20 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 175 files changed, 4827 insertions(+), 8246 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-25_428a3fed-f24c-4de3-92be-885b31335186/summary.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:21:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 176 files changed, 4871 insertions(+), 8241 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:27:58 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 176 files changed, 4952 insertions(+), 8235 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:34:41 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 177 files changed, 5054 insertions(+), 8233 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:34:45 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 177 files changed, 5072 insertions(+), 8230 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:35:33 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo APP/STUDENT_APP_REDUX/vite.config.ts 
+_( 177 files changed, 5082 insertions(+), 8230 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:40:22 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 179 files changed, 5211 insertions(+), 8230 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:40:31 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 179 files changed, 5311 insertions(+), 8230 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:48:41 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 179 files changed, 5411 insertions(+), 8229 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:52:55 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 179 files changed, 5512 insertions(+), 8230 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 22:57:06 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 181 files changed, 5605 insertions(+), 8257 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 23:00:04 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 181 files changed, 5625 insertions(+), 8244 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 23:02:24 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 181 files changed, 5891 insertions(+), 8229 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 23:29:24 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 181 files changed, 6076 insertions(+), 8230 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 23:36:34 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 182 files changed, 6238 insertions(+), 8238 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 23:37:34 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 182 files changed, 6260 insertions(+), 8229 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 23:38:16 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 182 files changed, 6283 insertions(+), 8228 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-25 23:41:15 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6b9e9bb` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 182 files changed, 6599 insertions(+), 8222 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 00:06:56 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 178 files changed, 6253 insertions(+), 8172 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 00:10:24 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 178 files changed, 6483 insertions(+), 8172 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 00:16:04 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 178 files changed, 6713 insertions(+), 8172 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 00:43:47 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 178 files changed, 6943 insertions(+), 8172 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 00:49:19 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 178 files changed, 7392 insertions(+), 8172 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 00:51:08 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 178 files changed, 7622 insertions(+), 8172 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 00:51:19 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 178 files changed, 7633 insertions(+), 8172 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 08:06:19 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 178 files changed, 7823 insertions(+), 8256 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 08:15:54 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 178 files changed, 7919 insertions(+), 8251 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 08:33:38 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `22Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 180 files changed, 8008 insertions(+), 8282 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:01:05 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 181 files changed, 8030 insertions(+), 8268 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:01:13 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 183 files changed, 8051 insertions(+), 8264 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:01:14 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 183 files changed, 8065 insertions(+), 8261 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:02:22 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 183 files changed, 8081 insertions(+), 8261 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:02:31 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 183 files changed, 8096 insertions(+), 8260 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:02:42 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 183 files changed, 8116 insertions(+), 8256 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:04:23 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/tsconfig.tsbuildinfo 
+_( 183 files changed, 8140 insertions(+), 8254 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:05:25 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 184 files changed, 8200 insertions(+), 8258 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:06:31 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `22Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 184 files changed, 8219 insertions(+), 8254 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:06:58 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 184 files changed, 8282 insertions(+), 8260 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 09:07:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 184 files changed, 8425 insertions(+), 8260 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 10:29:09 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `25Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 184 files changed, 8436 insertions(+), 8260 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 10:32:00 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `25Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 184 files changed, 8584 insertions(+), 8259 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 10:39:06 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `25Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 187 files changed, 8970 insertions(+), 8251 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 10:39:28 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `25Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 187 files changed, 8980 insertions(+), 8251 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 11:25:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 187 files changed, 9163 insertions(+), 8251 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 11:44:41 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 187 files changed, 9501 insertions(+), 8241 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 11:44:42 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 187 files changed, 9516 insertions(+), 8239 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:01:42 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 189 files changed, 9684 insertions(+), 8229 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:01:55 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 189 files changed, 9700 insertions(+), 8228 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:02:01 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 189 files changed, 9718 insertions(+), 8226 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:05:13 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 190 files changed, 9749 insertions(+), 8226 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:05:21 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 190 files changed, 9770 insertions(+), 8225 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:05:30 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 190 files changed, 9788 insertions(+), 8225 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:06:49 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 190 files changed, 9838 insertions(+), 8233 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:07:31 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 191 files changed, 9866 insertions(+), 8232 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:07:33 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 192 files changed, 9886 insertions(+), 8234 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:07:35 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 192 files changed, 9904 insertions(+), 8235 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:07:37 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 192 files changed, 9922 insertions(+), 8236 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:22:26 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 192 files changed, 9739 insertions(+), 8334 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:54:06 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 193 files changed, 9876 insertions(+), 8314 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:54:18 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 194 files changed, 9897 insertions(+), 8310 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:54:24 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 194 files changed, 9912 insertions(+), 8307 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 12:54:53 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 194 files changed, 9934 insertions(+), 8305 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 13:00:05 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 9961 insertions(+), 8298 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 13:02:03 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 9917 insertions(+), 8347 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 14:06:00 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `7.2Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 9978 insertions(+), 8352 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 14:14:12 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `7.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 9988 insertions(+), 8352 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 14:18:05 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 9998 insertions(+), 8352 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 14:24:41 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 10008 insertions(+), 8352 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/questions/q001.md 
+
+---
+
+## Session snapshot — 2026-06-26 14:28:36 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 10030 insertions(+), 8345 deletions(-))_
+
+**Untracked:** .claude/skills/start-app/SKILL.md APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 14:31:33 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 10133 insertions(+), 8336 deletions(-))_
+
+**Untracked:** .claude/skills/start-app/SKILL.md APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 14:31:47 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 10189 insertions(+), 8333 deletions(-))_
+
+**Untracked:** .claude/skills/start-app/SKILL.md APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 14:32:46 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bfc86ad` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/GrammarPractice.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/PracticeTestCard.test.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/TestModeTabAdaptive.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/PracticeTestCard.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx APP/STUDENT_APP_REDUX/src/types/grammar.ts 
+_( 195 files changed, 10234 insertions(+), 8309 deletions(-))_
+
+**Untracked:** .claude/skills/start-app/SKILL.md APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/PracticeTestPage.test.tsx analysis/ingestion/1/run_2026-06-26_1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 14:47:31 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bc93bac` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 6 files changed, 1277 insertions(+), 98 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 14:51:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bc93bac` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 6 files changed, 1315 insertions(+), 96 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 14:58:36 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bc93bac` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 7 files changed, 1440 insertions(+), 87 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 14:59:38 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bc93bac` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 8 files changed, 1762 insertions(+), 379 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 15:03:37 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bc93bac` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 8 files changed, 1857 insertions(+), 380 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 15:09:29 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bc93bac` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md docker-compose.yml 
+_( 9 files changed, 1901 insertions(+), 378 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 15:11:10 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `bc93bac` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md docker-compose.yml 
+_( 9 files changed, 1939 insertions(+), 378 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 15:11:24 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bc93bac` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md docker-compose.yml 
+_( 9 files changed, 1947 insertions(+), 378 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 15:22:30 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 8 files changed, 2026 insertions(+), 379 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:22:36 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2042 insertions(+), 378 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:22:38 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2061 insertions(+), 375 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:22:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2074 insertions(+), 375 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:22:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2074 insertions(+), 375 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:27:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `7.8Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2147 insertions(+), 411 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:31:50 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2157 insertions(+), 411 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:33:04 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2167 insertions(+), 411 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:35:02 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2179 insertions(+), 407 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:35:45 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2211 insertions(+), 407 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:39:16 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2265 insertions(+), 407 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 15:47:38 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md 
+_( 9 files changed, 2296 insertions(+), 406 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md 
+
+---
+
+## Session snapshot — 2026-06-26 16:00:03 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260625_160001.dump backups/dsat_dev_20260625_180001.dump vocabulary/candidates.json 
+_( 13 files changed, 2390 insertions(+), 397 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md analysis/ingestion/4/run_2026-06-26_e8b32fc4-3fbd-4662-a2d0-8fe711b1365a/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:00:24 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260625_160001.dump backups/dsat_dev_20260625_180001.dump vocabulary/candidates.json 
+_( 13 files changed, 2412 insertions(+), 397 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md analysis/ingestion/4/run_2026-06-26_e8b32fc4-3fbd-4662-a2d0-8fe711b1365a/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:00:32 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260625_160001.dump backups/dsat_dev_20260625_180001.dump vocabulary/candidates.json 
+_( 13 files changed, 2423 insertions(+), 397 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md analysis/ingestion/4/run_2026-06-26_e8b32fc4-3fbd-4662-a2d0-8fe711b1365a/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:00:53 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260625_160001.dump backups/dsat_dev_20260625_180001.dump vocabulary/candidates.json 
+_( 13 files changed, 2433 insertions(+), 397 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md analysis/ingestion/4/run_2026-06-26_e8b32fc4-3fbd-4662-a2d0-8fe711b1365a/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:09:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `dc53ce4` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/ingestion-test/run.sh .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260625_160001.dump backups/dsat_dev_20260625_180001.dump vocabulary/candidates.json 
+_( 13 files changed, 2490 insertions(+), 398 deletions(-))_
+
+**Untracked:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md analysis/ingestion/4/run_2026-06-26_e8b32fc4-3fbd-4662-a2d0-8fe711b1365a/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:24:53 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/token-ledger.json 
+_()_
+
+---
+
+## Session snapshot — 2026-06-26 16:26:07 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/token-ledger.json CHANGELOG.md 
+_( 3 files changed, 55 insertions(+), 3 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:20 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py 
+_( 6 files changed, 229 insertions(+), 19 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:27 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py 
+_( 6 files changed, 266 insertions(+), 20 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:30 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 7 files changed, 284 insertions(+), 22 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:34 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 7 files changed, 300 insertions(+), 23 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:29:41 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 7 files changed, 328 insertions(+), 31 deletions(-))_
+
+---
+
+## Session snapshot — 2026-06-26 16:31:45 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 9 files changed, 374 insertions(+), 32 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:31:50 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 9 files changed, 393 insertions(+), 33 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:32:13 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 856 insertions(+), 336 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:33:56 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 964 insertions(+), 336 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:42:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 1099 insertions(+), 338 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:46:07 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 1218 insertions(+), 338 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 16:51:39 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py 
+_( 10 files changed, 1169 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 17:48:01 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py docker-compose.yml 
+_( 11 files changed, 1283 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 17:48:06 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py docker-compose.yml 
+_( 11 files changed, 1348 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:00:50 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1429 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:16:44 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1524 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:30:21 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1594 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:37:09 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1664 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:40:44 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1734 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:43:30 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1804 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:48:04 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1874 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:55:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 1944 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 18:56:21 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2014 insertions(+), 344 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 19:25:30 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2132 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 19:37:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2214 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 19:38:32 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2296 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 19:38:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump docker-compose.yml 
+_( 13 files changed, 2378 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 20:05:11 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2463 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:01:34 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2545 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:02:24 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2627 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:03:12 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2709 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:04:18 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2791 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:08:23 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2873 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:11:18 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2955 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:29:15 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2906 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 21:44:58 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump docker-compose.yml 
+_( 14 files changed, 2916 insertions(+), 345 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 22:38:37 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump docker-compose.yml 
+_( 15 files changed, 2951 insertions(+), 339 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json analysis/ingestion/PT01/run_2026-06-26_f0fb54ca-7ff8-4592-9235-4a84782e5516/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-06-26 22:50:27 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump docker-compose.yml 
+_( 15 files changed, 3003 insertions(+), 341 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-26 23:41:24 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump docker-compose.yml 
+_( 15 files changed, 3042 insertions(+), 341 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-27 07:58:01 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `9.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3056 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-29 14:56:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3115 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-06-29 15:07:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3158 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 15:20:34 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `4.9Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3190 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 15:20:58 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `5.0Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3222 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 15:34:28 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `5.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3254 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 17:04:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3262 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 17:05:08 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3272 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 17:05:46 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3282 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-29 17:06:11 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3292 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-30 10:00:18 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3325 insertions(+), 345 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-30 10:01:00 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/prompts/annotate_prompt.py backend/app/routers/ingest.py backups/backup.log backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump docker-compose.yml 
+_( 17 files changed, 3360 insertions(+), 342 deletions(-))_
+
+**Untracked:** 2024_TESTS_STATUS.md 2024_test3_answer_keys.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/amendment_candidates.json analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/summary.md analysis/ingestion/PT01/run_2026-06-26_00aae165-6f95-4153-81b0-1941b7c08ba8/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-06-30 13:49:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `24d9c95` · _ram:_ `12Gi/30Gi`
+
+_No uncommitted changes._
+
+**Untracked:** TESTS/2024_TESTS_STATUS.md TESTS/2024_test3_answer_keys.md TESTS/DATA_SRC/2025-2026 Tests Answers/Answers and Explanations/TEST05 Generated Explanations/TEST05_sec01_mod02.md TESTS/DATA_SRC/2025-2026 Tests Answers/Answers and Explanations/TEST11 Generated Explanations/assets/q11_tennis_decay.png TESTS/DATA_SRC/2025-2026 Tests Answers/Answers and Explanations/TEST11 Generated Explanations/assets/q13_veterans_congress.png 
+
+---
+
+## Session snapshot — 2026-06-30 13:54:25 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `bd9c335` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json backups/dsat_dev_20260625_220001.dump backups/dsat_dev_20260626_000001.dump backups/dsat_dev_20260626_020001.dump backups/dsat_dev_20260626_040001.dump backups/dsat_dev_20260626_060001.dump 
+_( 11 files changed, 2583 insertions(+), 323 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260626_180001.dump backups/dsat_dev_20260626_200001.dump backups/dsat_dev_20260626_220001.dump backups/dsat_dev_20260627_000001.dump backups/dsat_dev_20260629_180001.dump 
+
+---
+
+## Session snapshot — 2026-06-30 13:56:36 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json 
+_( 1 file changed, 1 insertion(+), 1 deletion(-))_
+
+---
+
+## Session snapshot — 2026-06-30 13:58:32 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md 
+_( 2 files changed, 9 insertions(+), 1 deletion(-))_
+
+---
+
+## Session snapshot — 2026-06-30 14:01:04 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 19 insertions(+), 1 deletion(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump 
+
+---
+
+## Session snapshot — 2026-06-30 16:16:31 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 5 files changed, 52 insertions(+), 6 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump 
+
+---
+
+## Session snapshot — 2026-06-30 16:21:03 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 5 files changed, 94 insertions(+), 10 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump 
+
+---
+
+## Session snapshot — 2026-06-30 16:24:28 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 152 insertions(+), 14 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump docs/superpowers/plans/2026-06-30-overlap-corpus-cache.md 
+
+---
+
+## Session snapshot — 2026-06-30 17:30:50 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 220 insertions(+), 17 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump cache_feature_plan.md docs/superpowers/plans/2026-06-30-overlap-corpus-cache.md 
+
+---
+
+## Session snapshot — 2026-06-30 17:58:12 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 282 insertions(+), 17 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump cache_feature_plan.md docs/superpowers/plans/2026-06-30-overlap-corpus-cache.md 
+
+---
+
+## Session snapshot — 2026-06-30 18:01:34 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 346 insertions(+), 17 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump cache_feature_plan.md docs/superpowers/plans/2026-06-30-overlap-corpus-cache.md 
+
+---
+
+## Session snapshot — 2026-06-30 22:19:46 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `4.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 390 insertions(+), 15 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-06-30 22:37:45 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `4.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 429 insertions(+), 16 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 17:47:42 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 540 insertions(+), 18 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 17:52:18 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 686 insertions(+), 19 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 17:56:48 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 853 insertions(+), 19 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 17:58:47 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 1017 insertions(+), 20 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:02:00 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1222 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:03:45 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1248 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:04:51 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1272 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:06:25 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1478 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:07:37 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1699 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:28:05 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1916 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:29:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2140 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:40:42 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2396 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:41:28 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2413 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:07:23 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `9.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2675 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:07:54 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2937 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:08:25 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 3199 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:44:19 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `d7422e1` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 3436 insertions(+), 21 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:44:50 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `d7422e1` · _ram:_ `9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 3698 insertions(+), 21 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:47:46 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `d7422e1` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 3960 insertions(+), 21 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:53:56 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `d7422e1` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 4222 insertions(+), 21 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
 
 ---

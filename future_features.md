@@ -26,6 +26,27 @@ Phases 1–5 of `APP/STUDENT_APP_REDUX/` are complete. Remaining QA:
 - [ ] **Data Management — question detail page** — click into a single question to view full annotation, version history, audit log, and edit form
 - [ ] **Backend endpoint tests** — pytest tests for admin question approve/reject/edit endpoints
 
+### Quality Audit Review UI
+
+The `scripts/quality_audit.py` script flags bad questions to `draft` status with a `rejection_reason`
+explaining the failure. The admin dashboard needs a dedicated view to surface and fix these:
+
+- [ ] **Add admin app to docker-compose** — serve at port 5175 alongside backend (8002) and student app (5174)
+- [ ] **Quality Audit tab in DataManagement** — filter draft questions flagged by `quality_audit_flagged`
+  audit log action; show the `rejection_reason` inline so the reviewer knows exactly what failed
+- [ ] **Expanded question detail panel** — clicking a flagged question opens a drawer showing:
+  full passage text, question stem, all 4 answer choices (A–D), correct answer label, and the
+  specific audit failure reason(s)
+- [ ] **LLM "Fix with AI" button** — per-question button that calls a new backend endpoint
+  `POST /admin/questions/{id}/llm-fix`; the endpoint reads the failure reason, calls Claude
+  to generate a targeted fix (fill missing passage, set correct answer, deduplicate options,
+  patch short passage), and returns a before/after diff for admin approval
+- [ ] **Backend `/admin/questions/{id}/llm-fix` endpoint** — reads `rejection_reason` to determine
+  fix type; dispatches to Claude with the full question context; returns proposed edits as a diff;
+  admin can approve (applies via existing `PATCH /admin/questions/{id}`) or dismiss
+- [ ] **Approve-after-fix flow** — after LLM fix is applied and admin reviews, one-click
+  promote back to `active` status, clearing `rejection_reason` and logging to `admin_question_audit_logs`
+
 ---
 
 ## Generation Pipeline — Batch Scheduler
