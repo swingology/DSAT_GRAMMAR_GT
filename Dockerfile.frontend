@@ -3,13 +3,16 @@ FROM node:20-bookworm-slim
 WORKDIR /app
 
 # Copy package files
-COPY APP/STUDENT_APP_REDUX/package*.json ./
+COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --legacy-peer-deps
+# Install dependencies. `cache clean --force` first: a corrupted local npm
+# cache was once silently reused across builds here (podman build cache did
+# not honor --no-cache for it), producing broken packages that still passed
+# npm's integrity check. Forcing a clean cache avoids relying on it.
+RUN npm cache clean --force && npm ci --legacy-peer-deps --no-audit --no-fund
 
 # Copy frontend code
-COPY APP/STUDENT_APP_REDUX/ ./
+COPY . ./
 
 # Expose port
 EXPOSE 5173

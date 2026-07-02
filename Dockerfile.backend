@@ -1,25 +1,37 @@
 FROM python:3.12-slim
 
+# Official static uv binary (pinned to match local dev version) — faster and
+# more reproducible than `pip install uv`, which re-resolves against PyPI.
+COPY --from=ghcr.io/astral-sh/uv:0.7.20 /uv /uvx /usr/local/bin/
+
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv for Python package management
-RUN pip install --no-cache-dir uv
+ENV UV_LINK_MODE=copy
+
+# Dependency layer: copy only the lock/manifest first so this layer (and its
+# cache) is only invalidated when dependencies actually change, not on every
+# backend source edit.
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --extra dev --no-install-project
 
 # Copy backend code
-COPY backend/ /app/
+COPY . /app/
 
-# Install Python dependencies
-RUN uv pip install -e ".[dev]" --system
+# Install the project itself (fast — deps already synced above)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --extra dev
 
 # Expose port
 EXPOSE 8000
 
-# Health check
+# Health check (CMD-SHELL — podman's exec-array form mis-tokenizes the
+# multi-word `-c` argument, splitting it on whitespace)
 HEALTHCHECK --interval=5s --timeout=5s --retries=10 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')" || exit 1
 
