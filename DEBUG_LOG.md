@@ -1,6 +1,41 @@
 # Debug Log
 
-## 2026-07-01 - Admin dashboard: edit capability audit (entries/fields propagation)
+## 2026-07-01 - Docker/Podman build pipeline: unscoped context, bad healthchecks, corrupted host node_modules
+Report created by: Claude Sonnet 5
+Git branch: `gitbutler/workspace`
+Git checkpoint: `0260da0` — GitButler Workspace Commit
+
+### Findings
+
+1. **Critical (hardware, unresolved): host filesystem has a single-bit-flip corruption signature in `APP/STUDENT_APP_REDUX/node_modules/vite/dist/node/chunks/node.js`.**
+   - Line 17291 read `consv forwardError = createErrorHandler(forwardReq, mptions.forward);` instead of `const forwardError = createErrorHandler(forwardReq, options.forward);` — two corruptions in one line: `t→v` and `o→m`. Both changes flip exactly the same bit (0x02: `t`=0x74/`v`=0x76, `o`=0x6F/`m`=0x6D). A consistent single-bit-flip across unrelated bytes is a classic signature of failing RAM or a failing disk/SSD, not network or npm-cache corruption (initially suspected — ruled out: a direct `curl` of the same package version from `registry.npmjs.org` was clean).
+   - **Not fixed — this needs a hardware check** (memtest86 for RAM, `smartctl`/`dmesg` for disk errors) on this host. The Docker fixes below (items 2-4) prevent this specific corrupted file from being copied into container images, but they don't address the underlying cause, which will keep corrupting other files on disk until diagnosed.
+
+2. **High: `docker-compose.yml` used repo-root (`.`) as the build context for both `backend` and `frontend` services, sending the entire ~8GB working tree (`.git`, `TESTS/` PDFs, both apps' `node_modules`, multiple Python venvs) to the build daemon on every build.**
+   - Root `.dockerignore` exclusions for these paths did not appear to take effect through the `podman compose` → `docker-compose` CLI plugin → podman API bridge in this environment (`docker compose build --no-cache` was observed sending 5GB+ and climbing before being interrupted).
+   - **Fixed:** scoped `build.context` to `./backend` and `./APP/STUDENT_APP_REDUX` respectively in `docker-compose.yml`, updated `COPY` paths in `Dockerfile.backend`/`Dockerfile.frontend` to be context-relative, and added `.dockerignore` files inside each subdirectory. Build context dropped to ~1.1MB (backend) and ~155KB (frontend); full `--no-cache` rebuild of both images went from a prior single attempt taking 9+ minutes to ~21 seconds.
+
+3. **High: frontend's `COPY APP/STUDENT_APP_REDUX/ ./` ran *after* `npm ci`, and without a working `node_modules` exclusion it would silently overwrite the freshly-installed image `node_modules` with the host's own copy — including the corrupted `vite` file from finding #1.** This is why a corrupted `vite/dist/node/chunks/node.js` reappeared identically across multiple `--no-cache` rebuilds (ruled out a buildah/npm cache reuse theory first).
+   - **Fixed:** `APP/STUDENT_APP_REDUX/.dockerignore` now excludes `node_modules`, so the image's own freshly-`npm ci`'d copy is never overwritten by the host's.
+
+4. **Medium: `dsat-backend`'s podman healthcheck was always "unhealthy" despite the API working fine.** `docker-compose.yml`'s `healthcheck.test: ["CMD", "python", "-c", "..."]` (exec-array form) had its multi-word `-c` argument tokenized on whitespace by podman, so the container only ever ran `python -c import` → `SyntaxError`.
+   - **Fixed:** changed both backend and frontend healthchecks in `docker-compose.yml` from exec-array `CMD` to `CMD-SHELL`, which runs the full string through `/bin/sh -c` and doesn't re-split it.
+
+5. **Low: `Dockerfile.backend` copied the entire `backend/` source before running `uv pip install -e ".[dev]" --system`, invalidating the dependency-install layer on every source edit.**
+   - **Fixed:** split into a dependency layer (`COPY pyproject.toml uv.lock` → `uv sync --frozen --extra dev --no-install-project`) followed by the source copy and a fast final `uv sync`. Also replaced `pip install uv` with the official static binary (`COPY --from=ghcr.io/astral-sh/uv:0.7.20`) and added a `--mount=type=cache,target=/root/.cache/uv` cache mount.
+
+## 2026-07-01 - DB restore from backup: orphaned FK reference in question_jobs
+Report created by: Claude Sonnet 5
+Git branch: `gitbutler/workspace`
+Git checkpoint: `0260da0` — GitButler Workspace Commit
+
+### Findings
+
+1. **Low: `question_jobs.raw_asset_id` FK constraint could not be restored — one row references a missing `question_assets` row.**
+   - Restored `backups/dsat_dev_20260630_220001.dump` (last known-good backup; the `dsat-db` container had been down since 2026-07-01 00:00, so every 2-hourly cron backup since then failed with "container not running" — no data was lost, the container was just offline).
+   - `pg_restore --clean --if-exists --no-owner` succeeded for all 26 tables and data (1583 questions, 165 question_jobs, 67 question_assets, etc.) except one FK: `question_jobs_raw_asset_id_fkey` on row `id=2f63aca9-e1b1-42fa-a95e-e6aadaf3998b` (status `needs_review`), which points at `question_assets.id=f2c2a55c-5a2e-47ef-94e0-8653d444c46d` — not present in the restored `question_assets` table. This inconsistency predates the restore (present in the source dump itself), not introduced by the restore process.
+   - Not fixed — the constraint is simply absent on `question_jobs.raw_asset_id` going forward (data itself is intact; only the FK enforcement is missing). Left as-is pending user decision: either null out that job's `raw_asset_id` and re-add the constraint, or investigate why `question_assets` row `f2c2a55c...` is missing.
+
 Report created by: Claude Sonnet 5
 Git branch: `gitbutler/workspace`
 Git checkpoint: `6ede750` — GitButler Workspace Commit
