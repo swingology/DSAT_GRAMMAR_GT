@@ -624,7 +624,7 @@ async def submit_answer(
 async def get_user_stats(
     user_id: int,
     db: AsyncSession = Depends(get_db),
-    _auth: str = Depends(student_required),
+    _auth: str = Depends(admin_or_student_required),
 ):
     result = await db.execute(
         select(UserProgress).where(UserProgress.user_id == user_id)
