@@ -1,13 +1,25 @@
 #!/bin/bash
 
-# dev-stack — Full development stack runner (Docker Compose)
-# Runs: PostgreSQL 16 + FastAPI Backend + React Frontend (Node.js v22)
+# dev-stack — Full development stack runner (Podman Compose, Docker-compatible)
+# Runs: PostgreSQL 16 + FastAPI Backend (uv) + React Frontend (Node.js 20 bookworm-slim)
 
 set -e
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../" && pwd)"
 COMPOSE_FILE="$REPO_ROOT/docker-compose.yml"
 DB_VOLUME="dsat_redux_md_dsat_pgdata_linux"
+
+# Prefer podman explicitly — a shell alias (docker=podman) may be set
+# interactively, but scripts/subagents run non-interactively and won't see it.
+if command -v podman &> /dev/null; then
+  ENGINE="podman"
+elif command -v docker &> /dev/null; then
+  ENGINE="docker"
+else
+  echo "Neither podman nor docker found." >&2
+  exit 1
+fi
+COMPOSE="$ENGINE compose"
 
 # Colors for output
 RED='\033[0;31m'
@@ -24,18 +36,13 @@ log_error() { echo -e "${RED}✗${NC} $1"; }
 check_prerequisites() {
   local missing=0
 
-  if ! command -v docker &> /dev/null; then
-    log_error "Docker not found. Install Docker Desktop or Docker Engine."
-    missing=1
-  fi
-
-  if ! docker compose version &> /dev/null; then
-    log_error "Docker Compose not found. Install Docker Compose v2+."
+  if ! $COMPOSE version &> /dev/null; then
+    log_error "$COMPOSE not found or not working."
     missing=1
   fi
 
   if [ ! -f "$COMPOSE_FILE" ]; then
-    log_error "docker compose.yml not found at $REPO_ROOT"
+    log_error "docker-compose.yml not found at $REPO_ROOT"
     missing=1
   fi
 
@@ -44,19 +51,26 @@ check_prerequisites() {
     exit 1
   fi
 
-  log_success "All prerequisites found"
+  log_success "All prerequisites found (engine: $ENGINE)"
 }
 
 ensure_volume() {
-  if ! docker volume inspect "$DB_VOLUME" &> /dev/null; then
+  if ! $ENGINE volume inspect "$DB_VOLUME" &> /dev/null; then
     log_info "Creating database volume: $DB_VOLUME"
-    docker volume create "$DB_VOLUME"
+    $ENGINE volume create "$DB_VOLUME"
     log_success "Volume created"
   fi
 }
 
+# Reads the actual host-mapped port for a service/container-port pair from
+# compose, rather than hardcoding — host ports here have drifted from the
+# defaults documented elsewhere before.
+host_port() {
+  $COMPOSE port "$1" "$2" 2>/dev/null | cut -d: -f2
+}
+
 start_all() {
-  log_info "Starting DSAT development stack via Docker Compose..."
+  log_info "Starting DSAT development stack via $ENGINE compose..."
   echo
 
   check_prerequisites
@@ -66,8 +80,9 @@ start_all() {
   log_info "Building and starting services..."
   cd "$REPO_ROOT"
 
-  # Start all services
-  docker compose up -d
+  # Start all services. --build is cheap here: dependency layers
+  # (uv sync / npm ci) are cache-mounted and only rerun when lockfiles change.
+  $COMPOSE up -d --build
 
   echo
   log_info "Waiting for services to be healthy..."
@@ -80,7 +95,7 @@ start_all() {
   local max_attempts=30
 
   for i in $(seq 1 $max_attempts); do
-    if docker compose exec -T db pg_isready -U dsat -d dsat_dev &>/dev/null; then
+    if $COMPOSE exec -T db pg_isready -U dsat -d dsat_dev &>/dev/null; then
       db_ready=1
     fi
     if [ $db_ready -eq 1 ]; then
@@ -90,7 +105,7 @@ start_all() {
   done
 
   for i in $(seq 1 $max_attempts); do
-    if docker compose ps backend | grep -q "healthy"; then
+    if $COMPOSE ps backend | grep -q "healthy"; then
       backend_ready=1
     fi
     if [ $backend_ready -eq 1 ]; then
@@ -100,7 +115,7 @@ start_all() {
   done
 
   for i in $(seq 1 $max_attempts); do
-    if docker compose ps frontend | grep -q "healthy"; then
+    if $COMPOSE ps frontend | grep -q "healthy"; then
       frontend_ready=1
     fi
     if [ $frontend_ready -eq 1 ]; then
@@ -109,23 +124,28 @@ start_all() {
     sleep 1
   done
 
+  local db_port backend_port frontend_port
+  db_port="$(host_port db 5432)"
+  backend_port="$(host_port backend 8000)"
+  frontend_port="$(host_port frontend 5173)"
+
   echo
   log_success "All services started!"
   echo
   echo -e "${GREEN}=== DSAT Development Stack ===${NC}"
-  echo "Frontend:    ${BLUE}http://localhost:5173${NC}"
-  echo "Backend API: ${BLUE}http://localhost:8000${NC}"
-  echo "API Docs:    ${BLUE}http://localhost:8000/docs${NC}"
-  echo "Database:    ${BLUE}localhost:5434${NC} (dsat / dsat_dev)"
+  echo -e "Frontend:    ${BLUE}http://localhost:${frontend_port}${NC}"
+  echo -e "Backend API: ${BLUE}http://localhost:${backend_port}${NC}"
+  echo -e "API Docs:    ${BLUE}http://localhost:${backend_port}/docs${NC}"
+  echo -e "Database:    ${BLUE}localhost:${db_port}${NC} (dsat / dsat_dev)"
   echo
-  echo "Node.js version: $(docker compose exec -T frontend node --version 2>/dev/null || echo 'v22 (Alpine)')"
+  echo "Node.js version: $($COMPOSE exec -T frontend node --version 2>/dev/null || echo 'unknown (frontend not up)')"
   echo
   echo "Commands:"
   echo "  /dev-stack stop              # Stop all services"
   echo "  /dev-stack status            # Check service status"
   echo "  /dev-stack logs              # Stream logs"
   echo "  /dev-stack logs backend      # Backend logs only"
-  echo "  docker compose down          # Full cleanup"
+  echo "  $COMPOSE down                # Full cleanup"
   echo
 }
 
@@ -133,7 +153,7 @@ stop_all() {
   log_info "Stopping development stack..."
 
   cd "$REPO_ROOT"
-  docker compose down
+  $COMPOSE down
 
   log_success "All services stopped"
 }
@@ -144,32 +164,37 @@ show_status() {
   echo -e "${GREEN}=== DSAT Stack Status ===${NC}"
   echo
 
-  # Show docker compose ps output
-  docker compose ps
+  # Show compose ps output
+  $COMPOSE ps
 
   echo
   echo "Service Health:"
   echo
 
+  local db_port backend_port frontend_port
+  db_port="$(host_port db 5432)"
+  backend_port="$(host_port backend 8000)"
+  frontend_port="$(host_port frontend 5173)"
+
   # Check database
-  if docker compose exec -T db pg_isready -U dsat -d dsat_dev &>/dev/null; then
-    echo -e "${GREEN}✓${NC} PostgreSQL (5434): ${GREEN}Ready${NC}"
+  if $COMPOSE exec -T db pg_isready -U dsat -d dsat_dev &>/dev/null; then
+    echo -e "${GREEN}✓${NC} PostgreSQL (${db_port:-?}): ${GREEN}Ready${NC}"
   else
-    echo -e "${RED}✗${NC} PostgreSQL (5434): ${RED}Not responding${NC}"
+    echo -e "${RED}✗${NC} PostgreSQL (${db_port:-?}): ${RED}Not responding${NC}"
   fi
 
   # Check backend
-  if curl -s http://localhost:8000/docs > /dev/null 2>&1; then
-    echo -e "${GREEN}✓${NC} Backend (8000): ${GREEN}Healthy${NC}"
+  if [ -n "$backend_port" ] && curl -s "http://localhost:${backend_port}/docs" > /dev/null 2>&1; then
+    echo -e "${GREEN}✓${NC} Backend (${backend_port:-?}): ${GREEN}Healthy${NC}"
   else
-    echo -e "${RED}✗${NC} Backend (8000): ${RED}Not responding${NC}"
+    echo -e "${RED}✗${NC} Backend (${backend_port:-?}): ${RED}Not responding${NC}"
   fi
 
   # Check frontend
-  if curl -s http://localhost:5173 > /dev/null 2>&1; then
-    echo -e "${GREEN}✓${NC} Frontend (5173): ${GREEN}Healthy${NC}"
+  if [ -n "$frontend_port" ] && curl -s "http://localhost:${frontend_port}" > /dev/null 2>&1; then
+    echo -e "${GREEN}✓${NC} Frontend (${frontend_port:-?}): ${GREEN}Healthy${NC}"
   else
-    echo -e "${RED}✗${NC} Frontend (5173): ${RED}Not responding${NC}"
+    echo -e "${RED}✗${NC} Frontend (${frontend_port:-?}): ${RED}Not responding${NC}"
   fi
 
   echo
@@ -181,11 +206,11 @@ stream_logs() {
   if [ -n "$2" ]; then
     # Specific service logs
     log_info "Streaming logs for: $2"
-    docker compose logs -f "$2"
+    $COMPOSE logs -f "$2"
   else
     # All service logs
     log_info "Streaming logs (Ctrl+C to exit)..."
-    docker compose logs -f
+    $COMPOSE logs -f
   fi
 }
 
