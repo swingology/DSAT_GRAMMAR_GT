@@ -18,14 +18,19 @@ async def create_user(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
+    # Normalize empty/whitespace-only email to NULL: User.email is
+    # unique+nullable, so a stored "" would collide on the second empty-email
+    # user (IntegrityError → 500) and defeat the admin UI's email??username
+    # display fallback.
+    email = (body.email or "").strip() or None
     existing = await db.execute(select(User).where(User.username == body.username))
     if existing.scalars().first():
         raise HTTPException(status_code=409, detail="Username already exists")
-    if body.email:
-        existing_email = await db.execute(select(User).where(User.email == body.email))
+    if email:
+        existing_email = await db.execute(select(User).where(User.email == email))
         if existing_email.scalars().first():
             raise HTTPException(status_code=409, detail="Email already exists")
-    user = User(username=body.username, email=body.email, created_at=datetime.now(timezone.utc))
+    user = User(username=body.username, email=email, created_at=datetime.now(timezone.utc))
     db.add(user)
     await db.commit()
     await db.refresh(user)
