@@ -115,3 +115,34 @@ Error response from daemon: container 1621113e43936c959f6dfb581a1121c93d0bc1fecb
 [Tue Jun 30 10:00:02 PDT 2026] ERROR: container dsat-db not running — skipping backup
 [Tue Jun 30 12:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_120001.dump
 Error response from daemon: container 1621113e43936c959f6dfb581a1121c93d0bc1fecba7fdb04450670d39bae05e is not running
+[Tue Jun 30 14:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_140001.dump
+Error response from daemon: container 1621113e43936c959f6dfb581a1121c93d0bc1fecba7fdb04450670d39bae05e is not running
+[Tue Jun 30 16:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_160001.dump
+[Tue Jun 30 16:00:03 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_160001.dump (14M)
+[Tue Jun 30 18:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_180001.dump
+[Tue Jun 30 18:00:03 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_180001.dump (14M)
+[Tue Jun 30 20:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_200001.dump
+[Tue Jun 30 20:00:03 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_200001.dump (14M)
+[Tue Jun 30 22:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_220001.dump
+[Tue Jun 30 22:00:03 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260630_220001.dump (14M)
+[Tue Jun 30 22:00:03 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260626_080001.dump
+[Wed Jul  1 00:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_000001.dump
+[Wed Jul  1 00:00:01 PDT 2026] ERROR: container dsat-db not running — skipping backup
+[Wed Jul  1 02:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_020001.dump
+[Wed Jul  1 02:00:01 PDT 2026] ERROR: container dsat-db not running — skipping backup
+[Wed Jul  1 04:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_040001.dump
+[Wed Jul  1 04:00:01 PDT 2026] ERROR: container dsat-db not running — skipping backup
+[Wed Jul  1 06:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_060001.dump
+[Wed Jul  1 06:00:02 PDT 2026] ERROR: container dsat-db not running — skipping backup
+[Wed Jul  1 08:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_080001.dump
+[Wed Jul  1 08:00:01 PDT 2026] ERROR: container dsat-db not running — skipping backup
+[Wed Jul  1 10:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_100001.dump
+[Wed Jul  1 10:00:02 PDT 2026] ERROR: container dsat-db not running — skipping backup
+[Wed Jul  1 12:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_120001.dump
+[Wed Jul  1 12:00:01 PDT 2026] ERROR: container dsat-db not running — skipping backup
+[Wed Jul  1 14:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_140001.dump
+[Wed Jul  1 14:00:01 PDT 2026] ERROR: container dsat-db not running — skipping backup
+[Wed Jul  1 16:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_160001.dump
+[Wed Jul  1 16:00:01 PDT 2026] ERROR: container dsat-db not running — skipping backup
+[Wed Jul  1 18:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260701_180001.dump
+[Wed Jul  1 18:00:01 PDT 2026] ERROR: container dsat-db not running — skipping backup

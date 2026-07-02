@@ -1,7 +1,12 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-29T22:07:55.999Z
-> Files: 1069 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-02T01:41:17.370Z
+> Files: 1077 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../
+
+- `.zshenv` (~42 tok)
+- `.zshrc` — export ZSH_DISABLE_COMPFIX=true (~1684 tok)
 
 ## ../../../../tmp/
 
@@ -55,13 +60,15 @@
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~907 tok)
+- `MEMORY.md` — Memory Index (~983 tok)
+- `project_admin-dashboard-plan.md` (~480 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_diagnostic_stats_architecture.md` (~439 tok)
 - `project_diagnostic_status.md` — Decisions locked (2026-06-23) (~677 tok)
 - `project_dual-user-routers.md` (~210 tok)
 - `project_grammar_redux_status.md` (~1463 tok)
 - `project_node-wasm-linux-fix.md` (~397 tok)
+- `project_rtk-path-fix.md` (~378 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
 - `user_platform.md` (~128 tok)
@@ -83,15 +90,18 @@
 - `2024_test3_answer_keys.md` — 2024 DSAT Test 3 — Answer Keys (~490 tok)
 - `2024_TESTS_STATUS.md` — 2024 Bluebook Tests — Ingestion Status (~1241 tok)
 - `ADMIN_DASHBOARD_DESIGN.md` — DSAT Admin Dashboard — Design & Implementation Plan (~6347 tok)
+- `admin_dashboard_plan.md` — Admin Dashboard — Living Plan (~5503 tok)
 - `ADMIN_DASHBOARD_README.md` — DSAT Admin Dashboard — Complete Design Package (~4151 tok)
+- `admin_dashboard_tasks.md` — Admin Dashboard Implementation Plan (~19797 tok)
 - `ADMIN_DASHBOARD_TASKS.md` — DSAT Admin Dashboard — Implementation Task Breakdown (~13530 tok)
 - `ADMIN_DASHBOARD_WIREFRAMES.md` — DSAT Admin Dashboard — Wireframes & Component Guide (~7794 tok)
 - `annotate_refactor_task.md` — Annotation Pipeline Refactor — Task Sheet (~1558 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
+- `cache_feature_plan.md` — Overlap Detection Corpus Cache Implementation Plan (~4895 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~180107 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~51920 tok)
+- `DEBUG_LOG.md` — Debug Log (~52935 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
@@ -1505,6 +1515,7 @@
 
 - `2026-05-23-grammar-rules-v7-to-v8-subpatterns.md` — Grammar Rules v7 → v8 Sub-Pattern Expansion Implementation Plan (~7452 tok)
 - `2026-06-18-student-app-react-rebuild.md` — Student App React Rebuild — Implementation Plan (~2797 tok)
+- `2026-06-30-overlap-corpus-cache.md` — Overlap Detection Corpus Cache Implementation Plan (~4676 tok)
 
 ## ingestion_exports/
 

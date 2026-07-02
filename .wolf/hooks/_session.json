@@ -1,12 +1,251 @@
 {
-  "session_id": "session-2026-06-30-1347",
-  "started": "2026-06-30T20:47:43.834Z",
-  "files_read": {},
-  "files_written": [],
-  "edit_counts": {},
-  "anatomy_hits": 0,
-  "anatomy_misses": 0,
-  "repeated_reads_warned": 0,
+  "session_id": "session-2026-07-02-1730",
+  "started": "2026-07-02T00:30:54.452Z",
+  "files_read": {
+    "/home/jb/.claude/settings.json": {
+      "count": 1,
+      "tokens": 750,
+      "first_read": "2026-07-02T00:38:48.607Z"
+    },
+    "/home/jb/.claude/hooks/rtk-rewrite.sh": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-07-02T00:38:52.073Z"
+    },
+    "/home/jb/.zshrc": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-07-02T00:39:16.933Z"
+    },
+    "/home/jb/.zprofile": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-07-02T00:39:27.698Z"
+    },
+    "/home/jb/.zshenv": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-07-02T00:43:21.691Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/ADMIN_APP/src/pages/StudentPerformance.tsx": {
+      "count": 1,
+      "tokens": 1986,
+      "first_read": "2026-07-02T00:45:37.701Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/backend/app/routers/student.py": {
+      "count": 2,
+      "tokens": 30758,
+      "first_read": "2026-07-02T00:45:54.153Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/ADMIN_DASHBOARD_README.md": {
+      "count": 1,
+      "tokens": 4151,
+      "first_read": "2026-07-02T00:50:07.206Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/ADMIN_APP/src/App.tsx": {
+      "count": 1,
+      "tokens": 330,
+      "first_read": "2026-07-02T00:50:31.714Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/ADMIN_APP/src/pages/UserManagement.tsx": {
+      "count": 2,
+      "tokens": 1912,
+      "first_read": "2026-07-02T00:50:42.089Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/ADMIN_APP/src/pages/DataManagement.tsx": {
+      "count": 3,
+      "tokens": 2975,
+      "first_read": "2026-07-02T00:50:42.466Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/ADMIN_APP/src/pages/PipelinePerformance.tsx": {
+      "count": 2,
+      "tokens": 3288,
+      "first_read": "2026-07-02T00:50:43.079Z"
+    },
+    "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-07-02T00:51:52.719Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/backend/app/routers/student_auth.py": {
+      "count": 1,
+      "tokens": 1826,
+      "first_read": "2026-07-02T00:55:35.581Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/backend/app/routers/users.py": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-07-02T00:55:35.642Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/backend/app/routers/admin.py": {
+      "count": 4,
+      "tokens": 28180,
+      "first_read": "2026-07-02T01:00:20.706Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md": {
+      "count": 1,
+      "tokens": 51920,
+      "first_read": "2026-07-02T01:01:38.575Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/.claude/skills/ingestion-status/SKILL.md": {
+      "count": 1,
+      "tokens": 968,
+      "first_read": "2026-07-02T01:02:48.081Z"
+    },
+    "/Users/jb/Library/Containers/at.EternalStorms.ScreenFloat-appstore/Data/tmp/SF2_Copy_Exports/804647066.377519.noindex/ScreenFloat Shot of Google Chrome on 2026-07-01 at 18-04-02.png": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-07-02T01:05:58.834Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/backend/tests/conftest.py": {
+      "count": 1,
+      "tokens": 385,
+      "first_read": "2026-07-02T01:31:38.592Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/ADMIN_APP/package.json": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-07-02T01:32:06.220Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/ADMIN_APP/src/components/Layout.tsx": {
+      "count": 1,
+      "tokens": 762,
+      "first_read": "2026-07-02T01:32:44.749Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/APP/ADMIN_APP/src/index.css": {
+      "count": 1,
+      "tokens": 63,
+      "first_read": "2026-07-02T01:32:44.834Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/backend/tests/test_users_router.py": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-07-02T01:36:00.628Z"
+    }
+  },
+  "files_written": [
+    {
+      "file": "/home/jb/.zshrc",
+      "action": "edit",
+      "tokens": 53,
+      "at": "2026-07-02T00:42:53.629Z"
+    },
+    {
+      "file": "/home/jb/.zshenv",
+      "action": "edit",
+      "tokens": 45,
+      "at": "2026-07-02T00:43:30.645Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "create",
+      "tokens": 1879,
+      "at": "2026-07-02T00:51:25.766Z"
+    },
+    {
+      "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_rtk-path-fix.md",
+      "action": "create",
+      "tokens": 410,
+      "at": "2026-07-02T00:51:48.216Z"
+    },
+    {
+      "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md",
+      "action": "edit",
+      "tokens": 128,
+      "at": "2026-07-02T00:51:58.600Z"
+    },
+    {
+      "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_admin-dashboard-plan.md",
+      "action": "create",
+      "tokens": 526,
+      "at": "2026-07-02T00:52:09.944Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "edit",
+      "tokens": 98,
+      "at": "2026-07-02T00:56:14.875Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "edit",
+      "tokens": 909,
+      "at": "2026-07-02T00:56:33.970Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "edit",
+      "tokens": 66,
+      "at": "2026-07-02T00:56:40.414Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md",
+      "action": "edit",
+      "tokens": 789,
+      "at": "2026-07-02T01:02:00.295Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md",
+      "action": "edit",
+      "tokens": 487,
+      "at": "2026-07-02T01:03:45.327Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "edit",
+      "tokens": 80,
+      "at": "2026-07-02T01:03:51.655Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "edit",
+      "tokens": 2257,
+      "at": "2026-07-02T01:04:27.307Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "edit",
+      "tokens": 80,
+      "at": "2026-07-02T01:07:15.689Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "edit",
+      "tokens": 827,
+      "at": "2026-07-02T01:07:31.727Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "edit",
+      "tokens": 1195,
+      "at": "2026-07-02T01:29:16.021Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_tasks.md",
+      "action": "create",
+      "tokens": 22625,
+      "at": "2026-07-02T01:40:42.277Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/admin_dashboard_plan.md",
+      "action": "edit",
+      "tokens": 232,
+      "at": "2026-07-02T01:41:17.380Z"
+    }
+  ],
+  "edit_counts": {
+    "../.zshrc": 1,
+    "../.zshenv": 1,
+    "admin_dashboard_plan.md": 10,
+    "../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_rtk-path-fix.md": 1,
+    "../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md": 1,
+    "../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_admin-dashboard-plan.md": 1,
+    "DEBUG_LOG.md": 2,
+    "admin_dashboard_tasks.md": 1
+  },
+  "anatomy_hits": 15,
+  "anatomy_misses": 9,
+  "repeated_reads_warned": 8,
   "cerebrum_warnings": 0,
-  "stop_count": 2
+  "stop_count": 17
 }

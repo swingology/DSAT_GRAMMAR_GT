@@ -9724,3 +9724,309 @@ _( 11 files changed, 2583 insertions(+), 323 deletions(-))_
 **Untracked:** backups/dsat_dev_20260626_180001.dump backups/dsat_dev_20260626_200001.dump backups/dsat_dev_20260626_220001.dump backups/dsat_dev_20260627_000001.dump backups/dsat_dev_20260629_180001.dump 
 
 ---
+
+## Session snapshot — 2026-06-30 13:56:36 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json 
+_( 1 file changed, 1 insertion(+), 1 deletion(-))_
+
+---
+
+## Session snapshot — 2026-06-30 13:58:32 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md 
+_( 2 files changed, 9 insertions(+), 1 deletion(-))_
+
+---
+
+## Session snapshot — 2026-06-30 14:01:04 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 19 insertions(+), 1 deletion(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump 
+
+---
+
+## Session snapshot — 2026-06-30 16:16:31 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 5 files changed, 52 insertions(+), 6 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump 
+
+---
+
+## Session snapshot — 2026-06-30 16:21:03 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 5 files changed, 94 insertions(+), 10 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump 
+
+---
+
+## Session snapshot — 2026-06-30 16:24:28 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 152 insertions(+), 14 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump docs/superpowers/plans/2026-06-30-overlap-corpus-cache.md 
+
+---
+
+## Session snapshot — 2026-06-30 17:30:50 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 220 insertions(+), 17 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump cache_feature_plan.md docs/superpowers/plans/2026-06-30-overlap-corpus-cache.md 
+
+---
+
+## Session snapshot — 2026-06-30 17:58:12 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 282 insertions(+), 17 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump cache_feature_plan.md docs/superpowers/plans/2026-06-30-overlap-corpus-cache.md 
+
+---
+
+## Session snapshot — 2026-06-30 18:01:34 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 346 insertions(+), 17 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump cache_feature_plan.md docs/superpowers/plans/2026-06-30-overlap-corpus-cache.md 
+
+---
+
+## Session snapshot — 2026-06-30 22:19:46 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `4.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 390 insertions(+), 15 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-06-30 22:37:45 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `4.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 429 insertions(+), 16 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 17:47:42 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 540 insertions(+), 18 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 17:52:18 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 686 insertions(+), 19 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 17:56:48 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 853 insertions(+), 19 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 17:58:47 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 1017 insertions(+), 20 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:02:00 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1222 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:03:45 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1248 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:04:51 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1272 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:06:25 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1478 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:07:37 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1699 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:28:05 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 1916 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:29:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2140 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:40:42 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2396 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 18:41:28 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2413 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:07:23 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `9.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2675 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:07:54 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 2937 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:08:25 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `6ede750` · _ram:_ `9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 8 files changed, 3199 insertions(+), 21 deletions(-))_
+
+**Untracked:** admin_dashboard_plan.md admin_dashboard_tasks.md backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:44:19 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `d7422e1` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 3436 insertions(+), 21 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:44:50 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `d7422e1` · _ram:_ `9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 3698 insertions(+), 21 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:47:46 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `d7422e1` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 3960 insertions(+), 21 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-01 19:53:56 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `d7422e1` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_080001.dump 
+_( 7 files changed, 4222 insertions(+), 21 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---

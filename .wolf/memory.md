@@ -4535,3 +4535,59 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-06-30 15:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:24 | Created docs/superpowers/plans/2026-06-30-overlap-corpus-cache.md | — | ~4988 |
+| 16:24 | Session end: 1 writes across 1 files (2026-06-30-overlap-corpus-cache.md) | 3 reads | ~24385 tok |
+| 17:30 | Created cache_feature_plan.md | — | ~5221 |
+| 17:30 | Session end: 2 writes across 2 files (2026-06-30-overlap-corpus-cache.md, cache_feature_plan.md) | 4 reads | ~34655 tok |
+| 17:58 | Session end: 2 writes across 2 files (2026-06-30-overlap-corpus-cache.md, cache_feature_plan.md) | 4 reads | ~34655 tok |
+| 18:01 | Session end: 2 writes across 2 files (2026-06-30-overlap-corpus-cache.md, cache_feature_plan.md) | 4 reads | ~34655 tok |
+
+## Session: 2026-07-01 22:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-02 17:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:42 | Edited ../.zshrc | 2→5 lines | ~50 |
+| 17:43 | Edited ../.zshenv | 1→4 lines | ~42 |
+| 17:47 | Session end: 2 writes across 2 files (.zshrc, .zshenv) | 7 reads | ~33592 tok |
+| 17:51 | Created admin_dashboard_plan.md | — | ~1754 |
+| 17:51 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_rtk-path-fix.md | — | ~383 |
+| 17:51 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→3 lines | ~119 |
+| 17:52 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_admin-dashboard-plan.md | — | ~491 |
+| 17:52 | Session end: 6 writes across 6 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 13 reads | ~49191 tok |
+| 17:56 | Edited admin_dashboard_plan.md | 6→7 lines | ~92 |
+| 17:56 | Edited admin_dashboard_plan.md | modified body() | ~848 |
+| 17:56 | Edited admin_dashboard_plan.md | 6→3 lines | ~61 |
+| 17:56 | Session end: 9 writes across 6 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 15 reads | ~52090 tok |
+| 17:58 | Session end: 9 writes across 6 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 15 reads | ~52090 tok |
+| 18:02 | Edited DEBUG_LOG.md | expanded (+21 lines) | ~736 |
+| 18:03 | Edited DEBUG_LOG.md | 1→5 lines | ~455 |
+| 18:03 | Edited admin_dashboard_plan.md | 2→4 lines | ~75 |
+| 18:04 | Edited admin_dashboard_plan.md | added optional chaining | ~2107 |
+| 18:04 | Session end: 13 writes across 7 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 18 reads | ~136771 tok |
+| 18:06 | Session end: 13 writes across 7 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 19 reads | ~136771 tok |
+| 18:07 | Edited admin_dashboard_plan.md | 2→3 lines | ~75 |
+| 18:07 | Edited admin_dashboard_plan.md | expanded (+48 lines) | ~772 |
+| 18:07 | Session end: 15 writes across 7 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 19 reads | ~137678 tok |
+| 18:28 | Session end: 15 writes across 7 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 19 reads | ~137678 tok |
+| 18:29 | Edited admin_dashboard_plan.md | expanded (+20 lines) | ~1115 |
+| 18:29 | Session end: 16 writes across 7 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 19 reads | ~138873 tok |
+| 18:40 | Created admin_dashboard_tasks.md | — | ~21117 |
+| 18:41 | Edited admin_dashboard_plan.md | 6→10 lines | ~216 |
+| 18:41 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
+| 19:07 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
+| 19:07 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
+| 19:08 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
+| 19:44 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
+| 19:44 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
+| 19:47 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
+| 19:53 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
