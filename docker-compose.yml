@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: dsat_dev
       POSTGRES_DB: dsat_dev
     ports:
-      - "5434:5432"
+      - "5437:5432"
     volumes:
       - dsat_pgdata_linux:/var/lib/postgresql/data
     healthcheck:
@@ -18,42 +18,59 @@ services:
 
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      # Scoped to backend/ only — a repo-root context was sending the whole
+      # 8GB+ working tree (.git, TESTS/ PDFs, other apps' node_modules, etc.)
+      # to the build daemon on every build regardless of layer caching.
+      context: ./backend
+      dockerfile: ../Dockerfile.backend
     container_name: dsat-backend
     ports:
-      - "8000:8000"
+      - "8002:8000"
     environment:
       DATABASE_URL: postgresql+asyncpg://dsat:dsat_dev@db:5432/dsat_dev
+      STUDENT_API_KEYS: student-test-key,student-key-change-me
+      ADMIN_API_KEYS: admin-test-key,admin-key-change-me
       PYTHONUNBUFFERED: "1"
+      # Extraction/annotation reach the host's Ollama daemon (glm-ocr + :cloud models).
+      # Inside the container `localhost:11434` is the container itself, so route via host-gateway.
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - ./backend:/app
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"]
+      # CMD-SHELL, not exec-array CMD: podman mis-tokenizes a multi-word -c
+      # argument in exec-array form (splits it on whitespace, breaking `-c`).
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')\""]
       interval: 5s
       timeout: 5s
       retries: 10
 
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      # Scoped to APP/STUDENT_APP_REDUX/ only — same reasoning as backend.
+      context: ./APP/STUDENT_APP_REDUX
+      dockerfile: ../../Dockerfile.frontend
     container_name: dsat-frontend
     ports:
-      - "5173:5173"
+      - "5174:5173"
     depends_on:
       - backend
     volumes:
       - ./APP/STUDENT_APP_REDUX:/app
       - /app/node_modules
     environment:
-      VITE_API_BASE: http://backend:8000
+      VITE_API_BASE: /api
+      VITE_STUDENT_API_KEY: student-test-key
+      VITE_TEST_USER_TOKEN: c76d24d2-5b59-4250-82f0-5874e5e1d826
+      VITE_TEST_USER_ID: "1"
       BACKEND_PROXY_URL: http://backend:8000
+      __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: jb-2410.tail0cecc1.ts.net
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5173/"]
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:5173/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
       interval: 5s
       timeout: 5s
       retries: 10

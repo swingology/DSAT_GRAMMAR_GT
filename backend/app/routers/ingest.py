@@ -2,6 +2,7 @@ import uuid
 import re
 import asyncio
 import logging
+import random
 import tempfile
 import base64
 import json
@@ -28,9 +29,9 @@ from app.storage.local_store import compute_checksum
 from app.storage.object_store import put_object, read_object
 from app.storage.crop_detector import detect_layout, match_region_for_question, match_stimulus_regions_for_question, crop_and_store
 from app.parsers.pdf_parser import parse_pdf
-from app.parsers.json_parser import extract_json_from_text, normalize_annotation
+from app.parsers.json_parser import extract_json_from_text, normalize_annotation, canonicalize_annotation
 from app.pipeline.orchestrator import JobOrchestrator
-from app.pipeline.validator import validate_question
+from app.pipeline.validator import validate_question, validate_annotation_completeness
 from app.pipeline.annotation_sanitizer import sanitize_annotation_keys
 from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields, apply_option_annotations
 from app.models.payload import JobResponse, ReannotateRequest, OCRJobResult, OCRBenchmarkResponse
@@ -829,6 +830,7 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
     seen_keys: set[tuple[str, object]] = set()
     questions = []
     norm_errors: list[dict] = []
+    from app.prompts.extract_prompt import canonicalize_stem, canonicalize_stimulus_mode
     for raw_idx, q in enumerate(raw_questions):
         enriched = dict(q)
         for k, v in shared_source.items():
@@ -861,6 +863,19 @@ def _normalize_extracted_questions(extract_root: dict, raw_text: str = "") -> tu
         ):
             for idx, opt in enumerate(opts):
                 opt["label"] = "ABCD"[idx]
+
+        # Canonicalize stem_type_key / stimulus_mode_key against the controlled
+        # vocab. The extraction prompt now constrains these, but LLM drift still
+        # emits aliases; map known aliases so Pass 2 routing (_detect_domain)
+        # matches a real domain bucket instead of falling to "unknown" + Part D.
+        if enriched.get("stem_type_key"):
+            _canon_stem = canonicalize_stem(enriched["stem_type_key"])
+            if _canon_stem:
+                enriched["stem_type_key"] = _canon_stem
+        if enriched.get("stimulus_mode_key"):
+            _canon_mode = canonicalize_stimulus_mode(enriched["stimulus_mode_key"])
+            if _canon_mode:
+                enriched["stimulus_mode_key"] = _canon_mode
 
         # Drop blanks and surface as a validation error so silent loss is
         # visible. Most often triggers when _split_passage_from_question moves
@@ -1066,7 +1081,7 @@ async def _persist_single_question(
         source_subject_code=q_data.get("source_subject_code"),
         source_section_code=q_data.get("source_section_code"),
         source_module_code=q_data.get("source_module_code"),
-        source_question_number=q_data.get("source_question_number"),
+        source_question_number=q_num_int,
         stimulus_mode_key=q_data.get("stimulus_mode_key"),
         stem_type_key=q_data.get("stem_type_key"),
         current_question_text=q_data.get("question_text", ""),
@@ -1124,6 +1139,13 @@ async def _persist_single_question(
 
     question.latest_annotation_id = annotation_id
     question.latest_version_id = version_id
+
+    # Pass 2 canonicalizes stem_type_key (sanitize above enforces STEM_TYPE_KEYS);
+    # write it back so questions.stem_type_key reflects the validated annotation
+    # rather than the raw Pass 1 extraction label, which is frequently non-canonical.
+    _canonical_stem = annotate_json.get("stem_type_key")
+    if _canonical_stem:
+        question.stem_type_key = _canonical_stem
 
     correct_label = _resolve_correct_option_label(q_data, annotate_json)
     opt_analyses = option_analyses_by_label(annotate_json)
@@ -1977,24 +1999,29 @@ def _build_ocr_chain(resolved: str, settings, *, pagewise_pdf_ocr: bool = False)
 
 
 async def _prewarm_annotation_cache(provider, questions_data: list[dict], content_origin: str) -> None:
-    """Fire a minimal annotation call per distinct domain to fill the provider's KV cache.
+    """Fire a minimal annotation call per distinct (domain, variant) to fill the provider's KV cache.
 
     The rules block (system_static) is 10-17K tokens. Without pre-warming, the
     first real annotation call in asyncio.gather pays the full prefill cost while
     all other concurrent tasks wait behind the semaphore. Pre-warming fills the
     cache serially before the gather starts so every concurrent call gets a cache hit.
 
-    A failed pre-warm is non-fatal — the real annotation calls will still work,
-    just without the cache benefit on the first question of each domain.
-    """
-    from app.prompts.annotate_prompt import build_annotate_prompt_parts, _detect_domain
+    Reading questions trim the rules block per skill family, so each distinct
+    reading variant has its own static block and needs its own pre-warm call.
 
-    seen_domains: set[str] = set()
+    A failed pre-warm is non-fatal — the real annotation calls will still work,
+    just without the cache benefit on the first question of each variant.
+    """
+    from app.prompts.annotate_prompt import build_annotate_prompt_parts, _detect_domain, _reading_variant_key
+
+    seen: set[tuple[str, str | None]] = set()
     for q_data in questions_data:
         domain = _detect_domain(q_data)
-        if domain in seen_domains:
+        variant = _reading_variant_key(q_data) if domain == "reading" else None
+        key = (domain, variant)
+        if key in seen:
             continue
-        seen_domains.add(domain)
+        seen.add(key)
         try:
             prompt_q_data = {**q_data, "content_origin": content_origin}
             sys_static, sys_dynamic, _ = build_annotate_prompt_parts(prompt_q_data)
@@ -2004,9 +2031,17 @@ async def _prewarm_annotation_cache(provider, questions_data: list[dict], conten
                 user="Cache pre-warm — respond with exactly: {}",
                 max_tokens=4,
             )
-            logger.info("Annotation cache pre-warmed for domain=%s", domain)
+            logger.info("Annotation cache pre-warmed for domain=%s variant=%s", domain, variant)
         except Exception as exc:
-            logger.warning("Annotation cache pre-warm failed for domain=%s: %s", domain, exc)
+            logger.warning("Annotation cache pre-warm failed for domain=%s variant=%s: %s", domain, variant, exc)
+
+
+def _is_rate_limit_error(exc: Exception) -> bool:
+    return "429" in str(exc)
+
+
+# Backoff delays for HTTP 429 rate-limit retries (seconds). Final slot has +jitter applied.
+_RATE_LIMIT_BACKOFF = [5, 15, 45]
 
 
 async def _annotate_with_retry(
@@ -2021,14 +2056,21 @@ async def _annotate_with_retry(
     question_index: int | None = None,
     log_context: str = "question",
 ) -> tuple[dict, dict]:
-    """Run Pass 2 annotation with one retry for malformed/empty JSON output."""
+    """Run Pass 2 annotation with retries for malformed JSON and HTTP 429 rate limits.
+
+    - Up to 3 retries for 429 with exponential backoff (5s / 15s / 45s + jitter).
+    - 1 retry for empty/malformed JSON (no wait).
+    """
     from app.prompts.annotate_prompt import build_annotate_prompt_parts, enforce_nullability, _detect_domain
 
     prompt_q_data = {**q_data, "content_origin": content_origin}
     sys_static, sys_dynamic, user = build_annotate_prompt_parts(prompt_q_data)
+
+    rate_limit_attempts = 0
+    json_attempts = 0
     last_exc: Exception | None = None
 
-    for attempt in range(2):
+    while True:
         try:
             if semaphore is None:
                 result = await provider.complete_cached(
@@ -2055,7 +2097,7 @@ async def _annotate_with_retry(
                     f"model='{model_name}', input_len={len(result.raw_text)}, "
                     f"preview='{result.raw_text[:200]}')"
                 )
-            annotate_json = normalize_annotation(parsed)
+            annotate_json = canonicalize_annotation(parsed)
             annotate_json = enforce_nullability(annotate_json, _detect_domain(q_data))
             meta = {
                 "provider": result.provider,
@@ -2066,25 +2108,50 @@ async def _annotate_with_retry(
             if question_index is not None:
                 meta["question_index"] = question_index
             return annotate_json, meta
+
         except Exception as exc:
             last_exc = exc
-            if attempt == 0:
+
+            if _is_rate_limit_error(exc):
+                if rate_limit_attempts >= len(_RATE_LIMIT_BACKOFF):
+                    logger.warning(
+                        "Annotation 429 rate-limit exhausted for %s after %d retries: %s",
+                        log_context,
+                        rate_limit_attempts,
+                        exc,
+                    )
+                    raise
+                delay = _RATE_LIMIT_BACKOFF[rate_limit_attempts] + random.uniform(0, 2)
                 logger.warning(
-                    "Annotation attempt 1 returned no JSON for %s, retrying: %s",
+                    "Annotation 429 for %s (attempt %d/%d), backing off %.1fs",
+                    log_context,
+                    rate_limit_attempts + 1,
+                    len(_RATE_LIMIT_BACKOFF),
+                    delay,
+                )
+                await asyncio.sleep(delay)
+                rate_limit_attempts += 1
+            else:
+                if json_attempts >= 1:
+                    logger.warning(
+                        "Annotation failed for %s after %d JSON attempts: %s",
+                        log_context,
+                        json_attempts + 1,
+                        exc,
+                    )
+                    raise
+                logger.warning(
+                    "Annotation attempt returned no JSON for %s, retrying: %s",
                     log_context,
                     exc,
                 )
-
-    logger.warning("Annotation failed for %s after 2 attempts: %s", log_context, last_exc)
-    if last_exc is not None:
-        raise last_exc
-    raise RuntimeError(f"Annotation failed for {log_context} after 2 attempts")
+                json_attempts += 1
 
 
 async def _run_pipeline(job: QuestionJob, db: AsyncSession):
     from app.llm.factory import get_provider
     from app.prompts.extract_prompt import build_extract_prompt
-    from app.prompts.annotate_prompt import _detect_domain
+    from app.prompts.annotate_prompt import _detect_domain, annotation_max_tokens
 
     settings = get_settings()
     provider = get_provider(
@@ -2802,7 +2869,7 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
                 content_origin=job.content_origin,
                 provider_name=job.provider_name,
                 model_name=job.model_name,
-                max_tokens=8192,
+                max_tokens=annotation_max_tokens(q_data),
                 semaphore=_annot_semaphore,
                 question_index=idx,
                 log_context=f"question_index {idx}",
@@ -2901,6 +2968,9 @@ async def _run_pipeline(job: QuestionJob, db: AsyncSession):
         job.status = "validating"
         merged = _merge_for_validation(q_data, annotate_json)
         errors = validate_question(merged, content_origin=job.content_origin)
+        # Domain-aware completeness gate (post-canonicalization). Catches taxonomy
+        # gaps that validate_question's structural checks miss.
+        errors = errors + validate_annotation_completeness(annotate_json, job_id=str(job.id))
 
         if any(e["severity"] == "blocking" for e in errors):
             all_errors.append({"question_index": i, "step": "validating", "errors": errors, "source_question_number": q_data.get("source_question_number")})
@@ -3609,6 +3679,10 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     )
     question.latest_annotation_id = annotation_id
     question.latest_version_id = version_id
+    # Write back the Pass 2 canonical stem_type_key (see _create_question).
+    _canonical_stem = annotate_json.get("stem_type_key")
+    if _canonical_stem:
+        question.stem_type_key = _canonical_stem
     question.annotation_stale = False
     question.updated_at = now
 
@@ -3691,6 +3765,13 @@ async def reannotate_question(
     )
     ver = ver_result.scalars().first()
     choices = ver.choices_jsonb if ver else []
+    # Canonicalize stem/stimulus against the controlled vocab as a safety net
+    # (older questions may still carry non-canonical Pass 1 labels). Ensures
+    # Pass 2 routing (_detect_domain) matches a real domain bucket.
+    from app.prompts.extract_prompt import canonicalize_stem, canonicalize_stimulus_mode
+    _canon_stem = canonicalize_stem(q.stem_type_key) or q.stem_type_key
+    _canon_mode = canonicalize_stimulus_mode(q.stimulus_mode_key) or q.stimulus_mode_key
+
     synthesized_pass1 = {
         "question_text": q.current_question_text,
         "passage_text": q.current_passage_text,
@@ -3698,8 +3779,8 @@ async def reannotate_question(
         "underlined_text": q.current_underlined_text,
         "options": choices,
         "correct_option_label": q.current_correct_option_label,
-        "stem_type_key": q.stem_type_key,
-        "stimulus_mode_key": q.stimulus_mode_key,
+        "stem_type_key": _canon_stem,
+        "stimulus_mode_key": _canon_mode,
         "source_exam_code": q.source_exam_code,
         "source_section_code": q.source_section_code,
         "source_module_code": q.source_module_code,

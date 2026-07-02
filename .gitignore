@@ -17,3 +17,7 @@ screenshot.png
 
 # OpenWolf interrupted-write temp files
 .wolf/*.tmp.*
+
+# Auto Claude data directory
+.auto-claude/
+backups/dsat_dev_20260627_020001.dump

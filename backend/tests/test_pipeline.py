@@ -588,6 +588,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
         monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
         monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+        monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_a, **_k: [])
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
@@ -635,6 +636,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
         monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
         monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+        monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_a, **_k: [])
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
@@ -688,6 +690,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
         monkeypatch.setattr(ingest_router, "extract_json_from_text", mock_extract_json)
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [])
+        monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_a, **_k: [])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",
             local_archive_mirror="/tmp/test_archive", layout_detection_enabled=False, ollama_max_concurrent=8,
@@ -729,6 +732,7 @@ class TestMultiQuestionPipeline:
         monkeypatch.setattr("app.prompts.extract_prompt.build_extract_prompt", lambda *_: ("system", "user"))
         monkeypatch.setattr("app.prompts.annotate_prompt.build_annotate_prompt_parts", lambda *_: ("sys_static", "sys_dynamic", "user"))
         monkeypatch.setattr(ingest_router, "extract_json_from_text", lambda *_: next(responses))
+        monkeypatch.setattr(ingest_router, "validate_annotation_completeness", lambda *_a, **_k: [])
         monkeypatch.setattr(ingest_router, "validate_question", lambda *_args, **_kwargs: [{"severity": "blocking", "field": "question_text", "message": "Missing"}])
         monkeypatch.setattr(ingest_router, "get_settings", lambda: SimpleNamespace(
             anthropic_api_key="k", openai_api_key=None, ollama_base_url="http://localhost:11434",

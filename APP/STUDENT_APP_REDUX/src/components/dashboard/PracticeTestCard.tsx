@@ -2,21 +2,16 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const QUESTION_COUNTS = [10, 20, 33]
-const TIME_PRESETS: Array<{ label: string; seconds: number }> = [
-  { label: '10 min', seconds: 600 },
-  { label: '20 min', seconds: 1200 },
-  { label: '32 min (SAT)', seconds: 1920 },
-]
+const QUESTION_COUNTS = [27]
+const PRACTICE_TEST_SECONDS = 32 * 60
 
 export function PracticeTestCard() {
   const [configOpen, setConfigOpen] = useState(false)
-  const [qCount, setQCount] = useState(20)
-  const [timeSeconds, setTimeSeconds] = useState(1200)
+  const [qCount, setQCount] = useState(27)
   const navigate = useNavigate()
 
   function startTest() {
-    navigate(`/test?questions=${qCount}&seconds=${timeSeconds}`)
+    navigate(`/test?questions=${qCount}&seconds=${PRACTICE_TEST_SECONDS}`)
   }
 
   return (
@@ -36,7 +31,7 @@ export function PracticeTestCard() {
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-gray-900 text-base">Practice Test</h3>
           <p className="text-gray-500 text-sm">
-            {qCount} questions · {Math.round(timeSeconds / 60)} min
+            {qCount} questions · 32 min
           </p>
         </div>
         <span
@@ -80,26 +75,12 @@ export function PracticeTestCard() {
                 </div>
               </div>
 
-              {/* Time limit */}
               <div>
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
                   Time limit
                 </p>
-                <div className="flex gap-2">
-                  {TIME_PRESETS.map((p) => (
-                    <button
-                      key={p.seconds}
-                      onClick={() => setTimeSeconds(p.seconds)}
-                      className={[
-                        'flex-1 py-2 rounded-lg text-xs font-medium border transition',
-                        timeSeconds === p.seconds
-                          ? 'bg-amber-500 border-amber-500 text-white'
-                          : 'border-gray-200 text-gray-600 hover:bg-amber-50 hover:border-amber-200',
-                      ].join(' ')}
-                    >
-                      {p.label}
-                    </button>
-                  ))}
+                <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-700">
+                  32 min · auto-submit
                 </div>
               </div>
 

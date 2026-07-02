@@ -1,40 +1,36 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 export interface DiagnosticTimerState {
   remaining: number
-  isExpired: boolean
+  isOvertime: boolean
+  overtimeSeconds: number
   formatted: string
 }
 
-export function useDiagnosticTimer(
-  timeLimitSeconds: number,
-  onExpire: () => void,
-): DiagnosticTimerState {
+function formatDuration(seconds: number): string {
+  const safeSeconds = Math.max(0, seconds)
+  const m = Math.floor(safeSeconds / 60)
+  const s = safeSeconds % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
+export function useDiagnosticTimer(timeLimitSeconds: number): DiagnosticTimerState {
   const [remaining, setRemaining] = useState(timeLimitSeconds)
-  const expiredRef = useRef(false)
-  const onExpireRef = useRef(onExpire)
-  onExpireRef.current = onExpire
 
   useEffect(() => {
-    expiredRef.current = false
     setRemaining(timeLimitSeconds)
   }, [timeLimitSeconds])
 
   useEffect(() => {
-    if (remaining <= 0) {
-      if (!expiredRef.current) {
-        expiredRef.current = true
-        onExpireRef.current()
-      }
-      return
-    }
     const timer = setTimeout(() => setRemaining((s) => s - 1), 1000)
     return () => clearTimeout(timer)
   }, [remaining])
 
-  const m = Math.floor(remaining / 60)
-  const s = remaining % 60
-  const formatted = `${m}:${String(s).padStart(2, '0')}`
+  const isOvertime = remaining <= 0
+  const overtimeSeconds = isOvertime ? Math.abs(remaining) : 0
+  const formatted = isOvertime
+    ? `+${formatDuration(overtimeSeconds)}`
+    : formatDuration(remaining)
 
-  return { remaining, isExpired: remaining <= 0, formatted }
+  return { remaining, isOvertime, overtimeSeconds, formatted }
 }

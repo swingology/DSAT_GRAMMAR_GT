@@ -19,6 +19,10 @@ PDF_DIR_2025="$ROOT/TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL"
 PDF_DIR_2024="$ROOT/TESTS/DATA_SRC/2024-2025 Tests Answers"
 API="http://localhost:8000"
 KEY="${ADMIN_API_KEY:-admin-test-key}"
+# DB port: env override → backend/.env DATABASE_URL → default 5437.
+# Avoids the 5434/5437 host-port drift between this runner and docker-compose (bug-765).
+DB_PORT="${DB_PORT:-$(grep -oE 'localhost:[0-9]+' "$BACKEND/.env" 2>/dev/null | grep -oE '[0-9]+' | head -1)}"
+DB_PORT="${DB_PORT:-5437}"
 TARGET="${1:-Test_1_digital_sec01_mod01}"
 STARTED_SERVER=0
 SERVER_PID=""
@@ -42,15 +46,15 @@ trap cleanup EXIT
 # --- 1. Prerequisites -------------------------------------------------------
 cd "$BACKEND" || { echo "RESULT_JSON:{\"error\":\"backend dir missing\"}"; exit 1; }
 
-if ! PGPASSWORD=dsat_dev psql -h localhost -p 5434 -U dsat -d dsat_dev -c '\q' 2>/dev/null; then
+if ! PGPASSWORD=dsat_dev psql -h localhost -p "$DB_PORT" -U dsat -d dsat_dev -c '\q' 2>/dev/null; then
     log "Postgres down — starting db container"
     (cd "$ROOT" && docker compose up -d db) || true
     for _ in $(seq 1 20); do
-        PGPASSWORD=dsat_dev psql -h localhost -p 5434 -U dsat -d dsat_dev -c '\q' 2>/dev/null && break
+        PGPASSWORD=dsat_dev psql -h localhost -p "$DB_PORT" -U dsat -d dsat_dev -c '\q' 2>/dev/null && break
         sleep 3
     done
 fi
-if ! PGPASSWORD=dsat_dev psql -h localhost -p 5434 -U dsat -d dsat_dev -c '\q' 2>/dev/null; then
+if ! PGPASSWORD=dsat_dev psql -h localhost -p "$DB_PORT" -U dsat -d dsat_dev -c '\q' 2>/dev/null; then
     echo "RESULT_JSON:{\"error\":\"postgres unavailable\"}"; exit 1
 fi
 
@@ -140,17 +144,17 @@ case "$STATUS" in
 esac
 
 # --- 5. Collect validation errors ------------------------------------------
-ERR_COUNTS=$(PGPASSWORD=dsat_dev psql -h localhost -p 5434 -U dsat -d dsat_dev -tA -F'|' -c \
+ERR_COUNTS=$(PGPASSWORD=dsat_dev psql -h localhost -p "$DB_PORT" -U dsat -d dsat_dev -tA -F'|' -c \
   "SELECT e->>'step', count(*) FROM question_jobs, jsonb_array_elements(validation_errors_jsonb) e WHERE id='$JOB' GROUP BY 1;" 2>/dev/null)
-CREATED=$(PGPASSWORD=dsat_dev psql -h localhost -p 5434 -U dsat -d dsat_dev -tA -c \
+CREATED=$(PGPASSWORD=dsat_dev psql -h localhost -p "$DB_PORT" -U dsat -d dsat_dev -tA -c \
   "SELECT count(*) FROM question_job_questions WHERE job_id='$JOB';" 2>/dev/null)
-EXTRACTED=$(PGPASSWORD=dsat_dev psql -h localhost -p 5434 -U dsat -d dsat_dev -tA -c \
+EXTRACTED=$(PGPASSWORD=dsat_dev psql -h localhost -p "$DB_PORT" -U dsat -d dsat_dev -tA -c \
   "SELECT pass1_json->>'_extracted_count' FROM question_jobs WHERE id='$JOB';" 2>/dev/null)
 
 echo "=== validation error counts by step ==="
 echo "${ERR_COUNTS:-（none）}"
 echo "=== representative errors ==="
-PGPASSWORD=dsat_dev psql -h localhost -p 5434 -U dsat -d dsat_dev -c \
+PGPASSWORD=dsat_dev psql -h localhost -p "$DB_PORT" -U dsat -d dsat_dev -c \
   "SELECT DISTINCT ON (e->>'step') jsonb_pretty(e) FROM question_jobs, jsonb_array_elements(validation_errors_jsonb) e WHERE id='$JOB';" 2>/dev/null
 
 echo "RESULT_JSON:{\"mode\":\"single\",\"target\":\"$TARGET\",\"job_id\":\"$JOB\",\"status\":\"$STATUS\",\"poll_timeout\":$POLL_TIMEOUT,\"extracted\":\"${EXTRACTED:-?}\",\"created\":\"${CREATED:-0}\"}"

@@ -4,7 +4,7 @@ from typing import List
 
 
 class Settings(BaseSettings):
-    database_url: str = "postgresql+asyncpg://dsat:dsat_dev@localhost:5434/dsat_dev"
+    database_url: str = "postgresql+asyncpg://dsat:dsat_dev@localhost:5437/dsat_dev"
 
     # Environment — set to "production" to enforce security checks at startup
     env: str = "development"

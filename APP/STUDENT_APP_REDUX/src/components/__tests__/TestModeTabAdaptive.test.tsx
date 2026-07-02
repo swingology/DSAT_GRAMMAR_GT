@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
@@ -54,6 +54,7 @@ function wrap(ui: React.ReactElement) {
 
 describe('TestModeTab — Adaptive routing', () => {
   beforeEach(() => { vi.clearAllMocks() })
+  afterEach(() => { vi.useRealTimers() })
 
   it('shows adaptive test label when adaptive=true', () => {
     vi.mocked(api.getQuestions).mockResolvedValue({ questions: [], items: [] })
@@ -139,4 +140,23 @@ describe('TestModeTab — Adaptive routing', () => {
     // module1Complete should not have been called
     expect(vi.mocked(api.module1Complete)).not.toHaveBeenCalled()
   })
+
+  it('auto-submits when the practice test timer expires', async () => {
+    vi.mocked(api.getQuestions).mockResolvedValue({ questions: [MOCK_QUESTION], items: [MOCK_QUESTION] })
+    vi.mocked(api.module1Complete).mockResolvedValue(ROUTING_LOWER)
+
+    wrap(<TestModeTab adaptive={true} questionCount={1} durationSeconds={1} userToken="test-token" />)
+    fireEvent.click(screen.getByText(/start adaptive test/i))
+
+    await waitFor(() => screen.getByText(/the researcher/i))
+
+    await waitFor(() => {
+      expect(vi.mocked(api.module1Complete)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          user_token: 'test-token',
+          module_1_duration_seconds: expect.any(Number),
+        })
+      )
+    }, { timeout: 2500 })
+  }, 4000)
 })

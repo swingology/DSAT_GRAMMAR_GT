@@ -1,0 +1,14 @@
+# Context is now scoped to this directory (docker-compose.yml build.context).
+# node_modules MUST be excluded: the Dockerfile runs `npm ci` before the
+# `COPY . ./` that follows it, so an un-ignored node_modules here would
+# silently overwrite the freshly-installed one in the image with whatever
+# (possibly stale or corrupted) copy sits on the host.
+node_modules
+dist
+.git
+.gitignore
+.env
+.env.local
+.pytest_cache
+*.tsbuildinfo
+.DS_Store

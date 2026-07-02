@@ -9,7 +9,7 @@ import type {
 import { api } from '../api/client'
 
 
-export function useGrammarSession() {
+export function useGrammarSession({ limit = 10 }: { limit?: number } = {}) {
   const [questions, setQuestions] = useState<any[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [totalAvailable, setTotalAvailable] = useState(0)
@@ -18,6 +18,7 @@ export function useGrammarSession() {
     question: null,
     selectedAnswer: null,
     isCorrect: null,
+    correctOptionLabel: null,
     activeKeys: new Set(),
     feedbackVisible: false,
     isLoading: true,
@@ -31,7 +32,7 @@ export function useGrammarSession() {
         setState((prev) => ({ ...prev, isLoading: true, error: null }))
         const resp = await api.getQuestions({
           domain: 'grammar',
-          limit: 50,
+          limit,
         })
         const items = resp?.items ?? []
         const total = resp?.matching_target_total ?? items.length
@@ -76,6 +77,7 @@ export function useGrammarSession() {
       activeKeys: new Set(),
       selectedAnswer: null,
       isCorrect: null,
+      correctOptionLabel: null,
       feedbackVisible: false,
     }))
   }, [state.question?.id])
@@ -163,7 +165,7 @@ export function useGrammarSession() {
     if (!state.question) return []
 
     const q = state.question as any
-    const correctLabel = q.current_correct_option_label
+    const correctLabel = state.correctOptionLabel
 
     return q.options.map((option: any) => {
       const isSelected = option.label === state.selectedAnswer
@@ -177,7 +179,7 @@ export function useGrammarSession() {
         isIncorrect: isSelected && state.isCorrect === false,
       }
     })
-  }, [state.question, state.selectedAnswer, state.feedbackVisible, state.isCorrect])
+  }, [state.question, state.selectedAnswer, state.feedbackVisible, state.isCorrect, state.correctOptionLabel])
 
   /**
    * 3. renderGrammarKeys()
@@ -259,28 +261,29 @@ export function useGrammarSession() {
 
     const q = state.question as any
 
-    // Evaluate correctness immediately from the question payload — no network wait
-    const isCorrect: boolean = optionId === q.current_correct_option_label
+    // Optimistically mark the answer selected; await submit for correctness
+    setState((prev) => ({ ...prev, selectedAnswer: optionId }))
 
-    setState((prev) => ({
-      ...prev,
-      selectedAnswer: optionId,
-      isCorrect,
-      feedbackVisible: true,
-    }))
-
-    // Submit to backend in the background for progress tracking
     const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token') || ''
     const selectedOption = (q.options as any[])?.find((o: any) => o.label === optionId)
-    api.submitAnswer({
-      question_id: q.id,
-      selected_option_label: optionId,
-      user_token: USER_TOKEN,
-      missed_grammar_focus_key: q.grammar_focus_key,
-      missed_syntactic_trap_key: selectedOption?.distractor_type_key ?? undefined,
-    }).catch(() => {
-      // Backend submission failed — feedback already shown, nothing to undo
-    })
+    try {
+      const result = await api.submitAnswer({
+        question_id: q.id,
+        selected_option_label: optionId,
+        user_token: USER_TOKEN,
+        missed_grammar_focus_key: q.grammar_focus_key,
+        missed_syntactic_trap_key: selectedOption?.distractor_type_key ?? undefined,
+      })
+      setState((prev) => ({
+        ...prev,
+        isCorrect: result.is_correct,
+        correctOptionLabel: result.correct_option_label ?? null,
+        feedbackVisible: true,
+      }))
+    } catch {
+      // Submit failed — show feedback with unknown correctness to avoid blocking UX
+      setState((prev) => ({ ...prev, feedbackVisible: true }))
+    }
   }, [state.question])
 
   /**

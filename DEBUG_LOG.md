@@ -1,5 +1,276 @@
 # Debug Log
 
+## 2026-07-01 - Docker/Podman build pipeline: unscoped context, bad healthchecks, corrupted host node_modules
+Report created by: Claude Sonnet 5
+Git branch: `gitbutler/workspace`
+Git checkpoint: `0260da0` — GitButler Workspace Commit
+
+### Findings
+
+1. **Critical (hardware, unresolved): host filesystem has a single-bit-flip corruption signature in `APP/STUDENT_APP_REDUX/node_modules/vite/dist/node/chunks/node.js`.**
+   - Line 17291 read `consv forwardError = createErrorHandler(forwardReq, mptions.forward);` instead of `const forwardError = createErrorHandler(forwardReq, options.forward);` — two corruptions in one line: `t→v` and `o→m`. Both changes flip exactly the same bit (0x02: `t`=0x74/`v`=0x76, `o`=0x6F/`m`=0x6D). A consistent single-bit-flip across unrelated bytes is a classic signature of failing RAM or a failing disk/SSD, not network or npm-cache corruption (initially suspected — ruled out: a direct `curl` of the same package version from `registry.npmjs.org` was clean).
+   - **Not fixed — this needs a hardware check** (memtest86 for RAM, `smartctl`/`dmesg` for disk errors) on this host. The Docker fixes below (items 2-4) prevent this specific corrupted file from being copied into container images, but they don't address the underlying cause, which will keep corrupting other files on disk until diagnosed.
+
+2. **High: `docker-compose.yml` used repo-root (`.`) as the build context for both `backend` and `frontend` services, sending the entire ~8GB working tree (`.git`, `TESTS/` PDFs, both apps' `node_modules`, multiple Python venvs) to the build daemon on every build.**
+   - Root `.dockerignore` exclusions for these paths did not appear to take effect through the `podman compose` → `docker-compose` CLI plugin → podman API bridge in this environment (`docker compose build --no-cache` was observed sending 5GB+ and climbing before being interrupted).
+   - **Fixed:** scoped `build.context` to `./backend` and `./APP/STUDENT_APP_REDUX` respectively in `docker-compose.yml`, updated `COPY` paths in `Dockerfile.backend`/`Dockerfile.frontend` to be context-relative, and added `.dockerignore` files inside each subdirectory. Build context dropped to ~1.1MB (backend) and ~155KB (frontend); full `--no-cache` rebuild of both images went from a prior single attempt taking 9+ minutes to ~21 seconds.
+
+3. **High: frontend's `COPY APP/STUDENT_APP_REDUX/ ./` ran *after* `npm ci`, and without a working `node_modules` exclusion it would silently overwrite the freshly-installed image `node_modules` with the host's own copy — including the corrupted `vite` file from finding #1.** This is why a corrupted `vite/dist/node/chunks/node.js` reappeared identically across multiple `--no-cache` rebuilds (ruled out a buildah/npm cache reuse theory first).
+   - **Fixed:** `APP/STUDENT_APP_REDUX/.dockerignore` now excludes `node_modules`, so the image's own freshly-`npm ci`'d copy is never overwritten by the host's.
+
+4. **Medium: `dsat-backend`'s podman healthcheck was always "unhealthy" despite the API working fine.** `docker-compose.yml`'s `healthcheck.test: ["CMD", "python", "-c", "..."]` (exec-array form) had its multi-word `-c` argument tokenized on whitespace by podman, so the container only ever ran `python -c import` → `SyntaxError`.
+   - **Fixed:** changed both backend and frontend healthchecks in `docker-compose.yml` from exec-array `CMD` to `CMD-SHELL`, which runs the full string through `/bin/sh -c` and doesn't re-split it.
+
+5. **Low: `Dockerfile.backend` copied the entire `backend/` source before running `uv pip install -e ".[dev]" --system`, invalidating the dependency-install layer on every source edit.**
+   - **Fixed:** split into a dependency layer (`COPY pyproject.toml uv.lock` → `uv sync --frozen --extra dev --no-install-project`) followed by the source copy and a fast final `uv sync`. Also replaced `pip install uv` with the official static binary (`COPY --from=ghcr.io/astral-sh/uv:0.7.20`) and added a `--mount=type=cache,target=/root/.cache/uv` cache mount.
+
+## 2026-07-01 - DB restore from backup: orphaned FK reference in question_jobs
+Report created by: Claude Sonnet 5
+Git branch: `gitbutler/workspace`
+Git checkpoint: `0260da0` — GitButler Workspace Commit
+
+### Findings
+
+1. **Low: `question_jobs.raw_asset_id` FK constraint could not be restored — one row references a missing `question_assets` row.**
+   - Restored `backups/dsat_dev_20260630_220001.dump` (last known-good backup; the `dsat-db` container had been down since 2026-07-01 00:00, so every 2-hourly cron backup since then failed with "container not running" — no data was lost, the container was just offline).
+   - `pg_restore --clean --if-exists --no-owner` succeeded for all 26 tables and data (1583 questions, 165 question_jobs, 67 question_assets, etc.) except one FK: `question_jobs_raw_asset_id_fkey` on row `id=2f63aca9-e1b1-42fa-a95e-e6aadaf3998b` (status `needs_review`), which points at `question_assets.id=f2c2a55c-5a2e-47ef-94e0-8653d444c46d` — not present in the restored `question_assets` table. This inconsistency predates the restore (present in the source dump itself), not introduced by the restore process.
+   - Not fixed — the constraint is simply absent on `question_jobs.raw_asset_id` going forward (data itself is intact; only the FK enforcement is missing). Left as-is pending user decision: either null out that job's `raw_asset_id` and re-add the constraint, or investigate why `question_assets` row `f2c2a55c...` is missing.
+
+Report created by: Claude Sonnet 5
+Git branch: `gitbutler/workspace`
+Git checkpoint: `6ede750` — GitButler Workspace Commit
+
+### Findings
+
+1. **Medium: `DataManagement.tsx` (question review page) has no way to edit a question at all — only Approve/Reject.**
+   - The backend `PATCH /admin/questions/{question_id}` endpoint (`backend/app/routers/admin.py:1001`) is fully built and correct: it creates a new `QuestionVersion`, clones `QuestionOption` rows with updated correctness flags, updates `Question.latest_version_id`/`current_*` fields, and writes an audit log entry. `adminApi.editQuestion()` exists in `client.ts` but is called from nowhere in the frontend (`grep editQuestion` across `APP/ADMIN_APP/src` returns only the definition). Admins currently cannot change question text, passage text, explanation, or the correct answer from the UI — the only path is a raw API call.
+   - Not fixed — added to `admin_dashboard_plan.md` backlog (§7, question edit UI).
+
+2. **Medium: editing a question sets `annotation_stale=True` but nothing ever surfaces or acts on that flag.**
+   - `admin.py:1100` sets `q.annotation_stale = True` on every edit (correct — the annotation, e.g. `grammar_focus_key`/`syntactic_trap_key`/distractor metadata, was generated against the pre-edit text and is now potentially wrong). The only other reference is `ingest.py:3686`, which clears it after a reannotation run. There is no admin UI badge, filter, or queue showing "N questions need reannotation," and no `annotation_stale` field even exists on the frontend `Question` type (`APP/ADMIN_APP/src/types/index.ts`). Once this endpoint gets a UI (finding #1), edited questions could silently accumulate stale annotation metadata feeding the analytics/weak-spots endpoints indefinitely.
+   - Not fixed — added to `admin_dashboard_plan.md` backlog (§7).
+
+3. **Low: no way to edit an existing user's `username`/`email`/`role` from the admin dashboard — `users.py` only has create/list/get/delete.**
+   - Confirmed by reading `backend/app/routers/users.py` in full: `POST ""`, `GET ""`, `GET "/{user_id}"`, `DELETE "/{user_id}"` — no `PATCH`/`PUT`. Fixing a typo'd email or promoting a role requires a manual DB update.
+   - Not fixed — added to `admin_dashboard_plan.md` backlog (§7).
+
+4. **Medium: `DataManagement.tsx` Focus and Difficulty columns are always blank — field-shape mismatch with the API.**
+   - `GET /admin/questions` (`admin.py:220-246`) nests classification fields inside a merged `annotation` object per item (`annotation = {**ann.annotation_jsonb, **ann.explanation_jsonb}`), so a question's grammar/reading focus key and difficulty live at `item.annotation.grammar_focus_key` / `item.annotation.difficulty_overall`. The frontend `Question` type (`APP/ADMIN_APP/src/types/index.ts`) declares `grammar_focus_key`/`reading_focus_key`/`difficulty_overall` as top-level fields, and `DataManagement.tsx` renders `q.grammar_focus_key || q.reading_focus_key` and `q.difficulty_overall` directly — both are `undefined` on every row the API actually returns, so those table columns render `—` unconditionally regardless of real data. The backend response also already includes `current_passage_text`, full `options` (with `is_correct`), `current_explanation_text`, `is_admin_edited`, and `official_overlap_status` per question — none of which are in the frontend type or rendered anywhere, so this data reaches the browser and is discarded.
+   - Not fixed — added to `admin_dashboard_plan.md` backlog (§7, question detail/edit view); the type + rendering fix is part of that same change since it requires reshaping how `DataManagement.tsx` consumes the response anyway.
+
+**Not a bug:** verified `QuestionOption` reads are consistently scoped by `latest_version_id` across every read path in `student.py` and `admin.py` (lines 206, 436-437, 561, 1603-1605, 2844) — the version-propagation architecture itself is sound. The gap is entirely in the admin UI layer, not the data model.
+
+## 2026-06-26 - Backend container cannot reach host Ollama (extraction ConnectError)
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `24d9c95` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: ingestion jobs fail at `extracting` with `ConnectError: All connection attempts failed`.**
+   - Affected Test_4 math sec02 mod01 (job `2afed5ab…`) and Test_4 verbal sec01 mod01 (job `405895ab…`), both failing at the `extracting` step. The extraction client in `backend/app/routers/ingest.py` uses `base_url=settings.ollama_base_url`, which defaults to `http://localhost:11434`. The `dsat-backend` container's compose service set no `OLLAMA_BASE_URL` and no `extra_hosts`, so `localhost:11434` resolved to the container itself — Ollama runs on the host (binds `*:11434`) and was unreachable. Prior successful ingestions must have run the backend on the host, not in this container.
+   - **Fixed:** added `OLLAMA_BASE_URL: http://host.docker.internal:11434` and `extra_hosts: ["host.docker.internal:host-gateway"]` to the `backend` service in `docker-compose.yml`; recreated with `docker compose up -d backend`. Verified from inside the container via `docker exec dsat-backend python -c "import urllib.request; urllib.request.urlopen('http://host.docker.internal:11434/api/tags')"` — reachable, and `glm-ocr:latest` / `deepseek-v4-pro:cloud` / `deepseek-ocr:latest` all present. Re-submitted Test_4 verbal sec01 mod01 + mod02 (jobs `bb4ad1b0…` / `9278f496…`); both moved from instant-fail to `extracting`. Also logged as bug-770 in `.wolf/buglog.json`.
+
+## 2026-06-26 - Annotation Optimization (items 1-3)
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `24d9c95` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: grammar `syntactic_trap_key` truncation — flat `max_tokens=8192` cap too tight for grammar annotations.**
+   - Grammar annotations output 4.5–8K tokens (grammar_role_key + grammar_focus_key + secondary_grammar_focus_keys + syntactic_trap_key + reasoning). The 8192 cap cut off the JSON tail where `syntactic_trap_key` lives, producing `None`/missing values that failed the non-null validator rule for `agreement/pronoun/modifier/verb_form/sentence_boundary` roles. This is the root cause of the 5 blocking `syntactic_trap_key` errors in the Test_4 run (see prior entry, finding #1).
+   - **Fixed:** `annotation_max_tokens(q_data)` in `backend/app/prompts/annotate_prompt.py` returns 12288 for grammar/unknown, 8192 for reading. `_run_pipeline` annotation call site (`backend/app/routers/ingest.py`) now uses it instead of the hardcoded 8192. Reannotate path unchanged (already 32000).
+
+2. **Medium: annotation output ordered reasoning before classification keys, so truncation lost required fields.**
+   - **Fixed:** added an output-ordering instruction to rule 5 of both `_SYSTEM_INSTRUCTIONS_TEMPLATE` and `_SYSTEM_BASE` — emit classification fields FIRST (question_family_key, stem_type_key, grammar_role_key, grammar_focus_key, reading_focus_key, syntactic_trap_key, difficulty_*, etc.), reasoning/amendment_proposal LAST. Truncation now only loses reasoning, never a required key.
+
+3. **Medium: reading rules block sent ~18.3K input tokens to every reading annotation, most irrelevant to the question.**
+   - **Fixed:** `_reading_context(variant_key)` now trims per skill family via `_STEM_SKILL_FAMILY` → `_SKILL_SECTION_NUMBERS` — keeps shared §3-§12 + §14 + §17, selects only the matching §13 skill subsection + §19 failure-mode subsection (+ §19.7 summary), and drops §15 Passage Architecture (generation-only). Unmapped stems fall back to the full block (no accuracy regression). `lru_cache(maxsize=16)` caches each variant; `_prewarm_annotation_cache` dedups by `(domain, variant)` and pre-warms each. Measured: full ~64K chars → trimmed ~41-43K chars (~35% reduction; maps to ~18.3K→~12K tokens on real tokenization).
+
+### Verification
+- `tests/test_prompts.py` — 11/11 pass (rules loading, disambiguation presence, amendment guards, stem-vocab coverage).
+- Full backend suite: 1049 passed, 6 pre-existing failures unrelated to this change (`test_config` ocr_vision_model default drift, `test_vocab_sync` candidates/ontology drift, 4× `test_student_retrieval` DB-seed-state — none import `annotate_prompt`/`_annotate_with_retry`).
+
+## 2026-06-26 - Ingestion Test Run (Test_4_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `dc53ce4` — GitButler Workspace Commit
+
+### Findings
+
+1. ~~**High:** Blocking `syntactic_trap_key` validation error — grammar_role_key='verb_form' annotation returned `None` for `syntactic_trap_key`; rule requires non-None/non-'none'. Affected 5 questions (validating|5 errors); 5 questions failed to persist (extracted 33, created 28). Representative: question index 19 / source question number "20", job `e8b32fc4-3fbd-4662-a2d0-8fe711b1365a`.~~
+   - **Fixed (root cause):** the `None` values were truncation, not model refusal — the flat `max_tokens=8192` cap cut the JSON tail where `syntactic_trap_key` lives. Raised grammar cap to 12288 (domain-aware `annotation_max_tokens`) and reordered output so classification fields precede reasoning. See "Annotation Optimization (items 1-3)" entry above. Re-run the Test_4 ingestion to confirm the 5 questions now persist.
+
+2. **High:** `module_completeness` persistence shortfall — expected 33, extracted 33, created only 28. Directly caused by the 5 blocking `syntactic_trap_key` errors in finding #1.
+
+3. **Medium:** Question 20 (job `e8b32fc4`) additionally has `correct_option_label not found in source` (severity: warning) and `skill_family_key` populated on a grammar-domain question (severity: review). Both are non-blocking. The "Option labels must be exactly {A, B, C, D}, got ['']" cascade did **not** appear.
+
+## 2026-06-26 - Diagnostic Test 404/500 Fix
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `bc93bac` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: `POST /api/diagnostic/start` returned 404 `{"detail":"User not found"}` — stale test-user token in docker-compose.yml.**
+   - `docker-compose.yml:57` injected `VITE_TEST_USER_TOKEN: 92451633-1318-410a-8687-5b1ab59e4709`, a token from an earlier DB seed. The dev DB was re-seeded on 2026-05-29 and the only `users` row now has `user_token = c76d24d2-5b59-4250-82f0-5874e5e1d826`. `DiagnosticPage.tsx` resolves `USER_TOKEN` from `VITE_TEST_USER_TOKEN` → `localStorage` → `''`, so the frontend sent a valid-but-unmatched UUID; `_resolve_user_by_token` (`backend/app/routers/student.py:667`) parsed it but found no User → 404.
+   - **Fixed:** updated `VITE_TEST_USER_TOKEN` to `c76d24d2-5b59-4250-82f0-5874e5e1d826` in `docker-compose.yml` and recreated the frontend container (`docker compose up -d --no-deps frontend`) so Vite re-injects `import.meta.env`. Verified live: `POST /api/diagnostic/start` with `X-API-Key: student-test-key` + the token → 200. (bug-766)
+
+2. **High: `POST /api/diagnostic/start` returned 500 once a valid token was supplied — `diagnostic_sessions` table missing (alembic drift).**
+   - Backend traceback: `asyncpg.exceptions.UndefinedTableError: relation "diagnostic_sessions" does not exist`. `alembic_version` was stamped at 033 (head) but the schema was actually at ~029: migrations 030/031/032's standalone tables (`diagnostic_sessions`, `spaced_repetition_state`, `test_session_results`) and the `user_progress.diagnostic_session_id` column were never created. 033's `question_annotations` columns + `span_review_queue` + GIN indexes WERE present (mixed `create_all`+stamp baseline), so `alembic upgrade head` could not re-run 030–032 and a `stamp 029; upgrade head` would crash at 033 `add_column` on existing columns.
+   - **Fixed:** applied the missing DDL directly with `IF NOT EXISTS` guards (`/tmp/fix_diag_schema.sql` run via `docker exec dsat-db psql -f`) — created `diagnostic_sessions` (+ indexes + `user_progress.diagnostic_session_id` FK/index), `spaced_repetition_state` (+ unique `user_id/question_id` + indexes), `test_session_results` (+ indexes). Left `alembic_version` at 033 since the schema now matches head. Verified: diagnostic start returns 200 with 16 questions + coverage_report. (bug-767)
+
+3. **Medium: `dsat-backend` got stuck in a uvicorn `--reload` loop watching `.venv/lib/python3.12/site-packages/**`, rendering the container unhealthy.**
+   - WatchFiles detected churn under the venv and reloaded repeatedly without serving. Restarted `dsat-backend` to recover. Root cause is the reload watcher's include scope (pre-existing config issue, not caused by this fix); not addressed here. Note: dev stack host ports are backend **8002**, frontend **5174**, db **5437** — not the CLAUDE.md-documented 8000/5173/5434.
+
+## 2026-06-26 - Ingestion Test Run (Test_1_digital_sec01_mod01)
+Report created by: Claude (ingestion-test skill subagent)
+Git branch: `gitbutler/workspace`
+Git checkpoint: `bc93bac` — GitButler Workspace Commit
+
+### Outcome summary
+
+- Target: `Test_1_digital_sec01_mod01` (official verbal, exam 1 / sec 01 / mod 01, year 2025).
+- New submission was a **no-op**: backend idempotency guard returned
+  `This file has already produced a complete ingest (33/33 questions).` (HTTP detail,
+  `_duplicate_checksum_conflict_detail` in `backend/app/routers/ingest.py:3161`), so the
+  runner created no new job (`RESULT_JSON:{"error":"no job_id", ...}`).
+- Canonical prior ingest of this target — job `887ebddb-6343-4096-a283-c6cf838388da`
+  (created 2026-05-23) — is **clean**: status **approved**, extracted **33** / created **33**,
+  `validation_errors_jsonb` is NULL (zero validation errors by step). The
+  `Option labels must be exactly {A, B, C, D}, got ['']` cascade did **not** appear
+  (0 matches). Pipeline run for this target is clean — no pipeline findings.
+
+### Findings
+
+1. ~~**Medium: ingestion-test runner aborts on a false "postgres unavailable" due to a hardcoded DB-port drift.**~~ — **Fixed 2026-06-26** (see Fixed bullet below)
+   - `.claude/skills/ingestion-test/run.sh` hardcodes its prereq psql check and all
+     result-collection queries to host port **5434** (lines 45/49/53/143–148), but the
+     deployed stack publishes Postgres on host port **5437** (`docker-compose.yml:10`
+     `"5437:5432"`; `backend/.env` and `backend/app/config.py` both use `localhost:5437`).
+     Nothing listens on 5434, so the runner exits with
+     `RESULT_JSON:{"error":"postgres unavailable"}` even though the `dsat-db` container is
+     healthy and accepting connections. This blocks the runner out of the box.
+   - Not a pipeline defect — environmental/harness config drift. The application backend
+     itself connects correctly (5437); only the stale runner script is affected.
+   - **Worked around (not fixed):** ran a throwaway localhost TCP forwarder 5434→5437 so the
+     bundled runner could execute unmodified; no pipeline source was edited and nothing was
+     committed. Permanent fix = update `run.sh` to 5437 (or read the port from `.env`).
+   - **Fixed 2026-06-26:** `run.sh` now derives `DB_PORT` from `backend/.env`'s `DATABASE_URL`
+     (env override `DB_PORT`, default 5437); all 7 psql calls use `$DB_PORT` instead of the
+     hardcoded 5434. Verified: resolver yields 5437, DB reachable on it, `bash -n` clean. The
+     temporary TCP forwarder is no longer needed.
+
+## 2026-06-26 - Annotation Pipeline Refactor (shape-mismatch hardening)
+Report created by: Claude Opus 4.8
+Git branch: `gitbutler/workspace`
+Git checkpoint: `bfc86ad` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: nested LLM reasoning shape did not reconcile to the flat schema consumed by practice/generation.**
+   - LLMs emitted canonical fields (`question_family_key`, `difficulty_overall`, `syntactic_trap_key`, etc.)
+     inside nested `question`/`classification`/`review`/`reasoning` blocks while top-level stayed null/`"none"`.
+     Live active rows showed `missing_question_family` 21, `missing_difficulty` 21. Reliance on LLM obedience
+     was the root cause — no deterministic reconciliation step existed.
+   - **Fixed:** Added `canonicalize_annotation()` (`backend/app/parsers/json_parser.py`) — deterministic
+     promotion of nested → top-level with null/empty/`"none"` repair, alias normalization, and a conflict
+     policy (top-level wins, clash recorded in `_annotation_quality.conflicts[]`, `needs_human_review` set).
+     Replaced `normalize_annotation` in the ingest annotate path and routed `generate.py` through the same
+     pipeline. Repair script (`backend/scripts/repair_annotation_canonical.py`) backfilled 30 active rows
+     (0 conflicts): `missing_question_family` 21 → 0, `missing_difficulty` 21 → 2.
+
+2. **Medium: no domain-complete validation gate — malformed taxonomy persisted silently.**
+   - Grammar rows could carry `skill_family_key`; reading rows could carry grammar role/focus keys; required
+     fields and valid role/focus pairings were never enforced before persistence.
+   - **Fixed:** Added `validate_annotation_completeness()` (`backend/app/pipeline/validator.py`) wired into
+     ingest (after sanitize) and generation. Grammar requires role/focus/family/difficulty + conditional
+     `syntactic_trap_key` and forbids `skill_family_key`; reading requires skill/focus/family/difficulty and
+     forbids grammar keys. Backed by `SYNTACTIC_TRAP_REQUIRED_ROLES` in `ontology.py` (single source shared
+     with the prompt). 11 completeness tests + 8 canonicalize tests; refactor scope green (40 passed, 2 skipped).
+
+3. **Low: prompt/ontology vocabulary contradiction — prompt allowed `very_high` difficulty.**
+   - `DIFFICULTY_KEYS` is `low/medium/high` in master.json + ontology + both rules-doc blocks; the prompt was
+     the lone outlier adding `very_high`.
+   - **Fixed:** Removed `very_high` from both prompt difficulty-calibration blocks (folded into `high`); set
+     cross-domain difficulty examples to `null` for not-applicable; stated grammar must not populate
+     `skill_family_key`.
+
+### Remaining (genuinely-missing data, not repairable)
+
+- 2 rows missing `difficulty_overall`, 2 reading rows missing `reading_focus_key`, plus grammar
+  `syntactic_trap_key` debt → require re-annotation, not deterministic repair. (Overlaps Finding #1 of the
+  Ingestion Pipeline Audit entry below.)
+
+## 2026-06-26 - Ingestion Pipeline Audit + Annotation Coverage Gaps
+Report created by: Claude Sonnet 4.6
+Git branch: `gitbutler/workspace`
+Git checkpoint: `bfc86ad` — GitButler Workspace Commit
+
+### Findings
+
+1. **High: `syntactic_trap_key` coverage 2/43 (5%) for grammar questions despite grammar rules file defining it for structural roles.**
+   - `agreement`, `pronoun`, `modifier`, `verb_form`, `sentence_boundary` questions all have syntactic traps in grammar_v8 rules, but the LLM skips the field because the prompt never marks it as required.
+   - `reasoning_trap_key` (reading domain) and `syntactic_trap_key` (grammar domain) are separate vocabularies — neither is missing from the rules files; the prompt failed to enforce the grammar one.
+   - **Fixed:** Added explicit NULLABILITY ENFORCEMENT rule to `_SYSTEM_INSTRUCTIONS_TEMPLATE` and `_SYSTEM_BASE` in `backend/app/prompts/annotate_prompt.py`: `syntactic_trap_key` is now REQUIRED (non-null) whenever `grammar_role_key` is `agreement`, `pronoun`, `modifier`, `verb_form`, or `sentence_boundary`.
+
+2. **Medium: `grammar_role_key` echoing parent family name (e.g. `"expression_of_ideas"`) instead of a role value.**
+   - Exam 1 Q6: `grammar_role_key = "expression_of_ideas"` — this is a `question_family_key` value, not a role. The LLM falls back to the family name when it can't identify the correct role.
+   - Affects: precision word-choice / transition questions under `expression_of_ideas` where `grammar_role_key` is ambiguous.
+   - **Not fixed in code** — requires grammar_v8 rules file amendment adding explicit role values for EOI sub-types. See amendment process note below.
+   - **Action needed:** Add `## expression_of_ideas sub-roles` section to `rules_agent_dsat_grammar_ingestion_generation_v8.md` defining role keys for: transition/conjunction selection, precision word-choice, rhetorical synthesis.
+
+3. **High: `_FLAT_ANNOTATION_KEYS` in `backend/app/parsers/json_parser.py` missing all reading domain fields.**
+   - LLM inconsistently nests reading annotation under `"classification"` key. `normalize_annotation()` only promoted 8 grammar-domain keys; all reading fields stayed buried.
+   - Result: 23/93 official questions had `question_family_key = NULL` at top level even though data existed in nested dict.
+   - **Fixed:** Expanded `_FLAT_ANNOTATION_KEYS` to include all reading fields. Added `_SKILL_FAMILY_DISPLAY_TO_KEY` map to convert human-readable display names (e.g. `"Words in Context"`) to snake_case keys. Updated `normalize_annotation()` to promote both.
+   - **Fixed (DB):** One-time migration promoted nested `classification` fields to top-level `annotation_jsonb` for 22 existing unclassified questions. Exam 6 Q32 remains (grammar question misrouted to reading; needs re-annotation).
+
+4. **High: `source_question_number` passed as string to INTEGER DB column in `ingest.py:1083`.**
+   - `q_data.get("source_question_number")` returns raw LLM string. `q_num_int` (already computed) was not being used.
+   - Caused 2 hard `psycopg` errors per ingestion run.
+   - **Fixed:** `ingest.py:1083` now passes `q_num_int`.
+
+5. **Critical: `current_correct_option_label` exposed in `StudentQuestionResponse` API.**
+   - Field leaked the correct answer to the student-facing `/questions` endpoint.
+   - **Fixed:** Removed field from `StudentQuestionResponse` (payload.py) and both serializer call-sites in student.py. Submit endpoint (`/submit`) now returns `correct_option_label` in its response. Frontend `useGrammarSession.ts` updated to await submit result and derive `correctOptionLabel` from response instead of pre-loaded question data.
+
+6. **High: `reading_skill_family_key` key mismatch — DB stores `skill_family_key`, query used wrong name.**
+   - `student.py:312` and `328` queried `annotation_jsonb["reading_skill_family_key"]` which is always NULL; actual key is `skill_family_key`.
+   - Result: reading domain filtering returned zero questions; `skill_family_key` never populated in API response.
+   - **Fixed:** Updated DB filters (student.py:312, 328) and serializers (student.py:508, 1262, 1644) to use `skill_family_key`. Renamed field in `StudentQuestionResponse` and `DiagnosticQuestionPayload` (payload.py:22, 1092).
+
+7. **High: HTTP 429 rate-limit errors not retried — annotation pipeline fails on 30+ question modules.**
+   - `_annotate_with_retry()` only caught empty/malformed JSON. All 429 errors fell through as permanent failures.
+   - 32/34 annotation errors in Test 1 mod02 were 429s.
+   - **Fixed:** `_annotate_with_retry()` now has independent retry loops: up to 3 retries for 429 with exponential backoff (5s → 15s → 45s + up to 2s jitter); 1 retry for malformed JSON. Added `_is_rate_limit_error()` helper.
+
+---
+
+### Rules File Amendment Process (admin note)
+
+**The grammar and reading rules files are the single source of truth for all LLMs in this system.** Amendments to these files must go through the structured review process:
+
+**Flow:**
+```
+LLM proposes (annotation_jsonb['reasoning']['amendment_proposal'])
+  → capture_amendment_proposal() → vocabulary/amendments/pending/*.json
+  → Admin review: GET /api/admin/amendments
+  → Semantic duplicate check (now runs on approve)
+  → approve_amendment() → status = approved (still in pending/)
+  → promote_amendment() → patches master.json + rules files + moves to approved/
+```
+
+**Why this must be carefully controlled (multi-LLM context):**
+- Different LLM providers (DeepSeek, Qwen, Claude, GPT-4) independently annotate questions using the same rules files. If one model proposes `contextual_inference` and another proposes `context_clue_inference` for the same concept, and both get promoted, the vocabulary fragments — future models may use either name inconsistently.
+- The `validate_amendment_for_approval()` function now runs a semantic duplicate check (Jaccard token overlap ≥ 0.5) against: (a) active entries in `vocabulary/master.json`, and (b) other pending/approved amendments in the same vocabulary. Near-matches block approval and surface a `duplicate_warnings` list for human review.
+- Before adding any key to the rules files, verify: does a synonym already exist under a different name? Check `vocabulary/master.json` entries, `vocabulary/candidates.json`, and all pending amendments.
+
+**Two pending amendments require human decision:**
+- `rhetorical_synthesis` → `GRAMMAR_FOCUS_BY_ROLE` (pending): Exam 6 Q32. Likely correct — notes synthesis questions have no existing role key. Needs grammar_v8 section added.
+- `verb_form` → `READING_SKILL_FAMILY_KEYS` (pending): **REJECT.** `verb_form` is already a `grammar_role_key` value. The LLM misrouted a grammar question to reading and proposed adding a grammar concept to the reading taxonomy.
+
 ## 2026-06-08 - Annotation JSON Parse Failure on Manually Inserted Questions
 Report created by: Claude Sonnet 4.6
 Git branch: `frontend`
