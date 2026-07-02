@@ -42,6 +42,74 @@ class TestWeakSpotsEndpoint:
         resp = client.get("/admin/analytics/weak-spots?limit=1", headers=AUTH)
         assert resp.status_code == 422
 
+    def test_focus_key_derived_from_annotation_jsonb(self):
+        """Regression: the focus-map lookup must read
+        QuestionAnnotation.annotation_jsonb (the real column) and derive the
+        focus key in Python, not select a nonexistent
+        QuestionAnnotation.grammar_focus_key ORM attribute.
+
+        This only exercises the buggy code path when there is at least one
+        question-miss row, since the annotation-join query is skipped
+        entirely when `question_ids` is empty.
+        """
+        import uuid as _uuid
+        from types import SimpleNamespace
+        from fastapi.testclient import TestClient
+
+        from app.main import app
+        from app.database import get_db
+
+        qid = _uuid.uuid4()
+
+        class FakeResult:
+            def __init__(self, rows):
+                self._rows = rows
+
+            def all(self):
+                return self._rows
+
+        class FakeSession:
+            def __init__(self):
+                self.call_count = 0
+
+            async def execute(self, stmt):
+                self.call_count += 1
+                if self.call_count == 1:
+                    # Per-question miss rates (UserProgress aggregation)
+                    return FakeResult([
+                        SimpleNamespace(
+                            question_id=qid,
+                            question_domain="grammar",
+                            total=10,
+                            misses=6,
+                        )
+                    ])
+                if self.call_count == 2:
+                    # Focus-key lookup joined against QuestionAnnotation
+                    return FakeResult([
+                        (qid, {"grammar_focus_key": "subject_verb_agreement"}),
+                    ])
+                # Focus-area (grammar / reading) miss-rate queries: no rows
+                return FakeResult([])
+
+        fake = FakeSession()
+
+        async def _override_get_db():
+            yield fake
+
+        app.dependency_overrides[get_db] = _override_get_db
+        try:
+            with TestClient(app) as c:
+                resp = c.get("/admin/analytics/weak-spots", headers=AUTH)
+        finally:
+            app.dependency_overrides.pop(get_db, None)
+
+        assert resp.status_code == 200
+        misses = resp.json()["question_wise_misses"]
+        assert len(misses) == 1
+        assert misses[0]["question_id"] == str(qid)
+        assert misses[0]["focus_key"] == "subject_verb_agreement"
+
 
 class TestCohortSummaryEndpoint:
     def test_requires_admin_auth(self, client: TestClient):

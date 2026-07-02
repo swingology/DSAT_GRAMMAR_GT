@@ -2337,12 +2337,17 @@ async def cohort_weak_spots(
     focus_map: dict[str, str] = {}
     if question_ids:
         ann_result = await db.execute(
-            select(Question.id, QuestionAnnotation.grammar_focus_key)
+            select(Question.id, QuestionAnnotation.annotation_jsonb)
             .join(QuestionAnnotation, Question.latest_annotation_id == QuestionAnnotation.id)
             .where(Question.id.in_([r.question_id for r in q_rows]))
         )
-        for qid, fk in ann_result.all():
-            focus_map[str(qid)] = fk or ""
+        for qid, annotation_jsonb in ann_result.all():
+            annotation = annotation_jsonb or {}
+            focus_map[str(qid)] = (
+                annotation.get("grammar_focus_key")
+                or annotation.get("reading_focus_key")
+                or ""
+            )
 
     question_misses = [
         QuestionMissRate(
