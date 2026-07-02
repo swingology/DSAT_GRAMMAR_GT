@@ -1,5 +1,30 @@
 # Debug Log
 
+## 2026-07-01 - Admin dashboard: edit capability audit (entries/fields propagation)
+Report created by: Claude Sonnet 5
+Git branch: `gitbutler/workspace`
+Git checkpoint: `6ede750` — GitButler Workspace Commit
+
+### Findings
+
+1. **Medium: `DataManagement.tsx` (question review page) has no way to edit a question at all — only Approve/Reject.**
+   - The backend `PATCH /admin/questions/{question_id}` endpoint (`backend/app/routers/admin.py:1001`) is fully built and correct: it creates a new `QuestionVersion`, clones `QuestionOption` rows with updated correctness flags, updates `Question.latest_version_id`/`current_*` fields, and writes an audit log entry. `adminApi.editQuestion()` exists in `client.ts` but is called from nowhere in the frontend (`grep editQuestion` across `APP/ADMIN_APP/src` returns only the definition). Admins currently cannot change question text, passage text, explanation, or the correct answer from the UI — the only path is a raw API call.
+   - Not fixed — added to `admin_dashboard_plan.md` backlog (§7, question edit UI).
+
+2. **Medium: editing a question sets `annotation_stale=True` but nothing ever surfaces or acts on that flag.**
+   - `admin.py:1100` sets `q.annotation_stale = True` on every edit (correct — the annotation, e.g. `grammar_focus_key`/`syntactic_trap_key`/distractor metadata, was generated against the pre-edit text and is now potentially wrong). The only other reference is `ingest.py:3686`, which clears it after a reannotation run. There is no admin UI badge, filter, or queue showing "N questions need reannotation," and no `annotation_stale` field even exists on the frontend `Question` type (`APP/ADMIN_APP/src/types/index.ts`). Once this endpoint gets a UI (finding #1), edited questions could silently accumulate stale annotation metadata feeding the analytics/weak-spots endpoints indefinitely.
+   - Not fixed — added to `admin_dashboard_plan.md` backlog (§7).
+
+3. **Low: no way to edit an existing user's `username`/`email`/`role` from the admin dashboard — `users.py` only has create/list/get/delete.**
+   - Confirmed by reading `backend/app/routers/users.py` in full: `POST ""`, `GET ""`, `GET "/{user_id}"`, `DELETE "/{user_id}"` — no `PATCH`/`PUT`. Fixing a typo'd email or promoting a role requires a manual DB update.
+   - Not fixed — added to `admin_dashboard_plan.md` backlog (§7).
+
+4. **Medium: `DataManagement.tsx` Focus and Difficulty columns are always blank — field-shape mismatch with the API.**
+   - `GET /admin/questions` (`admin.py:220-246`) nests classification fields inside a merged `annotation` object per item (`annotation = {**ann.annotation_jsonb, **ann.explanation_jsonb}`), so a question's grammar/reading focus key and difficulty live at `item.annotation.grammar_focus_key` / `item.annotation.difficulty_overall`. The frontend `Question` type (`APP/ADMIN_APP/src/types/index.ts`) declares `grammar_focus_key`/`reading_focus_key`/`difficulty_overall` as top-level fields, and `DataManagement.tsx` renders `q.grammar_focus_key || q.reading_focus_key` and `q.difficulty_overall` directly — both are `undefined` on every row the API actually returns, so those table columns render `—` unconditionally regardless of real data. The backend response also already includes `current_passage_text`, full `options` (with `is_correct`), `current_explanation_text`, `is_admin_edited`, and `official_overlap_status` per question — none of which are in the frontend type or rendered anywhere, so this data reaches the browser and is discarded.
+   - Not fixed — added to `admin_dashboard_plan.md` backlog (§7, question detail/edit view); the type + rendering fix is part of that same change since it requires reshaping how `DataManagement.tsx` consumes the response anyway.
+
+**Not a bug:** verified `QuestionOption` reads are consistently scoped by `latest_version_id` across every read path in `student.py` and `admin.py` (lines 206, 436-437, 561, 1603-1605, 2844) — the version-propagation architecture itself is sound. The gap is entirely in the admin UI layer, not the data model.
+
 ## 2026-06-26 - Backend container cannot reach host Ollama (extraction ConnectError)
 Report created by: Claude (glm-5.2:cloud)
 Git branch: `gitbutler/workspace`
