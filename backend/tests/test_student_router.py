@@ -55,3 +55,13 @@ def test_api_users_username_too_long_rejected(client):
         headers={"X-API-Key": "admin-test-key"},
     )
     assert resp.status_code == 422
+
+
+def test_student_stats_accepts_admin_key(client):
+    resp = client.get("/api/stats/99999", headers={"X-API-Key": "admin-test-key"})
+    assert resp.status_code == 200
+
+
+def test_student_stats_still_accepts_student_key(client):
+    resp = client.get("/api/stats/99999", headers={"X-API-Key": "student-test-key"})
+    assert resp.status_code == 200

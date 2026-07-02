@@ -1,4 +1,7 @@
-const API_BASE = '/api'
+// No shared base path: users.router mounts at /users, admin.router at /admin,
+// but student.router (stats/study endpoints) mounts at /api — each adminApi
+// call below spells out its own real backend prefix instead of assuming one.
+const API_BASE = ''
 
 const ADMIN_TOKEN = (import.meta as any).env.VITE_ADMIN_TOKEN || ''
 
@@ -7,11 +10,12 @@ export async function apiCall(endpoint: string, options: RequestInit = {}) {
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${ADMIN_TOKEN}`,
+      'X-API-Key': ADMIN_TOKEN,
       ...(options.headers || {}),
     },
   })
   if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`)
+  if (res.status === 204) return null
   return res.json()
 }
 
@@ -66,12 +70,12 @@ export const adminApi = {
     return apiCall(`/admin/analytics/trends?${q}`)
   },
 
-  // Student stats
-  getStudentStats: (userId: number) => apiCall(`/stats/${userId}`),
+  // Student stats (student.router mounts at /api, unlike users/admin routers)
+  getStudentStats: (userId: number) => apiCall(`/api/stats/${userId}`),
   getStudentRecommendations: (userToken: string) =>
-    apiCall('/study/recommendations', { method: 'POST', body: JSON.stringify({ user_token: userToken }) }),
+    apiCall('/api/study/recommendations', { method: 'POST', body: JSON.stringify({ user_token: userToken }) }),
   getStudentMissed: (userToken: string) =>
-    apiCall(`/study/missed?user_token=${userToken}`),
+    apiCall(`/api/study/missed?user_token=${userToken}`),
 
   // Auto-release
   getAutoReleaseStatus: () => apiCall('/admin/generation/auto-release/status'),
