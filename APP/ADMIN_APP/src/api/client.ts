@@ -7,11 +7,12 @@ export async function apiCall(endpoint: string, options: RequestInit = {}) {
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${ADMIN_TOKEN}`,
+      'X-API-Key': ADMIN_TOKEN,
       ...(options.headers || {}),
     },
   })
   if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`)
+  if (res.status === 204) return null
   return res.json()
 }
 
