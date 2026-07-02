@@ -1,12 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { api } from '../../api/client'
 import { useDiagnosticTimer } from '../../hooks/useDiagnosticTimer'
-import type { DiagnosticQuestion } from '../../types'
+
+export interface PracticeQuestion {
+  id: string
+  current_question_text: string
+  current_passage_text?: string | null
+  options: Array<{ label: string; text: string }>
+  domain?: string | null
+  difficulty_overall?: string | null
+  grammar_focus_key?: string | null
+  reading_focus_key?: string | null
+}
 
 interface Props {
-  sessionId: string
-  questions: DiagnosticQuestion[]
+  questions: PracticeQuestion[]
   timeLimitSeconds: number
   userToken: string
   onComplete: () => void
@@ -14,23 +23,25 @@ interface Props {
 
 type QuestionState = 'unanswered' | 'answered' | 'flagged'
 
-export function DiagnosticTestRunner({
-  sessionId,
-  questions,
-  timeLimitSeconds,
-  userToken,
-  onComplete,
-}: Props) {
+export function PracticeTestRunner({ questions, timeLimitSeconds, userToken, onComplete }: Props) {
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [flags, setFlags] = useState<Set<string>>(new Set())
   const [showConfirm, setShowConfirm] = useState(false)
+  const autoSubmittedRef = useRef(false)
 
   const timer = useDiagnosticTimer(timeLimitSeconds)
 
   const q = questions[current]
   const answered = Object.keys(answers).length
   const unanswered = questions.length - answered
+
+  useEffect(() => {
+    if (timer.remaining <= 0 && !autoSubmittedRef.current) {
+      autoSubmittedRef.current = true
+      onComplete()
+    }
+  }, [timer.remaining, onComplete])
 
   function questionState(qid: string): QuestionState {
     if (answers[qid]) return 'answered'
@@ -43,16 +54,13 @@ export function DiagnosticTestRunner({
     const newAnswers = { ...answers, [q.id]: label }
     setAnswers(newAnswers)
 
-    // Fire-and-forget submit — do NOT use response to reveal correctness
-    api.diagnosticSubmit(sessionId, {
-      user_token: userToken,
+    api.submitAnswer({
       question_id: q.id,
       selected_option_label: label,
+      user_token: userToken,
       missed_grammar_focus_key: q.grammar_focus_key ?? undefined,
       missed_reading_focus_key: q.reading_focus_key ?? undefined,
-    }).catch(() => {
-      // Silent — answer is recorded locally; backend sync is best-effort
-    })
+    }).catch(() => {})
   }
 
   function toggleFlag() {
@@ -76,9 +84,7 @@ export function DiagnosticTestRunner({
   if (!q) return null
 
   const urgent = timer.remaining < 5 * 60
-  const timerLabel = timer.isOvertime
-    ? `Overtime: ${timer.formatted.slice(1)}`
-    : `Time remaining: ${timer.formatted}`
+  const timerDisplay = timer.isOvertime ? '0:00' : timer.formatted
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -90,17 +96,12 @@ export function DiagnosticTestRunner({
         <div className="flex-1" />
         <span
           className={`font-mono text-sm font-bold tabular-nums ${
-            timer.isOvertime
-              ? 'text-red-600 animate-pulse'
-              : urgent
-                ? 'text-red-600'
-                : 'text-gray-700'
+            urgent ? 'text-red-600' : 'text-gray-700'
           }`}
-          style={timer.isOvertime ? { animationDuration: '2.4s' } : undefined}
-          aria-label={timerLabel}
-          title={timerLabel}
+          aria-label={`Time remaining: ${timerDisplay}`}
+          title={`Time remaining: ${timerDisplay}`}
         >
-          {timer.formatted}
+          {timerDisplay}
         </span>
         <button
           onClick={handleSubmitClick}
@@ -120,26 +121,22 @@ export function DiagnosticTestRunner({
             transition={{ duration: 0.18 }}
             className="bg-white border border-gray-200 rounded-xl p-6 mb-4"
           >
-            {/* Domain badge */}
             {q.domain && (
               <span className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3 block">
-                {q.domain} {q.difficulty_overall ? `· ${q.difficulty_overall}` : ''}
+                {q.domain}{q.difficulty_overall ? ` · ${q.difficulty_overall}` : ''}
               </span>
             )}
 
-            {/* Passage */}
             {q.current_passage_text && (
               <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 rounded-lg p-4 mb-4 border border-gray-100">
                 {q.current_passage_text}
               </div>
             )}
 
-            {/* Stem */}
             <p className="text-gray-800 leading-relaxed mb-5 text-base">
               {q.current_question_text}
             </p>
 
-            {/* Options — no correctness styling */}
             <div className="space-y-2">
               {q.options.map((opt) => {
                 const isSelected = answers[q.id] === opt.label

@@ -71,6 +71,7 @@ export interface GrammarSessionState {
   question: GrammarQuestion | null
   selectedAnswer: string | null
   isCorrect: boolean | null            // null = not yet answered
+  correctOptionLabel: string | null    // revealed by submit response, not pre-loaded
   activeKeys: Set<string>              // Syntax Anatomy keys, NOT backend keys
   feedbackVisible: boolean
   isLoading: boolean

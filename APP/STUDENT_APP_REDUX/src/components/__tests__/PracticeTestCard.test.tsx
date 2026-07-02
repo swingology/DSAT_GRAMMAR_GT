@@ -26,13 +26,14 @@ describe('PracticeTestCard', () => {
   it('renders the card header with defaults', () => {
     wrap(<PracticeTestCard />)
     expect(screen.getByText('Practice Test')).toBeInTheDocument()
-    expect(screen.getByText('20 questions · 20 min')).toBeInTheDocument()
+    expect(screen.getByText('27 questions · 32 min')).toBeInTheDocument()
   })
 
   it('config options are hidden by default', () => {
     wrap(<PracticeTestCard />)
     expect(screen.queryByText('Questions')).not.toBeInTheDocument()
     expect(screen.queryByText('Time limit')).not.toBeInTheDocument()
+    expect(screen.queryByText('32 min · auto-submit')).not.toBeInTheDocument()
   })
 
   it('expands config on click', () => {
@@ -40,6 +41,7 @@ describe('PracticeTestCard', () => {
     fireEvent.click(screen.getByText('Practice Test'))
     expect(screen.getByText('Questions')).toBeInTheDocument()
     expect(screen.getByText('Time limit')).toBeInTheDocument()
+    expect(screen.getByText('32 min · auto-submit')).toBeInTheDocument()
   })
 
   it('shows all question count options', () => {
@@ -47,44 +49,35 @@ describe('PracticeTestCard', () => {
     fireEvent.click(screen.getByText('Practice Test'))
     expect(screen.getByRole('button', { name: '10' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '20' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: '33' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '27' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '33' })).not.toBeInTheDocument()
   })
 
-  it('shows all time preset options', () => {
+  it('shows fixed auto-submit time', () => {
     wrap(<PracticeTestCard />)
     fireEvent.click(screen.getByText('Practice Test'))
-    expect(screen.getByRole('button', { name: '10 min' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: '20 min' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: '32 min (SAT)' })).toBeInTheDocument()
+    expect(screen.getByText('32 min · auto-submit')).toBeInTheDocument()
   })
 
   it('updates subtitle when question count changes', () => {
     wrap(<PracticeTestCard />)
     fireEvent.click(screen.getByText('Practice Test'))
     fireEvent.click(screen.getByRole('button', { name: '10' }))
-    expect(screen.getByText('10 questions · 20 min')).toBeInTheDocument()
-  })
-
-  it('updates subtitle when time limit changes', () => {
-    wrap(<PracticeTestCard />)
-    fireEvent.click(screen.getByText('Practice Test'))
-    fireEvent.click(screen.getByRole('button', { name: '32 min (SAT)' }))
-    expect(screen.getByText('20 questions · 32 min')).toBeInTheDocument()
+    expect(screen.getByText('10 questions · 32 min')).toBeInTheDocument()
   })
 
   it('navigates to /test with correct query params on start', () => {
     wrap(<PracticeTestCard />)
     fireEvent.click(screen.getByText('Practice Test'))
     fireEvent.click(screen.getByRole('button', { name: /start test/i }))
-    expect(mockNavigate).toHaveBeenCalledWith('/test?questions=20&seconds=1200')
+    expect(mockNavigate).toHaveBeenCalledWith('/test?questions=27&seconds=1920')
   })
 
   it('navigates with updated params after changing config', () => {
     wrap(<PracticeTestCard />)
     fireEvent.click(screen.getByText('Practice Test'))
-    fireEvent.click(screen.getByRole('button', { name: '33' }))
-    fireEvent.click(screen.getByRole('button', { name: '32 min (SAT)' }))
+    fireEvent.click(screen.getByRole('button', { name: '20' }))
     fireEvent.click(screen.getByRole('button', { name: /start test/i }))
-    expect(mockNavigate).toHaveBeenCalledWith('/test?questions=33&seconds=1920')
+    expect(mockNavigate).toHaveBeenCalledWith('/test?questions=20&seconds=1920')
   })
 })
