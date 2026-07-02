@@ -6,6 +6,7 @@ Domain routing:
   Unknown  → grammar_v8 Parts C+D + reading_v3 §3–7
 """
 import os
+import re
 import json
 from functools import lru_cache
 
@@ -16,6 +17,9 @@ from app.models.ontology import (
     GRAMMAR_ROLE_KEYS,
     GRAMMAR_FOCUS_BY_ROLE,
     READING_FOCUS_BY_SKILL_FAMILY,
+    READING_QUESTION_FAMILY_KEYS,
+    GRAMMAR_QUESTION_FAMILY_KEYS,
+    READING_SKILL_FAMILY_KEYS,
     REASONING_TRAP_KEYS,
 )
 
@@ -73,49 +77,111 @@ _ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", 
 _GRAMMAR_FILE = "rules_agent_dsat_grammar_ingestion_generation_v8.md"
 _READING_FILE = "rules_agent_dsat_reading_v3.md"
 
-# stem_type_key values that unambiguously belong to grammar / SEC domain
-_GRAMMAR_STEMS = {
-    "complete_the_text",
-    "choose_transition",
-    "rhetorical_synthesis",
-    "choose_conjunction",
-    "fix_punctuation",
-    "fix_sentence_boundary",
-    "no_change",
+# stem_type_key → domain attribution. Single source of truth for Pass 2 prompt
+# routing. Every STEM_TYPE_KEYS value (from ontology.py) MUST appear here —
+# guarded by test_stem_domain_covers_all_vocab in test_prompts.py. Adding a stem
+# to the vocab without attributing a domain fails CI.
+#   "grammar"   → SEC / Expression of Ideas (loads grammar_v8 Parts A,C,D)
+#   "reading"   → Information & Ideas / Craft & Structure (loads reading_v3 §3-14)
+#   "ambiguous" → routed at runtime by _detect_domain (complete_the_text is
+#                 SEC/EOI sentence-completion OR vocabulary-in-context w/ passage)
+# Kept here (not in generated ontology.py) so the gen_vocab sync check stays clean.
+STEM_TYPE_DOMAIN = {
+    "complete_the_text": "ambiguous",
+    "conform_to_standard_english": "grammar",
+    "choose_best_grammar_revision": "grammar",
+    "choose_best_transition": "grammar",
+    "choose_best_notes_synthesis": "grammar",
+    "choose_main_idea": "reading",
+    "choose_main_purpose": "reading",
+    "choose_structure_description": "reading",
+    "choose_sentence_function": "reading",
+    "choose_likely_response": "reading",
+    "choose_best_support": "reading",
+    "choose_best_quote": "reading",
+    "choose_best_completion_from_data": "reading",
+    "choose_words_in_context": "reading",
+    "choose_word_in_context": "reading",
+    "choose_cross_text_connection": "reading",
+    "choose_text_relationship": "reading",
+    "choose_agreement_across_texts": "reading",
+    "choose_difference_across_texts": "reading",
+    "choose_best_inference": "reading",
+    "choose_command_of_evidence_textual": "reading",
+    "choose_command_of_evidence_quantitative": "reading",
+    "choose_central_detail": "reading",
+    "choose_detail": "reading",
+    "choose_best_illustration": "reading",
+    "choose_best_weakener": "reading",
+    "most_logically_completes": "reading",
+    "synthesize_information": "reading",
+    "compare_contributions": "reading",
 }
 
-# stem_type_key values that unambiguously belong to reading domains
-_READING_STEMS = {
-    "vocabulary_in_context",
-    "choose_words_in_context",
-    "describe_structure",
-    "state_main_purpose",
-    "state_main_idea",
-    "choose_main_idea",
-    "identify_main_purpose",
-    "support_claim",
-    "function_of_part",
-    "choose_function",
-    "interpret_graph",
-    "interpret_data",
-    "infer_author_opinion",
-    "infer_character",
-    "analyze_argument",
-    "choose_cross_text_connection",
-    "choose_command_of_evidence_textual",
-    "choose_command_of_evidence_quantitative",
-    "choose_best_support",
-    "synthesize_information",
-    "present_methods",
-    "emphasize_similarity",
-    "compare_hypotheses",
-    "most_logically_completes",
-}
+# Domain routing sets are DERIVED from the canonical STEM_TYPE_DOMAIN map in
+# ontology.py — never hand-maintained. This eliminates drift between the routing
+# sets and the STEM_TYPE_KEYS controlled vocabulary (the prior hand-maintained
+# sets contained dead aliases like "describe_structure" and were missing real
+# canonical keys like "choose_sentence_function", causing reading questions to
+# mis-route to "unknown" and pull in grammar Part D). Guarded by
+# test_stem_domain_covers_all_vocab.
+_GRAMMAR_STEMS = frozenset(
+    k for k, v in STEM_TYPE_DOMAIN.items() if v == "grammar"
+)
+_READING_STEMS = frozenset(
+    k for k, v in STEM_TYPE_DOMAIN.items() if v == "reading"
+)
+_AMBIGUOUS_STEMS = frozenset(
+    k for k, v in STEM_TYPE_DOMAIN.items() if v == "ambiguous"
+)
 
 # question text keywords that signal grammar domain for complete_the_text
 _GRAMMAR_QUESTION_SIGNALS = {
     "punctuation", "transition", "conjunction", "semicolon", "comma",
     "period", "colon", "dash", "which choice most effectively",
+}
+
+# Pass 1 stem_type_key → reading skill family, used to trim the reading rules
+# block to only the relevant §13 skill-specific and §19 failure-mode subsections.
+# Unmapped stems fall back to the full §13/§19 block (no accuracy regression,
+# just no token savings). Kept conservative on purpose — a wrong routing here
+# would drop the section the annotator needs, so unmatched stems keep everything.
+_STEM_SKILL_FAMILY = {
+    "choose_best_support": "command_of_evidence_textual",
+    "choose_best_quote": "command_of_evidence_textual",
+    "choose_command_of_evidence_textual": "command_of_evidence_textual",
+    "choose_best_completion_from_data": "command_of_evidence_quantitative",
+    "choose_command_of_evidence_quantitative": "command_of_evidence_quantitative",
+    "choose_main_idea": "central_ideas_and_details",
+    "choose_central_detail": "central_ideas_and_details",
+    "choose_detail": "central_ideas_and_details",
+    "choose_best_inference": "inferences",
+    "most_logically_completes": "inferences",
+    "choose_best_illustration": "inferences",
+    "choose_best_weakener": "inferences",
+    "choose_words_in_context": "words_in_context",
+    "choose_word_in_context": "words_in_context",
+    "choose_main_purpose": "text_structure_and_purpose",
+    "choose_structure_description": "text_structure_and_purpose",
+    "choose_sentence_function": "text_structure_and_purpose",
+    "choose_cross_text_connection": "cross_text_connections",
+    "choose_text_relationship": "cross_text_connections",
+    "choose_agreement_across_texts": "cross_text_connections",
+    "choose_difference_across_texts": "cross_text_connections",
+    "synthesize_information": "cross_text_connections",
+    "compare_contributions": "cross_text_connections",
+}
+
+# skill family → (§13 subsection number, §19 failure-mode subsection number or
+# None). central_ideas_and_details has no dedicated §19 failure-mode subsection.
+_SKILL_SECTION_NUMBERS = {
+    "command_of_evidence_textual": ("13.1", "19.3"),
+    "command_of_evidence_quantitative": ("13.2", "19.2"),
+    "central_ideas_and_details": ("13.3", None),
+    "inferences": ("13.4", "19.4"),
+    "words_in_context": ("13.5", "19.1"),
+    "text_structure_and_purpose": ("13.6", "19.5"),
+    "cross_text_connections": ("13.7", "19.6"),
 }
 
 
@@ -148,19 +214,86 @@ def _grammar_context() -> str:
     return f"Grammar v8 RULES REFERENCE:\n=== GRAMMAR v8: MODE ROUTING ===\n{routing}\n\n=== GRAMMAR v8: ANNOTATION + TAXONOMY (Parts C & D) ===\n{annotation}"
 
 
-@lru_cache(maxsize=1)
-def _reading_context() -> str:
+_SUBSECTION_END_RE = re.compile(r"\n(#{2,3}) ")
+
+
+def _extract_subsection(text: str, start_prefix: str) -> str:
+    """Extract a ### subsection from its heading to the next ## or ### heading.
+
+    start_prefix is a heading prefix like "### 13.5 ". Stops at the next level-2
+    or level-3 heading so any level-4 sub-subsections inside stay included.
+    """
+    start = text.find(start_prefix)
+    if start == -1:
+        return ""
+    rest = text[start + len(start_prefix):]
+    m = _SUBSECTION_END_RE.search(rest)
+    if m:
+        end = start + len(start_prefix) + m.start()
+        return text[start:end].rstrip() + "\n"
+    return text[start:].rstrip() + "\n"
+
+
+def _reading_variant_key(q_data: dict) -> str | None:
+    """Map a reading question's stem_type_key to a skill-family variant key.
+
+    Returns None when the stem is unknown/unmapped, which makes the caller load
+    the full §13/§19 block (safe fallback — no accuracy regression).
+    """
+    stem = (q_data.get("stem_type_key") or "").strip().lower()
+    return _STEM_SKILL_FAMILY.get(stem)
+
+
+# Domain-aware Pass 2 output caps. Grammar annotations carry a larger
+# classification payload (grammar_role_key, grammar_focus_key,
+# secondary_grammar_focus_keys, syntactic_trap_key) plus reasoning; observed
+# output is 4.5–8K tokens and the prior flat 8192 cap truncated
+# syntactic_trap_key on longer items. Reading output fits comfortably in 8K.
+# "unknown" loads grammar Part D, so it gets the grammar cap as well.
+ANNOTATION_MAX_TOKENS_GRAMMAR = 12288
+ANNOTATION_MAX_TOKENS_READING = 8192
+
+
+def annotation_max_tokens(q_data: dict) -> int:
+    """Return the domain-aware max output tokens for Pass 2 annotation."""
+    if _detect_domain(q_data) == "reading":
+        return ANNOTATION_MAX_TOKENS_READING
+    return ANNOTATION_MAX_TOKENS_GRAMMAR
+
+
+@lru_cache(maxsize=16)
+def _reading_context(variant_key: str | None = None) -> str:
     text = _read_file(_READING_FILE)
     if not text:
         return ""
-    core = _extract_between(text, "## 3. Question Fields", "## 16. Generation Rules")
-    # Always include disambiguation rules and student failure modes
-    extra = ""
-    for section in ("## 17. Disambiguation Rules", "## 19. Student Failure Mode Keys"):
-        chunk = _extract_between(text, section, "##" if section != "## 19. Student Failure Mode Keys" else "## 20.")
-        if chunk:
-            extra += f"\n{chunk}"
-    return f"Reading v3 RULES REFERENCE:\n=== READING v3: ANNOTATION REFERENCE (§3-14 + disambiguation) ===\n{core}{extra}"
+    # Shared reference for every reading question: §3 Question Fields → §12
+    # Option-Level Analysis (ends just before §13 skill-specific rules).
+    shared = _extract_between(text, "## 3. Question Fields", "## 13. Skill-Specific Annotation Rules")
+    # §13 Skill-Specific Annotation Rules: targeted subsection per variant, or
+    # the full §13 block when no variant is selected (safe fallback).
+    if variant_key and variant_key in _SKILL_SECTION_NUMBERS:
+        sec13_num, _sec19_num = _SKILL_SECTION_NUMBERS[variant_key]
+        skill_block = _extract_subsection(text, f"### {sec13_num} ")
+    else:
+        skill_block = _extract_between(text, "## 13. Skill-Specific Annotation Rules", "## 14. Difficulty Calibration")
+    # §14 Difficulty Calibration. §15 Passage Architecture Requirements is
+    # generation-only (the passage already exists at annotation time) so it is
+    # dropped from the annotation context.
+    difficulty = _extract_between(text, "## 14. Difficulty Calibration", "## 15. Passage Architecture Requirements")
+    # §17 Disambiguation Rules (always relevant for annotation).
+    disambig = _extract_between(text, "## 17. Disambiguation Rules", "## 18. Forbidden Patterns")
+    # §19 Student Failure Mode Keys: targeted subsection + the §19.7 summary
+    # list, or the full §19 block when no variant is selected.
+    if variant_key and variant_key in _SKILL_SECTION_NUMBERS:
+        _sec13_num, sec19_num = _SKILL_SECTION_NUMBERS[variant_key]
+        failure_block = _extract_subsection(text, f"### {sec19_num} ") if sec19_num else ""
+        summary = _extract_subsection(text, "### 19.7 ")
+        failure = (failure_block + "\n" + summary).strip()
+    else:
+        failure = _extract_between(text, "## 19. Student Failure Mode Keys", "## 20. Amendment Process")
+    parts = [shared, skill_block, difficulty, disambig, failure]
+    body = "\n".join(p for p in parts if p).strip()
+    return f"Reading v3 RULES REFERENCE:\n=== READING v3: ANNOTATION REFERENCE (§3-14 + §17 + §19) ===\n{body}"
 
 
 @lru_cache(maxsize=1)
@@ -172,8 +305,9 @@ def _unknown_context() -> str:
 
 def _detect_domain(q_data: dict) -> str:
     stem = (q_data.get("stem_type_key") or "").strip().lower()
-    if stem in _GRAMMAR_STEMS:
-        # complete_the_text can be vocabulary (reading) — check question text
+    if stem in _AMBIGUOUS_STEMS:
+        # complete_the_text can be SEC/EOI (grammar) or vocabulary-in-context
+        # (reading) — disambiguate from question text + passage presence.
         if stem == "complete_the_text":
             q_text = (q_data.get("question_text") or "").lower()
             if any(sig in q_text for sig in _GRAMMAR_QUESTION_SIGNALS):
@@ -183,6 +317,8 @@ def _detect_domain(q_data: dict) -> str:
                 return "reading"
             # Sentence-only complete_the_text defaults to grammar unless overridden
             return "grammar"
+        return "unknown"
+    if stem in _GRAMMAR_STEMS:
         return "grammar"
     if stem in _READING_STEMS:
         return "reading"
@@ -203,6 +339,7 @@ _SYSTEM_INSTRUCTIONS_TEMPLATE = """You are a DSAT question annotation specialist
    • Standard English Conventions (SEC) / Expression of Ideas (grammar-adjacent):
      - grammar_focus_key: required, non-null
      - grammar_role_key: required, non-null
+     - skill_family_key: MUST be null (skill_family_key is reading-domain only)
      - Use grammar_v8 taxonomy keys only
    • Information and Ideas / Craft and Structure (reading):
      - grammar_focus_key: MUST be null
@@ -221,14 +358,30 @@ _SYSTEM_INSTRUCTIONS_TEMPLATE = """You are a DSAT question annotation specialist
    • difficulty_grammar: null for reading-domain questions
    • difficulty_reading: null for grammar-domain questions
    • syntactic_trap_key: null for reading-domain questions unless explicitly applicable
+   • syntactic_trap_key: REQUIRED and non-null when grammar_role_key is one of:
+       agreement, pronoun, modifier, verb_form, sentence_boundary
+     These roles always involve a structural trap. Use "none" only if the sentence is
+     genuinely unambiguous (no proximity confusion, no complex intervening clause).
+     Valid values: nearest_noun_attraction, nominalization_obscures_subject,
+     long_distance_dependency, interruption_breaks_subject_verb, pronoun_ambiguity,
+     modifier_attachment_ambiguity, temporal_sequence_ambiguity, garden_path,
+     early_clause_anchor, scope_of_negation, presupposition_trap, multiple, none
 
-4. DIFFICULTY CALIBRATION — do not default everything to "medium":
+4. DIFFICULTY CALIBRATION — valid values are exactly low, medium, high (no other value).
+   Do not default everything to "medium":
    • low: straightforward rule application, no trap
    • medium: one plausible trap, moderate passage complexity
-   • high: multiple traps, complex syntax, subtle distinction
-   • very_high: expert-level, rare construction, or cross-passage inference
+   • high: multiple traps, complex syntax, subtle distinction, expert-level rare
+     construction, or cross-passage inference
 
 5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
+   Emit keys in this order: classification fields FIRST (question_family_key,
+   stimulus_mode_key, stem_type_key, skill_family_key, grammar_role_key,
+   grammar_focus_key, reading_focus_key, syntactic_trap_key, difficulty_overall, difficulty_grammar,
+   difficulty_reading), then option-level fields, then the
+   reasoning/amendment_proposal object LAST. This ordering makes truncation
+   harmless: if output is cut off, only reasoning is lost — never a required
+   classification key.
 
 6. CONTROLLED VOCABULARY: question_family_key, stimulus_mode_key, stem_type_key,
    grammar_role_key, grammar_focus_key, and reading_focus_key must be drawn
@@ -259,6 +412,7 @@ _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the gi
    • Standard English Conventions (SEC) / Expression of Ideas (grammar-adjacent):
      - grammar_focus_key: required, non-null
      - grammar_role_key: required, non-null
+     - skill_family_key: MUST be null (skill_family_key is reading-domain only)
      - Use grammar_v8 taxonomy keys only
    • Information and Ideas / Craft and Structure (reading):
      - grammar_focus_key: MUST be null
@@ -277,14 +431,30 @@ _SYSTEM_BASE = """You are a DSAT question annotation specialist. Annotate the gi
    • difficulty_grammar: null for reading-domain questions
    • difficulty_reading: null for grammar-domain questions
    • syntactic_trap_key: null for reading-domain questions unless explicitly applicable
+   • syntactic_trap_key: REQUIRED and non-null when grammar_role_key is one of:
+       agreement, pronoun, modifier, verb_form, sentence_boundary
+     These roles always involve a structural trap. Use "none" only if the sentence is
+     genuinely unambiguous (no proximity confusion, no complex intervening clause).
+     Valid values: nearest_noun_attraction, nominalization_obscures_subject,
+     long_distance_dependency, interruption_breaks_subject_verb, pronoun_ambiguity,
+     modifier_attachment_ambiguity, temporal_sequence_ambiguity, garden_path,
+     early_clause_anchor, scope_of_negation, presupposition_trap, multiple, none
 
-4. DIFFICULTY CALIBRATION — do not default everything to "medium":
+4. DIFFICULTY CALIBRATION — valid values are exactly low, medium, high (no other value).
+   Do not default everything to "medium":
    • low: straightforward rule application, no trap
    • medium: one plausible trap, moderate passage complexity
-   • high: multiple traps, complex syntax, subtle distinction
-   • very_high: expert-level, rare construction, or cross-passage inference
+   • high: multiple traps, complex syntax, subtle distinction, expert-level rare
+     construction, or cross-passage inference
 
 5. OUTPUT: valid JSON only, matching the required output shape from the rules reference.
+   Emit keys in this order: classification fields FIRST (question_family_key,
+   stimulus_mode_key, stem_type_key, skill_family_key, grammar_role_key,
+   grammar_focus_key, reading_focus_key, syntactic_trap_key, difficulty_overall, difficulty_grammar,
+   difficulty_reading), then option-level fields, then the
+   reasoning/amendment_proposal object LAST. This ordering makes truncation
+   harmless: if output is cut off, only reasoning is lost — never a required
+   classification key.
 
 6. CONTROLLED VOCABULARY: question_family_key, stimulus_mode_key, stem_type_key,
    grammar_role_key, grammar_focus_key, and reading_focus_key must be drawn
@@ -317,6 +487,16 @@ def _infer_domain_from_annotation(annotation: dict) -> str:
     Checks top-level and 'classification' block.
     """
     def _check(d: dict) -> str | None:
+        # Most reliable signal: canonical question_family_key against ontology sets.
+        qfk = d.get("question_family_key")
+        if qfk in READING_QUESTION_FAMILY_KEYS:
+            return "reading"
+        if qfk in GRAMMAR_QUESTION_FAMILY_KEYS:
+            return "grammar"
+        # Canonical skill_family_key is reading-only.
+        sfk = d.get("skill_family_key")
+        if sfk in READING_SKILL_FAMILY_KEYS:
+            return "reading"
         gfk = d.get("grammar_focus_key")
         domain_str = (d.get("domain") or d.get("domain_key") or "").lower()
         if gfk and gfk not in ("null", "none", ""):
@@ -325,6 +505,7 @@ def _infer_domain_from_annotation(annotation: dict) -> str:
             return "grammar"
         if any(x in domain_str for x in ("information", "craft", "words in context", "reading")):
             return "reading"
+        # Fallback: display-name substrings (handles non-canonical LLM output).
         skill = (d.get("skill_family_key") or d.get("skill_family") or "").lower()
         if any(x in skill for x in ("words in context", "information", "craft", "central ideas", "command of evidence", "inferences", "cross-text")):
             return "reading"
@@ -421,7 +602,7 @@ def build_annotate_prompt_parts(
     if domain == "grammar":
         system_static = _grammar_context()
     elif domain == "reading":
-        system_static = _reading_context()
+        system_static = _reading_context(_reading_variant_key(q_data))
     else:
         system_static = _unknown_context()
 

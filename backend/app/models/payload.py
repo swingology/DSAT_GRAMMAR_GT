@@ -11,7 +11,6 @@ class StudentQuestionResponse(BaseModel):
     content_origin: str
     current_question_text: str
     current_passage_text: Optional[str] = None
-    current_correct_option_label: Optional[str] = None
     passage_tokens: Optional[List[dict]] = None
     passage_spans: Optional[dict] = None
     practice_status: str
@@ -19,7 +18,7 @@ class StudentQuestionResponse(BaseModel):
     source_test_name: Optional[str] = None
     grammar_role_key: Optional[str] = None
     grammar_focus_key: Optional[str] = None
-    reading_skill_family_key: Optional[str] = None
+    skill_family_key: Optional[str] = None
     reading_focus_key: Optional[str] = None
     difficulty_overall: Optional[str] = None
     stimulus_mode_key: Optional[str] = None
@@ -1090,7 +1089,7 @@ class DiagnosticQuestionPayload(BaseModel):
     domain: Optional[str] = None
     grammar_role_key: Optional[str] = None
     grammar_focus_key: Optional[str] = None
-    reading_skill_family_key: Optional[str] = None
+    skill_family_key: Optional[str] = None
     reading_focus_key: Optional[str] = None
     difficulty_overall: Optional[str] = None
     question_family_key: Optional[str] = None

@@ -1,7 +1,11 @@
 import pytest
 import os
 import tempfile
-from app.parsers.json_parser import extract_json_from_text, normalize_annotation
+from app.parsers.json_parser import (
+    extract_json_from_text,
+    normalize_annotation,
+    canonicalize_annotation,
+)
 from app.parsers.pdf_parser import parse_pdf
 from app.parsers.image_parser import parse_image
 from app.parsers.markdown_parser import parse_markdown
@@ -146,6 +150,140 @@ def test_normalize_annotation_ignores_unknown_nested_keys():
     result = normalize_annotation(data)
     assert result["explanation_short"] == "Kept."
     assert result["wrapper"]["unknown_key"] == "value"
+
+
+def test_normalize_annotation_promotes_reading_keys_from_classification():
+    # Reproduces the real-world case where the LLM nests reading fields
+    # under a 'classification' key instead of returning them flat.
+    data = {
+        "stem_type_key": "choose_words_in_context",
+        "grammar_focus_key": None,
+        "grammar_role_key": None,
+        "classification": {
+            "question_family_key": "craft_and_structure",
+            "skill_family_key": "words_in_context",
+            "reading_focus_key": "precision_fit",
+            "difficulty_overall": "low",
+            "reasoning_trap_key": "topical_relevance_without_logical_connection",
+        },
+    }
+    result = normalize_annotation(data)
+    assert result["question_family_key"] == "craft_and_structure"
+    assert result["skill_family_key"] == "words_in_context"
+    assert result["reading_focus_key"] == "precision_fit"
+    assert result["difficulty_overall"] == "low"
+    assert result["reasoning_trap_key"] == "topical_relevance_without_logical_connection"
+    # original nested structure preserved
+    assert result["classification"]["question_family_key"] == "craft_and_structure"
+
+
+def test_normalize_annotation_converts_skill_family_display_name():
+    # When the LLM outputs 'skill_family' as a human-readable name instead of
+    # snake_case 'skill_family_key', normalize_annotation should convert it.
+    data = {
+        "classification": {
+            "question_family_key": "craft_and_structure",
+            "skill_family": "Words in Context",  # display name, not snake_case key
+            "reading_focus_key": "precision_fit",
+        },
+    }
+    result = normalize_annotation(data)
+    assert result["skill_family_key"] == "words_in_context"
+    assert result["question_family_key"] == "craft_and_structure"
+    assert result["reading_focus_key"] == "precision_fit"
+
+
+def test_normalize_annotation_skill_family_key_wins_over_display_name():
+    # If skill_family_key already exists at top level, display-name conversion
+    # should not overwrite it.
+    data = {
+        "skill_family_key": "inferences",
+        "classification": {
+            "skill_family": "Words in Context",
+        },
+    }
+    result = normalize_annotation(data)
+    assert result["skill_family_key"] == "inferences"
+
+
+# --- canonicalize_annotation (deterministic shape reconciliation) ---
+
+def test_canonicalize_promotes_absent_top_level_from_nested():
+    # Live failure shape: classification has the value, top level lacks it.
+    raw = {"classification": {"question_family_key": "craft_and_structure"}}
+    result = canonicalize_annotation(raw)
+    assert result["question_family_key"] == "craft_and_structure"
+    assert "question_family_key" in result["_annotation_quality"]["promoted_fields"]
+
+
+def test_canonicalize_repairs_null_top_level_from_nested():
+    # The exact gap the old normalize_annotation could not close: top-level null
+    # blocks promotion. canonicalize must repair it.
+    raw = {
+        "question_family_key": None,
+        "difficulty_overall": None,
+        "classification": {
+            "question_family_key": "craft_and_structure",
+            "difficulty_overall": "medium",
+            "syntactic_trap_key": "nearest_noun_attraction",
+        },
+    }
+    result = canonicalize_annotation(raw)
+    assert result["question_family_key"] == "craft_and_structure"
+    assert result["difficulty_overall"] == "medium"
+    assert result["syntactic_trap_key"] == "nearest_noun_attraction"
+    repaired = result["_annotation_quality"]["repaired_from_nested"]
+    assert "question_family_key" in repaired
+    assert "difficulty_overall" in repaired
+
+
+def test_canonicalize_treats_none_string_as_empty():
+    raw = {
+        "syntactic_trap_key": "none",
+        "classification": {"syntactic_trap_key": "long_distance_dependency"},
+    }
+    result = canonicalize_annotation(raw)
+    assert result["syntactic_trap_key"] == "long_distance_dependency"
+
+
+def test_canonicalize_conflict_keeps_top_level_and_flags_review():
+    # Multi-LLM danger case: top-level and nested disagree, both non-empty.
+    raw = {
+        "question_family_key": "conventions_grammar",
+        "classification": {"question_family_key": "craft_and_structure"},
+    }
+    result = canonicalize_annotation(raw)
+    assert result["question_family_key"] == "conventions_grammar"  # top-level wins
+    assert result["needs_human_review"] is True
+    conflicts = result["_annotation_quality"]["conflicts"]
+    assert conflicts[0]["field"] == "question_family_key"
+    assert conflicts[0]["kept_top_level"] == "conventions_grammar"
+    assert conflicts[0]["nested_value"] == "craft_and_structure"
+
+
+def test_canonicalize_normalizes_reading_skill_family_alias():
+    raw = {"reading_skill_family_key": "inferences"}
+    result = canonicalize_annotation(raw)
+    assert result["skill_family_key"] == "inferences"
+
+
+def test_canonicalize_converts_skill_family_display_name_from_nested():
+    raw = {"classification": {"skill_family": "Words in Context"}}
+    result = canonicalize_annotation(raw)
+    assert result["skill_family_key"] == "words_in_context"
+
+
+def test_canonicalize_passage_tokens_soft_fallback():
+    raw = {"classification": {"passage_tokens": [{"t": "x"}]}}
+    result = canonicalize_annotation(raw)
+    assert result["passage_tokens"] == [{"t": "x"}]
+
+
+def test_canonicalize_noop_on_flat_complete_annotation():
+    raw = {"question_family_key": "conventions_grammar", "grammar_role_key": "agreement"}
+    result = canonicalize_annotation(raw)
+    assert result["question_family_key"] == "conventions_grammar"
+    assert "_annotation_quality" not in result
 
 
 # --- PDF Parser ---

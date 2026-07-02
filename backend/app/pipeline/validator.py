@@ -6,12 +6,14 @@ from app.models.ontology import (
     GRAMMAR_FOCUS_KEYS,
     GRAMMAR_FOCUS_BY_ROLE,
     GRAMMAR_ROLE_KEYS,
+    GRAMMAR_QUESTION_FAMILY_KEYS,
     QUESTION_FAMILY_KEYS,
     READING_QUESTION_FAMILY_KEYS,
     READING_SKILL_FAMILY_KEYS,
     READING_FOCUS_BY_SKILL_FAMILY,
     STIMULUS_MODE_KEYS,
     STEM_TYPE_KEYS,
+    SYNTACTIC_TRAP_REQUIRED_ROLES,
 )
 from app.models.vocab_candidates import record_unknown_field
 
@@ -225,5 +227,123 @@ def validate_question(
             "field": "explanation_short",
             "message": f"explanation_short exceeds 300 chars ({len(explanation_short)} chars)",
         })
+
+    return errors
+
+
+def _empty(value) -> bool:
+    """Treat None / empty-string / 'none' as absent for completeness checks."""
+    if value is None:
+        return True
+    if isinstance(value, str) and value.strip().lower() in ("", "none", "null"):
+        return True
+    return False
+
+
+def validate_annotation_completeness(annotation: dict, job_id: str | None = None) -> List[Dict]:
+    """Domain-aware completeness gate, run AFTER canonicalize → enforce_nullability → sanitize.
+
+    Unlike validate_question (which checks structure and reading requiredness),
+    this verifies the full taxonomy is present and internally consistent for the
+    detected domain. Reads only top-level fields — by this point canonicalization
+    has promoted every nested value, so anything still missing is a genuine gap.
+
+    Severities: 'blocking' prevents active promotion; 'review' flags for a human.
+    """
+    errors: List[Dict] = []
+    family = annotation.get("question_family_key")
+
+    if _empty(family):
+        errors.append({
+            "severity": "blocking",
+            "field": "question_family_key",
+            "message": "Annotation is missing question_family_key after canonicalization",
+        })
+        return errors
+
+    if _empty(annotation.get("difficulty_overall")):
+        errors.append({
+            "severity": "blocking",
+            "field": "difficulty_overall",
+            "message": "Annotation is missing difficulty_overall",
+        })
+
+    if family in GRAMMAR_QUESTION_FAMILY_KEYS:
+        grammar_role = annotation.get("grammar_role_key")
+        grammar_focus = annotation.get("grammar_focus_key")
+        if _empty(grammar_role):
+            errors.append({
+                "severity": "blocking",
+                "field": "grammar_role_key",
+                "message": "Grammar-domain questions require grammar_role_key",
+            })
+        if _empty(grammar_focus):
+            errors.append({
+                "severity": "blocking",
+                "field": "grammar_focus_key",
+                "message": "Grammar-domain questions require grammar_focus_key",
+            })
+        if grammar_role and grammar_focus:
+            allowed = GRAMMAR_FOCUS_BY_ROLE.get(grammar_role, ())
+            if grammar_focus not in allowed:
+                errors.append({
+                    "severity": "review",
+                    "field": "grammar_focus_key",
+                    "message": f"grammar_focus_key {grammar_focus!r} not valid for grammar_role_key {grammar_role!r}",
+                })
+        # syntactic_trap_key required (non-null) for structural roles; "none" only
+        # allowed for roles outside SYNTACTIC_TRAP_REQUIRED_ROLES.
+        trap = annotation.get("syntactic_trap_key")
+        if grammar_role in SYNTACTIC_TRAP_REQUIRED_ROLES and _empty(trap):
+            errors.append({
+                "severity": "blocking",
+                "field": "syntactic_trap_key",
+                "message": (
+                    f"syntactic_trap_key required (non-'none') for grammar_role_key {grammar_role!r}; "
+                    f"got {trap!r}"
+                ),
+            })
+        if not _empty(annotation.get("skill_family_key")):
+            errors.append({
+                "severity": "review",
+                "field": "skill_family_key",
+                "message": "Grammar-domain questions must not populate skill_family_key (reading-only)",
+            })
+
+    elif family in READING_QUESTION_FAMILY_KEYS:
+        skill_family = annotation.get("skill_family_key")
+        reading_focus = annotation.get("reading_focus_key")
+        if _empty(skill_family):
+            errors.append({
+                "severity": "blocking",
+                "field": "skill_family_key",
+                "message": "Reading-domain questions require skill_family_key",
+            })
+        if _empty(reading_focus):
+            errors.append({
+                "severity": "blocking",
+                "field": "reading_focus_key",
+                "message": "Reading-domain questions require reading_focus_key",
+            })
+        if skill_family and reading_focus:
+            allowed = READING_FOCUS_BY_SKILL_FAMILY.get(skill_family, ())
+            if allowed and reading_focus not in allowed:
+                errors.append({
+                    "severity": "review",
+                    "field": "reading_focus_key",
+                    "message": f"reading_focus_key {reading_focus!r} not valid for skill_family_key {skill_family!r}",
+                })
+        if not _empty(annotation.get("grammar_role_key")) or not _empty(annotation.get("grammar_focus_key")):
+            errors.append({
+                "severity": "blocking",
+                "field": "grammar_keys",
+                "message": "Reading-domain questions must not populate grammar_role_key/grammar_focus_key",
+            })
+        if _empty(annotation.get("reasoning_trap_key")):
+            errors.append({
+                "severity": "review",
+                "field": "reasoning_trap_key",
+                "message": "Reading-domain questions should have a reasoning_trap_key",
+            })
 
     return errors

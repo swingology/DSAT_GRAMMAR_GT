@@ -21,7 +21,7 @@ import psycopg2.extras
 from collections import defaultdict
 from datetime import datetime
 
-DB_DSN = "postgresql://dsat:dsat_dev@localhost:5434/dsat_dev"
+DB_DSN = "postgresql://dsat:dsat_dev@localhost:5437/dsat_dev"
 
 # ── Approved taxonomy from rules_agent_dsat_grammar_ingestion_generation_v7.md ──
 

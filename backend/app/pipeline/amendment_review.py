@@ -278,7 +278,128 @@ def validate_amendment_for_approval(
     candidate_result = _ensure_candidate(amendment, repo_root=repo_root)
     if not candidate_result.ok:
         return candidate_result
+
+    # Semantic duplicate check — surfaces near-matches so a reviewer can verify
+    # the proposed key is genuinely distinct from existing vocab and from other
+    # pending proposals. Critical in a multi-LLM setup where different models may
+    # independently coin different names for the same concept.
+    duplicate_warnings = _check_semantic_duplicates(amendment, repo_root=repo_root)
+    if duplicate_warnings:
+        return AmendmentOperationResult(
+            ok=False,
+            amendment=amendment,
+            error=(
+                "Potential duplicate or synonym detected — review before approving. "
+                "If the proposed key is genuinely distinct, re-submit with "
+                "reviewer_override=true (not yet implemented) or add a "
+                "review_note explaining why it is not a duplicate."
+            ),
+            details={"duplicate_warnings": duplicate_warnings},
+            error_code="duplicate_candidate",
+        )
+
     return AmendmentOperationResult(ok=True, amendment=amendment)
+
+
+def _check_semantic_duplicates(
+    amendment: RuleAmendment,
+    *,
+    repo_root: Path,
+) -> list[dict]:
+    """Return warnings if proposed_value is too close to an existing active key or
+    another pending/approved amendment in the same vocabulary.
+
+    Uses token-overlap (Jaccard on underscore-split tokens) as a proxy for semantic
+    similarity. Threshold 0.5 means more than half the tokens are shared — strong
+    signal of a synonym or near-duplicate, even if the names differ slightly.
+
+    This is intentionally conservative: it flags for human review rather than
+    auto-rejecting, because some near-matches are genuinely distinct (e.g.
+    "pronoun_ambiguity" vs "pronoun_antecedent_agreement" are different vocab slots).
+    """
+    proposed = amendment.proposed_value
+    vocab_name = amendment.affected_vocab
+    proposed_tokens = set(proposed.lower().split("_"))
+    warnings: list[dict] = []
+
+    # 1. Check against active entries in master.json
+    try:
+        master = _load_master(repo_root)
+        vocab = _find_vocab(master, vocab_name)
+        if vocab:
+            for entry in vocab.get("entries", []):
+                if entry.get("status") != "active":
+                    continue
+                existing = entry.get("value", "")
+                if existing == proposed:
+                    continue  # exact match already caught by _validate_master_json_patch
+                existing_tokens = set(existing.lower().split("_"))
+                union = proposed_tokens | existing_tokens
+                if not union:
+                    continue
+                overlap = len(proposed_tokens & existing_tokens) / len(union)
+                if overlap >= 0.5:
+                    warnings.append({
+                        "type": "near_match_active_vocab",
+                        "vocab": vocab_name,
+                        "existing_value": existing,
+                        "proposed_value": proposed,
+                        "token_overlap": round(overlap, 2),
+                        "message": (
+                            f"'{proposed}' shares {overlap:.0%} token overlap with active "
+                            f"key '{existing}' in {vocab_name}. Verify these are distinct concepts."
+                        ),
+                    })
+    except Exception as exc:
+        logger.warning("semantic duplicate check (master.json) failed: %s", exc)
+
+    # 2. Check against other pending/approved amendments in the same vocab
+    base = repo_root / "vocabulary" / "amendments"
+    for status_dir in ("pending", "approved"):
+        directory = base / status_dir
+        for path in directory.glob("*.json"):
+            if path.stem == amendment.amendment_id:
+                continue
+            try:
+                other = RuleAmendment.model_validate(json.loads(path.read_text(encoding="utf-8")))
+            except Exception:
+                continue
+            if other.affected_vocab != vocab_name:
+                continue
+            if other.proposed_value == proposed:
+                warnings.append({
+                    "type": "exact_duplicate_amendment",
+                    "vocab": vocab_name,
+                    "duplicate_amendment_id": other.amendment_id,
+                    "duplicate_status": other.status,
+                    "message": (
+                        f"'{proposed}' was already proposed in amendment {other.amendment_id} "
+                        f"(status: {other.status}). Consolidate rather than approve a second copy."
+                    ),
+                })
+                continue
+            other_tokens = set(other.proposed_value.lower().split("_"))
+            union = proposed_tokens | other_tokens
+            if not union:
+                continue
+            overlap = len(proposed_tokens & other_tokens) / len(union)
+            if overlap >= 0.5:
+                warnings.append({
+                    "type": "near_match_pending_amendment",
+                    "vocab": vocab_name,
+                    "other_amendment_id": other.amendment_id,
+                    "other_proposed_value": other.proposed_value,
+                    "other_status": other.status,
+                    "proposed_value": proposed,
+                    "token_overlap": round(overlap, 2),
+                    "message": (
+                        f"'{proposed}' shares {overlap:.0%} token overlap with '{other.proposed_value}' "
+                        f"in amendment {other.amendment_id} (status: {other.status}). "
+                        f"Different LLMs may have proposed synonyms — consolidate to one canonical name."
+                    ),
+                })
+
+    return warnings
 
 
 def _find_amendment_path(amendment_id: str, *, repo_root: Path) -> Path | None:

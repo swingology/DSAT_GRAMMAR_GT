@@ -1,6 +1,33 @@
-from app.prompts.extract_prompt import build_extract_prompt
-from app.prompts.annotate_prompt import build_annotate_prompt
+from app.prompts.extract_prompt import (
+    build_extract_prompt,
+    EXTRACT_SYSTEM_PROMPT,
+    canonicalize_stem,
+    canonicalize_stimulus_mode,
+)
+from app.prompts.annotate_prompt import build_annotate_prompt, STEM_TYPE_DOMAIN
 from app.prompts.generate_prompt import build_generate_prompt
+from app.models.ontology import STEM_TYPE_KEYS
+
+
+def test_stem_domain_covers_all_vocab():
+    """Every canonical STEM_TYPE_KEYS value must have a domain attribution.
+
+    Guards against routing drift: _READING_STEMS / _GRAMMAR_STEMS are derived
+    from STEM_TYPE_DOMAIN, so a stem added to the controlled vocabulary without
+    a domain attribution would silently route to "unknown" (pulling in grammar
+    Part D). This fails fast instead.
+    """
+    assert set(STEM_TYPE_KEYS) == set(STEM_TYPE_DOMAIN), (
+        "every STEM_TYPE_KEYS value needs a STEM_TYPE_DOMAIN attribution; "
+        f"missing: {set(STEM_TYPE_KEYS) - set(STEM_TYPE_DOMAIN)}; "
+        f"extra: {set(STEM_TYPE_DOMAIN) - set(STEM_TYPE_KEYS)}"
+    )
+    valid_domains = {"grammar", "reading", "ambiguous"}
+    assert set(STEM_TYPE_DOMAIN.values()) <= valid_domains
+    for domain in valid_domains:
+        assert any(v == domain for v in STEM_TYPE_DOMAIN.values()), (
+            f"no stems attributed to domain {domain!r}"
+        )
 
 
 def test_extract_prompt_contains_instructions():
@@ -84,3 +111,47 @@ def test_generate_prompt_names_official_source_examples_as_foundational():
     assert "Stored official questions are serving as the foundational source for generation" in user
     assert "Do not copy passages, stems, or options" in user
     assert "00000000-0000-0000-0000-000000000001" in user
+
+
+def test_extract_prompt_constrains_stem_vocab():
+    """Pass 1 must instruct the LLM to emit canonical stem_type_key values."""
+    system, _ = build_extract_prompt(raw_text="Some SAT text with a question.")
+    assert "CONTROLLED VOCABULARY" in system
+    # every canonical stem is listed as an allowed value
+    from app.models.ontology import STEM_TYPE_KEYS
+    for stem in STEM_TYPE_KEYS:
+        assert stem in system
+    # the cross-text rule uses the canonical key, not the old "compare_texts"
+    assert "choose_cross_text_connection" in system
+    assert 'stem_type_key to "compare_texts"' not in system
+
+
+def test_canonicalize_stem_maps_known_aliases():
+    # canonical values pass through unchanged
+    assert canonicalize_stem("choose_words_in_context") == "choose_words_in_context"
+    assert canonicalize_stem("complete_the_text") == "complete_the_text"
+    # observed non-canonical aliases map to canonical keys
+    assert canonicalize_stem("analyze_text_structure") == "choose_structure_description"
+    assert canonicalize_stem("retrieve_detail") == "choose_detail"
+    assert canonicalize_stem("support_claim") == "choose_best_support"
+    assert canonicalize_stem("synthesize_notes") == "choose_best_notes_synthesis"
+    assert canonicalize_stem("compare_texts") == "choose_cross_text_connection"
+    # unknown alias returns None (caller leaves the value; routes to "unknown")
+    assert canonicalize_stem("some_invented_stem") is None
+    assert canonicalize_stem(None) is None
+    # stimulus_mode canonicalization
+    assert canonicalize_stimulus_mode("paired_prose") == "prose_paired"
+    assert canonicalize_stimulus_mode("sentence_only") == "sentence_only"
+    assert canonicalize_stimulus_mode("nonsense") is None
+
+
+def test_stem_alias_targets_are_all_canonical():
+    """Every alias must map to a real STEM_TYPE_KEYS value (never to another alias).
+
+    Guards the Pass 1 safety-net so a typo'd target can't silently route a
+    question to the wrong domain.
+    """
+    from app.prompts.extract_prompt import _STEM_ALIASES
+    from app.models.ontology import STEM_TYPE_KEYS
+    bad = {k: v for k, v in _STEM_ALIASES.items() if v not in STEM_TYPE_KEYS}
+    assert not bad, f"alias targets not in STEM_TYPE_KEYS: {bad}"
