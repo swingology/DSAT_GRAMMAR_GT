@@ -1,9 +1,11 @@
 export interface User {
   id: number
-  email: string
+  username: string
+  email?: string | null
+  role: string
+  is_active: boolean
   user_token: string
   created_at: string
-  is_active?: boolean
 }
 
 export interface Question {

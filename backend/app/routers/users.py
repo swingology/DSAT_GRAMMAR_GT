@@ -21,7 +21,11 @@ async def create_user(
     existing = await db.execute(select(User).where(User.username == body.username))
     if existing.scalars().first():
         raise HTTPException(status_code=409, detail="Username already exists")
-    user = User(username=body.username, created_at=datetime.now(timezone.utc))
+    if body.email:
+        existing_email = await db.execute(select(User).where(User.email == body.email))
+        if existing_email.scalars().first():
+            raise HTTPException(status_code=409, detail="Email already exists")
+    user = User(username=body.username, email=body.email, created_at=datetime.now(timezone.utc))
     db.add(user)
     await db.commit()
     await db.refresh(user)

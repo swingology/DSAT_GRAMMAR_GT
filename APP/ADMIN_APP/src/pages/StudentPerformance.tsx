@@ -113,7 +113,7 @@ export function StudentPerformance() {
   })
 
   const filtered = (users ?? []).filter((u) =>
-    u.email.toLowerCase().includes(search.toLowerCase())
+    (u.email ?? u.username).toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -156,10 +156,10 @@ export function StudentPerformance() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 text-sm font-bold flex items-center justify-center flex-shrink-0">
-                    {u.email[0].toUpperCase()}
+                    {(u.email ?? u.username)[0].toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-800">{u.email}</p>
+                    <p className="text-sm font-medium text-gray-800">{u.email ?? u.username}</p>
                     <p className="text-xs text-gray-400">ID #{u.id}</p>
                   </div>
                 </div>

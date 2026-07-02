@@ -515,6 +515,7 @@ class OCRBenchmarkResponse(BaseModel):
 
 class UserCreate(BaseModel):
     username: str = Field(min_length=1, max_length=100)
+    email: Optional[str] = None
 
 
 class UserResponse(BaseModel):
@@ -522,6 +523,7 @@ class UserResponse(BaseModel):
     username: str
     email: Optional[str] = None
     role: str = "student"
+    is_active: bool = True
     user_token: UUID
     created_at: Optional[datetime] = None
 

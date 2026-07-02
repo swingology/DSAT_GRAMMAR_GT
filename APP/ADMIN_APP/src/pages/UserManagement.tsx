@@ -14,6 +14,7 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 
 function CreateUserModal({ onClose }: { onClose: () => void }) {
   const qc = useQueryClient()
+  const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const mutation = useMutation({
     mutationFn: (data: any) => adminApi.createUser(data),
@@ -27,7 +28,15 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Create User</h2>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="student_username"
+        />
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email (optional)</label>
         <input
           type="email"
           value={email}
@@ -46,8 +55,8 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
             Cancel
           </button>
           <button
-            onClick={() => mutation.mutate({ email })}
-            disabled={!email || mutation.isPending}
+            onClick={() => mutation.mutate({ username, email: email || undefined })}
+            disabled={!username || mutation.isPending}
             className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition"
           >
             {mutation.isPending ? 'Creating…' : 'Create'}
@@ -75,7 +84,7 @@ export function UserManagement() {
   })
 
   const filtered = (users ?? []).filter((u) =>
-    u.email.toLowerCase().includes(search.toLowerCase())
+    (u.email ?? u.username).toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -106,7 +115,7 @@ export function UserManagement() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by email…"
+          placeholder="Search by email or username…"
           className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -138,7 +147,7 @@ export function UserManagement() {
               {filtered.map((u) => (
                 <tr key={u.id} className="hover:bg-gray-50 transition">
                   <td className="px-4 py-3 text-gray-500 font-mono text-xs">{u.id}</td>
-                  <td className="px-4 py-3 font-medium text-gray-800">{u.email}</td>
+                  <td className="px-4 py-3 font-medium text-gray-800">{u.email ?? u.username}</td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-400 truncate max-w-xs">
                     {u.user_token?.slice(0, 16)}…
                   </td>
@@ -148,7 +157,7 @@ export function UserManagement() {
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => {
-                        if (confirm(`Delete user ${u.email}?`)) deleteMutation.mutate(u.id)
+                        if (confirm(`Delete user ${u.email ?? u.username}?`)) deleteMutation.mutate(u.id)
                       }}
                       className="text-xs text-red-500 hover:text-red-700 transition"
                     >
