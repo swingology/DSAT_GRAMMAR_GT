@@ -588,3 +588,65 @@ def test_admin_relations_list_accepts_pagination(client):
 def test_admin_relations_list_rejects_zero_limit(client):
     resp = client.get("/admin/relations?limit=0", headers=AUTH)
     assert resp.status_code == 422
+
+
+def test_admin_list_questions_includes_annotation_stale(monkeypatch):
+    import uuid as _uuid
+    from datetime import datetime, timezone
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from app.database import get_db
+
+    class FakeQuestion:
+        def __init__(self):
+            self.id = _uuid.uuid4()
+            self.content_origin = "official"
+            self.practice_status = "active"
+            self.official_overlap_status = None
+            self.source_release_year = 2024
+            self.source_test_name = "Test_4"
+            self.source_exam_code = None
+            self.source_subject_code = None
+            self.source_section_code = None
+            self.source_module_code = None
+            self.source_question_number = 1
+            self.current_passage_text = None
+            self.current_question_text = "Sample question text"
+            self.current_correct_option_label = "A"
+            self.current_explanation_text = None
+            self.is_admin_edited = True
+            self.annotation_stale = True
+            self.latest_annotation_id = None
+            self.latest_version_id = None
+            self.created_at = datetime.now(timezone.utc)
+
+    fake_q = FakeQuestion()
+
+    class _Result:
+        def unique(self):
+            return self
+
+        def scalars(self):
+            return self
+
+        def all(self):
+            return [fake_q]
+
+    class FakeSession:
+        async def execute(self, stmt):
+            return _Result()
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.get("/admin/questions", headers=AUTH)
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert len(body) == 1
+    assert body[0]["annotation_stale"] is True

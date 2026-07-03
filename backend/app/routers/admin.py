@@ -240,6 +240,7 @@ async def list_questions(
             "current_correct_option_label": q.current_correct_option_label,
             "current_explanation_text": q.current_explanation_text,
             "is_admin_edited": q.is_admin_edited,
+            "annotation_stale": q.annotation_stale,
             "annotation": annotation,
             "options": options,
             "created_at": q.created_at.isoformat() if q.created_at else None,
