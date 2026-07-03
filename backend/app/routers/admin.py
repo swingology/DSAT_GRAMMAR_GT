@@ -213,7 +213,12 @@ async def list_questions(
             qid = version_to_qid.get(opt.question_version_id)
             if qid:
                 opts_by_qid.setdefault(qid, []).append(
-                    {"label": opt.option_label, "text": opt.option_text, "is_correct": opt.is_correct}
+                    {
+                        "id": str(opt.id),
+                        "option_label": opt.option_label,
+                        "option_text": opt.option_text,
+                        "is_correct": opt.is_correct,
+                    }
                 )
     else:
         opts_by_qid = {}

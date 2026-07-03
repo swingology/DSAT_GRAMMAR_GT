@@ -652,6 +652,99 @@ def test_admin_list_questions_includes_annotation_stale(monkeypatch):
     assert body[0]["annotation_stale"] is True
 
 
+def test_admin_list_questions_options_use_option_label_and_text_keys():
+    import uuid as _uuid
+    from datetime import datetime, timezone
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from app.database import get_db
+
+    version_id = _uuid.uuid4()
+    option_id = _uuid.uuid4()
+
+    class FakeQuestion:
+        def __init__(self):
+            self.id = _uuid.uuid4()
+            self.content_origin = "official"
+            self.practice_status = "active"
+            self.official_overlap_status = None
+            self.source_release_year = 2024
+            self.source_test_name = "Test_4"
+            self.source_exam_code = None
+            self.source_subject_code = None
+            self.source_section_code = None
+            self.source_module_code = None
+            self.source_question_number = 1
+            self.current_passage_text = None
+            self.current_question_text = "Sample question text"
+            self.current_correct_option_label = "A"
+            self.current_explanation_text = None
+            self.is_admin_edited = False
+            self.annotation_stale = False
+            self.latest_annotation_id = None
+            self.latest_version_id = version_id
+            self.created_at = datetime.now(timezone.utc)
+
+    fake_q = FakeQuestion()
+
+    class FakeOption:
+        def __init__(self):
+            self.id = option_id
+            self.question_version_id = version_id
+            self.option_label = "A"
+            self.option_text = "Sample option text"
+            self.is_correct = True
+
+    fake_opt = FakeOption()
+
+    class _QuestionResult:
+        def unique(self):
+            return self
+
+        def scalars(self):
+            return self
+
+        def all(self):
+            return [fake_q]
+
+    class _OptionResult:
+        def scalars(self):
+            return self
+
+        def all(self):
+            return [fake_opt]
+
+    class FakeSession:
+        def __init__(self):
+            self.call_count = 0
+
+        async def execute(self, stmt):
+            self.call_count += 1
+            if self.call_count == 1:
+                return _QuestionResult()
+            return _OptionResult()
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.get("/admin/questions", headers=AUTH)
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert len(body) == 1
+    assert body[0]["options"] == [{
+        "id": str(option_id),
+        "option_label": "A",
+        "option_text": "Sample option text",
+        "is_correct": True,
+    }]
+
+
 def test_admin_list_tests_empty(client):
     resp = client.get("/admin/tests", headers=AUTH)
     assert resp.status_code == 200
