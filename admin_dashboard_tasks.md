@@ -923,7 +923,7 @@ Ready to merge — With fixes.** Gap 1 is a live functional defect in the phase'
 (the detail/edit modal) and should be fixed before Phase 2 builds on top of it; Gaps 2–3 are
 scoped follow-ups; Gaps 4–6 are structural/polish notes.
 
-### Gap 1 (Critical): `QuestionDetailModal` options are non-functional — field-name mismatch
+### ~~Gap 1 (Critical): `QuestionDetailModal` options are non-functional — field-name mismatch~~ FIXED
 
 `backend/app/routers/admin.py` (`list_questions`, ~line 216) serializes each option as
 `{"label": opt.option_label, "text": opt.option_text, "is_correct": opt.is_correct}` — no `id`
@@ -948,6 +948,14 @@ the `current_correct_option_label` naming convention already used elsewhere in t
 dict), or change `QuestionOption` + `QuestionDetailModal` to read `label`/`text`. Re-verify the
 Task 1.4 manual QA (Step 3) against a question with populated options once fixed — the original
 report claimed a pass, which is worth reconciling.
+
+**Fixed:** `list_questions` (`backend/app/routers/admin.py`) now serializes each option as
+`{"id": str(opt.id), "option_label": opt.option_label, "option_text": opt.option_text,
+"is_correct": opt.is_correct}`, matching `QuestionOption`'s declared TS shape exactly. Added
+`test_admin_list_questions_options_use_option_label_and_text_keys` (`backend/tests/test_admin_router.py`)
+asserting the exact key set and values — 25/25 tests pass. Committed as `3f5b939` on
+`admin-dashboard-phase-1`. Task 1.4's manual QA (Step 3) is still unverified against a real
+browser — flag for follow-up.
 
 ### Gap 2 (Important): Test-card drill-down granularity doesn't match the cards
 
