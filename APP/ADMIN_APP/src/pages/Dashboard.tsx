@@ -1,4 +1,5 @@
 import { useCallback, useState, type ReactElement } from 'react'
+import { motion } from 'framer-motion'
 import { Responsive, WidthProvider, type Layout, type ResponsiveLayouts } from 'react-grid-layout/legacy'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
@@ -80,9 +81,16 @@ export function Dashboard() {
         draggableHandle=".panel-drag-handle"
         onLayoutChange={handleLayoutChange}
       >
-        {Object.entries(WIDGETS).map(([key, Widget]) => (
+        {Object.entries(WIDGETS).map(([key, Widget], index) => (
           <div key={key}>
-            <Widget />
+            <motion.div
+              className="h-full"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05, duration: 0.25 }}
+            >
+              <Widget />
+            </motion.div>
           </div>
         ))}
       </ResponsiveGridLayout>
