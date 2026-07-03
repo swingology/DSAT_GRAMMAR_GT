@@ -914,6 +914,85 @@ git commit -m "Add test browser mode to Data Management"
 
 ---
 
+## Phase 1 Gap Review (2026-07-02)
+
+All five Phase 1 tasks (1.1–1.5) passed individual spec-compliance + code-quality review and are
+committed on GitButler branch `admin-dashboard-phase-1` (commits `7b9aaef`..`75cb67e`). The final
+whole-branch review (broad pass, cross-task integration) found the following gaps. **Verdict:
+Ready to merge — With fixes.** Gap 1 is a live functional defect in the phase's headline feature
+(the detail/edit modal) and should be fixed before Phase 2 builds on top of it; Gaps 2–3 are
+scoped follow-ups; Gaps 4–6 are structural/polish notes.
+
+### Gap 1 (Critical): `QuestionDetailModal` options are non-functional — field-name mismatch
+
+`backend/app/routers/admin.py` (`list_questions`, ~line 216) serializes each option as
+`{"label": opt.option_label, "text": opt.option_text, "is_correct": opt.is_correct}` — no `id`
+field, and the keys are `label`/`text`. But `QuestionOption` (`APP/ADMIN_APP/src/types/index.ts:43-48`)
+declares `id: string`, `option_label: string`, `option_text: string`, `is_correct?: boolean`, and
+`QuestionDetailModal` (`APP/ADMIN_APP/src/pages/DataManagement.tsx`) reads those names throughout:
+
+- View mode: `key={opt.id ?? opt.option_label}` → both `undefined` (duplicate/undefined React keys);
+  `{opt.option_label}. {opt.option_text}` → renders ". " with no content; the
+  `opt.option_label === question.current_correct_option_label` highlight check is always false, so
+  the correct answer never highlights.
+- Edit mode: the "Correct option" `<select>` renders options with empty labels/values — an admin
+  cannot pick a correct answer while editing.
+
+This is the same class of bug Task 1.3 fixed for the annotation fields (flat vs. nested shape
+mismatch), left unfixed for options. `QuestionOption`'s declared shape predates Phase 1 and never
+matched what `list_questions` actually returns; it went unnoticed until Task 1.4 built the first
+UI that renders `.options`.
+
+**Fix:** align the backend serialization to `option_label`/`option_text`/`id` (preferred — matches
+the `current_correct_option_label` naming convention already used elsewhere in the same response
+dict), or change `QuestionOption` + `QuestionDetailModal` to read `label`/`text`. Re-verify the
+Task 1.4 manual QA (Step 3) against a question with populated options once fixed — the original
+report claimed a pass, which is worth reconciling.
+
+### Gap 2 (Important): Test-card drill-down granularity doesn't match the cards
+
+`TestBrowser` renders one card per `(source_release_year, source_test_name, source_exam_code,
+source_subject_code, source_section_code, source_module_code)` group (from `GET /admin/tests`,
+`admin.py:list_tests`) and labels cards by section/module. But selecting a card filters
+`list_questions` only by `source_test_name` (`DataManagement.tsx`) — `list_questions` accepts no
+section/module query params at all. Clicking any of "Test_4 sec01 mod01", "…sec01 mod02", etc.
+shows the same full-test result set behind visually distinct cards.
+
+**Fix:** add `source_section_code`/`source_module_code` (and ideally `source_release_year`) query
+params to `list_questions` and pass them from `testFilter`; or collapse the `/admin/tests`
+grouping to test-level so cards and filtering agree.
+
+### Gap 3 (Important): Pagination footer renders under the test-card grid
+
+The `questions` query in `DataManagement()` is never disabled while browsing test cards
+(`mode === 'tests' && !testFilter`), so the pager below the (hidden) table still renders based on
+the background unfiltered question list — controls that don't correspond to what's on screen.
+
+**Fix:** gate the pager on `!(mode === 'tests' && !testFilter)`; consider `enabled: false` on the
+questions query while cards are showing to avoid a wasted fetch.
+
+### Gap 4 (Minor): `DataManagement.tsx` is now a 543-line file
+
+Three consecutive tasks (1.3, 1.4, 1.5) added to this one file — it now holds `StatusBadge`,
+`RejectModal`, `QuestionDetailModal`, `TestBrowser`, and the page itself. Recommend splitting
+`QuestionDetailModal`, `TestBrowser`, and `RejectModal` into `components/` before Phase 2 adds
+more.
+
+### Gap 5 (Minor): `adminApi.editQuestion(id, data: any)` is now load-bearing
+
+`data: any` (`APP/ADMIN_APP/src/api/client.ts`) means a future payload-key typo compiles fine and
+silently no-ops server-side (`AdminEditRequest` uses `exclude_unset`). Recommend typing the
+parameter to match `AdminEditRequest`'s field set
+(`{ question_text?; passage_text?; correct_option_label?; explanation_text?; change_notes? }`).
+
+### Gap 6 (Minor): `key={i}` (array index) on test cards
+
+`TestSummary` has no natural unique id. A composite key
+(`${source_test_name}-${source_section_code}-${source_module_code}`) would be more correct than
+index-as-key, at no real cost.
+
+---
+
 ## Phase 2: User Edit Endpoint
 
 Implements `admin_dashboard_plan.md` §8.
