@@ -86,6 +86,8 @@ Admin scope required.
 
 | Method | Path | Auth Required | Description |
 |---|---|---|---|
+| GET | `/admin/questions` | Admin | List/filter questions for the admin dashboard's question browser. Response nests classification fields under `annotation` — see the shape note below. |
+| GET | `/admin/tests` | Admin | Aggregate questions by source test/section/module for the admin dashboard's test explorer |
 | PATCH | `/admin/questions/{question_id}` | Admin | Edit question content, answers, or explanation |
 | POST | `/admin/questions/{question_id}/approve` | Admin | Approve question for practice recall (sets `practice_status = active`) |
 | POST | `/admin/questions/{question_id}/reject` | Admin | Reject or retire a question (sets `practice_status = retired`) |
@@ -153,6 +155,45 @@ Used by `GET /questions/{question_id}`.
 | `updated_at` | datetime | No | Last update timestamp |
 
 ---
+
+### `GET /admin/questions` list item (plain dict, no Pydantic model)
+
+Used by `GET /admin/questions` (`backend/app/routers/admin.py`, `list_questions`). Built as a
+plain dict per row, not a `payload.py` model.
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | str | Yes | Question UUID |
+| `content_origin` | str | Yes | `official`, `generated`, or `admin_created` |
+| `practice_status` | str | Yes | `draft`, `active`, `approved`, `rejected`, or `needs_review` |
+| `official_overlap_status` | str | No | `none`, `possible`, or `confirmed` |
+| `source_release_year` / `source_test_name` / `source_exam_code` / `source_subject_code` / `source_section_code` / `source_module_code` / `source_question_number` | — | No | Source locator fields |
+| `current_passage_text` / `current_question_text` / `current_correct_option_label` / `current_explanation_text` | str | Mixed | Content fields |
+| `is_admin_edited` | bool | Yes | Whether an admin has edited this question |
+| `annotation_stale` | bool | Yes | Whether the annotation predates the latest admin edit (added for the admin question browser's stale badge) |
+| `annotation` | dict \| null | No | **Classification fields nested here**: `grammar_focus_key`, `grammar_role_key`, `reading_focus_key`, `difficulty_overall`, etc. |
+| `options` | list[dict] | Yes | Answer options |
+| `created_at` | datetime | No | Creation timestamp |
+
+### `TestSummary`
+
+Used by `GET /admin/tests` (`backend/app/routers/admin.py`, `list_tests`).
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `source_release_year` / `source_test_name` / `source_exam_code` / `source_subject_code` / `source_section_code` / `source_module_code` | — | No | Source locator fields (group-by key) |
+| `question_count` | int | Yes | Total questions in this source group |
+| `approved_count` | int | Yes | Questions with `practice_status` in `active`/`approved` |
+
+**⚠️ Response shape is not consistent across endpoints.** Classification fields
+(`grammar_focus_key`, `grammar_role_key`, `reading_focus_key`, `difficulty_overall`) are **flat**
+top-level fields on `QuestionRecallResponse` and `QuestionDetailResponse` above (student- and
+question-recall-facing), but **nested under `annotation`** on the `GET /admin/questions` list
+item. This is not a project-wide convention — it's specific to `list_questions`'s batch-loaded
+annotation query. A prior admin-frontend bug (fixed by aligning the `Question` TS type and the
+Focus/Difficulty columns to read `q.annotation?.*`) came from assuming the flat shape here. When
+adding a new consumer of question data, check which endpoint you're reading from rather than
+assuming one shape.
 
 ### `UserProgressCreate`
 
