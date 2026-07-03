@@ -177,10 +177,12 @@ export function DataManagement() {
                     {q.content_origin?.replace(/_/g, ' ')}
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-500">
-                    {(q.grammar_focus_key || q.reading_focus_key || '—').replace(/_/g, ' ')}
+                    {(q.annotation?.grammar_focus_key ?? q.annotation?.reading_focus_key ?? '—')
+                      .toString()
+                      .replace(/_/g, ' ')}
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-500 capitalize">
-                    {q.difficulty_overall ?? '—'}
+                    {q.annotation?.difficulty_overall ?? '—'}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex gap-1 justify-end">
