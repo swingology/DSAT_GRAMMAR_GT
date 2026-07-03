@@ -57,12 +57,214 @@ function RejectModal({ question, onReject, onClose }: {
   )
 }
 
+function QuestionDetailModal({ question, onClose }: { question: Question; onClose: () => void }) {
+  const qc = useQueryClient()
+  const [editing, setEditing] = useState(false)
+  const [questionText, setQuestionText] = useState(question.current_question_text)
+  const [passageText, setPassageText] = useState(question.current_passage_text ?? '')
+  const [correctLabel, setCorrectLabel] = useState(question.current_correct_option_label)
+  const [explanationText, setExplanationText] = useState(question.current_explanation_text ?? '')
+  const [changeNotes, setChangeNotes] = useState('')
+
+  const editMutation = useMutation({
+    mutationFn: () =>
+      adminApi.editQuestion(question.id, {
+        question_text: questionText,
+        passage_text: passageText || undefined,
+        correct_option_label: correctLabel,
+        explanation_text: explanationText || undefined,
+        change_notes: changeNotes || undefined,
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['questions'] })
+      onClose()
+    },
+  })
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800">
+              {question.source_test_name ?? 'Question'}
+              {question.source_question_number ? ` #${question.source_question_number}` : ''}
+            </h2>
+            <p className="text-xs text-gray-400 font-mono">{question.id}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {question.annotation_stale && (
+              <span className="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full font-medium">
+                Annotation stale
+              </span>
+            )}
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none">
+              ×
+            </button>
+          </div>
+        </div>
+
+        {!editing ? (
+          <div className="space-y-4">
+            {question.current_passage_text && (
+              <div>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Passage</p>
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">{question.current_passage_text}</p>
+              </div>
+            )}
+            <div>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Question</p>
+              <p className="text-sm text-gray-800 whitespace-pre-wrap">{question.current_question_text}</p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Options</p>
+              <div className="space-y-1">
+                {(question.options ?? []).map((opt) => (
+                  <div
+                    key={opt.id ?? opt.option_label}
+                    className={`text-sm px-3 py-1.5 rounded-lg border ${
+                      opt.option_label === question.current_correct_option_label
+                        ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
+                        : 'border-gray-200 text-gray-600'
+                    }`}
+                  >
+                    <span className="font-medium">{opt.option_label}.</span> {opt.option_text}
+                  </div>
+                ))}
+              </div>
+            </div>
+            {question.current_explanation_text && (
+              <div>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Explanation</p>
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">{question.current_explanation_text}</p>
+              </div>
+            )}
+            {question.annotation && (
+              <div>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Annotation</p>
+                <div className="flex flex-wrap gap-1">
+                  {question.annotation.grammar_focus_key && (
+                    <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full">
+                      {String(question.annotation.grammar_focus_key).replace(/_/g, ' ')}
+                    </span>
+                  )}
+                  {question.annotation.reading_focus_key && (
+                    <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full">
+                      {String(question.annotation.reading_focus_key).replace(/_/g, ' ')}
+                    </span>
+                  )}
+                  {question.annotation.difficulty_overall && (
+                    <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full capitalize">
+                      {String(question.annotation.difficulty_overall)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => setEditing(true)}
+                className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {question.current_passage_text !== undefined && (
+              <div>
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                  Passage
+                </label>
+                <textarea
+                  value={passageText}
+                  onChange={(e) => setPassageText(e.target.value)}
+                  rows={4}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            )}
+            <div>
+              <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                Question text
+              </label>
+              <textarea
+                value={questionText}
+                onChange={(e) => setQuestionText(e.target.value)}
+                rows={3}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                Correct option
+              </label>
+              <select
+                value={correctLabel}
+                onChange={(e) => setCorrectLabel(e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {(question.options ?? []).map((opt) => (
+                  <option key={opt.option_label} value={opt.option_label}>
+                    {opt.option_label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                Explanation
+              </label>
+              <textarea
+                value={explanationText}
+                onChange={(e) => setExplanationText(e.target.value)}
+                rows={3}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                Change notes
+              </label>
+              <input
+                type="text"
+                value={changeNotes}
+                onChange={(e) => setChangeNotes(e.target.value)}
+                placeholder="Why is this edit being made?"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            {editMutation.isError && <p className="text-red-600 text-sm">Failed to save changes.</p>}
+            <div className="flex gap-2 justify-end pt-2">
+              <button
+                onClick={() => setEditing(false)}
+                className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => editMutation.mutate()}
+                disabled={editMutation.isPending}
+                className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition"
+              >
+                {editMutation.isPending ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export function DataManagement() {
   const qc = useQueryClient()
   const [status, setStatus] = useState<StatusFilter>('all')
   const [origin, setOrigin] = useState<OriginFilter>('all')
   const [page, setPage] = useState(1)
   const [rejectTarget, setRejectTarget] = useState<Question | null>(null)
+  const [detailTarget, setDetailTarget] = useState<Question | null>(null)
   const limit = 25
 
   const params: Record<string, any> = { limit, offset: (page - 1) * limit }
@@ -166,8 +368,13 @@ export function DataManagement() {
             <tbody className="divide-y divide-gray-100">
               {questions.map((q) => (
                 <tr key={q.id} className="hover:bg-gray-50 transition">
-                  <td className="px-4 py-3 max-w-sm">
-                    <p className="text-gray-800 line-clamp-2 text-xs leading-relaxed">{q.current_question_text}</p>
+                  <td
+                    className="px-4 py-3 max-w-sm cursor-pointer"
+                    onClick={() => setDetailTarget(q)}
+                  >
+                    <p className="text-gray-800 line-clamp-2 text-xs leading-relaxed hover:underline">
+                      {q.current_question_text}
+                    </p>
                     <p className="text-gray-400 font-mono text-xs mt-0.5">{q.id.slice(0, 8)}…</p>
                   </td>
                   <td className="px-4 py-3">
@@ -243,6 +450,10 @@ export function DataManagement() {
           onReject={(reason) => rejectMutation.mutate({ id: rejectTarget.id, reason })}
           onClose={() => setRejectTarget(null)}
         />
+      )}
+
+      {detailTarget && (
+        <QuestionDetailModal question={detailTarget} onClose={() => setDetailTarget(null)} />
       )}
     </div>
   )
