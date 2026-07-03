@@ -17,6 +17,63 @@ Vite + TanStack Query v5 + react-router-dom v7 + Tailwind v4 (frontend). New fro
 dependency: `react-grid-layout` (Phase 5 only). `framer-motion` is already a dependency
 (`package.json`, `^12.40.0`) — no install needed for it.
 
+## Status (2026-07-03): Phases 0–6 shipped on `origin/main`
+
+All six sequenced phases are complete and pushed to `origin/main` (HEAD `fc99224`). Only the
+unsequenced "Future — Bulk Operations" item (bottom of this file) remains, and it is explicitly
+deferred until an admin actually needs it.
+
+**This work happened outside GitButler.** It was implemented via Codex CLI in a plain git
+worktree checked out from `origin/main`, independent of the `gitbutler/workspace` branch used
+for other work in this repo. `/home/jb/DSAT_REDUX_MD` (the GitButler-managed checkout) does not
+have these commits and is not expected to — do not try to reconcile them there unless you
+specifically need to resume admin-dashboard work inside GitButler.
+
+**The worktree used to do this (`/tmp/dsat-podman-clean`) lives on `tmpfs` and does not survive
+a reboot.** If it's gone, recreate it from the up-to-date `origin/main`:
+
+```bash
+cd /home/jb/DSAT_REDUX_MD
+git fetch origin
+git worktree add /tmp/dsat-podman-clean main   # or: git worktree add <path> origin/main
+```
+
+### How to activate
+
+1. Start the shared backend + DB (from `/home/jb/DSAT_REDUX_MD`, the normal dev stack):
+   `bash .claude/skills/dev-stack/run.sh start` (or the `/dev-stack` skill). Note the backend's
+   printed host port — it has varied by session (e.g. `8002`); the worktree's
+   `APP/ADMIN_APP/vite.config.ts` is already pointed at `8002` with proxies for `/api`, `/users`,
+   and `/admin` all forwarding to it. Update that file if the backend comes up on a different
+   port.
+2. Start the admin app itself — it is **not** part of `docker-compose.yml`, so run it manually
+   from the worktree: `cd /tmp/dsat-podman-clean/APP/ADMIN_APP && npm run dev` (Node 20 required
+   — `nvm use 20` first if your default isn't already pinned to it). It serves on `:5175`.
+3. Open `http://localhost:5175`.
+
+### How to test Phase 6 specifically
+
+- **Entrance stagger (6.1):** hard-refresh `/dashboard` — panels should fade/slide in with a
+  ~50ms-per-panel stagger, once, on load.
+- **Touch drag handles (6.2):** the size bump (`py-2.5` → `md:py-3.5`) only applies at the `md`
+  breakpoint (≥768px) — use a real iPad or DevTools device emulation at iPad width, not a
+  narrow/mobile viewport, or you won't see the difference. Confirm the handle is still draggable
+  and that scrolling inside a panel's body (e.g. a widget's list) doesn't trigger a drag.
+- **Table horizontal scroll (6.3):** at iPad-portrait width or narrower, open `/users`, the
+  question list in `/data`, and the pipeline/auto-release page — wide tables should scroll
+  horizontally within their own container instead of clipping action columns.
+- **Toasts / error boundary / skeletons (6.4):** trigger a mutation (create/edit/delete/reset a
+  user; approve/reject/edit a question; toggle auto-release) and confirm a success or error toast
+  appears top-right and auto-dismisses (~4s) instead of failing silently to the console. Throttle
+  network in DevTools to see skeleton loaders in tables, the question detail modal, and dashboard
+  widgets while data is pending.
+- **Known gap:** none of the above was verified live by Codex — its execution sandbox couldn't
+  bind a dev-server port (`listen EPERM`), so verification there was build-only. A prior static
+  code review confirmed the diffs match spec, but nobody has actually looked at the rendered UI
+  yet.
+
+---
+
 ## Global Constraints
 
 - Every new admin backend endpoint uses `Depends(admin_required)` (X-API-Key header), matching
