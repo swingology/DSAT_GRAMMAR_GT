@@ -650,3 +650,57 @@ def test_admin_list_questions_includes_annotation_stale(monkeypatch):
     body = resp.json()
     assert len(body) == 1
     assert body[0]["annotation_stale"] is True
+
+
+def test_admin_list_tests_empty(client):
+    resp = client.get("/admin/tests", headers=AUTH)
+    assert resp.status_code == 200
+    assert resp.json() == []
+
+
+def test_admin_list_tests_aggregates_by_source():
+    from types import SimpleNamespace
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from app.database import get_db
+
+    fake_row = SimpleNamespace(
+        source_release_year=2024,
+        source_test_name="Test_4",
+        source_exam_code="digital",
+        source_subject_code="verbal",
+        source_section_code="sec01",
+        source_module_code="mod01",
+        question_count=33,
+        approved_count=30,
+    )
+
+    class _Result:
+        def all(self):
+            return [fake_row]
+
+    class FakeSession:
+        async def execute(self, stmt):
+            return _Result()
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.get("/admin/tests", headers=AUTH)
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 200
+    assert resp.json() == [{
+        "source_release_year": 2024,
+        "source_test_name": "Test_4",
+        "source_exam_code": "digital",
+        "source_subject_code": "verbal",
+        "source_section_code": "sec01",
+        "source_module_code": "mod01",
+        "question_count": 33,
+        "approved_count": 30,
+    }]

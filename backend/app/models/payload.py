@@ -854,6 +854,17 @@ class SRProgressResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class TestSummary(BaseModel):
+    source_release_year: Optional[int] = None
+    source_test_name: Optional[str] = None
+    source_exam_code: Optional[str] = None
+    source_subject_code: Optional[str] = None
+    source_section_code: Optional[str] = None
+    source_module_code: Optional[str] = None
+    question_count: int
+    approved_count: int
+
+
 class TrapMetric(BaseModel):
     trap_type: str
     fall_rate: float          # 0.0–1.0

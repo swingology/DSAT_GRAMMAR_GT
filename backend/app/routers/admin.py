@@ -30,6 +30,7 @@ from app.models.payload import (
     QuestionMissRate, FocusAreaMissRate, CohortWeakSpotsResponse,
     AccuracyBucket, DomainPerformance, CohortSummaryResponse,
     TrapCohortStat, CohortTrapAnalyticsResponse,
+    TestSummary,
 )
 from app.pipeline import amendment_review
 
@@ -247,6 +248,56 @@ async def list_questions(
         })
 
     return items
+
+
+@router.get("/tests", response_model=list[TestSummary])
+async def list_tests(
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Aggregate questions by source test/section/module for the admin test explorer."""
+    stmt = (
+        select(
+            Question.source_release_year,
+            Question.source_test_name,
+            Question.source_exam_code,
+            Question.source_subject_code,
+            Question.source_section_code,
+            Question.source_module_code,
+            func.count(Question.id).label("question_count"),
+            func.count(
+                case((Question.practice_status.in_(("active", "approved")), 1))
+            ).label("approved_count"),
+        )
+        .group_by(
+            Question.source_release_year,
+            Question.source_test_name,
+            Question.source_exam_code,
+            Question.source_subject_code,
+            Question.source_section_code,
+            Question.source_module_code,
+        )
+        .order_by(
+            Question.source_release_year.asc().nullslast(),
+            Question.source_test_name.asc().nullslast(),
+            Question.source_section_code.asc().nullslast(),
+            Question.source_module_code.asc().nullslast(),
+        )
+    )
+    result = await db.execute(stmt)
+    return [
+        TestSummary(
+            source_release_year=r.source_release_year,
+            source_test_name=r.source_test_name,
+            source_exam_code=r.source_exam_code,
+            source_subject_code=r.source_subject_code,
+            source_section_code=r.source_section_code,
+            source_module_code=r.source_module_code,
+            question_count=r.question_count,
+            approved_count=r.approved_count,
+        )
+        for r in result.all()
+    ]
 
 
 def _parse_uuid(item_id: str) -> UUID:
