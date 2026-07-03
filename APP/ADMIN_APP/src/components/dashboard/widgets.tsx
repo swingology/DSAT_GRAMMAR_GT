@@ -1,7 +1,35 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '../../api/client'
 import { PanelShell } from '../PanelShell'
+import { Skeleton } from '../Skeleton'
+import { useToast } from '../Toast'
 import type { CohortWeakSpots, User } from '../../types'
+
+type GenerationSummary = {
+  approve_rate?: number
+  acceptance_rate?: number
+  total_generated?: number
+  generated_count?: number
+}
+
+type AutoReleaseStatus = {
+  enabled?: boolean
+  effective_enabled?: boolean
+}
+
+type BatchRow = {
+  id?: string | number
+  accepted_count?: number
+  rejected_count?: number
+}
+
+type BatchSummary = {
+  recent_batches?: BatchRow[]
+}
+
+function errorMessage(err: unknown) {
+  return err instanceof Error ? err.message : 'Request failed.'
+}
 
 function percent(value: unknown): number | null {
   return typeof value === 'number' ? Math.round(value * 100) : null
@@ -17,7 +45,7 @@ export function UsersWidget() {
   return (
     <PanelShell title="Users">
       {isLoading ? (
-        <div className="h-12 bg-gray-100 rounded animate-pulse" />
+        <Skeleton className="h-12" />
       ) : (
         <p className="text-3xl font-bold text-gray-800">{users?.length ?? '-'}</p>
       )}
@@ -27,7 +55,7 @@ export function UsersWidget() {
 }
 
 export function GenerationWidget() {
-  const { data, isLoading } = useQuery<any>({
+  const { data, isLoading } = useQuery<GenerationSummary>({
     queryKey: ['analytics-generation'],
     queryFn: () => adminApi.getGenerationAnalytics(),
     retry: 1,
@@ -38,7 +66,7 @@ export function GenerationWidget() {
   return (
     <PanelShell title="Generation Approve Rate">
       {isLoading ? (
-        <div className="h-12 bg-gray-100 rounded animate-pulse" />
+        <Skeleton className="h-12" />
       ) : (
         <p className={`text-3xl font-bold ${rate !== null && rate >= 70 ? 'text-emerald-600' : 'text-amber-600'}`}>
           {rate !== null ? `${rate}%` : '-'}
@@ -50,25 +78,64 @@ export function GenerationWidget() {
 }
 
 export function AutoReleaseWidget() {
-  const { data } = useQuery<any>({
+  const qc = useQueryClient()
+  const toast = useToast()
+  const { data, isLoading } = useQuery<AutoReleaseStatus>({
     queryKey: ['auto-release-status'],
     queryFn: () => adminApi.getAutoReleaseStatus(),
     retry: 1,
   })
   const enabled = data?.enabled ?? data?.effective_enabled
+  const enableMutation = useMutation({
+    mutationFn: () => adminApi.enableAutoRelease(),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['auto-release-status'] })
+      toast.showSuccess('Auto-release enabled.')
+    },
+    onError: (err) => toast.showError(errorMessage(err)),
+  })
+  const disableMutation = useMutation({
+    mutationFn: () => adminApi.disableAutoRelease(),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['auto-release-status'] })
+      toast.showSuccess('Auto-release disabled.')
+    },
+    onError: (err) => toast.showError(errorMessage(err)),
+  })
 
   return (
     <PanelShell title="Auto-Release">
-      <p className={`text-lg font-semibold ${enabled ? 'text-emerald-600' : 'text-red-500'}`}>
-        {enabled ? 'Enabled' : 'Disabled'}
-      </p>
-      <p className="text-xs text-gray-400 mt-1">Manage from Pipeline & Backend</p>
+      {isLoading ? (
+        <Skeleton className="h-12" />
+      ) : (
+        <>
+          <p className={`text-lg font-semibold ${enabled ? 'text-emerald-600' : 'text-red-500'}`}>
+            {enabled ? 'Enabled' : 'Disabled'}
+          </p>
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => enableMutation.mutate()}
+              disabled={enabled || enableMutation.isPending}
+              className="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-700 disabled:opacity-40"
+            >
+              Enable
+            </button>
+            <button
+              onClick={() => disableMutation.mutate()}
+              disabled={!enabled || disableMutation.isPending}
+              className="rounded bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-red-700 disabled:opacity-40"
+            >
+              Disable
+            </button>
+          </div>
+        </>
+      )}
     </PanelShell>
   )
 }
 
 export function RecentBatchesWidget() {
-  const { data, isLoading } = useQuery<any>({
+  const { data, isLoading } = useQuery<BatchSummary>({
     queryKey: ['analytics-batches'],
     queryFn: () => adminApi.getBatchAnalytics(),
     retry: 1,
@@ -80,14 +147,14 @@ export function RecentBatchesWidget() {
       {isLoading ? (
         <div className="space-y-2">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-6 bg-gray-100 rounded animate-pulse" />
+            <Skeleton key={i} className="h-6" />
           ))}
         </div>
       ) : rows.length === 0 ? (
         <p className="text-sm text-gray-400">No recent batch list available.</p>
       ) : (
         <ul className="space-y-1.5">
-          {rows.map((b: any) => (
+          {rows.map((b) => (
             <li key={b.id} className="grid grid-cols-[1fr_auto_auto] gap-2 text-xs">
               <span className="text-gray-500 font-mono truncate">{String(b.id).slice(0, 8)}</span>
               <span className="text-emerald-600">{b.accepted_count ?? 0} ok</span>
@@ -111,7 +178,7 @@ export function WeakSpotsWidget() {
   return (
     <PanelShell title="Cohort Weak Spots">
       {isLoading ? (
-        <div className="h-16 bg-gray-100 rounded animate-pulse" />
+        <Skeleton className="h-16" />
       ) : top.length === 0 ? (
         <p className="text-sm text-gray-400">Not enough data yet.</p>
       ) : (

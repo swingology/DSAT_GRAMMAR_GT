@@ -1,7 +1,18 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '../api/client'
+import { Skeleton } from '../components/Skeleton'
+import { useToast } from '../components/Toast'
 import type { User } from '../types'
+
+type CreateUserPayload = {
+  username: string
+  email?: string
+}
+
+function errorMessage(err: unknown) {
+  return err instanceof Error ? err.message : 'Request failed.'
+}
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
@@ -14,14 +25,17 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 
 function CreateUserModal({ onClose }: { onClose: () => void }) {
   const qc = useQueryClient()
+  const toast = useToast()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const mutation = useMutation({
-    mutationFn: (data: any) => adminApi.createUser(data),
+    mutationFn: (data: CreateUserPayload) => adminApi.createUser(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['users'] })
+      toast.showSuccess('User created.')
       onClose()
     },
+    onError: (err) => toast.showError(errorMessage(err)),
   })
 
   return (
@@ -69,6 +83,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
 
 function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
   const qc = useQueryClient()
+  const toast = useToast()
   const [username, setUsername] = useState(user.username)
   const [email, setEmail] = useState(user.email ?? '')
   const [role, setRole] = useState(user.role)
@@ -83,8 +98,10 @@ function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['users'] })
+      toast.showSuccess('User updated.')
       onClose()
     },
+    onError: (err) => toast.showError(errorMessage(err)),
   })
 
   return (
@@ -145,11 +162,16 @@ function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
 }
 
 function ResetPasswordModal({ user, onClose }: { user: User; onClose: () => void }) {
+  const toast = useToast()
   const [newPassword, setNewPassword] = useState('')
   const [done, setDone] = useState(false)
   const mutation = useMutation({
     mutationFn: () => adminApi.resetUserPassword(user.id, newPassword),
-    onSuccess: () => setDone(true),
+    onSuccess: () => {
+      toast.showSuccess('Password reset.')
+      setDone(true)
+    },
+    onError: (err) => toast.showError(errorMessage(err)),
   })
 
   return (
@@ -207,6 +229,7 @@ function ResetPasswordModal({ user, onClose }: { user: User; onClose: () => void
 }
 
 export function UserManagement() {
+  const toast = useToast()
   const [showCreate, setShowCreate] = useState(false)
   const [editTarget, setEditTarget] = useState<User | null>(null)
   const [resetTarget, setResetTarget] = useState<User | null>(null)
@@ -221,7 +244,11 @@ export function UserManagement() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => adminApi.deleteUser(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['users'] })
+      toast.showSuccess('User deleted.')
+    },
+    onError: (err) => toast.showError(errorMessage(err)),
   })
 
   const filtered = (users ?? []).filter((u) =>
@@ -266,7 +293,7 @@ export function UserManagement() {
         {isLoading ? (
           <div className="space-y-2 p-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-10 bg-gray-100 rounded animate-pulse" />
+              <Skeleton key={i} className="h-10" />
             ))}
           </div>
         ) : isError ? (

@@ -4,7 +4,12 @@ import {
   LineChart, Line, CartesianGrid, Legend,
 } from 'recharts'
 import { adminApi } from '../api/client'
+import { useToast } from '../components/Toast'
 import type { GenerationAnalytics, BatchAnalytics } from '../types'
+
+function errorMessage(err: unknown) {
+  return err instanceof Error ? err.message : 'Request failed.'
+}
 
 function StatCard({
   label, value, sub, color = 'text-gray-800',
@@ -34,6 +39,7 @@ function SectionHeader({ title, sub }: { title: string; sub?: string }) {
 
 export function PipelinePerformance() {
   const qc = useQueryClient()
+  const toast = useToast()
 
   const { data: gen, isLoading: genLoading } = useQuery<GenerationAnalytics>({
     queryKey: ['analytics-generation'],
@@ -55,11 +61,19 @@ export function PipelinePerformance() {
 
   const enableMutation = useMutation({
     mutationFn: () => adminApi.enableAutoRelease(),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['auto-release-status'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['auto-release-status'] })
+      toast.showSuccess('Auto-release enabled.')
+    },
+    onError: (err) => toast.showError(errorMessage(err)),
   })
   const disableMutation = useMutation({
     mutationFn: () => adminApi.disableAutoRelease(),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['auto-release-status'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['auto-release-status'] })
+      toast.showSuccess('Auto-release disabled.')
+    },
+    onError: (err) => toast.showError(errorMessage(err)),
   })
 
   const approveRate = gen ? Math.round((gen.approve_rate ?? 0) * 100) : null
