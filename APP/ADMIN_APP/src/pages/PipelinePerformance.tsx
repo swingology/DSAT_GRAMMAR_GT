@@ -211,7 +211,7 @@ export function PipelinePerformance() {
       )}
 
       {/* Recent Batches Table */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-xl overflow-x-auto">
         <div className="px-5 py-4 border-b border-gray-100">
           <SectionHeader title="Recent Batches" sub="Latest generation batches and their outcomes" />
         </div>
@@ -224,7 +224,7 @@ export function PipelinePerformance() {
         ) : !batches?.recent_batches?.length ? (
           <div className="p-8 text-center text-gray-400 text-sm">No batch data available.</div>
         ) : (
-          <table className="w-full text-sm">
+          <table className="w-full min-w-[860px] text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Batch ID</th>
