@@ -957,7 +957,7 @@ asserting the exact key set and values — 25/25 tests pass. Committed as `3f5b9
 `admin-dashboard-phase-1`. Task 1.4's manual QA (Step 3) is still unverified against a real
 browser — flag for follow-up.
 
-### Gap 2 (Important): Test-card drill-down granularity doesn't match the cards
+### ~~Gap 2 (Important): Test-card drill-down granularity doesn't match the cards~~ FIXED
 
 `TestBrowser` renders one card per `(source_release_year, source_test_name, source_exam_code,
 source_subject_code, source_section_code, source_module_code)` group (from `GET /admin/tests`,
@@ -970,7 +970,15 @@ shows the same full-test result set behind visually distinct cards.
 params to `list_questions` and pass them from `testFilter`; or collapse the `/admin/tests`
 grouping to test-level so cards and filtering agree.
 
-### Gap 3 (Important): Pagination footer renders under the test-card grid
+**Fixed:** `list_questions` (`backend/app/routers/admin.py`) gained
+`source_subject_code`/`source_section_code`/`source_module_code` query params (release_year and
+exam_code already existed), covering all six of `TestSummary`'s grouping fields. `testFilter`
+(`DataManagement.tsx`) now passes all of them. Added
+`test_admin_list_questions_filters_by_subject_section_module_code`
+(`backend/tests/test_admin_router.py`), compiling the statement with literal binds to assert each
+filter is actually applied — 26/26 tests pass. Committed as `43e17af` on `admin-dashboard-phase-1`.
+
+### ~~Gap 3 (Important): Pagination footer renders under the test-card grid~~ FIXED
 
 The `questions` query in `DataManagement()` is never disabled while browsing test cards
 (`mode === 'tests' && !testFilter`), so the pager below the (hidden) table still renders based on
@@ -978,6 +986,11 @@ the background unfiltered question list — controls that don't correspond to wh
 
 **Fix:** gate the pager on `!(mode === 'tests' && !testFilter)`; consider `enabled: false` on the
 questions query while cards are showing to avoid a wasted fetch.
+
+**Fixed:** added a `browsingTests` flag (`mode === 'tests' && !testFilter`) in
+`DataManagement.tsx`; the pager is now gated on `!browsingTests`, and the `questions` query is
+disabled (`enabled: !browsingTests`) while cards are showing, avoiding both the mismatched pager
+and a wasted background fetch. Same commit as Gap 2 (`43e17af`).
 
 ### Gap 4 (Minor): `DataManagement.tsx` is now a 543-line file
 
