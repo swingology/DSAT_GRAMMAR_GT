@@ -310,17 +310,25 @@ export function DataManagement() {
   const [testFilter, setTestFilter] = useState<TestSummary | null>(null)
   const limit = 25
 
+  const browsingTests = mode === 'tests' && !testFilter
+
   const params: Record<string, any> = { limit, offset: (page - 1) * limit }
   if (status !== 'all') params.practice_status = status
   if (origin !== 'all') params.content_origin = origin
   if (testFilter) {
+    if (testFilter.source_release_year != null) params.source_release_year = testFilter.source_release_year
     if (testFilter.source_test_name) params.source_test_name = testFilter.source_test_name
+    if (testFilter.source_exam_code) params.source_exam_code = testFilter.source_exam_code
+    if (testFilter.source_subject_code) params.source_subject_code = testFilter.source_subject_code
+    if (testFilter.source_section_code) params.source_section_code = testFilter.source_section_code
+    if (testFilter.source_module_code) params.source_module_code = testFilter.source_module_code
     params.sort_by_source = true
   }
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['questions', params],
     queryFn: () => adminApi.listQuestions(params),
+    enabled: !browsingTests,
     retry: 1,
   })
 
@@ -502,7 +510,7 @@ export function DataManagement() {
       )}
 
       {/* Pagination */}
-      {totalPages > 1 && (
+      {!browsingTests && totalPages > 1 && (
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-500 text-xs">
             Page {page} of {totalPages} · {total} questions

@@ -745,6 +745,53 @@ def test_admin_list_questions_options_use_option_label_and_text_keys():
     }]
 
 
+def test_admin_list_questions_filters_by_subject_section_module_code():
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from app.database import get_db
+
+    captured: dict = {}
+
+    class _Result:
+        def unique(self):
+            return self
+
+        def scalars(self):
+            return self
+
+        def all(self):
+            return []
+
+    class FakeSession:
+        async def execute(self, stmt):
+            captured["stmt"] = stmt
+            return _Result()
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.get(
+                "/admin/questions",
+                params={
+                    "source_subject_code": "verbal",
+                    "source_section_code": "sec01",
+                    "source_module_code": "mod02",
+                },
+                headers=AUTH,
+            )
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 200
+    compiled = str(captured["stmt"].compile(compile_kwargs={"literal_binds": True}))
+    assert "source_subject_code" in compiled and "'verbal'" in compiled
+    assert "source_section_code" in compiled and "'sec01'" in compiled
+    assert "source_module_code" in compiled and "'mod02'" in compiled
+
+
 def test_admin_list_tests_empty(client):
     resp = client.get("/admin/tests", headers=AUTH)
     assert resp.status_code == 200

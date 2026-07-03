@@ -155,6 +155,9 @@ async def list_questions(
     source_release_year: Optional[int] = Query(None, description="Filter by official release year"),
     source_test_name: Optional[str] = Query(None, description="Filter by source test name"),
     source_exam_code: Optional[str] = Query(None, description="Filter by source exam code"),
+    source_subject_code: Optional[str] = Query(None, description="Filter by source subject code"),
+    source_section_code: Optional[str] = Query(None, description="Filter by source section code"),
+    source_module_code: Optional[str] = Query(None, description="Filter by source module code"),
     sort_by_source: bool = Query(False, description="Sort by release/test/exam/module/question order"),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
@@ -174,6 +177,12 @@ async def list_questions(
         stmt = stmt.where(Question.source_test_name == source_test_name)
     if source_exam_code:
         stmt = stmt.where(Question.source_exam_code == source_exam_code)
+    if source_subject_code:
+        stmt = stmt.where(Question.source_subject_code == source_subject_code)
+    if source_section_code:
+        stmt = stmt.where(Question.source_section_code == source_section_code)
+    if source_module_code:
+        stmt = stmt.where(Question.source_module_code == source_module_code)
 
     if sort_by_source:
         stmt = stmt.order_by(
