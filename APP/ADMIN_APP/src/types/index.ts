@@ -1,23 +1,39 @@
 export interface User {
   id: number
-  email: string
+  username: string
+  email?: string | null
+  role: string
+  is_active: boolean
   user_token: string
   created_at: string
-  is_active?: boolean
+}
+
+export interface QuestionAnnotation {
+  grammar_focus_key?: string
+  grammar_role_key?: string
+  reading_focus_key?: string
+  difficulty_overall?: string
+  [key: string]: unknown
 }
 
 export interface Question {
   id: string
   content_origin: 'official' | 'generated' | 'admin_created'
   practice_status: 'draft' | 'active' | 'approved' | 'rejected' | 'needs_review'
+  official_overlap_status?: string
   current_question_text: string
   current_passage_text?: string
   current_correct_option_label: string
-  grammar_focus_key?: string
-  grammar_role_key?: string
-  reading_focus_key?: string
-  difficulty_overall?: string
+  current_explanation_text?: string
+  is_admin_edited?: boolean
+  annotation_stale?: boolean
+  annotation?: QuestionAnnotation | null
+  source_release_year?: number
   source_test_name?: string
+  source_exam_code?: string
+  source_subject_code?: string
+  source_section_code?: string
+  source_module_code?: string
   source_question_number?: number
   options?: QuestionOption[]
   updated_at?: string
@@ -29,6 +45,17 @@ export interface QuestionOption {
   option_label: string
   option_text: string
   is_correct?: boolean
+}
+
+export interface TestSummary {
+  source_release_year?: number
+  source_test_name?: string
+  source_exam_code?: string
+  source_subject_code?: string
+  source_section_code?: string
+  source_module_code?: string
+  question_count: number
+  approved_count: number
 }
 
 export interface GenerationAnalytics {
@@ -87,4 +114,24 @@ export interface StudentStats {
   accuracy: number
   top_missed_focus_keys: string[]
   top_missed_trap_keys: string[]
+}
+
+export interface ActivityDay {
+  date: string
+  count: number
+}
+
+export interface FocusAreaMissRate {
+  focus_key: string
+  domain: string
+  total_attempts: number
+  unique_students: number
+  miss_count: number
+  miss_rate: number
+}
+
+export interface CohortWeakSpots {
+  generated_at: string
+  question_wise_misses: unknown[]
+  focus_area_misses: FocusAreaMissRate[]
 }

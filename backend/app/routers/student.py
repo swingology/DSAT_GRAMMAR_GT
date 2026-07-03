@@ -27,6 +27,7 @@ from app.models.payload import (
     InventoryMetadata,
     UserProgressCreate,
     UserStats,
+    ActivityDayCount,
     WeaknessTarget,
     StudyRecommendationsRequest,
     StudyRecommendationsResponse,
@@ -627,7 +628,7 @@ async def submit_answer(
 async def get_user_stats(
     user_id: int,
     db: AsyncSession = Depends(get_db),
-    _auth: Tuple[str, str] = Depends(admin_or_student_required),
+    _auth: str = Depends(admin_or_student_required),
 ):
     result = await db.execute(
         select(UserProgress).where(UserProgress.user_id == user_id)
@@ -648,6 +649,29 @@ async def get_user_stats(
         top_missed_focus_keys=[k for k, _ in focus_counts.most_common(5)],
         top_missed_trap_keys=[k for k, _ in trap_counts.most_common(5)],
     )
+
+
+@router.get("/stats/{user_id}/activity", response_model=list[ActivityDayCount])
+async def get_user_activity(
+    user_id: int,
+    days: int = Query(365, ge=1, le=400),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_or_student_required),
+):
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    result = await db.execute(
+        select(
+            cast(UserProgress.timestamp, Date).label("day"),
+            func.count().label("count"),
+        )
+        .where(UserProgress.user_id == user_id, UserProgress.timestamp >= cutoff)
+        .group_by(cast(UserProgress.timestamp, Date))
+        .order_by(cast(UserProgress.timestamp, Date))
+    )
+    return [
+        ActivityDayCount(date=row.day.isoformat(), count=row.count)
+        for row in result.all()
+    ]
 
 
 # ---------------------------------------------------------------------------

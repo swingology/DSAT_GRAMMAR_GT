@@ -1,7 +1,4 @@
-// No shared base path: users.router mounts at /users, admin.router at /admin,
-// but student.router (stats/study endpoints) mounts at /api — each adminApi
-// call below spells out its own real backend prefix instead of assuming one.
-const API_BASE = ''
+const API_BASE = '/api'
 
 const ADMIN_TOKEN = (import.meta as any).env.VITE_ADMIN_TOKEN || ''
 
@@ -24,6 +21,13 @@ export const adminApi = {
   listUsers: () => apiCall('/users'),
   getUser: (id: number) => apiCall(`/users/${id}`),
   createUser: (data: any) => apiCall('/users', { method: 'POST', body: JSON.stringify(data) }),
+  updateUser: (id: number, data: { username?: string; email?: string | null; role?: string; is_active?: boolean }) =>
+    apiCall(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  resetUserPassword: (id: number, newPassword: string) =>
+    apiCall(`/users/${id}/reset-password`, {
+      method: 'POST',
+      body: JSON.stringify({ new_password: newPassword }),
+    }),
   deleteUser: (id: number) => apiCall(`/users/${id}`, { method: 'DELETE' }),
 
   // Questions
@@ -32,6 +36,7 @@ export const adminApi = {
     return apiCall(`/admin/questions?${q}`)
   },
   getQuestion: (id: string) => apiCall(`/admin/questions/${id}`),
+  getTests: () => apiCall('/admin/tests'),
   approveQuestion: (id: string) => apiCall(`/admin/questions/${id}/approve`, { method: 'POST' }),
   rejectQuestion: (id: string, reason: string) =>
     apiCall(`/admin/questions/${id}/reject`, { method: 'POST', body: JSON.stringify({ reason }) }),
@@ -69,13 +74,16 @@ export const adminApi = {
     const q = new URLSearchParams(params).toString()
     return apiCall(`/admin/analytics/trends?${q}`)
   },
+  getWeakSpots: (limit = 20) => apiCall(`/admin/analytics/weak-spots?limit=${limit}`),
 
-  // Student stats (student.router mounts at /api, unlike users/admin routers)
-  getStudentStats: (userId: number) => apiCall(`/api/stats/${userId}`),
+  // Student stats
+  getStudentStats: (userId: number) => apiCall(`/stats/${userId}`),
+  getStudentActivity: (userId: number, days = 365) =>
+    apiCall(`/stats/${userId}/activity?days=${days}`),
   getStudentRecommendations: (userToken: string) =>
-    apiCall('/api/study/recommendations', { method: 'POST', body: JSON.stringify({ user_token: userToken }) }),
+    apiCall('/study/recommendations', { method: 'POST', body: JSON.stringify({ user_token: userToken }) }),
   getStudentMissed: (userToken: string) =>
-    apiCall(`/api/study/missed?user_token=${userToken}`),
+    apiCall(`/study/missed?user_token=${userToken}`),
 
   // Auto-release
   getAutoReleaseStatus: () => apiCall('/admin/generation/auto-release/status'),

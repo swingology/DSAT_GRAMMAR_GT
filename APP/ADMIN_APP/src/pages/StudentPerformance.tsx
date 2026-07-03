@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { adminApi } from '../api/client'
-import type { User, StudentStats } from '../types'
+import type { User, StudentStats, ActivityDay } from '../types'
 
 function AccuracyBar({ value }: { value: number }) {
   const pct = Math.round(value * 100)
@@ -13,6 +13,59 @@ function AccuracyBar({ value }: { value: number }) {
         <div className={`h-full ${color} rounded-full`} style={{ width: `${pct}%` }} />
       </div>
       <span className="text-xs font-mono text-gray-500 w-8 text-right">{pct}%</span>
+    </div>
+  )
+}
+
+function bucketColor(count: number): string {
+  if (count === 0) return 'bg-gray-100'
+  if (count <= 2) return 'bg-emerald-200'
+  if (count <= 5) return 'bg-emerald-300'
+  if (count <= 10) return 'bg-emerald-500'
+  return 'bg-emerald-700'
+}
+
+function ActivityHeatmap({ userId }: { userId: number }) {
+  const { data, isLoading } = useQuery<ActivityDay[]>({
+    queryKey: ['student-activity', userId],
+    queryFn: () => adminApi.getStudentActivity(userId),
+    retry: 1,
+  })
+
+  if (isLoading) return <div className="h-24 bg-gray-100 rounded-xl animate-pulse" />
+
+  const counts = new Map((data ?? []).map((d) => [d.date, d.count]))
+  const today = new Date()
+  const days: { date: string; count: number }[] = []
+
+  for (let i = 364; i >= 0; i--) {
+    const d = new Date(today)
+    d.setDate(d.getDate() - i)
+    const key = d.toISOString().slice(0, 10)
+    days.push({ date: key, count: counts.get(key) ?? 0 })
+  }
+
+  const weeks: { date: string; count: number }[][] = []
+  for (let i = 0; i < days.length; i += 7) {
+    weeks.push(days.slice(i, i + 7))
+  }
+
+  return (
+    <div>
+      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Activity</p>
+      <div className="flex gap-0.5 overflow-x-auto pb-1">
+        {weeks.map((week, wi) => (
+          <div key={wi} className="flex flex-col gap-0.5">
+            {week.map((day) => (
+              <div
+                key={day.date}
+                title={`${day.date}: ${day.count} question${day.count === 1 ? '' : 's'}`}
+                className={`w-2.5 h-2.5 rounded-sm ${bucketColor(day.count)}`}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -54,6 +107,8 @@ function StudentDetailPanel({ user }: { user: User }) {
         <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Accuracy</p>
         <AccuracyBar value={stats.accuracy} />
       </div>
+
+      <ActivityHeatmap userId={user.id} />
 
       {stats.top_missed_focus_keys.length > 0 && (
         <div>
@@ -113,7 +168,7 @@ export function StudentPerformance() {
   })
 
   const filtered = (users ?? []).filter((u) =>
-    u.email.toLowerCase().includes(search.toLowerCase())
+    (u.email ?? u.username).toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -156,10 +211,10 @@ export function StudentPerformance() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 text-sm font-bold flex items-center justify-center flex-shrink-0">
-                    {u.email[0].toUpperCase()}
+                    {(u.email ?? u.username)[0].toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-800">{u.email}</p>
+                    <p className="text-sm font-medium text-gray-800">{u.email ?? u.username}</p>
                     <p className="text-xs text-gray-400">ID #{u.id}</p>
                   </div>
                 </div>

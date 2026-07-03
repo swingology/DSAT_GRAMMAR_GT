@@ -51,3 +51,349 @@ def test_delete_user_not_found(client):
 def test_delete_user_no_auth(client):
     resp = client.delete("/users/1")
     assert resp.status_code == 403
+
+
+def test_create_user_with_email_stores_email_and_returns_is_active():
+    """POST /users with an optional email persists it on the row and the
+    response includes is_active (defaults to True for a freshly created user).
+    """
+    import uuid as _uuid
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+    from app.database import get_db
+
+    created = {}
+
+    class _EmptyResult:
+        def scalars(self):
+            return self
+
+        def first(self):
+            return None
+
+        def all(self):
+            return []
+
+    class FakeSession:
+        async def execute(self, stmt):
+            return _EmptyResult()
+
+        def add(self, obj):
+            created["user"] = obj
+
+        async def commit(self):
+            pass
+
+        async def refresh(self, obj):
+            # Mimic the column defaults a real DB insert would populate.
+            obj.id = 1
+            obj.role = "student"
+            obj.is_active = True
+            obj.user_token = _uuid.uuid4()
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.post(
+                "/users",
+                headers=AUTH,
+                json={"username": "bob", "email": "bob@example.com"},
+            )
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 201
+    body = resp.json()
+    assert body["email"] == "bob@example.com"
+    assert body["is_active"] is True
+    assert created["user"].email == "bob@example.com"
+
+
+def test_create_user_duplicate_email_rejected():
+    """A second user created with an email already on file gets a 409,
+    even when the username differs from the existing row.
+    """
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+    from app.database import get_db
+
+    class _ExistingUser:
+        id = 5
+        username = "carol"
+        email = "dup@example.com"
+
+    call_count = {"n": 0}
+
+    class _Result:
+        def __init__(self, found):
+            self._found = found
+
+        def scalars(self):
+            return self
+
+        def first(self):
+            return self._found
+
+        def all(self):
+            return [self._found] if self._found else []
+
+    class FakeSession:
+        async def execute(self, stmt):
+            call_count["n"] += 1
+            # 1st execute = username duplicate check (none), 2nd = email
+            # duplicate check (existing row).
+            if call_count["n"] == 2:
+                return _Result(_ExistingUser())
+            return _Result(None)
+
+        def add(self, obj):
+            pass
+
+        async def commit(self):
+            pass
+
+        async def refresh(self, obj):
+            pass
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.post(
+                "/users",
+                headers=AUTH,
+                json={"username": "newname", "email": "dup@example.com"},
+            )
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 409
+    assert resp.json()["detail"] == "Email already exists"
+
+
+def test_create_user_empty_email_stored_as_none():
+    """Posting an empty-string email must persist NULL, not "".
+
+    User.email is unique+nullable: a stored "" would make the second
+    empty-email user fail with an IntegrityError (500) instead of a clean
+    response, and "" also defeats the frontend's `email ?? username` fallback.
+    """
+    import uuid as _uuid
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+    from app.database import get_db
+
+    created = {}
+
+    class _EmptyResult:
+        def scalars(self):
+            return self
+
+        def first(self):
+            return None
+
+        def all(self):
+            return []
+
+    class FakeSession:
+        async def execute(self, stmt):
+            return _EmptyResult()
+
+        def add(self, obj):
+            created["user"] = obj
+
+        async def commit(self):
+            pass
+
+        async def refresh(self, obj):
+            # Mimic the column defaults a real DB insert would populate.
+            obj.id = 1
+            obj.role = "student"
+            obj.is_active = True
+            obj.user_token = _uuid.uuid4()
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.post(
+                "/users",
+                headers=AUTH,
+                json={"username": "x", "email": ""},
+            )
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 201
+    assert created["user"].email is None
+    assert resp.json()["email"] is None
+
+
+def test_update_user_not_found(client):
+    resp = client.patch("/users/999", json={"username": "new-name"}, headers=AUTH)
+    assert resp.status_code == 404
+
+
+def test_update_user_duplicate_username(monkeypatch):
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from app.database import get_db
+
+    class FakeUser:
+        def __init__(self):
+            self.id = 1
+            self.username = "alice"
+            self.email = None
+            self.role = "student"
+
+    class ConflictingUser:
+        username = "bob"
+
+    fake_user = FakeUser()
+
+    class _Result:
+        def scalars(self):
+            return self
+
+        def first(self):
+            return ConflictingUser()
+
+    class FakeSession:
+        async def get(self, model, pk):
+            return fake_user if pk == 1 else None
+
+        async def execute(self, stmt):
+            return _Result()
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.patch("/users/1", json={"username": "bob"}, headers=AUTH)
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 409
+
+
+def test_update_user_success(monkeypatch):
+    import uuid as _uuid
+    from datetime import datetime, timezone
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from app.database import get_db
+
+    class FakeUser:
+        def __init__(self):
+            self.id = 1
+            self.username = "alice"
+            self.email = "alice@example.com"
+            self.role = "student"
+            self.user_token = _uuid.uuid4()
+            self.created_at = datetime.now(timezone.utc)
+
+    fake_user = FakeUser()
+
+    class _Result:
+        def scalars(self):
+            return self
+
+        def first(self):
+            return None
+
+    class FakeSession:
+        async def get(self, model, pk):
+            return fake_user if pk == 1 else None
+
+        async def execute(self, stmt):
+            return _Result()
+
+        async def commit(self):
+            pass
+
+        async def refresh(self, obj):
+            pass
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.patch("/users/1", json={"role": "admin"}, headers=AUTH)
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 200
+    assert fake_user.role == "admin"
+
+
+def test_admin_reset_password_not_found(client):
+    resp = client.post(
+        "/users/999/reset-password",
+        json={"new_password": "supersecret123"},
+        headers=AUTH,
+    )
+    assert resp.status_code == 404
+
+
+def test_admin_reset_password_validates_min_length(client):
+    resp = client.post(
+        "/users/1/reset-password",
+        json={"new_password": "short"},
+        headers=AUTH,
+    )
+    assert resp.status_code == 422
+
+
+def test_admin_reset_password_success(monkeypatch):
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from app.database import get_db
+
+    class FakeUser:
+        def __init__(self):
+            self.id = 1
+            self.password_hash = "old-hash"
+            self.refresh_token = "some-refresh-token"
+            self.refresh_token_expires = "later"
+
+    fake_user = FakeUser()
+
+    class FakeSession:
+        async def get(self, model, pk):
+            return fake_user if pk == 1 else None
+
+        async def commit(self):
+            pass
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.post(
+                "/users/1/reset-password",
+                json={"new_password": "brandnewpassword123"},
+                headers=AUTH,
+            )
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 204
+    assert fake_user.password_hash != "old-hash"
+    assert fake_user.refresh_token is None
+    assert fake_user.refresh_token_expires is None

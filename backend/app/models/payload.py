@@ -122,6 +122,11 @@ class UserStats(BaseModel):
     top_missed_trap_keys: List[str] = Field(default_factory=list)
 
 
+class ActivityDayCount(BaseModel):
+    date: str
+    count: int
+
+
 class AdminEditRequest(BaseModel):
     question_text: Optional[str] = None
     passage_text: Optional[str] = None
@@ -514,6 +519,18 @@ class OCRBenchmarkResponse(BaseModel):
 
 class UserCreate(BaseModel):
     username: str = Field(min_length=1, max_length=100)
+    email: Optional[str] = None
+
+
+class UserUpdate(BaseModel):
+    username: Optional[str] = Field(default=None, min_length=1, max_length=100)
+    email: Optional[str] = None
+    role: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class AdminPasswordReset(BaseModel):
+    new_password: str = Field(min_length=8, max_length=128)
 
 
 class UserResponse(BaseModel):
@@ -521,6 +538,7 @@ class UserResponse(BaseModel):
     username: str
     email: Optional[str] = None
     role: str = "student"
+    is_active: bool = True
     user_token: UUID
     created_at: Optional[datetime] = None
 
@@ -849,6 +867,17 @@ class SRProgressResponse(BaseModel):
     retention_rate: float  # correct_attempts / total_attempts across all SR records
 
     model_config = {"from_attributes": True}
+
+
+class TestSummary(BaseModel):
+    source_release_year: Optional[int] = None
+    source_test_name: Optional[str] = None
+    source_exam_code: Optional[str] = None
+    source_subject_code: Optional[str] = None
+    source_section_code: Optional[str] = None
+    source_module_code: Optional[str] = None
+    question_count: int
+    approved_count: int
 
 
 class TrapMetric(BaseModel):

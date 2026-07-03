@@ -30,6 +30,7 @@ from app.models.payload import (
     QuestionMissRate, FocusAreaMissRate, CohortWeakSpotsResponse,
     AccuracyBucket, DomainPerformance, CohortSummaryResponse,
     TrapCohortStat, CohortTrapAnalyticsResponse,
+    TestSummary,
 )
 from app.pipeline import amendment_review
 
@@ -154,6 +155,9 @@ async def list_questions(
     source_release_year: Optional[int] = Query(None, description="Filter by official release year"),
     source_test_name: Optional[str] = Query(None, description="Filter by source test name"),
     source_exam_code: Optional[str] = Query(None, description="Filter by source exam code"),
+    source_subject_code: Optional[str] = Query(None, description="Filter by source subject code"),
+    source_section_code: Optional[str] = Query(None, description="Filter by source section code"),
+    source_module_code: Optional[str] = Query(None, description="Filter by source module code"),
     sort_by_source: bool = Query(False, description="Sort by release/test/exam/module/question order"),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
@@ -173,6 +177,12 @@ async def list_questions(
         stmt = stmt.where(Question.source_test_name == source_test_name)
     if source_exam_code:
         stmt = stmt.where(Question.source_exam_code == source_exam_code)
+    if source_subject_code:
+        stmt = stmt.where(Question.source_subject_code == source_subject_code)
+    if source_section_code:
+        stmt = stmt.where(Question.source_section_code == source_section_code)
+    if source_module_code:
+        stmt = stmt.where(Question.source_module_code == source_module_code)
 
     if sort_by_source:
         stmt = stmt.order_by(
@@ -212,7 +222,12 @@ async def list_questions(
             qid = version_to_qid.get(opt.question_version_id)
             if qid:
                 opts_by_qid.setdefault(qid, []).append(
-                    {"label": opt.option_label, "text": opt.option_text, "is_correct": opt.is_correct}
+                    {
+                        "id": str(opt.id),
+                        "option_label": opt.option_label,
+                        "option_text": opt.option_text,
+                        "is_correct": opt.is_correct,
+                    }
                 )
     else:
         opts_by_qid = {}
@@ -240,12 +255,63 @@ async def list_questions(
             "current_correct_option_label": q.current_correct_option_label,
             "current_explanation_text": q.current_explanation_text,
             "is_admin_edited": q.is_admin_edited,
+            "annotation_stale": q.annotation_stale,
             "annotation": annotation,
             "options": options,
             "created_at": q.created_at.isoformat() if q.created_at else None,
         })
 
     return items
+
+
+@router.get("/tests", response_model=list[TestSummary])
+async def list_tests(
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Aggregate questions by source test/section/module for the admin test explorer."""
+    stmt = (
+        select(
+            Question.source_release_year,
+            Question.source_test_name,
+            Question.source_exam_code,
+            Question.source_subject_code,
+            Question.source_section_code,
+            Question.source_module_code,
+            func.count(Question.id).label("question_count"),
+            func.count(
+                case((Question.practice_status.in_(("active", "approved")), 1))
+            ).label("approved_count"),
+        )
+        .group_by(
+            Question.source_release_year,
+            Question.source_test_name,
+            Question.source_exam_code,
+            Question.source_subject_code,
+            Question.source_section_code,
+            Question.source_module_code,
+        )
+        .order_by(
+            Question.source_release_year.asc().nullslast(),
+            Question.source_test_name.asc().nullslast(),
+            Question.source_section_code.asc().nullslast(),
+            Question.source_module_code.asc().nullslast(),
+        )
+    )
+    result = await db.execute(stmt)
+    return [
+        TestSummary(
+            source_release_year=r.source_release_year,
+            source_test_name=r.source_test_name,
+            source_exam_code=r.source_exam_code,
+            source_subject_code=r.source_subject_code,
+            source_section_code=r.source_section_code,
+            source_module_code=r.source_module_code,
+            question_count=r.question_count,
+            approved_count=r.approved_count,
+        )
+        for r in result.all()
+    ]
 
 
 def _parse_uuid(item_id: str) -> UUID:
@@ -2337,12 +2403,17 @@ async def cohort_weak_spots(
     focus_map: dict[str, str] = {}
     if question_ids:
         ann_result = await db.execute(
-            select(Question.id, QuestionAnnotation.grammar_focus_key)
+            select(Question.id, QuestionAnnotation.annotation_jsonb)
             .join(QuestionAnnotation, Question.latest_annotation_id == QuestionAnnotation.id)
             .where(Question.id.in_([r.question_id for r in q_rows]))
         )
-        for qid, fk in ann_result.all():
-            focus_map[str(qid)] = fk or ""
+        for qid, annotation_jsonb in ann_result.all():
+            annotation = annotation_jsonb or {}
+            focus_map[str(qid)] = (
+                annotation.get("grammar_focus_key")
+                or annotation.get("reading_focus_key")
+                or ""
+            )
 
     question_misses = [
         QuestionMissRate(

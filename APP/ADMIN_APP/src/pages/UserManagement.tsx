@@ -14,6 +14,7 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 
 function CreateUserModal({ onClose }: { onClose: () => void }) {
   const qc = useQueryClient()
+  const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const mutation = useMutation({
     mutationFn: (data: any) => adminApi.createUser(data),
@@ -27,7 +28,15 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Create User</h2>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="student_username"
+        />
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email (optional)</label>
         <input
           type="email"
           value={email}
@@ -46,8 +55,8 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
             Cancel
           </button>
           <button
-            onClick={() => mutation.mutate({ email })}
-            disabled={!email || mutation.isPending}
+            onClick={() => mutation.mutate({ username, email: email || undefined })}
+            disabled={!username || mutation.isPending}
             className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition"
           >
             {mutation.isPending ? 'Creating…' : 'Create'}
@@ -58,8 +67,149 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
   )
 }
 
+function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
+  const qc = useQueryClient()
+  const [username, setUsername] = useState(user.username)
+  const [email, setEmail] = useState(user.email ?? '')
+  const [role, setRole] = useState(user.role)
+  const [isActive, setIsActive] = useState(user.is_active)
+  const mutation = useMutation({
+    mutationFn: () =>
+      adminApi.updateUser(user.id, {
+        username,
+        email: email.trim() || null,
+        role,
+        is_active: isActive,
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['users'] })
+      onClose()
+    },
+  })
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Edit User</h2>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="student">student</option>
+          <option value="admin">admin</option>
+        </select>
+        <label className="flex items-center gap-2 text-sm text-gray-700 mb-4">
+          <input
+            type="checkbox"
+            checked={isActive}
+            onChange={(e) => setIsActive(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+          Active account
+        </label>
+        {mutation.isError && <p className="text-red-600 text-sm mb-3">Failed to update user.</p>}
+        <div className="flex gap-2 justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => mutation.mutate()}
+            disabled={!username || mutation.isPending}
+            className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition"
+          >
+            {mutation.isPending ? 'Saving...' : 'Save'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ResetPasswordModal({ user, onClose }: { user: User; onClose: () => void }) {
+  const [newPassword, setNewPassword] = useState('')
+  const [done, setDone] = useState(false)
+  const mutation = useMutation({
+    mutationFn: () => adminApi.resetUserPassword(user.id, newPassword),
+    onSuccess: () => setDone(true),
+  })
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
+        <h2 className="text-lg font-semibold text-gray-800 mb-2">Reset Password</h2>
+        <p className="text-sm text-gray-500 mb-4">for {user.email ?? user.username}</p>
+
+        {done ? (
+          <>
+            <p className="text-sm text-gray-700 mb-2">Password reset. Share this with the student:</p>
+            <p className="font-mono text-sm bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 mb-4 break-all">
+              {newPassword}
+            </p>
+            <div className="flex justify-end">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+              >
+                Done
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <label className="block text-sm font-medium text-gray-700 mb-1">New password</label>
+            <input
+              type="text"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Minimum 8 characters"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {mutation.isError && <p className="text-red-600 text-sm mb-3">Failed to reset password.</p>}
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => mutation.mutate()}
+                disabled={newPassword.length < 8 || mutation.isPending}
+                className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50 transition"
+              >
+                {mutation.isPending ? 'Resetting...' : 'Reset Password'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export function UserManagement() {
   const [showCreate, setShowCreate] = useState(false)
+  const [editTarget, setEditTarget] = useState<User | null>(null)
+  const [resetTarget, setResetTarget] = useState<User | null>(null)
   const [search, setSearch] = useState('')
   const qc = useQueryClient()
 
@@ -75,7 +225,7 @@ export function UserManagement() {
   })
 
   const filtered = (users ?? []).filter((u) =>
-    u.email.toLowerCase().includes(search.toLowerCase())
+    (u.email ?? u.username).toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -106,7 +256,7 @@ export function UserManagement() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by email…"
+          placeholder="Search by email or username…"
           className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -138,7 +288,7 @@ export function UserManagement() {
               {filtered.map((u) => (
                 <tr key={u.id} className="hover:bg-gray-50 transition">
                   <td className="px-4 py-3 text-gray-500 font-mono text-xs">{u.id}</td>
-                  <td className="px-4 py-3 font-medium text-gray-800">{u.email}</td>
+                  <td className="px-4 py-3 font-medium text-gray-800">{u.email ?? u.username}</td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-400 truncate max-w-xs">
                     {u.user_token?.slice(0, 16)}…
                   </td>
@@ -147,8 +297,20 @@ export function UserManagement() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
+                      onClick={() => setEditTarget(u)}
+                      className="text-xs text-blue-500 hover:text-blue-700 transition mr-3"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setResetTarget(u)}
+                      className="text-xs text-amber-600 hover:text-amber-700 transition mr-3"
+                    >
+                      Reset Password
+                    </button>
+                    <button
                       onClick={() => {
-                        if (confirm(`Delete user ${u.email}?`)) deleteMutation.mutate(u.id)
+                        if (confirm(`Delete user ${u.email ?? u.username}?`)) deleteMutation.mutate(u.id)
                       }}
                       className="text-xs text-red-500 hover:text-red-700 transition"
                     >
@@ -163,6 +325,10 @@ export function UserManagement() {
       </div>
 
       {showCreate && <CreateUserModal onClose={() => setShowCreate(false)} />}
+      {editTarget && <EditUserModal user={editTarget} onClose={() => setEditTarget(null)} />}
+      {resetTarget && (
+        <ResetPasswordModal user={resetTarget} onClose={() => setResetTarget(null)} />
+      )}
     </div>
   )
 }

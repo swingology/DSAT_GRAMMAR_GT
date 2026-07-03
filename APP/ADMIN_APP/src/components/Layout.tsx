@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 const NAV = [
+  { to: '/dashboard', label: 'Dashboard', icon: '⌂' },
   { to: '/users', label: 'User Management', icon: '👥' },
   { to: '/data', label: 'Data Management', icon: '📋' },
   { to: '/students', label: 'Student Performance', icon: '📈' },
