@@ -47,6 +47,17 @@ export interface QuestionOption {
   is_correct?: boolean
 }
 
+export interface TestSummary {
+  source_release_year?: number
+  source_test_name?: string
+  source_exam_code?: string
+  source_subject_code?: string
+  source_section_code?: string
+  source_module_code?: string
+  question_count: number
+  approved_count: number
+}
+
 export interface GenerationAnalytics {
   total_generated: number
   total_approved: number

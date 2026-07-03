@@ -29,6 +29,7 @@ export const adminApi = {
     return apiCall(`/admin/questions?${q}`)
   },
   getQuestion: (id: string) => apiCall(`/admin/questions/${id}`),
+  getTests: () => apiCall('/admin/tests'),
   approveQuestion: (id: string) => apiCall(`/admin/questions/${id}/approve`, { method: 'POST' }),
   rejectQuestion: (id: string, reason: string) =>
     apiCall(`/admin/questions/${id}/reject`, { method: 'POST', body: JSON.stringify({ reason }) }),

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '../api/client'
-import type { Question } from '../types'
+import type { Question, TestSummary } from '../types'
 
 type StatusFilter = 'all' | 'active' | 'draft' | 'needs_review' | 'rejected'
 type OriginFilter = 'all' | 'official' | 'generated' | 'admin_created'
@@ -258,6 +258,47 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
   )
 }
 
+function TestBrowser({ onSelectTest }: { onSelectTest: (t: TestSummary) => void }) {
+  const { data: tests, isLoading } = useQuery<TestSummary[]>({
+    queryKey: ['admin-tests'],
+    queryFn: () => adminApi.getTests(),
+    retry: 1,
+  })
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
+        ))}
+      </div>
+    )
+  }
+
+  if (!tests || tests.length === 0) {
+    return <div className="p-8 text-center text-gray-400 text-sm">No source test data found.</div>
+  }
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {tests.map((t, i) => (
+        <button
+          key={i}
+          onClick={() => onSelectTest(t)}
+          className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-blue-300 hover:shadow-sm transition"
+        >
+          <p className="text-sm font-semibold text-gray-800">
+            {t.source_test_name ?? 'Unknown'} {t.source_section_code ?? ''} {t.source_module_code ?? ''}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {t.question_count} questions · {t.approved_count} approved
+          </p>
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export function DataManagement() {
   const qc = useQueryClient()
   const [status, setStatus] = useState<StatusFilter>('all')
@@ -265,11 +306,17 @@ export function DataManagement() {
   const [page, setPage] = useState(1)
   const [rejectTarget, setRejectTarget] = useState<Question | null>(null)
   const [detailTarget, setDetailTarget] = useState<Question | null>(null)
+  const [mode, setMode] = useState<'list' | 'tests'>('list')
+  const [testFilter, setTestFilter] = useState<TestSummary | null>(null)
   const limit = 25
 
   const params: Record<string, any> = { limit, offset: (page - 1) * limit }
   if (status !== 'all') params.practice_status = status
   if (origin !== 'all') params.content_origin = origin
+  if (testFilter) {
+    if (testFilter.source_test_name) params.source_test_name = testFilter.source_test_name
+    params.sort_by_source = true
+  }
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['questions', params],
@@ -336,88 +383,123 @@ export function DataManagement() {
           ))}
         </div>
 
+        <div className="flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
+          <button
+            onClick={() => { setMode('list'); setTestFilter(null) }}
+            className={[
+              'px-3 py-1.5 rounded-md text-xs font-medium transition',
+              mode === 'list' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700',
+            ].join(' ')}
+          >
+            All Questions
+          </button>
+          <button
+            onClick={() => setMode('tests')}
+            className={[
+              'px-3 py-1.5 rounded-md text-xs font-medium transition',
+              mode === 'tests' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700',
+            ].join(' ')}
+          >
+            Browse by Test
+          </button>
+        </div>
+
         <div className="ml-auto text-xs text-gray-400 self-center">
           {total} total
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        {isLoading ? (
-          <div className="space-y-2 p-4">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 rounded animate-pulse" />
-            ))}
+      {mode === 'tests' && !testFilter ? (
+        <TestBrowser onSelectTest={setTestFilter} />
+      ) : (
+        <>
+          {testFilter && (
+            <button
+              onClick={() => setTestFilter(null)}
+              className="text-xs text-blue-600 hover:underline"
+            >
+              ← Back to tests
+            </button>
+          )}
+          {/* Table */}
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            {isLoading ? (
+              <div className="space-y-2 p-4">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="h-12 bg-gray-100 rounded animate-pulse" />
+                ))}
+              </div>
+            ) : isError ? (
+              <div className="p-8 text-center text-red-600 text-sm">Failed to load questions.</div>
+            ) : questions.length === 0 ? (
+              <div className="p-8 text-center text-gray-400 text-sm">No questions found.</div>
+            ) : (
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Question</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Origin</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Focus</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Difficulty</th>
+                    <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {questions.map((q) => (
+                    <tr key={q.id} className="hover:bg-gray-50 transition">
+                      <td
+                        className="px-4 py-3 max-w-sm cursor-pointer"
+                        onClick={() => setDetailTarget(q)}
+                      >
+                        <p className="text-gray-800 line-clamp-2 text-xs leading-relaxed hover:underline">
+                          {q.current_question_text}
+                        </p>
+                        <p className="text-gray-400 font-mono text-xs mt-0.5">{q.id.slice(0, 8)}…</p>
+                      </td>
+                      <td className="px-4 py-3">
+                        <StatusBadge status={q.practice_status} />
+                      </td>
+                      <td className="px-4 py-3 text-xs text-gray-500 capitalize">
+                        {q.content_origin?.replace(/_/g, ' ')}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-gray-500">
+                        {(q.annotation?.grammar_focus_key ?? q.annotation?.reading_focus_key ?? '—')
+                          .toString()
+                          .replace(/_/g, ' ')}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-gray-500 capitalize">
+                        {q.annotation?.difficulty_overall ?? '—'}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex gap-1 justify-end">
+                          {q.practice_status !== 'active' && q.practice_status !== 'approved' && (
+                            <button
+                              onClick={() => approveMutation.mutate(q.id)}
+                              disabled={approveMutation.isPending}
+                              className="text-xs px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded transition"
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {q.practice_status !== 'rejected' && (
+                            <button
+                              onClick={() => setRejectTarget(q)}
+                              className="text-xs px-2 py-1 bg-red-100 hover:bg-red-200 text-red-600 rounded transition"
+                            >
+                              Reject
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
-        ) : isError ? (
-          <div className="p-8 text-center text-red-600 text-sm">Failed to load questions.</div>
-        ) : questions.length === 0 ? (
-          <div className="p-8 text-center text-gray-400 text-sm">No questions found.</div>
-        ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Question</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Origin</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Focus</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Difficulty</th>
-                <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {questions.map((q) => (
-                <tr key={q.id} className="hover:bg-gray-50 transition">
-                  <td
-                    className="px-4 py-3 max-w-sm cursor-pointer"
-                    onClick={() => setDetailTarget(q)}
-                  >
-                    <p className="text-gray-800 line-clamp-2 text-xs leading-relaxed hover:underline">
-                      {q.current_question_text}
-                    </p>
-                    <p className="text-gray-400 font-mono text-xs mt-0.5">{q.id.slice(0, 8)}…</p>
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={q.practice_status} />
-                  </td>
-                  <td className="px-4 py-3 text-xs text-gray-500 capitalize">
-                    {q.content_origin?.replace(/_/g, ' ')}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-gray-500">
-                    {(q.annotation?.grammar_focus_key ?? q.annotation?.reading_focus_key ?? '—')
-                      .toString()
-                      .replace(/_/g, ' ')}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-gray-500 capitalize">
-                    {q.annotation?.difficulty_overall ?? '—'}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex gap-1 justify-end">
-                      {q.practice_status !== 'active' && q.practice_status !== 'approved' && (
-                        <button
-                          onClick={() => approveMutation.mutate(q.id)}
-                          disabled={approveMutation.isPending}
-                          className="text-xs px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded transition"
-                        >
-                          Approve
-                        </button>
-                      )}
-                      {q.practice_status !== 'rejected' && (
-                        <button
-                          onClick={() => setRejectTarget(q)}
-                          className="text-xs px-2 py-1 bg-red-100 hover:bg-red-200 text-red-600 rounded transition"
-                        >
-                          Reject
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+        </>
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (
