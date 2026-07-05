@@ -21,6 +21,13 @@ export const adminApi = {
   listUsers: () => apiCall('/users'),
   getUser: (id: number) => apiCall(`/users/${id}`),
   createUser: (data: any) => apiCall('/users', { method: 'POST', body: JSON.stringify(data) }),
+  updateUser: (id: number, data: { username?: string; email?: string | null; role?: string; is_active?: boolean }) =>
+    apiCall(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  resetUserPassword: (id: number, newPassword: string) =>
+    apiCall(`/users/${id}/reset-password`, {
+      method: 'POST',
+      body: JSON.stringify({ new_password: newPassword }),
+    }),
   deleteUser: (id: number) => apiCall(`/users/${id}`, { method: 'DELETE' }),
 
   // Questions
