@@ -29,8 +29,11 @@ docker exec "$CONTAINER" \
 SIZE=$(du -sh "$OUTFILE" | cut -f1)
 echo "[$(date)] Backup complete: $OUTFILE ($SIZE)"
 
-# Prune old backups, keep $KEEP most recent
-ls -t "$BACKUP_DIR"/dsat_dev_*.dump 2>/dev/null | tail -n +$((KEEP + 1)) | while read -r old; do
+# Prune old backups, keep $KEEP most recent. Sort by the timestamp encoded in
+# the filename, not mtime — a git-tracked dump's mtime resets on checkout,
+# which let stale dumps dodge rotation indefinitely (see .gitignore, dumps
+# are no longer committed).
+ls "$BACKUP_DIR"/dsat_dev_*.dump 2>/dev/null | sort -r | tail -n +$((KEEP + 1)) | while read -r old; do
   echo "[$(date)] Pruning old backup: $old"
   rm -f "$old"
 done

@@ -20,4 +20,6 @@ screenshot.png
 
 # Auto Claude data directory
 .auto-claude/
-backups/dsat_dev_20260627_020001.dump
+
+# DB backup dumps — rotated locally by scripts/backup_db.sh, never committed
+backups/*.dump
