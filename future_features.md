@@ -538,3 +538,15 @@ Ideas not in current scope but worth tracking:
 - [ ] **Progress over time** — chart student accuracy trend by week/month per domain
 - [ ] **Full test simulation** — two-module adaptive test (mod01 → mod02 higher/lower based on mod01 score), with score estimate at the end
 - [ ] **Passage-based questions** — student UI support for displaying passages alongside questions (currently grammar-only)
+
+---
+
+## Student Tracking — Trap Analysis (Phase 2.5 leftovers)
+
+Phase 2.5 (distractor trap tracking — annotation → submission → storage → analytics → dashboard) is complete and verified end-to-end (see `docs/archive/student-tracking/student-tracking-tasks.md` TASK-001–013). These items were deliberately deferred, not because they're low-value, but because their trigger conditions haven't happened yet:
+
+- [ ] **TASK-014 — Cache `GET /api/student/trap-susceptibility`** — declined as a nightly-batch job (2026-07-05 decision, see `.wolf/cerebrum.md` Decision Log) because a nightly refresh means a student's own most recent answers wouldn't show up in their dashboard until the next day. Endpoint currently aggregates live from `user_progress` on every request, which is fine at current traffic (~1 test user). **Revisit when server load is high enough that this query is measurably slow** — and when it's revisited, prefer a write-through cache (recompute on answer submit) or a short-TTL read cache over a nightly batch, so freshness doesn't regress.
+- [ ] **TASK-016 — Integrate trap susceptibility into Spaced Repetition ordering** — sort due questions by the student's trap fall-rate (most susceptible traps first) in addition to days-overdue. Blocked on Phase 2 (Spaced Repetition) existing in a state ready for this kind of prioritization change.
+- [ ] **TASK-017 — Surface trap trends in Analytics/Progress dashboard** — add trap-improvement trend data to `student_daily_stats` and the progress-trend endpoint/UI. Blocked on Phase 3 (Analytics) being further along.
+
+(TASK-015 — backfilling `missed_syntactic_trap_key` on historical `user_progress` rows — is being handled separately on a data-integrity branch, not tracked here.)

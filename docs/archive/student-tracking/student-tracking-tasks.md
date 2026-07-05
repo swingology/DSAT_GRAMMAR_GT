@@ -252,7 +252,14 @@
 - ✅ Backend receives and stores trap data
 - ✅ Database has trap type for all test answers
 - ✅ Both focus_key and trap_key are populated
-- ✅ No errors in browser console or server logs
+- ✅ No errors in browser console or server logs (only a benign extension-noise line, see below)
+
+**Verified 2026-07-05 (API + code level, then live browser click-through):**
+- Dev stack confirmed running on non-default ports: backend `:8002`, frontend `:5174`, db `:5437` (see `.wolf/cerebrum.md`).
+- `POST /api/submit` with a wrong answer stored `missed_syntactic_trap_key` + `missed_grammar_focus_key` together in `user_progress` (row id 14).
+- Code-read confirmed `useGrammarSession.ts:275` and `DiagnosticTab.tsx:43-63` extract `distractor_type_key` from the selected option into the exact same payload shape used in the manual test — the frontend wiring from TASK-001/002/003 is real, not just documented.
+- Ran a full diagnostic session via `/api/diagnostic/start` → `submit` ×3 → `complete`: 2 wrong answers both got `missed_syntactic_trap_key` populated (100% coverage), 1 correct answer correctly got `NULL` trap (defense-in-depth logic at `student.py:1815` confirmed). `complete` response's `breakdown.by_trap` correctly aggregated both traps.
+- **Live browser click-through completed manually** (claude-in-chrome extension automation was unreliable — tab-group state kept dropping after every navigate call, ~5 failed attempts — so the user drove it directly in their own browser via Tailscale at `https://jb-2410:8443/practice/grammar`): clicked a real wrong answer on question `40e4e597-b90a-5ca1-9ee1-4e0557fb759d`, DevTools Network tab showed the `/api/submit` payload with `missed_syntactic_trap_key: "semantic_imprecision"` and `missed_grammar_focus_key: "precision_word_choice"` both populated; confirmed stored in `user_progress` (row id 20). Only console output was a benign `Unchecked runtime.lastError: The message port closed before a response was received` — standard Chrome extension messaging noise, unrelated to the app.
 
 ---
 
@@ -677,136 +684,28 @@
 - **File:** `backend/alembic/versions/XXX_add_student_trap_susceptibility.py` (new migration)
 - **Effort:** 1 day
 - **Dependency:** None (can do anytime after TASK-006)
-- **Status:** ☐ Not Started
+- **Status:** ❌ Declined 2026-07-05 — see decision note below
 
-**Subtasks:**
-- [ ] Create Alembic migration
-  - **Table Name:** student_trap_susceptibility
-  - **Fields:** id, user_id, trap_fall_rates (JSONB), trap_patterns (JSONB), most_susceptible_traps (VARCHAR[]), last_updated
-  - **Criteria:** Migration script created
-
-- [ ] Add to SQLAlchemy models
-  - **File:** `backend/app/models/db.py`
-  - **Class:** StudentTrapSusceptibility
-  - **Criteria:** Model defined
-
-- [ ] Create nightly aggregation job
-  - **File:** `backend/app/jobs/nightly_aggregation.py` (new file)
-  - **Logic:** Run after midnight, aggregate UserProgress → StudentTrapSusceptibility
-  - **Criteria:** Job runs successfully
-
-- [ ] Schedule nightly job
-  - **Tool:** APScheduler or similar
-  - **Time:** 00:30 UTC
-  - **Criteria:** Job executes on schedule
-
-- [ ] Update endpoint to use table
-  - **Change:** TASK-006 endpoint now queries StudentTrapSusceptibility instead of aggregating on-the-fly
-  - **Performance:** Query time drops from 2s to <50ms
-  - **Criteria:** Endpoint faster
-
-- [ ] Test aggregation job
-  - **Setup:** Create test data, run job manually
-  - **Verify:** StudentTrapSusceptibility populated correctly
-  - **Criteria:** Job works
-
-**Acceptance Criteria:**
-- ✅ Migration applies without errors
-- ✅ Table created with correct schema
-- ✅ Aggregation job runs successfully
-- ✅ Endpoint uses new table
-- ✅ Query time < 50ms
+**Decision (2026-07-05):** Declined as a nightly-batch job. The nightly design means the dashboard shows yesterday's trap stats, not today's — a student's most recent answers wouldn't appear until the next day's job ran. User rejected that staleness tradeoff. Current traffic is essentially one test user, so there is no performance problem the live query needs solving yet. `GET /api/student/trap-susceptibility` stays as a live on-the-fly aggregation from `user_progress`. **Moved to `future_features.md` → "Student Tracking — Trap Analysis (Phase 2.5 leftovers)"** to revisit when server load makes it measurably slow — and when it's revisited, prefer a write-through cache or short-TTL read cache over a nightly batch. Full decision rationale also in `.wolf/cerebrum.md` Decision Log (2026-07-05).
 
 ---
 
 #### TASK-015: Backfill Historical Trap Data
 - **Effort:** 0.5 days
-- **Dependency:** TASK-014 (if using new table) or can do standalone
-- **Status:** ☐ Not Started
-
-**Subtasks:**
-- [ ] Write backfill script
-  - **File:** `backend/scripts/backfill_traps.py`
-  - **Logic:** For each UserProgress with NULL missed_syntactic_trap_key:
-    - Join question_id → Question.latest_annotation
-    - Join selected_option_label → QuestionOption.distractor_type_key
-    - Update missed_syntactic_trap_key
-  - **Criteria:** Script ready
-
-- [ ] Test on staging data
-  - **Setup:** Copy 1000 rows to test table
-  - **Run:** Backfill script
-  - **Verify:** missed_syntactic_trap_key populated
-  - **Criteria:** Script works
-
-- [ ] Run on production (if applicable)
-  - **Estimate:** ~30 min for 100k rows
-  - **Criteria:** Completes successfully
-
-**Acceptance Criteria:**
-- ✅ Script populates historical trap data
-- ✅ No data corruption
-- ✅ Completes in reasonable time
+- **Dependency:** standalone
+- **Status:** Being handled on a separate data-integrity branch (owner: user), alongside chart/graph fill issues — not tracked further in this file.
 
 ---
 
 ### 🟢 Cross-Phase Integration
 
 #### TASK-016: Integrate with Phase 2 (Spaced Repetition)
-- **Effort:** 1 day
-- **Dependency:** Phase 2 complete (TASK-016 requires SpacedRepetitionState table)
-- **Status:** ☐ Not Started (Blocked by Phase 2)
-
-**Subtasks:**
-- [ ] When surfacing due questions, prioritize traps
-  - **File:** `backend/app/routers/student.py`
-  - **Logic:** Sort due questions by:
-    1. User's susceptibility to that trap (high fall_rate first)
-    2. Days overdue (oldest first)
-  - **Criteria:** Query works
-
-- [ ] Update GET /api/spaced-repetition/due-questions
-  - **Change:** Add trap_type to response
-  - **Change:** Sort by user susceptibility
-  - **Criteria:** Endpoint returns trap-aware order
-
-- [ ] Test spaced rep + trap analysis integration
-  - **Scenario:** User has 5 due questions, 2 with subject_number_mismatch (high susceptibility)
-  - **Expected:** subject_number_mismatch questions appear first
-  - **Criteria:** Ordering correct
-
-**Acceptance Criteria:**
-- ✅ Due questions prioritize user's susceptible traps
-- ✅ Tests pass
-- ✅ No performance regression
+- **Status:** Blocked by Phase 2 (Spaced Repetition). **Moved to `future_features.md` → "Student Tracking — Trap Analysis (Phase 2.5 leftovers)"**.
 
 ---
 
 #### TASK-017: Integrate with Phase 3 (Analytics)
-- **Effort:** 0.5 days
-- **Dependency:** Phase 3 in progress
-- **Status:** ☐ Not Started (Blocked by Phase 3)
-
-**Subtasks:**
-- [ ] Add trap improvement metrics to student_daily_stats
-  - **File:** `backend/app/models/db.py`
-  - **Fields:** trap_fall_rates (JSONB), new_traps_encountered (INT)
-  - **Criteria:** Table updated
-
-- [ ] Update analytics endpoints to include trap trends
-  - **File:** `backend/app/routers/student.py`
-  - **Endpoint:** GET /api/progress/trend
-  - **Data:** trap_improvement per trap_type
-  - **Criteria:** Endpoint works
-
-- [ ] Update frontend progress dashboard
-  - **File:** `APP/STUDENT_APP_REDUX/src/pages/ProgressPage.tsx`
-  - **Add:** "Trap Mastery" section with line chart
-  - **Criteria:** Chart renders
-
-**Acceptance Criteria:**
-- ✅ Daily stats include trap data
-- ✅ Analytics show trap trends
+- **Status:** Blocked by Phase 3 (Analytics). **Moved to `future_features.md` → "Student Tracking — Trap Analysis (Phase 2.5 leftovers)"**.
 - ✅ Frontend displays trends correctly
 
 ---
@@ -819,7 +718,7 @@
 | TASK-002 | Extract trap in DiagnosticTab | 0.5d | 001 | ✅ |
 | TASK-003 | Update API client types | 0.5d | 001,002 | ✅ |
 | TASK-004 | Backend type updates | 0.5d | None | ✅ (pre-existing) |
-| **TASK-005** | **Manual integration test** | **1d** | **001-004** | **⏳ needs live stack** |
+| **TASK-005** | **Manual integration test** | **1d** | **001-004** | **✅ (fully verified 2026-07-05: API, DB, and live manual browser click-through)** |
 | TASK-006 | GET /api/student/trap-susceptibility | 1.5d | 005 | ✅ |
 | TASK-007 | Test trap susceptibility endpoint | 1d | 006 | ✅ |
 | TASK-008 | GET question-type-performance | 1d | 006 | ✅ |
@@ -828,8 +727,8 @@
 | TASK-011 | TrapDetailView component | 1.5d | 009 | ✅ |
 | TASK-012 | Update dashboard navigation | 0.5d | 010,011 | ✅ |
 | **TASK-013** | **End-to-end dashboard test** | **1d** | **010-012** | **✅** |
-| TASK-014 | Create StudentTrapSusceptibility table (OPT) | 1d | 006 | ☐ |
-| TASK-015 | Backfill historical trap data (OPT) | 0.5d | 014 | ☐ |
+| TASK-014 | Create StudentTrapSusceptibility table (OPT) | 1d | 006 | ❌ Declined 2026-07-05 (nightly staleness rejected; live query kept) |
+| TASK-015 | Backfill historical trap data (OPT) | 0.5d | standalone | ☐ |
 | TASK-016 | Integrate with Phase 2 (Blocked) | 1d | Phase 2 | ☐ |
 | TASK-017 | Integrate with Phase 3 (Blocked) | 0.5d | Phase 3 | ☐ |
 

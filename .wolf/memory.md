@@ -4591,3 +4591,282 @@
 | 19:44 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
 | 19:47 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
 | 19:53 | Session end: 18 writes across 8 files (.zshrc, .zshenv, admin_dashboard_plan.md, project_rtk-path-fix.md, MEMORY.md) | 24 reads | ~162940 tok |
+
+## Session: 2026-07-02 15:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:18 | Edited backend/tests/test_admin_router.py | modified test_admin_relations_list_rejects_zero_limit() | ~597 |
+| 17:18 | Edited backend/app/routers/admin.py | 3→4 lines | ~60 |
+| 17:19 | Created .superpowers/sdd/task-1.1-report.md | — | ~873 |
+| 17:20 | Session end: 3 writes across 3 files (test_admin_router.py, admin.py, task-1.1-report.md) | 7 reads | ~35293 tok |
+| 17:21 | Edited backend/app/routers/admin.py | 2→3 lines | ~40 |
+| 17:22 | Created .superpowers/sdd/task-1.1-report.md | — | ~1321 |
+| 17:23 | Session end: 5 writes across 3 files (test_admin_router.py, admin.py, task-1.1-report.md) | 9 reads | ~37638 tok |
+| 17:24 | Session end: 5 writes across 3 files (test_admin_router.py, admin.py, task-1.1-report.md) | 12 reads | ~48871 tok |
+| 17:25 | Session end: 5 writes across 3 files (test_admin_router.py, admin.py, task-1.1-report.md) | 13 reads | ~48871 tok |
+| 17:25 | Edited backend/app/models/payload.py | modified TestSummary() | ~108 |
+| 17:25 | Edited backend/tests/test_admin_router.py | modified test_admin_list_tests_empty() | ~83 |
+| 17:26 | Session end: 7 writes across 4 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py) | 14 reads | ~59919 tok |
+| 17:26 | Edited backend/app/routers/admin.py | 4→5 lines | ~56 |
+| 17:26 | Edited backend/app/routers/admin.py | modified list_tests() | ~534 |
+| 17:26 | Edited backend/tests/test_admin_router.py | modified test_admin_list_tests_empty() | ~423 |
+| 17:27 | Created .superpowers/sdd/task-1.2-report.md | — | ~1372 |
+| 17:27 | Session end: 11 writes across 5 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 15 reads | ~63688 tok |
+| 17:29 | Session end: 11 writes across 5 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 17 reads | ~63688 tok |
+| 17:29 | Edited APP/ADMIN_APP/src/types/index.ts | expanded (+14 lines) | ~264 |
+| 17:29 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added optional chaining | ~123 |
+| 17:30 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/8fa50fd0-17ac-43b9-baf1-6b4534740212/scratchpad/commit-msg-1.3.txt | — | ~149 |
+| 17:31 | Created .superpowers/sdd/task-1.3-report.md | — | ~1303 |
+| 17:31 | Session end: 15 writes across 9 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 19 reads | ~69158 tok |
+| 17:32 | Session end: 15 writes across 9 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 22 reads | ~70379 tok |
+| 17:33 | Session end: 15 writes across 9 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 22 reads | ~70522 tok |
+| 17:33 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added nullish coalescing | ~2621 |
+| 17:33 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | 2→3 lines | ~48 |
+| 17:33 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | CSS: hover | ~132 |
+| 17:33 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | 10→14 lines | ~109 |
+| 17:34 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/8fa50fd0-17ac-43b9-baf1-6b4534740212/scratchpad/commit-msg-1.4.txt | — | ~19 |
+| 17:34 | Created .superpowers/sdd/task-1.4-report.md | — | ~1343 |
+| 17:36 | Session end: 21 writes across 11 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 24 reads | ~76679 tok |
+| 17:36 | Edited docs/backend/api-endpoints.md | 8→10 lines | ~286 |
+| 17:37 | Edited docs/backend/api-endpoints.md | added optional chaining | ~720 |
+| 17:37 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_annotation-shape-inconsistency.md | — | ~511 |
+| 17:37 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→2 lines | ~102 |
+| 17:37 | Session end: 25 writes across 14 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 26 reads | ~78413 tok |
+| 17:40 | Session end: 25 writes across 14 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 29 reads | ~79672 tok |
+| 17:40 | Edited APP/ADMIN_APP/src/api/client.ts | 1→2 lines | ~31 |
+| 17:41 | Edited APP/ADMIN_APP/src/types/index.ts | expanded (+11 lines) | ~109 |
+| 17:41 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | inline fix | ~16 |
+| 17:41 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added nullish coalescing | ~385 |
+| 17:41 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added 2 condition(s) | ~182 |
+| 17:41 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | expanded (+35 lines) | ~1610 |
+| 17:43 | Created .superpowers/sdd/task-1.5-report.md | — | ~1660 |
+| 17:44 | Task 1.5: added TestBrowser/browse-mode to DataManagement, getTests + TestSummary; built clean under Node 20; committed 75cb67e to admin-dashboard-phase-1 | client.ts, types/index.ts, DataManagement.tsx | done | ~build-verified |
+| 17:44 | Session end: 32 writes across 16 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 30 reads | ~89047 tok |
+| 17:44 | Session end: 32 writes across 16 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 32 reads | ~90603 tok |
+| 17:46 | Session end: 32 writes across 16 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 34 reads | ~90603 tok |
+| 17:49 | Edited admin_dashboard_tasks.md | added nullish coalescing | ~1331 |
+| 17:50 | Session end: 33 writes across 17 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 36 reads | ~113321 tok |
+| 17:58 | Session end: 33 writes across 17 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 36 reads | ~113321 tok |
+| 18:03 | Edited backend/app/routers/admin.py | 3→8 lines | ~94 |
+| 18:03 | Edited backend/tests/test_admin_router.py | modified test_admin_list_questions_options_use_option_label_and_text_keys() | ~831 |
+| 18:05 | Edited admin_dashboard_tasks.md | inline fix | ~28 |
+| 18:05 | Edited admin_dashboard_tasks.md | expanded (+8 lines) | ~198 |
+| 18:06 | Edited CHANGELOG.md | added optional chaining | ~918 |
+| 18:06 | Edited CHANGELOG.md | 4→2 lines | ~44 |
+| 18:09 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/feedback_fix-logging-convention.md | — | ~442 |
+| 18:09 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→2 lines | ~97 |
+| 18:09 | Session end: 41 writes across 19 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 37 reads | ~324129 tok |
+| 18:13 | Session end: 41 writes across 19 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 37 reads | ~324129 tok |
+| 18:14 | Session end: 41 writes across 19 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 37 reads | ~324129 tok |
+| 20:49 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_admin-dashboard-phase1-status.md | — | ~760 |
+| 20:49 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→2 lines | ~96 |
+| 20:50 | Edited backend/app/routers/admin.py | expanded (+6 lines) | ~395 |
+| 20:50 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | CSS: enabled | ~279 |
+| 20:50 | Edited backend/app/routers/admin.py | 3→4 lines | ~111 |
+| 20:50 | Edited backend/app/routers/admin.py | 3→5 lines | ~67 |
+| 20:50 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added 1 condition(s) | ~83 |
+| 20:51 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | 2→2 lines | ~20 |
+| 20:51 | Edited backend/tests/test_admin_router.py | modified test_admin_list_questions_filters_by_subject_section_module_code() | ~479 |
+| 20:52 | Edited admin_dashboard_tasks.md | inline fix | ~24 |
+| 20:53 | Edited admin_dashboard_tasks.md | modified 3() | ~450 |
+| 20:53 | Edited CHANGELOG.md | expanded (+9 lines) | ~379 |
+| 20:53 | Edited CHANGELOG.md | inline fix | ~23 |
+| 20:54 | Session end: 54 writes across 20 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 37 reads | ~328655 tok |
+| 20:57 | Created .nvmrc | — | ~1 |
+| 20:57 | Created APP/ADMIN_APP/.nvmrc | — | ~1 |
+| 20:57 | Created APP/STUDENT_APP_REDUX/.nvmrc | — | ~1 |
+| 20:57 | Edited APP/ADMIN_APP/package.json | 3→6 lines | ~28 |
+| 20:57 | Edited APP/STUDENT_APP_REDUX/package.json | 3→6 lines | ~28 |
+| 20:58 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_node-wasm-linux-fix.md | modified fix() | ~893 |
+| 20:58 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | inline fix | ~56 |
+| 20:59 | Session end: 61 writes across 23 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 40 reads | ~330161 tok |
+| 21:06 | Session end: 61 writes across 23 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 40 reads | ~330161 tok |
+| 21:09 | Edited CHANGELOG.md | removed 64 lines | ~27 |
+| 21:10 | Session end: 62 writes across 23 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 40 reads | ~330336 tok |
+| 21:12 | Session end: 62 writes across 23 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 40 reads | ~330569 tok |
+| 21:14 | Session end: 62 writes across 23 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 41 reads | ~330569 tok |
+| 21:14 | Edited backend/app/models/payload.py | modified UserCreate() | ~103 |
+| 21:14 | Edited backend/tests/test_users_router.py | modified test_update_user_not_found() | ~768 |
+| 21:14 | Edited backend/app/routers/users.py | inline fix | ~20 |
+| 21:14 | Edited backend/app/routers/users.py | modified update_user() | ~357 |
+| 21:21 | Session end: 66 writes across 25 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 44 reads | ~384752 tok |
+| 21:23 | Edited DEBUG_LOG.md | modified Critical() | ~809 |
+| 21:23 | Created .superpowers/sdd/task-2.1-report.md | — | ~2203 |
+| 21:25 | Session end: 68 writes across 27 files (test_admin_router.py, admin.py, task-1.1-report.md, payload.py, task-1.2-report.md) | 44 reads | ~390055 tok |
+
+## Session: 2026-07-03 22:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:33 | Edited APP/ADMIN_APP/vite.config.ts | 6→6 lines | ~26 |
+| 00:30 | Edited APP/ADMIN_APP/vite.config.ts | 6→6 lines | ~26 |
+| 00:36 | Session end: 2 writes across 1 files (vite.config.ts) | 9 reads | ~23331 tok |
+| 00:38 | Session end: 2 writes across 1 files (vite.config.ts) | 9 reads | ~23331 tok |
+| 00:38 | Session end: 2 writes across 1 files (vite.config.ts) | 9 reads | ~23331 tok |
+| 00:43 | Session end: 2 writes across 1 files (vite.config.ts) | 10 reads | ~23331 tok |
+| 00:57 | Session end: 2 writes across 1 files (vite.config.ts) | 15 reads | ~23331 tok |
+| 09:45 | Session end: 2 writes across 1 files (vite.config.ts) | 15 reads | ~23331 tok |
+| 09:47 | Session end: 2 writes across 1 files (vite.config.ts) | 15 reads | ~23331 tok |
+| 10:12 | Session end: 2 writes across 1 files (vite.config.ts) | 15 reads | ~23331 tok |
+| 10:15 | Session end: 2 writes across 1 files (vite.config.ts) | 15 reads | ~23331 tok |
+| 10:16 | Session end: 2 writes across 1 files (vite.config.ts) | 15 reads | ~23331 tok |
+| 10:19 | Edited ../../../tmp/dsat-podman-clean/admin_dashboard_tasks.md | modified Status() | ~932 |
+| 10:19 | Session end: 3 writes across 2 files (vite.config.ts, admin_dashboard_tasks.md) | 16 reads | ~45701 tok |
+
+## Session: 2026-07-03 10:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-03 13:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:42 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/user_keyring-prompt-claude-launch.md | — | ~215 |
+| 13:42 | Session end: 1 writes across 1 files (user_keyring-prompt-claude-launch.md) | 0 reads | ~230 tok |
+| 14:06 | Session end: 1 writes across 1 files (user_keyring-prompt-claude-launch.md) | 0 reads | ~230 tok |
+| 14:08 | Session end: 1 writes across 1 files (user_keyring-prompt-claude-launch.md) | 0 reads | ~230 tok |
+| 14:09 | Session end: 1 writes across 1 files (user_keyring-prompt-claude-launch.md) | 0 reads | ~230 tok |
+| 14:11 | Session end: 1 writes across 1 files (user_keyring-prompt-claude-launch.md) | 0 reads | ~230 tok |
+| 14:30 | Edited APP/ADMIN_APP/vite.config.ts | inline fix | ~21 |
+| 14:32 | Edited APP/ADMIN_APP/vite.config.ts | expanded (+10 lines) | ~165 |
+| 14:33 | Edited backend/app/routers/admin.py | inline fix | ~18 |
+| 14:34 | Edited DEBUG_LOG.md | modified Fixed() | ~582 |
+| 14:35 | Fixed /admin/tests enum 500 (bug-773) + admin-app Vite proxy prefix/port fix; admin dashboard live on :5175 | backend/app/routers/admin.py, APP/ADMIN_APP/vite.config.ts, DEBUG_LOG.md | ok | ~40k |
+| 14:35 | Edited CHANGELOG.md | modified 500() | ~316 |
+| 14:35 | Session end: 6 writes across 5 files (user_keyring-prompt-claude-launch.md, vite.config.ts, admin.py, DEBUG_LOG.md, CHANGELOG.md) | 5 reads | ~294265 tok |
+| 15:09 | Session end: 6 writes across 5 files (user_keyring-prompt-claude-launch.md, vite.config.ts, admin.py, DEBUG_LOG.md, CHANGELOG.md) | 5 reads | ~294265 tok |
+| 15:11 | Created start_admin.sh | — | ~454 |
+| 14:12 | Created start_admin.sh (reuse-or-start stack + admin vite on 5175); tested reuse path on :5176 | start_admin.sh | ok | ~6k |
+| 15:12 | Session end: 7 writes across 6 files (user_keyring-prompt-claude-launch.md, vite.config.ts, admin.py, DEBUG_LOG.md, CHANGELOG.md) | 5 reads | ~294751 tok |
+| 15:13 | Session end: 7 writes across 6 files (user_keyring-prompt-claude-launch.md, vite.config.ts, admin.py, DEBUG_LOG.md, CHANGELOG.md) | 5 reads | ~294751 tok |
+| 15:17 | Edited APP/ADMIN_APP/vite.config.ts | 2→4 lines | ~31 |
+| 15:17 | Session end: 8 writes across 6 files (user_keyring-prompt-claude-launch.md, vite.config.ts, admin.py, DEBUG_LOG.md, CHANGELOG.md) | 5 reads | ~294782 tok |
+| 15:21 | Created start.sh | — | ~1032 |
+| 15:21 | Combined root start.sh (stack + admin app + MagicDNS summary, start/stop/status); removed start_admin.sh; old expose_tailscale.sh would clobber tailscale serve 443 used by app on :8766 | start.sh, .wolf/anatomy.md | ok | ~15k |
+| 15:21 | Session end: 9 writes across 7 files (user_keyring-prompt-claude-launch.md, vite.config.ts, admin.py, DEBUG_LOG.md, CHANGELOG.md) | 6 reads | ~297204 tok |
+| 15:29 | Session end: 9 writes across 7 files (user_keyring-prompt-claude-launch.md, vite.config.ts, admin.py, DEBUG_LOG.md, CHANGELOG.md) | 6 reads | ~297204 tok |
+| 10:06 | Edited start.sh | modified Tailscale() | ~58 |
+| 10:06 | Added tailscale serve --https=8443 -> student app :5174 (valid TLS, tailnet-only); start.sh summary updated | start.sh, .wolf/cerebrum.md | ok | ~5k |
+| 10:06 | Session end: 10 writes across 7 files (user_keyring-prompt-claude-launch.md, vite.config.ts, admin.py, DEBUG_LOG.md, CHANGELOG.md) | 6 reads | ~297266 tok |
+
+## Session: 2026-07-04 11:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-04 11:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:34 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_bookmarks-tailscale.md | — | ~283 |
+| 11:34 | Session end: 1 writes across 1 files (project_bookmarks-tailscale.md) | 2 reads | ~1357 tok |
+| 11:34 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 2→4 lines | ~48 |
+| 11:34 | Session end: 2 writes across 2 files (project_bookmarks-tailscale.md, MEMORY.md) | 2 reads | ~1408 tok |
+| 11:35 | Edited start.sh | modified up() | ~218 |
+| 11:35 | Edited start.sh | modified Tailscale() | ~57 |
+| 11:36 | Edited start.sh | 8→11 lines | ~96 |
+| 11:36 | Edited start.sh | 3→4 lines | ~94 |
+| 11:36 | wire tailscale serve :8443 -> student app into start.sh (ensure_student_tls, idempotent, leaves :443 bookmarks config alone) | start.sh | done | ~600 |
+| 11:36 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_student-app-tailscale-tls.md | — | ~243 |
+| 11:36 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→2 lines | ~94 |
+| 11:36 | Session end: 8 writes across 4 files (project_bookmarks-tailscale.md, MEMORY.md, start.sh, project_student-app-tailscale-tls.md) | 2 reads | ~2266 tok |
+| 11:39 | Session end: 8 writes across 4 files (project_bookmarks-tailscale.md, MEMORY.md, start.sh, project_student-app-tailscale-tls.md) | 2 reads | ~2266 tok |
+
+## Session: 2026-07-05 18:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:28 | Created .understand-anything/intermediate/batch-11.json | — | ~1236 |
+| 18:28 | Created .understand-anything/intermediate/batch-12.json | — | ~2869 |
+| 18:29 | Created ../.claude/plans/calm-juggling-goblet.md | — | ~1016 |
+| 18:30 | Created .understand-anything/intermediate/batch-7.json | — | ~7759 |
+| 18:32 | Created ../.claude/plans/calm-juggling-goblet-agent-abaf93047536884a3.md | — | ~10676 |
+
+## Session: 2026-07-05 18:59
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-05 18:59
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-05 19:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:16 | /understand incremental graph update complete (Phases 3-7) | .understand-anything/knowledge-graph.json | 830 nodes/1420 edges/9 layers/12 tour, commit 42959e7 | ~moderate |
+| 19:50 | Created ../../../tmp/um-commit-msg.txt | — | ~126 |
+
+## Session: 2026-07-05 19:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:59 | Edited ../../../tmp/um-wt/APP/ADMIN_APP/src/api/client.ts | 8→5 lines | ~42 |
+| 19:59 | Edited ../../../tmp/um-wt/backend/app/models/payload.py | modified UserCreate() | ~132 |
+| 22:46 | Session end: 2 writes across 2 files (client.ts, payload.py) | 2 reads | ~11706 tok |
+
+## Session: 2026-07-05 22:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## 2026-07-04 session — GitButler removal + branch merge
+
+| Time | description | file(s) | outcome | ~tokens |
+|------|-------------|---------|---------|---------|
+| 22:50 | Merge all GitButler branch work into gitbutler-rescue off origin/main | /tmp/rescue-wt | merged pin-node-20, admin-dashboard-plan, admin-phase1-gap-review, podman-uv-build-repair, admin-user-mgmt; resolved 5 conflicts | ~15k |
+| 22:52 | Fast-forward origin/main to rescue tip (45a73a9..0c4c7cf) | origin/main | all branch work now in main | ~2k |
+| 22:54 | Commit vite.config.ts bug-777/778 proxy fix (only genuinely newer worktree file) | APP/ADMIN_APP/vite.config.ts | main = 0c4c7cf | ~2k |
+| 22:58 | Remove GitButler: switch worktree gitbutler/workspace -> main, restore housekeeping, delete all lane branches + gitbutler/* refs + .git/gitbutler dir | .git/refs, .git/gitbutler/ | repo on plain git, only main branch | ~5k |
+| 23:00 | Delete 13 merged remote branches (origin/admin-*, c-branch-1, content, openwolf-updates, pin-node-20, refactor_ingestion, rules_edit, gitbutler-rescue, podman-uv-build-repair) | origin/* | remote has only origin/main | ~3k |
+| 23:01 | Update cerebrum.md Key Learnings: GitButler REMOVED, use plain git | .wolf/cerebrum.md | future sessions won't use `but` | ~1k |
+
+**Net result:** GitButler fully removed. Repo = plain git, single `main` branch (local + remote), all feature work merged. Housekeeping (.wolf/*, logs, start.sh) remains as uncommitted changes the user can commit via plain git when ready. Backup of pre-removal housekeeping at /tmp/gb-removal-backup/.
+
+## Session: 2026-07-05 23:24
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:27 | Edited backend/.gitignore | 1→2 lines | ~5 |
+| 23:29 | verified admin dashboard safe post-merge; 31 router tests pass; restored backend/.venv-jb; committed db482f1 (changelog+start.sh+gitignore) + pushed | .wolf/, backend/tests/ | merge verified safe, venv restored, housekeeping pushed | ~6k |
+| 23:29 | Session end: 1 writes across 1 files (.gitignore) | 1 reads | ~75 tok |
+| 23:31 | Session end: 1 writes across 1 files (.gitignore) | 1 reads | ~75 tok |
+| 23:39 | Session end: 1 writes across 1 files (.gitignore) | 1 reads | ~75 tok |
+
+## Session: 2026-07-05 00:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:43 | Edited student-tracking-tasks.md | modified 05() | ~427 |
+| 00:43 | Edited student-tracking-tasks.md | inline fix | ~41 |
+| 00:43 | Verified TASK-005 (trap-key integration) via live API: POST /api/submit + diagnostic start/submit/complete on dsat-backend:8002 | student.py, user_progress table | trap_key stored correctly, diagnostic by_trap breakdown correct; browser click-through deferred (gstack skills corrupted) | ~4500 |
+| 00:44 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_gstack-skills-corrupted.md | — | ~483 |
+| 00:44 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 3→4 lines | ~62 |
+| 00:44 | Session end: 4 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~8894 tok |
+| 00:48 | Session end: 4 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~8894 tok |
+| 00:50 | Session end: 4 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~8894 tok |
+| 00:51 | Session end: 4 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~8894 tok |
+| 00:54 | Session end: 4 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~8894 tok |
+| 00:56 | Session end: 4 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~8894 tok |
+| 00:57 | Session end: 4 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~8894 tok |
+| 00:57 | Session end: 4 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~8894 tok |
+| 00:58 | Edited student-tracking-tasks.md | modified 05() | ~549 |
+| 00:58 | Edited student-tracking-tasks.md | inline fix | ~41 |
+| 01:20 | Completed TASK-005 browser click-through manually (user drove via Tailscale https://jb-2410:8443, claude-in-chrome extension unreliable) | student-tracking-tasks.md | payload + DB confirmed correct, only benign extension console noise | ~1800 |
+| 00:59 | Session end: 6 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~9526 tok |
+| 01:00 | Session end: 6 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~9526 tok |
+| 01:01 | Session end: 6 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~9526 tok |
+| 01:01 | Session end: 6 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 4 reads | ~9526 tok |
+| 01:04 | Session end: 6 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 8 reads | ~21957 tok |
+| 01:07 | Edited student-tracking-tasks.md | modified Decision() | ~255 |
+| 01:07 | Edited student-tracking-tasks.md | 2→2 lines | ~58 |
+| 01:08 | Session end: 8 writes across 3 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md) | 8 reads | ~22935 tok |
+| 01:09 | Edited future_features.md | expanded (+12 lines) | ~490 |
+| 01:09 | Edited student-tracking-tasks.md | modified Decision() | ~399 |
+| 01:11 | Edited future_features.md | "student-tracking-tasks.md" → "docs/archive/student-trac" | ~56 |
+| 01:35 | Archived 4 student-tracking docs to docs/archive/student-tracking/ (git mv, history preserved); moved TASK-014/016/017 to future_features.md, updated anatomy.md | student-tracking-tasks.md, student-tracking-agent-plan.md, STUDENT_TRACKING_AUDIT.md, student_tracking_backend_prd.md, future_features.md, .wolf/anatomy.md | clean, no dangling references except historical CHANGELOG/memory logs | ~2200 |
+| 01:11 | Session end: 11 writes across 4 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md, future_features.md) | 9 reads | ~31515 tok |

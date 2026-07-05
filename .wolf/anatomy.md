@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-02T01:41:17.370Z
-> Files: 1077 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-05T08:11:11.007Z
+> Files: 1105 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -20,11 +20,29 @@
 - `ingest_test4_verbal_sec01.sh` — Ingest Test 4 verbal sec01 mod01 + mod02 (live dev API, port 8002). (~599 tok)
 - `mock_api.py` — Handler: do_GET, do_POST, do_OPTIONS, log_message (~608 tok)
 - `poll_test4_verbal.sh` — Poll the two in-flight Test 4 verbal sec01 jobs until terminal. (~287 tok)
+- `um-commit-msg.txt` (~118 tok)
 
 ## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/607e54ac-9498-4651-8182-473f13bf4e6c/scratchpad/
 
 - `commit_msg.txt` (~341 tok)
 - `pgfwd.py` — Throwaway TCP forwarder: localhost:5434 -> localhost:5437. (~354 tok)
+
+## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/8fa50fd0-17ac-43b9-baf1-6b4534740212/scratchpad/
+
+- `commit-msg-1.3.txt` — Declares and (~140 tok)
+- `commit-msg-1.4.txt` (~17 tok)
+
+## ../../../tmp/dsat-podman-clean/
+
+- `admin_dashboard_tasks.md` — Admin Dashboard Implementation Plan (~30779 tok)
+
+## ../../../tmp/um-wt/APP/ADMIN_APP/src/api/
+
+- `client.ts` — Exports apiCall, adminApi (~1147 tok)
+
+## ../../../tmp/um-wt/backend/app/models/
+
+- `payload.py` — HTTP request/response models. (~10530 tok)
 
 ## ../.agents/skills/generation-test/
 
@@ -36,6 +54,8 @@
 
 ## ../.claude/plans/
 
+- `calm-juggling-goblet-agent-abaf93047536884a3.md` — Plan: file-analyzer batch 1 output (DSAT_REDUX_MD) (~10009 tok)
+- `calm-juggling-goblet.md` — Plan: Finish in-flight work — knowledge-graph update + user-management commit/push (~953 tok)
 - `floofy-splashing-globe.md` — Plan: Fix Frontend and Run Dev Stack (~264 tok)
 - `foamy-watching-zephyr.md` — Student Auth System — Implementation Plan (~2359 tok)
 - `generic-rolling-parnas.md` — Crop / Layout Provenance Implementation Plan (~3582 tok)
@@ -54,23 +74,30 @@
 
 - `feedback_debug-log-workflow.md` — YYYY-MM-DD - <Audit Title> (~208 tok)
 - `feedback_docker-compose-version.md` (~192 tok)
+- `feedback_fix-logging-convention.md` — Branch**/**Commits** lines, then (~433 tok)
 - `feedback_frequent-memory-saves.md` — Frequent memory saves to survive crashes (~357 tok)
 - `feedback_generation-seeding.md` (~375 tok)
 - `feedback_gitbutler-workflow.md` (~551 tok)
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~983 tok)
+- `MEMORY.md` — Memory Index (~1442 tok)
+- `project_admin-dashboard-phase1-status.md` (~732 tok)
 - `project_admin-dashboard-plan.md` (~480 tok)
+- `project_annotation-shape-inconsistency.md` — Declares originally (~499 tok)
 - `project_backend-option-versioning.md` (~244 tok)
+- `project_bookmarks-tailscale.md` (~285 tok)
 - `project_diagnostic_stats_architecture.md` (~439 tok)
 - `project_diagnostic_status.md` — Decisions locked (2026-06-23) (~677 tok)
 - `project_dual-user-routers.md` (~210 tok)
 - `project_grammar_redux_status.md` (~1463 tok)
-- `project_node-wasm-linux-fix.md` (~397 tok)
+- `project_gstack-skills-corrupted.md` (~472 tok)
+- `project_node-wasm-linux-fix.md` (~837 tok)
 - `project_rtk-path-fix.md` (~378 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
+- `project_student-app-tailscale-tls.md` (~247 tok)
+- `user_keyring-prompt-claude-launch.md` (~222 tok)
 - `user_platform.md` (~128 tok)
 
 ## ../.claude/skills/ramlog/
@@ -87,21 +114,22 @@
 - `.dockerignore` (~62 tok)
 - `.gitattributes` — Git attributes (~12 tok)
 - `.gitignore` — Git ignore rules (~70 tok)
+- `.nvmrc` (~1 tok)
 - `2024_test3_answer_keys.md` — 2024 DSAT Test 3 — Answer Keys (~490 tok)
 - `2024_TESTS_STATUS.md` — 2024 Bluebook Tests — Ingestion Status (~1241 tok)
 - `ADMIN_DASHBOARD_DESIGN.md` — DSAT Admin Dashboard — Design & Implementation Plan (~6347 tok)
 - `admin_dashboard_plan.md` — Admin Dashboard — Living Plan (~5503 tok)
 - `ADMIN_DASHBOARD_README.md` — DSAT Admin Dashboard — Complete Design Package (~4151 tok)
-- `admin_dashboard_tasks.md` — Admin Dashboard Implementation Plan (~19797 tok)
+- `admin_dashboard_tasks.md` — Admin Dashboard Implementation Plan (~21371 tok)
 - `ADMIN_DASHBOARD_TASKS.md` — DSAT Admin Dashboard — Implementation Task Breakdown (~13530 tok)
 - `ADMIN_DASHBOARD_WIREFRAMES.md` — DSAT Admin Dashboard — Wireframes & Component Guide (~7794 tok)
 - `annotate_refactor_task.md` — Annotation Pipeline Refactor — Task Sheet (~1558 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `cache_feature_plan.md` — Overlap Detection Corpus Cache Implementation Plan (~4895 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~180107 tok)
+- `CHANGELOG.md` — CHANGELOG (~207709 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~52935 tok)
+- `DEBUG_LOG.md` — Debug Log (~55527 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
@@ -111,7 +139,7 @@
 - `docker-compose.yml` — Docker Compose services (~632 tok)
 - `Dockerfile.backend` (~180 tok)
 - `Dockerfile.frontend` (~123 tok)
-- `future_features.md` — Future Features & Outstanding Work (~8420 tok)
+- `future_features.md` — Future Features & Outstanding Work (~8855 tok)
 - `FUTURE_FEATURES.md` — Future Features (~12323 tok)
 - `future_tasks.md` — Future Tasks (~219 tok)
 - `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
@@ -138,14 +166,10 @@
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
-- `start.sh` — Colors for output (~1317 tok)
+- `start.sh` — One-shot launcher for the DSAT apps: (~1270 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
 - `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~5330 tok)
-- `STUDENT_TRACKING_AUDIT.md` — Student Tracking Backend — Implementation Audit (~4635 tok)
-- `student_tracking_backend_prd.md` — Student Tracking Backend PRD (~9107 tok)
 - `STUDENT_UI_TASKS.md` — Student UI React Rebuild — Task Tracker (~4864 tok)
-- `student-tracking-agent-plan.md` — Student Tracking — Serial Execution with Subagents (~3121 tok)
-- `student-tracking-tasks.md` — Student Tracking Backend — Detailed Task List (~7808 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
@@ -206,6 +230,15 @@
 - `project.local.yml` — This file allows you to locally override settings in project.yml for development purposes. (~115 tok)
 - `project.yml` — the name by which the project can be referenced within Serena (~2252 tok)
 
+## .superpowers/sdd/
+
+- `task-1.1-report.md` — Task 1.1 Report: Expose `annotation_stale` in Admin Question List Response (~1238 tok)
+- `task-1.2-report.md` — Task 1.2 Report — Backend `GET /admin/tests` aggregation endpoint (~1286 tok)
+- `task-1.3-report.md` — Task 1.3 Report: Frontend — fix the `Question` type and the Focus/Difficulty columns (~1221 tok)
+- `task-1.4-report.md` — Task 1.4 Report — QuestionDetailModal (view, edit, stale badge) (~1259 tok)
+- `task-1.5-report.md` — Task 1.5 Report — Frontend "Tests" browse tab (~1556 tok)
+- `task-2.1-report.md` — Task 2.1 Report — Backend `PATCH /users/{user_id}` (~2065 tok)
+
 ## .understand-anything/
 
 - `.understandignore` — # !local_object_store/* (~223 tok)
@@ -215,7 +248,7 @@
 - `batch-1.json` (~9514 tok)
 - `batch-10.json` — Declares or (~5149 tok)
 - `batch-11.json` (~935 tok)
-- `batch-12.json` (~2252 tok)
+- `batch-12.json` (~2869 tok)
 - `batch-13.json` (~5803 tok)
 - `batch-14.json` — Declares with (~3471 tok)
 - `batch-15.json` — Declares name (~2260 tok)
@@ -240,7 +273,7 @@
 - `batch-4.json` — Declares result (~6500 tok)
 - `batch-5.json` — Declares with (~9139 tok)
 - `batch-6.json` (~4204 tok)
-- `batch-7.json` — that: computation (~2720 tok)
+- `batch-7.json` — Declares definitions (~7759 tok)
 - `batch-8.json` — Declares and (~2756 tok)
 - `batch-9.json` (~4392 tok)
 - `scan-result.json` (~12785 tok)
@@ -248,7 +281,9 @@
 
 ## APP/ADMIN_APP/
 
-- `vite.config.ts` (~82 tok)
+- `.nvmrc` (~1 tok)
+- `package.json` — Node.js package manifest (~272 tok)
+- `vite.config.ts` (~252 tok)
 
 ## APP/ADMIN_APP/src/
 
@@ -257,7 +292,7 @@
 
 ## APP/ADMIN_APP/src/api/
 
-- `client.ts` — Exports apiCall, adminApi (~1018 tok)
+- `client.ts` — Exports apiCall, adminApi (incl. getTests → GET /admin/tests) (~1050 tok)
 
 ## APP/ADMIN_APP/src/components/
 
@@ -265,22 +300,23 @@
 
 ## APP/ADMIN_APP/src/pages/
 
-- `DataManagement.tsx` — StatusBadge — renders table (~2975 tok)
+- `DataManagement.tsx` — StatusBadge (~6776 tok)
 - `PipelinePerformance.tsx` — StatCard — renders table (~3288 tok)
 - `StudentPerformance.tsx` — AccuracyBar (~1986 tok)
 - `UserManagement.tsx` — StatCard — renders table (~1912 tok)
 
 ## APP/ADMIN_APP/src/types/
 
-- `index.ts` — Exports User, Question, QuestionOption, GenerationAnalytics + 6 more (~552 tok)
+- `index.ts` — Exports User, QuestionAnnotation, Question, QuestionOption, TestSummary + 8 more (~800 tok)
 
 ## APP/STUDENT_APP_REDUX/
 
 - `.gitignore` — Git ignore rules (~76 tok)
+- `.nvmrc` (~1 tok)
 - `eslint.config.js` (~202 tok)
 - `GRAMMAR_COMPONENT_TAXONOMY_ALIGNMENT.md` — Grammar Component — Taxonomy Alignment with Backend (v8 Rules) (~2138 tok)
 - `index.html` — Student App Redux (~98 tok)
-- `package.json` — Node.js package manifest (~430 tok)
+- `package.json` — Node.js package manifest (~441 tok)
 - `PHASE_1_COMPONENT_BREAKDOWN.md` — Phase 1: Grammar Practice Page — Component Breakdown (~4881 tok)
 - `PHASE_1_IMPLEMENTATION_SUMMARY.md` — Phase 1 Implementation Summary (~2434 tok)
 - `PHASE_1_VALIDATION_REPORT.md` — Phase 1 Validation Report (Tasks 1.6–1.8) (~2273 tok)
@@ -518,7 +554,7 @@
 ## backend/
 
 - `.envrc` — Override the global VIRTUAL_ENV so uv uses the project-local .venv (~28 tok)
-- `.gitignore` — Git ignore rules (~12 tok)
+- `.gitignore` — Git ignore rules (~15 tok)
 - `.python-version` (~2 tok)
 - `alembic.ini` — A generic, single database configuration. (~1327 tok)
 - `pyproject.toml` — DSAT question corpus ingestion, annotation, generation, and practice API (~220 tok)
@@ -1341,7 +1377,7 @@
 - `db.py` — Declares QuestionJob (~10429 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5806 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~10305 tok)
+- `payload.py` — HTTP request/response models. (~10482 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1380,12 +1416,13 @@
 
 ## backend/app/routers/
 
-- `admin.py` — API: 7 endpoints (~28180 tok)
+- `admin.py` — API: 8 endpoints (~28986 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` (~16107 tok)
 - `ingest.py` (~47039 tok)
 - `student_auth.py` — API: 5 endpoints (~1826 tok)
 - `student.py` (~30758 tok)
+- `users.py` — API: 5 endpoints (~1095 tok)
 
 ## backend/app/services/
 
@@ -1447,7 +1484,7 @@
 
 - `conftest.py` — Force test env before any app imports — use assignment, not setdefault (~385 tok)
 - `test_adaptive_routing.py` — Tests for Phase 4: Adaptive Module 2 Routing. (~1410 tok)
-- `test_admin_router.py` — FakeQuestion: test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, (~5520 tok)
+- `test_admin_router.py` — FakeQuestion: test_admin_edit_invalid_uuid, test_admin_edit_not_found, test_admin_approve_not_found, (~7670 tok)
 - `test_amendment_capture.py` — Tests for extracting and storing Pass 2 amendment proposals. (~3724 tok)
 - `test_amendment_review.py` — Tests for admin amendment review and promotion operations. (~5112 tok)
 - `test_amendments_cli.py` — Tests for local development amendment CLI commands. (~2584 tok)
@@ -1489,6 +1526,7 @@
 - `test_student_retrieval.py` — Phase 7 — Student Retrieval API Expansion tests. (~4606 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~510 tok)
 - `test_trap_susceptibility.py` — Tests for GET /api/student/trap-susceptibility endpoint. (~1077 tok)
+- `test_users_router.py` — _EmptyResult: test_create_user_no_auth, test_create_user_missing_username, test_create_user_empty_us (~2551 tok)
 - `test_validator_completeness.py` — Tests for validate_annotation_completeness — the domain-aware taxonomy gate. (~1354 tok)
 - `test_vocab_sync.py` — Tests for the controlled-vocabulary source-of-truth system. (~925 tok)
 
@@ -1510,6 +1548,10 @@
 - `domain.md` — Domain Docs (~316 tok)
 - `issue-tracker.md` — Issue tracker: Local Markdown (~210 tok)
 - `triage-labels.md` — Triage Labels (~262 tok)
+
+## docs/backend/
+
+- `api-endpoints.md` — API Endpoints Reference (~2710 tok)
 
 ## docs/superpowers/plans/
 
