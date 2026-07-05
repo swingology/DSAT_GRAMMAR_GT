@@ -1,5 +1,38 @@
 # Debug Log
 
+## 2026-07-03 - Admin dashboard startup check: /admin/tests 500 + dev proxy 404s
+Report created by: Claude Fable 5
+Git branch: `gitbutler/workspace`
+Git checkpoint: `196d10c` — GitButler Workspace Commit
+
+### Findings
+
+1. **High:** ~~`GET /admin/tests` returned 500 — `asyncpg.InvalidTextRepresentationError: invalid input value for enum practice_status_enum: "approved"`.~~
+   - `backend/app/routers/admin.py:283` counted approved questions with `practice_status.in_(("active", "approved"))`, but `practice_status_enum` only has `draft/active/retired/rejected`; Postgres rejects the cast at query time, so the Test Explorer tab could never load.
+   - **Fixed:** changed the filter to `practice_status == "active"`, matching the approved-count convention used elsewhere in the same file (≈lines 1886, 2180). Endpoint verified 200 after uvicorn hot-reload. Logged as bug-773 in `.wolf/buglog.json`.
+
+2. **Medium:** ~~Admin app dev server unusable against the running stack — all `/api/admin/*` and `/api/users*` calls 404'd through the Vite proxy (manifestation of the known bug-777/778 prefix mismatch), and the hardcoded proxy target `localhost:8000` no longer matches the stack's backend port (now 8002).~~
+   - Backend mounts admin/users routers without the `/api` prefix; only `stats`/`study` live under `/api`. Compose host ports also drifted from the documented defaults (backend 8002, DB 5437, student frontend 5174 — which additionally collides with the admin app's configured port 5174).
+   - **Fixed (dev-only):** `APP/ADMIN_APP/vite.config.ts` proxy now strips `/api` for `/api/admin` and `/api/users` routes and reads the target from `VITE_BACKEND_ORIGIN` (default still `localhost:8000`). Admin app started on port 5175. The production-path prefix alignment remains open under bug-777/778.
+
+3. **Low:** `adminApi.listJobs` calls `GET /admin/jobs`, which does not exist on the backend (only `/dashboard/jobs`, an HTML fragment). No page currently uses `listJobs`, so nothing breaks — dead client code to remove or rewire when a jobs view is built.
+
+## 2026-07-03 - GitButler commit blocked: workspace merge-base conflict + transient loose-object corruption
+Report created by: Claude Sonnet 5
+Git branch: `gitbutler/workspace`
+Git checkpoint: `b32273b` — Pin Node 20 to fix recurring WSL2/WASM build crashes
+
+### Findings
+
+1. **Critical (blocked, needs user decision): `but commit admin-dashboard-phase-2 --only ...` and the `--changes <ids>` variant both fail with `Failed to merge bases while cherry picking commit ... Encountered a conflict while merging the commit's new bases: <10 commit ids>`, reproduced 3 times with different flags/messages.**
+   - The workspace currently has 9 other applied branches stacked (`podman-uv-build-repair`, `c-branch-1`, `admin-dashboard-plan`, `session-checkpoint`, `admin-dashboard-phase-0`, `cleanup-phase-0`, `admin-dashboard-phase-1`, `admin-phase1-gap-review`, `pin-node-20`) plus the freshly-created `admin-dashboard-phase-2`. The failure is not content-specific — it reproduces identically regardless of which 3 files/commit message are supplied, and the leading commit id in the error (`196d10c816ae...`) is constant across retries, pointing at a structural issue merging the new branch's base against the existing 9-branch stack rather than anything wrong with the staged diff.
+   - Files staged for this commit (`backend/app/models/payload.py`, `backend/app/routers/users.py`, `backend/tests/test_users_router.py`) remain uncommitted in the working tree in a known-good, fully-tested state — no data was lost.
+   - **Not fixed.** Did not attempt to unapply any of the 9 other applied branches or otherwise restructure the workspace, since that risks other in-progress work and requires user authorization per the git safety protocol. Needs either: (a) the user resolving/consolidating the applied-branch stack, or (b) a `but`/GitButler-level workspace repair.
+
+2. **Medium (transient, likely same root cause as the 2026-07-01 hardware bit-flip finding): a `but commit` attempt also surfaced `Could not inflate data at .git/objects/12/b172c43...: corrupt deflate stream`, and a follow-up `git fsck --full` in the same session flagged a *different* loose object (`2ab3bbe28c...`) as corrupt — which then read back clean via `git cat-file -t` moments later on retry.**
+   - Non-reproducible/non-persistent corruption on read (different object each time, self-resolving on retry) is consistent with the previously-logged single-bit-flip RAM/disk signature in `DEBUG_LOG.md` (2026-07-01 entry, finding #1), not with a new independent bug. Also consistent with an unrelated pytest run in the same session hitting a one-off `Segmentation fault` during Pydantic model-schema construction on the first run, which then passed cleanly on two immediate retries.
+   - **Not fixed — same unresolved hardware root cause.** No corrective action taken beyond re-running affected commands, which succeeded/read-clean on retry.
+
 ## 2026-07-01 - Docker/Podman build pipeline: unscoped context, bad healthchecks, corrupted host node_modules
 Report created by: Claude Sonnet 5
 Git branch: `gitbutler/workspace`

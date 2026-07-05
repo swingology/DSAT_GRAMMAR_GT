@@ -5,6 +5,27 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-07-03 — Fix /admin/tests enum 500 + admin app dev proxy alignment
+
+**Model:** Claude Fable 5
+**Branch:** `gitbutler/workspace`
+**Commits:** uncommitted working tree
+
+### Fixed
+
+- **High — `GET /admin/tests` 500 (bug-773):** `backend/app/routers/admin.py` counted approved
+  questions with `practice_status.in_(("active", "approved"))`, but `practice_status_enum` has no
+  `approved` value (`draft/active/retired/rejected`), so Postgres rejected the cast and the Test
+  Explorer tab could never load. Filter changed to `practice_status == "active"`, matching the
+  convention used elsewhere in the file.
+- **Medium — admin app dev proxy (dev-only mitigation of bug-777/778):** `APP/ADMIN_APP/vite.config.ts`
+  proxy now strips the `/api` prefix for `/api/admin` and `/api/users` routes (backend mounts those
+  routers without the prefix) and reads its target from `VITE_BACKEND_ORIGIN` (default unchanged at
+  `http://localhost:8000`) so it can follow the stack's actual backend port (currently 8002). The
+  production-path prefix alignment remains open under bug-777/778.
+
+---
+
 ## 2026-06-26 — Annotation Pipeline Refactor (deterministic canonicalize → enforce → validate)
 
 **Model:** Claude Opus 4.8
@@ -10028,5 +10049,525 @@ _branch:_ `gitbutler/workspace` · _commit:_ `d7422e1` · _ram:_ `10Gi/30Gi`
 _( 7 files changed, 4222 insertions(+), 21 deletions(-))_
 
 **Untracked:** backups/dsat_dev_20260630_140001.dump backups/dsat_dev_20260630_160001.dump backups/dsat_dev_20260630_180001.dump backups/dsat_dev_20260630_200001.dump backups/dsat_dev_20260630_220001.dump 
+
+---
+
+## Session snapshot — 2026-07-02 21:10:54 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `9.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json backups/backup.log backups/dsat_dev_20260626_140001.dump backups/dsat_dev_20260626_160001.dump 
+_( 7 files changed, 7983 insertions(+), 150 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump backups/dsat_dev_20260702_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-02 21:12:27 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `9.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_140001.dump backups/dsat_dev_20260626_160001.dump 
+_( 8 files changed, 8561 insertions(+), 150 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump backups/dsat_dev_20260702_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-02 21:14:04 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `9.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_140001.dump backups/dsat_dev_20260626_160001.dump 
+_( 8 files changed, 9144 insertions(+), 150 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump backups/dsat_dev_20260702_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-02 21:14:59 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `9.3Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/models/payload.py backend/app/routers/users.py backend/tests/test_users_router.py backups/backup.log backups/dsat_dev_20260626_140001.dump backups/dsat_dev_20260626_160001.dump 
+_( 11 files changed, 9911 insertions(+), 150 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump backups/dsat_dev_20260702_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-02 21:21:52 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `9.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/models/payload.py backend/app/routers/users.py backend/tests/test_users_router.py backups/backup.log backups/dsat_dev_20260626_140001.dump backups/dsat_dev_20260626_160001.dump 
+_( 11 files changed, 9926 insertions(+), 150 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump backups/dsat_dev_20260702_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-02 21:23:09 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `9.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/users.py backend/tests/test_users_router.py backups/backup.log backups/dsat_dev_20260626_140001.dump backups/dsat_dev_20260626_160001.dump 
+_( 12 files changed, 10573 insertions(+), 151 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump backups/dsat_dev_20260702_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-02 21:25:30 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `9.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/users.py backend/tests/test_users_router.py backups/backup.log backups/dsat_dev_20260626_140001.dump backups/dsat_dev_20260626_160001.dump 
+_( 12 files changed, 10592 insertions(+), 151 deletions(-))_
+
+**Untracked:** backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump backups/dsat_dev_20260702_200001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 00:36:56 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 24 files changed, 11229 insertions(+), 240 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 00:38:10 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 24 files changed, 11321 insertions(+), 240 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 00:38:49 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 24 files changed, 11413 insertions(+), 240 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 00:43:48 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 24 files changed, 11507 insertions(+), 237 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 00:57:11 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 24 files changed, 11618 insertions(+), 225 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 09:45:34 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 28 files changed, 11758 insertions(+), 225 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 09:47:34 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 28 files changed, 11886 insertions(+), 225 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 10:12:15 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12017 insertions(+), 225 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 10:15:33 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12145 insertions(+), 225 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 10:16:05 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12273 insertions(+), 225 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 10:19:35 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12414 insertions(+), 221 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 10:19:52 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12424 insertions(+), 221 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 13:42:48 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `8.6Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12531 insertions(+), 269 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 14:06:05 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `8.5Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12565 insertions(+), 269 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 14:08:05 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `8.3Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12597 insertions(+), 269 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 14:09:26 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12629 insertions(+), 269 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 14:11:48 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `9.4Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py backend/tests/test_users_router.py backups/backup.log 
+_( 29 files changed, 12661 insertions(+), 269 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 14:33:19 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py backend/app/routers/users.py backend/tests/test_student_router.py 
+_( 31 files changed, 12727 insertions(+), 254 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 14:34:58 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py backend/app/routers/users.py 
+_( 32 files changed, 12779 insertions(+), 248 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 14:35:21 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py backend/app/routers/users.py 
+_( 32 files changed, 12819 insertions(+), 243 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 14:35:33 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py backend/app/routers/users.py 
+_( 32 files changed, 12829 insertions(+), 243 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 15:09:35 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py backend/app/routers/users.py 
+_( 32 files changed, 12917 insertions(+), 243 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 15:12:35 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `14Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py backend/app/routers/users.py 
+_( 32 files changed, 13012 insertions(+), 240 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 15:13:53 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py backend/app/routers/users.py 
+_( 32 files changed, 13105 insertions(+), 240 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 15:17:44 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `14Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py backend/app/routers/users.py 
+_( 32 files changed, 13204 insertions(+), 237 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 15:21:56 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py 
+_( 34 files changed, 13414 insertions(+), 242 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-03 15:29:55 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py 
+_( 34 files changed, 13523 insertions(+), 242 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260702_160001.dump backups/dsat_dev_20260702_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 10:06:35 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py 
+_( 34 files changed, 13670 insertions(+), 239 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260703_160001.dump backups/dsat_dev_20260703_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 11:34:25 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py 
+_( 34 files changed, 13750 insertions(+), 273 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260703_160001.dump backups/dsat_dev_20260703_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 11:34:41 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py 
+_( 34 files changed, 13799 insertions(+), 269 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260703_160001.dump backups/dsat_dev_20260703_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 11:36:44 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `5.0Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py 
+_( 34 files changed, 13893 insertions(+), 252 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260703_160001.dump backups/dsat_dev_20260703_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 11:39:16 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `9.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py 
+_( 34 files changed, 13973 insertions(+), 252 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260703_160001.dump backups/dsat_dev_20260703_180001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 18:05:06 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `196d10c` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py 
+_( 34 files changed, 14041 insertions(+), 288 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260704_000001.dump backups/dsat_dev_20260704_020001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 18:16:14 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `42959e7` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/admin.py backend/app/routers/student.py 
+_( 34 files changed, 14054 insertions(+), 280 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260704_000001.dump backups/dsat_dev_20260704_020001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 18:21:40 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `42959e7` · _ram:_ `14Gi/31Gi`
+
+**Uncommitted changes:** .serena/.gitignore .serena/project.yml .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py 
+_( 36 files changed, 14092 insertions(+), 422 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260704_000001.dump backups/dsat_dev_20260704_020001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 18:32:48 (50kb-written)
+_branch:_ `gitbutler/workspace` · _commit:_ `42959e7` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .serena/.gitignore .serena/project.yml .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py 
+_( 36 files changed, 14168 insertions(+), 391 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260704_000001.dump backups/dsat_dev_20260704_020001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 19:01:32 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `42959e7` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .serena/.gitignore .serena/project.yml .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py 
+_( 36 files changed, 14161 insertions(+), 432 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260704_000001.dump backups/dsat_dev_20260704_020001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 19:16:27 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `42959e7` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .serena/.gitignore .serena/project.yml .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py 
+_( 36 files changed, 14173 insertions(+), 427 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260704_000001.dump backups/dsat_dev_20260704_020001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 19:20:59 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `42959e7` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .serena/.gitignore .serena/project.yml .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py 
+_( 36 files changed, 14205 insertions(+), 427 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260704_000001.dump backups/dsat_dev_20260704_020001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 22:46:22 (session-end)
+_branch:_ `gitbutler/workspace` · _commit:_ `3a462a6` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .serena/.gitignore .serena/project.yml .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/package-lock.json APP/ADMIN_APP/package.json APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/StudentPerformance.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/payload.py 
+_( 31 files changed, 14270 insertions(+), 416 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/ADMIN_APP/src/components/PanelShell.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx backups/dsat_dev_20260704_040001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 23:02:46 (session-end)
+_branch:_ `main` · _commit:_ `0c4c7cf` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log start.sh 
+_( 10 files changed, 13664 insertions(+), 282 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md backups/dsat_dev_20260704_040001.dump backups/dsat_dev_20260704_060001.dump backups/dsat_dev_20260704_080001.dump backups/dsat_dev_20260704_100001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 23:03:33 (session-end)
+_branch:_ `main` · _commit:_ `0c4c7cf` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log start.sh 
+_( 10 files changed, 13674 insertions(+), 282 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md backups/dsat_dev_20260704_040001.dump backups/dsat_dev_20260704_060001.dump backups/dsat_dev_20260704_080001.dump backups/dsat_dev_20260704_100001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 23:18:07 (session-end)
+_branch:_ `main` · _commit:_ `0c4c7cf` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log start.sh 
+_( 10 files changed, 13684 insertions(+), 282 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md backups/dsat_dev_20260704_040001.dump backups/dsat_dev_20260704_060001.dump backups/dsat_dev_20260704_080001.dump backups/dsat_dev_20260704_100001.dump 
+
+---
+
+## Session snapshot — 2026-07-04 23:22:14 (session-end)
+_branch:_ `main` · _commit:_ `0c4c7cf` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log start.sh 
+_( 10 files changed, 13694 insertions(+), 282 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-04 23:25:04 (session-end)
+_branch:_ `main` · _commit:_ `0c4c7cf` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backups/backup.log start.sh 
+_( 10 files changed, 13709 insertions(+), 282 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
 
 ---
