@@ -5,22 +5,6 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
-## 2026-07-02 — Admin Dashboard Phase 0 Contract Cleanup
-
-**Model:** GPT-5 Codex
-**Branch:** `main`
-**Commits:** local cleanup branch, pending push
-
-Cleaned the GitButler workspace signal into tracked Phase 0 admin-dashboard prep:
-
-- Admin app requests now use the backend's `X-API-Key` contract instead of a bearer token.
-- Admin app API paths now spell out real router prefixes (`/admin`, `/users`, `/api`) instead of assuming a shared `/api` base.
-- Admin Vite proxy now targets the local backend on port `8002` and uses port `5175` to avoid the student app port.
-- `GET /api/stats/{user_id}` accepts admin keys as well as student keys, matching admin-dashboard usage.
-- Added the Phase 1 admin-dashboard task plan as `admin_dashboard_tasks.md`.
-
----
-
 ## 2026-06-26 — Annotation Pipeline Refactor (deterministic canonicalize → enforce → validate)
 
 **Model:** Claude Opus 4.8

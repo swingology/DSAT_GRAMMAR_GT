@@ -1,5 +1,27 @@
 [
   {
+    "id": "bug-769",
+    "timestamp": "2026-06-26T16:31:00-07:00",
+    "error_message": "Grammar annotations truncated syntactic_trap_key to None, failing the non-null validator for roles agreement/pronoun/modifier/verb_form/sentence_boundary (Test_4: 5 blocking errors, 5/33 questions failed to persist)",
+    "file": "backend/app/prompts/annotate_prompt.py, backend/app/routers/ingest.py",
+    "root_cause": "Flat max_tokens=8192 cap too tight for grammar annotations (4.5-8K tokens output); JSON tail containing syntactic_trap_key was cut off. Output also ordered reasoning before classification keys, so truncation lost required fields. Reading rules block (~18.3K tokens) sent in full regardless of question type.",
+    "fix": "annotation_max_tokens(q_data) returns 12288 (grammar/unknown) / 8192 (reading); _run_pipeline call site uses it. Rule 5 of both prompt templates now orders classification fields first, reasoning last. _reading_context(variant_key) trims per skill family (matching \u00a713 + \u00a719 subsection only, drops \u00a715); _prewarm_annotation_cache dedups by (domain, variant). Unmapped stems fall back to full block.",
+    "tags": [
+      "annotation",
+      "truncation",
+      "max_tokens",
+      "grammar",
+      "prompt-engineering",
+      "performance"
+    ],
+    "related_bugs": [
+      "bug-035",
+      "bug-036"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T16:31:00-07:00"
+  },
+  {
     "id": "bug-001",
     "timestamp": "2026-05-10T00:21:21.064Z",
     "error_message": "Significant refactor of ",
@@ -6208,5 +6230,245 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-06-23T15:26:56.689273+00:00"
+  },
+  {
+    "id": "bug-762",
+    "timestamp": "2026-06-26T05:40:00+00:00",
+    "error_message": "questions.stem_type_key held stale non-canonical Pass 1 extraction labels (e.g. 23x complete_the_text, support_claim, analyze_text_structure, synthesize_notes, retrieve_detail) while the validated Pass 2 canonical stem lived only in question_annotations.annotation_jsonb['stem_type_key']. Any code reading questions.stem_type_key directly (student practice, analytics, diagnostic) saw wrong/mis-classified stems.",
+    "file": "backend/app/routers/ingest.py (_create_question ~L1060-1126, _run_reannotate_pipeline ~L3607-3613)",
+    "root_cause": "Question row is created with stem_type_key=q_data['stem_type_key'] (raw Pass 1 extraction, frequently non-canonical). Pass 2 sanitize_annotation_keys() enforces STEM_TYPE_KEYS and stores the canonical stem in annotation_jsonb, but the canonical value was never written back to questions.stem_type_key. Validator only checks the annotation stem (canonical) so the job approved with questions.stem_type_key stale.",
+    "fix": "FIXED: after sanitize + latest_annotation_id assignment in both _create_question and _run_reannotate_pipeline (ingest.py), write back annotate_json['stem_type_key'] to question.stem_type_key (guarded `if _canonical_stem`). Backfilled globally: UPDATE across ALL questions (47 rows updated: 46 stale + 1 NULL) from annotation_jsonb->>'stem_type_key'; 0 disagreements post-verify across 94 questions. Future ingestions auto-corrected via code change.",
+    "tags": [
+      "annotation-schema",
+      "stem_type_key",
+      "ingestion",
+      "pass1-pass2",
+      "write-back",
+      "v8"
+    ],
+    "related_bugs": [
+      "bug-761",
+      "bug-760"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T05:48:00+00:00"
+  },
+  {
+    "id": "bug-763",
+    "timestamp": "2026-06-26T06:05:00+00:00",
+    "error_message": "Pass 2 prompt routing drifted from controlled vocab: _READING_STEMS/_GRAMMAR_STEMS in annotate_prompt.py were hand-maintained sets containing dead aliases (describe_structure, state_main_purpose, support_claim, function_of_part, rhetorical_synthesis, fix_punctuation) and MISSING canonical STEM_TYPE_KEYS (choose_structure_description, choose_text_relationship, choose_sentence_function, choose_detail, choose_best_inference, choose_best_notes_synthesis, choose_main_purpose, compare_contributions). Reading questions with canonical stems mis-routed to 'unknown' \u2192 loaded grammar Part D (taxonomy) + reading hybrid instead of reading-only \u00a73-14.",
+    "file": "backend/app/prompts/annotate_prompt.py (_GRAMMAR_STEMS/_READING_STEMS, _detect_domain)",
+    "root_cause": "Two hand-maintained stem sets duplicated the canonical STEM_TYPE_KEYS vocab from ontology.py and diverged over time. No guard ensured the sets covered the vocab.",
+    "fix": "FIXED: added STEM_TYPE_DOMAIN map (stem\u2192grammar/reading/ambiguous) in annotate_prompt.py (NOT ontology.py \u2014 ontology.py is gen_vocab-generated; adding there broke test_vocab_sync). _GRAMMAR_STEMS/_READING_STEMS/_AMBIGUOUS_STEMS now DERIVED from STEM_TYPE_DOMAIN via frozenset comprehensions. _detect_domain routes ambiguous complete_the_text via existing text-signal/passage disambiguation. Guard test test_stem_domain_covers_all_vocab in test_prompts.py asserts set(STEM_TYPE_KEYS)==set(STEM_TYPE_DOMAIN). Verified: 0 canonical stems route to unknown; all reading stems load Reading v3 with Part D absent. 93 tests pass.",
+    "tags": [
+      "annotation-schema",
+      "stem_type_key",
+      "routing",
+      "drift",
+      "pass2",
+      "v8"
+    ],
+    "related_bugs": [
+      "bug-762",
+      "bug-761"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T06:05:00+00:00"
+  },
+  {
+    "id": "bug-764",
+    "timestamp": "2026-06-26T06:42:00+00:00",
+    "error_message": "Pass 1 extraction emitted non-canonical stem_type_key values (analyze_text_structure, retrieve_detail, support_claim, synthesize_notes, compare_texts, etc.) because the extraction prompt had no controlled vocabulary and even instructed 'Set stem_type_key to compare_texts' for cross-text. Non-canonical stems mis-routed Pass 2 to 'unknown' \u2192 grammar Part D hybrid instead of reading-only context.",
+    "file": "backend/app/prompts/extract_prompt.py (EXTRACT_SYSTEM_PROMPT); backend/app/routers/ingest.py (_normalize_extracted_questions, reannotate_question synthesized_pass1)",
+    "root_cause": "Extraction prompt described stem_type_key with loose examples and no allowed-values list; no deterministic canonicalization of LLM output before Pass 2 routing.",
+    "fix": "FIXED: (1) extract_prompt.py now injects an ALLOWED stem_type_key / stimulus_mode_key vocab block (built from ontology STEM_TYPE_KEYS/STIMULUS_MODE_KEYS) + a CONTROLLED VOCABULARY rule; fixed cross-text rule to choose_cross_text_connection (was compare_texts). (2) Added canonicalize_stem/canonicalize_stimulus_mode + _STEM_ALIASES/_STIMULUS_ALIASES safety net, wired into _normalize_extracted_questions (new ingestions) and reannotate_question synthesized_pass1 (Pass-2-only reannotation). (3) Guard tests: test_extract_prompt_constrains_stem_vocab, test_canonicalize_stem_maps_known_aliases, test_stem_alias_targets_are_all_canonical. Verified live: reannotate Q8 \u2192 approved, clean reading annotation (grammar_focus_key null).",
+    "tags": [
+      "extraction",
+      "pass1",
+      "stem_type_key",
+      "controlled-vocab",
+      "routing",
+      "v8"
+    ],
+    "related_bugs": [
+      "bug-762",
+      "bug-763"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T06:42:00+00:00"
+  },
+  {
+    "id": "bug-765",
+    "timestamp": "2026-06-26T15:00:00+00:00",
+    "error_message": "ingestion-test runner aborted with RESULT_JSON:{\"error\":\"postgres unavailable\"} even though the dsat-db container was healthy and accepting connections.",
+    "file": ".claude/skills/ingestion-test/run.sh",
+    "root_cause": "run.sh hardcodes its Postgres prereq check and result-collection queries to host port 5434 (lines 45/49/53/143-148), but the deployed stack publishes Postgres on host port 5437 (docker-compose.yml '5437:5432'; backend/.env and backend/app/config.py both use localhost:5437). Nothing listens on 5434 -> connection refused -> false 'postgres unavailable' abort before any job runs.",
+    "fix": "FIXED 2026-06-26: run.sh now derives DB_PORT from backend/.env DATABASE_URL (env override DB_PORT, default 5437); all 7 psql calls use $DB_PORT. Verified: resolver yields 5437, DB reachable on it, bash -n clean. (Earlier session used a throwaway 5434->5437 TCP forwarder as a temporary workaround.)",
+    "tags": [
+      "ingestion-test",
+      "runner",
+      "postgres",
+      "port-5434",
+      "port-5437",
+      "config-drift",
+      "docker-compose",
+      "prereq"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T15:00:00+00:00"
+  },
+  {
+    "id": "bug-766",
+    "timestamp": "2026-06-26T21:55:00+00:00",
+    "error_message": "Diagnostic test returns 404 {\"detail\":\"User not found\"} on POST /api/diagnostic/start.",
+    "file": "docker-compose.yml, APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx",
+    "root_cause": "docker-compose.yml env VITE_TEST_USER_TOKEN was set to 92451633-1318-410a-8687-5b1ab59e4709, a token from an earlier DB seed. The dev DB was re-seeded on 2026-05-29 and the only users row now has user_token c76d24d2-5b59-4250-82f0-5874e5e1d826. DiagnosticPage resolves USER_TOKEN from VITE_TEST_USER_TOKEN -> localStorage -> '', so the frontend sent a valid-but-stale UUID that _resolve_user_by_token (backend/app/routers/student.py:667) parses OK but matches no User -> 404 'User not found'.",
+    "fix": "Updated docker-compose.yml VITE_TEST_USER_TOKEN to c76d24d2-5b59-4250-82f0-5874e5e1d826 (matches the seeded dev user) and recreated the frontend container (docker compose up -d --no-deps frontend) so Vite re-injects the env. Verified POST /api/diagnostic/start with X-API-Key: student-test-key + the token returns 200 with 16 questions.",
+    "tags": [
+      "diagnostic",
+      "404",
+      "user-not-found",
+      "token-drift",
+      "docker-compose",
+      "env",
+      "dev-db-reseed"
+    ],
+    "related_bugs": [
+      "bug-767"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T21:55:00+00:00"
+  },
+  {
+    "id": "bug-767",
+    "timestamp": "2026-06-26T21:55:00+00:00",
+    "error_message": "POST /api/diagnostic/start returns 500 Internal Server Error once a valid user_token is supplied: asyncpg UndefinedTableError relation \"diagnostic_sessions\" does not exist.",
+    "file": "backend/migrations/versions/030_diagnostic_sessions.py, 031_spaced_repetition.py, 032_test_session_results.py",
+    "root_cause": "Dev DB alembic_version was stamped at 033 (head) but the schema was actually at ~029: the standalone tables from migrations 030 (diagnostic_sessions), 031 (spaced_repetition_state), 032 (test_session_results) and the user_progress.diagnostic_session_id column were never created. 033's question_annotations columns + span_review_queue table + GIN indexes WERE present, so the DB was a mixed baseline (create_all + stamp) and `alembic upgrade head` could not re-run 030-032 (and would crash at 033 add_column on existing columns).",
+    "fix": "Applied the missing DDL directly with IF NOT EXISTS guards via /tmp/fix_diag_schema.sql: created diagnostic_sessions (+ indexes + user_progress.diagnostic_session_id FK/index), spaced_repetition_state (+ unique user_id/question_id + indexes), test_session_results (+ indexes). Left alembic_version at 033 since the schema now matches head. Verified diagnostic/start returns 200 with 16 questions and a coverage_report.",
+    "tags": [
+      "diagnostic",
+      "500",
+      "missing-table",
+      "alembic-drift",
+      "migration-not-applied",
+      "diagnostic_sessions",
+      "schema-baseline",
+      "dev-db"
+    ],
+    "related_bugs": [
+      "bug-766"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T21:55:00+00:00"
+  },
+  {
+    "id": "bug-768",
+    "timestamp": "2026-06-26T15:56:08+00:00",
+    "error_message": "syntactic_trap_key required (non-'none') for grammar_role_key 'verb_form'; got None \u2014 5 questions blocked from persistence in Test_4_digital_sec01_mod01 ingest (extracted 33, created 28).",
+    "file": "backend/app/routers/ingest.py (annotation validation step)",
+    "root_cause": "LLM annotation for grammar verb_form questions does not populate syntactic_trap_key. The validate-annotations step enforces that any question with grammar_role_key='verb_form' must have a non-None, non-'none' syntactic_trap_key; when the field is absent from the annotation, the question is flagged blocking and skipped by the persistence step.",
+    "fix": "Not yet fixed. Needs either (a) prompt update to ensure LLM always emits syntactic_trap_key for verb_form questions, or (b) canonicalize step that derives/defaults syntactic_trap_key from context when missing. Job e8b32fc4-3fbd-4662-a2d0-8fe711b1365a is in needs_review; 5 questions require human review or re-annotation.",
+    "tags": [
+      "ingestion",
+      "annotation",
+      "syntactic_trap_key",
+      "verb_form",
+      "blocking-validation",
+      "persistence-shortfall",
+      "needs_review",
+      "Test_4_mod01"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-06-26T15:56:08+00:00"
+  },
+  {
+    "id": "bug-769",
+    "timestamp": "2026-06-26",
+    "error_message": "Test_4 verbal annotation: 5 questions failed validation 'syntactic_trap_key required (non-none) for grammar_role_key verb_form' (bug-768); root cause = annotation output truncated at max_tokens=8192 before syntactic_trap_key emitted",
+    "file": "backend/app/prompts/annotate_prompt.py, backend/app/routers/ingest.py",
+    "root_cause": "Grammar annotation prompts exceeded 8192 output tokens; with classification fields emitted AFTER reasoning, truncation dropped syntactic_trap_key. Reading rules input was ~18.3K tokens (oversized).",
+    "fix": "(1) domain-aware max_tokens: annotation_max_tokens() returns 8192 reading / 12288 grammar; (2) reordered output schema so classification fields emit FIRST, reasoning/amendment LAST (truncation now harmless); (3) trimmed reading rules to targeted \u00a713/\u00a719 subsections per stem skill family (~18.3K->~12K tokens) via _reading_variant_key + lru_cache(16). Reannotate path unchanged at 32000.",
+    "tags": [
+      "annotation",
+      "truncation",
+      "max_tokens",
+      "grammar",
+      "ingestion",
+      "prompt"
+    ],
+    "related_bugs": [
+      "bug-768"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26"
+  },
+  {
+    "id": "bug-770",
+    "timestamp": "2026-06-26",
+    "error_message": "Ingestion job fails at 'extracting' step with ConnectError: All connection attempts failed (affected math sec02 mod01 AND verbal sec01 mod01)",
+    "file": "docker-compose.yml (backend service), backend/app/routers/ingest.py",
+    "root_cause": "dsat-backend runs in a Docker container; compose set no OLLAMA_BASE_URL and no extra_hosts, so backend fell back to code default http://localhost:11434 which inside the container resolves to the container itself. Ollama runs on the host (binds *:11434) and was unreachable from the container.",
+    "fix": "Added OLLAMA_BASE_URL: http://host.docker.internal:11434 and extra_hosts: ['host.docker.internal:host-gateway'] to the backend service in docker-compose.yml; recreated backend. Verified via docker exec python urllib that host Ollama + glm-ocr/deepseek-v4-pro:cloud are reachable from the container.",
+    "tags": [
+      "docker",
+      "ollama",
+      "connectivity",
+      "ingestion",
+      "extraction",
+      "compose"
+    ],
+    "related_bugs": [
+      "bug-768"
+    ],
+    "occurrences": 2,
+    "last_seen": "2026-06-26"
+  },
+  {
+    "id": "bug-771",
+    "timestamp": "2026-06-26",
+    "error_message": "Test_4 verbal sec01 mod01 re-run: job failed at 'validating' \u2014 annotation missing difficulty_overall on all 33 questions (33 blocking errors), despite 15559 output tokens (not truncated)",
+    "file": "backend/app/prompts/annotate_prompt.py",
+    "root_cause": "Output-reorder instruction (added in bug-769 fix) listed difficulty_grammar/difficulty_reading but NOT difficulty_overall. difficulty_overall is never mentioned anywhere in backend/app/prompts/ \u2014 the model only emitted it before by inference. With the explicit emit-list constraining the model, it treated the difficulty block as complete and dropped difficulty_overall. Regression introduced by the bug-769 reorder change.",
+    "fix": "Added difficulty_overall to the emit-order list in both _SYSTEM_INSTRUCTIONS_TEMPLATE and _SYSTEM_BASE ('...syntactic_trap_key, difficulty_overall, difficulty_grammar, difficulty_reading...'). Restarted backend to clear @lru_cache. Validated: mod01 re-run went from status=failed (33 difficulty_overall blocking) to status=needs_review with 0 difficulty_overall errors and 32/33 questions created/annotated.",
+    "tags": [
+      "annotation",
+      "difficulty_overall",
+      "regression",
+      "prompt",
+      "validation",
+      "ingestion"
+    ],
+    "related_bugs": [
+      "bug-769",
+      "bug-768"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26"
+  },
+  {
+    "id": "bug-772",
+    "timestamp": "2026-06-26",
+    "error_message": "Re-ingesting a previously-complete official PDF rejected with 'This file has already produced a complete ingest (33/33 questions).' even after all its questions were hard-deleted from the DB",
+    "file": "backend/app/routers/ingest.py (_duplicate_checksum_conflict_detail, lines ~3126-3176)",
+    "root_cause": "The dedup guard keys off QuestionAsset.checksum + the prior QuestionJob's stored created_count (_created_count_from_job_payload), NOT off live question rows. Deleting questions (even via the admin DELETE /questions/{id} endpoint) leaves the QuestionAsset and QuestionJob records behind (the admin endpoint detaches question_jobs/question_assets by nulling question_id rather than deleting them). So the guard still sees a prior job with created_count>=expected and rejects. The admin hard-delete endpoint also 500s on questions that have question_source_spans / question_stimulus_assets / question_job_questions rows (ORM tries to null question_id but those columns are NOT NULL -> NotNullViolation).",
+    "fix": "To cleanly re-ingest a previously-complete official module: (1) delete the questions and ALL question-scoped child rows in dependency order in SQL (stimulus_assets BEFORE source_spans because stimulus_assets.source_span_id FK; options+annotations BEFORE versions; null questions.latest_version_id/latest_annotation_id first to break the circular FK); detach question_jobs/question_assets by nulling question_id (nullable, preserves audit trail). (2) delete the prior QuestionJob row(s) and QuestionAsset row(s) for that module's checksum so the guard's _duplicate_checksum_conflict_detail returns None. Then re-POST /ingest/official/pdf. There is NO force/replace flag on the endpoint.",
+    "tags": [
+      "ingestion",
+      "dedup",
+      "guard",
+      "checksum",
+      "reingest",
+      "delete",
+      "fk",
+      "admin"
+    ],
+    "related_bugs": [
+      "bug-770"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-06-26"
   }
 ]

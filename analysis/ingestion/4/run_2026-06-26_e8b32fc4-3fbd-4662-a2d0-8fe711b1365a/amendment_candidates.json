@@ -1,0 +1,33 @@
+{
+  "job_id": "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a",
+  "hashes": {
+    "master_json_hash": "44c26f2a7fb3e8d28ba151900144454cfa67921fa0c16e49652a53a30c669b52",
+    "reading_rules_hash": "767795f6a672591fa6134afde5f11503213a7bba6c1e7a9e9890e2c3ec001367",
+    "grammar_rules_hash": "8cbd1ea6e6ec1bfdfa2f5c2a0bd67b0983b53557517bed61ccb7abc361faf216",
+    "ontology_hash": "3453f3ec3923374c5fb2fb26c4db0b31528cd3dd1db62213118ff08c6dc2e446"
+  },
+  "amendment_candidates": [
+    {
+      "source_question_number": "19",
+      "q_data": {
+        "source_exam_code": "4",
+        "source_subject_code": "verbal",
+        "source_section_code": "01",
+        "source_module_code": "01",
+        "source_question_number": "19",
+        "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+        "skill_family_key": null,
+        "grammar_role_key": null
+      },
+      "amendment_proposal": {
+        "proposed_key": "apostrophe_possessive_error",
+        "proposed_parent_role_key": "punctuation",
+        "reason": "Current semantic_relation_key list lacks a specific key for apostrophe errors in possessives. The closest key 'confused_word_substitution' is intended for non-homophone semantic confusion, not punctuation. A dedicated key would improve precision.",
+        "evidence_text": "Options B, C, D all contain apostrophe-related errors: 'peoples story's', 'peoples stories', 'people's story's'.",
+        "status": "proposed",
+        "frequency_estimate": "high",
+        "example_count": 1
+      }
+    }
+  ]
+}

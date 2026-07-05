@@ -1,0 +1,36 @@
+{
+  "job_id": "1ae88c80-b8f8-437d-bdc1-a3839e8bb5ba",
+  "hashes": {
+    "master_json_hash": "44c26f2a7fb3e8d28ba151900144454cfa67921fa0c16e49652a53a30c669b52",
+    "reading_rules_hash": "20d2cc1526dc12359059bd2a73dbb4862c8d92cc701397ec0c1fcb0c595445d0",
+    "grammar_rules_hash": "e3eab05ff6161c151b7b9123dd4f2292d7025acf1d4985d1351bbdf4a367345d",
+    "ontology_hash": "4d6aca7213f879a692aab6d146b5060e17d9802ee8cd9f6fbc17cec6ff6e05b4"
+  },
+  "amendment_candidates": [
+    {
+      "source_question_number": 23,
+      "q_data": {
+        "source_exam_code": "1",
+        "source_subject_code": "verbal",
+        "source_section_code": "01",
+        "source_module_code": "01",
+        "source_question_number": 23,
+        "question_text": "Which choice completes the text so that it conforms to the conventions of Standard English?",
+        "skill_family_key": null,
+        "grammar_role_key": null
+      },
+      "amendment_proposal": {
+        "affected_doc": "reading_v3_rules_reference",
+        "affected_vocab": "skill_family_key",
+        "proposed_value": "verb_form",
+        "parent_key": "conventions_grammar",
+        "definition": "The skill family for questions testing the correct form of a verb, including finite vs. non-finite, tense, and voice.",
+        "current_best_fit": "None; the existing skill_family_key values are all reading-specific.",
+        "why_current_rules_are_insufficient": "The current rules do not provide skill family keys for grammar domains, making it impossible to annotate grammar questions without using a proposed key.",
+        "official_evidence": "Official Practice Test 1, question 23 requires a grammar skill family for verb form.",
+        "rule_doc_patch": "Add to §6 Skill Family Keys: For conventions_grammar domain, use one of: verb_form, agreement, punctuation, sentence_boundary, modifier, parallel_structure, pronoun, expression_of_ideas.",
+        "master_json_patch": "Add to allowed_values for skill_family_key: verb_form, agreement, punctuation, sentence_boundary, modifier, parallel_structure, pronoun, expression_of_ideas."
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+question_id: ceabb1b3-b90b-4514-958c-09705f5be52f
+question_text: Q2
+passage_text: Shared passage for two questions.
+correct_option_label: B
+options:
+- label: A
+  text: a
+- label: B
+  text: b
+- label: C
+  text: c
+- label: D
+  text: d
+annotation:
+  explanation_short: E
+  explanation_full: F
+  annotation_confidence: 0.9
+  needs_human_review: false

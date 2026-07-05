@@ -1,32 +1,5 @@
 # Debug Log
 
-## 2026-07-02 - Admin dashboard dirty-tree cleanup
-Report created by: GPT-5 Codex
-Git branch: `main`
-Git checkpoint: local cleanup after `190b24d` (`Merge podman-uv-build-clean`)
-
-### Findings
-
-1. **GitButler workspace contained mixed signal and generated noise.**
-   - Preserved admin-dashboard contract work from `APP/ADMIN_APP`, `backend/app/routers/student.py`,
-     and `backend/tests/test_student_router.py`.
-   - Preserved the Phase 1 task plan in `admin_dashboard_tasks.md`.
-   - Did not preserve generated/session artifacts into the clean commits: `.wolf/*`, `.tokensave/`,
-     ingestion analysis run folders, backup rotation files, or generated backup dumps.
-
-2. **Admin app/backend contract mismatch was the blocker before Phase 1.**
-   - Admin app now sends `X-API-Key`, routes admin/user/student calls to their actual FastAPI prefixes,
-     and proxies to the local backend on `8002`.
-   - Student stats accepts admin keys so dashboard views can read the endpoint without using a student-only key.
-
-### Verification
-
-- Backend targeted tests: `tests/test_student_router.py` passed after cleanup.
-- Ingestion DB integrity was checked separately on `localhost:5437`: 26 public tables, 1,583 questions,
-  6,540 options, and zero orphan/reference failures across the main ingestion relationships.
-
----
-
 ## 2026-07-01 - Docker/Podman build pipeline: unscoped context, bad healthchecks, corrupted host node_modules
 Report created by: Claude Sonnet 5
 Git branch: `gitbutler/workspace`
