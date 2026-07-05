@@ -17,69 +17,11 @@ Vite + TanStack Query v5 + react-router-dom v7 + Tailwind v4 (frontend). New fro
 dependency: `react-grid-layout` (Phase 5 only). `framer-motion` is already a dependency
 (`package.json`, `^12.40.0`) — no install needed for it.
 
-## Status (2026-07-03): Phases 0–6 shipped on `origin/main`
-
-All six sequenced phases are complete and pushed to `origin/main` (HEAD `fc99224`). Only the
-unsequenced "Future — Bulk Operations" item (bottom of this file) remains, and it is explicitly
-deferred until an admin actually needs it.
-
-**This work happened outside GitButler.** It was implemented via Codex CLI in a plain git
-worktree checked out from `origin/main`, independent of the `gitbutler/workspace` branch used
-for other work in this repo. `/home/jb/DSAT_REDUX_MD` (the GitButler-managed checkout) does not
-have these commits and is not expected to — do not try to reconcile them there unless you
-specifically need to resume admin-dashboard work inside GitButler.
-
-**The worktree used to do this (`/tmp/dsat-podman-clean`) lives on `tmpfs` and does not survive
-a reboot.** If it's gone, recreate it from the up-to-date `origin/main`:
-
-```bash
-cd /home/jb/DSAT_REDUX_MD
-git fetch origin
-git worktree add /tmp/dsat-podman-clean main   # or: git worktree add <path> origin/main
-```
-
-### How to activate
-
-1. Start the shared backend + DB (from `/home/jb/DSAT_REDUX_MD`, the normal dev stack):
-   `bash .claude/skills/dev-stack/run.sh start` (or the `/dev-stack` skill). Note the backend's
-   printed host port — it has varied by session (e.g. `8002`); the worktree's
-   `APP/ADMIN_APP/vite.config.ts` is already pointed at `8002` with proxies for `/api`, `/users`,
-   and `/admin` all forwarding to it. Update that file if the backend comes up on a different
-   port.
-2. Start the admin app itself — it is **not** part of `docker-compose.yml`, so run it manually
-   from the worktree: `cd /tmp/dsat-podman-clean/APP/ADMIN_APP && npm run dev` (Node 20 required
-   — `nvm use 20` first if your default isn't already pinned to it). It serves on `:5175`.
-3. Open `http://localhost:5175`.
-
-### How to test Phase 6 specifically
-
-- **Entrance stagger (6.1):** hard-refresh `/dashboard` — panels should fade/slide in with a
-  ~50ms-per-panel stagger, once, on load.
-- **Touch drag handles (6.2):** the size bump (`py-2.5` → `md:py-3.5`) only applies at the `md`
-  breakpoint (≥768px) — use a real iPad or DevTools device emulation at iPad width, not a
-  narrow/mobile viewport, or you won't see the difference. Confirm the handle is still draggable
-  and that scrolling inside a panel's body (e.g. a widget's list) doesn't trigger a drag.
-- **Table horizontal scroll (6.3):** at iPad-portrait width or narrower, open `/users`, the
-  question list in `/data`, and the pipeline/auto-release page — wide tables should scroll
-  horizontally within their own container instead of clipping action columns.
-- **Toasts / error boundary / skeletons (6.4):** trigger a mutation (create/edit/delete/reset a
-  user; approve/reject/edit a question; toggle auto-release) and confirm a success or error toast
-  appears top-right and auto-dismisses (~4s) instead of failing silently to the console. Throttle
-  network in DevTools to see skeleton loaders in tables, the question detail modal, and dashboard
-  widgets while data is pending.
-- **Known gap:** none of the above was verified live by Codex — its execution sandbox couldn't
-  bind a dev-server port (`listen EPERM`), so verification there was build-only. A prior static
-  code review confirmed the diffs match spec, but nobody has actually looked at the rendered UI
-  yet.
-
----
-
 ## Global Constraints
 
 - Every new admin backend endpoint uses `Depends(admin_required)` (X-API-Key header), matching
-  every existing endpoint in `admin.py`/`users.py`. Endpoints consumed by the admin dashboard
-  from `student.py` must accept an admin key too, using `Depends(admin_or_student_required)`.
-  Do not build admin UI against a student-only API key path.
+  every existing endpoint in `admin.py`/`users.py`. Student-facing endpoints (Phase 4) use
+  `Depends(student_required)`, matching the existing `/stats/{user_id}` endpoint.
 - Backend tests use the `client` fixture and `AUTH = {"X-API-Key": "admin-test-key"}` header
   convention already established in `backend/tests/conftest.py`, `test_admin_router.py`, and
   `test_users_router.py`. The default `client` fixture's mock DB session returns `None` from
@@ -87,10 +29,6 @@ git worktree add /tmp/dsat-podman-clean main   # or: git worktree add <path> ori
   Tests needing a populated row use a custom `FakeSession`/`FakeUser`/`FakeQuestion` class and
   `app.dependency_overrides[get_db]`, matching the pattern in
   `test_admin_router.py::test_admin_reject_is_non_destructive`.
-- Local/manual admin UI access uses username `admin` and password `admin`. If a login gate is
-  added while implementing this plan, seed or configure that local credential for development
-  and QA; keep API requests backed by the `X-API-Key` contract above unless the backend auth
-  dependencies are explicitly changed.
 - **`APP/ADMIN_APP` has no automated frontend test suite** (verified: no `vitest.config.ts`, no
   `*.test.tsx` files anywhere in the app). Frontend tasks are verified by manual QA against the
   dev server (`npm run dev` from `APP/ADMIN_APP`), not automated tests. Do not invent frontend
@@ -101,464 +39,6 @@ git worktree add /tmp/dsat-podman-clean main   # or: git worktree add <path> ori
   matching the existing `AdminEditRequest`/`edit_question` in `admin.py:1001-1124`.
 - All Pydantic request/response models go in `backend/app/models/payload.py`, matching every
   existing model.
-
----
-
-## Phase 0: Contract Alignment Prerequisites
-
-These fixes are required before Phase 1. They repair existing API/frontend contract mismatches
-that would otherwise make the later dashboard tasks fail even if their feature code is correct.
-
-### Task 0.1: Frontend — send `X-API-Key` from `APP/ADMIN_APP`
-
-**Files:**
-- Modify: `APP/ADMIN_APP/src/api/client.ts`
-
-**Interfaces:**
-- Consumes: `VITE_ADMIN_TOKEN` (existing env variable name)
-- Produces: every admin app request includes `X-API-Key`, matching `admin_required` /
-  `student_required` / `admin_or_student_required`
-
-- [ ] **Step 1: Replace the Bearer-only header**
-
-In `APP/ADMIN_APP/src/api/client.ts`, replace the request headers in `apiCall` with:
-
-```ts
-    headers: {
-      'Content-Type': 'application/json',
-      'X-API-Key': ADMIN_TOKEN,
-      ...(options.headers || {}),
-    },
-```
-
-Do not keep `Authorization: Bearer ${ADMIN_TOKEN}` for this admin app unless a later task
-explicitly moves these routers to JWT auth; the current FastAPI dependencies read `X-API-Key`.
-
-- [ ] **Step 2: Handle 204 responses**
-
-In the same `apiCall`, replace:
-
-```ts
-  if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`)
-  return res.json()
-```
-
-with:
-
-```ts
-  if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`)
-  if (res.status === 204) return null
-  return res.json()
-```
-
-This is required before Task 3.2 because `POST /users/{user_id}/reset-password` intentionally
-returns `204 No Content`.
-
-- [ ] **Step 3: Manual verification**
-
-Run: `cd APP/ADMIN_APP && npm run dev`, open any existing admin page, and confirm an authenticated
-request such as `GET /api/users` no longer fails with `403 Invalid admin API key`.
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add APP/ADMIN_APP/src/api/client.ts
-git commit -m "Send X-API-Key from admin app API client"
-```
-
----
-
-### Task 0.2: Backend/frontend — align the user contract before edit/reset work
-
-**Files:**
-- Modify: `backend/app/models/payload.py`
-- Modify: `backend/app/routers/users.py`
-- Modify: `backend/tests/test_users_router.py`
-- Modify: `APP/ADMIN_APP/src/types/index.ts`
-- Modify: `APP/ADMIN_APP/src/pages/UserManagement.tsx`
-
-**Interfaces:**
-- Consumes: `User.username/email/role/is_active` (existing DB columns)
-- Produces: `UserResponse` includes `is_active`; create-user UI sends a valid `username`
-  instead of an email-only payload; frontend `User` type matches `UserResponse`
-
-- [ ] **Step 1: Extend the backend payload models**
-
-In `backend/app/models/payload.py`, replace `UserCreate` / `UserResponse` with:
-
-```python
-class UserCreate(BaseModel):
-    username: str = Field(min_length=1, max_length=100)
-    email: Optional[str] = None
-
-
-class UserResponse(BaseModel):
-    id: int
-    username: str
-    email: Optional[str] = None
-    role: str = "student"
-    is_active: bool = True
-    user_token: UUID
-    created_at: Optional[datetime] = None
-
-    model_config = {"from_attributes": True}
-```
-
-- [ ] **Step 2: Store optional email on create**
-
-In `backend/app/routers/users.py`, update `create_user` so it checks duplicate email when
-`body.email` is provided and creates the row with both fields:
-
-```python
-    if body.email:
-        existing_email = await db.execute(select(User).where(User.email == body.email))
-        if existing_email.scalars().first():
-            raise HTTPException(status_code=409, detail="Email already exists")
-    user = User(username=body.username, email=body.email, created_at=datetime.now(timezone.utc))
-```
-
-- [ ] **Step 3: Add backend tests**
-
-Add tests proving `POST /users` stores email, rejects duplicate email, and returns `is_active`
-in `UserResponse`. Use the same `FakeSession` / dependency override pattern already used in
-this file.
-
-- [ ] **Step 4: Fix the frontend `User` type**
-
-In `APP/ADMIN_APP/src/types/index.ts`, replace the current `User` interface with:
-
-```ts
-export interface User {
-  id: number
-  username: string
-  email?: string | null
-  role: string
-  is_active: boolean
-  user_token: string
-  created_at: string
-}
-```
-
-- [ ] **Step 5: Fix `CreateUserModal`**
-
-Update `APP/ADMIN_APP/src/pages/UserManagement.tsx` so the create modal has a required
-`username` input and optional `email` input, then calls:
-
-```tsx
-mutation.mutate({ username, email: email || undefined })
-```
-
-Also update the users table/search display to prefer `u.email ?? u.username`, so users without
-email still render cleanly.
-
-- [ ] **Step 6: Verification**
-
-Run: `cd backend && pytest tests/test_users_router.py -k "create_user or list_users" -v`
-and `cd APP/ADMIN_APP && npm run build`.
-
-- [ ] **Step 7: Commit**
-
-```bash
-git add backend/app/models/payload.py backend/app/routers/users.py backend/tests/test_users_router.py APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/src/pages/UserManagement.tsx
-git commit -m "Align admin user create and response contracts"
-```
-
----
-
-### Task 0.3: Backend — let admin dashboard read student stats
-
-**Files:**
-- Modify: `backend/app/routers/student.py`
-- Test: `backend/tests/test_student_router.py`
-
-**Interfaces:**
-- Consumes: existing `GET /api/stats/{user_id}` used by `StudentPerformance`
-- Produces: same response shape, but accepts admin API keys as well as student API keys
-
-- [ ] **Step 1: Write the auth regression tests**
-
-Add tests showing both headers work:
-
-```python
-def test_student_stats_accepts_admin_key(client):
-    resp = client.get("/api/stats/99999", headers={"X-API-Key": "admin-test-key"})
-    assert resp.status_code == 200
-
-
-def test_student_stats_still_accepts_student_key(client):
-    resp = client.get("/api/stats/99999", headers={"X-API-Key": "student-test-key"})
-    assert resp.status_code == 200
-```
-
-- [ ] **Step 2: Change the dependency**
-
-In `backend/app/routers/student.py`, change `get_user_stats` from:
-
-```python
-    _auth: str = Depends(student_required),
-```
-
-to:
-
-```python
-    _auth=Depends(admin_or_student_required),
-```
-
-- [ ] **Step 3: Run tests**
-
-Run: `cd backend && pytest tests/test_student_router.py -k "student_stats" -v`
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add backend/app/routers/student.py backend/tests/test_student_router.py
-git commit -m "Allow admin keys to read student stats for dashboard"
-```
-
----
-
-### Task 0.4: Backend — repair `/admin/analytics/weak-spots` focus lookup
-
-**Files:**
-- Modify: `backend/app/routers/admin.py`
-- Test: `backend/tests/test_cohort_analytics.py`
-
-**Interfaces:**
-- Consumes: `QuestionAnnotation.annotation_jsonb` (actual model column)
-- Produces: `GET /admin/analytics/weak-spots` remains `CohortWeakSpotsResponse`, but no longer
-  queries nonexistent ORM attributes such as `QuestionAnnotation.grammar_focus_key`
-
-- [ ] **Step 1: Add a regression test**
-
-Add a test that exercises the endpoint with at least one question miss row and a fake annotation
-whose `annotation_jsonb` contains `grammar_focus_key`. The endpoint should return that focus key
-without raising an attribute/query-construction error.
-
-- [ ] **Step 2: Fix the focus-map query**
-
-In `backend/app/routers/admin.py`, replace the `select(Question.id, QuestionAnnotation.grammar_focus_key)`
-block with a query for `Question.id` and `QuestionAnnotation.annotation_jsonb`, then derive:
-
-```python
-        for qid, annotation_jsonb in ann_result.all():
-            annotation = annotation_jsonb or {}
-            focus_map[str(qid)] = (
-                annotation.get("grammar_focus_key")
-                or annotation.get("reading_focus_key")
-                or ""
-            )
-```
-
-- [ ] **Step 3: Run tests**
-
-Run: `cd backend && pytest tests/test_cohort_analytics.py -k weak_spots -v`
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add backend/app/routers/admin.py backend/tests/test_cohort_analytics.py
-git commit -m "Fix weak-spots analytics focus lookup"
-```
-
----
-
-## Phase 0 Follow-ups (deferred gaps)
-
-Phase 0 shipped (commits `5ddd178`–`fb84273`), but five items were explicitly deferred and one
-loose end is still staged. None block Phase 1; they can be folded into any later phase. Each is
-verified-open as of 2026-07-02.
-
-**Re-verified 2026-07-02** against the live repo + a running podman stack (Task 0.10's live QA,
-below): 0.1–0.4 confirmed correct in code. 0.5 still uncommitted. 0.6's code fix turned out to
-already be in place (only its test is missing — status corrected below). 0.7's `UserUpdate`
-target doesn't exist yet. 0.8/0.9 still open as described. Two previously-undocumented gaps
-surfaced during the live QA and are tracked as Task 0.11 and Task 0.12.
-
-### Task 0.5: Loose end — commit the staged `get_user_stats` auth annotation
-
-**Files:**
-- Staged: `backend/app/routers/student.py` (`get_user_stats`: `_auth: str` → `_auth: Tuple[str, str]`)
-- Staged: `backend/tests/test_student_router.py` (trailing-newline only)
-
-**Status:** Already staged, uncommitted. Leftover from the "stale auth annotation" cleanup
-(`fb84273` caught the others; this one spot remained).
-
-- [ ] **Step 1:** Confirm `Tuple` is imported at the top of `student.py` (it is used by other
-  `admin_or_student_required`-annotated endpoints in the file — match their import).
-- [ ] **Step 2:** Commit via the GitButler workflow (plain `git commit` is blocked here):
-  `but stage backend/app/routers/student.py backend/tests/test_student_router.py && but commit -m "Fix remaining stale auth annotation on get_user_stats"`
-
----
-
-### Task 0.6: Whitespace-only email test + normalization
-
-**Files:**
-- Modify: `backend/app/routers/users.py` (`create_user`)
-- Test: `backend/tests/test_users_router.py`
-
-**Gap:** `create_user` does not strip whitespace from `body.email` before the duplicate check or
-insert. A whitespace-only `"  "` email bypasses the `None` path and is stored as a non-null
-whitespace string.
-
-**Status update 2026-07-02:** Step 2's normalization is already live in `users.py:25` —
-`email = (body.email or "").strip() or None` — landed alongside the empty-string fix (`cef241c`).
-Only Step 1 (the whitespace-specific test) is still missing; `test_users_router.py` currently
-tests `email: ""` (covered) but not `email: "  "` or the trim-collision case.
-
-- [ ] **Step 1:** Add a test: `POST /users` with `email: "  "` stores `email=None` (or rejects),
-  and a second user with `email: "  bob@example.com  "` does not collide with a stored
-  `bob@example.com`. Use the existing `FakeSession` / dependency-override pattern in this file.
-- [x] ~~Step 2: In `create_user`, normalize before use...~~ — already done (`users.py:25`).
-- [ ] **Step 3:** Run `cd backend && .venv-jb/bin/python -m pytest tests/test_users_router.py -k create_user -v`.
-- [ ] **Step 4:** Commit: `Add whitespace-only email test for user create`.
-
----
-
-### Task 0.7: Pydantic-layer email validation on `UserCreate`
-
-**Files:**
-- Modify: `backend/app/models/payload.py` (`UserCreate`, `UserUpdate`)
-
-**Gap:** `UserCreate.email` is bare `Optional[str] = None` with no format validation. Other
-models in this file already validate (e.g. line ~537 uses a regex pattern), so the convention
-exists — this was a deliberate hold, not an omission.
-
-**Status update 2026-07-02:** `UserUpdate` does not exist in `payload.py` yet — there is no
-`PATCH /users/{id}` endpoint at all (user editing is Phase 3 scope, not built). Step 1/2 below
-apply to `UserCreate` only until Phase 3 introduces `UserUpdate`; whoever implements Phase 3's
-user-edit task should add email validation to the new `UserUpdate` model at that time rather
-than assuming it already exists.
-
-- [ ] **Step 1:** Decide the validation surface: either `EmailStr` (requires
-  `pydantic[email]` / `email-validator`) or an inline `Field(pattern=...)` matching the existing
-  convention. Prefer the inline regex to avoid a new dependency.
-- [ ] **Step 2:** Add validation to `UserCreate.email` now; add the matching validation to
-  `UserUpdate.email` when Phase 3 creates that model (do not create `UserUpdate` here just to
-  satisfy this task — that's out of scope for Phase 0).
-- [ ] **Step 3:** Add a test: `POST /users` with `email: "not-an-email"` returns 422. (The
-  `PATCH /users/{id}` case is Phase 3's responsibility once that endpoint exists.)
-- [ ] **Step 4:** Run `cd backend && .venv-jb/bin/python -m pytest tests/test_users_router.py -v`.
-- [ ] **Step 5:** Commit: `Add Pydantic email validation on user create`.
-
----
-
-### Task 0.8: `reading_focus_key` fallback test for weak-spots
-
-**Files:**
-- Test: `backend/tests/test_cohort_analytics.py` (`test_focus_key_derived_from_annotation_jsonb`)
-
-**Gap:** The existing regression test only feeds `{"grammar_focus_key": "subject_verb_agreement"}`
-and asserts that key. The `or annotation.get("reading_focus_key")` fallback branch at
-`admin.py:2347-2348` is untested. The production fix is in place; only the fallback *path* lacks
-coverage.
-
-- [ ] **Step 1:** Add a second test (or a parametrized variant) that feeds an annotation with no
-  `grammar_focus_key` but `reading_focus_key: "main_idea"`, and assert the response's
-  `focus_key` is `"main_idea"`.
-- [ ] **Step 2:** Run `cd backend && .venv-jb/bin/python -m pytest tests/test_cohort_analytics.py -k focus_key -v`.
-- [ ] **Step 3:** Commit: `Add reading_focus_key fallback test for weak-spots`.
-
----
-
-### Task 0.9: Shared `FakeSession` helper for `test_cohort_analytics.py`
-
-**Files:**
-- Modify: `backend/tests/test_cohort_analytics.py`
-
-**Gap:** This file defines inline `FakeSession`/`FakeResult` per test (lines ~64–97). Other test
-files share a fixture. Pure refactor — no behavior change, no risk.
-
-- [ ] **Step 1:** Extract a module-level `FakeSession` (configurable per-`execute`-call row
-  returns) and a `make_override(fake)` helper, matching the pattern in `test_admin_router.py`.
-- [ ] **Step 2:** Replace the inline definitions in each test; confirm the existing
-  `test_focus_key_derived_from_annotation_jsonb` still uses the call-count-based dispatch (it
-  needs ordered returns — keep that capability in the shared helper or leave that one test as-is).
-- [ ] **Step 3:** Run `cd backend && .venv-jb/bin/python -m pytest tests/test_cohort_analytics.py -v`.
-- [ ] **Step 4:** Commit: `Extract shared FakeSession helper in test_cohort_analytics`.
-
----
-
-### Task 0.10: Live manual QA of the Phase 0 admin frontend — DONE 2026-07-02
-
-**Files:** none (verification only)
-
-**Gap:** Phase 0 was verified via `tsc` + backend pytest only — the admin frontend was never run
-against the dev server (WSL2 Vite WASM build issue at the time). The `node:20-bookworm-slim`
-Docker fix is now in, so this is unblocked. Do this **before** Phase 1 UI work piles on top, so
-the Task 0.1 X-API-Key fix is confirmed working in a real browser.
-
-- [x] **Step 1:** Started the stack (`/dev-stack`: db + backend on podman) plus the admin app
-  standalone (`cd APP/ADMIN_APP && npm run dev`, port 5175 per its `vite.config.ts`). Vite itself
-  still crashed under the host's default Node (v24 via nvm) with the WSL2 WASM
-  `Illegal instruction` bug — worked around with `nvm use 20` (see Task 0.12, new).
-- [x] **Step 2 (adapted):** There is no login page in `APP/ADMIN_APP/src` — the app has no auth
-  gate at all; it sends `VITE_ADMIN_TOKEN` from `.env` on every request. The doc's "log in
-  (admin/admin)" instruction doesn't apply to the app as built; skip it until/unless a login gate
-  is added. Verified `GET /users` (curl, `X-API-Key: admin-test-key`) directly instead — see
-  findings below.
-- [x] **Step 3:** `GET /api/stats/{user_id}` verified 200 with a real admin key — Task 0.3 correct.
-- [x] **Step 4:** `GET /admin/analytics/weak-spots` verified 200 — Task 0.4 correct, no 500.
-- [x] **Step 5:** Findings recorded in `DEBUG_LOG.md` (2026-07-02 entry) and `.wolf/buglog.json`
-  (bug-777, bug-778).
-
-**Findings:**
-1. **(Found + fixed same session)** `APP/ADMIN_APP/src/api/client.ts` hardcoded
-   `API_BASE = '/api'`, but only `student.py`'s router mounts at `prefix="/api"` —
-   `users.py` is `prefix="/users"`, `admin.py` is `prefix="/admin"`. Every `adminApi` call except
-   the three student-stats ones 404'd live (`GET /api/users` → 404, `GET /api/admin/questions` →
-   404) despite passing `tsc` + pytest. Fixed: `API_BASE` → `''`, each `adminApi` entry keeps its
-   real prefix, student-stats calls spell out `/api/...` explicitly; `vite.config.ts` proxy
-   extended to also forward `/users` and `/admin`. Re-verified live (200s across the board) and
-   `tsc -b && vite build` passes clean. Logged as bug-777 (fixed).
-2. **(Found, not fixed — new Task 0.12)** `APP/ADMIN_APP` isn't in `docker-compose.yml` at all;
-   running it standalone under the host's default Node hits the WSL2 WASM crash. Logged as
-   bug-778 (open).
-
----
-
-### Task 0.11: Commit the admin app `/api` prefix fix (bug-777)
-
-**Files:**
-- Modify (already edited, uncommitted): `APP/ADMIN_APP/src/api/client.ts`,
-  `APP/ADMIN_APP/vite.config.ts`
-
-**Status:** Code fix is done and re-verified live (see Task 0.10 findings) but not yet committed.
-
-- [ ] **Step 1:** Confirm no other in-flight edits to these two files are needed, then commit via
-  GitButler: `but stage APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/vite.config.ts && but commit
-  -m "Fix admin app API_BASE prefix mismatch (users/admin routers aren't under /api)"`.
-- [ ] **Step 2:** Consider adding a lightweight regression guard so this can't silently regress
-  again — e.g. an integration test (`backend/tests` or a small script) that boots the FastAPI
-  app and asserts `client.get("/users")` and `client.get("/admin/questions")` don't 404, since
-  there's no frontend test suite to catch a path-prefix regression on the `client.ts` side.
-
----
-
-### Task 0.12: Containerize `APP/ADMIN_APP` (fix bug-778 properly)
-
-**Files:**
-- Modify: `docker-compose.yml`
-- New: `Dockerfile.admin` (or similar, matching `Dockerfile.frontend`'s pattern)
-
-**Gap:** `APP/ADMIN_APP` is the only app in this repo not part of `docker-compose.yml`. It must
-be started standalone (`npm run dev`), and doing so under the host's default Node (v24 via nvm)
-hits the same WSL2 Vite/WASM `Illegal instruction (core dumped)` crash that `Dockerfile.frontend`
-was already fixed for by switching to `node:20-bookworm-slim`. The admin app never inherited that
-fix because it isn't containerized at all. Current workaround is manual:
-`source ~/.nvm/nvm.sh && nvm use 20 && npm run dev`.
-
-- [ ] **Step 1:** Add a `dsat-admin` service to `docker-compose.yml`, following the `frontend`
-  service's pattern (build context scoped to `./APP/ADMIN_APP`, `node:20-bookworm-slim` base,
-  volume-mounted source + isolated `node_modules`, healthcheck).
-- [ ] **Step 2:** Decide the port (avoid colliding with `dsat-frontend`'s 5174 or the admin app's
-  own `vite.config.ts` port 5175 — pick one and keep both consistent).
-- [ ] **Step 3:** Set `VITE_ADMIN_TOKEN` via the compose `environment:` block (matching
-  `admin-test-key` from the backend's `ADMIN_API_KEYS`), so a fresh `.env`-less checkout still
-  works out of the box.
-- [ ] **Step 4:** Verify via `/dev-stack` that all four services (db, backend, frontend, admin)
-  come up healthy, and that the admin app's `/users`, `/admin/questions`,
-  `/admin/analytics/weak-spots` all resolve through its containerized proxy.
-- [ ] **Step 5:** Commit: `Containerize APP/ADMIN_APP dev server`.
 
 ---
 
@@ -707,7 +187,7 @@ git commit -m "Expose annotation_stale in admin question list response"
 - Test: `backend/tests/test_admin_router.py`
 
 **Interfaces:**
-- Consumes: `Question.source_release_year/source_test_name/source_exam_code/source_subject_code/source_section_code/source_module_code/practice_status` (existing columns)
+- Consumes: `Question.source_release_year/source_test_name/source_exam_code/source_subject_code/source_section_code/source_module_code/practice_status` (existing columns, already used by `list_questions`'s `sort_by_source` filters)
 - Produces: `GET /admin/tests` → `list[TestSummary]`, each `{source_release_year, source_test_name, source_exam_code, source_subject_code, source_section_code, source_module_code, question_count, approved_count}` — consumed by Task 1.5 (Tests browse tab)
 
 - [ ] **Step 1: Add the `TestSummary` model**
@@ -870,168 +350,6 @@ git commit -m "Add GET /admin/tests aggregation endpoint for the test explorer"
 
 ---
 
-### Task 1.2b: Backend — add section/module filters to `GET /admin/questions`
-
-**Files:**
-- Modify: `backend/app/routers/admin.py` (`list_questions`)
-- Test: `backend/tests/test_admin_router.py`
-
-**Interfaces:**
-- Consumes: the same source fields aggregated by Task 1.2
-- Produces: `GET /admin/questions` supports `source_subject_code`, `source_section_code`, and
-  `source_module_code` query params — required by Task 1.5 so clicking a test/section/module
-  card does not broaden back to the whole test
-
-- [ ] **Step 1: Add a query-construction regression test**
-
-Add a test with a fake session that captures the executed SQLAlchemy statement, then call:
-
-```python
-resp = c.get(
-    "/admin/questions?source_test_name=Test_4&source_section_code=sec01&source_module_code=mod01",
-    headers=AUTH,
-)
-```
-
-Assert the response is `200` and the captured statement includes filters for
-`source_test_name`, `source_section_code`, and `source_module_code`.
-
-- [ ] **Step 2: Add the query params and filters**
-
-In `list_questions`, add parameters next to `source_exam_code`:
-
-```python
-    source_subject_code: Optional[str] = Query(None, description="Filter by source subject code"),
-    source_section_code: Optional[str] = Query(None, description="Filter by source section code"),
-    source_module_code: Optional[str] = Query(None, description="Filter by source module code"),
-```
-
-Then add filters after the existing `source_exam_code` filter:
-
-```python
-    if source_subject_code:
-        stmt = stmt.where(Question.source_subject_code == source_subject_code)
-    if source_section_code:
-        stmt = stmt.where(Question.source_section_code == source_section_code)
-    if source_module_code:
-        stmt = stmt.where(Question.source_module_code == source_module_code)
-```
-
-- [ ] **Step 3: Run tests**
-
-Run: `cd backend && pytest tests/test_admin_router.py -k "list_questions" -v`
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add backend/app/routers/admin.py backend/tests/test_admin_router.py
-git commit -m "Add source section and module filters to admin question list"
-```
-
----
-
-### Task 1.2c: Backend — add date-range and general sort to `GET /admin/questions`
-
-**Files:**
-- Modify: `backend/app/routers/admin.py` (`list_questions`)
-- Test: `backend/tests/test_admin_router.py`
-
-**Interfaces:**
-- Consumes: `Question.created_at` / `Question.updated_at` (existing DB columns)
-- Produces: `GET /admin/questions` supports `date_from`, `date_to` (inclusive
-  `created_at` bounds) and a whitelisted `sort_by` / `sort_dir` pair, in addition
-  to the existing `sort_by_source` toggle. Salvaged from the deprecated
-  `ADMIN_DASHBOARD_TASKS.md` Phase 1.1 spec, which proposed these params but they
-  were dropped when the new plan narrowed `list_questions` to source-field filters.
-
-**Gap:** `list_questions` currently only offers `sort_by_source: bool` and the
-`source_*` / `practice_status` / `content_origin` filters. An admin cannot scope
-the list to "questions created this month" or sort by `updated_at` descending.
-The deprecated plan's `date_from` / `date_to` / `sort_by` / `sort_dir` params
-cover both.
-
-- [ ] **Step 1: Add a query-construction regression test**
-
-Add a test using a fake session that captures the executed SQLAlchemy statement,
-then call:
-
-```python
-resp = c.get(
-    "/admin/questions?date_from=2026-01-01T00:00:00&date_to=2026-02-01T00:00:00&sort_by=updated_at&sort_dir=desc",
-    headers=AUTH,
-)
-```
-
-Assert the response is `200` and the captured statement includes a
-`created_at >= date_from` filter, a `created_at <= date_to` filter, and an
-`ORDER BY updated_at DESC` clause.
-
-- [ ] **Step 2: Add the query params**
-
-In `list_questions`, add parameters alongside the existing `source_*` params:
-
-```python
-    date_from: Optional[datetime] = Query(None, description="Inclusive lower bound on Question.created_at"),
-    date_to: Optional[datetime] = Query(None, description="Inclusive upper bound on Question.created_at"),
-    sort_by: Optional[str] = Query(
-        None,
-        description="Sort column — one of: created_at, updated_at, practice_status, source_release_year",
-    ),
-    sort_dir: str = Query("desc", pattern="^(asc|desc)$"),
-```
-
-- [ ] **Step 3: Apply the filters and sort**
-
-After the existing `source_*` filter block and before the `sort_by_source`
-branch, add:
-
-```python
-    if date_from:
-        stmt = stmt.where(Question.created_at >= date_from)
-    if date_to:
-        stmt = stmt.where(Question.created_at <= date_to)
-```
-
-Then replace the `sort_by_source` handling so a general `sort_by` takes
-precedence when provided, falling back to `sort_by_source` for the
-release/test/exam ordering, and finally `updated_at DESC` as the default:
-
-```python
-    _ALLOWED_SORT_COLUMNS = {
-        "created_at": Question.created_at,
-        "updated_at": Question.updated_at,
-        "practice_status": Question.practice_status,
-        "source_release_year": Question.source_release_year,
-    }
-    if sort_by and sort_by in _ALLOWED_SORT_COLUMNS:
-        col = _ALLOWED_SORT_COLUMNS[sort_by]
-        stmt = stmt.order_by(col.desc() if sort_dir == "desc" else col.asc())
-    elif sort_by_source:
-        stmt = stmt.order_by(
-            Question.source_release_year.asc().nullslast(),
-            # ... existing source ordering chain stays unchanged
-        )
-    else:
-        stmt = stmt.order_by(Question.updated_at.desc())
-```
-
-The whitelist prevents arbitrary column injection. Do not accept `sort_by`
-values outside the allowed set — return `422` for unknown columns (Pydantic
-`pattern` on the Query, or an explicit check + `HTTPException`).
-
-- [ ] **Step 4: Run tests**
-
-Run: `cd backend && pytest tests/test_admin_router.py -k "list_questions" -v`
-
-- [ ] **Step 5: Commit**
-
-```bash
-git add backend/app/routers/admin.py backend/tests/test_admin_router.py
-git commit -m "Add date-range and general sort to admin question list"
-```
-
----
-
 ### Task 1.3: Frontend — fix the `Question` type and the Focus/Difficulty columns
 
 **Files:**
@@ -1077,12 +395,6 @@ export interface QuestionAnnotation {
   [key: string]: unknown
 }
 
-export interface QuestionOption {
-  label: string
-  text: string
-  is_correct?: boolean
-}
-
 export interface Question {
   id: string
   content_origin: 'official' | 'generated' | 'admin_created'
@@ -1107,9 +419,6 @@ export interface Question {
   created_at?: string
 }
 ```
-
-This intentionally uses `label` / `text` for `QuestionOption`: `GET /admin/questions` currently
-serializes list options as `{label, text, is_correct}`, not `{option_label, option_text}`.
 
 - [ ] **Step 2: Fix the Focus/Difficulty column rendering**
 
@@ -1230,14 +539,14 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
               <div className="space-y-1">
                 {(question.options ?? []).map((opt) => (
                   <div
-                    key={opt.label}
+                    key={opt.id ?? opt.option_label}
                     className={`text-sm px-3 py-1.5 rounded-lg border ${
-                      opt.label === question.current_correct_option_label
+                      opt.option_label === question.current_correct_option_label
                         ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
                         : 'border-gray-200 text-gray-600'
                     }`}
                   >
-                    <span className="font-medium">{opt.label}.</span> {opt.text}
+                    <span className="font-medium">{opt.option_label}.</span> {opt.option_text}
                   </div>
                 ))}
               </div>
@@ -1315,8 +624,8 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {(question.options ?? []).map((opt) => (
-                  <option key={opt.label} value={opt.label}>
-                    {opt.label}
+                  <option key={opt.option_label} value={opt.option_label}>
+                    {opt.option_label}
                   </option>
                 ))}
               </select>
@@ -1433,120 +742,6 @@ git commit -m "Add QuestionDetailModal with view, edit, and annotation-stale bad
 
 ---
 
-### Task 1.4b: Frontend — per-option text editing in `QuestionDetailModal`
-
-**Files:**
-- Modify: `APP/ADMIN_APP/src/pages/DataManagement.tsx` (`QuestionDetailModal`)
-- Modify: `backend/app/routers/admin.py` (`edit_question`)
-- Test: `backend/tests/test_admin_router.py`
-
-**Interfaces:**
-- Consumes: `Question.options` (Task 1.3's `{label, text, is_correct}[]`)
-- Produces: the edit modal can rewrite individual option wording, not just
-  re-tag which existing option is correct. The backend `edit_question` payload
-  gains an optional `options: [{label, text}]` field that updates
-  `QuestionOption.option_text` on the cloned version rows.
-
-**Gap:** Task 1.4's modal only edits `correct_option_label` — the backend
-(`admin.py` `edit_question`) re-tags existing `QuestionOption.is_correct` flags
-but never updates `option_text`. A typo in a distractor cannot currently be
-fixed from the admin UI. Salvaged from the deprecated plan's `AdminEditRequest`
-which carried `options: List[{label, text, is_correct}]` with a
-`validate_options` enforcing "exactly 4 options, exactly 1 correct" (deprecated
-`ADMIN_DASHBOARD_TASKS.md` L445-461).
-
-- [ ] **Step 1: Extend the backend edit payload**
-
-In `edit_question` (`backend/app/routers/admin.py`), accept an optional
-`options` list in the request body. Each entry is `{label: str, text: str}`.
-Validate before applying:
-
-```python
-    incoming_options = changes.get("options")
-    if incoming_options is not None:
-        if len(incoming_options) != len(existing_options):
-            raise HTTPException(
-                status_code=422,
-                detail="options list must have one entry per existing option (re-labeling or adding/removing options is not supported here)",
-            )
-        # Exactly one option must be marked correct (matches the new correct_option_label)
-        correct_labels = {o["label"] for o in incoming_options if o["label"] == new_correct_label}
-        if len(correct_labels) != 1:
-            raise HTTPException(status_code=422, detail="Exactly one option must match correct_option_label")
-        # Build a label -> text map and apply when cloning QuestionOption rows
-        text_by_label = {o["label"]: o["text"] for o in incoming_options}
-```
-
-Then, in the existing `for opt in existing_options:` clone loop, replace the
-`option_text=opt.option_text` line with:
-
-```python
-            option_text=text_by_label.get(opt.option_label, opt.option_text),
-```
-
-Also update `choices_jsonb` in the new `QuestionVersion` snapshot so the cloned
-`text` reflects the edits:
-
-```python
-    choices = [
-        {
-            "label": o.option_label,
-            "text": text_by_label.get(o.option_label, o.option_text),
-            "is_correct": o.option_label == new_correct_label,
-        }
-        for o in existing_options
-    ]
-```
-
-Record `options` in `audit_after` so the diff is recoverable.
-
-- [ ] **Step 2: Add a backend regression test**
-
-Add `test_edit_question_updates_option_text` using the existing `FakeSession`
-pattern: post `PATCH /admin/questions/{id}` with `options: [{label:"A", text:"new A text"}, ...]`,
-assert the cloned `QuestionOption` rows carry the new `option_text` and the
-audit `after_jsonb` includes the `options` field.
-
-Also add `test_edit_question_rejects_wrong_option_count` posting an `options`
-list whose length differs from the existing option count — assert `422`.
-
-- [ ] **Step 3: Extend the modal's edit mode**
-
-In `QuestionDetailModal` (`DataManagement.tsx`), add per-option text inputs in
-edit mode. Replace the read-only options list in the editing branch with
-editable inputs bound to a `optionText: Record<string, string>` state seeded
-from `question.options`. The correct-label selector stays as in Task 1.4.
-
-Add to the `editMutation.mutationFn` payload:
-
-```tsx
-        options: question.options?.map((opt) => ({
-          label: opt.label,
-          text: optionText[opt.label] ?? opt.text,
-        })),
-```
-
-- [ ] **Step 4: Manual verification**
-
-Run `cd APP/ADMIN_APP && npm run dev`, open `/data`, click a question, switch
-to edit mode, change one distractor's text, save. Re-open the same question and
-confirm the new option wording displays. In the backend, confirm a new
-`QuestionVersion` row was created with `choices_jsonb` reflecting the edited
-text (via `psql` or the audit log endpoint).
-
-- [ ] **Step 5: Run tests**
-
-Run: `cd backend && pytest tests/test_admin_router.py -k "edit_question" -v`
-
-- [ ] **Step 6: Commit**
-
-```bash
-git add APP/ADMIN_APP/src/pages/DataManagement.tsx backend/app/routers/admin.py backend/tests/test_admin_router.py
-git commit -m "Allow per-option text editing in admin question edit"
-```
-
----
-
 ### Task 1.5: Frontend — "Tests" browse tab
 
 **Files:**
@@ -1555,8 +750,7 @@ git commit -m "Allow per-option text editing in admin question edit"
 - Modify: `APP/ADMIN_APP/src/pages/DataManagement.tsx` (add browse mode)
 
 **Interfaces:**
-- Consumes: `GET /admin/tests` (Task 1.2), `source_*` filters on `GET /admin/questions`
-  (Task 1.2b), and `sort_by_source=true`
+- Consumes: `GET /admin/tests` (Task 1.2), existing `source_test_name` + `sort_by_source=true` params on `GET /admin/questions` (already supported server-side, verified in `admin.py:150-190`)
 - Produces: none (leaf feature)
 
 - [ ] **Step 1: Add `getTests` to the API client**
@@ -1653,12 +847,7 @@ Merge the test filter into the query params (find the existing `params` construc
   if (status !== 'all') params.practice_status = status
   if (origin !== 'all') params.content_origin = origin
   if (testFilter) {
-    if (testFilter.source_release_year !== undefined) params.source_release_year = testFilter.source_release_year
     if (testFilter.source_test_name) params.source_test_name = testFilter.source_test_name
-    if (testFilter.source_exam_code) params.source_exam_code = testFilter.source_exam_code
-    if (testFilter.source_subject_code) params.source_subject_code = testFilter.source_subject_code
-    if (testFilter.source_section_code) params.source_section_code = testFilter.source_section_code
-    if (testFilter.source_module_code) params.source_module_code = testFilter.source_module_code
     params.sort_by_source = true
   }
 ```
@@ -1714,9 +903,7 @@ show a "← Back to tests" button above the (now test-filtered) table:
 
 Run: `cd APP/ADMIN_APP && npm run dev`, open `/data`, click "Browse by Test". Confirm test
 cards render with question counts. Click a card. Confirm the question list filters to that test,
-section, and module, ordered by question number, with a "← Back to tests" link. If two cards
-share the same `source_test_name` but have different section/module codes, confirm they show
-different question lists.
+ordered by question number, with a "← Back to tests" link.
 
 - [ ] **Step 6: Commit**
 
@@ -1724,6 +911,106 @@ different question lists.
 git add APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/src/pages/DataManagement.tsx
 git commit -m "Add test browser mode to Data Management"
 ```
+
+---
+
+## Phase 1 Gap Review (2026-07-02)
+
+All five Phase 1 tasks (1.1–1.5) passed individual spec-compliance + code-quality review and are
+committed on GitButler branch `admin-dashboard-phase-1` (commits `7b9aaef`..`75cb67e`). The final
+whole-branch review (broad pass, cross-task integration) found the following gaps. **Verdict:
+Ready to merge — With fixes.** Gap 1 is a live functional defect in the phase's headline feature
+(the detail/edit modal) and should be fixed before Phase 2 builds on top of it; Gaps 2–3 are
+scoped follow-ups; Gaps 4–6 are structural/polish notes.
+
+### ~~Gap 1 (Critical): `QuestionDetailModal` options are non-functional — field-name mismatch~~ FIXED
+
+`backend/app/routers/admin.py` (`list_questions`, ~line 216) serializes each option as
+`{"label": opt.option_label, "text": opt.option_text, "is_correct": opt.is_correct}` — no `id`
+field, and the keys are `label`/`text`. But `QuestionOption` (`APP/ADMIN_APP/src/types/index.ts:43-48`)
+declares `id: string`, `option_label: string`, `option_text: string`, `is_correct?: boolean`, and
+`QuestionDetailModal` (`APP/ADMIN_APP/src/pages/DataManagement.tsx`) reads those names throughout:
+
+- View mode: `key={opt.id ?? opt.option_label}` → both `undefined` (duplicate/undefined React keys);
+  `{opt.option_label}. {opt.option_text}` → renders ". " with no content; the
+  `opt.option_label === question.current_correct_option_label` highlight check is always false, so
+  the correct answer never highlights.
+- Edit mode: the "Correct option" `<select>` renders options with empty labels/values — an admin
+  cannot pick a correct answer while editing.
+
+This is the same class of bug Task 1.3 fixed for the annotation fields (flat vs. nested shape
+mismatch), left unfixed for options. `QuestionOption`'s declared shape predates Phase 1 and never
+matched what `list_questions` actually returns; it went unnoticed until Task 1.4 built the first
+UI that renders `.options`.
+
+**Fix:** align the backend serialization to `option_label`/`option_text`/`id` (preferred — matches
+the `current_correct_option_label` naming convention already used elsewhere in the same response
+dict), or change `QuestionOption` + `QuestionDetailModal` to read `label`/`text`. Re-verify the
+Task 1.4 manual QA (Step 3) against a question with populated options once fixed — the original
+report claimed a pass, which is worth reconciling.
+
+**Fixed:** `list_questions` (`backend/app/routers/admin.py`) now serializes each option as
+`{"id": str(opt.id), "option_label": opt.option_label, "option_text": opt.option_text,
+"is_correct": opt.is_correct}`, matching `QuestionOption`'s declared TS shape exactly. Added
+`test_admin_list_questions_options_use_option_label_and_text_keys` (`backend/tests/test_admin_router.py`)
+asserting the exact key set and values — 25/25 tests pass. Committed as `3f5b939` on
+`admin-dashboard-phase-1`. Task 1.4's manual QA (Step 3) is still unverified against a real
+browser — flag for follow-up.
+
+### ~~Gap 2 (Important): Test-card drill-down granularity doesn't match the cards~~ FIXED
+
+`TestBrowser` renders one card per `(source_release_year, source_test_name, source_exam_code,
+source_subject_code, source_section_code, source_module_code)` group (from `GET /admin/tests`,
+`admin.py:list_tests`) and labels cards by section/module. But selecting a card filters
+`list_questions` only by `source_test_name` (`DataManagement.tsx`) — `list_questions` accepts no
+section/module query params at all. Clicking any of "Test_4 sec01 mod01", "…sec01 mod02", etc.
+shows the same full-test result set behind visually distinct cards.
+
+**Fix:** add `source_section_code`/`source_module_code` (and ideally `source_release_year`) query
+params to `list_questions` and pass them from `testFilter`; or collapse the `/admin/tests`
+grouping to test-level so cards and filtering agree.
+
+**Fixed:** `list_questions` (`backend/app/routers/admin.py`) gained
+`source_subject_code`/`source_section_code`/`source_module_code` query params (release_year and
+exam_code already existed), covering all six of `TestSummary`'s grouping fields. `testFilter`
+(`DataManagement.tsx`) now passes all of them. Added
+`test_admin_list_questions_filters_by_subject_section_module_code`
+(`backend/tests/test_admin_router.py`), compiling the statement with literal binds to assert each
+filter is actually applied — 26/26 tests pass. Committed as `43e17af` on `admin-dashboard-phase-1`.
+
+### ~~Gap 3 (Important): Pagination footer renders under the test-card grid~~ FIXED
+
+The `questions` query in `DataManagement()` is never disabled while browsing test cards
+(`mode === 'tests' && !testFilter`), so the pager below the (hidden) table still renders based on
+the background unfiltered question list — controls that don't correspond to what's on screen.
+
+**Fix:** gate the pager on `!(mode === 'tests' && !testFilter)`; consider `enabled: false` on the
+questions query while cards are showing to avoid a wasted fetch.
+
+**Fixed:** added a `browsingTests` flag (`mode === 'tests' && !testFilter`) in
+`DataManagement.tsx`; the pager is now gated on `!browsingTests`, and the `questions` query is
+disabled (`enabled: !browsingTests`) while cards are showing, avoiding both the mismatched pager
+and a wasted background fetch. Same commit as Gap 2 (`43e17af`).
+
+### Gap 4 (Minor): `DataManagement.tsx` is now a 543-line file
+
+Three consecutive tasks (1.3, 1.4, 1.5) added to this one file — it now holds `StatusBadge`,
+`RejectModal`, `QuestionDetailModal`, `TestBrowser`, and the page itself. Recommend splitting
+`QuestionDetailModal`, `TestBrowser`, and `RejectModal` into `components/` before Phase 2 adds
+more.
+
+### Gap 5 (Minor): `adminApi.editQuestion(id, data: any)` is now load-bearing
+
+`data: any` (`APP/ADMIN_APP/src/api/client.ts`) means a future payload-key typo compiles fine and
+silently no-ops server-side (`AdminEditRequest` uses `exclude_unset`). Recommend typing the
+parameter to match `AdminEditRequest`'s field set
+(`{ question_text?; passage_text?; correct_option_label?; explanation_text?; change_notes? }`).
+
+### Gap 6 (Minor): `key={i}` (array index) on test cards
+
+`TestSummary` has no natural unique id. A composite key
+(`${source_test_name}-${source_section_code}-${source_module_code}`) would be more correct than
+index-as-key, at no real cost.
 
 ---
 
@@ -1775,7 +1062,6 @@ def test_update_user_duplicate_username(monkeypatch):
             self.username = "alice"
             self.email = None
             self.role = "student"
-            self.is_active = True
 
     class ConflictingUser:
         username = "bob"
@@ -1822,7 +1108,6 @@ def test_update_user_success(monkeypatch):
             self.username = "alice"
             self.email = "alice@example.com"
             self.role = "student"
-            self.is_active = True
             self.user_token = _uuid.uuid4()
             self.created_at = datetime.now(timezone.utc)
 
@@ -1947,18 +1232,9 @@ In `APP/ADMIN_APP/src/pages/UserManagement.tsx`, add above `export function User
 ```tsx
 function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
   const qc = useQueryClient()
-  const [username, setUsername] = useState(user.username)
   const [email, setEmail] = useState(user.email ?? '')
-  const [role, setRole] = useState(user.role)
-  const [isActive, setIsActive] = useState(user.is_active)
   const mutation = useMutation({
-    mutationFn: () =>
-      adminApi.updateUser(user.id, {
-        username,
-        email: email || undefined,
-        role,
-        is_active: isActive,
-      }),
+    mutationFn: () => adminApi.updateUser(user.id, { email }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['users'] })
       onClose()
@@ -1969,13 +1245,6 @@ function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Edit User</h2>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
         <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
         <input
           type="email"
@@ -1983,23 +1252,6 @@ function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
           onChange={(e) => setEmail(e.target.value)}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="student">student</option>
-          <option value="admin">admin</option>
-        </select>
-        <label className="flex items-center gap-2 text-sm text-gray-700 mb-4">
-          <input
-            type="checkbox"
-            checked={isActive}
-            onChange={(e) => setIsActive(e.target.checked)}
-          />
-          Active
-        </label>
         {mutation.isError && <p className="text-red-600 text-sm mb-3">Failed to update user.</p>}
         <div className="flex gap-2 justify-end">
           <button
@@ -2010,7 +1262,7 @@ function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
           </button>
           <button
             onClick={() => mutation.mutate()}
-            disabled={!username || mutation.isPending}
+            disabled={!email || mutation.isPending}
             className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition"
           >
             {mutation.isPending ? 'Saving…' : 'Save'}
@@ -2042,7 +1294,7 @@ Find the row actions `<td>` (the one with the "Delete" button) and add an "Edit"
                     </button>
                     <button
                       onClick={() => {
-                        if (confirm(`Delete user ${u.email ?? u.username}?`)) deleteMutation.mutate(u.id)
+                        if (confirm(`Delete user ${u.email}?`)) deleteMutation.mutate(u.id)
                       }}
                       className="text-xs text-red-500 hover:text-red-700 transition"
                     >
@@ -2059,9 +1311,8 @@ Add the modal render next to `{showCreate && <CreateUserModal .../>}`:
 
 - [ ] **Step 4: Manual verification**
 
-Run: `cd APP/ADMIN_APP && npm run dev`, open `/users`, click "Edit" on a user, change username,
-email, role, and active status in separate saves. Confirm the table refreshes with the edited
-values and duplicate username/email failures show the error state.
+Run: `cd APP/ADMIN_APP && npm run dev`, open `/users`, click "Edit" on a user, change the
+email, save. Confirm the table refreshes with the new email.
 
 - [ ] **Step 5: Commit**
 
@@ -2228,7 +1479,7 @@ function ResetPasswordModal({ user, onClose }: { user: User; onClose: () => void
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
         <h2 className="text-lg font-semibold text-gray-800 mb-2">Reset Password</h2>
-        <p className="text-sm text-gray-500 mb-4">for {user.email ?? user.username}</p>
+        <p className="text-sm text-gray-500 mb-4">for {user.email}</p>
 
         {done ? (
           <>
@@ -2342,19 +1593,13 @@ class ActivityDayCount(BaseModel):
 
 - [ ] **Step 2: Write the failing test**
 
-Add to `backend/tests/test_student_router.py` (reuse the project's `X-API-Key` header
-convention). This endpoint is consumed by the admin dashboard, so it must accept an admin key;
-student-key compatibility is kept for parity with `/api/stats/{user_id}`:
+Add to `backend/tests/test_student_router.py` (check the file's existing `AUTH`/`STUDENT_AUTH`
+header constants and reuse them — this project's convention, per `test_users_router.py`, is
+`STUDENT_AUTH = {"X-API-Key": "student-test-key"}`):
 
 ```python
-def test_student_activity_empty_accepts_admin_key(client):
-    resp = client.get("/api/stats/1/activity", headers={"X-API-Key": "admin-test-key"})
-    assert resp.status_code == 200
-    assert resp.json() == []
-
-
-def test_student_activity_empty_accepts_student_key(client):
-    resp = client.get("/api/stats/1/activity", headers={"X-API-Key": "student-test-key"})
+def test_student_activity_empty(client):
+    resp = client.get("/api/stats/1/activity", headers=STUDENT_AUTH)
     assert resp.status_code == 200
     assert resp.json() == []
 
@@ -2386,7 +1631,7 @@ def test_student_activity_returns_daily_counts(monkeypatch):
     app.dependency_overrides[get_db] = _override_get_db
     try:
         with TestClient(app) as c:
-            resp = c.get("/api/stats/1/activity", headers={"X-API-Key": "admin-test-key"})
+            resp = c.get("/api/stats/1/activity", headers=STUDENT_AUTH)
     finally:
         app.dependency_overrides.pop(get_db, None)
 
@@ -2413,7 +1658,7 @@ async def get_user_activity(
     user_id: int,
     days: int = Query(365, ge=1, le=400),
     db: AsyncSession = Depends(get_db),
-    _auth=Depends(admin_or_student_required),
+    _auth: str = Depends(student_required),
 ):
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     result = await db.execute(
@@ -2431,9 +1676,8 @@ async def get_user_activity(
     ]
 ```
 
-`datetime`, `timedelta`, `timezone`, `func`, `cast`, `Date`, `Query`, and
-`admin_or_student_required` are all already imported at the top of `student.py` — no new imports
-needed beyond the payload model.
+`datetime`, `timedelta`, `timezone`, `func`, `cast`, `Date`, and `Query` are all already
+imported at the top of `student.py` — no new imports needed beyond the payload model.
 
 - [ ] **Step 5: Run tests to verify they pass**
 
@@ -2578,9 +1822,8 @@ git commit -m "Add student activity heatmap to Student Performance"
 
 ## Phase 5: Modular Widget Dashboard — Desktop
 
-Implements `admin_dashboard_plan.md` §9 (desktop half). After Phase 0.4, every widget reuses an
-existing, verified `adminApi` call; do not start this phase until the weak-spots endpoint fix is
-merged.
+Implements `admin_dashboard_plan.md` §9 (desktop half). No backend changes — every widget
+reuses an existing `adminApi` call.
 
 ### Task 5.1: Install `react-grid-layout`, build the panel shell
 
@@ -2648,7 +1891,7 @@ git commit -m "Add react-grid-layout dependency and panel shell component"
 - Create: `APP/ADMIN_APP/src/components/dashboard/widgets.tsx`
 
 **Interfaces:**
-- Consumes: `PanelShell` (Task 5.1); existing `adminApi.listUsers`, `getGenerationAnalytics`, `getAutoReleaseStatus`, `enableAutoRelease`, `disableAutoRelease`, `getBatchAnalytics`; new `adminApi.getWeakSpots` → `GET /admin/analytics/weak-spots` (repaired by Phase 0.4 before this phase starts)
+- Consumes: `PanelShell` (Task 5.1); existing `adminApi.listUsers`, `getGenerationAnalytics`, `getAutoReleaseStatus`, `getBatchAnalytics`; new `adminApi.getWeakSpots` → `GET /admin/analytics/weak-spots` (existing backend endpoint, verified response shape by reading `admin.py:2305` / `payload.py`'s `CohortWeakSpotsResponse`/`FocusAreaMissRate` — this endpoint has zero frontend consumers today)
 - Produces: `UsersWidget`, `GenerationWidget`, `AutoReleaseWidget`, `RecentBatchesWidget`, `WeakSpotsWidget` — consumed by Task 5.3
 
 - [ ] **Step 1: Add `getWeakSpots` to the API client**
@@ -2685,7 +1928,7 @@ export interface CohortWeakSpots {
 Create `APP/ADMIN_APP/src/components/dashboard/widgets.tsx`:
 
 ```tsx
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { adminApi } from '../../api/client'
 import { PanelShell } from '../PanelShell'
 import type { User, GenerationAnalytics, BatchAnalytics, CohortWeakSpots } from '../../types'
@@ -2696,24 +1939,14 @@ export function UsersWidget() {
     queryFn: () => adminApi.listUsers(),
     retry: 1,
   })
-  const total = users?.length ?? 0
-  const active = users?.filter((u) => u.is_active).length ?? 0
   return (
     <PanelShell title="Users">
       {isLoading ? (
         <div className="h-12 bg-gray-100 rounded animate-pulse" />
       ) : (
-        <div className="flex items-end gap-4">
-          <div>
-            <p className="text-3xl font-bold text-gray-800">{total}</p>
-            <p className="text-xs text-gray-400 mt-1">Total</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-emerald-600">{active}</p>
-            <p className="text-xs text-gray-400 mt-1">Active</p>
-          </div>
-        </div>
+        <p className="text-3xl font-bold text-gray-800">{users?.length ?? '—'}</p>
       )}
+      <p className="text-xs text-gray-400 mt-1">Total registered students</p>
     </PanelShell>
   )
 }
@@ -2740,28 +1973,17 @@ export function GenerationWidget() {
 }
 
 export function AutoReleaseWidget() {
-  const qc = useQueryClient()
   const { data } = useQuery({
     queryKey: ['auto-release-status'],
     queryFn: () => adminApi.getAutoReleaseStatus(),
     retry: 1,
-  })
-  const toggleMutation = useMutation({
-    mutationFn: () => (data?.enabled ? adminApi.disableAutoRelease() : adminApi.enableAutoRelease()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['auto-release-status'] }),
   })
   return (
     <PanelShell title="Auto-Release">
       <p className={`text-lg font-semibold ${data?.enabled ? 'text-emerald-600' : 'text-red-500'}`}>
         {data?.enabled ? 'Enabled' : 'Disabled'}
       </p>
-      <button
-        onClick={() => toggleMutation.mutate()}
-        disabled={toggleMutation.isPending || !data}
-        className="mt-3 px-3 py-1.5 text-xs bg-gray-900 hover:bg-gray-800 text-white rounded-lg disabled:opacity-50 transition"
-      >
-        {data?.enabled ? 'Disable' : 'Enable'}
-      </button>
+      <p className="text-xs text-gray-400 mt-1">Manage from Pipeline & Backend page</p>
     </PanelShell>
   )
 }
@@ -2829,9 +2051,7 @@ export function WeakSpotsWidget() {
 - [ ] **Step 4: Manual verification**
 
 Run `cd APP/ADMIN_APP && npm run build` — confirm no TypeScript errors. Full visual
-verification happens in Task 5.3 once these are placed on the grid; at that point verify the
-Users widget shows both total and active counts, and the Auto-Release widget can enable/disable
-the setting and refresh its status.
+verification happens in Task 5.3 once these are placed on the grid.
 
 - [ ] **Step 5: Commit**
 
@@ -2839,16 +2059,6 @@ the setting and refresh its status.
 git add APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/src/components/dashboard/widgets.tsx
 git commit -m "Add dashboard widget components"
 ```
-
-> **Future enhancement (salvaged from deprecated plan):** The deprecated
-> `ADMIN_DASHBOARD_TASKS.md` Phase 4.1 proposed a `GET /admin/analytics/coverage`
-> endpoint returning question counts per focus key. The current
-> `WeakSpotsWidget` shows miss *rate* but not inventory *depth* — an admin can
-> see "subject_verb_agreement is missed 60% of the time" but not "we only have
-> 8 questions tagged with that focus key, so the rate is noisy." A `coverage`
-> endpoint + a secondary column in `WeakSpotsWidget` (e.g. "n=8" beside the
-> miss rate) would surface low-coverage focus areas. Not blocking Phase 5; track
-> as a Phase 5 follow-up.
 
 ---
 
@@ -3015,10 +2225,9 @@ const NAV = [
 - [ ] **Step 3: Manual verification**
 
 Run: `cd APP/ADMIN_APP && npm run dev`. Confirm visiting `/` redirects to `/dashboard`, the nav
-shows "Dashboard" first and highlights it as active, all 5 widgets render with real data, the
-Users widget shows total + active counts, the Auto-Release widget toggles enabled/disabled and
-refreshes, and dragging a panel by its header (not its content) moves it — reload the page and
-confirm the rearranged position persists.
+shows "Dashboard" first and highlights it as active, all 5 widgets render with real data, and
+dragging a panel by its header (not its content) moves it — reload the page and confirm the
+rearranged position persists.
 
 - [ ] **Step 4: Commit**
 
@@ -3184,122 +2393,3 @@ Step 2 finds," not "implement nothing."
 git add -A
 git commit -m "Fix iPad feature-parity gaps found in QA pass"
 ```
-
----
-
-### Task 6.4: UX polish — toast notifications, error boundary, loading skeletons
-
-**Files:**
-- New: `APP/ADMIN_APP/src/components/Toast.tsx`
-- New: `APP/ADMIN_APP/src/components/ErrorBoundary.tsx`
-- Modify: `APP/ADMIN_APP/src/main.tsx` (mount the error boundary + toast provider)
-- Modify: `APP/ADMIN_APP/src/pages/DataManagement.tsx`, `UserManagement.tsx`, `Dashboard.tsx` (replace bare `throw` handlers with toast calls; add skeleton states)
-
-**Interfaces:**
-- Consumes: existing `useMutation` `onError` / `isPending` hooks (React Query)
-- Produces: user-facing error toasts, a top-level error boundary, and skeleton
-  loaders for table rows / detail modals / widget bodies while data loads.
-
-**Gap:** Every admin modal currently surfaces API failures only as a thrown
-error in the console — there is no user-visible feedback that a save failed or
-a network request timed out. Loading states are inconsistent: some widgets show
-a pulse, others show nothing. Salvaged from the deprecated plan's Phase 3.1 /
-3.2 (`ADMIN_DASHBOARD_TASKS.md` L1580-1616). The deprecated plan's
-`AdminRoute` / JWT permission gate (L1616-1644) is **not** salvaged — the admin
-app is API-key based, not JWT, and Task 0.10 explicitly noted it has no auth
-gate at all; that design is obsolete under the current auth model.
-
-- [ ] **Step 1: Add a toast system**
-
-Create `APP/ADMIN_APP/src/components/Toast.tsx` exporting a `ToastProvider` and
-a `useToast()` hook returning `{ showSuccess, showError }`. Use React context +
-`useState` to manage a list of toasts, each with `{id, kind: 'success'|'error', message}`,
-auto-dismissing after 4s. Render them fixed to the top-right with Tailwind
-(`bg-emerald-50`/`bg-red-50`, `text-emerald-700`/`text-red-700`).
-
-- [ ] **Step 2: Add an error boundary**
-
-Create `APP/ADMIN_APP/src/components/ErrorBoundary.tsx` as a class component
-catching render errors and showing a fallback card: "Something went wrong.
-Reload the page." with the error message in a `<pre>` for debugging. Mount it
-in `main.tsx` wrapping `<App />`, inside the `ToastProvider`.
-
-- [ ] **Step 3: Wire toasts into mutations**
-
-In every `useMutation` across the admin app (`UserManagement.tsx`'s
-`createUser`/`deleteUser`, `DataManagement.tsx`'s `approve`/`reject`/`edit`,
-`ResetPasswordModal`, `EditUserModal`, `AutoReleaseWidget`'s toggle), add an
-`onError: (err) => toast.showError(err.message)` and an `onSuccess:
-toast.showSuccess('...')` where currently silent. Keep the existing
-`qc.invalidateQueries` calls.
-
-- [ ] **Step 4: Add skeleton loaders**
-
-Replace ad-hoc loading states with a small reusable `Skeleton` component
-(`h-4 bg-gray-100 rounded animate-pulse`). Use it for:
-- Table rows in `UserManagement` and `DataManagement` while `isLoading`
-- The detail modal body while the question loads
-- Each dashboard widget body while its query is pending (replacing the current
-  per-widget `bg-gray-100 rounded animate-pulse` divs with the shared component)
-
-- [ ] **Step 5: Manual verification**
-
-Run `cd APP/ADMIN_APP && npm run dev`. Trigger a failure (e.g. stop the backend,
-click "Save" in an edit modal) — confirm a red toast appears, not just a
-console error. Trigger a slow load (throttle network in DevTools) — confirm
-skeletons render in the table and widgets, not blank space.
-
-- [ ] **Step 6: Commit**
-
-```bash
-git add APP/ADMIN_APP/src/components/Toast.tsx APP/ADMIN_APP/src/components/ErrorBoundary.tsx APP/ADMIN_APP/src/main.tsx APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/ADMIN_APP/src/pages/Dashboard.tsx APP/ADMIN_APP/src/components/dashboard/widgets.tsx
-git commit -m "Add toast notifications, error boundary, and loading skeletons"
-```
-
----
-
-## Future — Bulk Operations (not sequenced)
-
-**Status:** Deferred. Captured here so the endpoint sketch from the deprecated
-`ADMIN_DASHBOARD_TASKS.md` Phase 4.2 (L1734-1756) is not lost. Do not sequence
-into Phases 1–6 — it is a distinct workstream and the current plan already has
-six phases of scope. Pull this in only when an admin reports needing to act on
-more than one question at a time.
-
-**Proposed backend endpoints (new):**
-- `POST /admin/bulk/reannotate` — queue a re-annotation job for a set of question IDs
-- `POST /admin/bulk/update-focus-key` — bulk update `grammar_focus_key` / `reading_focus_key` on a set of questions
-- `GET /admin/bulk/job/{id}` — check progress of a queued bulk job
-
-**Frontend:**
-- A `BulkOpsPage.tsx` with a question-picker (reuse the `Tests` browser filter
-  UI from Task 1.5), a reannotate form, a focus-key update form, and a job
-  progress tracker. Progress should be live — either WebSocket push or
-  short-polling, matching whatever transport the existing generation-job
-  status endpoints already use.
-
-**Notes:**
-- The existing per-question `edit_question` / `approve_question` /
-  `reject_question` endpoints stay as-is; bulk ops should call into shared
-  helpers (`_write_admin_audit`, the version-clone logic) rather than
-  duplicating the mutation logic.
-- Audit every bulk action to `AdminQuestionAuditLog` with `action="bulk_*"` so
-  the audit trail distinguishes bulk from single edits.
-- The deprecated plan estimated this at 10-12 hours; treat that as a floor
-  given the live-progress transport work.
-
----
-
-## Superseded plan note
-
-`ADMIN_DASHBOARD_TASKS.md` (uppercase, repo root) is the **deprecated**
-predecessor of this file. Its Phases 1–3 scaffolding (admin API router, types,
-API client, layout, question list/detail/edit, review queue, audit log model,
-versioning) has been absorbed into this plan's Phases 0–6 plus the existing
-codebase. Its Phase 4.1 analytics endpoints were partially absorbed (existing
-`/admin/analytics/weak-spots`, `generation`, `batches`, `trends`); the missing
-`coverage` endpoint is tracked above under Task 5.2 as a future enhancement.
-Its Phase 3.3 `AdminRoute` / JWT permission gate is **obsolete** — the admin app
-is API-key based, not JWT. Do not salvage further from the deprecated file; if
-a future need arises, treat it as a fresh task here rather than resurrecting
-the old plan's structure.
