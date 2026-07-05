@@ -1,22 +1,10 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '../api/client'
-import { Skeleton } from '../components/Skeleton'
-import { useToast } from '../components/Toast'
 import type { Question, TestSummary } from '../types'
 
 type StatusFilter = 'all' | 'active' | 'draft' | 'needs_review' | 'rejected'
 type OriginFilter = 'all' | 'official' | 'generated' | 'admin_created'
-type QuestionListResponse = {
-  questions?: Question[]
-  items?: Question[]
-  total?: number
-} | Question[]
-type QuestionListParams = Record<string, string | number | boolean>
-
-function errorMessage(err: unknown) {
-  return err instanceof Error ? err.message : 'Request failed.'
-}
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
@@ -71,13 +59,6 @@ function RejectModal({ question, onReject, onClose }: {
 
 function QuestionDetailModal({ question, onClose }: { question: Question; onClose: () => void }) {
   const qc = useQueryClient()
-  const toast = useToast()
-  const { data: detailQuestion, isLoading } = useQuery<Question>({
-    queryKey: ['question', question.id],
-    queryFn: () => adminApi.getQuestion(question.id),
-    retry: 1,
-  })
-  const activeQuestion = detailQuestion ?? question
   const [editing, setEditing] = useState(false)
   const [questionText, setQuestionText] = useState(question.current_question_text)
   const [passageText, setPassageText] = useState(question.current_passage_text ?? '')
@@ -85,17 +66,9 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
   const [explanationText, setExplanationText] = useState(question.current_explanation_text ?? '')
   const [changeNotes, setChangeNotes] = useState('')
 
-  const startEditing = () => {
-    setQuestionText(activeQuestion.current_question_text)
-    setPassageText(activeQuestion.current_passage_text ?? '')
-    setCorrectLabel(activeQuestion.current_correct_option_label)
-    setExplanationText(activeQuestion.current_explanation_text ?? '')
-    setEditing(true)
-  }
-
   const editMutation = useMutation({
     mutationFn: () =>
-      adminApi.editQuestion(activeQuestion.id, {
+      adminApi.editQuestion(question.id, {
         question_text: questionText,
         passage_text: passageText || undefined,
         correct_option_label: correctLabel,
@@ -104,11 +77,8 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['questions'] })
-      qc.invalidateQueries({ queryKey: ['question', activeQuestion.id] })
-      toast.showSuccess('Question saved.')
       onClose()
     },
-    onError: (err) => toast.showError(errorMessage(err)),
   })
 
   return (
@@ -117,13 +87,13 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
         <div className="flex items-start justify-between mb-4">
           <div>
             <h2 className="text-lg font-semibold text-gray-800">
-              {activeQuestion.source_test_name ?? 'Question'}
-              {activeQuestion.source_question_number ? ` #${activeQuestion.source_question_number}` : ''}
+              {question.source_test_name ?? 'Question'}
+              {question.source_question_number ? ` #${question.source_question_number}` : ''}
             </h2>
-            <p className="text-xs text-gray-400 font-mono">{activeQuestion.id}</p>
+            <p className="text-xs text-gray-400 font-mono">{question.id}</p>
           </div>
           <div className="flex items-center gap-2">
-            {activeQuestion.annotation_stale && (
+            {question.annotation_stale && (
               <span className="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full font-medium">
                 Annotation stale
               </span>
@@ -134,32 +104,26 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
           </div>
         </div>
 
-        {isLoading ? (
+        {!editing ? (
           <div className="space-y-4">
-            <Skeleton className="h-20" />
-            <Skeleton className="h-16" />
-            <Skeleton className="h-24" />
-          </div>
-        ) : !editing ? (
-          <div className="space-y-4">
-            {activeQuestion.current_passage_text && (
+            {question.current_passage_text && (
               <div>
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Passage</p>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{activeQuestion.current_passage_text}</p>
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">{question.current_passage_text}</p>
               </div>
             )}
             <div>
               <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Question</p>
-              <p className="text-sm text-gray-800 whitespace-pre-wrap">{activeQuestion.current_question_text}</p>
+              <p className="text-sm text-gray-800 whitespace-pre-wrap">{question.current_question_text}</p>
             </div>
             <div>
               <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Options</p>
               <div className="space-y-1">
-                {(activeQuestion.options ?? []).map((opt) => (
+                {(question.options ?? []).map((opt) => (
                   <div
                     key={opt.id ?? opt.option_label}
                     className={`text-sm px-3 py-1.5 rounded-lg border ${
-                      opt.option_label === activeQuestion.current_correct_option_label
+                      opt.option_label === question.current_correct_option_label
                         ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
                         : 'border-gray-200 text-gray-600'
                     }`}
@@ -169,29 +133,29 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
                 ))}
               </div>
             </div>
-            {activeQuestion.current_explanation_text && (
+            {question.current_explanation_text && (
               <div>
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Explanation</p>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{activeQuestion.current_explanation_text}</p>
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">{question.current_explanation_text}</p>
               </div>
             )}
-            {activeQuestion.annotation && (
+            {question.annotation && (
               <div>
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Annotation</p>
                 <div className="flex flex-wrap gap-1">
-                  {activeQuestion.annotation.grammar_focus_key && (
+                  {question.annotation.grammar_focus_key && (
                     <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full">
-                      {String(activeQuestion.annotation.grammar_focus_key).replace(/_/g, ' ')}
+                      {String(question.annotation.grammar_focus_key).replace(/_/g, ' ')}
                     </span>
                   )}
-                  {activeQuestion.annotation.reading_focus_key && (
+                  {question.annotation.reading_focus_key && (
                     <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full">
-                      {String(activeQuestion.annotation.reading_focus_key).replace(/_/g, ' ')}
+                      {String(question.annotation.reading_focus_key).replace(/_/g, ' ')}
                     </span>
                   )}
-                  {activeQuestion.annotation.difficulty_overall && (
+                  {question.annotation.difficulty_overall && (
                     <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full capitalize">
-                      {String(activeQuestion.annotation.difficulty_overall)}
+                      {String(question.annotation.difficulty_overall)}
                     </span>
                   )}
                 </div>
@@ -199,7 +163,7 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
             )}
             <div className="flex justify-end pt-2">
               <button
-                onClick={startEditing}
+                onClick={() => setEditing(true)}
                 className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
               >
                 Edit
@@ -208,7 +172,7 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
           </div>
         ) : (
           <div className="space-y-3">
-            {activeQuestion.current_passage_text !== undefined && (
+            {question.current_passage_text !== undefined && (
               <div>
                 <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
                   Passage
@@ -241,7 +205,7 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
                 onChange={(e) => setCorrectLabel(e.target.value)}
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {(activeQuestion.options ?? []).map((opt) => (
+                {(question.options ?? []).map((opt) => (
                   <option key={opt.option_label} value={opt.option_label}>
                     {opt.option_label}
                   </option>
@@ -305,7 +269,7 @@ function TestBrowser({ onSelectTest }: { onSelectTest: (t: TestSummary) => void 
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[...Array(8)].map((_, i) => (
-          <Skeleton key={i} className="h-20 rounded-xl" />
+          <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
         ))}
       </div>
     )
@@ -337,7 +301,6 @@ function TestBrowser({ onSelectTest }: { onSelectTest: (t: TestSummary) => void 
 
 export function DataManagement() {
   const qc = useQueryClient()
-  const toast = useToast()
   const [status, setStatus] = useState<StatusFilter>('all')
   const [origin, setOrigin] = useState<OriginFilter>('all')
   const [page, setPage] = useState(1)
@@ -349,7 +312,7 @@ export function DataManagement() {
 
   const browsingTests = mode === 'tests' && !testFilter
 
-  const params: QuestionListParams = { limit, offset: (page - 1) * limit }
+  const params: Record<string, any> = { limit, offset: (page - 1) * limit }
   if (status !== 'all') params.practice_status = status
   if (origin !== 'all') params.content_origin = origin
   if (testFilter) {
@@ -362,7 +325,7 @@ export function DataManagement() {
     params.sort_by_source = true
   }
 
-  const { data, isLoading, isError } = useQuery<QuestionListResponse>({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['questions', params],
     queryFn: () => adminApi.listQuestions(params),
     enabled: !browsingTests,
@@ -371,11 +334,7 @@ export function DataManagement() {
 
   const approveMutation = useMutation({
     mutationFn: (id: string) => adminApi.approveQuestion(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['questions'] })
-      toast.showSuccess('Question approved.')
-    },
-    onError: (err) => toast.showError(errorMessage(err)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['questions'] }),
   })
 
   const rejectMutation = useMutation({
@@ -383,14 +342,12 @@ export function DataManagement() {
       adminApi.rejectQuestion(id, reason),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['questions'] })
-      toast.showSuccess('Question rejected.')
       setRejectTarget(null)
     },
-    onError: (err) => toast.showError(errorMessage(err)),
   })
 
-  const questions: Question[] = Array.isArray(data) ? data : (data?.questions ?? data?.items ?? [])
-  const total: number = Array.isArray(data) ? questions.length : (data?.total ?? questions.length)
+  const questions: Question[] = data?.questions ?? data?.items ?? data ?? []
+  const total: number = data?.total ?? questions.length
   const totalPages = Math.ceil(total / limit)
 
   return (
@@ -473,11 +430,11 @@ export function DataManagement() {
             </button>
           )}
           {/* Table */}
-          <div className="bg-white border border-gray-200 rounded-xl overflow-x-auto">
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             {isLoading ? (
               <div className="space-y-2 p-4">
                 {[...Array(8)].map((_, i) => (
-                  <Skeleton key={i} className="h-12" />
+                  <div key={i} className="h-12 bg-gray-100 rounded animate-pulse" />
                 ))}
               </div>
             ) : isError ? (
@@ -485,7 +442,7 @@ export function DataManagement() {
             ) : questions.length === 0 ? (
               <div className="p-8 text-center text-gray-400 text-sm">No questions found.</div>
             ) : (
-              <table className="w-full min-w-[760px] text-sm">
+              <table className="w-full text-sm">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Question</th>
