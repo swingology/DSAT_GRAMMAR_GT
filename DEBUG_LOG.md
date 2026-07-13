@@ -1,5 +1,50 @@
 # Debug Log
 
+## 2026-07-13 - OAuth login: no end-to-end browser tests; Playwright setup plan
+Report created by: Claude Sonnet 5
+Git branch: `oauth_feature`
+Git checkpoint: `e29ce58` — Add Google OAuth login across backend, student app, and admin app
+
+### Findings
+
+1. **High (not fixed — tooling gap):** No Playwright/e2e tests exist for the OAuth login flow. Every auth test fakes Google at its seam, so a real Google ID token has never flowed through the system in a real browser.
+   - Backend: `backend/tests/test_google_auth.py` (17 tests) monkeypatches the Google verifier and uses FastAPI `TestClient` (in-process, no browser). Proves auth logic, not Google integration.
+   - Student app: `src/auth/__tests__/auth.test.tsx` (8 tests) runs in jsdom. Proves token/refresh/guard logic, not the GIS popup.
+   - Admin app: no auth tests at all.
+   - `playwright` is in no `package.json`/`pyproject.toml`; no e2e/spec files, no Playwright config. The only real-browser work was the O-00c one-off `playwright-core` + `google-chrome-stable` origin-render check (button renders, never completed a login; script not saved in repo).
+   - The PRD (`.scratch/oauth-login/PRD.md` ~L159) explicitly deferred frontend login verification to **live QA (Phase 4)**, not automated browser tests.
+
+   **Playwright setup — packages and commands (per app, student and/or admin):**
+   - `npm install -D @playwright/test` — adds the test runner + `@playwright/test` API
+   - `npx playwright install chromium` — downloads the Chromium binary (add `firefox webkit` for cross-browser)
+   - `npx playwright install-deps chromium` — installs OS-level shared libs on Linux (may need `sudo`)
+   - Add to `package.json` scripts: `"test:e2e": "playwright test"`
+   - Add `playwright.config.ts` at the app root:
+     ```ts
+     import { defineConfig, devices } from '@playwright/test'
+     export default defineConfig({
+       testDir: './e2e',
+       fullyParallel: true,
+       use: { baseURL: 'http://localhost:5173', trace: 'on-first-retry' },
+       projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+       webServer: {
+         command: 'npm run dev',
+         url: 'http://localhost:5173',
+         reuseExistingServer: !process.env.CI,
+         timeout: 60_000,
+       },
+     })
+     ```
+   - First spec `e2e/login.spec.ts`: navigate to `/`, assert redirect to `/login`, assert the Google button renders, and (stubbed) assert a successful credential exchange routes to the dashboard. For the admin app, additionally assert a non-admin account hits the "Not an admin" screen.
+
+   **Caveats for the GIS popup flow:**
+   - Driving the real Google sign-in popup against `accounts.google.com` is flaky and against Google's ToS for automated sign-in. Do **not** automate the real Google account chooser.
+   - Recommended e2e seam: inject a fake GIS credential before the app loads (`page.addInitScript`) and stub `window.google.accounts.id` so `loginWithGoogle` receives the fake credential. The backend then either (a) runs with its existing monkeypatched verifier (fast, hermetic — proves the app wiring end-to-end without touching Google), or (b) points at the real Google token endpoint with a real test-account token (slower — proves the integration). Option (a) is the practical automated target.
+   - A true real-Google end-to-end check stays a manual Phase 4 live QA step (O-18/O-19): a human signs in once with a real test Gmail.
+   - Linux host note: this box has segfaulted Node tooling on cold Vite/worker caches (bug-781, and the `tsc -b`/`node_modules/.tmp` segfault hit during Phase 3). If `npx playwright` segfaults, clear `node_modules/.vite` and `node_modules/.tmp` and retry before assuming a Playwright bug.
+
+   - **Fixed:** not yet — this entry records the plan. Tracked as Phase 4 (O-18/O-19) in `TASK_OAUTH.md`.
+
 ## 2026-07-13 - OAuth Phase 2 (student app): frontend test runner + token sourcing
 Report created by: Claude Opus 4.8
 Git branch: `oauth_feature`
