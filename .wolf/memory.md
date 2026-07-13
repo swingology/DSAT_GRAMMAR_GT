@@ -5183,3 +5183,7 @@
 | 15:25 | Fixed TrapSusceptibilityDashboard null guard (bug-785) — non-conforming trap-susceptibility body no longer unmounts dashboard+Sign-out; committed 9d31894; e2e 9/9 still green | TrapSusceptibilityDashboard.tsx, .wolf/buglog.json | fixed+committed | ~6k |
 | 15:21 | Edited TASK_OAUTH.md | modified 13() | ~375 |
 | 15:45 | O-19 server-side plumbing verified — tailscale :8443 → 5174 = STUDENT app (not admin, prior note was wrong); live GIS loads w/ no origin error, /api/auth/me → 401 through tailnet proxy; manual real-Google sign-in from a tailnet device remains | TASK_OAUTH.md, .wolf/memory.md | verified+documented | ~5k |
+| 15:21 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | "Google OAuth login for st" → "Google OAuth login for st" | ~67 |
+| 15:21 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | inline fix | ~179 |
+| 15:21 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | modified route() | ~755 |
+| 15:21 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | inline fix | ~64 |

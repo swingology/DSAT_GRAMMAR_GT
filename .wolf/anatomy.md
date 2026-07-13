@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-05T08:11:11.007Z
-> Files: 1105 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-13T22:21:36.007Z
+> Files: 1124 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -19,8 +19,14 @@
 - `ingest_test4_sec02.sh` — Ingest Test 4 sec02 (math) mod01 + mod02 into the live dev API (port 8002). (~512 tok)
 - `ingest_test4_verbal_sec01.sh` — Ingest Test 4 verbal sec01 mod01 + mod02 (live dev API, port 8002). (~599 tok)
 - `mock_api.py` — Handler: do_GET, do_POST, do_OPTIONS, log_message (~608 tok)
+- `oauth_commit_msg.txt` — Declares persisted (~617 tok)
 - `poll_test4_verbal.sh` — Poll the two in-flight Test 4 verbal sec01 jobs until terminal. (~287 tok)
 - `um-commit-msg.txt` (~118 tok)
+
+## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/1c372c51-1725-41d8-8eb2-8db3c8e74e07/scratchpad/gsi-origin-test/
+
+- `index.html` — GSI origin test (~313 tok)
+- `run-test.mjs` — CLIENT_ID: testOrigin (~713 tok)
 
 ## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/607e54ac-9498-4651-8182-473f13bf4e6c/scratchpad/
 
@@ -51,6 +57,7 @@
 ## ../.claude/
 
 - `settings.json` (~674 tok)
+- `statusline-command.sh` — Claude Code status line command (~1292 tok)
 
 ## ../.claude/plans/
 
@@ -81,7 +88,7 @@
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~1442 tok)
+- `MEMORY.md` — Memory Index (~1501 tok)
 - `project_admin-dashboard-phase1-status.md` (~732 tok)
 - `project_admin-dashboard-plan.md` (~480 tok)
 - `project_annotation-shape-inconsistency.md` — Declares originally (~499 tok)
@@ -93,6 +100,7 @@
 - `project_grammar_redux_status.md` (~1463 tok)
 - `project_gstack-skills-corrupted.md` (~472 tok)
 - `project_node-wasm-linux-fix.md` (~837 tok)
+- `project_oauth-login-feature.md` — ')` was hijacking `/src/api/client.ts` (added file-extension passthrough); quoted `text="…"` is an E (~1990 tok)
 - `project_rtk-path-fix.md` (~378 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
@@ -113,7 +121,7 @@
 - `.codex` (~0 tok)
 - `.dockerignore` (~62 tok)
 - `.gitattributes` — Git attributes (~12 tok)
-- `.gitignore` — Git ignore rules (~70 tok)
+- `.gitignore` — Git ignore rules (~121 tok)
 - `.nvmrc` (~1 tok)
 - `2024_test3_answer_keys.md` — 2024 DSAT Test 3 — Answer Keys (~490 tok)
 - `2024_TESTS_STATUS.md` — 2024 Bluebook Tests — Ingestion Status (~1241 tok)
@@ -127,16 +135,16 @@
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `cache_feature_plan.md` — Overlap Detection Corpus Cache Implementation Plan (~4895 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~207709 tok)
+- `CHANGELOG.md` — CHANGELOG (~228484 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~55527 tok)
+- `DEBUG_LOG.md` — Debug Log (~57221 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
 - `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7859 tok)
 - `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~4119 tok)
 - `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
-- `docker-compose.yml` — Docker Compose services (~632 tok)
+- `docker-compose.yml` — Docker Compose services (~835 tok)
 - `Dockerfile.backend` (~180 tok)
 - `Dockerfile.frontend` (~123 tok)
 - `future_features.md` — Future Features & Outstanding Work (~8855 tok)
@@ -166,10 +174,11 @@
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
-- `start.sh` — One-shot launcher for the DSAT apps: (~1270 tok)
+- `start.sh` — One-shot launcher for the DSAT apps: (~1475 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
 - `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~5330 tok)
 - `STUDENT_UI_TASKS.md` — Student UI React Rebuild — Task Tracker (~4864 tok)
+- `TASK_OAUTH.md` — Google OAuth Login — Task List (~2617 tok)
 - `TASKS_GENERATION.md` — Generation, Review, and Self-Study Factory Task List (~15301 tok)
 - `TASKS_INGESTION_REFACTOR.md` — Ingestion Pipeline Refactor — Speed & Token Efficiency Tasks (~2386 tok)
 - `TASKS_OCR_IMAGE.md` — OCR Stimulus Backfill Task List (~7528 tok)
@@ -223,6 +232,10 @@
 ## .pytest_cache/v/cache/
 
 - `nodeids` (~1 tok)
+
+## .scratch/oauth-login/
+
+- `PRD.md` — PRD: Google OAuth Login for Student and Admin Apps (~3631 tok)
 
 ## .serena/
 
@@ -287,23 +300,32 @@
 
 ## APP/ADMIN_APP/src/
 
-- `App.tsx` — queryClient (~330 tok)
+- `App.tsx` — queryClient (~476 tok)
 - `index.css` — Styles: 2 rules (~63 tok)
 
 ## APP/ADMIN_APP/src/api/
 
-- `client.ts` — Exports apiCall, adminApi (incl. getTests → GET /admin/tests) (~1050 tok)
+- `client.ts` — Skip the 401 silent-refresh interceptor (used by the auth calls themselves). (~2335 tok)
+
+## APP/ADMIN_APP/src/auth/
+
+- `AuthContext.tsx` — Exchange a GIS popup credential for a session. Throws on rejection. (~991 tok)
+- `authStore.ts` — UUID the legacy endpoints take as a `user_token` param — not the JWT. (~687 tok)
+- `google.d.ts` — Minimal typing for the Google Identity Services script (loaded by useGoogleScript). (~118 tok)
+- `RequireAdmin.tsx` — Gate every admin route behind a session with role "admin". (~577 tok)
+- `useGoogleScript.ts` — Load the Google Identity Services script once, shared across callers. (~412 tok)
 
 ## APP/ADMIN_APP/src/components/
 
-- `Layout.tsx` — NAV (~762 tok)
+- `Layout.tsx` — NAV (~991 tok)
 
 ## APP/ADMIN_APP/src/pages/
 
-- `DataManagement.tsx` — StatusBadge (~6776 tok)
+- `DataManagement.tsx` — StatusBadge (~6779 tok)
+- `LoginPage.tsx` — LoginPage (~841 tok)
 - `PipelinePerformance.tsx` — StatCard — renders table (~3288 tok)
 - `StudentPerformance.tsx` — AccuracyBar (~1986 tok)
-- `UserManagement.tsx` — StatCard — renders table (~1912 tok)
+- `UserManagement.tsx` — StatCard — renders table (~3969 tok)
 
 ## APP/ADMIN_APP/src/types/
 
@@ -327,11 +349,11 @@
 - `tsconfig.node.json` (~61 tok)
 - `vite.config.js` — Declares backendTarget (~129 tok)
 - `vite.config.ts` — Declares backendTarget (~168 tok)
-- `vitest.config.ts` (~89 tok)
+- `vitest.config.ts` — Declares of (~166 tok)
 
 ## APP/STUDENT_APP_REDUX/src/
 
-- `App.tsx` — queryClient (~451 tok)
+- `App.tsx` — queryClient (~611 tok)
 - `index.css` — Styles: 3 rules (~17 tok)
 - `main.tsx` (~68 tok)
 - `vite-env.d.ts` — / <reference types="vite/client" /> (~33 tok)
@@ -343,19 +365,31 @@
 
 ## APP/STUDENT_APP_REDUX/src/api/
 
-- `client.ts` — Blueprint v1 diagnostic — returns full 16-question module with no answer key. (~1643 tok)
+- `client.ts` — Skip the 401 silent-refresh interceptor (used by the auth calls themselves). (~2386 tok)
+
+## APP/STUDENT_APP_REDUX/src/auth/
+
+- `AuthContext.tsx` — Exchange a GIS popup credential for a session. Throws on rejection. (~959 tok)
+- `authStore.ts` — UUID the legacy endpoints take as a `user_token` param — not the JWT. (~793 tok)
+- `RequireAuth.tsx` — Gate every app route behind a session. Wraps the router's element tree. (~254 tok)
+- `useGoogleScript.ts` — Load the Google Identity Services script once, shared across callers. (~418 tok)
+
+## APP/STUDENT_APP_REDUX/src/auth/__tests__/
+
+- `auth.test.tsx` — authStore reads localStorage at import time, so each test re-imports it fresh. (~2612 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/
 
 - `.keep` (~0 tok)
 - `GrammarPractice.css` — Styles: 66 rules, 22 vars (~4286 tok)
 - `GrammarPractice.tsx` — GrammarPractice (~738 tok)
+- `UserMenu.tsx` — Signed-in identity + sign-out, shown on the dashboard. (~259 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/__tests__/
 
 - `.keep` (~0 tok)
 - `ConceptWeaknessChart.test.tsx` — mockedUseRecommendations (~883 tok)
-- `DashboardPage.test.tsx` — motionEl (~828 tok)
+- `DashboardPage.test.tsx` — motionEl (~858 tok)
 - `DiagnosticCard.test.tsx` — mockNavigate (~898 tok)
 - `DiagnosticDetail.test.tsx` — --------------------------------------------------------------------------- (~1496 tok)
 - `DiagnosticHistory.test.tsx` — --------------------------------------------------------------------------- (~1522 tok)
@@ -387,7 +421,7 @@
 - `SpacedRepetitionWidget.tsx` — Dashboard card: mastery-tier badges (mastered/proficient/developing/novice), due-question list with days_overdue, CTA button to /practice/grammar; uses useSRProgress + useSRDue hooks (~1400 tok)
 - `TestModeTab.tsx` — DEFAULT_DURATION_SECONDS (~5126 tok)
 - `TrapDetailView.tsx` — trapLabel (~1760 tok)
-- `TrapSusceptibilityDashboard.tsx` — SEVERITY_COLORS (~1665 tok)
+- `TrapSusceptibilityDashboard.tsx` — SEVERITY_COLORS (~1791 tok)
 - `WeakConceptsTab.tsx` — scoreBar (~1135 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/diagnostic/
@@ -429,11 +463,12 @@
 - `.keep` (~0 tok)
 - `ConceptSelectorPage.tsx` — ConceptSelectorPage (~1206 tok)
 - `DashboardPage.tsx` — EASE (~1035 tok)
-- `DiagnosticDetailPage.tsx` — USER_TOKEN (~718 tok)
+- `DiagnosticDetailPage.tsx` — DiagnosticDetailPage (~702 tok)
 - `DiagnosticHistoryPage.tsx` — DiagnosticHistoryPage (~275 tok)
-- `DiagnosticPage.tsx` — USER_TOKEN (~836 tok)
+- `DiagnosticPage.tsx` — DiagnosticPage (~822 tok)
+- `LoginPage.tsx` — LoginPage (~856 tok)
 - `MixedPracticePage.tsx` — QuestionCard (~1950 tok)
-- `PracticeTestPage.tsx` — PRACTICE_TEST_SECONDS (~1497 tok)
+- `PracticeTestPage.tsx` — PRACTICE_TEST_SECONDS (~1476 tok)
 - `ProgressPage.tsx` — ── Inline SVG line chart ────────────────────────────────────────────────── (~2974 tok)
 
 ## APP/STUDENT_APP_REDUX/src/types/
@@ -557,7 +592,7 @@
 - `.gitignore` — Git ignore rules (~15 tok)
 - `.python-version` (~2 tok)
 - `alembic.ini` — A generic, single database configuration. (~1327 tok)
-- `pyproject.toml` — DSAT question corpus ingestion, annotation, generation, and practice API (~220 tok)
+- `pyproject.toml` — DSAT question corpus ingestion, annotation, generation, and practice API (~234 tok)
 - `run_ocr_benchmark.py` — Standalone OCR benchmark runner. (~8522 tok)
 - `test_ocr_live.py` — load_image_as_b64, test_ollama, test_anthropic, test_openai (~2654 tok)
 
@@ -1348,9 +1383,10 @@
 
 ## backend/app/
 
-- `auth.py` — --- Password hashing ------------------------------------------------------- (~2644 tok)
-- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2142 tok)
-- `main.py` — lifespan (~1514 tok)
+- `auth.py` — hash_password, verify_password, verify_and_update_password, create_access_token (~3575 tok)
+- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2281 tok)
+- `google_oauth.py` — Google Sign-In ID token verification. (~509 tok)
+- `main.py` — lifespan (~2056 tok)
 
 ## backend/app/diagnostic/
 
@@ -1377,7 +1413,7 @@
 - `db.py` — Declares QuestionJob (~10429 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5806 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~10482 tok)
+- `payload.py` — HTTP request/response models. (~10588 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1420,7 +1456,7 @@
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` (~16107 tok)
 - `ingest.py` (~47039 tok)
-- `student_auth.py` — API: 5 endpoints (~1826 tok)
+- `student_auth.py` — API: 6 endpoints (~2486 tok)
 - `student.py` (~30758 tok)
 - `users.py` — API: 5 endpoints (~1095 tok)
 
@@ -1505,6 +1541,7 @@
 - `test_generate_batches.py` — Phase 1 (generation factory) — batch endpoint, request validation, (~5374 tok)
 - `test_generate_router.py` — test_generate_questions_valid_body, test_generate_compare_valid_body, test_generate_run_invalid_uuid (~1404 tok)
 - `test_generate_runner.py` — Phase 2 (generation factory) — runner, failure classification, batch (~8810 tok)
+- `test_google_auth.py` — Tests for Google OAuth sign-in and the JWT-aware admin_required guard. (~3704 tok)
 - `test_ingest_router.py` — test_resolve_provider_and_model_uses_default_ollama_model, test_resolve_provider_and_model_respects_ (~8845 tok)
 - `test_ingestion_analysis.py` — Tests for ingestion analysis reports and re-appraisal creation. (~1792 tok)
 - `test_llm_providers.py` — FakeRateLimit: test_llm_response_dataclass, test_llm_provider_protocol_exists, test_factory_returns_ (~1743 tok)
@@ -1559,6 +1596,10 @@
 - `2026-06-18-student-app-react-rebuild.md` — Student App React Rebuild — Implementation Plan (~2797 tok)
 - `2026-06-30-overlap-corpus-cache.md` — Overlap Detection Corpus Cache Implementation Plan (~4676 tok)
 
+## e2e/
+
+- `oauth-live.mjs` — call hermetically. Auth endpoints read cfg; any other (~3432 tok)
+
 ## ingestion_exports/
 
 - `Test_1_verbal_sec01_mod01_ANNOTATIONS.md` — Annotation chart + per-option distractor analysis for Test 1 verbal mod01 job (~9500 tok)
@@ -1571,7 +1612,7 @@
 ## scripts/
 
 - `amendments.py` — Local development CLI for approval-gated rule amendments. (~1235 tok)
-- `backup_db.sh` — Dumps the DSAT postgres DB via the running dsat-db Docker container. (~284 tok)
+- `backup_db.sh` — Dumps the DSAT postgres DB via the running dsat-db Docker container. (~343 tok)
 - `build_calibration_set.py` — normalize_skill_family, classify_question, select_calibration_candidates, best_from (~6612 tok)
 - `dev_reset_ingestion.sh` — dev_reset_ingestion.sh (~902 tok)
 - `dev_reset_ingestion.sql` — DEV-ONLY: TRUNCATEs all question_* tables + llm_evaluations (CASCADE clears user_progress), keeps users; clears the duplicate-checksum guard so PDFs can be re-ingested. (~625 tok)
