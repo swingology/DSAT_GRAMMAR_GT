@@ -92,7 +92,16 @@ export function TrapSusceptibilityDashboard() {
     )
   }
 
-  if (!data || data.total_questions_attempted === 0) {
+  // Guard every field read before touching it: a non-conforming body (e.g. an
+  // unexpected [] or an object missing most_susceptible_traps) used to reach
+  // data.most_susceptible_traps.length and throw, which — with no error boundary
+  // above — unmounts the entire dashboard and takes the header's sign-out with
+  // it. Treat any missing field the same as "no data yet".
+  if (
+    !data ||
+    !Array.isArray(data.most_susceptible_traps) ||
+    data.total_questions_attempted === 0
+  ) {
     return (
       <div style={{ padding: 24, color: '#6b7280', fontSize: 14, textAlign: 'center' }}>
         No trap data yet. Answer some questions to see your patterns.
