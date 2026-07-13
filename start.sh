@@ -43,6 +43,15 @@ ensure_student_tls() {
     echo "WARN: tailscale serve :8443 failed (Tailscale not up?) — student TLS skipped." >&2
 }
 
+# Same idea for the admin dashboard, on https://<node>:8444. Kept on a separate
+# port so it doesn't collide with the student (:8443) or bookmarks (:443) configs.
+ensure_admin_tls() {
+  command -v tailscale >/dev/null 2>&1 || return 0
+  tailscale status >/dev/null 2>&1 || return 0
+  tailscale serve --bg --https=8444 "http://localhost:${ADMIN_PORT}" >/dev/null 2>&1 || \
+    echo "WARN: tailscale serve :8444 failed (Tailscale not up?) — admin TLS skipped." >&2
+}
+
 magicdns_name() {
   tailscale status --json 2>/dev/null \
     | grep -oE '"DNSName": *"[^"]*"' | head -1 \
@@ -61,6 +70,7 @@ summary() {
     echo "  student:  http://${ts}:${STUDENT_PORT}"
     echo "  student (TLS):  https://${ts}:8443"
     echo "  admin:    http://${ts}:${ADMIN_PORT}"
+    echo "  admin (TLS):    https://${ts}:8444"
   fi
 }
 
@@ -98,6 +108,8 @@ case "${1:-start}" in
     # 2. Admin dashboard on the host.
     if admin_up; then
       echo "Admin dashboard already running on :${ADMIN_PORT}."
+      # Re-affirm the Tailscale TLS proxy in case it was dropped.
+      ensure_admin_tls
       summary
       exit 0
     fi
@@ -106,6 +118,10 @@ case "${1:-start}" in
     source "$HOME/.nvm/nvm.sh"
     cd "$ADMIN_DIR"
     [ -d node_modules ] || npm install
+
+    # Wire the admin TLS endpoint before launching — `tailscale serve` just sets
+    # the proxy config, so the port doesn't need to be up yet.
+    ensure_admin_tls
 
     summary
     echo

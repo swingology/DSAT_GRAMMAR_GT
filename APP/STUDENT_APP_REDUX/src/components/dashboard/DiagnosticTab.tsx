@@ -5,8 +5,8 @@ import { useRecommendations, useSubmitAnswer } from '../../hooks/useDashboardDat
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api/client'
 import type { WeaknessTarget } from '../../types'
+import { getUserToken } from '../../auth/authStore'
 
-const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || ''
 
 type DiagnosticState = 'idle' | 'running' | 'done'
 
@@ -43,7 +43,7 @@ function DiagnosticQuestionCard({
     const trapType = selectedOpt?.distractor_type_key ?? undefined
     if (sessionId) {
       api.diagnosticSubmit(sessionId, {
-        user_token: USER_TOKEN,
+        user_token: getUserToken(),
         question_id: question.id,
         selected_option_label: label,
         missed_grammar_focus_key: question.grammar_focus_key,
@@ -258,7 +258,7 @@ export function DiagnosticTab() {
         sessionId={sessionId}
         onDone={async (r) => {
           if (sessionId) {
-            await api.diagnosticComplete(sessionId, { user_token: USER_TOKEN }).catch(() => {})
+            await api.diagnosticComplete(sessionId, { user_token: getUserToken() }).catch(() => {})
           }
           setResults(r)
           setState('done')
@@ -295,7 +295,7 @@ export function DiagnosticTab() {
       )}
       <button
         onClick={async () => {
-          const res = await api.diagnosticStart({ user_token: USER_TOKEN, diagnostic_type: 'adaptive' }).catch(() => null)
+          const res = await api.diagnosticStart({ user_token: getUserToken(), diagnostic_type: 'adaptive' }).catch(() => null)
           setSessionId(res?.session_id ?? null)
           setState('running')
         }}

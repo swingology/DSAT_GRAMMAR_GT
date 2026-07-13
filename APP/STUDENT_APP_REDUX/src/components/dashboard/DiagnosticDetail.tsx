@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../../api/client'
+import { getUserToken } from '../../auth/authStore'
 
-const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || ''
 
 export function DiagnosticDetail() {
   const { sessionId } = useParams<{ sessionId: string }>()
@@ -10,7 +10,7 @@ export function DiagnosticDetail() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['diagnostic-detail', sessionId],
-    queryFn: () => api.diagnosticDetail(sessionId!, USER_TOKEN),
+    queryFn: () => api.diagnosticDetail(sessionId!, getUserToken()),
     enabled: !!sessionId,
   })
 

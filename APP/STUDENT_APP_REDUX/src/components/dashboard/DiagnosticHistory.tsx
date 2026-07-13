@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api/client'
 import { useNavigate } from 'react-router-dom'
+import { getUserToken } from '../../auth/authStore'
 
-const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || ''
 
 export function DiagnosticHistory() {
   const navigate = useNavigate()
   const { data, isLoading, isError } = useQuery({
     queryKey: ['diagnostic-history'],
-    queryFn: () => api.diagnosticHistory(USER_TOKEN),
+    queryFn: () => api.diagnosticHistory(getUserToken()),
   })
 
   if (isLoading) return <div className="h-48 bg-gray-100 rounded-xl animate-pulse" />

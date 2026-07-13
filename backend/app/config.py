@@ -18,6 +18,16 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
 
+    # Google OAuth (Sign in with Google). The client ID is public by design —
+    # the backend verifies ID-token signatures against Google's public keys and
+    # never uses the client secret.
+    google_oauth_client_id: str = (
+        "721127096332-4b5fgqs0dfn8g414gnehrnbrb85q22r4.apps.googleusercontent.com"
+    )
+    # Seeded on startup as an active admin so the tutor can never be locked out.
+    admin_seed_email: str = "jbyun76@gmail.com"
+    admin_seed_username: str = "jbyun"
+
     # LLM
     anthropic_api_key: str = ""
     openai_api_key: str = ""

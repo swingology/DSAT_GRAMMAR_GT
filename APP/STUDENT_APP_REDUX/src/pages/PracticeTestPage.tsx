@@ -3,11 +3,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { api } from '../api/client'
 import { PracticeTestRunner, type PracticeQuestion } from '../components/practice/PracticeTestRunner'
+import { getUserToken } from '../auth/authStore'
 
 const PRACTICE_TEST_SECONDS = 32 * 60
 const MAX_QUESTIONS = 27
-const DEFAULT_USER_TOKEN =
-  (import.meta as any).env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token') || ''
 
 type PageState = 'idle' | 'loading' | 'running' | 'done'
 
@@ -57,7 +56,7 @@ export function PracticeTestPage() {
       <PracticeTestRunner
         questions={questions}
         timeLimitSeconds={PRACTICE_TEST_SECONDS}
-        userToken={DEFAULT_USER_TOKEN}
+        userToken={getUserToken()}
         onComplete={() => setState('done')}
       />
     )

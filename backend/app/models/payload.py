@@ -570,12 +570,19 @@ class RefreshRequest(BaseModel):
     refresh_token: str
 
 
+class GoogleLogin(BaseModel):
+    credential: str
+
+
 class StudentMeResponse(BaseModel):
     id: int
     username: str
     email: str
     role: str
     created_at: datetime
+    # Legacy endpoints still take a `user_token` query param; the frontend sources
+    # it from here instead of a hardcoded env var.
+    user_token: str
 
 
 # --- Phase 8: Self-study agent request layer ---------------------------------

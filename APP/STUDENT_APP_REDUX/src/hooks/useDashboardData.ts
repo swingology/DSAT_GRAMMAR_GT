@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../api/client'
 import type { StudyRecommendationsResponse } from '../types'
+import { getUserToken } from '../auth/authStore'
 
-const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || ''
 
 export interface StudentStats {
   user_id: number
@@ -44,7 +44,7 @@ export interface MissedQuestionsResponse {
 export function useRecommendations() {
   return useQuery<StudyRecommendationsResponse>({
     queryKey: ['recommendations'],
-    queryFn: () => api.getStudyRecommendations(USER_TOKEN),
+    queryFn: () => api.getStudyRecommendations(getUserToken()),
     staleTime: 5 * 60 * 1000,
   })
 }
@@ -68,7 +68,7 @@ export function useSubmitAnswer() {
       missed_reading_focus_key?: string
       missed_syntactic_trap_key?: string
     }) =>
-      api.submitAnswer({ ...data, user_token: USER_TOKEN }),
+      api.submitAnswer({ ...data, user_token: getUserToken() }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['recommendations'] })
     },
@@ -78,7 +78,7 @@ export function useSubmitAnswer() {
 export function useMissedQuestions(params: { domain?: string; sort_by?: string } = {}) {
   return useQuery<MissedQuestionsResponse>({
     queryKey: ['missed', params],
-    queryFn: () => api.getMissedQuestions({ user_token: USER_TOKEN, ...params }),
+    queryFn: () => api.getMissedQuestions({ user_token: getUserToken(), ...params }),
     staleTime: 2 * 60 * 1000,
     retry: 1,
   })
@@ -87,7 +87,7 @@ export function useMissedQuestions(params: { domain?: string; sort_by?: string }
 export function useSRProgress() {
   return useQuery({
     queryKey: ['sr-progress'],
-    queryFn: () => api.srProgress(USER_TOKEN),
+    queryFn: () => api.srProgress(getUserToken()),
     staleTime: 60_000,
   })
 }
@@ -95,7 +95,7 @@ export function useSRProgress() {
 export function useSRDue(limit = 20) {
   return useQuery({
     queryKey: ['sr-due', limit],
-    queryFn: () => api.srDueQuestions(USER_TOKEN, limit),
+    queryFn: () => api.srDueQuestions(getUserToken(), limit),
     staleTime: 60_000,
   })
 }
@@ -103,7 +103,7 @@ export function useSRDue(limit = 20) {
 export function useTrapSusceptibility() {
   return useQuery({
     queryKey: ['trap-susceptibility'],
-    queryFn: () => api.getTrapSusceptibility(USER_TOKEN),
+    queryFn: () => api.getTrapSusceptibility(getUserToken()),
     staleTime: 5 * 60_000,
   })
 }
@@ -111,7 +111,7 @@ export function useTrapSusceptibility() {
 export function useQuestionTypePerformance() {
   return useQuery({
     queryKey: ['question-type-performance'],
-    queryFn: () => api.getQuestionTypePerformance(USER_TOKEN),
+    queryFn: () => api.getQuestionTypePerformance(getUserToken()),
     staleTime: 5 * 60_000,
   })
 }
@@ -119,7 +119,7 @@ export function useQuestionTypePerformance() {
 export function useTrapDetails(trapType: string) {
   return useQuery({
     queryKey: ['trap-details', trapType],
-    queryFn: () => api.getTrapDetails(trapType, USER_TOKEN),
+    queryFn: () => api.getTrapDetails(trapType, getUserToken()),
     staleTime: 5 * 60_000,
     enabled: !!trapType,
   })
@@ -128,7 +128,7 @@ export function useTrapDetails(trapType: string) {
 export function useProgressTrend(days = 30) {
   return useQuery({
     queryKey: ['progress-trend', days],
-    queryFn: () => api.getProgressTrend(USER_TOKEN, days),
+    queryFn: () => api.getProgressTrend(getUserToken(), days),
     staleTime: 5 * 60_000,
   })
 }
@@ -136,7 +136,7 @@ export function useProgressTrend(days = 30) {
 export function useDomainTrend(days = 30) {
   return useQuery({
     queryKey: ['domain-trend', days],
-    queryFn: () => api.getDomainTrend(USER_TOKEN, days),
+    queryFn: () => api.getDomainTrend(getUserToken(), days),
     staleTime: 5 * 60_000,
   })
 }
@@ -144,7 +144,7 @@ export function useDomainTrend(days = 30) {
 export function useFocusSummary() {
   return useQuery({
     queryKey: ['focus-summary'],
-    queryFn: () => api.getFocusSummary(USER_TOKEN),
+    queryFn: () => api.getFocusSummary(getUserToken()),
     staleTime: 5 * 60_000,
   })
 }

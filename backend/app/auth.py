@@ -108,7 +108,55 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=Fals
 # --- Legacy API-key dependencies (backward compat) --------------------------
 
 
-async def admin_required(api_key: str = Security(api_key_header)):
+async def admin_required(
+    bearer_token: Optional[str] = Depends(oauth2_scheme),
+    api_key: Optional[str] = Security(api_key_header),
+    db: AsyncSession = Depends(get_db),
+) -> str:
+    """Accept a legacy admin API key OR a Bearer JWT whose user has role == "admin".
+
+    Returns a string identifier for the acting admin, because callers persist it to
+    the audit trail (`rejected_by_admin_token`, `admin_token=`): the raw key for
+    key auth, "jwt:<email>" for JWT auth.
+    """
+    if bearer_token:
+        payload = decode_token(bearer_token)
+        if payload.get("type") != "access":
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not an access token",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        try:
+            user_id = int(payload["sub"])
+        except (KeyError, ValueError):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token payload",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalars().first()
+        if user is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User account is disabled",
+            )
+        # A valid non-admin JWT is a definitive "no" — never fall through to the
+        # API-key branch, or a student token would get a misleading key error.
+        if user.role != "admin":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin role required",
+            )
+        return f"jwt:{user.email}"[:128]
+
     settings = get_settings()
     if api_key not in settings.admin_api_key_list:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid admin API key")

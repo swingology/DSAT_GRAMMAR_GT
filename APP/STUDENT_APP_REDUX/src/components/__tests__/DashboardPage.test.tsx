@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { DashboardPage } from '../../pages/DashboardPage'
+import { AuthProvider } from '../../auth/AuthContext'
 
 const motionEl = (tag: string) =>
   ({ children, ...props }: any) => {
@@ -40,7 +41,9 @@ function renderDashboard() {
   return render(
     <QueryClientProvider client={qc}>
       <MemoryRouter>
-        <DashboardPage />
+        <AuthProvider>
+          <DashboardPage />
+        </AuthProvider>
       </MemoryRouter>
     </QueryClientProvider>
   )

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 
 const NAV = [
   { to: '/dashboard', label: 'Dashboard', icon: '⌂' },
@@ -11,6 +12,13 @@ const NAV = [
 
 export function Layout() {
   const [collapsed, setCollapsed] = useState(false)
+  const { profile, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -64,9 +72,21 @@ export function Layout() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between flex-shrink-0">
           <h1 className="text-base font-semibold text-gray-800">Admin Dashboard</h1>
-          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">
-            Admin
-          </span>
+          <div className="flex items-center gap-3">
+            {profile ? (
+              <span className="text-xs text-gray-500 hidden sm:inline" title={profile.username}>
+                {profile.email}
+              </span>
+            ) : (
+              <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">Admin</span>
+            )}
+            <button
+              onClick={handleLogout}
+              className="text-xs font-medium text-gray-600 hover:text-gray-900 rounded-lg px-3 py-1.5 hover:bg-gray-100 transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />

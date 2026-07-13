@@ -2,7 +2,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import (
@@ -15,8 +15,10 @@ from app.auth import (
 )
 from app.config import get_settings
 from app.database import get_db
+from app.google_oauth import GoogleTokenError, verify_google_id_token
 from app.models.db import User
 from app.models.payload import (
+    GoogleLogin,
     RefreshRequest,
     StudentLogin,
     StudentMeResponse,
@@ -118,6 +120,60 @@ async def login(body: StudentLogin, db: AsyncSession = Depends(get_db)):
     )
 
 
+@router.post("/google", response_model=TokenResponse)
+async def google_login(body: GoogleLogin, db: AsyncSession = Depends(get_db)):
+    """Authenticate with a Google ID token from the GIS popup flow.
+
+    Accounts are pre-registered by the tutor: a verified Google email that has no
+    matching User is rejected. Sign-in never creates an account.
+    """
+    try:
+        claims = verify_google_id_token(body.credential)
+    except GoogleTokenError as exc:
+        logger.warning("Rejected Google credential: %s", exc)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Google sign-in failed. Please try again.",
+        )
+
+    email = claims["email"].lower()
+    result = await db.execute(select(User).where(func.lower(User.email) == email))
+    user = result.scalars().first()
+
+    if user is None:
+        # Deliberately generic: revealing "no such account" would let anyone with a
+        # Google account enumerate who is registered.
+        logger.warning("Google sign-in for unregistered email: %s", email)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="This Google account isn't registered. Ask your tutor for access.",
+        )
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is disabled",
+        )
+
+    settings = get_settings()
+    access_token = create_access_token(user.id, user.role)
+    refresh_token = create_refresh_token(user.id)
+
+    user.refresh_token = refresh_token
+    user.refresh_token_expires = datetime.now(timezone.utc) + timedelta(
+        days=settings.refresh_token_expire_days
+    )
+    await db.commit()
+
+    logger.info("Google sign-in succeeded for user_id=%s role=%s", user.id, user.role)
+
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        expires_in=settings.access_token_expire_minutes * 60,
+    )
+
+
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh(body: RefreshRequest, db: AsyncSession = Depends(get_db)):
     """Exchange a valid refresh token for new access + refresh tokens."""
@@ -199,4 +255,5 @@ async def me(user: User = Depends(get_current_user)):
         email=user.email,
         role=user.role,
         created_at=user.created_at,
+        user_token=str(user.user_token),
     )

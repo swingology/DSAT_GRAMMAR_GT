@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { adminApi } from '../api/client'
+import { adminApi, type QueryParams } from '../api/client'
 import type { Question, TestSummary } from '../types'
 
 type StatusFilter = 'all' | 'active' | 'draft' | 'needs_review' | 'rejected'
@@ -312,7 +312,7 @@ export function DataManagement() {
 
   const browsingTests = mode === 'tests' && !testFilter
 
-  const params: Record<string, any> = { limit, offset: (page - 1) * limit }
+  const params: QueryParams = { limit, offset: (page - 1) * limit }
   if (status !== 'all') params.practice_status = status
   if (origin !== 'all') params.content_origin = origin
   if (testFilter) {

@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 from fastapi import FastAPI
@@ -7,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.logging_config import configure_logging
 from app.middleware import RequestIDMiddleware
-from app.routers import health, questions, student, admin, ingest, generate, users, dashboard
+from app.routers import health, questions, student, admin, ingest, generate, users, dashboard, student_auth
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,48 @@ def _check_insecure_keys(settings) -> None:
         )
 
 
+async def _seed_admin_user(settings):
+    """Ensure the tutor's email exists as an active admin so Google sign-in works.
+
+    Idempotent: promotes/reactivates an existing row rather than duplicating it.
+    Password stays null — this account signs in with Google only.
+    """
+    from sqlalchemy import func, select
+    from app.database import async_session
+    from app.models.db import User
+
+    email = settings.admin_seed_email.strip().lower()
+    if not email:
+        return
+
+    async with async_session() as db:
+        result = await db.execute(select(User).where(func.lower(User.email) == email))
+        user = result.scalars().first()
+
+        if user is not None:
+            changed = False
+            if user.role != "admin":
+                user.role = "admin"
+                changed = True
+            if not user.is_active:
+                user.is_active = True
+                changed = True
+            if changed:
+                await db.commit()
+                logger.info("Admin seed: promoted existing user %s to active admin", email)
+            return
+
+        # username is unique-constrained; don't collide with an unrelated account.
+        username = settings.admin_seed_username
+        taken = await db.execute(select(User).where(User.username == username))
+        if taken.scalars().first():
+            username = f"{username}-admin-{uuid.uuid4().hex[:6]}"
+
+        db.add(User(username=username, email=email, role="admin", is_active=True))
+        await db.commit()
+        logger.info("Admin seed: created admin user %s (username=%s)", email, username)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
@@ -68,6 +111,12 @@ async def lifespan(app: FastAPI):
                 logger.warning("Startup: marked %d stuck job(s) as failed", _result.rowcount)
     except Exception as _startup_err:
         logger.warning("Startup recovery skipped (DB unavailable): %s", _startup_err)
+
+    try:
+        await _seed_admin_user(settings)
+    except Exception as _seed_err:
+        # Never let seeding take the API down — it only gates Google admin sign-in.
+        logger.warning("Admin seed skipped: %s", _seed_err)
 
     # Background sweeper: periodically mark stuck jobs as failed
     _sweeper_task = None
@@ -126,3 +175,4 @@ app.include_router(ingest.router)
 app.include_router(generate.router)
 app.include_router(users.router)
 app.include_router(dashboard.router)
+app.include_router(student_auth.router)

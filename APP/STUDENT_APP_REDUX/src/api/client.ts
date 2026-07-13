@@ -1,14 +1,60 @@
 // API client for communication with backend
 
+import {
+  clearSession,
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+} from '../auth/authStore'
+
 const API_BASE = (import.meta as any).env.VITE_API_BASE || '/api'
 
 interface ApiOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
   headers?: Record<string, string>
   body?: any
+  /** Skip the 401 silent-refresh interceptor (used by the auth calls themselves). */
+  skipAuthRetry?: boolean
 }
 
-export async function apiCall(endpoint: string, options: ApiOptions = {}) {
+/**
+ * Exchange the refresh token for a fresh pair.
+ *
+ * Deliberately a bare `fetch` rather than `apiCall`: routing it through the interceptor
+ * would let an expired refresh token trigger its own 401 handler and recurse.
+ * Concurrent 401s share one in-flight refresh.
+ */
+let refreshInFlight: Promise<boolean> | null = null
+
+function refreshTokens(): Promise<boolean> {
+  if (refreshInFlight) return refreshInFlight
+
+  refreshInFlight = (async () => {
+    const refreshToken = getRefreshToken()
+    if (!refreshToken) return false
+
+    try {
+      const response = await fetch(`${API_BASE}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      })
+      if (!response.ok) return false
+
+      const tokens = await response.json()
+      setTokens(tokens)
+      return true
+    } catch {
+      return false
+    } finally {
+      refreshInFlight = null
+    }
+  })()
+
+  return refreshInFlight
+}
+
+async function rawApiCall(endpoint: string, options: ApiOptions): Promise<Response> {
   const { method = 'GET', headers = {}, body } = options
 
   const requestHeaders: Record<string, string> = {
@@ -16,35 +62,74 @@ export async function apiCall(endpoint: string, options: ApiOptions = {}) {
     ...headers,
   }
 
+  // Legacy static key — the backend still accepts it, and scripts depend on it.
   const apiKey = (import.meta as any).env.VITE_STUDENT_API_KEY || 'student-test-key'
   requestHeaders['X-API-Key'] = apiKey
 
-  const token = (import.meta as any).env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token')
-  if (token) {
-    requestHeaders['Authorization'] = `Bearer ${token}`
+  const accessToken = getAccessToken()
+  if (accessToken) {
+    requestHeaders['Authorization'] = `Bearer ${accessToken}`
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
+  return fetch(`${API_BASE}${endpoint}`, {
     method,
     headers: requestHeaders,
     body: body ? JSON.stringify(body) : undefined,
   })
+}
+
+export async function apiCall(endpoint: string, options: ApiOptions = {}) {
+  let response = await rawApiCall(endpoint, options)
+
+  if (response.status === 401 && !options.skipAuthRetry && getRefreshToken()) {
+    if (await refreshTokens()) {
+      response = await rawApiCall(endpoint, options)
+    } else {
+      // Refresh is dead — drop the session. AuthContext subscribes to the store and
+      // sends the user to the login page.
+      clearSession()
+    }
+  }
 
   if (!response.ok) {
     let detail = ''
     try {
       const payload = await response.clone().json()
-      detail = typeof payload?.detail === 'string' ? `: ${payload.detail}` : ''
+      detail = typeof payload?.detail === 'string' ? payload.detail : ''
     } catch {
       detail = ''
     }
-    throw new Error(`API error: ${response.status} ${response.statusText}${detail}`)
+    const error = new Error(
+      `API error: ${response.status} ${response.statusText}${detail ? `: ${detail}` : ''}`,
+    )
+    // Callers that want to show the backend's message read this rather than
+    // re-parsing the string above.
+    ;(error as any).detail = detail
+    ;(error as any).status = response.status
+    throw error
   }
+
+  if (response.status === 204) return null
 
   return response.json()
 }
 
 export const api = {
+  /** Exchange a Google ID token (GIS popup credential) for our JWT pair. */
+  googleLogin: (credential: string) =>
+    apiCall('/auth/google', {
+      method: 'POST',
+      body: { credential },
+      skipAuthRetry: true,
+    }),
+
+  // Deliberately NOT skipAuthRetry: on a return visit the stored access token is
+  // usually expired (minutes) while the refresh token is still good (days), so this
+  // call must be allowed to refresh — that is what "remember me" rests on.
+  me: () => apiCall('/auth/me'),
+
+  logout: () => apiCall('/auth/logout', { method: 'POST', skipAuthRetry: true }),
+
   getStudyRecommendations: (userToken: string) =>
     apiCall('/study/recommendations', {
       method: 'POST',

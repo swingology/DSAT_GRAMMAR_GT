@@ -5,13 +5,9 @@ import { DiagnosticTestRunner } from '../components/diagnostic/DiagnosticTestRun
 import { DiagnosticReport } from '../components/diagnostic/DiagnosticReport'
 import { api } from '../api/client'
 import type { DiagnosticStartV1Response, DiagnosticResult } from '../types'
+import { getUserToken } from '../auth/authStore'
 
 type Phase = 'intro' | 'running' | 'complete'
-
-const USER_TOKEN =
-  (import.meta as any).env.VITE_TEST_USER_TOKEN ||
-  localStorage.getItem('user_token') ||
-  ''
 
 export function DiagnosticPage() {
   const navigate = useNavigate()
@@ -28,7 +24,7 @@ export function DiagnosticPage() {
     if (!sessionData) return
     try {
       const res = await api.diagnosticComplete(sessionData.session_id, {
-        user_token: USER_TOKEN,
+        user_token: getUserToken(),
       })
       setResult(res as DiagnosticResult)
     } catch {
@@ -43,7 +39,7 @@ export function DiagnosticPage() {
         sessionId={sessionData.session_id}
         questions={sessionData.questions}
         timeLimitSeconds={sessionData.time_limit_seconds}
-        userToken={USER_TOKEN}
+        userToken={getUserToken()}
         onComplete={handleComplete}
       />
     )
@@ -64,7 +60,7 @@ export function DiagnosticPage() {
         <DiagnosticReport
           result={result}
           sessionId={sessionData?.session_id ?? ''}
-          userToken={USER_TOKEN}
+          userToken={getUserToken()}
           onRetake={() => { setPhase('intro'); setSessionData(null); setResult(null) }}
         />
       </div>
@@ -82,7 +78,7 @@ export function DiagnosticPage() {
         </button>
         <span className="text-gray-800 font-semibold">Diagnostic Test</span>
       </header>
-      <DiagnosticIntro userToken={USER_TOKEN} onStarted={handleStarted} />
+      <DiagnosticIntro userToken={getUserToken()} onStarted={handleStarted} />
     </div>
   )
 }

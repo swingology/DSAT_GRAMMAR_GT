@@ -1,5 +1,32 @@
 # Debug Log
 
+## 2026-07-13 - OAuth Phase 2 (student app): frontend test runner + token sourcing
+Report created by: Claude Opus 4.8
+Git branch: `oauth_feature`
+Git checkpoint: `ffe255e` — Add PRD for Google OAuth login (student + admin apps)
+
+### Findings
+
+1. **Medium:** ~~`npx vitest run` in `APP/STUDENT_APP_REDUX` died with `Segmentation fault (core dumped)` before executing a single test.~~
+   - Not caused by any test. Vite's dependency (re-)optimization crashes vitest's default worker-thread pool on this Linux host. Any cold cache triggers it: adding the new `src/auth/` directory invalidated the cache, and `rm -rf node_modules/.vite` reproduced the segfault on a **pre-existing, previously passing** test file, which isolates it from the OAuth work. `--pool=forks` ran clean.
+   - Same class as the `optimizeDeps.bundler: 'esbuild'` pin already in `vite.config.ts` (Rolldown/WASM on Linux); `vitest.config.ts` never got the equivalent.
+   - **Fixed:** set `pool: 'forks'` in `APP/STUDENT_APP_REDUX/vitest.config.ts`. Suite now runs (162 passed / 16 pre-existing failures). Logged as bug-781.
+   - Note: `--poolOptions.forks.singleFork=true` is **not** a valid alternative — one shared process leaks module/DOM state across files and blows the suite up to 87 failures.
+
+2. **High:** ~~The student app sent the `user_token` UUID in the `Authorization: Bearer` header, where the backend expects a JWT.~~
+   - `src/api/client.ts:22` set `Bearer <user_token>`; the backend's `get_current_user` decodes a JWT, so that header was never usable — identity travelled only in request bodies/query params.
+   - **Fixed:** the Bearer header now carries the real JWT access token from the OAuth session; `user_token` is sourced from `GET /api/auth/me`.
+
+3. **High:** ~~`user_token` was read into module-scope constants in 8 files, i.e. at import time — before a login can possibly exist.~~
+   - `useDashboardData.ts`, `useGrammarSession.ts`, `DiagnosticPage/DiagnosticDetailPage/PracticeTestPage`, `TestModeTab/DiagnosticTab/DiagnosticDetail/DiagnosticHistory` each held `const USER_TOKEN = import.meta.env… || localStorage…`. Swapping the right-hand side to a getter would have preserved the bug, since the const still evaluates once at import.
+   - **Fixed:** every read moved to render/fetch time via `getUserToken()` at the call site.
+
+4. **Medium:** ~~Logging out would have served the previous student's cached data to the next one.~~
+   - React Query keys don't include the user token, and the cache survives a logout in the same browser tab.
+   - **Fixed:** `queryClient.clear()` on logout in `AuthContext`.
+
+5. **Low (not fixed — pre-existing):** 16 tests fail on `oauth_feature` and on a clean tree alike: `grammar-page` (4), `GrammarPractice`, `PracticeCard` (3), `PracticeTestCard` (3), `PracticeTestPage` (1), `keyColors` (4). None touch auth. `PracticeTestPage.test.tsx` mocks `TestModeTab`, but the page renders `PracticeTestRunner` — the test is stale.
+
 ## 2026-07-03 - Admin dashboard startup check: /admin/tests 500 + dev proxy 404s
 Report created by: Claude Fable 5
 Git branch: `gitbutler/workspace`

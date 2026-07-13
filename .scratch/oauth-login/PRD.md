@@ -171,6 +171,39 @@ OAuth client (the tutor's account).
 - Server-side authorization-code OAuth flow and offline access to Google APIs.
 - Multi-tutor/permission tiers beyond the existing `student`/`admin` roles.
 
+## Future Consideration: Migrating to Supabase Auth
+
+Out of scope for this PRD, but recorded here so it isn't rediscovered from
+scratch. If the project later moves to Supabase Auth (GoTrue) as the identity
+provider — as opposed to merely hosting Postgres on Supabase, which requires no
+changes to this design at all — note the following:
+
+- **This is a different OAuth flow, not a drop-in swap.** Supabase Auth uses a
+  redirect-based OAuth handshake (`supabase.auth.signInWithOAuth`) mediated by
+  Supabase's GoTrue server, not the GIS popup flow this PRD implements. The
+  Google OAuth client's *secret* (never used in this design) would need to be
+  registered in the Supabase dashboard.
+- **The access-policy gate (`## User Stories` #4, #9, #10; `Implementation
+  Decisions` — pre-registered emails only) does not port automatically.**
+  Supabase's Google provider auto-creates a row in `auth.users` for any
+  successful Google sign-in by default — there is no built-in "reject unknown
+  email" behavior. Reproducing the admin-controlled allow list requires a
+  Supabase **Auth Hook** (e.g. "Before User Created" / custom access token
+  hook) that checks the verified email against an allow-list table and
+  rejects sign-in server-side, replacing the check currently done inline in
+  `POST /api/auth/google`.
+- **Users move from your own `User` table to Supabase-managed `auth.users`.**
+  App-specific fields (role, `user_token`, active/inactive flag) would live in
+  a separate `profiles` table keyed by the Supabase user id, not directly on
+  `auth.users`.
+- **Session/JWT format changes.** Supabase issues its own JWTs (claims built
+  around `auth.uid()` for Postgres RLS); the existing access/refresh pair and
+  `/api/auth/*` endpoints this PRD relies on would be replaced, not extended.
+- **Net effect:** this PRD's `User` table and JWT layer are fully portable to
+  a Supabase-*hosted-database* future with zero changes. They are not portable
+  to a Supabase-*Auth* future — that would be a follow-up PRD replacing the
+  identity layer, reusing only the allow-list *concept*, not the code.
+
 ## Further Notes
 
 - The OAuth client ID is intentionally public; only ID-token *verification* keys

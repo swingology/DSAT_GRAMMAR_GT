@@ -3,10 +3,10 @@ import { motion } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api/client'
 import { useSubmitAnswer } from '../../hooks/useDashboardData'
+import { getUserToken } from '../../auth/authStore'
 
 const DEFAULT_DURATION_SECONDS = 32 * 60
 const DEFAULT_QUESTIONS = 27
-const DEFAULT_USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token') || ''
 
 type TestState = 'idle' | 'running' | 'routing' | 'module2' | 'review' | 'done'
 
@@ -273,7 +273,7 @@ export function TestModeTab({
   questionCount = DEFAULT_QUESTIONS,
   durationSeconds = DEFAULT_DURATION_SECONDS,
   adaptive = true,
-  userToken = DEFAULT_USER_TOKEN,
+  userToken = getUserToken(),
 }: {
   questionCount?: number
   durationSeconds?: number

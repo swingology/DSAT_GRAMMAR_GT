@@ -8,6 +8,7 @@ import { RecentSessions } from '../components/dashboard/RecentSessions'
 import { ConceptWeaknessChart } from '../components/dashboard/ConceptWeaknessChart'
 import { SpacedRepetitionWidget } from '../components/dashboard/SpacedRepetitionWidget'
 import { TrapSusceptibilityDashboard } from '../components/dashboard/TrapSusceptibilityDashboard'
+import { UserMenu } from '../components/UserMenu'
 
 const EASE: Easing = 'easeOut'
 
@@ -22,7 +23,7 @@ export function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
         <span className="text-blue-600 font-bold text-lg">DSAT Prep</span>
-        <span className="text-xs text-gray-400">Student Portal</span>
+        <UserMenu />
       </header>
 
       <div className="max-w-lg mx-auto px-4 py-6 space-y-4">

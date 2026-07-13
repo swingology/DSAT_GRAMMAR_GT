@@ -3,11 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api/client'
 import { DiagnosticReport } from '../components/diagnostic/DiagnosticReport'
 import type { DiagnosticResult } from '../types'
-
-const USER_TOKEN =
-  (import.meta as any).env.VITE_TEST_USER_TOKEN ||
-  localStorage.getItem('user_token') ||
-  ''
+import { getUserToken } from '../auth/authStore'
 
 export function DiagnosticDetailPage() {
   const { sessionId } = useParams<{ sessionId: string }>()
@@ -18,7 +14,7 @@ export function DiagnosticDetailPage() {
 
   useEffect(() => {
     if (!sessionId) return
-    api.diagnosticDetail(sessionId, USER_TOKEN)
+    api.diagnosticDetail(sessionId, getUserToken())
       .then((data: any) => {
         // Map detail response to DiagnosticResult shape
         setResult({
@@ -63,7 +59,7 @@ export function DiagnosticDetailPage() {
         <DiagnosticReport
           result={result}
           sessionId={sessionId ?? ''}
-          userToken={USER_TOKEN}
+          userToken={getUserToken()}
           onRetake={() => navigate('/diagnostic')}
         />
       )}

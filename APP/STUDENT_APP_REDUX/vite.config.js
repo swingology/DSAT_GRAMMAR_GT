@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => ({
     server: {
         host: '0.0.0.0',
         port: 5173,
+        allowedHosts: ['jb-2410.tail0cecc1.ts.net', '.ts.net'],
         proxy: {
             '/api': {
                 target: resolveBackendTarget(mode),

@@ -21,6 +21,7 @@ dependencies = [
     "python-jose[cryptography]>=3.3",
     "pwdlib[argon2]>=0.2",
     "bcrypt>=4.0",
+    "google-auth[requests]>=2.35",
 ]
 
 [project.optional-dependencies]

@@ -5,6 +5,100 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-07-13 — Google OAuth login, Phase 2 (student app)
+
+**Model:** Claude Opus 4.8
+**Branch:** `oauth_feature`
+**Commits:** uncommitted working tree
+
+Implements Phase 2 (O-09 … O-14) of `TASK_OAUTH.md`: the student app (5173) now has a real
+login. Google sign-in is the front door; the legacy `X-API-Key` + `VITE_TEST_USER_TOKEN`
+path is untouched and still works for scripts and tests.
+
+### Added
+
+- **`src/auth/authStore.ts`**: session state (access token, refresh token, profile) in
+  localStorage. A **plain module rather than a hook**, because `api/client.ts` has to read
+  tokens outside of React.
+- **`src/auth/AuthContext.tsx`**: login/logout/profile over the store. Re-validates a stored
+  session against `/api/auth/me` on mount (`bootstrapping` status) so a page refresh doesn't
+  bounce a signed-in student to the login page. Logout clears the React Query cache — query
+  keys don't include the user token, so cached work would otherwise be served to whoever
+  signed in next on that browser.
+- **`src/auth/RequireAuth.tsx`**, **`src/pages/LoginPage.tsx`**, **`src/components/UserMenu.tsx`**,
+  **`src/auth/useGoogleScript.ts`** (shared, on-demand GIS script loader).
+- **`VITE_GOOGLE_CLIENT_ID`** in `.env.example`.
+- **`src/auth/__tests__/auth.test.tsx`** — 8 tests: Bearer header, refresh-and-retry on 401,
+  dead refresh clears the session without looping, guard redirect, session restore on load.
+
+### Changed
+
+- **`src/api/client.ts`**: sends the real JWT as `Authorization: Bearer`. It previously sent
+  the `user_token` UUID in that header, which the backend never read. Adds silent refresh on
+  401 with a single retry; the refresh call is a bare `fetch` that bypasses the interceptor so
+  an expired refresh token can't recurse, and concurrent 401s share one in-flight refresh.
+- **`user_token` now comes from the signed-in user** (`/api/auth/me`). It had been read into
+  **module-scope consts in 8 files** — evaluated at import time, before any login exists — so
+  each read moved to render/fetch time via `getUserToken()`. The env/localStorage fallback is
+  preserved inside that getter.
+
+### Fixed
+
+- **Medium: `vitest` segfaulted before running a single test.** Vite dep re-optimization crashes
+  vitest's default worker-thread pool on this Linux host, so any cold cache (e.g. adding the new
+  `src/auth/` directory) killed the whole run with `Segmentation fault (core dumped)`. Set
+  `pool: 'forks'` in `vitest.config.ts` — same class of issue as the `optimizeDeps.bundler:
+  'esbuild'` pin already in `vite.config.ts`. Logged as bug-781.
+
+### Notes
+
+- Live QA (Phase 4, O-18/O-19) is still open — this phase was verified by typecheck, production
+  build, and the test suite, not by a browser sign-in against Google.
+- Suite: 162 passed / 16 failed. All 16 failures are pre-existing and unrelated to auth —
+  confirmed identical on a clean tree.
+
+---
+
+## 2026-07-13 — Google OAuth login, Phase 1 (backend)
+
+**Model:** Claude Opus 4.8
+**Branch:** `oauth_feature`
+**Commits:** uncommitted working tree
+
+Implements Phase 1 (O-01 … O-08) of `TASK_OAUTH.md`. GIS popup flow → `POST /api/auth/google`
+verifies the Google ID token → issues the *existing* JWT access/refresh pair. Pre-registered
+emails only; sign-in never creates an account. Legacy API keys keep working in parallel.
+
+### Added
+
+- **`POST /api/auth/google`** (`backend/app/routers/student_auth.py`): verifies the credential,
+  looks up the User by verified email, rotates the refresh token, returns the same `TokenResponse`
+  as password login. Unknown email → generic 401 (no account enumeration); inactive user → 403.
+- **`backend/app/google_oauth.py`**: ID-token verification isolated behind one function so tests
+  can fake it at the seam. Beyond signature/audience/expiry, it **pins the issuer and rejects
+  `email_verified: false`** — an unverified Google account could otherwise claim a registered
+  student's address.
+- **Idempotent admin seed** in the `main.py` lifespan: creates or promotes `admin_seed_email`
+  to an active admin. Wrapped so a DB outage can't take the API down.
+- **`backend/tests/test_google_auth.py`** — 17 tests, including the admin seed (which swallows
+  exceptions by design and would otherwise fail silently).
+
+### Changed
+
+- **`student_auth` router is now mounted** (`backend/app/main.py`). It never was, so all of
+  `/api/auth/*` was dead code returning 404. `GET /api/auth/me` now correctly returns 401.
+- **`admin_required` accepts an admin Bearer JWT** as well as the legacy `X-API-Key`, so all ~41
+  admin endpoints inherit Google sign-in. It **keeps its `str` return type**: 6 call sites persist
+  that value to the audit trail (`rejected_by_admin_token`, `admin_token=`), so JWT auth returns
+  `"jwt:<email>"` rather than a User object. A valid non-admin JWT 403s instead of falling through
+  to the API-key branch.
+- **`user_token` added to `StudentMeResponse`**, so the frontend can source legacy `user_token`
+  params from the logged-in user instead of a hardcoded env var.
+- **`google-auth[requests]`** in `backend/pyproject.toml` — the `[requests]` extra is required;
+  `google.auth.transport.requests` raises ImportError without it.
+
+---
+
 ## 2026-07-03 — Fix /admin/tests enum 500 + admin app dev proxy alignment
 
 **Model:** Claude Fable 5
@@ -10569,5 +10663,955 @@ _branch:_ `main` · _commit:_ `0c4c7cf` · _ram:_ `11Gi/31Gi`
 _( 10 files changed, 13709 insertions(+), 282 deletions(-))_
 
 **Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-04 23:29:44 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json backups/backup.log 
+_( 7 files changed, 13036 insertions(+), 264 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-04 23:31:14 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 8 files changed, 13075 insertions(+), 264 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-04 23:39:20 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 8 files changed, 13114 insertions(+), 264 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:34:46 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 8 files changed, 13165 insertions(+), 268 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:43:35 (50kb-written)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13222 insertions(+), 258 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:43:52 (50kb-written)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13233 insertions(+), 258 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:44:22 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13253 insertions(+), 246 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:48:12 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13325 insertions(+), 246 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:50:37 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13397 insertions(+), 246 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:51:44 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13469 insertions(+), 246 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:54:46 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13541 insertions(+), 246 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:56:03 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `12Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13613 insertions(+), 246 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:57:18 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13685 insertions(+), 246 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:57:38 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13757 insertions(+), 246 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:58:42 (50kb-written)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.6Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13837 insertions(+), 240 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 00:59:13 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13848 insertions(+), 240 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:00:10 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 13930 insertions(+), 240 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:01:38 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.6Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 14012 insertions(+), 240 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:01:50 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.6Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 14094 insertions(+), 240 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:04:35 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 14186 insertions(+), 230 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:07:47 (50kb-written)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.6Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 14306 insertions(+), 228 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:08:13 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.6Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log student-tracking-tasks.md 
+_( 9 files changed, 14317 insertions(+), 228 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:09:54 (50kb-written)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.6Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log future_features.md student-tracking-tasks.md 
+_( 10 files changed, 14460 insertions(+), 333 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:11:26 (50kb-written)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.6Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log docs/archive/student-tracking/STUDENT_TRACKING_AUDIT.md docs/archive/student-tracking/student-tracking-agent-plan.md docs/archive/student-tracking/student-tracking-tasks.md docs/archive/student-tracking/student_tracking_backend_prd.md future_features.md 
+_( 13 files changed, 14473 insertions(+), 333 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:11:45 (session-end)
+_branch:_ `main` · _commit:_ `db482f1` · _ram:_ `8.6Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log docs/archive/student-tracking/STUDENT_TRACKING_AUDIT.md docs/archive/student-tracking/student-tracking-agent-plan.md docs/archive/student-tracking/student-tracking-tasks.md docs/archive/student-tracking/student_tracking_backend_prd.md future_features.md 
+_( 13 files changed, 14484 insertions(+), 333 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:13:11 (session-end)
+_branch:_ `main` · _commit:_ `ba06b38` · _ram:_ `8.5Gi/31Gi`
+
+**Uncommitted changes:** .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 5 files changed, 14243 insertions(+), 191 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:15:37 (session-end)
+_branch:_ `main` · _commit:_ `ba06b38` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 14382 insertions(+), 188 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:16:41 (session-end)
+_branch:_ `main` · _commit:_ `ba06b38` · _ram:_ `8.8Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log backups/dsat_dev_20260626_100001.dump backups/dsat_dev_20260626_120001.dump backups/dsat_dev_20260626_140001.dump backups/dsat_dev_20260626_160001.dump scripts/backup_db.sh 
+_( 13 files changed, 14552 insertions(+), 189 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-05 01:17:28 (session-end)
+_branch:_ `main` · _commit:_ `140fa72` · _ram:_ `8.7Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 7 files changed, 14703 insertions(+), 186 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-06 09:03:34 (session-end)
+_branch:_ `main` · _commit:_ `140fa72` · _ram:_ `9.4Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 7 files changed, 14843 insertions(+), 260 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-06 09:36:59 (session-end)
+_branch:_ `main` · _commit:_ `140fa72` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 7 files changed, 14853 insertions(+), 260 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 14:21:55 (session-end)
+_branch:_ `main` · _commit:_ `140fa72` · _ram:_ `9.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 573 insertions(+), 68643 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 15:50:13 (session-end)
+_branch:_ `main` · _commit:_ `140fa72` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 578 insertions(+), 68660 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 15:51:27 (session-end)
+_branch:_ `main` · _commit:_ `140fa72` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 588 insertions(+), 68660 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 16:29:25 (session-end)
+_branch:_ `main` · _commit:_ `140fa72` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 606 insertions(+), 68652 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 16:47:02 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 637 insertions(+), 68636 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 16:48:31 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 647 insertions(+), 68636 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 16:51:13 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 665 insertions(+), 68632 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 16:53:56 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 675 insertions(+), 68632 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 17:00:55 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 685 insertions(+), 68632 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 17:03:03 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 695 insertions(+), 68632 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 17:07:52 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 705 insertions(+), 68632 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 17:10:04 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 715 insertions(+), 68632 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 17:10:24 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 725 insertions(+), 68632 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 17:16:05 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 740 insertions(+), 68628 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 17:20:40 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 755 insertions(+), 68625 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-07 17:22:39 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 776 insertions(+), 68624 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-08 15:19:02 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 787 insertions(+), 68654 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-08 15:19:09 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 797 insertions(+), 68654 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-08 16:23:39 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `5.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 812 insertions(+), 68657 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-08 16:34:33 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `5.1Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 8 files changed, 822 insertions(+), 68657 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-08 16:35:18 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `5.2Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 9 files changed, 869 insertions(+), 68648 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-12 05:05:26 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `5.5Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 9 files changed, 971 insertions(+), 68661 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-12 09:45:58 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `5.7Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 9 files changed, 992 insertions(+), 68657 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 02:42:04 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.6Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 9 files changed, 1023 insertions(+), 68661 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 02:42:43 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.6Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh 
+_( 9 files changed, 1033 insertions(+), 68661 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 02:51:07 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.8Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/config.py backend/app/models/payload.py backend/app/routers/student_auth.py backend/pyproject.toml backups/backup.log start.sh 
+_( 13 files changed, 1148 insertions(+), 68639 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 02:52:03 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.8Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/auth.py backend/app/config.py backend/app/main.py backend/app/models/payload.py backend/app/routers/student_auth.py backend/pyproject.toml backups/backup.log start.sh 
+_( 15 files changed, 1297 insertions(+), 68622 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 02:55:00 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.8Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/auth.py backend/app/config.py backend/app/main.py backend/app/models/payload.py backend/app/routers/student_auth.py backend/pyproject.toml backups/backup.log start.sh 
+_( 15 files changed, 1376 insertions(+), 68611 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 02:59:45 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.8Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/auth.py backend/app/config.py backend/app/main.py backend/app/models/payload.py backend/app/routers/student_auth.py backend/pyproject.toml backups/backup.log start.sh 
+_( 15 files changed, 1444 insertions(+), 68604 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 03:00:19 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.7Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/auth.py backend/app/config.py backend/app/main.py backend/app/models/payload.py backend/app/routers/student_auth.py backend/pyproject.toml backups/backup.log start.sh 
+_( 15 files changed, 1470 insertions(+), 68600 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 03:02:46 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.7Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/auth.py backend/app/config.py backend/app/main.py backend/app/models/payload.py backend/app/routers/student_auth.py backend/pyproject.toml backups/backup.log start.sh 
+_( 15 files changed, 1480 insertions(+), 68600 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 03:04:32 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.7Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/auth.py backend/app/config.py backend/app/main.py backend/app/models/payload.py backend/app/routers/student_auth.py backend/pyproject.toml backups/backup.log start.sh 
+_( 15 files changed, 1490 insertions(+), 68600 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md TASK_OAUTH.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
+
+---
+
+## Session snapshot — 2026-07-13 03:17:26 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.7Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx CHANGELOG.md backend/app/auth.py 
+_( 27 files changed, 1657 insertions(+), 68679 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts APP/STUDENT_APP_REDUX/src/auth/useGoogleScript.ts 
+
+---
+
+## Session snapshot — 2026-07-13 03:27:29 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.7Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 33 files changed, 1831 insertions(+), 68668 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 03:27:48 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.7Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 34 files changed, 1877 insertions(+), 68669 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 03:28:29 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.7Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx 
+_( 34 files changed, 1948 insertions(+), 68669 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 03:31:02 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `4.7Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1991 insertions(+), 68667 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 08:47:19 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1848 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 08:49:01 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `9.4Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1858 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 09:07:05 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1875 insertions(+), 68742 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 09:26:19 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1888 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 09:26:51 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1898 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 09:29:17 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1913 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 09:31:53 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1923 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 10:18:38 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1950 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 10:25:01 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1960 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 10:26:15 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1970 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 10:30:24 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1980 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 10:33:14 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 1995 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 10:34:58 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 2005 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 11:00:50 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 2015 insertions(+), 68746 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 11:17:34 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 2050 insertions(+), 68721 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 11:17:46 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 2060 insertions(+), 68721 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 11:28:45 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 2070 insertions(+), 68721 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 11:33:12 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 2080 insertions(+), 68721 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 12:06:26 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 2086 insertions(+), 68740 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 13:01:51 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx 
+_( 35 files changed, 2112 insertions(+), 68721 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx APP/STUDENT_APP_REDUX/src/auth/authStore.ts 
+
+---
+
+## Session snapshot — 2026-07-13 13:19:41 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/.env.example APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts 
+_( 39 files changed, 2428 insertions(+), 68681 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/ADMIN_APP/src/auth/AuthContext.tsx APP/ADMIN_APP/src/auth/RequireAdmin.tsx APP/ADMIN_APP/src/auth/authStore.ts APP/ADMIN_APP/src/auth/google.d.ts 
+
+---
+
+## Session snapshot — 2026-07-13 13:43:03 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/.env.example APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts 
+_( 41 files changed, 2457 insertions(+), 68773 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/ADMIN_APP/src/auth/AuthContext.tsx APP/ADMIN_APP/src/auth/RequireAdmin.tsx APP/ADMIN_APP/src/auth/authStore.ts APP/ADMIN_APP/src/auth/google.d.ts 
+
+---
+
+## Session snapshot — 2026-07-13 13:43:52 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/.env.example APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts 
+_( 41 files changed, 2481 insertions(+), 68762 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/ADMIN_APP/src/auth/AuthContext.tsx APP/ADMIN_APP/src/auth/RequireAdmin.tsx APP/ADMIN_APP/src/auth/authStore.ts APP/ADMIN_APP/src/auth/google.d.ts 
+
+---
+
+## Session snapshot — 2026-07-13 13:51:25 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `7.9Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/.env.example APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts 
+_( 41 files changed, 2499 insertions(+), 68752 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/ADMIN_APP/src/auth/AuthContext.tsx APP/ADMIN_APP/src/auth/RequireAdmin.tsx APP/ADMIN_APP/src/auth/authStore.ts APP/ADMIN_APP/src/auth/google.d.ts 
+
+---
+
+## Session snapshot — 2026-07-13 13:52:04 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `7.9Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/.env.example APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts 
+_( 41 files changed, 2509 insertions(+), 68752 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/ADMIN_APP/src/auth/AuthContext.tsx APP/ADMIN_APP/src/auth/RequireAdmin.tsx APP/ADMIN_APP/src/auth/authStore.ts APP/ADMIN_APP/src/auth/google.d.ts 
+
+---
+
+## Session snapshot — 2026-07-13 13:54:35 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/.env.example APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx 
+_( 42 files changed, 2597 insertions(+), 68748 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/ADMIN_APP/src/auth/AuthContext.tsx APP/ADMIN_APP/src/auth/RequireAdmin.tsx APP/ADMIN_APP/src/auth/authStore.ts APP/ADMIN_APP/src/auth/google.d.ts 
+
+---
+
+## Session snapshot — 2026-07-13 13:54:37 (50kb-written)
+_branch:_ `oauth_feature` · _commit:_ `ffe255e` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** .scratch/oauth-login/PRD.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/.env.example APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/UserManagement.tsx APP/STUDENT_APP_REDUX/.env.example APP/STUDENT_APP_REDUX/src/App.tsx APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticDetail.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticHistory.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx 
+_( 43 files changed, 2624 insertions(+), 68743 deletions(-))_
+
+**Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md APP/ADMIN_APP/src/auth/AuthContext.tsx APP/ADMIN_APP/src/auth/RequireAdmin.tsx APP/ADMIN_APP/src/auth/authStore.ts APP/ADMIN_APP/src/auth/google.d.ts 
 
 ---

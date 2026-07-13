@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { adminApi } from '../api/client'
+import { adminApi, type CreateUserPayload } from '../api/client'
 import type { User } from '../types'
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
@@ -17,7 +17,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const mutation = useMutation({
-    mutationFn: (data: any) => adminApi.createUser(data),
+    mutationFn: (data: CreateUserPayload) => adminApi.createUser(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['users'] })
       onClose()

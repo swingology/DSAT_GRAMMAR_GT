@@ -7,6 +7,7 @@ import type {
   SyntaxAnatomyKey,
 } from '../types/grammar'
 import { api } from '../api/client'
+import { getUserToken } from '../auth/authStore'
 
 
 export function useGrammarSession({ limit = 10 }: { limit?: number } = {}) {
@@ -264,13 +265,12 @@ export function useGrammarSession({ limit = 10 }: { limit?: number } = {}) {
     // Optimistically mark the answer selected; await submit for correctness
     setState((prev) => ({ ...prev, selectedAnswer: optionId }))
 
-    const USER_TOKEN = (import.meta as any).env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token') || ''
     const selectedOption = (q.options as any[])?.find((o: any) => o.label === optionId)
     try {
       const result = await api.submitAnswer({
         question_id: q.id,
         selected_option_label: optionId,
-        user_token: USER_TOKEN,
+        user_token: getUserToken(),
         missed_grammar_focus_key: q.grammar_focus_key,
         missed_syntactic_trap_key: selectedOption?.distractor_type_key ?? undefined,
       })
