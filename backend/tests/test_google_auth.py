@@ -112,6 +112,53 @@ def test_google_login_succeeds_for_registered_active_user(monkeypatch):
     assert client._fake_db.committed
 
 
+def test_refresh_tokens_are_unique_per_minting():
+    """Two refresh tokens minted back-to-back for the same user must differ.
+
+    Regression guard for the missing-`jti` bug: with only `{sub, type, exp}` and
+    1-second `exp` granularity, two mintings in the same wall-clock second
+    produced byte-identical tokens, which defeated refresh-token rotation.
+    """
+    user = _FakeUser()
+    a = create_refresh_token(user.id)
+    b = create_refresh_token(user.id)
+    assert a != b, "refresh tokens must carry a unique jti, not just exp"
+
+
+def test_refresh_rotates_and_invalidates_old_token(monkeypatch):
+    """A used refresh token must not remain valid after rotation.
+
+    Drives the same-second rotation path that the missing-`jti` bug broke: the
+    old and new tokens used to collide, so the old one was never invalidated.
+    """
+    user = _FakeUser(email="student@example.com", role="student")
+    _fake_verifier(monkeypatch, claims={"email": "student@example.com", "email_verified": True})
+    client = _client(user)
+
+    # Prime the user with a refresh token via login.
+    r0 = client.post("/api/auth/google", json={"credential": "fake-credential"})
+    old_refresh = r0.json()["refresh_token"]
+
+    # Rotate immediately (no sleep — the regression case is sub-second).
+    r1 = client.post(
+        "/api/auth/refresh",
+        json={"refresh_token": old_refresh},
+        headers={"Authorization": f"Bearer {r0.json()['access_token']}"},
+    )
+    assert r1.status_code == 200
+    new_refresh = r1.json()["refresh_token"]
+    assert new_refresh != old_refresh, "rotation must issue a fresh token"
+
+    # The old token is now invalid.
+    r2 = client.post(
+        "/api/auth/refresh",
+        json={"refresh_token": old_refresh},
+        headers={"Authorization": f"Bearer {r0.json()['access_token']}"},
+    )
+    assert r2.status_code == 401
+    assert "invalidated" in r2.json()["detail"].lower()
+
+
 def test_google_login_rejects_unknown_email(monkeypatch):
     _fake_verifier(monkeypatch, claims={"email": "stranger@example.com", "email_verified": True})
 

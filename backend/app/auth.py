@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 
@@ -64,8 +65,8 @@ ALGORITHM = "HS256"
 def _create_token(data: dict, expires_delta: timedelta) -> str:
     settings = get_settings()
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + expires_delta
-    to_encode.update({"exp": expire})
+    now = datetime.now(timezone.utc)
+    to_encode.update({"exp": now + expires_delta, "iat": now})
     return jwt.encode(to_encode, settings.jwt_secret_key, algorithm=ALGORITHM)
 
 
@@ -79,8 +80,13 @@ def create_access_token(user_id: int, role: str) -> str:
 
 def create_refresh_token(user_id: int) -> str:
     settings = get_settings()
+    # jti guarantees every minting is unique even when two refresh tokens are
+    # issued for the same user within the same wall-clock second. Without it,
+    # refresh-token rotation is defeated: the "new" token can be byte-identical
+    # to the old one, so the old one is never invalidated. exp alone has only
+    # 1-second granularity.
     return _create_token(
-        {"sub": str(user_id), "type": "refresh"},
+        {"sub": str(user_id), "type": "refresh", "jti": secrets.token_hex(16)},
         timedelta(days=settings.refresh_token_expire_days),
     )
 

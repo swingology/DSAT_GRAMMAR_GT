@@ -137,8 +137,9 @@ because `admin_required` checks Bearer first.
 
 ## Phase 4 · Live QA
 
-- [ ] O-18 · Full pass on dev stack: sign-in, guarded routes, silent refresh, logout,
-  unknown-email rejection, admin role rejection — both apps
+- [x] O-18 · Full pass on dev stack: sign-in, guarded routes, silent refresh, logout,
+  unknown-email rejection, admin role rejection — both apps (hermetic e2e
+  `e2e/oauth-live.mjs`, 9/9 green, 2026-07-13)
 - [ ] O-19 · QA from a tailnet device via `https://jb-2410.tail0cecc1.ts.net:8443`
   (note: that port currently proxies to the **admin** app, 5174 — align `tailscale serve`
   mapping with whichever app should face students before this task)

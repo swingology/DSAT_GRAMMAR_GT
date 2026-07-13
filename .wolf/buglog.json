@@ -6470,5 +6470,144 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-06-26"
+  },
+  {
+    "id": "bug-773",
+    "timestamp": "2026-07-03",
+    "error_message": "GET /admin/tests 500: asyncpg InvalidTextRepresentationError - invalid input value for enum practice_status_enum: \"approved\"",
+    "file": "backend/app/routers/admin.py",
+    "root_cause": "list_tests approved_count case() filtered practice_status IN ('active','approved'), but practice_status_enum only has draft/active/retired/rejected; postgres rejects the cast at query time",
+    "fix": "changed filter to practice_status == 'active', matching the approved-count convention used elsewhere in admin.py (lines ~1886, ~2180)",
+    "tags": [
+      "backend",
+      "admin-dashboard",
+      "enum",
+      "sqlalchemy",
+      "practice_status"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-03"
+  },
+  {
+    "id": "bug-779",
+    "timestamp": "2026-07-13",
+    "error_message": "All /api/auth/* endpoints returned 404 \u2014 student login, refresh, logout, me were unreachable",
+    "file": "backend/app/main.py",
+    "root_cause": "the student_auth router was fully implemented but never passed to app.include_router(), so the entire auth surface was dead code",
+    "fix": "imported student_auth in the routers import list and added app.include_router(student_auth.router); verified GET /api/auth/me now returns 401 not 404",
+    "tags": [
+      "auth",
+      "router",
+      "fastapi",
+      "oauth",
+      "dead-code"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-13"
+  },
+  {
+    "id": "bug-780",
+    "timestamp": "2026-07-13",
+    "error_message": "ImportError: The requests library is not installed from please install the requests package to use the requests transport",
+    "file": "backend/pyproject.toml",
+    "root_cause": "declared google-auth>=2.35 without the [requests] extra; google.auth.transport.requests hard-requires the requests package, which is not otherwise a backend dependency (backend uses httpx)",
+    "fix": "changed the dependency to google-auth[requests]>=2.35 and installed it into backend/.venv-jb via `uv pip install --python ./.venv-jb/bin/python` (the venv has no pip)",
+    "tags": [
+      "dependencies",
+      "google-auth",
+      "oauth",
+      "import-error",
+      "uv"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-13"
+  },
+  {
+    "id": "bug-781",
+    "timestamp": "2026-07-13",
+    "error_message": "Segmentation fault (core dumped) \u2014 `npx vitest run` in APP/STUDENT_APP_REDUX exits before running a single test",
+    "file": "APP/STUDENT_APP_REDUX/vitest.config.ts",
+    "root_cause": "Vite dependency (re-)optimization crashes vitest's default worker-thread pool on this Linux host. Any cold cache triggers it \u2014 adding a new source directory (src/auth/) invalidates the cache, as does rm -rf node_modules/.vite, which reproduces the segfault on a pre-existing passing test file. vite.config.ts already pins optimizeDeps.bundler:'esbuild' for the same Rolldown/WASM reason, but vitest.config.ts never got the equivalent.",
+    "fix": "set pool: 'forks' in vitest.config.ts. NOTE: --poolOptions.forks.singleFork=true is NOT a valid alternative \u2014 a single shared process leaks module/DOM state across test files (87 failures).",
+    "tags": [
+      "vitest",
+      "vite",
+      "segfault",
+      "linux",
+      "wasm",
+      "rolldown",
+      "test-runner",
+      "student-app"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-13"
+  },
+  {
+    "id": "bug-782",
+    "timestamp": "2026-07-13",
+    "error_message": "Student app sent the user_token UUID in the Authorization: Bearer header, where the backend expects a JWT",
+    "file": "APP/STUDENT_APP_REDUX/src/api/client.ts",
+    "root_cause": "client.ts set `Bearer <user_token>` from VITE_TEST_USER_TOKEN/localStorage. get_current_user decodes a JWT, so that header was never usable; identity actually travelled in request bodies and query params.",
+    "fix": "Bearer now carries the real JWT access token from the OAuth session (authStore.getAccessToken()); user_token is sourced from GET /api/auth/me and still passed in bodies/params.",
+    "tags": [
+      "auth",
+      "oauth",
+      "jwt",
+      "bearer",
+      "student-app"
+    ],
+    "related_bugs": [
+      "bug-783"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-13"
+  },
+  {
+    "id": "bug-783",
+    "timestamp": "2026-07-13",
+    "error_message": "user_token read into module-scope consts in 8 files \u2014 evaluated at import time, before a login can exist",
+    "file": "APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts",
+    "root_cause": "`const USER_TOKEN = import.meta.env.VITE_TEST_USER_TOKEN || localStorage.getItem('user_token')` at module scope in useDashboardData, useGrammarSession, DiagnosticPage, DiagnosticDetailPage, PracticeTestPage, TestModeTab, DiagnosticTab, DiagnosticDetail, DiagnosticHistory. Module scope evaluates once at import, so a token obtained later at login is never picked up. Swapping only the right-hand side to a getter preserves the bug.",
+    "fix": "deleted the consts and called getUserToken() at each use site (render/fetch time). getUserToken() prefers the signed-in profile, then falls back to VITE_TEST_USER_TOKEN then localStorage so legacy/scripted use keeps working.",
+    "tags": [
+      "auth",
+      "oauth",
+      "user-token",
+      "module-scope",
+      "import-time",
+      "student-app"
+    ],
+    "related_bugs": [
+      "bug-782"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-13"
+  },
+  {
+    "id": "bug-784",
+    "timestamp": "2026-07-13T15:05:00-07:00",
+    "error_message": "OAuth Phase 4 hermetic e2e (e2e/oauth-live.mjs) returned 0/9: scenarios crashed with 'Cannot read properties of undefined (reading newContext)', then '#e2e-gis-button' never appeared (MIME mismatch), then 'No DSAT account' / 'Sign out' selectors timed out, then student dashboard rendered empty #root after sign-in.",
+    "file": "e2e/oauth-live.mjs",
+    "root_cause": "Multiple harness bugs, not app bugs: (1) scenario fns declared a ctxFactory param but SCENARIOS called them without forwarding the launched browser; (2) page.route('**/api/**') glob also matched dev-served /src/api/client.ts and fulfilled it with JSON, breaking the app module graph; (3) Playwright text=\"...\" (quoted) is an EXACT match, so fragment selectors like 'No DSAT account' never matched the full backend sentence; (4) student UserMenu shows username (email is only a title attr) but harness asserted email; (5) TrapSusceptibilityDashboard reads data.most_susceptible_traps.length with no null guard, so the catch-all [] response threw TypeError and unmounted the whole dashboard tree (no error boundary), hiding UserMenu's Sign out.",
+    "fix": "(1) wrap each SCENARIOS entry to forward browser as last arg; (2) in installRoutes, route.continue() any request whose pathname has a file extension so source modules reach the dev server; (3) add visibleText/hasText helpers using getByText(exact:false); (4) give STUDENT_PROFILE a username and assert identityMarker=profile.username||profile.email; (5) special-case /api/student/trap-susceptibility to return {total_questions_attempted:0,most_susceptible_traps:[]}. Result: 9/9 green.",
+    "tags": [
+      "oauth",
+      "e2e",
+      "playwright",
+      "harness",
+      "phase4",
+      "student-app",
+      "admin-app"
+    ],
+    "related_bugs": [
+      "bug-777",
+      "bug-778"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-13"
   }
 ]

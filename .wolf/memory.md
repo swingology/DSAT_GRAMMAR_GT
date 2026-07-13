@@ -1,6 +1,7 @@
 # Memory
 
 > Chronological action log. Hooks and AI append to this file automatically.
+| 11:16 | Updated Claude Code statusline: right side now shows repo name (from git remote), branch + git status, quota usage, context usage, and quota reset countdown; left side shows active model. Changed final printf from %s to %b so ANSI colors and the branch icon render. | ~/.claude/statusline-command.sh | success (tested with sample JSON) | ~200 |
 | 15:56 | Ingestion test for Test_4_digital_sec01_mod01 — status=needs_review, extracted 33, created 28 (5 blocked by syntactic_trap_key=None for verb_form questions). Logged bug-768, DEBUG_LOG.md. | DEBUG_LOG.md, .wolf/buglog.json | needs_review (5 questions unresolved) | ~300 |
 | 10:24 | Grammar nav: fetch batch of 50 questions; added nextQuestion/prevQuestion/currentIndex/totalQuestions/hasPrev/hasNext to useGrammarSession; added Prev/Next buttons + "N / total" counter to QuestionSection; added progress counter to Header; CSS for .question-nav/.nav-btn/.question-counter; tsc clean. | useGrammarSession.ts, QuestionSection.tsx, Header.tsx, GrammarPractice.tsx, GrammarPractice.css | success | ~800 |
 | 15:31 | Phase 2 SR tests: 23 backend tests in test_spaced_repetition.py (all pass) — 12 SM-2 algorithm unit tests + 11 endpoint tests for /review /due /progress; 8 frontend tests in SpacedRepetitionWidget.test.tsx (all pass) — loading/empty/due-count/caught-up/tiers/list/button/navigate. Key fixes: used plain _FakeSR class instead of SQLAlchemy.__new__ (descriptor init fails); capped ef_cap test iterations to prevent date overflow; used nvm 22.12.0 for WASM crash avoidance. | backend/tests/test_spaced_repetition.py, APP/STUDENT_APP_REDUX/src/components/__tests__/SpacedRepetitionWidget.test.tsx | 31/31 pass | ~2k |
@@ -4870,3 +4871,306 @@
 | 01:11 | Edited future_features.md | "student-tracking-tasks.md" → "docs/archive/student-trac" | ~56 |
 | 01:35 | Archived 4 student-tracking docs to docs/archive/student-tracking/ (git mv, history preserved); moved TASK-014/016/017 to future_features.md, updated anatomy.md | student-tracking-tasks.md, student-tracking-agent-plan.md, STUDENT_TRACKING_AUDIT.md, student_tracking_backend_prd.md, future_features.md, .wolf/anatomy.md | clean, no dangling references except historical CHANGELOG/memory logs | ~2200 |
 | 01:11 | Session end: 11 writes across 4 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md, future_features.md) | 9 reads | ~31515 tok |
+| 01:13 | Session end: 11 writes across 4 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md, future_features.md) | 9 reads | ~31515 tok |
+| 01:15 | Session end: 11 writes across 4 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md, future_features.md) | 10 reads | ~31799 tok |
+| 01:16 | Edited .gitignore | 3→5 lines | ~36 |
+| 01:16 | Edited scripts/backup_db.sh | 2→5 lines | ~96 |
+| 01:16 | Session end: 13 writes across 6 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md, future_features.md, .gitignore) | 11 reads | ~32011 tok |
+| 01:17 | Session end: 13 writes across 6 files (student-tracking-tasks.md, project_gstack-skills-corrupted.md, MEMORY.md, future_features.md, .gitignore) | 11 reads | ~32011 tok |
+
+## Session: 2026-07-06 09:02
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-06 15:13
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-07 14:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-07 14:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-07 14:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-07 14:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:21 | Edited start.sh | modified ensure_student_tls() | ~291 |
+| 14:21 | Edited start.sh | expanded (+6 lines) | ~240 |
+| 14:21 | Edited start.sh | modified Tailscale() | ~70 |
+
+## Session: 2026-07-07 14:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:41 | Created .scratch/oauth-login/PRD.md | — | ~3313 |
+| 16:46 | Wrote OAuth login PRD, committed on new branch oauth_feature, pushed | .scratch/oauth-login/PRD.md | success | ~4k |
+| 16:46 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | — | ~348 |
+| 16:46 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 3→4 lines | ~70 |
+| 16:50 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/1c372c51-1725-41d8-8eb2-8db3c8e74e07/scratchpad/gsi-origin-test/index.html | — | ~313 |
+| 17:14 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/1c372c51-1725-41d8-8eb2-8db3c8e74e07/scratchpad/gsi-origin-test/run-test.mjs | — | ~713 |
+| 17:20 | Verified Google OAuth client: localhost:5173 + ts.net:8443 origins approved (headless chrome test) | scratchpad gsi-origin-test | success | ~3k |
+| 17:20 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | modified reality() | ~248 |
+| 17:22 | Created TASK_OAUTH.md | — | ~1320 |
+| 17:22 | Created TASK_OAUTH.md with verified Phase 0 + implementation phases | TASK_OAUTH.md | success | ~1.5k |
+
+## Session: 2026-07-08 14:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-08 15:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:35 | Edited .scratch/oauth-login/PRD.md | expanded (+33 lines) | ~565 |
+
+## Session: 2026-07-09 22:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-10 07:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-12 05:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-12 05:08
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 02:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 02:46 | Edited backend/app/config.py | expanded (+10 lines) | ~182 |
+| 02:46 | Edited backend/pyproject.toml | 4→5 lines | ~30 |
+
+## Session: 2026-07-13 02:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 02:50 | Created backend/app/google_oauth.py | — | ~509 |
+| 02:50 | Edited backend/app/models/payload.py | modified GoogleLogin() | ~93 |
+| 02:51 | Edited backend/app/routers/student_auth.py | modified google_login() | ~587 |
+| 02:51 | Edited backend/app/routers/student_auth.py | added 1 import(s) | ~181 |
+| 02:51 | Edited backend/app/routers/student_auth.py | 7→8 lines | ~62 |
+| 02:51 | Edited backend/app/auth.py | modified admin_required() | ~634 |
+| 02:51 | Edited backend/app/main.py | inline fix | ~31 |
+| 02:51 | Edited backend/app/main.py | 2→3 lines | ~32 |
+| 02:51 | Edited backend/app/main.py | modified warning() | ~120 |
+| 02:52 | Edited backend/app/main.py | modified _seed_admin_user() | ~472 |
+| 02:52 | Edited backend/app/main.py | added 1 import(s) | ~24 |
+| 02:53 | Created backend/tests/test_google_auth.py | — | ~2539 |
+| 02:53 | Edited backend/pyproject.toml | "google-auth>=2.35" → "google-auth[requests]>=2." | ~10 |
+| 02:54 | Edited TASK_OAUTH.md | 23→25 lines | ~465 |
+| 02:55 | Edited CHANGELOG.md | modified so() | ~607 |
+| 02:58 | Edited backend/tests/test_google_auth.py | modified test_admin_required_still_403s_bad_key() | ~678 |
+| 02:59 | Edited backend/tests/test_google_auth.py | 11→7 lines | ~117 |
+| 02:59 | Edited TASK_OAUTH.md | passing() → seed() | ~72 |
+| 02:59 | Edited CHANGELOG.md | 1→2 lines | ~41 |
+| 02:59 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | "Google OAuth login featur" → "Google OAuth login for st" | ~51 |
+| 03:00 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | modified OAuth() | ~393 |
+
+## Session: 2026-07-13 03:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 03:13 | Created APP/STUDENT_APP_REDUX/src/auth/authStore.ts | — | ~793 |
+| 03:14 | Edited APP/STUDENT_APP_REDUX/src/api/client.ts | added 6 condition(s) | ~868 |
+| 03:14 | Edited APP/STUDENT_APP_REDUX/src/api/client.ts | expanded (+12 lines) | ~127 |
+| 03:14 | Created APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx | — | ~879 |
+| 03:14 | Created APP/STUDENT_APP_REDUX/src/auth/useGoogleScript.ts | — | ~418 |
+| 03:15 | Created APP/STUDENT_APP_REDUX/src/pages/LoginPage.tsx | — | ~801 |
+| 03:15 | Created APP/STUDENT_APP_REDUX/src/auth/RequireAuth.tsx | — | ~254 |
+| 03:15 | Created APP/STUDENT_APP_REDUX/src/components/UserMenu.tsx | — | ~259 |
+| 03:15 | Created APP/STUDENT_APP_REDUX/src/App.tsx | — | ~611 |
+| 03:16 | Edited APP/STUDENT_APP_REDUX/src/pages/DiagnosticPage.tsx | modified DiagnosticPage() | ~24 |
+| 03:16 | Edited APP/STUDENT_APP_REDUX/src/pages/DiagnosticDetailPage.tsx | modified DiagnosticDetailPage() | ~26 |
+| 03:16 | Edited APP/STUDENT_APP_REDUX/src/pages/PracticeTestPage.tsx | 5→4 lines | ~35 |
+| 03:16 | Edited APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx | added 1 import(s) | ~55 |
+| 03:16 | Edited APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx | modified AuthProvider() | ~82 |
+| 03:17 | Edited APP/STUDENT_APP_REDUX/src/auth/AuthContext.tsx | 5→9 lines | ~85 |
+| 03:17 | Edited APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx | 4→4 lines | ~62 |
+| 03:17 | Edited APP/STUDENT_APP_REDUX/src/pages/DashboardPage.tsx | added 1 import(s) | ~42 |
+| 03:17 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx | added 1 import(s) | ~32 |
+| 03:17 | Edited APP/STUDENT_APP_REDUX/src/components/__tests__/DashboardPage.test.tsx | 6→8 lines | ~54 |
+| 03:18 | Created APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx | — | ~1896 |
+| 03:19 | Created APP/STUDENT_APP_REDUX/src/auth/__tests__/probe.test.ts | — | ~73 |
+| 03:19 | Created APP/STUDENT_APP_REDUX/src/auth/__tests__/probe.test.ts | — | ~41 |
+| 03:20 | Edited APP/STUDENT_APP_REDUX/vitest.config.ts | 11→15 lines | ~141 |
+| 03:24 | Edited APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx | 27→28 lines | ~288 |
+| 03:25 | Created APP/STUDENT_APP_REDUX/src/auth/__tests__/probe.test.ts | — | ~248 |
+| 03:25 | Edited APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx | stubEnv() → clearSession() | ~404 |
+| 03:27 | Edited TASK_OAUTH.md | modified route() | ~743 |
+| 03:27 | Edited CHANGELOG.md | expanded (+54 lines) | ~785 |
+| 03:27 | Edited DEBUG_LOG.md | modified 2() | ~813 |
+| 03:30 | Edited APP/STUDENT_APP_REDUX/src/api/client.ts | 1→4 lines | ~79 |
+| 03:30 | Edited APP/STUDENT_APP_REDUX/src/api/client.ts | modified if() | ~172 |
+| 03:31 | Edited APP/STUDENT_APP_REDUX/src/pages/LoginPage.tsx | added optional chaining | ~103 |
+| 03:31 | Edited APP/STUDENT_APP_REDUX/src/pages/LoginPage.tsx | 15→19 lines | ~263 |
+| 03:31 | Edited APP/STUDENT_APP_REDUX/src/auth/__tests__/auth.test.tsx | expanded (+56 lines) | ~633 |
+
+## Session: 2026-07-13 07:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 08:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 08:56
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 09:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 09:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 09:57
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 10:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 10:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 10:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 11:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:15 | Created ../.claude/statusline-command.sh | — | ~1292 |
+| 11:16 | Edited ../.claude/statusline-command.sh | 9→9 lines | ~57 |
+
+## Session: 2026-07-13 11:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 13:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:00 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | "Google OAuth login for st" → "Google OAuth login for st" | ~53 |
+| 13:01 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | modified OAuth() | ~395 |
+| 13:01 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | inline fix | ~55 |
+| 13:16 | Created APP/ADMIN_APP/src/auth/authStore.ts | — | ~687 |
+| 13:16 | Created APP/ADMIN_APP/src/auth/useGoogleScript.ts | — | ~418 |
+| 13:16 | Created APP/ADMIN_APP/src/api/client.ts | — | ~2131 |
+| 13:16 | Created APP/ADMIN_APP/src/auth/AuthContext.tsx | — | ~959 |
+| 13:17 | Created APP/ADMIN_APP/src/auth/RequireAdmin.tsx | — | ~577 |
+| 13:17 | Created APP/ADMIN_APP/src/pages/LoginPage.tsx | — | ~839 |
+| 13:17 | Created APP/ADMIN_APP/src/App.tsx | — | ~476 |
+| 13:17 | Edited APP/ADMIN_APP/src/components/Layout.tsx | added 1 import(s) | ~41 |
+| 13:17 | Edited APP/ADMIN_APP/src/components/Layout.tsx | CSS: replace | ~73 |
+| 13:17 | Edited APP/ADMIN_APP/src/components/Layout.tsx | CSS: sm, hover, hover | ~180 |
+| 13:19 | Created APP/ADMIN_APP/src/auth/google.d.ts | — | ~118 |
+| 13:19 | Edited APP/ADMIN_APP/src/auth/useGoogleScript.ts | 2→1 lines | ~24 |
+| 13:19 | Edited APP/ADMIN_APP/src/auth/useGoogleScript.ts | inline fix | ~11 |
+| 13:19 | Edited APP/ADMIN_APP/src/auth/AuthContext.tsx | 3→3 lines | ~21 |
+| 13:19 | Edited APP/ADMIN_APP/src/auth/AuthContext.tsx | modified useAuth() | ~49 |
+| 13:19 | Edited APP/ADMIN_APP/src/pages/LoginPage.tsx | added optional chaining | ~49 |
+| 13:19 | Edited APP/ADMIN_APP/src/pages/LoginPage.tsx | modified catch() | ~106 |
+| 13:19 | Edited APP/ADMIN_APP/src/api/client.ts | inline fix | ~17 |
+| 13:19 | Edited APP/ADMIN_APP/src/api/client.ts | 8→8 lines | ~100 |
+| 13:27 | Edited docker-compose.yml | 2→4 lines | ~87 |
+
+## Session: 2026-07-13 13:29
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 13:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 13:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:50 | Edited APP/ADMIN_APP/src/api/client.ts | 7→7 lines | ~65 |
+| 13:51 | Edited TASK_OAUTH.md | modified gate() | ~588 |
+| 13:54 | Edited APP/ADMIN_APP/src/api/client.ts | added 1 condition(s) | ~288 |
+| 13:54 | Edited APP/ADMIN_APP/src/api/client.ts | inline fix | ~7 |
+| 13:54 | Edited APP/ADMIN_APP/src/api/client.ts | inline fix | ~8 |
+| 13:54 | Edited APP/ADMIN_APP/src/api/client.ts | inline fix | ~32 |
+| 13:54 | Edited APP/ADMIN_APP/src/api/client.ts | 2→2 lines | ~42 |
+| 13:54 | Edited APP/ADMIN_APP/src/pages/UserManagement.tsx | inline fix | ~19 |
+| 13:54 | Edited APP/ADMIN_APP/src/pages/UserManagement.tsx | inline fix | ~21 |
+| 13:54 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | inline fix | ~17 |
+| 13:54 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | inline fix | ~20 |
+| 13:57 | Created ../../../tmp/oauth_commit_msg.txt | — | ~658 |
+| 14:10 | Edited DEBUG_LOG.md | modified High() | ~1044 |
+
+## Session: 2026-07-13 14:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:19 | Edited backend/app/auth.py | added 1 import(s) | ~29 |
+| 14:19 | Edited backend/app/auth.py | modified _create_token() | ~86 |
+| 14:19 | Edited backend/app/auth.py | modified create_refresh_token() | ~169 |
+| 14:20 | Edited backend/tests/test_google_auth.py | modified test_refresh_tokens_are_unique_per_minting() | ~605 |
+
+## Session: 2026-07-13 14:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-13 14:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:50 | Created e2e/oauth-live.mjs | — | ~2950 |
+
+## Session: 2026-07-13 14:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:55 | Edited e2e/oauth-live.mjs | 11→11 lines | ~207 |
+| 15:00 | Edited e2e/oauth-live.mjs | added 1 condition(s) | ~211 |
+| 15:03 | Edited e2e/oauth-live.mjs | 4→4 lines | ~42 |
+| 15:03 | Edited e2e/oauth-live.mjs | modified visible() | ~206 |
+| 15:03 | Edited e2e/oauth-live.mjs | modified guardedRedirect() | ~1116 |
+| 15:06 | Edited e2e/oauth-live.mjs | added 1 condition(s) | ~201 |
+| 15:12 | Edited TASK_OAUTH.md | 2→3 lines | ~55 |
+| 15:05 | OAuth Phase 4 O-18 hermetic e2e green (9/9) after fixing 5 harness bugs in e2e/oauth-live.mjs | TASK_OAUTH.md, e2e/oauth-live.mjs, .wolf/buglog.json | O-18 checked off; O-19 (tailnet QA) still open | ~12k |
