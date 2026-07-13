@@ -6609,5 +6609,25 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-07-13"
+  },
+  {
+    "id": "bug-785",
+    "timestamp": "2026-07-13",
+    "error_message": "Student app dashboard blanked (#root empty) after sign-in when /api/student/trap-susceptibility returned a non-conforming body ([] or missing most_susceptible_traps)",
+    "file": "APP/STUDENT_APP_REDUX/src/components/dashboard/TrapSusceptibilityDashboard.tsx",
+    "root_cause": "Component read data.most_susceptible_traps.length / data.total_questions_attempted without null-guarding; no error boundary above, so the thrown TypeError unmounted the whole dashboard tree including UserMenu's Sign-out",
+    "fix": "Guard: treat !data, !Array.isArray(data.most_susceptible_traps), or total===0 as the 'No trap data yet' empty state",
+    "tags": [
+      "react",
+      "null-guard",
+      "error-boundary",
+      "dashboard",
+      "oauth-4"
+    ],
+    "related_bugs": [
+      "bug-784"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-13"
   }
 ]

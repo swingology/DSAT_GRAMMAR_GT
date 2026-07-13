@@ -5174,3 +5174,12 @@
 | 15:06 | Edited e2e/oauth-live.mjs | added 1 condition(s) | ~201 |
 | 15:12 | Edited TASK_OAUTH.md | 2→3 lines | ~55 |
 | 15:05 | OAuth Phase 4 O-18 hermetic e2e green (9/9) after fixing 5 harness bugs in e2e/oauth-live.mjs | TASK_OAUTH.md, e2e/oauth-live.mjs, .wolf/buglog.json | O-18 checked off; O-19 (tailnet QA) still open | ~12k |
+| 15:18 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TrapSusceptibilityDashboard.tsx | CSS: it | ~198 |
+
+## Session: 2026-07-13 15:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:25 | Fixed TrapSusceptibilityDashboard null guard (bug-785) — non-conforming trap-susceptibility body no longer unmounts dashboard+Sign-out; committed 9d31894; e2e 9/9 still green | TrapSusceptibilityDashboard.tsx, .wolf/buglog.json | fixed+committed | ~6k |
+| 15:21 | Edited TASK_OAUTH.md | modified 13() | ~375 |
+| 15:45 | O-19 server-side plumbing verified — tailscale :8443 → 5174 = STUDENT app (not admin, prior note was wrong); live GIS loads w/ no origin error, /api/auth/me → 401 through tailnet proxy; manual real-Google sign-in from a tailnet device remains | TASK_OAUTH.md, .wolf/memory.md | verified+documented | ~5k |

@@ -141,5 +141,22 @@ because `admin_required` checks Bearer first.
   unknown-email rejection, admin role rejection — both apps (hermetic e2e
   `e2e/oauth-live.mjs`, 9/9 green, 2026-07-13)
 - [ ] O-19 · QA from a tailnet device via `https://jb-2410.tail0cecc1.ts.net:8443`
-  (note: that port currently proxies to the **admin** app, 5174 — align `tailscale serve`
-  mapping with whichever app should face students before this task)
+
+  **Server-side plumbing verified 2026-07-13 (no tailscale change needed):**
+  `tailscale serve` already maps `:8443 → localhost:5174`, and **5174 is the student
+  app** (`<title>Student App Redux</title>`), not the admin app. The earlier note here
+  was wrong — 5174 had been mislabeled "admin". Confirmed over the live tailnet URL:
+  - `GET https://…:8443/login` → student login page renders, `window.google.accounts.id`
+    present, **no GIS origin error** (origin `https://…:8443` was registered in O-00b)
+  - `GET https://…:8443/api/auth/me` → `401` (Vite `/api` proxy reaches the backend,
+    same status as a direct `localhost:8002` hit)
+  - `:8444 → localhost:5175` is a second admin-app instance; the student-facing port is
+    `:8443`.
+
+  **Remaining (manual, requires a real tailnet device + a registered Google account):**
+  on a phone/laptop on the tailnet, open `https://jb-2410.tail0cecc1.ts.net:8443`,
+  sign in with a Google account whose email is in the `users` table, and confirm the
+  dashboard loads + Sign-out works. Only the seeded admin (`jbyun76@gmail.com`) is
+  guaranteed present; a real **student** email must be inserted first (e.g.
+  `psql … -c "insert into users(email,role,is_active) values('<student@gmail>', 'student', true)"`)
+  or the sign-in will hit the generic "No DSAT account" 401.
