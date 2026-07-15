@@ -227,6 +227,45 @@ class TestDiagnosticStart:
 
             app.dependency_overrides[get_db] = _orig
 
+    def test_diagnostic_start_reports_empty_bank(self, client, monkeypatch):
+        """Blueprint diagnostics return a client-facing error when the bank is empty."""
+        from app.main import app
+        from app.database import get_db
+        from app.diagnostic.selector import DiagnosticBankExhaustedError
+        from app.routers import student as student_router
+
+        class _UserDB:
+            async def execute(self, _stmt):
+                return _UserResult()
+
+        async def _override():
+            yield _UserDB()
+
+        async def _exhausted(*_args, **_kwargs):
+            raise DiagnosticBankExhaustedError(
+                "Bank exhausted at slot 1 — not enough active questions"
+            )
+
+        monkeypatch.setattr(student_router, "assemble_diagnostic", _exhausted)
+        app.dependency_overrides[get_db] = _override
+        try:
+            resp = client.post(
+                "/api/diagnostic/start",
+                json={"user_token": USER_TOKEN, "diagnostic_type": "blueprint_v1"},
+                headers=AUTH,
+            )
+            assert resp.status_code == 409
+            assert "Not enough active questions" in resp.json()["detail"]
+        finally:
+            from tests.conftest import _MockSession
+
+            mock_db = _MockSession()
+
+            async def _orig():
+                yield mock_db
+
+            app.dependency_overrides[get_db] = _orig
+
 
 # ---------------------------------------------------------------------------
 # POST /api/diagnostic/{session_id}/submit

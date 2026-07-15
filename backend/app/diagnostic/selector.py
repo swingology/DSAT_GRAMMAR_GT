@@ -31,6 +31,10 @@ class AssembledDiagnostic:
     coverage_report: dict
 
 
+class DiagnosticBankExhaustedError(RuntimeError):
+    """Raised when the live question bank cannot fill a diagnostic blueprint."""
+
+
 async def _fetch_one_id(
     db: AsyncSession,
     *,
@@ -130,7 +134,7 @@ async def assemble_diagnostic(
             qid = await _fetch_one_id(db, stmt=stmt, exclude_ids=chosen_ids)
 
         if qid is None:
-            raise RuntimeError(
+            raise DiagnosticBankExhaustedError(
                 f"Bank exhausted at slot {slot.seq} — not enough active questions"
             )
 

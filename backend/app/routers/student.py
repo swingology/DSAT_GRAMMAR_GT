@@ -14,7 +14,7 @@ from uuid import UUID
 from app.config import get_settings
 from app.database import get_db
 from app.diagnostic.queries import derive_domain
-from app.diagnostic.selector import assemble_diagnostic
+from app.diagnostic.selector import DiagnosticBankExhaustedError, assemble_diagnostic
 from app.diagnostic.blueprint import BLUEPRINT_V1
 from app.auth import student_required, admin_or_student_required, student_jwt_required, admin_or_student_jwt_required
 from app.models.db import (
@@ -1691,7 +1691,16 @@ async def diagnostic_start(
     user = await _resolve_user_by_token(body.user_token, db)
 
     if body.diagnostic_type == "blueprint_v1":
-        assembled = await assemble_diagnostic(db, user_id=user.id, blueprint=BLUEPRINT_V1)
+        try:
+            assembled = await assemble_diagnostic(db, user_id=user.id, blueprint=BLUEPRINT_V1)
+        except DiagnosticBankExhaustedError as exc:
+            raise HTTPException(
+                status_code=409,
+                detail=(
+                    "Not enough active questions are available to start the diagnostic. "
+                    "Restore or reingest the question bank, then try again."
+                ),
+            ) from exc
 
         question_ids_ordered = [cq.question_id for cq in assembled.questions]
         session = DiagnosticSession(

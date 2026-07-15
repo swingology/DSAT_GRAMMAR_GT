@@ -12,6 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 ENV UV_LINK_MODE=copy
+# Keep uv-managed dependencies outside /app. In dev, docker-compose bind-mounts
+# ./backend over /app, so a project-local .venv would be hidden and recreated
+# inside the watched source tree on every start, causing reload churn.
+ENV UV_PROJECT_ENVIRONMENT=/opt/dsat-backend-venv
+ENV UV_CACHE_DIR=/tmp/uv-cache
 
 # Dependency layer: copy only the lock/manifest first so this layer (and its
 # cache) is only invalidated when dependencies actually change, not on every
