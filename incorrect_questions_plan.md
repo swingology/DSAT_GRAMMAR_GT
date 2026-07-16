@@ -3,8 +3,8 @@
 **Status:** Design approved 2026-07-16. Gap-review fixes added 2026-07-16. Second-pass
 review fixes (versioned-options join, `current_*` field mapping, `domain`/`difficulty`/`focus_key`
 column sources, dedup+pagination semantics, `diagnostic`-on-generic-endpoint 422) added
-2026-07-16. Phase 1 data model and submit tagging implemented and verified on branch
-`missed_question`; review APIs and frontend review page remain.
+2026-07-16. Phases 1 and 2 (data model, submit tagging, review APIs, and filter facets) implemented
+and verified on branch `missed_question`; frontend review hooks/page remain.
 
 **Implementation plan:** the phase-by-phase task breakdown (exact file paths, code, tests,
 commit steps) will live in `incorrect_questions_tasks.md`, following the same design/execution
@@ -93,7 +93,7 @@ Query params:
 | `domain` | `grammar` \| `reading` |
 | `focus_key` | concept filter |
 | `stem_type_key` | question-type filter |
-| `difficulty` | `easy` \| `medium` \| `hard` |
+| `difficulty` | exact attempt-time facet value returned by `/study/review/filters` (the current data includes values such as `low` and `medium`; do not hardcode a three-value enum) |
 | `content_origin` | comma-separated `official,unofficial,generated` |
 | `page`, `page_size` | pagination, default `page_size=20` |
 

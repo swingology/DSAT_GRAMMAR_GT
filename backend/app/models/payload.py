@@ -624,6 +624,58 @@ class MissedQuestionsResponse(BaseModel):
     total: int
 
 
+class ReviewQuestionOption(BaseModel):
+    label: str
+    text: str
+    is_correct: bool
+
+
+class ReviewQuestionItem(BaseModel):
+    question_id: str
+    passage_text: Optional[str] = None
+    paired_passage_text: Optional[str] = None
+    underlined_text: Optional[str] = None
+    question_text: str
+    options: List[ReviewQuestionOption]
+    correct_option_label: str
+    explanation: Optional[str] = None
+    user_answer: str
+    domain: Optional[str] = None
+    focus_key: Optional[str] = None
+    focus_key_source: Optional[str] = None
+    stem_type_key: Optional[str] = None
+    difficulty: Optional[str] = None
+    content_origin: str
+    source_test_name: Optional[str] = None
+    source_section_code: Optional[str] = None
+    source_module_code: Optional[str] = None
+    source_question_number: Optional[int] = None
+    source_type: str
+    source_types: List[str]
+    miss_count: int
+    last_missed_at: Optional[datetime] = None
+
+
+class ReviewQuestionsResponse(BaseModel):
+    items: List[ReviewQuestionItem]
+    total: int
+    page: int
+    page_size: int
+    has_more: bool
+
+
+class ReviewFiltersResponse(BaseModel):
+    source_types: List[str] = Field(default_factory=list)
+    source_test_names: List[str] = Field(default_factory=list)
+    source_section_codes: List[str] = Field(default_factory=list)
+    source_module_codes: List[str] = Field(default_factory=list)
+    domains: List[str] = Field(default_factory=list)
+    focus_keys: List[str] = Field(default_factory=list)
+    stem_type_keys: List[str] = Field(default_factory=list)
+    difficulties: List[str] = Field(default_factory=list)
+    content_origins: List[str] = Field(default_factory=list)
+
+
 class StudyRecommendationsRequest(BaseModel):
     user_token: str
 

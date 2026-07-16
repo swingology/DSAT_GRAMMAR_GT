@@ -176,6 +176,9 @@ tests bypassing that unrelated startup dependency pass. Dev DB remains verified 
 - `page` default `1`, minimum `1`
 - `page_size` default `20`, minimum `1`, maximum `100`
 
+`difficulty` is an exact attempt-time facet string returned by `/study/review/filters`; do not
+hardcode `easy|medium|hard`, because existing data also contains values such as `low`.
+
 **Response envelope:**
 
 ```python
@@ -285,18 +288,18 @@ includes all five persisted values, including `diagnostic` and `unknown`.
   three, the frontend can round-trip a `focus_key` value without the backend having to attribute it
   to a specific column on the `/review/filters` side.
 
-- [ ] Add Pydantic response models with the fields above.
-- [ ] Implement endpoint with auth via `student_required` + `user_token` query param (matches
+- [x] Add Pydantic response models with the fields above.
+- [x] Implement endpoint with auth via `student_required` + `user_token` query param (matches
       `/study/missed` at `student.py:1515`).
-- [ ] Build the filtered missed-row relation, deterministic `row_number()` latest-row relation,
+- [x] Build the filtered missed-row relation, deterministic `row_number()` latest-row relation,
       grouped stats (`miss_count`, sorted distinct `source_types`, `last_missed_at`), deduped total,
       and stable card pagination in that order. Pull latest `user_answer`/`source_type`/domain/
       difficulty/focus fields only from `rn = 1`.
-- [ ] Bulk-fetch `Question` + current-version `QuestionOption` (via `latest_version_id`) +
+- [x] Bulk-fetch `Question` + current-version `QuestionOption` (via `latest_version_id`) +
       `QuestionAnnotation` for the page's question_ids; assemble options/explanation per the
       source tables above.
-- [ ] Implement the `focus_key` OR-filter resolution and `content_origin` enum-aware filter.
-- [ ] Add tests for: auth, missing token, empty result, pagination + stable page boundaries,
+- [x] Implement the `focus_key` OR-filter resolution and `content_origin` enum-aware filter.
+- [x] Add tests for: auth, missing token, empty result, pagination + stable page boundaries,
       reverse-chron ordering, source/domain/focus/stem/difficulty/content/source-section filters,
       per-question dedup after filters, `source_types`, latest-miss `user_answer`, current-version
       options only (no stale/duplicate options from other versions), `total` = deduped count, and
@@ -306,7 +309,13 @@ includes all five persisted values, including `diagnostic` and `unknown`.
       `content_origin` query values (422), null-source rows behaving as `unknown`, correctness-field
       mismatch recovery, and an unresolvable correct answer returning a logged API error.
 
-**Handoff note:** Not started.
+**Handoff note:** Status=complete; owner=Codex/missed_question; base=2400c67; no commit yet.
+Implemented the filtered/ranked/grouped review query, deterministic pagination, current-version
+options, latest annotation explanations, correctness integrity handling, all documented filters,
+and response models. Focused Phase 2/model tests: 24 passed. Live PostgreSQL checks returned 200
+for unfiltered, diagnostic, unknown, page 2, and `difficulty=low` requests; invalid content origin
+and mixed `all` CSV requests returned 422. Implementation discovery: attempt data contains `low`,
+so difficulty now round-trips exact facet strings instead of a hardcoded three-value enum.
 
 ---
 
@@ -345,11 +354,14 @@ includes all five persisted values, including `diagnostic` and `unknown`.
   any facet value without per-value column attribution — so `focus_keys` can stay flat (no need to
   return which column each value came from).
 
-- [ ] Add response model.
-- [ ] Implement endpoint.
-- [ ] Add tests for student scoping, missed-only facets, `unknown`, and empty state.
+- [x] Add response model.
+- [x] Implement endpoint.
+- [x] Add tests for student scoping, missed-only facets, `unknown`, and empty state.
 
-**Handoff note:** Not started.
+**Handoff note:** Status=complete; owner=Codex/missed_question; base=2400c67; no commit yet.
+Implemented student-scoped missed-only aggregate facets with null-source `unknown` handling and a
+flat union of all focus-key columns. Covered scoping SQL, focus union, unknown, and empty facets in
+`backend/tests/test_study_review.py`; live responses verified source/content/domain/focus facets.
 
 ---
 

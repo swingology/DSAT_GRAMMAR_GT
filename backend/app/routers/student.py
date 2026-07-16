@@ -4,7 +4,7 @@ import math
 import uuid as _uuid_module
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
-from typing import Any, Optional, Tuple
+from typing import Any, Literal, Optional, Tuple
 
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy import select, func, and_, or_, text, case, cast, Date
@@ -37,6 +37,10 @@ from app.models.payload import (
     GenerationBatchRequest,
     MissedQuestionItem,
     MissedQuestionsResponse,
+    ReviewQuestionOption,
+    ReviewQuestionItem,
+    ReviewQuestionsResponse,
+    ReviewFiltersResponse,
     DiagnosticSessionStartRequest,
     DiagnosticSessionStartResponse,
     DiagnosticStartV1Request,
@@ -76,7 +80,7 @@ from app.models.payload import (
     TestSessionHistoryItem,
     TestSessionHistoryResponse,
 )
-from app.models.ontology import GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
+from app.models.ontology import CONTENT_ORIGINS, GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
 
 logger = logging.getLogger(__name__)
 
@@ -1607,6 +1611,396 @@ async def get_missed_questions(
         ))
 
     return MissedQuestionsResponse(user_id=user.id, items=items, total=len(items))
+
+
+_REVIEW_SOURCE_TYPES = {"diagnostic", "practice_test", "drill", "practice", "unknown"}
+
+
+def _parse_review_csv_filter(
+    raw_value: Optional[str],
+    *,
+    allowed: set[str],
+    field_name: str,
+) -> Optional[list[str]]:
+    if raw_value is None or not raw_value.strip():
+        return None
+
+    values = {part.strip().lower() for part in raw_value.split(",") if part.strip()}
+    if not values or values == {"all"}:
+        return None
+    if "all" in values:
+        raise HTTPException(
+            status_code=422,
+            detail=f"{field_name} cannot combine 'all' with concrete values",
+        )
+
+    invalid = values - allowed
+    if invalid:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Invalid {field_name}: {', '.join(sorted(invalid))}",
+        )
+    return sorted(values)
+
+
+def _review_focus_key(row: Any) -> tuple[Optional[str], Optional[str]]:
+    if row.question_domain == "grammar":
+        if row.missed_grammar_focus_key:
+            return row.missed_grammar_focus_key, "grammar_focus_key"
+        return None, None
+
+    if row.question_domain == "reading":
+        if row.missed_reading_focus_key:
+            return row.missed_reading_focus_key, "reading_focus_key"
+        if row.missed_reading_skill_family_key:
+            return row.missed_reading_skill_family_key, "reading_skill_family_key"
+        return None, None
+
+    if row.missed_grammar_focus_key:
+        return row.missed_grammar_focus_key, "grammar_focus_key"
+    if row.missed_reading_focus_key:
+        return row.missed_reading_focus_key, "reading_focus_key"
+    if row.missed_reading_skill_family_key:
+        return row.missed_reading_skill_family_key, "reading_skill_family_key"
+    return None, None
+
+
+def _review_explanation(annotation: Optional[QuestionAnnotation]) -> Optional[str]:
+    if not annotation:
+        return None
+    explanation = annotation.explanation_jsonb or {}
+    return (
+        explanation.get("explanation_short")
+        or explanation.get("short")
+        or explanation.get("explanation")
+        or (annotation.annotation_jsonb or {}).get("explanation_short")
+    )
+
+
+def _review_options(
+    question: Question,
+    options: list[QuestionOption],
+) -> tuple[list[ReviewQuestionOption], str]:
+    marked_correct = [option.option_label for option in options if option.is_correct]
+    option_labels = {option.option_label for option in options}
+
+    if len(marked_correct) == 1:
+        correct_label = marked_correct[0]
+        if question.current_correct_option_label != correct_label:
+            logger.warning(
+                "Review answer mismatch for question %s: question=%s option=%s",
+                question.id,
+                question.current_correct_option_label,
+                correct_label,
+            )
+    elif question.current_correct_option_label in option_labels:
+        correct_label = question.current_correct_option_label
+        logger.error(
+            "Review options have %d correct labels for question %s; normalized to %s",
+            len(marked_correct),
+            question.id,
+            correct_label,
+        )
+    else:
+        logger.error(
+            "Review question %s has no resolvable current correct option",
+            question.id,
+        )
+        raise HTTPException(
+            status_code=500,
+            detail=f"Question {question.id} has invalid answer data",
+        )
+
+    return (
+        [
+            ReviewQuestionOption(
+                label=option.option_label,
+                text=option.option_text,
+                is_correct=option.option_label == correct_label,
+            )
+            for option in sorted(options, key=lambda item: item.option_label)
+        ],
+        correct_label,
+    )
+
+
+@router.get("/study/review", response_model=ReviewQuestionsResponse)
+async def get_review_questions(
+    user_token: str = Query(..., description="Student user token"),
+    source_type: Optional[str] = Query(None, description="Comma-separated attempt source types"),
+    source_test_name: Optional[str] = Query(None),
+    source_section_code: Optional[str] = Query(None),
+    source_module_code: Optional[str] = Query(None),
+    domain: Optional[Literal["grammar", "reading"]] = Query(None),
+    focus_key: Optional[str] = Query(None),
+    stem_type_key: Optional[str] = Query(None),
+    difficulty: Optional[str] = Query(None, description="Exact attempt-time difficulty facet"),
+    content_origin: Optional[str] = Query(None, description="Comma-separated content origins"),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return deduplicated missed-question review cards for one student."""
+    source_types = _parse_review_csv_filter(
+        source_type,
+        allowed=_REVIEW_SOURCE_TYPES,
+        field_name="source_type",
+    )
+    content_origins = _parse_review_csv_filter(
+        content_origin,
+        allowed=set(CONTENT_ORIGINS),
+        field_name="content_origin",
+    )
+    user = await _resolve_user_by_token(user_token, db)
+
+    effective_source_type = func.coalesce(UserProgress.source_type, "unknown")
+    filtered_stmt = (
+        select(
+            UserProgress.id.label("progress_id"),
+            UserProgress.question_id,
+            UserProgress.selected_option_label,
+            effective_source_type.label("source_type"),
+            UserProgress.question_domain,
+            UserProgress.question_difficulty,
+            UserProgress.missed_grammar_focus_key,
+            UserProgress.missed_reading_focus_key,
+            UserProgress.missed_reading_skill_family_key,
+            UserProgress.timestamp,
+        )
+        .join(Question, Question.id == UserProgress.question_id)
+        .where(
+            UserProgress.user_id == user.id,
+            UserProgress.is_correct == False,  # noqa: E712
+        )
+    )
+
+    if source_types:
+        filtered_stmt = filtered_stmt.where(effective_source_type.in_(source_types))
+    if source_test_name:
+        filtered_stmt = filtered_stmt.where(Question.source_test_name == source_test_name)
+    if source_section_code:
+        filtered_stmt = filtered_stmt.where(Question.source_section_code == source_section_code)
+    if source_module_code:
+        filtered_stmt = filtered_stmt.where(Question.source_module_code == source_module_code)
+    if domain:
+        filtered_stmt = filtered_stmt.where(UserProgress.question_domain == domain)
+    if focus_key:
+        filtered_stmt = filtered_stmt.where(
+            or_(
+                UserProgress.missed_grammar_focus_key == focus_key,
+                UserProgress.missed_reading_focus_key == focus_key,
+                UserProgress.missed_reading_skill_family_key == focus_key,
+            )
+        )
+    if stem_type_key:
+        filtered_stmt = filtered_stmt.where(Question.stem_type_key == stem_type_key)
+    if difficulty:
+        filtered_stmt = filtered_stmt.where(UserProgress.question_difficulty == difficulty)
+    if content_origins:
+        filtered_stmt = filtered_stmt.where(Question.content_origin.in_(content_origins))
+
+    filtered = filtered_stmt.cte("review_filtered_misses")
+    ranked = select(
+        *filtered.c,
+        func.row_number().over(
+            partition_by=filtered.c.question_id,
+            order_by=(
+                filtered.c.timestamp.desc().nullslast(),
+                filtered.c.progress_id.desc(),
+            ),
+        ).label("row_number"),
+    ).cte("review_ranked_misses")
+    stats = (
+        select(
+            filtered.c.question_id,
+            func.count(filtered.c.progress_id).label("miss_count"),
+            func.max(filtered.c.timestamp).label("last_missed_at"),
+            func.array_agg(func.distinct(filtered.c.source_type)).label("source_types"),
+        )
+        .group_by(filtered.c.question_id)
+        .cte("review_miss_stats")
+    )
+
+    total = int(
+        (await db.execute(select(func.count()).select_from(stats))).scalar_one()
+    )
+    if total == 0:
+        return ReviewQuestionsResponse(
+            items=[],
+            total=0,
+            page=page,
+            page_size=page_size,
+            has_more=False,
+        )
+
+    offset = (page - 1) * page_size
+    page_stmt = (
+        select(
+            ranked.c.question_id,
+            ranked.c.selected_option_label,
+            ranked.c.source_type,
+            ranked.c.question_domain,
+            ranked.c.question_difficulty,
+            ranked.c.missed_grammar_focus_key,
+            ranked.c.missed_reading_focus_key,
+            ranked.c.missed_reading_skill_family_key,
+            stats.c.miss_count,
+            stats.c.last_missed_at,
+            stats.c.source_types,
+        )
+        .join(stats, stats.c.question_id == ranked.c.question_id)
+        .where(ranked.c.row_number == 1)
+        .order_by(
+            stats.c.last_missed_at.desc().nullslast(),
+            ranked.c.question_id.asc(),
+        )
+        .offset(offset)
+        .limit(page_size)
+    )
+    rows = (await db.execute(page_stmt)).all()
+    question_ids = [row.question_id for row in rows]
+
+    question_result = await db.execute(
+        select(Question).where(Question.id.in_(question_ids))
+    )
+    questions_by_id = {question.id: question for question in question_result.scalars().all()}
+
+    version_to_question = {
+        question.latest_version_id: question.id
+        for question in questions_by_id.values()
+        if question.latest_version_id
+    }
+    options_by_question: dict[UUID, list[QuestionOption]] = defaultdict(list)
+    if version_to_question:
+        option_result = await db.execute(
+            select(QuestionOption)
+            .where(QuestionOption.question_version_id.in_(version_to_question))
+            .order_by(QuestionOption.option_label.asc())
+        )
+        for option in option_result.scalars().all():
+            question_id = version_to_question.get(option.question_version_id)
+            if question_id:
+                options_by_question[question_id].append(option)
+
+    annotation_to_question = {
+        question.latest_annotation_id: question.id
+        for question in questions_by_id.values()
+        if question.latest_annotation_id
+    }
+    annotations_by_question: dict[UUID, QuestionAnnotation] = {}
+    if annotation_to_question:
+        annotation_result = await db.execute(
+            select(QuestionAnnotation).where(
+                QuestionAnnotation.id.in_(annotation_to_question)
+            )
+        )
+        for annotation in annotation_result.scalars().all():
+            question_id = annotation_to_question.get(annotation.id)
+            if question_id:
+                annotations_by_question[question_id] = annotation
+
+    items: list[ReviewQuestionItem] = []
+    for row in rows:
+        question = questions_by_id.get(row.question_id)
+        if not question:
+            logger.warning("Review question %s no longer exists", row.question_id)
+            continue
+
+        options, correct_label = _review_options(
+            question,
+            options_by_question.get(row.question_id, []),
+        )
+        focus_value, focus_source = _review_focus_key(row)
+        items.append(
+            ReviewQuestionItem(
+                question_id=str(question.id),
+                passage_text=question.current_passage_text,
+                paired_passage_text=question.current_paired_passage_text,
+                underlined_text=question.current_underlined_text,
+                question_text=question.current_question_text,
+                options=options,
+                correct_option_label=correct_label,
+                explanation=_review_explanation(
+                    annotations_by_question.get(row.question_id)
+                ),
+                user_answer=row.selected_option_label,
+                domain=row.question_domain,
+                focus_key=focus_value,
+                focus_key_source=focus_source,
+                stem_type_key=question.stem_type_key,
+                difficulty=row.question_difficulty,
+                content_origin=str(question.content_origin),
+                source_test_name=question.source_test_name,
+                source_section_code=question.source_section_code,
+                source_module_code=question.source_module_code,
+                source_question_number=question.source_question_number,
+                source_type=row.source_type or "unknown",
+                source_types=sorted(set(row.source_types or ["unknown"])),
+                miss_count=row.miss_count,
+                last_missed_at=row.last_missed_at,
+            )
+        )
+
+    return ReviewQuestionsResponse(
+        items=items,
+        total=total,
+        page=page,
+        page_size=page_size,
+        has_more=offset + len(rows) < total,
+    )
+
+
+def _sorted_review_facets(values: Optional[list[Any]]) -> list[str]:
+    return sorted({str(value) for value in (values or []) if value is not None})
+
+
+@router.get("/study/review/filters", response_model=ReviewFiltersResponse)
+async def get_review_filters(
+    user_token: str = Query(..., description="Student user token"),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """Return facets present in one student's missed-question history."""
+    user = await _resolve_user_by_token(user_token, db)
+    effective_source_type = func.coalesce(UserProgress.source_type, "unknown")
+    stmt = (
+        select(
+            func.array_agg(func.distinct(effective_source_type)).label("source_types"),
+            func.array_agg(func.distinct(Question.source_test_name)).label("source_test_names"),
+            func.array_agg(func.distinct(Question.source_section_code)).label("source_section_codes"),
+            func.array_agg(func.distinct(Question.source_module_code)).label("source_module_codes"),
+            func.array_agg(func.distinct(UserProgress.question_domain)).label("domains"),
+            func.array_agg(func.distinct(UserProgress.missed_grammar_focus_key)).label("grammar_focus_keys"),
+            func.array_agg(func.distinct(UserProgress.missed_reading_focus_key)).label("reading_focus_keys"),
+            func.array_agg(func.distinct(UserProgress.missed_reading_skill_family_key)).label("reading_skill_family_keys"),
+            func.array_agg(func.distinct(Question.stem_type_key)).label("stem_type_keys"),
+            func.array_agg(func.distinct(UserProgress.question_difficulty)).label("difficulties"),
+            func.array_agg(func.distinct(Question.content_origin)).label("content_origins"),
+        )
+        .join(Question, Question.id == UserProgress.question_id)
+        .where(
+            UserProgress.user_id == user.id,
+            UserProgress.is_correct == False,  # noqa: E712
+        )
+    )
+    row = (await db.execute(stmt)).one()
+    focus_keys = _sorted_review_facets(
+        (row.grammar_focus_keys or [])
+        + (row.reading_focus_keys or [])
+        + (row.reading_skill_family_keys or [])
+    )
+    return ReviewFiltersResponse(
+        source_types=_sorted_review_facets(row.source_types),
+        source_test_names=_sorted_review_facets(row.source_test_names),
+        source_section_codes=_sorted_review_facets(row.source_section_codes),
+        source_module_codes=_sorted_review_facets(row.source_module_codes),
+        domains=_sorted_review_facets(row.domains),
+        focus_keys=focus_keys,
+        stem_type_keys=_sorted_review_facets(row.stem_type_keys),
+        difficulties=_sorted_review_facets(row.difficulties),
+        content_origins=_sorted_review_facets(row.content_origins),
+    )
 
 
 # ── Diagnostic Session Endpoints ─────────────────────────────────────────────
