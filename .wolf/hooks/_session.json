@@ -1,57 +1,11 @@
 {
-  "session_id": "session-2026-07-13-1519",
-  "started": "2026-07-13T22:19:07.313Z",
-  "files_read": {
-    "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-07-13T22:21:17.205Z"
-    },
-    "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-07-13T22:21:32.994Z"
-    }
-  },
-  "files_written": [
-    {
-      "file": "/home/jb/DSAT_REDUX_MD/TASK_OAUTH.md",
-      "action": "edit",
-      "tokens": 402,
-      "at": "2026-07-13T22:21:10.797Z"
-    },
-    {
-      "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md",
-      "action": "edit",
-      "tokens": 72,
-      "at": "2026-07-13T22:21:21.096Z"
-    },
-    {
-      "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md",
-      "action": "edit",
-      "tokens": 191,
-      "at": "2026-07-13T22:21:24.442Z"
-    },
-    {
-      "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md",
-      "action": "edit",
-      "tokens": 808,
-      "at": "2026-07-13T22:21:30.595Z"
-    },
-    {
-      "file": "/home/jb/.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md",
-      "action": "edit",
-      "tokens": 68,
-      "at": "2026-07-13T22:21:36.020Z"
-    }
-  ],
-  "edit_counts": {
-    "TASK_OAUTH.md": 1,
-    "../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md": 3,
-    "../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md": 1
-  },
+  "session_id": "session-2026-07-16-0957",
+  "started": "2026-07-16T16:57:14.597Z",
+  "files_read": {},
+  "files_written": [],
+  "edit_counts": {},
   "anatomy_hits": 0,
-  "anatomy_misses": 2,
+  "anatomy_misses": 0,
   "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
   "stop_count": 0

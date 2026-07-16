@@ -3,10 +3,8 @@
 #   - dev stack (PostgreSQL + FastAPI backend + grammar-practice/student app) via podman compose
 #   - admin dashboard (APP/ADMIN_APP) as a host Vite dev server
 #
-# Both apps are reachable over Tailscale via MagicDNS host + port (they bind 0.0.0.0
-# and allowlist .ts.net hosts in their Vite configs). The student grammar app is also
-# exposed over TLS at https://<node>:8443 via `tailscale serve` (wired in ensure_student_tls
-# below). Port 443 is left untouched — it's already claimed by another app on this node.
+# Student/admin are reachable through Tailscale Serve. Port 443 is left untouched
+# because BOOKMARKS_LINKS owns it on this node.
 #
 # Usage:
 #   ./start.sh          start everything (reuses whatever is already running)
@@ -18,16 +16,15 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ADMIN_DIR="$ROOT/APP/ADMIN_APP"
 RUN_SH="$ROOT/.claude/skills/dev-stack/run.sh"
 
-# Host ports = host side of the container mappings in docker-compose.yml.
-BACKEND_PORT="$(grep -oE '"[0-9]+:8000"' "$ROOT/docker-compose.yml" | head -1 | tr -d '"' | cut -d: -f1)"
-BACKEND_PORT="${BACKEND_PORT:-8002}"
-STUDENT_PORT="$(grep -oE '"[0-9]+:5173"' "$ROOT/docker-compose.yml" | head -1 | tr -d '"' | cut -d: -f1)"
-STUDENT_PORT="${STUDENT_PORT:-5174}"
-ADMIN_PORT="${ADMIN_PORT:-5175}"
+BACKEND_PORT="${DSAT_BACKEND_PORT:-8002}"
+STUDENT_PORT="${DSAT_STUDENT_PORT:-5174}"
+ADMIN_PORT="${DSAT_ADMIN_PORT:-${ADMIN_PORT:-5175}}"
+STUDENT_TLS_PORT="${DSAT_STUDENT_TLS_PORT:-8443}"
+ADMIN_TLS_PORT="${DSAT_ADMIN_TLS_PORT:-8444}"
 ADMIN_TOKEN="${VITE_ADMIN_TOKEN:-admin-test-key}"
-BACKEND_ORIGIN="http://localhost:${BACKEND_PORT}"
+BACKEND_ORIGIN="http://127.0.0.1:${BACKEND_PORT}"
 
-up() { curl -sf -o /dev/null --max-time 2 "http://localhost:$1$2"; }
+up() { curl -sf -o /dev/null --max-time 2 "http://127.0.0.1:$1$2"; }
 backend_up() { up "$BACKEND_PORT" /docs; }
 student_up() { up "$STUDENT_PORT" /; }
 admin_up()   { up "$ADMIN_PORT" /; }
@@ -39,8 +36,8 @@ admin_up()   { up "$ADMIN_PORT" /; }
 ensure_student_tls() {
   command -v tailscale >/dev/null 2>&1 || return 0
   tailscale status >/dev/null 2>&1 || return 0
-  tailscale serve --bg --https=8443 "http://localhost:${STUDENT_PORT}" >/dev/null 2>&1 || \
-    echo "WARN: tailscale serve :8443 failed (Tailscale not up?) — student TLS skipped." >&2
+  tailscale serve --bg --https="${STUDENT_TLS_PORT}" "http://127.0.0.1:${STUDENT_PORT}" >/dev/null 2>&1 || \
+    echo "WARN: tailscale serve :${STUDENT_TLS_PORT} failed (Tailscale not up?) — student TLS skipped." >&2
 }
 
 # Same idea for the admin dashboard, on https://<node>:8444. Kept on a separate
@@ -48,8 +45,8 @@ ensure_student_tls() {
 ensure_admin_tls() {
   command -v tailscale >/dev/null 2>&1 || return 0
   tailscale status >/dev/null 2>&1 || return 0
-  tailscale serve --bg --https=8444 "http://localhost:${ADMIN_PORT}" >/dev/null 2>&1 || \
-    echo "WARN: tailscale serve :8444 failed (Tailscale not up?) — admin TLS skipped." >&2
+  tailscale serve --bg --https="${ADMIN_TLS_PORT}" "http://127.0.0.1:${ADMIN_PORT}" >/dev/null 2>&1 || \
+    echo "WARN: tailscale serve :${ADMIN_TLS_PORT} failed (Tailscale not up?) — admin TLS skipped." >&2
 }
 
 magicdns_name() {
@@ -62,15 +59,15 @@ summary() {
   local ts; ts="$(magicdns_name || true)"
   echo
   echo "=== DSAT apps ==="
-  printf '%-26s %-30s %s\n' "Student app (grammar):" "http://localhost:${STUDENT_PORT}" "$(student_up && echo UP || echo DOWN)"
-  printf '%-26s %-30s %s\n' "Admin dashboard:"       "http://localhost:${ADMIN_PORT}"   "$(admin_up && echo UP || echo DOWN)"
+  printf '%-26s %-30s %s\n' "Student app (grammar):" "http://127.0.0.1:${STUDENT_PORT}" "$(student_up && echo UP || echo DOWN)"
+  printf '%-26s %-30s %s\n' "Admin dashboard:"       "http://127.0.0.1:${ADMIN_PORT}"   "$(admin_up && echo UP || echo DOWN)"
   printf '%-26s %-30s %s\n' "Backend API:"           "${BACKEND_ORIGIN}"                "$(backend_up && echo UP || echo DOWN)"
   if [ -n "$ts" ]; then
     echo "Tailscale (MagicDNS):"
     echo "  student:  http://${ts}:${STUDENT_PORT}"
-    echo "  student (TLS):  https://${ts}:8443"
+    echo "  student (TLS):  https://${ts}:${STUDENT_TLS_PORT}"
     echo "  admin:    http://${ts}:${ADMIN_PORT}"
-    echo "  admin (TLS):    https://${ts}:8444"
+    echo "  admin (TLS):    https://${ts}:${ADMIN_TLS_PORT}"
   fi
 }
 
@@ -128,7 +125,7 @@ case "${1:-start}" in
     echo "Starting admin dashboard on :${ADMIN_PORT}..."
     echo "(Ctrl-C stops only the admin app; the stack keeps running. Use './start.sh stop' to stop everything.)"
     exec env VITE_BACKEND_ORIGIN="$BACKEND_ORIGIN" VITE_ADMIN_TOKEN="$ADMIN_TOKEN" \
-      npm run dev -- --port "$ADMIN_PORT" --strictPort
+      npm run dev -- --host 127.0.0.1 --port "$ADMIN_PORT" --strictPort
     ;;
 
   *)

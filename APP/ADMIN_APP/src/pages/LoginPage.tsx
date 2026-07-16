@@ -17,6 +17,15 @@ export function LoginPage() {
     if (!gsi) return
     gsi.initialize({
       client_id: GOOGLE_CLIENT_ID,
+      // Force the account chooser every time via the standard popup flow (the same
+      // flow the student app uses). auto_select=false prevents GIS from silently
+      // credentialing a single previously-approved session, and we clear the
+      // auto-select cookie on load (not just on logout) so a user who never signed
+      // out still gets the picker. NOTE: do NOT enable use_fedcm_for_button here —
+      // FedCM enforces stricter OAuth policy and rejects this unverified dev client
+      // with "doesn't comply with Google's OAuth 2.0 policy", while the popup flow
+      // works. The chooser only lists Google accounts signed into this browser.
+      auto_select: false,
       callback: async (response: { credential: string }) => {
         setError(null)
         setSigningIn(true)
@@ -30,6 +39,8 @@ export function LoginPage() {
         }
       },
     })
+    // Drop any prior "remembered" account so the next click opens the chooser.
+    gsi.disableAutoSelect()
 
     gsi.renderButton(buttonRef.current, {
       theme: 'outline',

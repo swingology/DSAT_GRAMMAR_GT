@@ -1,5 +1,17 @@
 # Debug Log
 
+## 2026-07-15 - Admin dashboard add-user 502 on stale :5173 instance; .env missing VITE_BACKEND_ORIGIN
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `oauth_feature`
+Git checkpoint: `41bcd27` — Move completed/superseded task files to _deprecated/
+
+### Findings
+
+1. **High (Fixed):** Adding a user through the admin dashboard 502'd on the `:5173` admin vite instance.
+   - Root cause: two admin vite processes were running — pid 1276245 on `:5175` (launched with `VITE_BACKEND_ORIGIN=http://localhost:8002`) and a stale pid 1253380 on `:5173` launched WITHOUT that env var. `APP/ADMIN_APP/vite.config.ts` proxy defaults to `http://localhost:8000` when `VITE_BACKEND_ORIGIN` is unset, but the dev-stack backend listens on host `:8002` (compose maps `8002->8000`). So `:5173`'s proxy forwarded `/api/users` to a dead `:8000` → 502. `APP/ADMIN_APP/.env` also lacked `VITE_BACKEND_ORIGIN`, so any fresh `vite` start without the shell env reproduced the 502.
+   - **Fixed:** Killed stale `:5173` process (pid 1253380). Persisted `VITE_BACKEND_ORIGIN=http://localhost:8002` into `APP/ADMIN_APP/.env`. Verified `POST /api/users` through `:5175` returns 201 (then deleted the test user, 204). Canonical admin port is **5175**.
+   - Backend `POST /users` itself was healthy throughout (direct `:8002` call returned 201). Logged as bug-784 in `.wolf/buglog.json`; related to bug-777/778 (admin app `/api` prefix mismatch).
+
 ## 2026-07-13 - OAuth login: no end-to-end browser tests; Playwright setup plan
 Report created by: Claude Sonnet 5
 Git branch: `oauth_feature`

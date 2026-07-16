@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-13T22:21:36.007Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-15T23:31:02.875Z
 > Files: 1124 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
@@ -100,7 +100,7 @@
 - `project_grammar_redux_status.md` (~1463 tok)
 - `project_gstack-skills-corrupted.md` (~472 tok)
 - `project_node-wasm-linux-fix.md` (~837 tok)
-- `project_oauth-login-feature.md` — ')` was hijacking `/src/api/client.ts` (added file-extension passthrough); quoted `text="…"` is an E (~1990 tok)
+- `project_oauth-login-feature.md` — ')` was hijacking `/src/api/client.ts` (added file-extension passthrough); quoted `text="…"` is an E (~2271 tok)
 - `project_rtk-path-fix.md` (~378 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
@@ -137,7 +137,7 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~228484 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~57221 tok)
+- `DEBUG_LOG.md` — Debug Log (~57576 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
@@ -296,7 +296,7 @@
 
 - `.nvmrc` (~1 tok)
 - `package.json` — Node.js package manifest (~272 tok)
-- `vite.config.ts` (~252 tok)
+- `vite.config.ts` — Declares env (~398 tok)
 
 ## APP/ADMIN_APP/src/
 
@@ -311,7 +311,7 @@
 
 - `AuthContext.tsx` — Exchange a GIS popup credential for a session. Throws on rejection. (~991 tok)
 - `authStore.ts` — UUID the legacy endpoints take as a `user_token` param — not the JWT. (~687 tok)
-- `google.d.ts` — Minimal typing for the Google Identity Services script (loaded by useGoogleScript). (~118 tok)
+- `google.d.ts` — Minimal typing for the Google Identity Services script (loaded by useGoogleScript). (~168 tok)
 - `RequireAdmin.tsx` — Gate every admin route behind a session with role "admin". (~577 tok)
 - `useGoogleScript.ts` — Load the Google Identity Services script once, shared across callers. (~412 tok)
 
@@ -322,7 +322,7 @@
 ## APP/ADMIN_APP/src/pages/
 
 - `DataManagement.tsx` — StatusBadge (~6779 tok)
-- `LoginPage.tsx` — LoginPage (~841 tok)
+- `LoginPage.tsx` — LoginPage (~1069 tok)
 - `PipelinePerformance.tsx` — StatCard — renders table (~3288 tok)
 - `StudentPerformance.tsx` — AccuracyBar (~1986 tok)
 - `UserManagement.tsx` — StatCard — renders table (~3969 tok)

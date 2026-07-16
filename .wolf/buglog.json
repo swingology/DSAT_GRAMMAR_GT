@@ -6629,5 +6629,74 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-07-13"
+  },
+  {
+    "id": "bug-784",
+    "timestamp": "2026-07-15",
+    "error_message": "Add-user through admin dashboard 502s on the :5173 admin vite instance (stale process)",
+    "file": "APP/ADMIN_APP/.env, APP/ADMIN_APP/vite.config.ts",
+    "root_cause": "Two admin vite processes were running: pid 1276245 on :5175 (launched with VITE_BACKEND_ORIGIN=http://localhost:8002) and a stale pid 1253380 on :5173 launched WITHOUT VITE_BACKEND_ORIGIN. vite.config.ts proxy defaults to http://localhost:8000 when VITE_BACKEND_ORIGIN is unset, but the dev-stack backend listens on host :8002 (compose maps 8002->8000), so :5173's proxy forwarded /api/users to a dead :8000 -> 502. APP/ADMIN_APP/.env also lacked VITE_BACKEND_ORIGIN, so any fresh vite start without the shell env reproduced the 502.",
+    "fix": "Killed stale :5173 process (pid 1253380). Persisted VITE_BACKEND_ORIGIN=http://localhost:8002 into APP/ADMIN_APP/.env so the proxy always targets the running dev-stack backend. Verified POST /api/users through :5175 returns 201; deleted the test user (204). Canonical admin port is 5175.",
+    "tags": [
+      "admin-app",
+      "add-user",
+      "502",
+      "vite-proxy",
+      "env",
+      "dev-stack",
+      "port-mismatch"
+    ],
+    "related_bugs": [
+      "bug-777",
+      "bug-778"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-15"
+  },
+  {
+    "id": "bug-785",
+    "timestamp": "2026-07-15",
+    "error_message": "Admin app dev proxy 502 after restart: vite.config.ts read process.env.VITE_BACKEND_ORIGIN which is empty because Vite does not populate process.env from .env for the config itself",
+    "file": "APP/ADMIN_APP/vite.config.ts, APP/ADMIN_APP/.env",
+    "root_cause": "Vite only feeds .env values into import.meta.env for the CLIENT bundle. It does NOT populate Node process.env when evaluating vite.config.ts. So `process.env.VITE_BACKEND_ORIGIN || 'http://localhost:8000'` in the proxy target silently fell back to :8000 (nothing running in dev stack; backend is on host :8002) -> 502 on every /api/* call. The previously-working process only worked because VITE_BACKEND_ORIGIN was exported in its launching shell environ (/proc/<pid>/environ), not because of .env.",
+    "fix": "Rewrote vite.config.ts to use loadEnv(mode, process.cwd(), '') and derive backendOrigin = env.VITE_BACKEND_ORIGIN || process.env.VITE_BACKEND_ORIGIN || 'http://localhost:8000'. Now APP/ADMIN_APP/.env's VITE_BACKEND_ORIGIN=http://localhost:8002 genuinely governs the proxy with no shell-env dependency. Killed the 502 process and relaunched `vite --port 5175 --strictPort`; verified GET /api/users through :5175 returns 200.",
+    "tags": [
+      "admin-app",
+      "vite",
+      "proxy",
+      "502",
+      "env",
+      "loadEnv",
+      "process.env",
+      "dev-stack",
+      "gotcha"
+    ],
+    "related_bugs": [
+      "bug-784",
+      "bug-777",
+      "bug-778"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-15"
+  },
+  {
+    "id": "bug-786",
+    "timestamp": "2026-07-15T10:45:00",
+    "error_message": "You can't sign in to this app because it doesn't comply with Google's OAuth 2.0 policy.",
+    "file": "APP/ADMIN_APP/src/pages/LoginPage.tsx",
+    "root_cause": "Enabling use_fedcm_for_button: true in gsi.initialize made the admin app use the FedCM button flow, which enforces stricter OAuth 2.0 policy and rejects this unverified/Testing-mode dev client. The student app (same OAuth client 721127096332-...) works because it uses the plain popup flow without FedCM. FedCM was added ~10:30am; admin sign-in worked at 9:15am before the change.",
+    "fix": "Removed use_fedcm_for_button and button_auto_select from gsi.initialize (and from google.d.ts types). Kept auto_select: false + gsi.disableAutoSelect() so the standard popup flow still forces the account chooser. Admin app now matches the working student-app flow.",
+    "tags": [
+      "admin-app",
+      "google-oauth",
+      "gis",
+      "fedcm",
+      "oauth-policy",
+      "login",
+      "account-chooser"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-15"
   }
 ]

@@ -11,15 +11,13 @@ DB_VOLUME="dsat_redux_md_dsat_pgdata_linux"
 
 # Prefer podman explicitly — a shell alias (docker=podman) may be set
 # interactively, but scripts/subagents run non-interactively and won't see it.
-if command -v podman &> /dev/null; then
-  ENGINE="podman"
-elif command -v docker &> /dev/null; then
-  ENGINE="docker"
-else
-  echo "Neither podman nor docker found." >&2
+ENGINE="podman"
+COMPOSE="podman compose"
+
+if ! command -v podman &> /dev/null; then
+  echo "podman not found." >&2
   exit 1
 fi
-COMPOSE="$ENGINE compose"
 
 # Colors for output
 RED='\033[0;31m'
@@ -33,8 +31,15 @@ log_success() { echo -e "${GREEN}✓${NC} $1"; }
 log_warn() { echo -e "${YELLOW}⚠${NC} $1"; }
 log_error() { echo -e "${RED}✗${NC} $1"; }
 
+ensure_podman_socket() {
+  command -v systemctl >/dev/null 2>&1 || return 0
+  systemctl --user start podman.socket >/dev/null 2>&1 || true
+}
+
 check_prerequisites() {
   local missing=0
+
+  ensure_podman_socket
 
   if ! $COMPOSE version &> /dev/null; then
     log_error "$COMPOSE not found or not working."
@@ -215,6 +220,8 @@ stream_logs() {
 }
 
 main() {
+  ensure_podman_socket
+
   case "${1:-}" in
     start)
       start_all

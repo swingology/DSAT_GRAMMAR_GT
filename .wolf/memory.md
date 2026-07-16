@@ -5187,3 +5187,74 @@
 | 15:21 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | inline fix | ~179 |
 | 15:21 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | modified route() | ~755 |
 | 15:21 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | inline fix | ~64 |
+
+## Session: 2026-07-15 09:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:47 | Edited DEBUG_LOG.md | modified High() | ~404 |
+| 16:41 | Admin add-user 502 root cause = stale :5173 vite (no VITE_BACKEND_ORIGIN, defaulted to dead :8000); killed :5173, persisted VITE_BACKEND_ORIGIN=:8002 in .env; :5175 add-user verified 201 | APP/ADMIN_APP/.env, vite.config.ts | fixed | ~6k |
+| 10:17 | Edited APP/ADMIN_APP/vite.config.ts | expanded (+11 lines) | ~398 |
+| 17:16 | Admin app 502 after restart: vite.config.ts used process.env.VITE_BACKEND_ORIGIN but Vite doesn't populate process.env from .env for the config (only import.meta.env for client) -> proxy defaulted to dead :8000. Fixed vite.config.ts to use loadEnv(); relaunched :5175, proxy 200 | APP/ADMIN_APP/vite.config.ts, .env | fixed | ~5k |
+| 10:31 | Edited APP/ADMIN_APP/src/auth/google.d.ts | modified renderButton() | ~141 |
+| 10:31 | Edited APP/ADMIN_APP/src/pages/LoginPage.tsx | modified catch() | ~335 |
+| 17:32 | Admin Google sign-in: force account chooser — set auto_select/button_auto_select=false, use_fedcm_for_button=true, call disableAutoSelect() on LoginPage load (not just logout). Chooser only lists accounts signed into the browser; jeenbyun must be added as a browser account to appear | APP/ADMIN_APP/src/pages/LoginPage.tsx, google.d.ts | enhanced | ~4k |
+| 10:41 | Edited APP/ADMIN_APP/src/pages/LoginPage.tsx | CSS: NOTE | ~388 |
+
+## Session: 2026-07-15 10:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:43 | Edited APP/ADMIN_APP/src/auth/google.d.ts | 5→3 lines | ~51 |
+| 10:45 | revert FedCM (use_fedcm_for_button) in admin LoginPage — fixes OAuth policy block; keep auto_select=false+disableAutoSelect for chooser | APP/ADMIN_APP/src/pages/LoginPage.tsx, google.d.ts | bug-786 logged, typecheck clean, :8444->:5175 intact | ~3k |
+
+## Session: 2026-07-15 10:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-15 10:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-15 11:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-15 16:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-15 16:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-15 16:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:31 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | 1→3 lines | ~368 |
+
+## Session: 2026-07-16 08:51
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-16 08:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-16 08:59
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-16 09:57
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

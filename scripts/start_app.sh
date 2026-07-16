@@ -3,8 +3,11 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VOLUME_NAME="dsat_redux_md_dsat_pgdata_linux"
-FRONTEND_URL="http://localhost:5174/"
-BACKEND_URL="http://localhost:8002/docs"
+DSAT_DB_PORT="${DSAT_DB_PORT:-5437}"
+DSAT_BACKEND_PORT="${DSAT_BACKEND_PORT:-8002}"
+DSAT_STUDENT_PORT="${DSAT_STUDENT_PORT:-5174}"
+FRONTEND_URL="http://127.0.0.1:${DSAT_STUDENT_PORT}/"
+BACKEND_URL="http://127.0.0.1:${DSAT_BACKEND_PORT}/docs"
 
 cd "$ROOT_DIR"
 
@@ -24,5 +27,5 @@ cat <<EOF
 DSAT app is running.
 Frontend: $FRONTEND_URL
 Backend:  $BACKEND_URL
-Database: localhost:5437
+Database: 127.0.0.1:${DSAT_DB_PORT}
 EOF
