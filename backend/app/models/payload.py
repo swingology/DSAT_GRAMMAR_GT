@@ -107,6 +107,7 @@ class UserProgressCreate(BaseModel):
     user_token: str
     question_id: str
     selected_option_label: str = Field(pattern=r"^[A-D]$")
+    source_type: Literal["practice_test", "drill", "practice", "unknown"] = "unknown"
     missed_grammar_focus_key: Optional[str] = None
     missed_syntactic_trap_key: Optional[str] = None
     # Phase 8: reading equivalents (client-optional; auto-populated from annotation)

@@ -9,6 +9,8 @@ import {
 
 const API_BASE = (import.meta as any).env.VITE_API_BASE || '/api'
 
+export type SubmitSourceType = 'practice_test' | 'drill' | 'practice' | 'unknown'
+
 interface ApiOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
   headers?: Record<string, string>
@@ -143,6 +145,7 @@ export const api = {
     question_id: string
     selected_option_label: string
     user_token: string
+    source_type: SubmitSourceType
     missed_grammar_focus_key?: string
     missed_reading_focus_key?: string
     missed_syntactic_trap_key?: string

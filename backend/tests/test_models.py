@@ -62,3 +62,14 @@ def test_foreign_keys():
     fk_cols = {c.key for c in mapper.columns if c.foreign_keys}
     assert "user_id" in fk_cols
     assert "question_id" in fk_cols
+
+
+def test_user_progress_source_type_column_and_index():
+    from app.models.db import UserProgress
+
+    source_type = UserProgress.__table__.c.source_type
+    index_names = {index.name for index in UserProgress.__table__.indexes}
+
+    assert source_type.type.length == 20
+    assert source_type.nullable is True
+    assert "ix_user_progress_source_type" in index_names

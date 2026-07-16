@@ -78,6 +78,7 @@ function TestRunner({
     submitAnswer.mutate({
       question_id: q.id,
       selected_option_label: label,
+      source_type: 'practice_test',
       missed_grammar_focus_key: q.grammar_focus_key,
       missed_reading_focus_key: q.reading_focus_key,
     })

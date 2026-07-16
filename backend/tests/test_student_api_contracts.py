@@ -108,6 +108,7 @@ class _QueueDB:
 
     def __init__(self, results):
         self._results = list(results)
+        self.added = []
 
     async def execute(self, _stmt):
         return self._results.pop(0) if self._results else _ScalarResult()
@@ -115,8 +116,8 @@ class _QueueDB:
     async def get(self, _model, _pk):
         return None
 
-    def add(self, _obj):
-        pass
+    def add(self, obj):
+        self.added.append(obj)
 
     async def commit(self):
         pass
@@ -237,6 +238,43 @@ class TestSubmit:
         )
         assert resp.status_code == 422
 
+    def test_omitted_source_type_defaults_to_unknown(self):
+        from app.models.payload import UserProgressCreate
+
+        body = UserProgressCreate(
+            user_token=STUDENT_TOKEN,
+            question_id=str(uuid.uuid4()),
+            selected_option_label="A",
+        )
+        assert body.source_type == "unknown"
+
+    @pytest.mark.parametrize("source_type", ["practice_test", "drill", "practice", "unknown"])
+    def test_generic_source_types_are_accepted(self, source_type):
+        from app.models.payload import UserProgressCreate
+
+        body = UserProgressCreate(
+            user_token=STUDENT_TOKEN,
+            question_id=str(uuid.uuid4()),
+            selected_option_label="A",
+            source_type=source_type,
+        )
+        assert body.source_type == source_type
+
+    @pytest.mark.parametrize("source_type", ["diagnostic", "invalid"])
+    def test_invalid_generic_source_types_fail_request_validation(self, source_type):
+        from pydantic import ValidationError
+        from app.models.payload import UserProgressCreate
+
+        with pytest.raises(ValidationError) as exc_info:
+            UserProgressCreate(
+                user_token=STUDENT_TOKEN,
+                question_id=str(uuid.uuid4()),
+                selected_option_label="A",
+                source_type=source_type,
+            )
+
+        assert exc_info.value.errors()[0]["loc"] == ("source_type",)
+
     @pytest.mark.asyncio
     async def test_correct_answer_returns_is_correct_true(self):
         """submit returns {id, is_correct} with is_correct=True when label matches."""
@@ -266,6 +304,7 @@ class TestSubmit:
                 user_token=STUDENT_TOKEN,
                 question_id=str(qid),
                 selected_option_label="B",
+                source_type="unknown",
                 missed_grammar_focus_key=None,
                 missed_syntactic_trap_key=None,
                 missed_reading_focus_key=None,
@@ -275,6 +314,7 @@ class TestSubmit:
             _auth="student-test-key",
         )
         assert result["is_correct"] is True
+        assert db.added[0].source_type == "unknown"
 
     @pytest.mark.asyncio
     async def test_wrong_answer_returns_is_correct_false(self):
@@ -304,6 +344,7 @@ class TestSubmit:
                 user_token=STUDENT_TOKEN,
                 question_id=str(qid),
                 selected_option_label="A",
+                source_type="drill",
                 missed_grammar_focus_key=None,
                 missed_syntactic_trap_key=None,
                 missed_reading_focus_key=None,
@@ -313,6 +354,7 @@ class TestSubmit:
             _auth="student-test-key",
         )
         assert result["is_correct"] is False
+        assert db.added[0].source_type == "drill"
 
 
 # ---------------------------------------------------------------------------

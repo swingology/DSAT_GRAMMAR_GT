@@ -518,6 +518,7 @@ class UserProgress(Base):
     question_difficulty = Column(String(20), nullable=True)
     timestamp = Column(DateTime(timezone=True), default=_utcnow, index=True)
     diagnostic_session_id = Column(UUID(as_uuid=True), ForeignKey("diagnostic_sessions.id"), nullable=True, index=True)
+    source_type = Column(String(20), nullable=True, index=True)
 
     user = relationship("User", back_populates="progress_records")
     question = relationship("Question", back_populates="progress_records", foreign_keys=[question_id])

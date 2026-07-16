@@ -58,6 +58,7 @@ function DiagnosticQuestionCard({
         {
           question_id: question.id,
           selected_option_label: label,
+          source_type: 'practice',
           missed_grammar_focus_key: question.grammar_focus_key,
           missed_reading_focus_key: question.reading_focus_key,
           missed_syntactic_trap_key: trapType,

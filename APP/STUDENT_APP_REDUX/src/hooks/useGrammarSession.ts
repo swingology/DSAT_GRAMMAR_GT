@@ -271,6 +271,7 @@ export function useGrammarSession({ limit = 10 }: { limit?: number } = {}) {
         question_id: q.id,
         selected_option_label: optionId,
         user_token: getUserToken(),
+        source_type: 'drill',
         missed_grammar_focus_key: q.grammar_focus_key,
         missed_syntactic_trap_key: selectedOption?.distractor_type_key ?? undefined,
       })

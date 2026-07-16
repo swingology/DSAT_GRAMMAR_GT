@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { api } from '../api/client'
+import { api, type SubmitSourceType } from '../api/client'
 import type { StudyRecommendationsResponse } from '../types'
 import { getUserToken } from '../auth/authStore'
 
@@ -64,6 +64,7 @@ export function useSubmitAnswer() {
     mutationFn: (data: {
       question_id: string
       selected_option_label: string
+      source_type: SubmitSourceType
       missed_grammar_focus_key?: string
       missed_reading_focus_key?: string
       missed_syntactic_trap_key?: string

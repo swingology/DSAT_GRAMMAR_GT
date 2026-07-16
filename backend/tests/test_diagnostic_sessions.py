@@ -14,6 +14,7 @@ DB behaviour is mocked via conftest._MockSession with per-test overrides.
 import uuid
 import pytest
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
 # ---------------------------------------------------------------------------
@@ -360,6 +361,62 @@ class TestDiagnosticSubmit:
                 yield mock_db
 
             app.dependency_overrides[get_db] = _orig
+
+    @pytest.mark.asyncio
+    async def test_diagnostic_submit_stores_diagnostic_source_type(self):
+        from app.models.db import DiagnosticSession, Question
+        from app.models.payload import DiagnosticAnswerRequest
+        from app.routers import student as student_router
+
+        session = FakeDiagnosticSession()
+        session.question_ids = []
+        session.total_questions = 0
+        session.correct_count = 0
+        question_id = uuid.uuid4()
+        question = SimpleNamespace(
+            id=question_id,
+            practice_status="active",
+            latest_annotation_id=None,
+            current_correct_option_label="B",
+        )
+
+        class _DiagnosticDB:
+            def __init__(self):
+                self.added = []
+
+            async def get(self, model, _pk):
+                if model is DiagnosticSession:
+                    return session
+                if model is Question:
+                    return question
+                return None
+
+            async def execute(self, _stmt):
+                return _UserResult()
+
+            def add(self, obj):
+                self.added.append(obj)
+
+            async def commit(self):
+                pass
+
+            async def refresh(self, obj):
+                obj.id = 123
+
+        db = _DiagnosticDB()
+        result = await student_router.diagnostic_submit(
+            session_id=VALID_SESSION_ID,
+            body=DiagnosticAnswerRequest(
+                user_token=USER_TOKEN,
+                question_id=str(question_id),
+                selected_option_label="B",
+            ),
+            db=db,
+            _auth="student-test-key",
+        )
+
+        assert result.is_correct is True
+        assert db.added[0].source_type == "diagnostic"
 
 
 # ---------------------------------------------------------------------------

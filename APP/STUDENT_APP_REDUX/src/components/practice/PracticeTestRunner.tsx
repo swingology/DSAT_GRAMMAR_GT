@@ -58,6 +58,7 @@ export function PracticeTestRunner({ questions, timeLimitSeconds, userToken, onC
       question_id: q.id,
       selected_option_label: label,
       user_token: userToken,
+      source_type: 'practice_test',
       missed_grammar_focus_key: q.grammar_focus_key ?? undefined,
       missed_reading_focus_key: q.reading_focus_key ?? undefined,
     }).catch(() => {})
