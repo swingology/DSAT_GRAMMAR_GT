@@ -100,3 +100,80 @@ export interface DiagnosticResult {
   weakest_focus_areas: Array<{ focus_key: string; miss_count: number }>
   breakdown?: DiagnosticBreakdown | null
 }
+
+export type ReviewSourceType =
+  | 'diagnostic'
+  | 'practice_test'
+  | 'drill'
+  | 'practice'
+  | 'unknown'
+
+export interface ReviewQuestionOption {
+  label: string
+  text: string
+  is_correct: boolean
+}
+
+export interface ReviewQuestionItem {
+  question_id: string
+  passage_text: string | null
+  paired_passage_text: string | null
+  underlined_text: string | null
+  question_text: string
+  options: ReviewQuestionOption[]
+  correct_option_label: string
+  explanation: string | null
+  user_answer: string
+  domain: string | null
+  focus_key: string | null
+  focus_key_source: string | null
+  stem_type_key: string | null
+  difficulty: string | null
+  content_origin: string
+  source_test_name: string | null
+  source_section_code: string | null
+  source_module_code: string | null
+  source_question_number: number | null
+  source_type: string
+  source_types: string[]
+  miss_count: number
+  last_missed_at: string | null
+}
+
+export interface ReviewQuestionsResponse {
+  items: ReviewQuestionItem[]
+  total: number
+  page: number
+  page_size: number
+  has_more: boolean
+}
+
+export interface ReviewFiltersResponse {
+  source_types: string[]
+  source_test_names: string[]
+  source_section_codes: string[]
+  source_module_codes: string[]
+  domains: string[]
+  focus_keys: string[]
+  stem_type_keys: string[]
+  difficulties: string[]
+  content_origins: string[]
+}
+
+export interface ReviewQuestionFilters {
+  source_type?: ReviewSourceType | ReviewSourceType[]
+  source_test_name?: string
+  source_section_code?: string
+  source_module_code?: string
+  domain?: string
+  focus_key?: string
+  stem_type_key?: string
+  difficulty?: string
+  content_origin?: string | string[]
+}
+
+export interface ReviewQuestionsParams extends ReviewQuestionFilters {
+  user_token: string
+  page?: number
+  page_size?: number
+}

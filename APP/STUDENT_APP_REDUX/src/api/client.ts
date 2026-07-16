@@ -6,6 +6,11 @@ import {
   getRefreshToken,
   setTokens,
 } from '../auth/authStore'
+import type {
+  ReviewFiltersResponse,
+  ReviewQuestionsParams,
+  ReviewQuestionsResponse,
+} from '../types'
 
 const API_BASE = (import.meta as any).env.VITE_API_BASE || '/api'
 
@@ -116,6 +121,17 @@ export async function apiCall(endpoint: string, options: ApiOptions = {}) {
   return response.json()
 }
 
+function reviewQuery(params: ReviewQuestionsParams) {
+  const query = new URLSearchParams({ user_token: params.user_token })
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (key === 'user_token' || value === undefined || value === '') return
+    query.set(key, Array.isArray(value) ? value.join(',') : String(value))
+  })
+
+  return query.toString()
+}
+
 export const api = {
   /** Exchange a Google ID token (GIS popup credential) for our JWT pair. */
   googleLogin: (credential: string) =>
@@ -165,6 +181,12 @@ export const api = {
     if (params.limit) query.set('limit', String(params.limit))
     return apiCall(`/study/missed?${query.toString()}`)
   },
+
+  getReviewQuestions: (params: ReviewQuestionsParams): Promise<ReviewQuestionsResponse> =>
+    apiCall(`/study/review?${reviewQuery(params)}`),
+
+  getReviewFilters: (userToken: string): Promise<ReviewFiltersResponse> =>
+    apiCall(`/study/review/filters?user_token=${encodeURIComponent(userToken)}`),
 
   getGenerationRequests: () =>
     apiCall('/study/generation-requests'),

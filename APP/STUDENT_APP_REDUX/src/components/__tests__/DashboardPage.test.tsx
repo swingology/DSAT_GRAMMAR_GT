@@ -36,6 +36,14 @@ vi.mock('../../hooks/useDashboardData', () => ({
   useTrapDetails: vi.fn().mockReturnValue({ isLoading: false, data: undefined }),
 }))
 
+vi.mock('../../hooks/useReviewData', () => ({
+  useReviewQuestions: vi.fn().mockReturnValue({
+    isLoading: false,
+    isError: false,
+    data: { items: [], total: 7, page: 1, page_size: 1, has_more: true },
+  }),
+}))
+
 function renderDashboard() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
@@ -78,5 +86,12 @@ describe('DashboardPage', () => {
   it('renders start session section', () => {
     renderDashboard()
     expect(screen.getByText('Start a session')).toBeInTheDocument()
+  })
+
+  it('links to the deduplicated missed-question review set', () => {
+    renderDashboard()
+    const link = screen.getByRole('link', { name: /Review missed questions/ })
+    expect(link).toHaveAttribute('href', '/review')
+    expect(screen.getByText('7 questions to revisit')).toBeInTheDocument()
   })
 })

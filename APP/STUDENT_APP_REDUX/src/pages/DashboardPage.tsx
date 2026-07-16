@@ -9,6 +9,8 @@ import { ConceptWeaknessChart } from '../components/dashboard/ConceptWeaknessCha
 import { SpacedRepetitionWidget } from '../components/dashboard/SpacedRepetitionWidget'
 import { TrapSusceptibilityDashboard } from '../components/dashboard/TrapSusceptibilityDashboard'
 import { UserMenu } from '../components/UserMenu'
+import { BookOpen, ChevronRight } from 'lucide-react'
+import { useReviewQuestions } from '../hooks/useReviewData'
 
 const EASE: Easing = 'easeOut'
 
@@ -19,6 +21,8 @@ const fadeUp = (delay: number) => ({
 })
 
 export function DashboardPage() {
+  const reviewSummary = useReviewQuestions({}, 1, 1)
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
@@ -54,6 +58,25 @@ export function DashboardPage() {
             Spaced review
           </h2>
           <SpacedRepetitionWidget />
+          <Link
+            to="/review"
+            className="mt-3 flex min-h-16 items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 shadow-sm transition-colors hover:bg-gray-50"
+          >
+            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-blue-50 text-blue-600">
+              <BookOpen size={20} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold text-gray-800">Review missed questions</span>
+              <span className="block text-xs text-gray-500">
+                {reviewSummary.isLoading
+                  ? 'Loading review count'
+                  : reviewSummary.isError
+                    ? 'Open your review set'
+                    : `${reviewSummary.data?.total ?? 0} questions to revisit`}
+              </span>
+            </span>
+            <ChevronRight size={18} className="shrink-0 text-gray-400" />
+          </Link>
         </motion.section>
 
         {/* Progress section */}

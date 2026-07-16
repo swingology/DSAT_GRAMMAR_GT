@@ -12,6 +12,7 @@ import { MixedPracticePage } from './pages/MixedPracticePage'
 import { DiagnosticHistoryPage } from './pages/DiagnosticHistoryPage'
 import { DiagnosticDetailPage } from './pages/DiagnosticDetailPage'
 import { ProgressPage } from './pages/ProgressPage'
+import { ReviewMissedPage } from './pages/ReviewMissedPage'
 
 const queryClient = new QueryClient()
 
@@ -36,6 +37,7 @@ export default function App() {
                     <Route path="/diagnostic/:sessionId" element={<DiagnosticDetailPage />} />
                     <Route path="/test" element={<PracticeTestPage />} />
                     <Route path="/progress" element={<ProgressPage />} />
+                    <Route path="/review" element={<ReviewMissedPage />} />
                   </Routes>
                 </RequireAuth>
               }

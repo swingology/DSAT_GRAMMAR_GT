@@ -384,11 +384,15 @@ flat union of all focus-key columns. Covered scoping SQL, focus union, unknown, 
 - UI filter changes must reset `page` to 1 before requesting data; otherwise a valid filtered
   result can appear empty because the previous page offset is out of range.
 
-- [ ] Add API methods and TS types.
-- [ ] Add hooks.
-- [ ] Add tests for query params, query keys, CSV encoding, and page reset on filter changes.
+- [x] Add API methods and TS types.
+- [x] Add hooks.
+- [x] Add tests for query params, query keys, CSV encoding, and page reset on filter changes.
 
-**Handoff note:** Not started.
+**Handoff note:** Status=complete; owner=Codex/missed_question; base=9e80a9d; no commit yet.
+Added exact backend response types, deterministic URL/CSV serialization, and independently cached review
+and facet hooks. Query keys contain the full filter object, page, and page size. Focused client/hook tests
+cover all query parameters, array filters, token encoding, and refetches on filter/page changes. Page-reset
+coverage lives with IQ-F02 because pagination state is owned by the page.
 
 ---
 
@@ -426,12 +430,20 @@ flat union of all focus-key columns. Covered scoping SQL, focus union, unknown, 
 - Loading, error, and empty states should visually match the existing dashboard style without
   changing `MissedQuestionsTab.tsx`.
 
-- [ ] Build route and page.
-- [ ] Add dashboard entry card.
-- [ ] Add tests for loading/error/empty, filter changes, pagination, passage reveal, answer
+- [x] Build route and page.
+- [x] Add dashboard entry card.
+- [x] Add tests for loading/error/empty, filter changes, pagination, passage reveal, answer
   reveal, and dashboard link.
 
-**Handoff note:** Not started.
+**Handoff note:** Status=complete; owner=Codex/missed_question; base=9e80a9d; no commit yet.
+Added the protected `/review` route, canonical source segments, all endpoint-backed facets, page reset on
+every filter change, responsive question cards, passage/answer disclosure, states, and pagination. The
+dashboard requests `page=1&page_size=1` with no filters and links the returned deduplicated total to
+`/review`. `MissedQuestionsTab.tsx` was not changed. Verification: TypeScript passes; production build
+passes; 15 focused Phase 3 tests pass; live Vite source returns 200; direct and Vite-proxied review calls
+return a populated response for a current DB user. Repository-wide tests still have 17 unrelated existing
+grammar/card/color failures. Lint is blocked before file analysis by the existing ESLint config omitting
+the `react-hooks` plugin registration. Playwright is not installed, so no browser screenshots were taken.
 
 ---
 
