@@ -12005,3 +12005,13 @@ _( 20 files changed, 689 insertions(+), 101 deletions(-))_
 **Untracked:** .claude/plans/2026-06-30-overlap-corpus-cache.md .claude/settings.local.json.tmp.41885.9c4395109e89 analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/summary.md analysis/ingestion/PT01/run_2026-07-05_51ed9baa-4994-4edc-9495-0e3089a6e1e9/taxonomy_coverage.json 
 
 ---
+
+## Session snapshot — 2026-07-16 09:59:52 (session-end)
+_branch:_ `oauth_feature` · _commit:_ `d8badfe` · _ram:_ `7.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json 
+_( 1 file changed, 1 insertion(+), 1 deletion(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 
+
+---
