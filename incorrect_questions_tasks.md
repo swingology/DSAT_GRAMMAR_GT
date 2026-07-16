@@ -475,9 +475,45 @@ rtk npm --prefix APP/STUDENT_APP_REDUX run build
 - Verify answer/explanation remain hidden until Show answer is clicked.
 - Verify passage reveal does not shift the page into an unusable layout on mobile width.
 
-- [ ] Run backend tests.
-- [ ] Run frontend tests and build.
-- [ ] Complete manual QA.
-- [ ] Record final status, commands, and residual risks below.
+- [x] Run backend tests.
+- [x] Run frontend tests and build.
+- [x] Complete manual QA.
+- [x] Record final status, commands, and residual risks below.
 
-**Handoff note:** Not started.
+**Handoff note:** Status=complete; owner=Codex/missed_question; base=6b75e5f; no product-code
+changes and no commit yet.
+
+Automated verification:
+- The two literal root `rtk pytest ...` commands could not collect because root Python resolves to
+  `/home/jb/.venv/bin/python`, which has no pytest. The backend project venv runs
+  `test_study_review.py` successfully (17 passed), but host execution of
+  `test_student_api_contracts.py` hangs before output and was stopped by a 180-second timeout.
+- The supported Podman backend runtime completed the required suites:
+  `rtk podman exec dsat-backend uv run pytest tests/test_student_api_contracts.py -q`
+  (42 passed) and the corresponding `test_diagnostic_sessions.py` command (22 passed).
+- `rtk npm --prefix APP/STUDENT_APP_REDUX test -- --run` executed and retained 16 unrelated
+  existing failures in grammar integration/component, practice-card routing, practice-test-card/page,
+  and key-color expectations. The four Phase 3 files pass 15/15 under the same root invocation.
+- RTK's npm argument parser misread the literal prefixed build command; passthrough
+  `rtk proxy npm --prefix APP/STUDENT_APP_REDUX run build` passes. The only build warning is the
+  existing 500 kB chunk-size advisory.
+
+Live/API and browser QA:
+- `./start.sh status` confirmed the current Podman stack healthy on backend `:8002`, student
+  `:5174`, and admin `:5175`.
+- Temporarily seeded progress rows 22 and 23 as two `drill` misses for user 1/question
+  `63a9e875-4f14-51e4-8d43-096604ed4edd`, then exercised live endpoints through Vite. All returned
+  two deduped questions; the repeated question returned `source_types=[diagnostic,drill]`,
+  `miss_count=3`, latest `user_answer=C`. Diagnostic returned count 1/answer B; Drill returned count
+  2/answer C; Unknown returned the historical unknown question. Rows 22/23 were deleted afterward,
+  and original rows 1/21 were verified intact.
+- Disposable local Playwright/Chromium QA used live review/filter endpoints and stubbed only
+  `/api/auth/me`: two All cards; combined source badges; Drill and Unknown each one card; answer
+  hidden before Show answer and visible afterward; passage reveal works; no console errors.
+  At 390 px, document/body widths both equal the 390 px viewport after passage expansion.
+- Screenshots are `/tmp/review-phase4-output/review-desktop.png` and
+  `/tmp/review-phase4-output/review-mobile.png`; visual inspection found no clipping or overlap.
+
+Residual risks: the repository-wide unrelated frontend failures remain, host execution of the large
+backend contract suite hangs while the container suite passes, and the production bundle remains a
+single 518 kB chunk. Incorrect-question handling itself passed focused, live API, and browser QA.
