@@ -622,3 +622,137 @@ Error response from daemon: can only create exec sessions on running containers:
 [Thu Jul 16 08:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260715_140001.dump
 [Thu Jul 16 10:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_100001.dump
 Error response from daemon: can only create exec sessions on running containers: container state improper
+[Thu Jul 16 12:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_120001.dump
+[Thu Jul 16 12:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_120001.dump (4.1M)
+[Thu Jul 16 12:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260715_180001.dump
+[Thu Jul 16 12:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260715_160001.dump
+[Thu Jul 16 14:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_140001.dump
+[Thu Jul 16 14:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_140001.dump (4.1M)
+[Thu Jul 16 14:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_020001.dump
+[Thu Jul 16 16:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_160001.dump
+[Thu Jul 16 16:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_160001.dump (4.1M)
+[Thu Jul 16 16:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_040001.dump
+[Thu Jul 16 18:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_180001.dump
+[Thu Jul 16 18:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_180001.dump (4.1M)
+[Thu Jul 16 18:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_060001.dump
+[Thu Jul 16 20:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_200001.dump
+[Thu Jul 16 20:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_200001.dump (4.1M)
+[Thu Jul 16 20:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_080001.dump
+[Thu Jul 16 22:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_220001.dump
+[Thu Jul 16 22:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_220001.dump (4.1M)
+[Thu Jul 16 22:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_100001.dump
+[Fri Jul 17 00:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_000001.dump
+[Fri Jul 17 00:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_000001.dump (4.1M)
+[Fri Jul 17 00:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_120001.dump
+[Fri Jul 17 02:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_020001.dump
+[Fri Jul 17 02:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_020001.dump (4.1M)
+[Fri Jul 17 02:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_140001.dump
+[Fri Jul 17 04:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_040001.dump
+[Fri Jul 17 04:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_040001.dump (4.1M)
+[Fri Jul 17 04:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_160001.dump
+[Fri Jul 17 06:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_060001.dump
+[Fri Jul 17 06:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_060001.dump (4.1M)
+[Fri Jul 17 06:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_180001.dump
+[Fri Jul 17 08:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_080001.dump
+[Fri Jul 17 08:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_080001.dump (4.1M)
+[Fri Jul 17 08:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_200001.dump
+[Fri Jul 17 10:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_100001.dump
+[Fri Jul 17 10:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_100001.dump (4.1M)
+[Fri Jul 17 10:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260716_220001.dump
+[Fri Jul 17 12:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_120001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Fri Jul 17 14:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_140001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Fri Jul 17 16:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_160001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Fri Jul 17 18:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_180001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Fri Jul 17 20:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_200001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Fri Jul 17 22:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_220001.dump
+[Fri Jul 17 22:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_220001.dump (4.1M)
+[Fri Jul 17 22:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_100001.dump
+[Fri Jul 17 22:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_080001.dump
+[Fri Jul 17 22:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_060001.dump
+[Fri Jul 17 22:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_040001.dump
+[Fri Jul 17 22:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_020001.dump
+[Fri Jul 17 22:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_000001.dump
+[Sat Jul 18 00:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_000001.dump
+[Sat Jul 18 00:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_000001.dump (4.1M)
+[Sat Jul 18 00:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_120001.dump
+[Sat Jul 18 02:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_020001.dump
+[Sat Jul 18 02:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_020001.dump (4.1M)
+[Sat Jul 18 02:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_140001.dump
+[Sat Jul 18 04:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_040001.dump
+[Sat Jul 18 04:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_040001.dump (4.1M)
+[Sat Jul 18 04:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_160001.dump
+[Sat Jul 18 06:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_060001.dump
+[Sat Jul 18 06:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_060001.dump (4.1M)
+[Sat Jul 18 06:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_180001.dump
+[Sat Jul 18 08:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_080001.dump
+[Sat Jul 18 08:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_080001.dump (4.1M)
+[Sat Jul 18 08:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_200001.dump
+[Sat Jul 18 10:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_100001.dump
+[Sat Jul 18 10:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_100001.dump (4.1M)
+[Sat Jul 18 10:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260717_220001.dump
+[Sat Jul 18 12:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_120001.dump
+[Sat Jul 18 12:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_120001.dump (4.1M)
+[Sat Jul 18 12:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_000001.dump
+[Sat Jul 18 14:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_140001.dump
+[Sat Jul 18 14:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_140001.dump (4.1M)
+[Sat Jul 18 14:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_020001.dump
+[Sat Jul 18 16:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_160001.dump
+[Sat Jul 18 16:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_160001.dump (4.1M)
+[Sat Jul 18 16:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_040001.dump
+[Sat Jul 18 18:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_180001.dump
+[Sat Jul 18 18:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_180001.dump (4.1M)
+[Sat Jul 18 18:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_060001.dump
+[Sat Jul 18 20:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_200001.dump
+[Sat Jul 18 20:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_200001.dump (4.1M)
+[Sat Jul 18 20:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_080001.dump
+[Sat Jul 18 22:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_220001.dump
+[Sat Jul 18 22:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_220001.dump (4.1M)
+[Sat Jul 18 22:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_100001.dump
+[Sun Jul 19 00:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_000001.dump
+[Sun Jul 19 00:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_000001.dump (4.1M)
+[Sun Jul 19 00:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_120001.dump
+[Sun Jul 19 02:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_020001.dump
+[Sun Jul 19 02:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_020001.dump (4.1M)
+[Sun Jul 19 02:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_140001.dump
+[Sun Jul 19 04:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_040001.dump
+[Sun Jul 19 04:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_040001.dump (4.1M)
+[Sun Jul 19 04:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_160001.dump
+[Sun Jul 19 06:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_060001.dump
+[Sun Jul 19 06:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_060001.dump (4.1M)
+[Sun Jul 19 06:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_180001.dump
+[Sun Jul 19 08:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_080001.dump
+[Sun Jul 19 08:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_080001.dump (4.1M)
+[Sun Jul 19 08:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_200001.dump
+[Sun Jul 19 10:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_100001.dump
+[Sun Jul 19 10:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_100001.dump (4.1M)
+[Sun Jul 19 10:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260718_220001.dump
+[Sun Jul 19 12:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_120001.dump
+[Sun Jul 19 12:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_120001.dump (4.1M)
+[Sun Jul 19 12:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_000001.dump
+[Sun Jul 19 14:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_140001.dump
+[Sun Jul 19 14:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_140001.dump (4.1M)
+[Sun Jul 19 14:00:01 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_020001.dump
+[Sun Jul 19 16:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_160001.dump
+[Sun Jul 19 16:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_160001.dump (4.1M)
+[Sun Jul 19 16:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_040001.dump
+[Sun Jul 19 18:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_180001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Sun Jul 19 20:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_200001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Sun Jul 19 22:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260719_220001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Mon Jul 20 00:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260720_000001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Mon Jul 20 02:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260720_020001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Mon Jul 20 04:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260720_040001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Mon Jul 20 06:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260720_060001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper
+[Mon Jul 20 08:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260720_080001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper

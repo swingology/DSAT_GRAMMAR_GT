@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-15T23:31:02.875Z
-> Files: 1124 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-17T22:23:36.336Z
+> Files: 1126 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -88,7 +88,7 @@
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~1501 tok)
+- `MEMORY.md` — Memory Index (~1483 tok)
 - `project_admin-dashboard-phase1-status.md` (~732 tok)
 - `project_admin-dashboard-plan.md` (~480 tok)
 - `project_annotation-shape-inconsistency.md` — Declares originally (~499 tok)
@@ -100,7 +100,7 @@
 - `project_grammar_redux_status.md` (~1463 tok)
 - `project_gstack-skills-corrupted.md` (~472 tok)
 - `project_node-wasm-linux-fix.md` (~837 tok)
-- `project_oauth-login-feature.md` — ')` was hijacking `/src/api/client.ts` (added file-extension passthrough); quoted `text="…"` is an E (~2271 tok)
+- `project_oauth-login-feature.md` — ')` was hijacking `/src/api/client.ts` (added file-extension passthrough); quoted `text="…"` is an E (~2355 tok)
 - `project_rtk-path-fix.md` (~378 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
@@ -155,6 +155,8 @@
 - `GRAMMAR_REDUX_TASKS.md` — GRAMMAR_REDUX_TASKS.md (~19210 tok)
 - `grammar-app.html` — SAT Grammar Practice (~11817 tok)
 - `INCONSISTENT_KEYS_LIST.md` — Inconsistent Taxonomy Keys in Official Question Annotations (~1473 tok)
+- `incorrect_questions_plan.md` — Incorrect Questions Review — Plan (~4801 tok)
+- `incorrect_questions_tasks.md` — Incorrect Questions Review — Implementation Tasks (~4566 tok)
 - `ingestion_generation_summary.md` — Ingestion & Generation Pipeline — Step-by-Step Summary (~1281 tok)
 - `ingestion_generation_summary.md` — Step-by-step breakdown of ingestion and generation pipelines, including all sub-steps, key differences, and shared components (~680 tok)
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~7592 tok)

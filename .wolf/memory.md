@@ -5258,3 +5258,78 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-07-16 10:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:49 | Created incorrect_questions_plan.md | — | ~1879 |
+
+## Session: 2026-07-16 11:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:18 | Edited incorrect_questions_plan.md | modified caveat() | ~455 |
+| 11:18 | Edited incorrect_questions_plan.md | modified sources() | ~461 |
+| 11:18 | Edited incorrect_questions_plan.md | expanded (+35 lines) | ~804 |
+| 11:19 | Edited incorrect_questions_plan.md | 4→8 lines | ~171 |
+| 11:19 | Edited incorrect_questions_plan.md | expanded (+6 lines) | ~275 |
+| 11:19 | Edited incorrect_questions_plan.md | 2→4 lines | ~85 |
+| 11:20 | Second-pass review of incorrect_questions_plan.md: patched §3/§4/§6 (versioned QuestionOption join, current_* field map, domain/difficulty/focus_key column sources, dedup+pagination semantics, diagnostic-on-generic 422) | incorrect_questions_plan.md | spec gaps closed, no code changed | ~2k |
+| 13:35 | Edited incorrect_questions_tasks.md | 6→9 lines | ~174 |
+| 13:35 | Edited incorrect_questions_tasks.md | 6→8 lines | ~142 |
+| 13:35 | Edited incorrect_questions_tasks.md | modified columns() | ~1791 |
+| 13:35 | Edited incorrect_questions_tasks.md | 6→11 lines | ~201 |
+| 13:35 | Patched incorrect_questions_tasks.md to carry second-pass plan fixes: IQ-B02 diagnostic-on-generic 422 + test clarity, IQ-B03 versioned-options fetch (refs student.py:455-459/1627-1630), current_* field map, annotation-based explanation, domain/difficulty/focus_key sources, dedup-precedes-pagination, total=deduped, content_origin enum, correct-answer SoT; IQ-B04 focus_keys flat-via-OR | incorrect_questions_tasks.md | tasks aligned to plan, no code changed | ~3k |
+| 13:36 | Edited incorrect_questions_plan.md | inline fix | ~92 |
+| 13:36 | Edited incorrect_questions_plan.md | modified caveat() | ~288 |
+| 13:36 | Edited incorrect_questions_plan.md | 3→6 lines | ~148 |
+| 13:37 | Edited incorrect_questions_tasks.md | 6→5 lines | ~125 |
+| 13:37 | Aligned incorrect_questions_plan.md §4 with tasks: explanation source now QuestionAnnotation.explanation_jsonb fallback chain (not Question.current_explanation_text); versioned-options caveat now points to student.py:455-459/1627-1630 via latest_version_id; fixed "reuses /study/missed join" to accurate two-step pattern (grouped UserProgress + bulk Question/Annotation, options fetch is NEW) | incorrect_questions_plan.md | plan<->tasks now consistent, no code changed | ~1k |
+| 14:23 | Edited incorrect_questions_tasks.md | 1→3 lines | ~34 |
+| 14:24 | Edited incorrect_questions_tasks.md | inline fix | ~15 |
+| 14:24 | Edited incorrect_questions_tasks.md | 1→3 lines | ~25 |
+| 14:24 | Edited incorrect_questions_tasks.md | inline fix | ~13 |
+| 14:24 | Edited incorrect_questions_tasks.md | 1→3 lines | ~20 |
+| 14:24 | Edited incorrect_questions_tasks.md | inline fix | ~16 |
+| 14:24 | Edited incorrect_questions_tasks.md | 1→3 lines | ~25 |
+| 14:24 | Edited incorrect_questions_tasks.md | 3→6 lines | ~71 |
+| 14:24 | Added phase headers to incorrect_questions_tasks.md: Phase 1 Backend data model & submit tagging (B01/B02), Phase 2 Review APIs (B03/B04), Phase 3 Frontend (F01/F02), Phase 4 QA & release handoff (QA01); demoted task headings to h3 under phase h2; added phase-order line to Dependency Map | incorrect_questions_tasks.md | structure-only reorg, no task content changed | ~0.5k |
+
+## Session: 2026-07-16 15:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-16 15:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-17 17:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-17 08:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-17 10:58
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-17 15:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:23 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | 1→5 lines | ~413 |
+| 15:23 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_oauth-login-feature.md | "Google OAuth login for st" → "Google OAuth login for st" | ~43 |
+| 15:23 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | inline fix | ~44 |
+
+## Session: 2026-07-20 11:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

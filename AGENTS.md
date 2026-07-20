@@ -36,76 +36,75 @@ The MCP server returns "not initialized." Ask the user: *"I notice this project 
 <claude-mem-context>
 # Memory Context
 
-# [DSAT_REDUX_MD] recent context, 2026-07-16 1:24am PDT
+# [DSAT_REDUX_MD] recent context, 2026-07-16 3:33pm PDT
 
 Legend: 🎯session 🔴bugfix 🟣feature 🔄refactor ✅change 🔵discovery ⚖️decision 🚨security_alert 🔐security_note
 Format: ID TIME TYPE TITLE
 Fetch details: get_observations([IDs]) | Search: mem-search skill
 
-Stats: 50 obs (16,416t read) | 242,490t work | 93% savings
+Stats: 50 obs (25,068t read) | 737,420t work | 97% savings
 
-### Jul 13, 2026
-S9 Investigate and test the "add user" action through the DSAT_REDUX_MD admin dashboard, which had a reported issue (Jul 13, 1:02 PM)
-80 1:20p 🟣 Admin App Phase 3 Production Build Passes — 882KB Bundle, No Errors
-81 " 🔵 Dev Stack Not Running — Backend and Both Apps Need to Be Started for Phase 4 QA
-82 1:22p 🔵 Dev Stack Uses Podman Compose — Backend on Port 8002, Frontend on 5174 (Not 8000/5173)
-83 " 🔵 Dev Stack Port Mapping Confirmed — Internal 8000/5173/5432 Map to External 8002/5174/5437
-84 " 🔵 Port 5174 Serves Student App — Admin App Not in Compose Stack
-85 1:23p 🔵 Admin App vite.config.ts Proxies to localhost:8000 — Needs VITE_BACKEND_ORIGIN=http://localhost:8002 for Dev Stack
-86 " 🔵 Admin API Key for Dev Stack is "admin-test-key" — Not Set in Admin App .env
-87 " 🔵 Backend Auth QA Shows 500 on /users with Admin API Key — Possible DB Issue in Dev Stack
-88 " 🔵 Backend 500 on /users Caused by Missing DB Schema — "relation users does not exist"
-89 1:24p 🔴 Dev Stack DB Migrations Run — 33 Migrations Applied, Schema Now Ready
-90 " 🔵 Backend Fully Operational After Migration + Restart — Admin Seed Created, /users Returns 200
-91 " 🟣 Admin App .env Created for Phase 4 QA — Three Required Vars Set
-92 1:25p 🔵 Backend JWT Lifecycle QA Passes With One Exception — Old Refresh Token Reuse Returns 200 Instead of 401
-93 " 🔵 Refresh Token Rotation Confirmed Working — Previous Test Was False Positive Due to Race Condition
-94 " 🔵 POST /api/auth/login Requires Email Not Username — Login Schema Takes {email, password}
-95 " 🔵 Refresh Token Rotation Definitively Confirmed — Old Token 401, New Token 200
-### Jul 15, 2026
-96 9:29a 🔵 Admin Dashboard User-Add Investigation: Buglog Review
-97 " 🔵 Admin App Project Structure and User Management API
-98 " 🔵 Bug-777/778: Backend /users and /admin Routes Missing /api Prefix
-99 " 🔵 Dev Stack Running: Backend on :8002, Admin Frontend on :5174
-100 9:37a 🔵 DSAT_REDUX_MD Admin Dashboard Infrastructure State
-101 9:38a 🔵 POST /users Endpoint: Auth and Schema for Admin User Creation
-102 " 🔵 admin_required Auth: Dual-Mode — Legacy API Key or Bearer JWT with admin Role
-103 " 🔵 Backend POST /users Works Directly — Admin App Port 5173 Returns 502
-104 " 🔵 Root Cause: Port 5173 Vite Instance Has No Env Vars — Port 5175 Is the Correctly Configured Instance
-S12 Session wrap-up: add-user admin dashboard investigation completed; user asked "is the server running?" as final check (Jul 15, 9:39 AM)
-105 9:41a 🔴 Killed Stale Admin App Vite Instance on Port 5173
-106 " 🔵 APP/ADMIN_APP/.env Missing VITE_BACKEND_ORIGIN — Must Be Set as Shell Env at Launch
-107 " 🔴 Persisted VITE_BACKEND_ORIGIN to APP/ADMIN_APP/.env to Prevent 502 Recurrence
-108 9:42a 🔴 Add-User Flow Verified End-to-End via Admin Dashboard Proxy on Port 5175
-109 9:46a ✅ Bug-784 Logged in Project Buglog — Admin Dashboard Add-User 502 via Stale Vite Process
-110 9:47a ✅ Bug-784 Documented in DEBUG_LOG.md and .wolf/memory.md
-S10 Investigate and fix the "add user through admin dashboard" failing action — root cause was a stale Vite process on port 5173 with no VITE_BACKEND_ORIGIN set (Jul 15, 9:47 AM)
-S11 User asked "is the server running?" — a quick status check following the completed add-user bug fix session (Jul 15, 9:47 AM)
-S13 User asked "is the server running?" — confirmed full dev stack is healthy across all services (Jul 15, 9:48 AM)
-S14 Google OAuth admin login investigation — confirmed working for jbyun76@gmail.com; identified multi-account picker confusion and potential frontend session issue (Jul 15, 10:02 AM)
-111 10:03a 🔵 Google OAuth Only in student_auth.py — Admin Auth Uses admin_seed_email Config
-112 10:04a 🔵 Google OAuth Login is Pre-Registration Only — Never Creates Accounts
-113 " 🔵 Current User DB State — Admin Account Confirmed, 8 Total Users
-114 " 🔵 Google OAuth Endpoint Mounted at /api/auth/google — Admin App src/ Not at Expected Path
-115 10:07a 🔵 Admin App Google OAuth Flow: GIS Popup → credential → POST /auth/google → JWT
-116 " 🔵 Admin LoginPage.tsx: GIS Button Renders Only When VITE_GOOGLE_CLIENT_ID Is Set
-117 " 🔵 Admin App :5175 Has All Three VITE_ Vars Correctly Injected — Google Login Is Ready
-118 10:08a 🔵 Backend Logs Confirm Google OAuth Working — Admin Login Succeeded, Two Unregistered Emails Rejected
-119 " 🔵 chrisbyun@gmail.com 401 Was Correct — User CB17 Added to DB After Failed Login Attempt
-S15 Google OAuth admin login investigation — confirmed jbyun76@gmail.com works as admin; user confirmed CB17/chrisbyun stays as student; no DB changes needed (Jul 15, 10:08 AM)
-S16 Google OAuth "Access blocked / Authorization error" — identified as Google Cloud Console OAuth consent screen in Testing mode blocking non-listed accounts (Jul 15, 10:10 AM)
-S17 Create jeenbyun@gmail.com admin user and fix Google OAuth "access blocked" issue (Jul 15, 10:11 AM)
-120 10:12a 🔵 PATCH /users/{user_id} Supports Role Changes — Path to Promote chrisbyun@gmail.com to Admin
-121 10:17a 🔵 Admin App Vite Process Launch Details
-122 " ✅ Admin Vite App Restarted to Pick Up New .env
-123 " 🔵 502 Persists After Admin App Restart — Proxy Still Broken
-124 " 🔵 New Vite Process (PID 1045436) Also Missing VITE_BACKEND_ORIGIN
-125 10:18a 🔴 vite.config.ts Fixed to Use loadEnv for Proxy Target
-126 10:20a 🔴 Admin App Proxy 502 Bug Fully Resolved
-127 " 🔵 VITE_GOOGLE_CLIENT_ID Confirmed in Restarted Admin App Bundle
-128 " ✅ bug-785 Logged in .wolf/buglog.json and memory.md
-129 10:21a 🔵 cerebrum.md Do-Not-Repeat Section Contains Vite-Adjacent Warning
-S18 Restart admin app cleanly and fix persistent 502 proxy bug (vite.config.ts loadEnv fix) (Jul 15, 10:21 AM)
+### Jul 16, 2026
+135 10:10a 🔵 oauth_feature Is 11 Commits Ahead of main With Zero Conflicts
+138 10:17a 🔵 Git stash list and working tree state in DSAT_REDUX_MD
+S23 Plan incorrect questions review feature for DSAT student app — full architecture investigation and backend design proposal (Jul 16, 10:18 AM)
+139 10:30a ⚖️ Incorrect Questions Review Feature Planned for Student App Main Page
+140 10:31a 🔵 Tokensave index misconfigured for DSAT_REDUX_MD worktree
+141 " 🔵 Existing MissedQuestionsTab and related infrastructure in DSAT_REDUX_MD student app
+142 " 🔵 MissedQuestionsTab and MissedQuestionItem data shape gaps for new incorrect questions feature
+143 " 🔵 Backend /study/missed endpoint implementation and data model gaps for full question review
+144 10:32a 🔵 Full ORM data model for incorrect questions feature: passage available on Question, choices via QuestionOption, section type gap
+145 " 🔵 Practice test answers stored in TestSessionResults JSONB, not linked to UserProgress rows
+146 10:42a 🔵 Student app route map and missing /missed-questions route
+147 " 🔵 Separate submit endpoints for diagnostic vs practice test vs drill — UserProgress session tagging confirmed
+S24 Incorrect questions review feature plan — API contract design for GET /study/review endpoint (Jul 16, 10:43 AM)
+S25 Incorrect questions review feature plan — frontend UX and architecture design (Section 3) (Jul 16, 10:44 AM)
+S26 Incorrect questions review feature plan — incorrect_questions_plan.md written and delivered for review (Jul 16, 10:45 AM)
+148 10:48a 🔵 Project plan file conventions established via admin_dashboard_plan.md format
+149 " ✅ incorrect_questions_plan.md created with full design spec for missed questions review feature
+S27 Spec alignment of incorrect_questions_plan.md §4 with tasks file — confirmed feature not yet implemented (Jul 16, 10:50 AM)
+150 10:51a 🔵 Incorrect Questions Review — Design Spec Found in DSAT_REDUX_MD
+151 " 🔵 Gap Review Confirmed: `user_progress` Lacks `source_type` Column and `POST /submit` Has No Session Tagging
+152 10:52a 🔵 All `submitAnswer` Call Sites Mapped — None Send `source_type`, DiagnosticTab Has a Subtle Fallback Gap
+153 " 🔵 Question Model Has All Fields Needed for GET /study/review Without Additional Columns
+154 10:53a 🔵 Migration Infrastructure Confirmed, DashboardPage Entry Point Absent, and Two Unlisted Call Sites Found
+156 10:54a 🟣 incorrect_questions_tasks.md created with 6 phased implementation tasks
+157 " ✅ incorrect_questions_plan.md updated with gap-review fixes
+S29 User confirmed: add explicit Phase N headers to incorrect_questions_tasks.md to make phase structure visible (Jul 16, 11:10 AM)
+S28 User asked if task file is specced into phases — confirmed yes, via IQ-B/IQ-F/IQ-QA prefix structure with dependency map, not explicit Phase N headers (Jul 16, 1:37 PM)
+S30 Add explicit Phase 1–4 headers to incorrect_questions_tasks.md — completed full structural reorganization (Jul 16, 2:20 PM)
+155 2:24p ✅ Added explicit Phase headers to incorrect_questions_tasks.md
+S31 User asked about parallelizing tasks — analysis shows critical path is essentially serial except for one backend∥frontend worktree split (Jul 16, 2:24 PM)
+158 2:46p ✅ incorrect_questions_tasks.md and plan gap-cleared with second-pass implementation detail
+160 " ✅ Third-pass patch attempted on both task/plan files — failed on plan content_origin text mismatch
+159 2:47p 🔵 UserProgress model confirmed missing source_type column — IQ-B01 migration not yet run
+161 2:48p ✅ incorrect_questions_tasks.md updated with row_number latest-row semantics and parallel B02/B03 execution model
+162 2:49p ✅ incorrect_questions_plan.md patched with row_number latest-row semantics — plan and tasks files now in sync
+163 2:51p ✅ incorrect_questions_tasks.md — fourth-pass operational hardening applied (7 independent gaps closed)
+164 " ✅ incorrect_questions_plan.md — correct-answer source-of-truth section rewritten to match tasks file graceful-degradation logic
+165 " ✅ Fifth-pass patch applied to both spec files — CSV validation, page-reset, filter-bar, and NULL source semantics gaps closed
+167 2:56p ⚖️ Implementation started on branch `missed_question` for incorrect question review feature
+168 2:57p 🔵 DSAT project environment and UserProgress model state confirmed before IQ-B01 implementation
+169 " 🟣 IQ-B01 implemented: `source_type` column added to UserProgress model with migration 034 and model test
+170 2:58p 🔵 `uv run` fails in primary session environment — read-only filesystem blocks uv cache writes
+S32 Create branch `missed_question` and begin implementing incorrect question review feature (IQ-B01 through IQ-QA01) (Jul 16, 2:58 PM)
+171 3:01p 🔵 Parallel verification commands timing out — alembic current likely blocking on DB connection
+173 " 🔵 Alembic current hangs and psql exits with error — dev DB unreachable from host despite Docker showing it up
+172 " 🔵 Branch confirmed as `missed_question`; alembic current returned empty — migration 034 not yet applied to dev DB
+174 3:06p 🔵 Dev DB state confirmed: at revision 033, no source_type column, no lock contention — migration 034 not yet run
+175 3:07p 🟣 IQ-B01 model and migration verified: 7 tests pass, alembic heads shows 034, migration syntax clean
+176 3:08p 🔵 Pre-migration row count confirmed; alembic not on PATH in backend container — must use full venv path
+177 " 🔵 Backend container uses `.venv-jb` not `.venv` — correct alembic path is `/app/.venv-jb/bin/alembic`
+178 " 🔵 `.venv-jb` binaries exist as files but are not directly executable in the container — likely shebang or symlink points to host path
+179 3:09p 🟣 IQ-B01 migration 034 successfully applied to dev DB — source_type column backfilled and verified
+180 " ✅ Tasks file updated: IQ-B01 marked complete, IQ-B02 claimed as in_progress
+181 " 🔵 IQ-B02 pre-implementation reconnaissance complete — exact change points mapped for payload, backend, API client, hook, and tests
+182 " 🔵 IQ-B02 full call-site audit complete — exact lines, current payloads, and test assertions mapped for all 5 frontend components
+183 3:10p 🔵 Frontend test audit complete — TestModeTabAdaptive mocks the hook not the API; only one test has an exact payload assertion
+185 " 🟣 IQ-B02 implemented: source_type persisted from all submit paths across 10 files
+184 " 🔵 Complete submitAnswer call-site map finalized — 3 direct api calls, 4 hook usages, tsconfig at root
+186 3:12p 🟣 IQ-B02 fully verified: 47 backend tests pass, 8-9 frontend hook tests pass, TypeScript + Vite build succeeds
+187 " 🔵 Vite/rolldown build fails with `rtk proxy npm` but succeeds with `rtk npm` — Node 20.20.2 + rolldown SyntaxError in proxy mode
 
-Access 242k tokens of past work via get_observations([IDs]) or mem-search skill.
+Access 737k tokens of past work via get_observations([IDs]) or mem-search skill.
 </claude-mem-context>
