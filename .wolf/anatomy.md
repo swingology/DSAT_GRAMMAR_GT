@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-17T22:23:36.336Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-27T18:09:44.570Z
 > Files: 1126 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
@@ -121,7 +121,7 @@
 - `.codex` (~0 tok)
 - `.dockerignore` (~62 tok)
 - `.gitattributes` — Git attributes (~12 tok)
-- `.gitignore` — Git ignore rules (~121 tok)
+- `.gitignore` — Git ignore rules (~144 tok)
 - `.nvmrc` (~1 tok)
 - `2024_test3_answer_keys.md` — 2024 DSAT Test 3 — Answer Keys (~490 tok)
 - `2024_TESTS_STATUS.md` — 2024 Bluebook Tests — Ingestion Status (~1241 tok)
@@ -176,7 +176,7 @@
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
-- `start.sh` — One-shot launcher for the DSAT apps: (~1475 tok)
+- `start.sh` — One-shot launcher for the DSAT apps: (~1713 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
 - `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~5330 tok)
 - `STUDENT_UI_TASKS.md` — Student UI React Rebuild — Task Tracker (~4864 tok)

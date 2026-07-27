@@ -12365,3 +12365,202 @@ _( 8 files changed, 631 insertions(+), 75 deletions(-))_
 **Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 analysis/ingestion/PT01/run_2026-07-17_096b42ad-d3f7-42c4-926f-45885c009eec/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-17_096b42ad-d3f7-42c4-926f-45885c009eec/summary.md analysis/ingestion/PT01/run_2026-07-17_096b42ad-d3f7-42c4-926f-45885c009eec/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-17_096b42ad-d3f7-42c4-926f-45885c009eec/validation_failures.json 
 
 ---
+
+## Session snapshot — 2026-07-20 11:55:51 (session-end)
+_branch:_ `missed_question` · _commit:_ `3b9f583` · _ram:_ `7.1Gi/31Gi`
+
+_No uncommitted changes._
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89
+
+---
+
+## Session snapshot — 2026-07-26 06:24:19 (session-end)
+_branch:_ `missed_question` · _commit:_ `3b9f583` · _ram:_ `4.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 178 insertions(+), 12 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89
+
+---
+
+## Session snapshot — 2026-07-26 20:14:10 (session-end)
+_branch:_ `missed_question` · _commit:_ `3b9f583` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 212 insertions(+), 12 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-26 20:31:47 (session-end)
+_branch:_ `missed_question` · _commit:_ `3b9f583` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 222 insertions(+), 12 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-26 20:32:46 (session-end)
+_branch:_ `missed_question` · _commit:_ `3b9f583` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md _deprecated/incorrect_questions_plan.md _deprecated/incorrect_questions_tasks.md backups/backup.log
+_( 7 files changed, 232 insertions(+), 12 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-26 20:34:37 (session-end)
+_branch:_ `missed_question` · _commit:_ `3b9f583` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md _deprecated/incorrect_questions_plan.md _deprecated/incorrect_questions_tasks.md backups/backup.log
+_( 7 files changed, 242 insertions(+), 12 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-26 20:37:13 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 252 insertions(+), 12 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-26 20:43:27 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 263 insertions(+), 7 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-26 21:13:27 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 273 insertions(+), 7 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-26 21:14:06 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 283 insertions(+), 7 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 10:44:23 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `6.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 376 insertions(+), 12 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 10:46:45 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 386 insertions(+), 12 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 10:57:34 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `8.3Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 403 insertions(+), 8 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 11:02:10 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `8.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 418 insertions(+), 8 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 11:04:48 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 433 insertions(+), 8 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 11:07:50 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log
+_( 5 files changed, 443 insertions(+), 8 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 11:09:50 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `9.0Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh
+_( 8 files changed, 536 insertions(+), 21 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 11:20:25 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh
+_( 8 files changed, 551 insertions(+), 21 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 11:22:02 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `9.7Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh
+_( 8 files changed, 561 insertions(+), 21 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---
+
+## Session snapshot — 2026-07-27 11:23:51 (session-end)
+_branch:_ `missed_question` · _commit:_ `2a935df` · _ram:_ `9.9Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log start.sh
+_( 8 files changed, 576 insertions(+), 21 deletions(-))_
+
+**Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
+
+---

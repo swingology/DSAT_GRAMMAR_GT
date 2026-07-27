@@ -18,6 +18,13 @@ screenshot.png
 # OpenWolf interrupted-write temp files
 .wolf/*.tmp.*
 
+# start.sh admin dashboard process tracking
+.admin-dashboard.pid
+.admin-dashboard.log
+
+# Claude settings atomic-write leftovers
+.claude/settings.local.json.tmp.*
+
 # Auto Claude data directory
 .auto-claude/
 

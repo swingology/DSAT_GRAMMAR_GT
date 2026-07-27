@@ -23,6 +23,8 @@ STUDENT_TLS_PORT="${DSAT_STUDENT_TLS_PORT:-8443}"
 ADMIN_TLS_PORT="${DSAT_ADMIN_TLS_PORT:-8444}"
 ADMIN_TOKEN="${VITE_ADMIN_TOKEN:-admin-test-key}"
 BACKEND_ORIGIN="http://127.0.0.1:${BACKEND_PORT}"
+ADMIN_PID_FILE="$ROOT/.admin-dashboard.pid"
+ADMIN_LOG_FILE="$ROOT/.admin-dashboard.log"
 
 up() { curl -sf -o /dev/null --max-time 2 "http://127.0.0.1:$1$2"; }
 backend_up() { up "$BACKEND_PORT" /docs; }
@@ -77,8 +79,16 @@ case "${1:-start}" in
     ;;
 
   stop)
+    if [ -f "$ADMIN_PID_FILE" ]; then
+      pid="$(cat "$ADMIN_PID_FILE" 2>/dev/null || true)"
+      if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+        echo "Stopping admin dev server (pid $pid)..."
+        kill "$pid" 2>/dev/null || true
+      fi
+      rm -f "$ADMIN_PID_FILE"
+    fi
     if admin_up; then
-      echo "Stopping admin dev server on :${ADMIN_PORT}..."
+      echo "Admin dev server still on :${ADMIN_PORT}, force-killing..."
       fuser -k "${ADMIN_PORT}/tcp" 2>/dev/null || true
     fi
     bash "$RUN_SH" stop
@@ -102,7 +112,9 @@ case "${1:-start}" in
     # Ensure the student grammar app is served over Tailscale at https://<node>:8443.
     student_up && ensure_student_tls
 
-    # 2. Admin dashboard on the host.
+    # 2. Admin dashboard on the host, auto-started detached (survives this shell
+    #    exiting — a prior foreground `exec` here meant admin died with the
+    #    invoking terminal, which is why it kept turning up DOWN).
     if admin_up; then
       echo "Admin dashboard already running on :${ADMIN_PORT}."
       # Re-affirm the Tailscale TLS proxy in case it was dropped.
@@ -110,6 +122,15 @@ case "${1:-start}" in
       summary
       exit 0
     fi
+
+    # Clear a stale pidfile/orphaned process from a previous crashed run before
+    # launching a fresh one, so we don't leak zombie vite processes.
+    if [ -f "$ADMIN_PID_FILE" ]; then
+      old_pid="$(cat "$ADMIN_PID_FILE" 2>/dev/null || true)"
+      [ -n "$old_pid" ] && kill "$old_pid" 2>/dev/null || true
+      rm -f "$ADMIN_PID_FILE"
+    fi
+    fuser -k "${ADMIN_PORT}/tcp" 2>/dev/null || true
 
     # Node 20 via NVM (host default), per project convention.
     source "$HOME/.nvm/nvm.sh"
@@ -120,12 +141,20 @@ case "${1:-start}" in
     # the proxy config, so the port doesn't need to be up yet.
     ensure_admin_tls
 
+    echo "Starting admin dashboard on :${ADMIN_PORT} (detached, log: ${ADMIN_LOG_FILE})..."
+    nohup env VITE_BACKEND_ORIGIN="$BACKEND_ORIGIN" VITE_ADMIN_TOKEN="$ADMIN_TOKEN" \
+      npm run dev -- --host 127.0.0.1 --port "$ADMIN_PORT" --strictPort \
+      >"$ADMIN_LOG_FILE" 2>&1 &
+    disown
+    echo $! >"$ADMIN_PID_FILE"
+
+    for _ in $(seq 1 30); do
+      admin_up && break
+      sleep 1
+    done
+    admin_up || echo "WARN: admin dashboard did not come up at :${ADMIN_PORT} within 30s — check ${ADMIN_LOG_FILE}" >&2
+
     summary
-    echo
-    echo "Starting admin dashboard on :${ADMIN_PORT}..."
-    echo "(Ctrl-C stops only the admin app; the stack keeps running. Use './start.sh stop' to stop everything.)"
-    exec env VITE_BACKEND_ORIGIN="$BACKEND_ORIGIN" VITE_ADMIN_TOKEN="$ADMIN_TOKEN" \
-      npm run dev -- --host 127.0.0.1 --port "$ADMIN_PORT" --strictPort
     ;;
 
   *)
