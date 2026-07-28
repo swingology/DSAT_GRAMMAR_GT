@@ -14,6 +14,8 @@ node_modules/
 .playwright-mcp/
 screenshot.png
 *.tmp
+.stimulus-worker.log
+.stimulus-worker.pid
 
 # OpenWolf interrupted-write temp files
 .wolf/*.tmp.*
@@ -30,3 +32,4 @@ screenshot.png
 
 # DB backup dumps — rotated locally by scripts/backup_db.sh, never committed
 backups/*.dump
+.worktrees/
