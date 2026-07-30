@@ -9,6 +9,7 @@ import { DiagnosticPage } from './pages/DiagnosticPage'
 import { PracticeTestPage } from './pages/PracticeTestPage'
 import { ConceptSelectorPage } from './pages/ConceptSelectorPage'
 import { MixedPracticePage } from './pages/MixedPracticePage'
+import { QuickPickPage } from './pages/QuickPickPage'
 import { DiagnosticHistoryPage } from './pages/DiagnosticHistoryPage'
 import { DiagnosticDetailPage } from './pages/DiagnosticDetailPage'
 import { ProgressPage } from './pages/ProgressPage'
@@ -31,6 +32,7 @@ export default function App() {
                     <Route path="/" element={<DashboardPage />} />
                     <Route path="/practice/grammar" element={<GrammarPractice />} />
                     <Route path="/practice/concepts" element={<ConceptSelectorPage />} />
+                    <Route path="/practice/quick" element={<QuickPickPage />} />
                     <Route path="/practice/mixed" element={<MixedPracticePage />} />
                     <Route path="/diagnostic" element={<DiagnosticPage />} />
                     <Route path="/diagnostic/history" element={<DiagnosticHistoryPage />} />
