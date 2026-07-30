@@ -21,6 +21,11 @@ export interface StudyRecommendationsResponse {
   threshold: number
 }
 
+export interface StimulusModeCount {
+  stimulus_mode_key: string
+  count: number
+}
+
 export interface Question {
   id: string
   text: string

@@ -174,6 +174,9 @@ export const api = {
   getStats: (userId: number) =>
     apiCall(`/stats/${userId}`),
 
+  getStimulusCounts: (): Promise<import('../types').StimulusModeCount[]> =>
+    apiCall('/questions/stimulus-counts'),
+
   getMissedQuestions: (params: { user_token: string; domain?: string; sort_by?: string; limit?: number }) => {
     const query = new URLSearchParams({ user_token: params.user_token })
     if (params.domain) query.set('domain', params.domain)
