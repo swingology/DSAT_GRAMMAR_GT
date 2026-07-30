@@ -103,37 +103,53 @@ export function ConceptSelectorPage() {
                   pct >= 70 ? 'bg-red-400' : pct >= 40 ? 'bg-amber-400' : 'bg-emerald-400'
 
                 return (
-                  <motion.button
+                  <motion.div
                     key={`${t.domain}-${t.focus_key}`}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.04, duration: 0.2, ease: 'easeOut' }}
-                    onClick={() =>
-                      navigate(
-                        `/practice/grammar?focus_key=${encodeURIComponent(t.focus_key)}&domain=${encodeURIComponent(t.domain)}&limit=${limit}`
-                      )
-                    }
-                    className="w-full text-left bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-blue-300 hover:shadow-sm transition-all group"
+                    className="flex items-stretch gap-2"
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-gray-400 w-5 flex-shrink-0 font-mono">{i + 1}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-800 group-hover:text-blue-700">
-                          {t.focus_key.replace(/_/g, ' ')}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-0.5">{t.domain}</p>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${barColor} rounded-full`}
-                            style={{ width: `${Math.min(pct, 100)}%` }}
-                          />
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/practice/grammar?focus_key=${encodeURIComponent(t.focus_key)}&domain=${encodeURIComponent(t.domain)}&limit=${limit}`
+                        )
+                      }
+                      className="flex-1 text-left bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-blue-300 hover:shadow-sm transition-all group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-gray-400 w-5 flex-shrink-0 font-mono">{i + 1}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-800 group-hover:text-blue-700">
+                            {t.focus_key.replace(/_/g, ' ')}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-0.5">{t.domain}</p>
                         </div>
-                        <span className="text-xs font-mono text-gray-400 w-8 text-right">{pct}%</span>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full ${barColor} rounded-full`}
+                              style={{ width: `${Math.min(pct, 100)}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-mono text-gray-400 w-8 text-right">{pct}%</span>
+                        </div>
                       </div>
-                    </div>
-                  </motion.button>
+                    </button>
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/practice/quick?domain=${encodeURIComponent(t.domain)}&focus_key=${encodeURIComponent(t.focus_key)}`
+                        )
+                      }
+                      aria-label={`Quick Pick 10 for ${t.focus_key.replace(/_/g, ' ')}`}
+                      title="Quick Pick: 10 questions, mixed difficulty"
+                      className="flex-shrink-0 w-11 flex items-center justify-center bg-white border border-gray-200 rounded-xl hover:border-violet-300 hover:bg-violet-50 transition-all text-lg"
+                    >
+                      ⚡
+                    </button>
+                  </motion.div>
                 )
               })}
             </div>

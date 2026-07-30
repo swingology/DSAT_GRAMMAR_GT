@@ -12,7 +12,9 @@ function q(id: string) {
 }
 
 describe('useQuickPickQuestions', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
 
   it('fetches low/medium/high in a 3/4/3 split for the given concept', async () => {
     vi.mocked(api.getQuestions).mockImplementation(async (params: any) => {

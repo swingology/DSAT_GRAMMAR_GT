@@ -82,4 +82,20 @@ describe('ConceptSelectorPage', () => {
     fireEvent.click(screen.getByText('Prose + Graph'))
     expect(mockNavigate).toHaveBeenCalledWith('/practice/mixed?stimulus_mode_key=prose_plus_graph&limit=10')
   })
+
+  it('navigates to the drill route when the row body is tapped', () => {
+    wrap(<ConceptSelectorPage />)
+    fireEvent.click(screen.getByText('comma splice'))
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/practice/grammar?focus_key=comma_splice&domain=grammar&limit=10'
+    )
+  })
+
+  it('navigates to the quick pick route when the quick pick action is tapped', () => {
+    wrap(<ConceptSelectorPage />)
+    fireEvent.click(screen.getByRole('button', { name: /Quick Pick/i }))
+    expect(mockNavigate).toHaveBeenCalledWith(
+      '/practice/quick?domain=grammar&focus_key=comma_splice'
+    )
+  })
 })
