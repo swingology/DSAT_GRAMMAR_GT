@@ -28,6 +28,7 @@ from app.models.payload import (
     UserProgressCreate,
     UserStats,
     ActivityDayCount,
+    StimulusModeCountResponse,
     WeaknessTarget,
     StudyRecommendationsRequest,
     StudyRecommendationsResponse,
@@ -80,7 +81,7 @@ from app.models.payload import (
     TestSessionHistoryItem,
     TestSessionHistoryResponse,
 )
-from app.models.ontology import CONTENT_ORIGINS, GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY
+from app.models.ontology import CONTENT_ORIGINS, GRAMMAR_FOCUS_BY_ROLE, READING_FOCUS_BY_SKILL_FAMILY, STIMULUS_MODE_KEYS
 
 logger = logging.getLogger(__name__)
 
@@ -537,6 +538,37 @@ async def student_recall(
     )
 
     return StudentQuestionsListResponse(items=items, inventory=inventory)
+
+
+@router.get("/questions/stimulus-counts", response_model=list[StimulusModeCountResponse])
+async def get_stimulus_mode_counts(
+    db: AsyncSession = Depends(get_db),
+    auth: Tuple[str, str] = Depends(admin_or_student_required),
+):
+    """Count active questions per canonical stimulus_mode_key, for the practice-by-type picker."""
+    dry_run_exists = (
+        select(QuestionJob.id)
+        .join(GenerationBatch, GenerationBatch.id == QuestionJob.generation_batch_id)
+        .where(
+            QuestionJob.question_id == Question.id,
+            GenerationBatch.release_policy == _DRY_RUN_RELEASE_POLICY,
+        )
+        .exists()
+    )
+    result = await db.execute(
+        select(Question.stimulus_mode_key, func.count())
+        .where(Question.practice_status == "active")
+        .where(~dry_run_exists)
+        .group_by(Question.stimulus_mode_key)
+    )
+    counts_by_key = dict(result.all())
+    return [
+        StimulusModeCountResponse(
+            stimulus_mode_key=key,
+            count=counts_by_key.get(key, 0) or 0,
+        )
+        for key in STIMULUS_MODE_KEYS
+    ]
 
 
 @router.post("/submit")
