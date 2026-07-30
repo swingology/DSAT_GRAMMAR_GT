@@ -997,3 +997,6 @@ Error response from daemon: can only create exec sessions on running containers:
 [Thu Jul 30 00:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260730_000001.dump
 [Thu Jul 30 00:00:01 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260730_000001.dump (5.0M)
 [Thu Jul 30 00:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260729_171846_pre_vocab_canonicalization.dump
+[Thu Jul 30 10:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260730_100001.dump
+[Thu Jul 30 10:00:02 PDT 2026] Backup complete: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260730_100001.dump (5.0M)
+[Thu Jul 30 10:00:02 PDT 2026] Pruning old backup: /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260729_173825_pre_stem_type_canonicalization.dump

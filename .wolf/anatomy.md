@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-30T07:53:11.671Z
-> Files: 1207 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-30T17:12:56.042Z
+> Files: 1220 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -333,6 +333,40 @@
 - `batch-9.json` (~4392 tok)
 - `scan-result.json` (~12785 tok)
 - `tour.json` — Declares defined (~2484 tok)
+
+## .worktrees/concept-quick-pick/APP/STUDENT_APP_REDUX/src/
+
+- `App.tsx` — queryClient (~689 tok)
+
+## .worktrees/concept-quick-pick/APP/STUDENT_APP_REDUX/src/components/
+
+- `GrammarPractice.tsx` — GrammarPractice (~757 tok)
+- `QuestionCard.tsx` — QuestionCard (~1186 tok)
+
+## .worktrees/concept-quick-pick/APP/STUDENT_APP_REDUX/src/components/__tests__/
+
+- `QuestionCard.test.tsx` — question (~696 tok)
+
+## .worktrees/concept-quick-pick/APP/STUDENT_APP_REDUX/src/hooks/
+
+- `useGrammarSession.ts` — 1. renderSentence() (~4140 tok)
+- `useQuickPickQuestions.ts` — Exports useQuickPickQuestions (~1036 tok)
+
+## .worktrees/concept-quick-pick/APP/STUDENT_APP_REDUX/src/hooks/__tests__/
+
+- `useGrammarSession.test.ts` — Mock the API (~2387 tok)
+- `useQuickPickQuestions.test.ts` — Declares q (~1112 tok)
+
+## .worktrees/concept-quick-pick/APP/STUDENT_APP_REDUX/src/pages/
+
+- `ConceptSelectorPage.tsx` — STIMULUS_TYPE_LABELS (~2565 tok)
+- `MixedPracticePage.tsx` — MixedPracticePage (~1113 tok)
+- `QuickPickPage.tsx` — QuickPickPage (~948 tok)
+
+## .worktrees/concept-quick-pick/APP/STUDENT_APP_REDUX/src/pages/__tests__/
+
+- `ConceptSelectorPage.test.tsx` — mockNavigate (~1064 tok)
+- `QuickPickPage.test.tsx` — useQuickPickQuestions (~934 tok)
 
 ## .worktrees/stimulus-type-picker/
 

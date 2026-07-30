@@ -12878,3 +12878,51 @@ _( 22 files changed, 877 insertions(+), 1513 deletions(-))_
 **Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
 
 ---
+
+## Session snapshot — 2026-07-30 09:14:23 (session-end)
+_branch:_ `missed_question` · _commit:_ `6cac136` · _ram:_ `5.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 
+_( 3 files changed, 9 insertions(+), 4 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 09:26:59 (session-end)
+_branch:_ `missed_question` · _commit:_ `6cac136` · _ram:_ `6.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 34 insertions(+), 5 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 09:27:31 (session-end)
+_branch:_ `missed_question` · _commit:_ `6cac136` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 4 files changed, 42 insertions(+), 5 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 10:08:25 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `6cac136` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 127 insertions(+), 9 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 10:12:56 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `6cac136` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 281 insertions(+), 10 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 10:16:21 (session-end)
+_branch:_ `missed_question` · _commit:_ `6cac136` · _ram:_ `7.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 141 insertions(+), 6 deletions(-))_
+
+---
