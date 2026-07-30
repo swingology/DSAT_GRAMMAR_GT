@@ -128,6 +128,12 @@ class ActivityDayCount(BaseModel):
     count: int
 
 
+class StimulusModeCountResponse(BaseModel):
+    """Count of active questions for one canonical stimulus_mode_key."""
+    stimulus_mode_key: str
+    count: int
+
+
 class AdminEditRequest(BaseModel):
     question_text: Optional[str] = None
     passage_text: Optional[str] = None

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createElement } from 'react'
-import { useRecommendations, useMissedQuestions, useSubmitAnswer } from '../useDashboardData'
+import { useRecommendations, useMissedQuestions, useSubmitAnswer, useStimulusCounts } from '../useDashboardData'
 import * as clientModule from '../../api/client'
 
 vi.mock('../../api/client', () => ({
@@ -11,6 +11,7 @@ vi.mock('../../api/client', () => ({
     getMissedQuestions: vi.fn(),
     submitAnswer: vi.fn(),
     getQuestions: vi.fn(),
+    getStimulusCounts: vi.fn(),
   },
 }))
 
@@ -172,6 +173,30 @@ describe('useSubmitAnswer', () => {
       selected_option_label: 'B',
       source_type: 'practice',
     })
+
+    await waitFor(() => expect(result.current.isError).toBe(true))
+  })
+})
+
+describe('useStimulusCounts', () => {
+  it('returns counts on success', async () => {
+    const mockData = [
+      { stimulus_mode_key: 'sentence_only', count: 559 },
+      { stimulus_mode_key: 'prose_plus_graph', count: 43 },
+    ]
+    mockedApi.getStimulusCounts.mockResolvedValue(mockData)
+
+    const { result } = renderHook(() => useStimulusCounts(), { wrapper: makeWrapper() })
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toHaveLength(2)
+    expect(result.current.data?.[1].stimulus_mode_key).toBe('prose_plus_graph')
+  })
+
+  it('enters error state when API fails', async () => {
+    mockedApi.getStimulusCounts.mockRejectedValue(new Error('network error'))
+
+    const { result } = renderHook(() => useStimulusCounts(), { wrapper: makeWrapper() })
 
     await waitFor(() => expect(result.current.isError).toBe(true))
   })

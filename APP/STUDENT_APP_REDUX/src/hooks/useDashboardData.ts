@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api, type SubmitSourceType } from '../api/client'
-import type { StudyRecommendationsResponse } from '../types'
+import type { StudyRecommendationsResponse, StimulusModeCount } from '../types'
 import { getUserToken } from '../auth/authStore'
 
 
@@ -45,6 +45,14 @@ export function useRecommendations() {
   return useQuery<StudyRecommendationsResponse>({
     queryKey: ['recommendations'],
     queryFn: () => api.getStudyRecommendations(getUserToken()),
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useStimulusCounts() {
+  return useQuery<StimulusModeCount[]>({
+    queryKey: ['stimulus-counts'],
+    queryFn: () => api.getStimulusCounts(),
     staleTime: 5 * 60 * 1000,
   })
 }

@@ -519,7 +519,6 @@ Git checkpoint: `5c7597a` — Add admin dashboard audit and launcher support
    - Root cause: no canonical test-id column exists; `source_test_name` is freeform and `source_exam_code` carries dirty values (`05`, `verbal`, `SAT`). Grouping/filtering on those raw fields cannot identify one logical test across its inconsistent source rows.
    - **Fixed:** Added a server-side canonical PT# derivation `_pt_number_expr` in `backend/app/routers/admin.py` (digits of `source_exam_code`, else first digit run of `source_test_name` via a two-stage `regexp_replace` that avoids the `NULLIF(result, original)` trap on purely-numeric test_name like `"05"`). `list_tests` now `GROUP BY (year, pt, subject, section, module)` and returns `pt_number`; `list_questions` gained a `pt_number` filter and sorts by `pt_number`; `TestSummary` gained `pt_number` (legacy `source_test_name`/`source_exam_code` kept optional, now null). Frontend (`DataManagement.tsx`, `types/index.ts`) renders cards as `Year · PT# · Sec## · Mod##`, question rows as `Year · PT# · Sec## · Mod## · Q#`, and filters by `pt_number`. Verified via curl: 49 deduplicated cards (was 58 raw rows); the 2024 PT5 Mod02B card returns all 38 merged questions sorted by Q#. TypeScript typecheck clean. Logged as bug-788 in `.wolf/buglog.json`; related to bug-787 (the `/admin/tests` 500 that first exposed this surface).
 
-
 ## 2026-07-15 - Admin dashboard add-user 502 on stale :5173 instance; .env missing VITE_BACKEND_ORIGIN
 Report created by: Claude (glm-5.2:cloud)
 Git branch: `oauth_feature`
