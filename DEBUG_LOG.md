@@ -1,5 +1,16 @@
 # Debug Log
 
+## 2026-07-29 - MixedPracticePage never renders a question
+Report created by: Claude Sonnet 5
+Git branch: `stimulus-type-picker`
+Git checkpoint: `35103be` — Add implementation plan for stimulus-type practice picker
+
+### Findings
+
+1. **High (Fixed):** `MixedPracticePage` always showed the "No questions available right now." empty state, even when the backend had matching questions.
+   - `GET /api/questions` (`backend/app/routers/student.py::student_recall`) returns `StudentQuestionsListResponse` with fields `{items, inventory}` — there is no `questions` key. `MixedPracticePage.tsx:136` read `data?.questions?.[0]`, which was always `undefined`, so `question` was always `null`.
+   - **Fixed:** Changed `data?.questions?.[0]` to `data?.items?.[0]` in `MixedPracticePage.tsx:136`, matching the actual response shape. Added a regression test (`src/pages/__tests__/MixedPracticePage.test.tsx`) asserting a question renders from a mocked `{items: [...]}` response. Logged as bug-813 in `.wolf/buglog.json`.
+
 ## 2026-07-15 - Admin dashboard add-user 502 on stale :5173 instance; .env missing VITE_BACKEND_ORIGIN
 Report created by: Claude (glm-5.2:cloud)
 Git branch: `oauth_feature`

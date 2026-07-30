@@ -123,7 +123,7 @@ export function MixedPracticePage() {
       }),
   })
 
-  const question: Question | null = data?.questions?.[0] ?? null
+  const question: Question | null = data?.items?.[0] ?? null
 
   function handleNext() {
     const newAnswered = answered + 1

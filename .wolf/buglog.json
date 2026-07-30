@@ -6698,5 +6698,24 @@
     "related_bugs": [],
     "occurrences": 1,
     "last_seen": "2026-07-15"
+  },
+  {
+    "id": "bug-813",
+    "timestamp": "2026-07-29T22:02:00Z",
+    "error_message": "MixedPracticePage always renders empty state 'No questions available right now.' because it reads data.questions instead of data.items",
+    "file": "APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx",
+    "root_cause": "GET /api/questions returns StudentQuestionsListResponse with {items, inventory}, but line 126 tried to read data?.questions?.[0], which is always undefined since the questions key never existed on the API response shape.",
+    "fix": "FIXED: Changed data?.questions?.[0] to data?.items?.[0] in MixedPracticePage.tsx:126, matching the actual StudentQuestionsListResponse shape ({items, inventory}). Added a regression test (MixedPracticePage.test.tsx) asserting a question renders from a mocked {items: [...]} response.",
+    "tags": [
+      "student-app",
+      "api-shape-mismatch",
+      "react-query",
+      "mixed-practice",
+      "field-name",
+      "regression-test"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-29T22:02:00Z"
   }
 ]
