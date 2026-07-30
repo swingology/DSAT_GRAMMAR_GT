@@ -34,6 +34,8 @@ services:
       # Extraction/annotation reach the host's Ollama daemon (glm-ocr + :cloud models).
       # Inside the container `localhost:11434` is the container itself, so route via host-gateway.
       OLLAMA_BASE_URL: http://host.docker.internal:11434
+      # Align local filesystem object store with the host repo-root local_object_store.
+      OBJECT_STORAGE_LOCAL_ROOT: /local_object_store
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -41,6 +43,11 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
+      - ./local_object_store:/local_object_store
+      # vocabulary/ holds the controlled-vocab manifest (master.json) and the
+      # candidate review queue (candidates.json). Mount read-only so the API
+      # can surface them in the admin dashboard without granting write access.
+      - ./vocabulary:/vocabulary:ro
     healthcheck:
       # CMD-SHELL, not exec-array CMD: podman mis-tokenizes a multi-word -c
       # argument in exec-array form (splits it on whitespace, breaking `-c`).

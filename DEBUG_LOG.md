@@ -1,5 +1,525 @@
 # Debug Log
 
+## 2026-07-29 - MixedPracticePage never renders a question (field-name mismatch)
+Report created by: Claude Sonnet 5
+Git branch: `missed_question`
+Git checkpoint: `a230326` — Add design spec for stimulus-type practice picker
+
+### Findings
+
+1. **High:** `MixedPracticePage.tsx:136` reads `data?.questions?.[0]`, but `GET /api/questions`
+   (`backend/app/routers/student.py::student_recall`, `response_model=StudentQuestionsListResponse`
+   in `backend/app/models/payload.py`) returns `{items, inventory}` — there is no `questions` key.
+   `question` is always `null`, so every Mixed Practice session falls through to the
+   "No questions available right now." empty state, regardless of what filters are applied.
+   - Affected: `APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx`.
+   - Discovered while designing the stimulus-type picker feature (routes into this page).
+   - **Fix scheduled:** Task 0 of `docs/superpowers/plans/2026-07-29-stimulus-type-picker.md`
+     (`data?.questions?.[0]` → `data?.items?.[0]`, with a regression test).
+
+## 2026-07-29 - stem_type_key column/jsonb drift and stray values across active question bank (canonicalized)
+Report created by: glm-5.2:cloud
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High:** 744 of 1410 active questions carried a non-canonical `stem_type_key` in the
+   denormalized `questions.stem_type_key` column (residual pre-`canonicalize_stem`/sanitizer Pass-1
+   emission labels, e.g. `grammar_convention`×54, `synthesize_notes`×48, `transition`×45,
+   `conventions_of_standard_english`×34). A further 211 rows had column AND `annotation_jsonb` BOTH
+   canonical yet DISAGREEING (e.g. column `complete_the_text` vs jsonb `most_logically_completes`).
+   Diagnostic blueprint filtering keys off `annotation_jsonb.stem_type_key` (`diagnostic/queries.py`)
+   while practice recall + review facets read the `questions.stem_type_key` column (`routers/student.py`),
+   so strays and disagreements made the two code paths surface different question sets.
+   - Affected: `questions.stem_type_key`; `question_annotations.annotation_jsonb->>'stem_type_key'`.
+   - **Root cause:** the flat column drifted from authoritative `annotation_jsonb` (pre-canonicalization
+     era). The `annotation_sanitizer` uses `difflib.get_close_matches` (cutoff 0.7), NOT the
+     `_STEM_ALIASES` map, so same-dimension strays like `conventions_of_english` were dropped to null
+     rather than mapped; the column was never re-synced.
+   - **Fixed:** `scripts/fix_stem_type_canonicalization.sql` (bug-812). Aligned column←jsonb for 940
+     rows where jsonb was canonical and they differed; same-dimension task→task alias-map (6 entries
+     incl `grammar_convention`) applied to 15 edge rows (13 jsonb-stray + 1 no-key + 1 no-annotation):
+     column set for 15, jsonb canonicalized for 13, key added for the 1 no-key row. Added 4 missing
+     aliases to `_STEM_ALIASES` in `extract_prompt.py` (`choose_grammatically_correct_form`,
+     `conventions_of_english`, `choose_logical_transition`, `synthesize_information_from_notes`) for
+     recurrence prevention. Post-state: 0 column strays, 0 jsonb strays, 0 col/jsonb disagreement
+     across all 1410 active questions. Pre-repair backup: `backups/stem_type_pre_repair_20260729_192456.dump`.
+
+## 2026-07-29 - Stray off-vocabulary keys in active question bank broke diagnostic targeting and stimulus-mode filtering (canonicalized)
+Report created by: glm-5.2:cloud
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High:** ~150 active questions carried stray off-vocabulary keys. `stimulus_mode_key` (column) had
+   24 stray values (only 9 canonical: sentence_only, passage_excerpt, prose_single, prose_paired,
+   prose_plus_table, prose_plus_graph, notes_bullets, notes_summary, poem); `grammar_role_key`
+   had 19 strays; `skill_family_key` had 9 strays — all grammar-domain concepts misplaced into the
+   reading field (e.g. `Boundaries`, `Form, Structure, and Sense`, `agreement`). Stray
+   grammar_role/skill_family values never match any diagnostic blueprint slot, so affected questions
+   silently fell through to the "any active" fallback, degrading diagnostic targeting. Stimulus-mode
+   filtering (practice recall reads `questions.stimulus_mode_key`) missed whole question families.
+   - Affected: `questions.stimulus_mode_key`; `question_annotations.annotation_jsonb`
+     (grammar_role_key, skill_family_key).
+   - **Root cause:** the validator tags unknown vocab keys `severity="review"` (non-blocking, by
+     design — `validator.py:107` "LLM may return near-miss keys"), recording them to
+     `candidates.json` but never blocking or canonicalizing; nobody processed `candidates.json`, so
+     strays accumulated. Separately, the denormalized `questions.stimulus_mode_key` column had
+     drifted from the authoritative `annotation_jsonb` value (293 rows disagreed pre-repair).
+   - **Fixed (one-time DB repair, scope = data only, no pipeline change):** grammar_role near-miss
+     synonyms -> canonical (verb->verb_form, adjective->modifier, subject_pronoun->pronoun, etc.);
+     2 reading-domain names misplaced into grammar_role (information_and_ideas, craft_and_structure)
+     -> NULL + `needs_human_review=true`; all 9 stray skill_family keys -> NULL (the grammar_role
+     sibling carries the domain); `stimulus_mode_key` column aligned <-
+     `annotation_jsonb->>'stimulus_mode_key'` (latest_annotation_id) for all 293 disagreeing rows
+     (annotation is the canonical authoritative source). Result: **0 strays in all 4 fields**,
+     column<->annotation **0 disagreements**. 4 low-confidence rows flagged for re-annotation
+     (conventions_grammar x2, information_and_ideas, craft_and_structure). Pre-fix backup
+     `backups/dsat_dev_20260729_171846_pre_vocab_canonicalization.dump`. bug-811.
+   - **Diagnostic pool after repair:** 707 grammar + 677 reading + 25 no-domain (fall to any-active).
+   - **Key lesson:** `annotation_jsonb` is the authoritative source; the `questions.<key>` columns
+     drift. Repair = align column <- annotation, NOT hand-mapping from stem_type heuristics (the
+     initial hand-map got `notes` wrong — mapped to notes_summary from the synthesis stem, but the
+     annotation correctly said notes_bullets: stimulus_mode = stimulus FORMAT, stem_type = TASK,
+     they are orthogonal).
+2. **Low (out of scope, flagged):** `stem_type_key` also carries strays (grammar_punctuation,
+   synthesize_notes, rhetorical_synthesis, synthesize_information, etc.) — not touched in this
+   repair. Recurrence prevention (validator alias layer or blocking unknown vocab keys) also not
+   done — scope was DB repair only. Both are future items.
+
+
+## 2026-07-29 - Admin Google OAuth login HTTP 500: uvicorn --reload poisoned SQLAlchemy mapper state (not a code bug)
+Report created by: glm-5.2:cloud
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High:** `POST /api/auth/google` (and `POST /api/auth/refresh`) returned HTTP 500 with
+   `TypeError: tuple indices must be integers or slices, not NoneType`, raised inside SQLAlchemy
+   `unitofwork.py:371` (`lambda tup: tup[0]._props.get(tup[1].key) is tup[1].prop`) during
+   `db.commit()` in `student_auth.py:google_login` (writing `user.refresh_token` /
+   `refresh_token_expires`). Google OAuth login was broken on the admin app and the tailscale
+   endpoint.
+   - Affected: `backend/app/routers/student_auth.py` (line ~166 commit site);
+     `backend/app/main.py` (uvicorn `--reload` launch).
+   - **Root cause (NOT a code/model bug):** uvicorn `--reload` re-imported SQLAlchemy mappers
+     in-place at ~16:18–16:19 (a batch edit adding a model to `db.py` + touching `payload.py`
+     and multiple routers) without cleanly tearing down the old mapper registry, poisoning the
+     long-running worker's unit-of-work dependency-processor state (`PopulateDict.__missing__`
+     → creator returned `None` in `uow._mapper_for_dep`). Every `commit()` in the poisoned
+     worker 500'd. Proof: reproducing the identical commit in a *fresh* python process inside
+     the same container returned `COMMIT OK`, confirming the models and DB were fine and only
+     the live worker was corrupt.
+   - **Fixed:** `docker restart dsat-backend` so the process re-imports mappers cleanly.
+     Verified `POST /api/auth/google` → `200 OK` in the live logs and the user confirmed
+     successful login. bug-810.
+   - **Prevention:** drop `--reload` in the dev stack (or restart the worker after any
+     multi-file model edit). A fresh-process repro is the diagnostic that distinguishes
+     "code is broken" from "worker state is corrupt."
+2. **Low:** Default JWT secrets were re-activated by the restart (see bug-779/780 family) —
+   `.env` must be reloaded for production secrets. Flagged, not in scope for this fix.
+
+## 2026-07-29 - Ingestion blocking policy: graph/chart questions and other recoverable blocking errors were silently dropped instead of held for review
+Report created by: Claude Sonnet 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High:** Any per-question `blocking` validation error during ingestion caused that question to
+   be skipped entirely — never persisted to the DB in any status, not even `draft`. The
+   `validate_annotation_completeness` docstring claimed "blocking prevents active promotion" but
+   the actual per-question loop in `routers/ingest.py` did a hard `continue` on any blocking error
+   before persistence. This is the root cause behind PT4 Mod02 Q13 and PT5 Mod02's graph question
+   needing manual SQL backfill earlier today instead of showing up in the admin review queue.
+   - **Fixed:** Per user direction, redefined the blocking-error policy in
+     `pipeline/validator.py`: (1) any chart/graph/table stimulus (`stimulus_mode_key` in
+     `prose_plus_graph`/`prose_plus_table`, or `table_data`/`graph_data` present) now always
+     blocks, independent of `skill_family_key`; (2) non-visual questions now also require
+     `passage_text` (question_text + 4 options were already required). All pre-existing blocking
+     checks were kept. In `routers/ingest.py`, `_persist_single_question` gained a `force_draft`
+     parameter: only blocking errors on `question_text`/`options`/`correct_option_label`
+     (structurally unusable data) still skip persistence; every other blocking reason now persists
+     the question with `practice_status='draft'` and `needs_human_review=true` instead of dropping
+     it. Added 3 new validator tests and fixed `test_validate_official_question_passes`'s fixture
+     (was missing `passage_text`, which real ingested `sentence_only` questions carry in 662/687
+     cases). Full suite: 1124 passed, same 6 pre-existing unrelated failures. Logged as bug-809.
+
+## 2026-07-29 - 2025 PT4 Sec01 Mod02: entire module never ingested
+Report created by: Claude Sonnet 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High:** 2025 PT4 Sec01 Mod02 (R&W Module 2) had zero rows in the DB — no `question_assets`/
+   `question_jobs` row and no `questions` rows at all (confirmed via direct query).
+   - The archive YAML (`backend/archive/official/2025_4_01_02.yaml`) was also incomplete: Q7 was
+     missing entirely (two-column PDF layout caused `pdftotext` to skip it during archive
+     generation), and Q13's `correct_option_label` (A) plus graph `structured_data` both
+     contradicted the official answer key/rationale (official answer is D).
+   - **Fixed:** Wrote `scripts/gen_fix_pt4_2025_mod02.py` to build all 33 questions — 32 from the
+     YAML (recovering dropped `sentence_only` prompts from option shape) plus Q7 sourced manually
+     from the test PDF — with every `correct_option_label` forced to the verified official key
+     (D,D,B,B,B,B,A,C,C,A,A,B,D,C,C,A,B,D,C,A,B,D,D,A,B,B,A,A,C,C,A,A,B). Q13 flagged
+     `needs_human_review` with `graph_structured_data_omitted=true` since its chart data is
+     untrustworthy and needs a manually-corrected graph asset. Generated idempotent SQL
+     (`scripts/fix_pt4_2025_mod02_create.sql`), took a table backup
+     (`backups/pre_pt4_mod02_backfill_20260729_145936.sql`), and applied it. Verified: 33/33
+     questions present (qn 1-33), each with 4 options, 1 version, 1 annotation, and correct
+     answers matching the official key. Logged as bug-807.
+
+## 2026-07-29 - 2025 PT5 Sec01 Mod01: Q26 missing from question bank (and from archive YAML)
+Report created by: Claude Opus 5 (glm-5.2:cloud)
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **Medium:** 2025 PT5 Sec01 Mod01 Q26 was missing entirely — no active, draft, or rejected row.
+   - The gap extended to the archive YAML: `backend/archive/official/2025_5_01_01.yaml` has 32
+     questions (max qn 33) with Q26 absent, so the question could not be sourced from the YAML.
+     All content (passage, stem, 4 options) was extracted from
+     `Test_5_digital_sec01_mod01.pdf`; the correct answer (B) came from the official answer-key
+     PDF (`sat-practice-test-5-answers-digital.pdf`, R&W Module 1, QUESTION 26).
+   - Q26 is a conventions-of-Standard-English punctuation item (supplementary elements; Sophie
+     Calle / "The Blind" passage).
+   - **Fixed:** `scripts/fix_pt5_2025_mod01_q26_create.sql` — PL/pgSQL DO block creating the
+     question + version + 4 options + minimal annotation. Matched active-sibling storage
+     (`source_test_name=NULL`, `stimulus_mode_key=sentence_only`,
+     `stem_type_key=standard_english_conventions` flat / `conform_to_standard_english` in
+     annotation). `annotation_stale=true` / `needs_human_review=true` for a later LLM pass.
+     Pre-fix backup: `backups/dsat_dev_20260729_134912_pre_pt5_mod01_q26.dump`.
+     Verified: qn=26, correct=B, plen=317, 4 options, active. Module now has qn 1-33 with no gaps.
+   - Related: bug-806. NOTE: the broader mod01 cleanup (13 rejected `"Test 5"` duplicate pairs,
+     Q31 still `draft`, Q6/Q8/Q9 active rows with doubled 8-option sets, Q9 active-vs-rejected
+     answer mismatch) is NOT done — flagged for a user scope decision.
+
+## 2026-07-29 - 2025 PT5 Sec01 Mod02: missing questions, NULL passages, wrong answers, duplicate draft/active pairs
+Report created by: Claude Opus 5 (glm-5.2:cloud)
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High:** 2025 PT5 Sec01 Mod02 (R&W Module 2) question bank was incomplete and inconsistent.
+   - 7 questions missing entirely (Q3, Q4, Q5, Q20, Q22, Q27, Q29).
+   - 6 surviving rows had `current_passage_text` NULL (Q19, Q21, Q23, Q24, Q25, Q28).
+   - 4 rows had wrong `current_correct_option_label` (Q21, Q24, Q25, Q28).
+   - 12 duplicate draft/active (or active/rejected) pairs coexisted — the
+     `uq_official_question_canonical_identity` constraint allows them because the twin rows
+     carried different `source_test_name` values.
+   - `source_test_name` was not normalized across survivors.
+   - Root cause: ingestion failed to create the 7 sentence-only questions and left 6 others
+     without a split passage; duplicate pairs from rejected/draft ingestion runs were never
+     reconciled. The LLM-generated explanation file (`TEST05_sec01_mod02.md`) had WRONG answer
+     keys for Q22 (said C, official B) and Q23 (said D, official A) — trusting it would have
+     embedded wrong answers + wrong rationales.
+   - **Fixed:** `scripts/fix_pt5_2025_mod02_cleanup.sql` (generated by
+     `scripts/gen_fix_pt5_2025_mod02.py`) — single transaction:
+     (A) backed up + FK-safe deleted 12 dup rows across all 23 tables referencing `questions(id)`
+     (`question_stimulus_assets` was the only one with live dependents — Q12/Q14 figure links,
+     whose kept twins already carry their own);
+     (B) filled `passage_text` + corrected answers + explanations for the 6 no-passage rows;
+     (C) created the 7 missing rows via a PL/pgSQL DO block (questions + versions + options +
+     minimal annotations, `annotation_stale=true` / `needs_human_review=true` for a later LLM pass);
+     (D) normalized `source_test_name` to `Test_5_digital_sec01_mod02`.
+     Pre-fix backup: `backups/dsat_dev_20260729_131037.dump`.
+     Verified post-fix: 33 questions (qn 1-33), 0 missing passages, 0 duplicate qns, 0 bad
+     source_test_name, all 33 `current_correct_option_label` match the official answer-key PDF.
+     Q26 remains `practice_status='draft'` (complete + correct; out of scope — user decision).
+   - Related: bug-805; same missing-passage pattern as PT6 Sec01 Mod02 Q1-Q5 (bug-804).
+
+## 2026-07-29 - 2025 PT6 Sec01 Mod02: Q1–Q5 passage not split from stem
+Report created by: Claude Opus 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High:** 2025 PT6 Sec01 Mod02 Q1–Q5 (vocabulary-in-context items) were mis-split during
+   ingestion: the sentence-with-blank was stored in `current_question_text`, `current_passage_text`
+   was NULL, and the "Which choice completes the text with the most logical and precise word or
+   phrase?" prompt was missing entirely.
+   - Root cause: the ingestion passage/stem splitter (`_split_passage_from_question` in
+     `backend/app/routers/ingest.py`) failed to split these five items. The other 28 questions in
+     the module split correctly (verified row-by-row against
+     `backend/archive/official/2025_Practice_Test_6_6_01_02.yaml`).
+   - Q3 also carried an OCR artifact (`_______ ,` → `_______,`).
+   - **Fixed:** `scripts/fix_pt6_2025_mod02_q1_q5_split.sql` — in-place update (bug-245/796
+     pattern) backing up the 5 `questions` rows + their latest `question_versions` rows into
+     `backup_pt6_2025_mod02_q1_q5_*` tables, then setting `current_passage_text` = the canonical
+     sentence and `current_question_text` = the prompt from `backend/archive/official/6_01_02.yaml`
+     (dollar-quoted, exact values), mirrored onto the latest `question_versions` row via
+     `latest_version_id`, with `is_admin_edited = true`, `annotation_stale = true`. Pre-fix backup
+     dump: `backups/dsat_dev_20260729_123150.dump`. Verified all 33 module rows now have a passage
+     + a proper short prompt stem. Logged as bug-804.
+
+## 2026-07-29 - 2025 PT9 Sec01 Mod02: q1/q2/q3 rotated out of their correct slots
+Report created by: Claude Opus 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High:** The first three questions of 2025 PT9 Sec01 Mod02 were rotated relative to the
+   source PDF (`TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL/Test_9_digital_sec01_mod02.pdf`).
+   - Ground truth from the PDF is q1 = Anita Desai "completing", q2 = "Predatory animals …
+     provide", q3 = "Teju Cole … enthusiasm for".
+   - Ingested state was q1 = Teju Cole, q2 = a duplicate of the Anita Desai item (carrying the
+     module's OCR header boilerplate — "Reading and Writing / 33 QUESTIONS / …" — inside
+     `current_passage_text`), q3 = Predatory animals.
+   - A prior session corrected q1 in place. That left "Predatory animals" correct only at q3 and
+     the duplicate Anita Desai item still sitting at q2, so the rotation had to be completed.
+   - q4–q33 were spot-checked against the PDF and are correctly slotted.
+   - **Fixed:** Migration `fix_pt9_2025_mod02_q2_q3.sql`. q2 (`28687b6a`) took the Predatory
+     animals payload, q3 (`1a0c20b6`) took the Teju Cole payload. Both payloads were copied
+     verbatim from existing `question_versions` rows (`da117d33` and the pre-fix q1 version
+     `a3782c17`) rather than retyped, preserving the exact blank-token form. Question UUIDs were
+     preserved and each target received a new version 2. Correct labels moved with the content
+     (q2 → C, q3 → B) across `questions.current_correct_option_label`,
+     `question_versions.correct_option_label` and the `question_options` rows; annotation keys
+     moved too (q2 `passage_excerpt`/`choose_word_in_context` → `sentence_only`/`complete_the_text`).
+
+2. **Medium:** The two archive YAML mirrors had diverged from each other and from the DB.
+   - `backend/archive/official/9_01_02.yaml` (canonical — `config.local_archive_mirror = "./archive"`)
+     received the earlier q1 fix; `archive_generated/official/9_01_02.yaml` did not, so it still
+     served Teju Cole at q1.
+   - `backend/archive/official/9_01_02.yaml` was additionally **missing question 31 entirely**
+     (32 entries, numbering jumped 30 → 32). This is the previously-noted "32 vs 33" discrepancy;
+     it was a genuine dropped entry, not a parse failure.
+   - **Fixed:** Both mirrors rewritten so q1/q2/q3 match the DB; q31 spliced back into
+     `backend/archive/official/9_01_02.yaml` from `archive_generated` after confirming its
+     `question_id` (`238d3bef`) and correct answer (D) match the DB row. Both files now parse and
+     carry a contiguous 1–33 with unique question ids.
+
+3. **Low (pre-existing, not introduced here, left as-is):** The archive YAML mirrors lag the DB
+   for every question in this module that has been admin-edited. Comparing YAML against the DB's
+   latest version across all 33 questions: correct answers match everywhere (0 differences), but
+   `question_text` differs for q6, q8, q9, q17, q18, q29–q33 and `passage_text` differs for 24
+   questions (8 of those whitespace-only). Every one of the 10 `question_text` differences is a
+   question with `is_admin_edited = true` and `max(version_number) = 2` — the YAML still carries
+   the v1 ingest text while the DB serves v2. The DB is authoritative and is what both the admin
+   and student APIs read, so this does not affect what users see. Flagged rather than fixed
+   because reconciling 24 entries is well beyond the scope of the q2 correction and needs a
+   deliberate decision about regenerating the archive from the DB.
+   - Consequence for the q31 splice above: the restored q31 block carries the v1 text, matching
+     the file's existing convention for admin-edited questions. Its `question_id` and correct
+     answer match the DB.
+
+### Verification
+
+- Admin API: `GET /admin/questions` on `127.0.0.1:8002` (header `X-API-Key: admin-test-key`,
+  `sort_by_source=true`) returns q1 Anita Desai / q2 Predatory animals (C, provide) /
+  q3 Teju Cole (B, enthusiasm for) / q4 Marilyn Dingle, total 33.
+- Student API: `GET /api/questions` (header `X-API-Key: student-test-key`) serves the same order
+  with `current_passage_text` populated and full option sets.
+- Pre-change snapshots in `backup_pt9_mod02_q2q3_2026_07_29_{questions,versions,options,annotations}`.
+
+## 2026-07-29 - PT11 (2025) "b l a n k" placeholder artifact + passage/stem merge
+Report created by: Claude Opus 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **Medium:** 23 of 66 PT11 questions (`source_exam_code='11'`, release year 2025) carry the literal
+   lowercase token `b l a n k` (letter-spaced) where the answer blank should be `____`.
+   - Origin is the **source PDF**, not the ingester: the College Board accessible/nondigital PDFs render
+     the blank as the letter-spaced word "b l a n k" (screen-reader text) rather than an underscore run.
+     `sat-practice-test-11-digital-sec01-mod01.pdf` contains 19 occurrences and
+     `...-sec01-mod02.pdf` contains 20 — no `_{3,}` runs at all in either.
+   - Live in `questions.current_*`: **Mod01 q1,2,3,4,5,15,17,18,19,20,21,22,23,24,25,26,27,28,29** (19
+     questions — module never remediated) and **Mod02 q2,3,4,13** (4 questions; the other 16 Mod02
+     questions were cleaned to `____` at some point, so the remediation pass was partial).
+   - Corpus-wide state for PT11: 57 rows use the correct `____` form, 17 still have `b l a n k` in
+     `current_passage_text`, 6 have it in `current_question_text`.
+   - Historical `question_versions` rows retain the raw token for effectively all of Mod02 as well
+     (q1–4, 13, 14, 17–30), so any code reading non-latest versions still sees it.
+   - No occurrences in `question_options.option_text` (0 rows) or in any explanation field.
+   - Derived analysis artifacts inherited the token: `analysis/calibration/official_classifications.json`
+     (40), `analysis/v8/focus_evidence/*.json` (~8 each), `analysis/calibration/calibration_set.json` (4).
+   - There is **no real archive YAML for PT11** — `backend/archive/official/PT11_M1.yaml` is a 1-question
+     test fixture (`passage_text: A short passage about ecology.`), not an export, so the DB is the only
+     copy of this content.
+
+2. **Medium:** For the 6 questions where the token landed in the stem (Mod01 q15, q17, q18, q19, q23;
+   Mod02 q13), the passage and the question stem were concatenated into `current_question_text` and
+   `current_passage_text` is NULL. Example — Mod01 q15 stores the full biofuel passage ending
+   `...the fuel with the highest energy density is b l a n k Which choice most effectively uses data from
+   the graph to complete the sentence?` as a single stem.
+   - Causally linked to finding 1: the passage/stem splitter keys off the `____` blank as a delimiter, so
+     the letter-spaced token defeated the split. 9 PT11 rows total have a NULL `current_passage_text`.
+   - Not fixed in this pass — reported only, per the request to locate occurrences.
+
+## 2026-07-28 - Test08_ENG_Sec01_Mod02B missing question q4
+Report created by: Claude Sonnet 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. ~~**High:** `Test08_ENG_Sec01_Mod02B` (2024 PT8, sec01, mod02B) had only 26 of 27 questions in the `questions` table; q4 was absent.
+   - Same root cause family as bug-797/798/799: `current_correct_option_label` NOT NULL/CHECK-constrained; the passage sentence was never captured during original extraction. The archive YAML's stub annotation explicitly said `explanation_short: Cannot determine without passage text` with `annotation_confidence: 0.2`.
+   - Note: Test08 has no per-module split PDF like other tests (`Test01-07_ENG_Sec01_Mod0*.pdf` pattern) — instead uses a single combined `Test_08_VERBAL_Sections.pdf` (81 pages = Mod01 + Mod02A + Mod02B, 27 pages each) plus a separate `Answer Keys/TEST_08_Answer_Key.pdf`. Module-relative page N maps to absolute page `54 + (N-1)` for Mod02B.~~
+   - **Fixed:** Rendered absolute page 57 (module-relative page 4) of `Test_08_VERBAL_Sections.pdf` to recover the passage sentence and confirmed options matched the archive YAML exactly. Determined correct answer = A (repudiates) from context (colon-introduced explanation: "this rejection is evident..."). Inserted `questions`, `question_versions`, `question_options`, and `question_annotations` rows, and updated the archive YAML in place (added the missing `passage_text` field). All 27 questions in the module now persist correctly.
+
+## 2026-07-28 - Test06_ENG_Sec01_Mod02B blank Focus column for several questions
+Report created by: Claude Sonnet 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. ~~**Low:** Admin dashboard "Focus" column (`annotation.grammar_focus_key`) was blank for 15 of 27 questions in `Test06_ENG_Sec01_Mod02B`. Checked corpus-wide: `choose_words_in_context`, `choose_sentence_function`, `choose_detail`, `choose_main_idea`, `choose_best_illustration`, `choose_command_of_evidence_quantitative`, `choose_best_support`, and `most_logically_completes` have **zero** non-null `grammar_focus_key` values anywhere in the database (50-86 samples each) — this is intentional taxonomy, not a gap, since that field is scoped to grammar/conventions and expression-of-ideas questions. Only the notes-synthesis stem types (`synthesize_notes`, `choose_best_notes_synthesis`) have an established focus taxonomy in ~80% of cases (`data_interpretation_claims`, `emphasis_meaning_shifts`, `logical_relationships`, `precision_word_choice`, `redundancy_concision`, `register_style_consistency`, `synthesis_of_information`).
+   - Also found the archive YAML is stale relative to the live DB in places unrelated to this fix — q16 and q19 show different `grammar_focus_key` values in the YAML (`null`, `run_on_sentence`) than what's actually live in `question_annotations` (`comma_splice`, `verb_form`), meaning the DB annotation was edited after the YAML was last exported and never re-synced. Not touched in this pass — flagged for awareness.~~
+   - **Fixed:** User confirmed scope — filled Focus only where an established taxonomy applies. Set q25=`logical_relationships`, q26=`data_interpretation_claims` (already present in the archive YAML but missing from the live DB annotation — a genuine gap, not just a blank-by-design case), q27=`synthesis_of_information`. User then asked to also fill q6 and q10 (Craft & Structure / Information & Ideas types that are blank everywhere else in the corpus) — did so as an explicit exception: q6=`logical_relationships` (reused existing corpus term), q10=`textual_evidence_support` (**new term, not used elsewhere in the corpus** — flagging in case this should be reconciled with an existing tag during a future taxonomy pass). Synced `question_annotations.annotation_jsonb` (both top-level and nested `classification.grammar_focus_key`) and the archive YAML for all 5 questions.
+
+## 2026-07-28 - Test06_ENG_Sec01_Mod02B missing questions q6, q10, q25
+Report created by: Claude Sonnet 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. ~~**High:** `Test06_ENG_Sec01_Mod02B` (2024 PT6, sec01, mod02B) had only 24 of 27 questions in the `questions` table; q6, q10, and q25 were absent. User reported q25 specifically; q6 and q10 were also missing but not yet noticed in the admin dashboard.
+   - Same root cause pattern as bug-797/bug-798: `current_correct_option_label` is NOT NULL/CHECK-constrained to A-D, and these 3 never resolved a correct answer during original ingestion, so the per-question SAVEPOINT persist step failed silently.
+   - Unlike prior cases, q6 and q10 already had a fully-written `explanation_full` in the archive YAML that explicitly named the correct option in prose (e.g. "Option C correctly captures this") — the annotation reasoning completed, but the discrete `correct_option_label` field was still left empty, and/or the annotation was missing other required completeness fields, so the validator still rejected persistence. q25 had no annotation block at all.~~
+   - **Fixed:** For q6 and q10, extracted the correct answer directly from the already-written explanation text in the archive YAML (C and D respectively) — no PDF lookup needed. For q25 (a rhetorical-synthesis "student wants to emphasize a similarity" notes question with no annotation), determined the answer by process of elimination among the 4 notes-based options (A states a shared trait; B and D state differences; C covers only one wave type) — answer A. Inserted `questions`, `question_versions`, `question_options`, and `question_annotations` rows for all 3 and updated the archive YAML in place. All 27 questions in the module now persist with valid answers and annotation metadata.
+
+## 2026-07-28 - Test04_ENG_Sec01_Mod02B missing questions q2, q3, q17, q23
+Report created by: Claude Sonnet 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. ~~**High:** `Test04_ENG_Sec01_Mod02B` (2024 PT4, sec01, mod02B) had only 23 of 27 questions in the `questions` table; q2, q3, q17, q23 were entirely absent (confirmed missing in admin dashboard Data Management view).
+   - Same root cause pattern as `Test03_ENG_Sec01_Mod02A` (bug-797): `current_correct_option_label` is `NOT NULL`/CHECK-constrained to A-D, and these 4 never received a completed annotation pass, so the per-question SAVEPOINT persist step failed silently during original ingestion.
+   - q2, q17, q23 had complete extraction data in the archive YAML (`backend/archive/official/2024_Test04_ENG_Sec01_Mod02B_04_01_02B.yaml`) but empty `correct_option_label` and no/partial annotation block.
+   - q3 was worse: the archive YAML had *no passage text anywhere* — `question_text` was just the generic stem, and the existing (unused) annotation stub explicitly said `explanation_short: Cannot determine without the sentence text` with `annotation_confidence: 0.1`, meaning the original extraction pass never captured the sentence at all, not just the annotation.~~
+   - **Fixed:** Rendered PDF pages 2 and 3 of `TESTS/DATA_SRC/2024-2025 Tests Answers/Test04_ENG_Sec01_Mod02B.pdf` to recover q2 and q3's passage text directly from the source (Bluebook screenshots, no text layer). q17 and q23 already had full passage/option text in the archive YAML, just no resolved answer. Determined correct answers by context (q2=B paucity of, q3=C buttress, q17=D "prey; rather,", q23=B "species, both native and nonnative;") and inserted `questions`, `question_versions`, `question_options`, and `question_annotations` rows for all 4 (with `grammar_focus_key`/`difficulty_overall`/`question_family_key` populated so Focus/Difficulty display correctly in the admin dashboard, per the gap found in bug-797). Updated the archive YAML in place, including adding the previously-missing `passage_text` field for q3. All 27 questions in the module now persist with valid answers, passage text, and annotation metadata.
+
+## 2026-07-28 - Test03_ENG_Sec01_Mod02A missing questions q1, q3, q4, q6
+Report created by: Claude Sonnet 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. ~~**High:** `Test03_ENG_Sec01_Mod02A` (2024 PT3, sec01, mod02A) had only 23 of 27 questions in the `questions` table; q1, q3, q4, q6 were entirely absent (confirmed missing in admin dashboard Data Management view).
+   - Archive YAML (`backend/archive/official/2024_Test03_ENG_Sec01_Mod02A_03_01_02A.yaml`, last modified 2026-06-13) has all 27 question numbers, but q3, q4, q6 have no `annotation:` block and q1 has only a partial one (missing `stimulus_mode_key`/`stem_type_key`/explanation) — all had `correct_option_label: ''`.
+   - Root cause: `questions.current_correct_option_label` is `NOT NULL` with a CHECK constraint restricting it to A-D. The ingestion pipeline (`backend/app/routers/ingest.py`) resolves the correct answer from the annotation pass when extraction doesn't supply one (`_resolve_correct_option_label`); since these 4 questions never received a completed annotation, no valid answer label could be resolved, so the per-question SAVEPOINT persist step failed and was skipped — while the other 23 questions in the same module persisted fine independently.
+   - No `question_job_questions`, `admin_question_audit_logs`, or backup-table rows exist for these 4 question IDs, confirming they were never previously persisted (not a later deletion).~~
+   - **Fixed:** Rendered PDF pages 1, 3, 4, 6 of `TESTS/DATA_SRC/2024-2025 Tests Answers/Test03_ENG_Sec01_Mod02A.pdf` to PNG and read them directly (Bluebook UI screenshots, no answer key present in the PDF — text layer is empty/image-only). Determined correct answers by context (q1=B observant, q3=C persistent, q4=B inadequate, q6=A validate) and inserted `questions`, `question_versions`, and `question_options` rows for all 4 using the existing deterministic question IDs from the archive YAML. Updated the archive YAML in place with the resolved `correct_option_label` and a minimal annotation block (`needs_human_review: true` since answers were manually reasoned, not LLM-annotated) so it stays in sync with the DB. All 27 questions in the module now have valid `current_correct_option_label` and `current_passage_text`.
+2. ~~**Medium:** The 4 questions above had no `question_annotations` row (`latest_annotation_id` was NULL), so the admin dashboard's Data Management table showed blank "Focus" and "Difficulty" columns for them — both are read from `annotation.grammar_focus_key`/`annotation.difficulty_overall` in `APP/ADMIN_APP/src/pages/DataManagement.tsx`, which come back `null` when there's no annotation row at all.~~
+   - **Fixed:** Created a `question_annotations` row for each of q1, q3, q4, q6 (classified as `grammar_focus_key: precision_word_choice`, `grammar_role_key`/`question_family_key: expression_of_ideas`, matching sibling questions q2/q5/q26 in this module) with per-question difficulty (`q1=low`, `q3=medium`, `q4=medium`, `q6=low`, based on how many clauses/inference steps each requires) and topic/evidence-scope metadata, and linked each via `questions.latest_annotation_id`. Flagged `needs_human_review: true` and `provider_name: manual`/`model_name: claude-sonnet-5` in `annotation_jsonb.review` since this was reasoned manually rather than produced by the LLM annotation pipeline. All 27 questions in the module now show consistent Focus/Difficulty/Family metadata in the admin dashboard.
+
+## 2026-07-28 - Test02_ENG_Sec01_Mod02B passage text missing for q1-27
+Report created by: Claude Sonnet 5
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High:** 16 of 27 questions in `Test02_ENG_Sec01_Mod02B` (2024 PT2, official verbal, sec01 mod02B) have `current_passage_text` NULL: q1-4, 6, 8, 9, 12-19, 21.
+   - `question_versions` history confirms passage text was never populated at ingestion (2026-06-08 16:14 batch). Only q5 and q20 were later patched via manual admin edits that same day (16:29-16:59), the same pattern already fixed for `Test02_ENG_Sec01_Mod02A` (see entry below).
+   - Affected `stimulus_mode_key` values: `sentence_only` (9 of 13 missing) and `passage_excerpt` (7 of 10 missing) — inconsistent within the same type, ruling out "this type has no passage by design."
+   - No recovery path via `question_assets` or `question_source_spans` — both tables have zero rows for this test, so there is no stored OCR/crop to re-extract from; passages must be pulled from the source PDF (`TESTS/DATA_SRC/2025-2026 Tests Answers/VERBAL/` or equivalent 2024 legacy PDF) and backfilled manually, same approach as the Mod02A fix.
+   - Related: `Test01_ENG_Sec01_Mod02B` has 1 missing, `Test04_ENG_Sec01_Mod02B` has 2 missing — same root cause, smaller blast radius.
+   - User is handling the backfill manually via the admin dashboard edit UI; not yet fixed.
+
+## 2026-07-28 - Test02_ENG_Sec01_Mod02A passage text missing or out of sync for q1-27
+Report created by: Claude (kimi-k2.7-code:cloud)
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. **High (Fixed):** Most questions in `Test02_ENG_Sec01_Mod02A` q1-27 had `passage_text` missing from `question_versions` and/or `current_passage_text` out of sync with `question_versions.passage_text`.
+   - Affected: 23 of 27 questions in `Test02_ENG_Sec01_Mod02A` q1-27 (official 2024 PT2 verbal sec01 mod02A).
+   - Root cause: ingestion stored the passage sentence inside `current_question_text` for many grammar/vocab questions and never populated the denormalized `current_passage_text` or `question_versions.passage_text`. Reading questions (q8, q9, q10, q13) already had passages, but q12 had `current_passage_text` set while its latest version lacked `passage_text`.
+   - **Fixed:** Copied canonical passage text and question stems from the matching `Test02` (module `02`) official questions into mod02A for q2, q4, q5, q6, q8, q9, q10, q13, q16, q19, q20, q21, q22, q24, q25, q26, q27, syncing both `questions.current_passage_text`/`current_question_text` and `question_versions.passage_text`/`question_text`. Synced q12's latest version `passage_text` from its existing `current_passage_text`. 18 questions updated in total; all now have synced current and version passage text. (Subsequently fixed the remaining 9 questions via PDF visual extraction; see finding 2.)
+2. ~~**Medium:** 9 questions remain without passage text after the DB-level sync.
+   - q11: graph question with a stimulus asset (expected to have no passage text).
+   - q1, q3, q7, q17, q18, q23: grammar/conventions questions where the entire sentence is currently stored in `current_question_text`; separating the passage from the stem requires the original PDF/ OCR or known canonical stems.
+   - q14, q15: reading-comprehension stems with no passage text available in the DB and no matching question in `Test02` module `02`; extracting their passages requires OCR of the source PDF (`Test02_ENG_Sec01_Mod02A.pdf`). Marker OCR timed out after 5 minutes on a 3-page range, so these remain pending.~~
+   - **Fixed:** Rendered the source PDF pages to PNG and visually extracted the missing passages/stems. q1, q3, and q7 were already correctly split. Updated q14, q15, q17, q18, and q23 by moving the sentence-with-blank (or full reading passage) into `current_passage_text`/`question_versions.passage_text` and replacing `current_question_text`/`question_versions.question_text` with the correct stem. q11, which has a graph stimulus asset, received the descriptive text below the graph as its `passage_text`. Full inspection now reports 0 problems across all 27 questions.
+
+## 2026-07-28 - marker_single extraction crashes with ld.so relocation assertion (exit 127)
+Report created by: Claude (kimi-k2.7-code:cloud)
+Git branch: `missed_question`
+Git checkpoint: `cd18fef` — Ignore local worktree scratch directory
+
+### Findings
+
+1. ~~**High:** `stimulus_worker.py` jobs fail with `RuntimeError: marker exited 127` whenever marker layout recognition runs.
+   - Reproduced on: `TESTS/DATA_SRC/2024-2025 Tests Answers/Test01_ENG_Sec01_Mod01.pdf` page 12 with `--disable_ocr --output_format json`.
+   - Actual stderr from `marker_single`: `Inconsistency detected by ld.so: ../sysdeps/x86_64/dl-machine.h: 498: elf_machine_rela_relative: Assertion 'ELFW(R_TYPE) (reloc->r_info) == R_X86_64_RELATIVE' failed!`
+   - Root cause: dynamic-linker crash while loading the PyTorch/surya layout model. The exit code 127 comes from the crashed loader, not "command not found". System glibc is `2.42`; marker worker uses uv Python 3.12.11 (Clang 20.1.4) + torch 2.11.0+cu128 + marker-pdf 1.10.2. This points to an ABI/binary-wheel incompatibility rather than a bug in `stimulus_backfill.py`.
+   - Affected: `tools/marker_worker/.venv/bin/marker_single`, `backend/scripts/stimulus_backfill.py` `_run_marker`.~~
+   - **Fixed:** Switched marker worker to CPU-only torch. Updated `tools/marker_worker/pyproject.toml` to pin `torch==2.11.0+cpu` and source it from the PyTorch CPU wheel index (`https://download.pytorch.org/whl/cpu`). Regenerated `uv.lock`, ran `uv sync`, and verified `marker_single` completes layout recognition on PT01_ENG_Sec01_Mod01.pdf page 12 with exit code 0. The host NVIDIA driver is too old for CUDA 12.8 anyway, so CPU-only is the correct configuration for this machine. Logged as bug-795.
+
+## 2026-07-28 - Stimulus asset end-to-end verification fixes
+Report created by: Claude (kimi-k2.7-code:cloud)
+Git branch: `missed_question`
+Git checkpoint: `5c7597a` — Add admin dashboard audit and launcher support
+
+### Findings
+
+1. **High (Fixed):** Backfilled stimulus assets returned `url` pointing to a JSON manifest, so student/admin image tags were broken.
+   - Affected: `backend/app/routers/student.py` `_load_stimulus_assets_by_question`, `backend/app/routers/admin.py` `list_questions` and `get_stimulus_assets`.
+   - **Fixed:** Joined the linked `QuestionSourceSpan` row and used `crop_path` for `url` when present; falls back to `storage_path` for admin-uploaded assets (which are images directly). Verified via `/api/questions` and `/admin/questions` responses for PT4 Mod01 Q13/Q15.
+
+2. **High (Fixed):** Dev-stack `/assets` 404ed for crops written by host-side backfill.
+   - Affected: `docker-compose.yml` backend service.
+   - **Fixed:** Mounted `./local_object_store:/local_object_store` and set `OBJECT_STORAGE_LOCAL_ROOT: /local_object_store` so the container serves the same directory the host scripts write to. Verified: crop PNGs return `200 image/png`.
+
+3. **Medium:** Two `table` crops were assigned to PT4 Mod01 Q13 by the marker backfill.
+   - This is marker's layout output (two Table blocks near that question number), not a code bug. The admin UI can review and delete/replace the extra crop if it is redundant.
+
+## 2026-07-27 - asyncpg stale-schema error after adding questions.source_has_graph
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `missed_question`
+Git checkpoint: `5c7597a` — Add admin dashboard audit and launcher support
+
+### Findings
+
+1. **Medium:** After applying alembic migration 035 (adding nullable Boolean `questions.source_has_graph`), the running backend raised `UndefinedColumnError: column questions.source_has_graph does not exist` on `list_questions` even though `\d questions` confirmed the column and `alembic_version=035`.
+   - Root cause: the backend's asyncpg connection pool held prepared statements describing the pre-ALTER schema. `uvicorn --reload` reloaded the Python code (new queries now reference `source_has_graph`) but did not re-establish the pool, so asyncpg prepared the new SELECT against stale cached metadata and PostgreSQL rejected the unknown column.
+   - **Fixed:** `docker restart dsat-backend` to create a fresh pool. End-to-end verified: `list_questions` surfaces the field, `POST /admin/questions/{id}/graph-tag` toggles true/false, DB persists, `tsc` clean. (Also logged as bug-790 in `.wolf/buglog.json`.)
+
+## 2026-07-27 - PT9 module-2 triplication + 4 tests with stray "02" module code (data dedup + convention fix)
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `missed_question`
+Git checkpoint: `5c7597a` — Add admin dashboard audit and launcher support
+
+### Findings
+
+1. **High (Fixed):** Module-code naming convention was violated in the raw data for five 2024 tests.
+   - The agreed convention: `Mod02` is the default; `Mod02A`/`Mod02B` are used only when a test has two module-2 sections (the DSAT adaptive easy/hard pair).
+   - 2024 PT1/PT4/PT5 had a plain `02` bucket sitting alongside `02B` (the `02` was the missing `02A` variant — confirmed by shared source PDF names and question text). 2024 PT2 had `02` alongside `02A` (the `02` was the missing `02B`).
+   - **Fixed:** `UPDATE questions SET source_module_code='02A'` for PT1/PT4/PT5 and `='02B'` for PT2 (deterministic: the `02` maps to whichever of 02A/02B is absent). Each now reads cleanly as Mod02A + Mod02B.
+   - 2025 tests were already correct (single module-2 each -> Mod02). Clean 2024 tests (PT3/6/7/8/10) were already correct (02A + 02B).
+
+2. **Critical (Fixed):** 2024 PT9 module-2 questions were **triplicated** in the DB — every question number 1-27 existed under `02`, `02A`, AND `02B` (with `02B` doubled), giving ~51 rows per module (4x duplicated content). The A and B variants are genuinely different questions (e.g. qn5: A="main purpose of the text" vs B="function of the underlined"), so this was duplicated content from a bad ingest, not a label clash.
+   - **Fixed:** Relabeled PT9 `02` -> `02A`, then deduped each (qn, mod) pair to one row, keeping by priority [has user_progress > has admin_question_audit_logs > practice_status='active' > earliest created_at]. Reassigned the 8 `admin_question_audit_logs` rows (both `question_id` and `question_version_id`) from the doomed questions to their surviving twin so audit history was preserved and the NO_ACTION FKs cleared. Deleted in FK-safe order: 50 questions + 50 annotations + 54 versions + 216 options (nulled doomed questions' `latest_annotation_id`/`latest_version_id` first; options -> annotations -> versions -> questions). PT9 module-2 went 102 -> 52 rows (26x02A + 26x02B). The 3 `user_progress` rows on qn24 02A were preserved; 0 dangling version pointers after. Backups kept: `backup_pt9_{questions,annotations,versions,options}_2026_07_27` and `backup_questions_2026_07_27`.
+   - Test-explorer cards went 49 -> 48; every card now follows `Year · PT# · Sec01 · Mod{01|02|02A|02B}`. Logged as bug-789 in `.wolf/buglog.json` (related to bug-788 naming fix).
+## 2026-07-27 - Data Management test cards: inconsistent naming + broken merged-card filter
+Report created by: Claude (glm-5.2:cloud)
+Git branch: `missed_question`
+Git checkpoint: `5c7597a` — Add admin dashboard audit and launcher support
+
+### Findings
+
+1. **High (Fixed):** "Browse by Test" cards labeled tests with raw `source_test_name`/`source_exam_code` (e.g. "Bluebook Practice Test 5  01  02B" or "Test05_ENG_Sec01_Mod02B  01  02B"), included no year, and produced duplicate/ambiguous cards for the same logical test (e.g. 2024 PT5 Mod02B appeared as two separate source rows: exam_code `05` and exam_code `verbal`). Clicking such a merged card filtered `list_questions` by exact `source_test_name`, which matched 0 rows because the Mod02B questions lived under a *different* `source_test_name` than the card's representative row.
+   - Root cause: no canonical test-id column exists; `source_test_name` is freeform and `source_exam_code` carries dirty values (`05`, `verbal`, `SAT`). Grouping/filtering on those raw fields cannot identify one logical test across its inconsistent source rows.
+   - **Fixed:** Added a server-side canonical PT# derivation `_pt_number_expr` in `backend/app/routers/admin.py` (digits of `source_exam_code`, else first digit run of `source_test_name` via a two-stage `regexp_replace` that avoids the `NULLIF(result, original)` trap on purely-numeric test_name like `"05"`). `list_tests` now `GROUP BY (year, pt, subject, section, module)` and returns `pt_number`; `list_questions` gained a `pt_number` filter and sorts by `pt_number`; `TestSummary` gained `pt_number` (legacy `source_test_name`/`source_exam_code` kept optional, now null). Frontend (`DataManagement.tsx`, `types/index.ts`) renders cards as `Year · PT# · Sec## · Mod##`, question rows as `Year · PT# · Sec## · Mod## · Q#`, and filters by `pt_number`. Verified via curl: 49 deduplicated cards (was 58 raw rows); the 2024 PT5 Mod02B card returns all 38 merged questions sorted by Q#. TypeScript typecheck clean. Logged as bug-788 in `.wolf/buglog.json`; related to bug-787 (the `/admin/tests` 500 that first exposed this surface).
+
+
 ## 2026-07-15 - Admin dashboard add-user 502 on stale :5173 instance; .env missing VITE_BACKEND_ORIGIN
 Report created by: Claude (glm-5.2:cloud)
 Git branch: `oauth_feature`

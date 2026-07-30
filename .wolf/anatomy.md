@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-27T18:09:44.570Z
-> Files: 1126 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-30T06:37:59.694Z
+> Files: 1205 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -14,19 +14,58 @@
 
 ## ../../../tmp/
 
+- `check_source_spans_all.py` — main (~440 tok)
+- `check_source_spans.py` — main (~290 tok)
+- `check_specific_q.py` — main (~552 tok)
+- `check_stimulus.py` — main (~351 tok)
+- `compare_all_mods.py` — main (~711 tok)
+- `compare_mod02.py` — main (~737 tok)
 - `export_test1.py` — Export ingested Test_1 verbal sec01 mod01 questions + annotations to markdown. (~2100 tok)
+- `extract_pt2_mod02a.py` — main (~125 tok)
+- `extract_q1q3q7_stimulus.py` — extract_page_text (~157 tok)
 - `fix_diag_schema.sql` — Recreate objects from migrations 030/031/032 that are missing from the dev DB (~827 tok)
+- `fix_mod02a_passages.py` — main (~1582 tok)
+- `fix_q14_q17_mod02a.py` — main (~781 tok)
+- `fix_remaining_mod02a.py` — main (~1172 tok)
+- `get_qtext_render.py` — render_page (~176 tok)
 - `ingest_test4_sec02.sh` — Ingest Test 4 sec02 (math) mod01 + mod02 into the live dev API (port 8002). (~512 tok)
 - `ingest_test4_verbal_sec01.sh` — Ingest Test 4 verbal sec01 mod01 + mod02 (live dev API, port 8002). (~599 tok)
+- `inspect_pt2_sec01_mod02a.py` — main (~820 tok)
+- `list_mod02.py` — main (~419 tok)
+- `list_tests.py` — main (~276 tok)
 - `mock_api.py` — Handler: do_GET, do_POST, do_OPTIONS, log_message (~608 tok)
 - `oauth_commit_msg.txt` — Declares persisted (~617 tok)
 - `poll_test4_verbal.sh` — Poll the two in-flight Test 4 verbal sec01 jobs until terminal. (~287 tok)
+- `render_more_pages.py` — render_pages (~181 tok)
+- `render_pages.py` — render_pages (~180 tok)
+- `stem_align_check.sql` — Of the 788 column-stray rows, classify by what the annotation holds. (~1171 tok)
+- `stem_audit.sql` (~575 tok)
+- `stem_strays.sql` — TRUE stem_type strays against the full 29 canonical STEM_TYPE_KEYS. (~1101 tok)
 - `um-commit-msg.txt` (~118 tok)
+
+## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/01f4a487-39f5-4121-a700-1ba2b39680bb/scratchpad/
+
+- `backfill_pt9_mod02a_q14.sql` — Backfill 2024 PT9 Sec01 Mod02A question 14 (bug-801) (~3409 tok)
+- `fix_pt9_2025_mod02_q1.sql` — Replace 2025 PT9 sec01 mod02 q1 with the correct Anita Desai "completing" question. (~3117 tok)
 
 ## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/1c372c51-1725-41d8-8eb2-8db3c8e74e07/scratchpad/gsi-origin-test/
 
 - `index.html` — GSI origin test (~313 tok)
 - `run-test.mjs` — CLIENT_ID: testOrigin (~713 tok)
+
+## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/
+
+- `annotate_pt3_mod02a.py` — main (~3065 tok)
+- `backfill_pt3_mod02a.py` — main (~2023 tok)
+- `backfill_pt4_mod02b.py` — main (~3415 tok)
+- `backfill_pt6_mod02b.py` — main (~3776 tok)
+- `backfill_pt8_mod02b_q4.py` — main (~1945 tok)
+- `fill_focus_pt6_mod02b.py` — main (~332 tok)
+- `fill_focus_q6_q10.py` — main (~320 tok)
+
+## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/43ef0a8d-6ce2-4a3d-b636-33159ac2f7ba/scratchpad/
+
+- `fix_pt9_2025_mod02_q2_q3.sql` — 2025 PT9 sec01 mod02: rotate q2 and q3 into their correct slots. (~3050 tok)
 
 ## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/607e54ac-9498-4651-8182-473f13bf4e6c/scratchpad/
 
@@ -88,7 +127,7 @@
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~1483 tok)
+- `MEMORY.md` — Memory Index (~1546 tok)
 - `project_admin-dashboard-phase1-status.md` (~732 tok)
 - `project_admin-dashboard-plan.md` (~480 tok)
 - `project_annotation-shape-inconsistency.md` — Declares originally (~499 tok)
@@ -101,6 +140,7 @@
 - `project_gstack-skills-corrupted.md` (~472 tok)
 - `project_node-wasm-linux-fix.md` (~837 tok)
 - `project_oauth-login-feature.md` — ')` was hijacking `/src/api/client.ts` (added file-extension passthrough); quoted `text="…"` is an E (~2355 tok)
+- `project_pt5-mod02-cleanup.md` (~1034 tok)
 - `project_rtk-path-fix.md` (~378 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
 - `project_student-app-react-rebuild.md` — Student App Rebuild — React decision (recovered 2026-06-18) (~2162 tok)
@@ -135,16 +175,16 @@
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
 - `cache_feature_plan.md` — Overlap Detection Corpus Cache Implementation Plan (~4895 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~228484 tok)
+- `CHANGELOG.md` — CHANGELOG (~296616 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~57576 tok)
+- `DEBUG_LOG.md` — Debug Log (~70212 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
 - `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7859 tok)
 - `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~4119 tok)
 - `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
-- `docker-compose.yml` — Docker Compose services (~835 tok)
+- `docker-compose.yml` — Docker Compose services (~992 tok)
 - `Dockerfile.backend` (~180 tok)
 - `Dockerfile.frontend` (~123 tok)
 - `future_features.md` — Future Features & Outstanding Work (~8855 tok)
@@ -294,20 +334,70 @@
 - `scan-result.json` (~12785 tok)
 - `tour.json` — Declares defined (~2484 tok)
 
+## .worktrees/stimulus-type-picker/
+
+- `DEBUG_LOG.md` — Debug Log (~57828 tok)
+
+## .worktrees/stimulus-type-picker/.superpowers/sdd/2026-07-29-stimulus-type-picker/
+
+- `progress.md` — SDD ledger — plan: docs/superpowers/plans/2026-07-29-stimulus-type-picker.md (~232 tok)
+
+## .worktrees/stimulus-type-picker/.wolf/
+
+- `buglog.json` — Declares in (~67913 tok)
+
+## .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/api/
+
+- `client.ts` — Skip the 401 silent-refresh interceptor (used by the auth calls themselves). (~2675 tok)
+
+## .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/hooks/
+
+- `useDashboardData.ts` — Exports StudentStats, useStats, MissedQuestionItem, MissedQuestionsResponse + 13 more (~1180 tok)
+
+## .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/hooks/__tests__/
+
+- `useDashboardData.test.ts` — mockedApi: makeWrapper (~1958 tok)
+
+## .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/
+
+- `ConceptSelectorPage.tsx` — STIMULUS_TYPE_LABELS (~2311 tok)
+- `MixedPracticePage.tsx` — QuestionCard (~2006 tok)
+
+## .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/__tests__/
+
+- `ConceptSelectorPage.test.tsx` — mockNavigate (~890 tok)
+- `MixedPracticePage.test.tsx` — mockedApi (~1050 tok)
+
+## .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/types/
+
+- `index.ts` — Question served during a blueprint diagnostic — no answer key. (~1245 tok)
+
+## .worktrees/stimulus-type-picker/backend/app/models/
+
+- `payload.py` — HTTP request/response models. (~11135 tok)
+
+## .worktrees/stimulus-type-picker/backend/app/routers/
+
+- `student.py` (~35955 tok)
+
+## .worktrees/stimulus-type-picker/backend/tests/
+
+- `test_stimulus_mode_counts.py` — Tests for GET /api/questions/stimulus-counts. (~793 tok)
+
 ## APP/ADMIN_APP/
 
 - `.nvmrc` (~1 tok)
 - `package.json` — Node.js package manifest (~272 tok)
-- `vite.config.ts` — Declares env (~398 tok)
+- `vite.config.ts` — Declares env (~408 tok)
 
 ## APP/ADMIN_APP/src/
 
-- `App.tsx` — queryClient (~476 tok)
+- `App.tsx` — queryClient (~636 tok)
 - `index.css` — Styles: 2 rules (~63 tok)
 
 ## APP/ADMIN_APP/src/api/
 
-- `client.ts` — Skip the 401 silent-refresh interceptor (used by the auth calls themselves). (~2335 tok)
+- `client.ts` — Skip the 401 silent-refresh interceptor (used by the auth calls themselves). (~2614 tok)
 
 ## APP/ADMIN_APP/src/auth/
 
@@ -319,19 +409,25 @@
 
 ## APP/ADMIN_APP/src/components/
 
-- `Layout.tsx` — NAV (~991 tok)
+- `ConfirmModal.tsx` — ConfirmModal (~437 tok)
+- `Layout.tsx` — NAV (~1056 tok)
+
+## APP/ADMIN_APP/src/hooks/
+
+- `useEscapeKey.ts` — React hook that invokes a callback on Escape keydown. (~120 tok)
 
 ## APP/ADMIN_APP/src/pages/
 
-- `DataManagement.tsx` — StatusBadge (~6779 tok)
+- `DataManagement.tsx` — Canonical practice-test number for a question, mirroring the backend's (~12012 tok)
 - `LoginPage.tsx` — LoginPage (~1069 tok)
 - `PipelinePerformance.tsx` — StatCard — renders table (~3288 tok)
 - `StudentPerformance.tsx` — AccuracyBar (~1986 tok)
 - `UserManagement.tsx` — StatCard — renders table (~3969 tok)
+- `VocabularyGovernance.tsx` — errorMessage — renders table (~4506 tok)
 
 ## APP/ADMIN_APP/src/types/
 
-- `index.ts` — Exports User, QuestionAnnotation, Question, QuestionOption, TestSummary + 8 more (~800 tok)
+- `index.ts` — Exports User, QuestionAnnotation, StimulusAsset, StimulusExtractionJob + 22 more (~1587 tok)
 
 ## APP/STUDENT_APP_REDUX/
 
@@ -350,7 +446,7 @@
 - `tsconfig.json` — TypeScript configuration (~211 tok)
 - `tsconfig.node.json` (~61 tok)
 - `vite.config.js` — Declares backendTarget (~129 tok)
-- `vite.config.ts` — Declares backendTarget (~168 tok)
+- `vite.config.ts` — Declares resolveBackendTarget (~283 tok)
 - `vitest.config.ts` — Declares of (~166 tok)
 
 ## APP/STUDENT_APP_REDUX/src/
@@ -385,6 +481,8 @@
 - `.keep` (~0 tok)
 - `GrammarPractice.css` — Styles: 66 rules, 22 vars (~4286 tok)
 - `GrammarPractice.tsx` — GrammarPractice (~738 tok)
+- `PassageText.tsx` — Text within `text` that should be rendered with a plain underline. (~323 tok)
+- `StimulusAssets.tsx` — StimulusAssets (~205 tok)
 - `UserMenu.tsx` — Signed-in identity + sign-out, shown on the dashboard. (~259 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/__tests__/
@@ -414,14 +512,14 @@
 - `DiagnosticCard.tsx` — DiagnosticCard (~676 tok)
 - `DiagnosticDetail.tsx` — USER_TOKEN (~1368 tok)
 - `DiagnosticHistory.tsx` — USER_TOKEN (~1094 tok)
-- `DiagnosticTab.tsx` — USER_TOKEN (~3152 tok)
+- `DiagnosticTab.tsx` — DiagnosticQuestionCard (~3282 tok)
 - `HeroBanner.tsx` — StatChip (~981 tok)
 - `MissedQuestionsTab.tsx` — MissedCard (~1604 tok)
 - `PracticeCard.tsx` — QUESTION_COUNTS (~1240 tok)
 - `PracticeTestCard.tsx` — QUESTION_COUNTS (~1014 tok)
 - `RecentSessions.tsx` — RecentSessions (~504 tok)
 - `SpacedRepetitionWidget.tsx` — Dashboard card: mastery-tier badges (mastered/proficient/developing/novice), due-question list with days_overdue, CTA button to /practice/grammar; uses useSRProgress + useSRDue hooks (~1400 tok)
-- `TestModeTab.tsx` — DEFAULT_DURATION_SECONDS (~5126 tok)
+- `TestModeTab.tsx` — DEFAULT_DURATION_SECONDS (~5356 tok)
 - `TrapDetailView.tsx` — trapLabel (~1760 tok)
 - `TrapSusceptibilityDashboard.tsx` — SEVERITY_COLORS (~1791 tok)
 - `WeakConceptsTab.tsx` — scoreBar (~1135 tok)
@@ -430,7 +528,7 @@
 
 - `DiagnosticIntro.tsx` — DiagnosticIntro (~906 tok)
 - `DiagnosticReport.tsx` — BarRow (~2627 tok)
-- `DiagnosticTestRunner.tsx` — DiagnosticTestRunner (~2833 tok)
+- `DiagnosticTestRunner.tsx` — DiagnosticTestRunner (~3955 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/grammar/
 
@@ -440,7 +538,7 @@
 
 ## APP/STUDENT_APP_REDUX/src/components/practice/
 
-- `PracticeTestRunner.tsx` — Full-screen practice test runner; mirrors DiagnosticTestRunner UI (palette, flag, passage, confirm dialog); 32-min hard timer with auto-submit; uses api.submitAnswer per answer (~700 tok)
+- `PracticeTestRunner.tsx` — PracticeTestRunner (~3982 tok)
 - `PracticeTestRunner.tsx` — PracticeTestRunner (~2902 tok)
 
 ## APP/STUDENT_APP_REDUX/src/data/
@@ -451,13 +549,14 @@
 
 - `.keep` (~0 tok)
 - `useDashboardData.ts` — Exports StudentStats, useStats, MissedQuestionItem, MissedQuestionsResponse + 12 more (~1095 tok)
-- `useDiagnosticTimer.ts` — Exports DiagnosticTimerState, useDiagnosticTimer (~296 tok)
-- `useGrammarSession.ts` — 1. renderSentence() (~4119 tok)
+- `useDiagnosticTimer.ts` — Exports DiagnosticTimerState, useDiagnosticTimer (~465 tok)
+- `useGrammarSession.ts` — 1. renderSentence() (~4174 tok)
 
 ## APP/STUDENT_APP_REDUX/src/hooks/__tests__/
 
 - `.keep` (~0 tok)
 - `useDashboardData.test.ts` — mockedApi: makeWrapper (~1659 tok)
+- `useDiagnosticTimer.test.tsx` (~695 tok)
 - `useGrammarSession.test.ts` — Mock the API (~2042 tok)
 
 ## APP/STUDENT_APP_REDUX/src/pages/
@@ -469,24 +568,27 @@
 - `DiagnosticHistoryPage.tsx` — DiagnosticHistoryPage (~275 tok)
 - `DiagnosticPage.tsx` — DiagnosticPage (~822 tok)
 - `LoginPage.tsx` — LoginPage (~856 tok)
-- `MixedPracticePage.tsx` — QuestionCard (~1950 tok)
+- `MixedPracticePage.tsx` — QuestionCard (~2093 tok)
 - `PracticeTestPage.tsx` — PRACTICE_TEST_SECONDS (~1476 tok)
 - `ProgressPage.tsx` — ── Inline SVG line chart ────────────────────────────────────────────────── (~2974 tok)
+- `ReviewMissedPage.tsx` — PAGE_SIZE (~4142 tok)
 
 ## APP/STUDENT_APP_REDUX/src/types/
 
 - `grammar.ts` — Grammar-specific type definitions (aligned with rules_agent_v8.md) (~753 tok)
-- `index.ts` — Question served during a blueprint diagnostic — no answer key. (~706 tok)
+- `index.ts` — Question served during a blueprint diagnostic — no answer key. (~1343 tok)
 
 ## APP/STUDENT_APP_REDUX/src/utils/
 
 - `keyColors.ts` — Exports assignKeyColor, activeKeyStyle, inactiveKeyStyle (~328 tok)
 - `sentenceTokenizer.ts` — Prefer exact backend spans and tags; tokenize locally only for legacy rows. (~3340 tok)
+- `underline.ts` — "Function of the underlined X" questions carry the underlined passage text (~1080 tok)
 
 ## APP/STUDENT_APP_REDUX/src/utils/__tests__/
 
 - `keyColors.test.ts` — Declares a (~817 tok)
 - `sentenceTokenizer.spans.test.ts` — Declares raw (~944 tok)
+- `underline.test.ts` — Declares stem (~1103 tok)
 
 ## DIAGNOSTIC_TEST_PLAN.md (~1.6k tokens)
 
@@ -1388,7 +1490,7 @@
 - `auth.py` — hash_password, verify_password, verify_and_update_password, create_access_token (~3575 tok)
 - `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2281 tok)
 - `google_oauth.py` — Google Sign-In ID token verification. (~509 tok)
-- `main.py` — lifespan (~2056 tok)
+- `main.py` — lifespan (~2281 tok)
 
 ## backend/app/diagnostic/
 
@@ -1415,7 +1517,7 @@
 - `db.py` — Declares QuestionJob (~10429 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5806 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~10588 tok)
+- `payload.py` — HTTP request/response models. (~11497 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1433,12 +1535,12 @@
 - `option_hydration.py` — Utilities for populating QuestionOption annotation fields from annotate_json. (~636 tok)
 - `overlap.py` — Overlap detection between unofficial/generated questions and official questions. (~1690 tok)
 - `rule_doc_patcher.py` — Rule-document body patch engine for approved vocabulary amendments. (~3041 tok)
-- `validator.py` — Validation rules from PRD §15. (~4528 tok)
+- `validator.py` — Validation rules from PRD §15. (~4884 tok)
 
 ## backend/app/prompts/
 
 - `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~8653 tok)
-- `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~3369 tok)
+- `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~3444 tok)
 - `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~2308 tok)
 - `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
 - `review_prompt.py` — Review prompt — composes rubric + grammar canon + optional reading rules + question context. (~2278 tok)
@@ -1454,12 +1556,12 @@
 
 ## backend/app/routers/
 
-- `admin.py` — API: 8 endpoints (~28986 tok)
+- `admin.py` — API: 9 endpoints (~37211 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` (~16107 tok)
-- `ingest.py` (~47039 tok)
+- `ingest.py` (~47356 tok)
 - `student_auth.py` — API: 6 endpoints (~2486 tok)
-- `student.py` (~30758 tok)
+- `student.py` (~36597 tok)
 - `users.py` — API: 5 endpoints (~1095 tok)
 
 ## backend/app/services/
@@ -1472,7 +1574,16 @@
 ## backend/app/storage/
 
 - `crop_detector.py` — Layout detection, region matching, and image cropping for page-level provenance. (~3185 tok)
+- `object_store.py` — Config-driven object storage for local S3/Supabase-style ingestion assets. (~2107 tok)
 - `yaml_export.py` — YAML export for persisted questions. (~1354 tok)
+
+## backend/archive/official/
+
+- `2024_Test03_ENG_Sec01_Mod02A_03_01_02A.yaml` — Declares one (~13669 tok)
+- `2024_Test04_ENG_Sec01_Mod02B_04_01_02B.yaml` — Declares of (~14868 tok)
+- `2024_Test06_ENG_Sec01_Mod02B_06_01_02B.yaml` — Declares of (~16069 tok)
+- `2024_Test08_ENG_Sec01_Mod02B_08_01_02B.yaml` — Declares of (~16604 tok)
+- `9_01_02.yaml` — Declares of (~18371 tok)
 
 ## backend/benchmark_results/
 
@@ -1510,6 +1621,7 @@
 - `031_spaced_repetition.py` — Add spaced_repetition_state table for SM-2 algorithm. (~540 tok)
 - `032_test_session_results.py` — Add test_session_results table for adaptive module 2 routing. (~471 tok)
 - `033_passage_spans.py` — Add passage_spans columns to question_annotations and span_review_queue table. (~706 tok)
+- `035_add_source_has_graph.py` — Add nullable Boolean `source_has_graph` to questions (curated admin provenance flag: original question had a graph/figure). Revises 034. (~180 tok)
 
 ## backend/scripts/
 
@@ -1550,7 +1662,7 @@
 - `test_ocr.py` — Unit tests for OCR providers: DeepSeekOCRClient and OllamaProvider.complete_vision(). (~2181 tok)
 - `test_ontology.py` — test_content_origins, test_job_statuses, test_grammar_role_keys, test_grammar_focus_by_role (~1206 tok)
 - `test_parsers.py` — test_extract_json_from_clean_text, test_extract_json_from_markdown_fence, test_extract_json_from_mix (~3881 tok)
-- `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~10695 tok)
+- `test_pipeline.py` — tests: test_can_transition_pending_to_parsing, test_cannot_transition_pending_to_approved, test_can_ (~11403 tok)
 - `test_progress_analytics.py` — Tests for Phase 3 progress analytics endpoints. (~1473 tok)
 - `test_prompts.py` — test_stem_domain_covers_all_vocab, test_extract_prompt_contains_instructions, test_annotate_prompt_l (~1990 tok)
 - `test_review_parser.py` — Tests for the review JSON parser and validator. (~2144 tok)
@@ -1597,6 +1709,13 @@
 - `2026-05-23-grammar-rules-v7-to-v8-subpatterns.md` — Grammar Rules v7 → v8 Sub-Pattern Expansion Implementation Plan (~7452 tok)
 - `2026-06-18-student-app-react-rebuild.md` — Student App React Rebuild — Implementation Plan (~2797 tok)
 - `2026-06-30-overlap-corpus-cache.md` — Overlap Detection Corpus Cache Implementation Plan (~4676 tok)
+- `2026-07-28-concept-quick-pick.md` — Concept Quick Pick Implementation Plan (~10526 tok)
+- `2026-07-29-stimulus-type-picker.md` — Stimulus-Type Picker Implementation Plan (~8934 tok)
+
+## docs/superpowers/specs/
+
+- `2026-07-28-concept-quick-pick-design.md` — Concept Quick Pick — Design (~1097 tok)
+- `2026-07-29-stimulus-type-picker-design.md` — Stimulus-Type Picker — Design (~1044 tok)
 
 ## e2e/
 
@@ -1619,7 +1738,15 @@
 - `dev_reset_ingestion.sh` — dev_reset_ingestion.sh (~902 tok)
 - `dev_reset_ingestion.sql` — DEV-ONLY: TRUNCATEs all question_* tables + llm_evaluations (CASCADE clears user_progress), keeps users; clears the duplicate-checksum guard so PDFs can be re-ingested. (~625 tok)
 - `export_review.py` — Export ingested questions to a markdown review file with tables and passages. (~1399 tok)
-- `gen_vocab.py` — Controlled-vocabulary generation and review-queue tooling. (~7489 tok)
+- `fix_pt4_2025_mod01_q20_q21_q32_create.sql` — Fix 2025 PT4 Sec01 Mod01: create missing Q20, Q21, Q32. (~6305 tok)
+- `fix_pt5_2025_mod01_rejected_cleanup.sql` — Fix 2025 PT5 Sec01 Mod01: clean up the 13 rejected duplicate rows. (~5444 tok)
+- `fix_pt6_2025_mod02_q1_q5_split.sql` — Fix 2025 PT6 Sec01 Mod02 Q1-Q5: passage text was jammed into question stem, (~1909 tok)
+- `fix_stem_type_canonicalization.sql` — bug-812: One-time canonicalization of stem_type_key across questions + annotations. (~1416 tok)
+- `fix_stem_type_canonicalization.sql` — One-time DB repair (bug-812): align questions.stem_type_key column <- annotation_jsonb (940 rows) + alias-map 15 edge rows; canonicalize both column and jsonb so diagnostic/practice filters agree. (~900 tok)
+- `fix_vocab_canonicalization.sql` — One-time DB repair: canonicalize stray stimulus_mode_key/grammar_role_key/skill_family_key values to controlled vocab. (~4800 tok)
+- `fix_vocab_canonicalization.sql` — One-time DB data repair: canonicalize stray vocab keys. (~2181 tok)
+- `gen_fix_pt5_2025_mod02.py` — Generate scripts/fix_pt5_2025_mod02_cleanup.sql from canonical sources. (~5305 tok)
+- `gen_vocab.py` — Controlled-vocabulary generation and review-queue tooling. (~7594 tok)
 - `quality_audit.py` — Quality audit for questions used in practice, diagnostic, and practice-test sections. (~3154 tok)
 - `reannotate_official_v7.py` — fetch_official_question_ids, submit_reannotate, poll_job, main (~2059 tok)
 - `reannotate_spans.py` — Bulk span-annotate grammar questions that are missing passage_spans. (~2722 tok)
@@ -1631,7 +1758,16 @@
 - `extract_focus_examples.py` — Extract official-classification examples per grammar_focus_key. (~388 tok)
 - `validate_v8_citations.py` — Validate sub-pattern citation format in v8 markdown. (~745 tok)
 
+## tools/marker_worker/
+
+- `pyproject.toml` — Isolated Marker environment for DSAT visual-stimulus extraction (~174 tok)
+- `README.md` — Project documentation (~201 tok)
+
 ## vocabulary/
 
+- `APP/ADMIN_APP/src/pages/VocabularyGovernance.tsx` — Vocabulary governance page: two tabs (candidate review queue grouped by vocab w/ occurrences+contexts+job_ids, canonical master.json vocabularies w/ per-family entries); uses adminApi.getVocabCandidates/getVocabMaster (~1900 tok)
+- `APP/STUDENT_APP_REDUX/src/components/PassageText.tsx` — PassageText component: renders passage with the underlined span wrapped in <u> (~300 tok)
+- `APP/STUDENT_APP_REDUX/src/utils/__tests__/underline.test.ts` — tests for extractUnderline + findUnderlineSpan (12 tests) (~700 tok)
+- `APP/STUDENT_APP_REDUX/src/utils/underline.ts` — extractUnderline() + findUnderlineSpan(): parses `underlined: <text>` annotation from question stem, matches span in passage (exact → whitespace/quote-folded) (~900 tok)
 - `candidates.json` (~348 tok)
 - `master.json` (~31436 tok)

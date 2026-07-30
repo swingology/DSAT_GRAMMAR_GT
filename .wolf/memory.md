@@ -1,7 +1,15 @@
 # Memory
 
+| 21:40 | Added reusable `useEscapeKey` hook and wired Escape-to-close into DataManagement `RejectModal`, `QuestionDetailModal`, and shared `ConfirmModal`. TypeScript check (`npx tsc -b`) passed. | APP/ADMIN_APP/src/hooks/useEscapeKey.ts, APP/ADMIN_APP/src/pages/DataManagement.tsx, APP/ADMIN_APP/src/components/ConfirmModal.tsx | typecheck clean | ~200 |
+| 18:25 | Test02_ENG_Sec01_Mod02A passage-text repair: copied canonical passage + stems from matching Test02 module-02 rows into 17 mod02A questions and synced q12's version passage_text from current_passage_text; 18 questions fixed, current/version passage text now in sync. 9 remain pending (6 grammar need stem separation or accept question_text-as-passage, 2 reading need PDF OCR, 1 graph). | DB (questions, question_versions), DEBUG_LOG.md, .wolf/{cerebrum.md,buglog.json} | 18/27 fixed, 9 pending | ~600 |
+| 13:17 | Test02_ENG_Sec01_Mod02A passage-text repair completed: visually extracted remaining passages/stems from source PDF for q11, q14, q15, q17, q18, q23; split passage from stem for q1, q3, q7. All 27 mod02A questions now have synced current/version passage and question text. | DB (questions, question_versions), DEBUG_LOG.md, .wolf/buglog.json | 0 problems remaining | ~800 |
+| 22:23 | Stimulus asset verification complete: ran marker backfill on PT4 sec01 mod01 (2 graph questions), fixed backend/container object-store path mismatch via docker-compose volume+env, fixed asset.url to use source-span crop_path for backfilled crops; verified /assets static serving, student/admin API payloads, upload/replace/delete endpoints. | backend/app/routers/{student,admin}.py, docker-compose.yml, .wolf/{cerebrum.md,buglog.json}, DEBUG_LOG.md | verified | ~800 |
+| 22:05 | Session resumed after context break; stimulus asset integration complete; pending dev-stack end-to-end verification (backfill + student/admin render). | .wolf/cerebrum.md, .wolf/memory.md | integration done, verification next | ~300 |
+| 05:22 | Stimulus asset integration: backend serves `/assets` static files, student responses include `stimulus_assets`, admin API supports upload/replace/delete of chart/table/figure images; admin dashboard StimulusAssetsPanel added to question modal; student app renders stimulus images in diagnostic, practice test, mixed practice, and test-mode flows; both Vite configs proxy `/assets`. | backend/app/main.py, object_store.py, payload.py, routers/student.py, routers/admin.py; APP/ADMIN_APP/src/{api/client.ts,pages/DataManagement.tsx,types/index.ts}; APP/STUDENT_APP_REDUX/src/{types/index.ts,components/StimulusAssets.tsx,components/practice/PracticeTestRunner.tsx,components/diagnostic/DiagnosticTestRunner.tsx,components/dashboard/{TestModeTab,DiagnosticTab}.tsx,pages/MixedPracticePage.tsx}; vite configs | builds pass, backend syntax OK | ~4k |
+
 > Chronological action log. Hooks and AI append to this file automatically.
 | 11:16 | Updated Claude Code statusline: right side now shows repo name (from git remote), branch + git status, quota usage, context usage, and quota reset countdown; left side shows active model. Changed final printf from %s to %b so ANSI colors and the branch icon render. | ~/.claude/statusline-command.sh | success (tested with sample JSON) | ~200 |
+| 13:25 | Created useEscapeKey hook in ADMIN_APP | APP/ADMIN_APP/src/hooks/useEscapeKey.ts | created | ~120 |
 | 15:56 | Ingestion test for Test_4_digital_sec01_mod01 — status=needs_review, extracted 33, created 28 (5 blocked by syntactic_trap_key=None for verb_form questions). Logged bug-768, DEBUG_LOG.md. | DEBUG_LOG.md, .wolf/buglog.json | needs_review (5 questions unresolved) | ~300 |
 | 10:24 | Grammar nav: fetch batch of 50 questions; added nextQuestion/prevQuestion/currentIndex/totalQuestions/hasPrev/hasNext to useGrammarSession; added Prev/Next buttons + "N / total" counter to QuestionSection; added progress counter to Header; CSS for .question-nav/.nav-btn/.question-counter; tsc clean. | useGrammarSession.ts, QuestionSection.tsx, Header.tsx, GrammarPractice.tsx, GrammarPractice.css | success | ~800 |
 | 15:31 | Phase 2 SR tests: 23 backend tests in test_spaced_repetition.py (all pass) — 12 SM-2 algorithm unit tests + 11 endpoint tests for /review /due /progress; 8 frontend tests in SpacedRepetitionWidget.test.tsx (all pass) — loading/empty/due-count/caught-up/tiers/list/button/navigate. Key fixes: used plain _FakeSR class instead of SQLAlchemy.__new__ (descriptor init fails); capped ef_cap test iterations to prevent date overflow; used nvm 22.12.0 for WASM crash avoidance. | backend/tests/test_spaced_repetition.py, APP/STUDENT_APP_REDUX/src/components/__tests__/SpacedRepetitionWidget.test.tsx | 31/31 pass | ~2k |
@@ -5392,3 +5400,445 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 16:04 | Added source provenance line (year · PT# · sec · mod · Q#) to Data Management question rows and detail modal header | APP/ADMIN_APP/src/pages/DataManagement.tsx | typecheck clean | ~low |
+| 16:24 | Fixed /admin/tests 500 (practice_status.in_((active,approved)) → ==active); Browse by Test now loads 58 tests + filtered query works | backend/app/routers/admin.py:302 | verified via curl | ~low |
+| 16:50 | Standardized Data Management test naming to canonical `Year · PT# · Sec## · Mod##`; backend derives pt_number (_pt_number_expr) and groups list_tests by it, list_questions filters/sorts by pt_number; frontend cards + question rows + filter use canonical label. Cards 58→49 deduped | backend/app/routers/admin.py, backend/app/models/payload.py, APP/ADMIN_APP/src/pages/DataManagement.tsx, src/types/index.ts | verified via curl (49 cards, PT5 Mod02B=38 merged), tsc clean | ~med |
+| 17:40 | Enforced module-code convention: Mod02 = single module-2; Mod02A/Mod02B only when two variants. Relabeled stray 02 bucket for 2024 PT1/PT4/PT5->02A, PT2->02B. Deduped PT9 (triplicated module-2: 102 rows -> 52; deleted 50 Q + 50 ann + 54 ver + 216 opt; reassigned 8 audit logs to surviving twin; preserved 3 user_progress on qn24). Cards 49 -> 48, all uniform Year·PT#·Sec01·Mod{01|02|02A|02B} | DB questions.source_module_code | verified via endpoint + integrity checks; backups saved | ~high |
+| 18:53 | Added per-question "original question had a graph" provenance flag: new nullable Boolean `questions.source_has_graph` (alembic 035), Question model col, `POST /admin/questions/{id}/graph-tag` endpoint (no version clone, writes audit log action=graph_tag), surfaced in list_questions; frontend Question type + adminApi.setGraphTag + "📊 Graph" toggle button in row Actions + modal header badge. Storage = dedicated column (not annotation_jsonb) since it's curated admin provenance | backend/migrations/versions/035_add_source_has_graph.py, backend/app/models/db.py:85, backend/app/models/payload.py (GraphTagRequest), backend/app/routers/admin.py (graph-tag endpoint + list_questions item), APP/ADMIN_APP/src/types/index.ts, APP/ADMIN_APP/src/api/client.ts, APP/ADMIN_APP/src/pages/DataManagement.tsx | alembic 034->035 applied; endpoint toggles true/false verified via curl on :8002; DB persists; tsc clean | ~med |
+| 20:25 | Built backend/scripts/stimulus_backfill.py to extract chart/table/figure crops from official verbal PDFs and link to existing questions (reuses detect_layout/crop_and_store/_annotate). Found + fixed bug-791: detect_layout used object-only extract_json_from_text on array output the layout prompt requests -> pipeline NEVER produced crops (0 stimulus rows, 0 real PNGs). Fixed: array-aware parsing, non-dict item skip, max_tokens 4096->8192. Then hit bug-792: VLM layout (glm-ocr/qwen2.5vl:7b/qwen3-vl:8b) unreliable on dense 2-col DSAT PDFs — misses pages, mislabels Q numbers, bad bboxes; cloud qwen3-vl:235b dead (HTTP 410). Deterministic pymupdf probe confirms Q13 chart is on page 6 (104-drawing vector spike) where VLMs returned nothing. PAUSED for user decision on pivoting to deterministic layout | backend/scripts/stimulus_backfill.py, backend/app/storage/crop_detector.py, .wolf/buglog.json (bug-791/792) | backfill script runs end-to-end; detect_layout parser fix applied; no DB rows written yet (proof not satisfied); pre-run pg_dump backup saved | ~high |
+
+## Session: 2026-07-28 21:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-28 21:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:50 | Edited backend/app/main.py | added 2 import(s) | ~126 |
+| 21:50 | Edited backend/app/main.py | expanded (+7 lines) | ~190 |
+| 21:50 | Edited backend/app/storage/object_store.py | modified read_object() | ~321 |
+| 21:51 | Edited backend/app/models/payload.py | modified StimulusAssetResponse() | ~470 |
+
+## Session: 2026-07-28 21:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:53 | Edited backend/app/models/payload.py | modified CorrectTotal() | ~76 |
+| 21:53 | Edited backend/app/routers/student.py | 6→8 lines | ~89 |
+| 21:53 | Edited backend/app/routers/student.py | added 1 import(s) | ~77 |
+| 21:53 | Edited backend/app/routers/student.py | modified _load_stimulus_assets_by_question() | ~344 |
+| 21:53 | Edited backend/app/routers/student.py | 9→12 lines | ~110 |
+| 21:53 | Edited backend/app/routers/student.py | 7→8 lines | ~108 |
+| 21:54 | Edited backend/app/routers/student.py | 48→52 lines | ~709 |
+| 21:54 | Edited backend/app/routers/student.py | modified _build_diagnostic_question_payload() | ~123 |
+| 21:54 | Edited backend/app/routers/student.py | 7→8 lines | ~62 |
+| 21:54 | Edited backend/app/routers/student.py | modified str() | ~265 |
+| 21:55 | Edited backend/app/routers/admin.py | 2→2 lines | ~51 |
+| 21:55 | Edited backend/app/routers/admin.py | added 1 import(s) | ~40 |
+| 21:55 | Edited backend/app/routers/admin.py | modified all() | ~631 |
+| 21:55 | Edited backend/app/routers/admin.py | modified upload_stimulus_asset() | ~1213 |
+| 21:56 | Edited backend/app/routers/admin.py | 2→2 lines | ~36 |
+| 21:56 | Edited backend/app/routers/admin.py | added 1 import(s) | ~63 |
+| 21:56 | Edited backend/app/routers/admin.py | modified _local_asset_path() | ~185 |
+| 21:56 | Edited backend/app/routers/admin.py | inline fix | ~20 |
+| 21:56 | Edited backend/app/routers/admin.py | inline fix | ~15 |
+| 21:56 | Edited APP/ADMIN_APP/src/types/index.ts | expanded (+14 lines) | ~308 |
+| 21:56 | Edited APP/ADMIN_APP/src/api/client.ts | 11→12 lines | ~60 |
+| 21:56 | Edited APP/ADMIN_APP/src/api/client.ts | added 1 condition(s) | ~115 |
+| 21:57 | Edited APP/ADMIN_APP/src/api/client.ts | expanded (+13 lines) | ~206 |
+| 21:57 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added 1 import(s) | ~85 |
+| 21:57 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added optional chaining | ~2288 |
+| 21:58 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | 23→24 lines | ~364 |
+| 21:58 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | 4→5 lines | ~82 |
+| 21:58 | Edited APP/STUDENT_APP_REDUX/src/types/index.ts | expanded (+15 lines) | ~430 |
+| 21:58 | Edited APP/STUDENT_APP_REDUX/vite.config.ts | 6→10 lines | ~62 |
+| 21:58 | Edited APP/ADMIN_APP/vite.config.ts | 6→7 lines | ~58 |
+| 21:58 | Created APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx | — | ~205 |
+| 21:59 | Edited APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx | 15→19 lines | ~194 |
+| 21:59 | Edited APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx | 9→11 lines | ~124 |
+| 21:59 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | added 1 import(s) | ~81 |
+| 21:59 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | 11→13 lines | ~139 |
+| 21:59 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | 16→20 lines | ~197 |
+| 21:59 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | expanded (+6 lines) | ~180 |
+| 21:59 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | added 2 import(s) | ~113 |
+| 21:59 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | 11→13 lines | ~104 |
+| 21:59 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | expanded (+6 lines) | ~172 |
+| 22:00 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | CSS: current_passage_text, stimulus_assets | ~120 |
+| 22:00 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx | added 1 import(s) | ~131 |
+| 22:00 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx | 12→14 lines | ~129 |
+| 22:00 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx | expanded (+6 lines) | ~185 |
+
+## Session: 2026-07-28 22:02
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:07 | Edited backend/app/routers/student.py | 4→4 lines | ~62 |
+| 22:08 | Edited backend/app/routers/student.py | modified _load_stimulus_assets_by_question() | ~486 |
+| 22:08 | Edited backend/app/routers/admin.py | 7→7 lines | ~105 |
+| 22:08 | Edited backend/app/routers/admin.py | modified all() | ~327 |
+| 22:08 | Edited backend/app/routers/admin.py | modified get_stimulus_assets() | ~408 |
+| 22:09 | Edited docker-compose.yml | 15→18 lines | ~237 |
+| 22:23 | Edited DEBUG_LOG.md | modified High() | ~410 |
+
+## Session: 2026-07-28 22:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-28 02:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-28 03:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:46 | Created docs/superpowers/specs/2026-07-28-concept-quick-pick-design.md | — | ~1170 |
+| 08:51 | Created docs/superpowers/plans/2026-07-28-concept-quick-pick.md | — | ~11005 |
+| 08:52 | Edited docs/superpowers/plans/2026-07-28-concept-quick-pick.md | modified useQuickPickQuestions() | ~822 |
+
+## Session: 2026-07-28 09:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-28 10:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-28 10:08
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:19 | Diagnosed marker extraction exit 127: reproduced directly on PT01 PDF; root cause is ld.so relocation assertion while loading PyTorch/surya layout model inside marker_single, an ABI/binary-wheel incompatibility with glibc 2.42 + uv Python 3.12.11 + torch 2.11.0+cu128, not a code bug in stimulus_backfill.py. Logged as bug-795 and added DEBUG_LOG.md entry. | .stimulus-worker.log, tools/marker_worker/.venv/bin/marker_single, backend/scripts/stimulus_backfill.py, DEBUG_LOG.md, .wolf/buglog.json | diagnosed, not fixed | ~1.2k |
+| 10:25 | Created tools/marker_worker/pyproject.toml | — | ~130 |
+| 10:25 | Created tools/marker_worker/pyproject.toml | — | ~154 |
+| 10:27 | Created tools/marker_worker/pyproject.toml | — | ~174 |
+| 10:32 | Fixed marker extraction exit 127: switched tools/marker_worker to CPU-only torch (torch==2.11.0+cpu from PyTorch CPU index), regenerated uv.lock, synced venv, and verified marker_single completes layout recognition on PT01 Sec01 Mod01 page 12. Previously failed stimulus jobs remain failed; new queued jobs will use the fixed venv. | tools/marker_worker/{pyproject.toml,uv.lock,.venv}, .wolf/buglog.json, DEBUG_LOG.md | fixed | ~1.5k |
+| 10:33 | Created tools/marker_worker/README.md | — | ~215 |
+
+## Session: 2026-07-28 12:24
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-28 12:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:43 | Created ../../../tmp/inspect_pt2_sec01_mod02a.py | — | ~742 |
+| 12:43 | Created ../../../tmp/list_tests.py | — | ~276 |
+| 12:44 | Created ../../../tmp/inspect_pt2_sec01_mod02a.py | — | ~811 |
+| 12:44 | Edited ../../../tmp/inspect_pt2_sec01_mod02a.py | 4→4 lines | ~85 |
+| 12:44 | Created ../../../tmp/compare_mod02.py | — | ~737 |
+| 12:45 | Created ../../../tmp/list_mod02.py | — | ~419 |
+| 12:45 | Created ../../../tmp/check_stimulus.py | — | ~351 |
+| 12:46 | Created ../../../tmp/compare_all_mods.py | — | ~711 |
+| 12:47 | Created ../../../tmp/fix_mod02a_passages.py | — | ~1582 |
+| 12:48 | Created ../../../tmp/extract_pt2_mod02a.py | — | ~125 |
+| 12:48 | Created ../../../tmp/check_source_spans.py | — | ~290 |
+| 12:55 | Edited DEBUG_LOG.md | modified High() | ~598 |
+| 12:56 | Edited CHANGELOG.md | expanded (+34 lines) | ~521 |
+| 13:00 | Created ../../../tmp/check_specific_q.py | — | ~552 |
+| 13:05 | Created ../../../tmp/extract_q1q3q7_stimulus.py | — | ~157 |
+| 13:06 | Created ../../../tmp/check_source_spans_all.py | — | ~440 |
+| 13:06 | Created ../../../tmp/get_qtext_render.py | — | ~176 |
+| 13:06 | Created ../../../tmp/render_pages.py | — | ~180 |
+| 13:08 | Created ../../../tmp/render_more_pages.py | — | ~181 |
+
+## Session: 2026-07-28 13:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:13 | Created ../../../tmp/fix_q14_q17_mod02a.py | — | ~781 |
+| 13:15 | Created ../../../tmp/fix_remaining_mod02a.py | — | ~1172 |
+| 13:16 | Edited DEBUG_LOG.md | 5→6 lines | ~340 |
+| 13:16 | Edited DEBUG_LOG.md | 2→2 lines | ~161 |
+
+## Session: 2026-07-28 13:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:25 | Created APP/ADMIN_APP/src/hooks/useEscapeKey.ts | — | ~136 |
+| 13:26 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added 1 import(s) | ~110 |
+| 13:26 | Edited APP/ADMIN_APP/src/components/ConfirmModal.tsx | modified ConfirmModal() | ~111 |
+| 13:26 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | modified RejectModal() | ~63 |
+| 13:26 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | modified QuestionDetailModal() | ~58 |
+| 13:37 | Edited DEBUG_LOG.md | expanded (+14 lines) | ~411 |
+
+## Session: 2026-07-28 13:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:29 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/backfill_pt3_mod02a.py | — | ~1981 |
+| 15:29 | Edited ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/backfill_pt3_mod02a.py | 11→11 lines | ~110 |
+| 15:29 | Edited ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/backfill_pt3_mod02a.py | 1→6 lines | ~68 |
+| 15:30 | Edited backend/archive/official/2024_Test03_ENG_Sec01_Mod02A_03_01_02A.yaml | 14→19 lines | ~153 |
+| 15:30 | Edited backend/archive/official/2024_Test03_ENG_Sec01_Mod02A_03_01_02A.yaml | expanded (+8 lines) | ~157 |
+| 15:30 | Edited backend/archive/official/2024_Test03_ENG_Sec01_Mod02A_03_01_02A.yaml | expanded (+9 lines) | ~169 |
+| 15:30 | Edited backend/archive/official/2024_Test03_ENG_Sec01_Mod02A_03_01_02A.yaml | expanded (+8 lines) | ~151 |
+| 15:31 | Edited DEBUG_LOG.md | expanded (+13 lines) | ~642 |
+| 15:53 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/annotate_pt3_mod02a.py | — | ~3065 |
+| 15:54 | Edited DEBUG_LOG.md | 2→4 lines | ~542 |
+| 16:10 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/backfill_pt4_mod02b.py | — | ~3415 |
+| 16:10 | Edited backend/archive/official/2024_Test04_ENG_Sec01_Mod02B_04_01_02B.yaml | expanded (+8 lines) | ~165 |
+| 16:11 | Edited backend/archive/official/2024_Test04_ENG_Sec01_Mod02B_04_01_02B.yaml | 24→28 lines | ~318 |
+| 16:11 | Edited backend/archive/official/2024_Test04_ENG_Sec01_Mod02B_04_01_02B.yaml | expanded (+8 lines) | ~273 |
+| 16:11 | Edited backend/archive/official/2024_Test04_ENG_Sec01_Mod02B_04_01_02B.yaml | expanded (+8 lines) | ~183 |
+| 16:11 | Edited DEBUG_LOG.md | expanded (+13 lines) | ~619 |
+| 17:02 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/backfill_pt6_mod02b.py | — | ~3776 |
+| 17:02 | Edited backend/archive/official/2024_Test06_ENG_Sec01_Mod02B_06_01_02B.yaml | 6→6 lines | ~71 |
+| 17:02 | Edited backend/archive/official/2024_Test06_ENG_Sec01_Mod02B_06_01_02B.yaml | 5→5 lines | ~63 |
+| 17:02 | Edited backend/archive/official/2024_Test06_ENG_Sec01_Mod02B_06_01_02B.yaml | expanded (+8 lines) | ~242 |
+| 17:03 | Edited DEBUG_LOG.md | expanded (+12 lines) | ~523 |
+| 17:07 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/fill_focus_pt6_mod02b.py | — | ~332 |
+| 17:08 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/fill_focus_q6_q10.py | — | ~320 |
+| 17:08 | Edited backend/archive/official/2024_Test06_ENG_Sec01_Mod02B_06_01_02B.yaml | modified explanation_short() | ~76 |
+| 17:08 | Edited backend/archive/official/2024_Test06_ENG_Sec01_Mod02B_06_01_02B.yaml | 5→5 lines | ~54 |
+| 17:08 | Edited backend/archive/official/2024_Test06_ENG_Sec01_Mod02B_06_01_02B.yaml | 5→5 lines | ~48 |
+| 17:09 | Edited backend/archive/official/2024_Test06_ENG_Sec01_Mod02B_06_01_02B.yaml | expanded (+9 lines) | ~308 |
+| 17:09 | Edited DEBUG_LOG.md | expanded (+11 lines) | ~679 |
+| 18:59 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/3bcbb90b-7823-4d9d-87aa-7f72b126d646/scratchpad/backfill_pt8_mod02b_q4.py | — | ~1945 |
+| 19:00 | Edited backend/archive/official/2024_Test08_ENG_Sec01_Mod02B_08_01_02B.yaml | 24→26 lines | ~292 |
+| 19:00 | Edited DEBUG_LOG.md | expanded (+12 lines) | ~438 |
+
+## Session: 2026-07-29 19:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-29 19:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-29 20:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:50 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/01f4a487-39f5-4121-a700-1ba2b39680bb/scratchpad/backfill_pt9_mod02a_q14.sql | — | ~3409 |
+| 09:08 | Edited DEBUG_LOG.md | expanded (+36 lines) | ~745 |
+| 10:16 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/01f4a487-39f5-4121-a700-1ba2b39680bb/scratchpad/fix_pt9_2025_mod02_q1.sql | — | ~3117 |
+| 10:17 | Edited backend/archive/official/9_01_02.yaml | expanded (+6 lines) | ~603 |
+| 10:19 | Edited backend/archive/official/9_01_02.yaml | 9→10 lines | ~220 |
+
+## Session: 2026-07-29 10:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:30 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/43ef0a8d-6ce2-4a3d-b636-33159ac2f7ba/scratchpad/fix_pt9_2025_mod02_q2_q3.sql | — | ~3050 |
+
+## Session: 2026-07-29 10:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:40 | Fixed rotated q1-q3 in 2025 PT9 sec01 mod02: q2 -> Predatory animals, q3 -> Teju Cole; synced both archive YAML mirrors and restored missing q31 | DB + backend/archive/official/9_01_02.yaml + archive_generated/official/9_01_02.yaml | verified via admin + student APIs | ~48k |
+| 11:13 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added optional chaining | ~269 |
+| 11:16 | Add "e" keyboard shortcut to enter edit mode in DataManagement QuestionDetailModal | APP/ADMIN_APP/src/pages/DataManagement.tsx | done, tsc clean | ~600 |
+
+## Session: 2026-07-29 11:31
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:34 | Created APP/STUDENT_APP_REDUX/src/utils/underline.ts | — | ~1078 |
+| 11:35 | Created APP/STUDENT_APP_REDUX/src/components/PassageText.tsx | — | ~323 |
+| 11:35 | Created APP/STUDENT_APP_REDUX/src/utils/__tests__/underline.test.ts | — | ~1103 |
+| 11:35 | Edited APP/STUDENT_APP_REDUX/src/utils/underline.ts | 8→8 lines | ~84 |
+| 11:36 | Edited APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx | added 2 import(s) | ~114 |
+| 11:36 | Edited APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx | 11→14 lines | ~178 |
+| 11:36 | Edited APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx | "text-sm text-gray-600 lea" → "text-sm text-gray-600 lea" | ~36 |
+| 11:36 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | added 2 import(s) | ~110 |
+| 11:36 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | 13→16 lines | ~188 |
+| 11:37 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | added 2 import(s) | ~142 |
+| 11:37 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | 7→10 lines | ~150 |
+| 11:37 | Edited APP/STUDENT_APP_REDUX/src/components/dashboard/TestModeTab.tsx | inline fix | ~35 |
+| 11:37 | Edited APP/STUDENT_APP_REDUX/src/pages/ReviewMissedPage.tsx | added 2 import(s) | ~82 |
+| 11:37 | Edited APP/STUDENT_APP_REDUX/src/pages/ReviewMissedPage.tsx | added nullish coalescing | ~113 |
+| 11:38 | Edited APP/STUDENT_APP_REDUX/src/pages/ReviewMissedPage.tsx | expanded (+8 lines) | ~175 |
+| 11:38 | Edited APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts | modified if() | ~219 |
+| 11:38 | Edited APP/STUDENT_APP_REDUX/src/hooks/useGrammarSession.ts | added 1 import(s) | ~87 |
+| 11:40 | Add passage underlining for "function of underlined" questions across all student views (parse `underlined:` stem annotation → underline in passage) | APP/STUDENT_APP_REDUX/src/utils/underline.ts, components/PassageText.tsx, PracticeTestRunner, DiagnosticTestRunner, TestModeTab, ReviewMissedPage, useGrammarSession, underline.test.ts | done, tsc clean, +12 tests, 0 regressions | ~6500 |
+| 12:33 | Edited scripts/fix_pt6_2025_mod02_q1_q5_split.sql | 5→6 lines | ~86 |
+| 12:34 | Fix 2025 PT6 Mod02 Q1-5 passage/stem split (passage jammed into stem, prompt missing) via scripts/fix_pt6_2025_mod02_q1_q5_split.sql | questions + question_versions, scripts/fix_pt6_2025_mod02_q1_q5_split.sql | applied, verified 33/33 clean, backup 123150.dump | ~5500 |
+| 12:35 | Edited DEBUG_LOG.md | expanded (+25 lines) | ~466 |
+
+## Session: 2026-07-29 12:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:20 | Created scripts/gen_fix_pt5_2025_mod02.py | — | ~4425 |
+
+## Session: 2026-07-29 13:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:25 | Edited scripts/gen_fix_pt5_2025_mod02.py | 2→4 lines | ~90 |
+| 13:25 | Edited scripts/gen_fix_pt5_2025_mod02.py | "e064526f-0fe0-424d-9664-c" → "01ff4e29-8735-525b-9d61-7" | ~39 |
+| 13:25 | Edited scripts/gen_fix_pt5_2025_mod02.py | 4→6 lines | ~96 |
+| 13:25 | Edited scripts/gen_fix_pt5_2025_mod02.py | 3→4 lines | ~98 |
+| 13:27 | Edited scripts/gen_fix_pt5_2025_mod02.py | expanded (+14 lines) | ~376 |
+| 13:29 | Edited scripts/gen_fix_pt5_2025_mod02.py | modified Audit() | ~597 |
+
+## Session: 2026-07-29 13:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:32 | Applied PT5 mod02 cleanup SQL (1 txn) | fix_pt5_2025_mod02_cleanup.sql | 33 qns 1-33, 0 missing/dups, all answers match official key | ~0 |
+| 13:33 | Logged bug-805 + DEBUG_LOG + CHANGELOG + cerebrum learnings | .wolf/*, DEBUG_LOG.md, CHANGELOG.md | post-action logging done | ~0 |
+| 13:33 | Edited DEBUG_LOG.md | expanded (+35 lines) | ~681 |
+| 13:34 | Edited CHANGELOG.md | expanded (+22 lines) | ~403 |
+| 13:34 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_pt5-mod02-cleanup.md | — | ~352 |
+| 13:34 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 3→4 lines | ~100 |
+| 13:50 | Created missing PT5 mod01 Q26 | fix_pt5_2025_mod01_q26_create.sql | qn26 correct=B, 4 opts, active; module now qn1-33 no gaps | ~0 |
+| 13:51 | Logged bug-806 + DEBUG_LOG + CHANGELOG | .wolf/*, DEBUG_LOG.md, CHANGELOG.md | post-action logging | ~0 |
+| 13:50 | Edited DEBUG_LOG.md | expanded (+26 lines) | ~511 |
+| 13:50 | Edited CHANGELOG.md | expanded (+17 lines) | ~300 |
+| 13:50 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_pt5-mod02-cleanup.md | — | ~644 |
+| 13:51 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | inline fix | ~68 |
+| 13:55 | Created scripts/fix_pt5_2025_mod01_rejected_cleanup.sql | — | ~5444 |
+
+## Session: 2026-07-29 13:57
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:59 | PT5 Mod01 rejected-cleanup ON HOLD per user | scripts/fix_pt5_2025_mod01_rejected_cleanup.sql | active admin-dashboard session editing same rows (rejects/approve/PATCH at 20:40-20:55 UTC); user chose "wait until I stop editing"; resume: re-verify 13 target UUIDs still rejected, then apply, verify, log bug-807 | ~1.2k |
+| 14:04 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_pt5-mod02-cleanup.md | modified PDT() | ~456 |
+| 14:09 | Created scripts/fix_pt4_2025_mod01_q20_q21_q32_create.sql | — | ~6305 |
+
+## Session: 2026-07-29 14:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:45 | Created scripts/gen_fix_pt4_2025_mod02.py | — | ~5145 |
+
+## Session: 2026-07-29 14:56
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:00 | Backfilled 2025 PT4 Sec01 Mod02 (33 qns, was 0/33 ingested); ran gen script, applied SQL, verified in DB (bug-807) | scripts/gen_fix_pt4_2025_mod02.py, scripts/fix_pt4_2025_mod02_create.sql, .wolf/buglog.json | Success — 33/33 questions with correct official answers | ~4k |
+| 15:10 | Deactivated all of 2025 PT3 (23 Mod01 questions, no official source for Mod01 or Mod02) — set practice_status='retired', non-destructive (bug-808) | DB only + .wolf/buglog.json | Success — 0 active PT3 2025 questions remain | ~1.5k |
+| 15:00 | Edited DEBUG_LOG.md | expanded (+24 lines) | ~460 |
+| 16:17 | Edited backend/app/pipeline/validator.py | modified get() | ~455 |
+| 16:17 | Edited backend/app/routers/ingest.py | 4→5 lines | ~45 |
+| 16:17 | Edited backend/app/routers/ingest.py | 6→11 lines | ~167 |
+| 16:17 | Edited backend/app/routers/ingest.py | modified begin_nested() | ~544 |
+| 16:18 | Edited backend/tests/test_pipeline.py | modified test_validate_official_question_passes() | ~69 |
+| 16:19 | Edited backend/tests/test_pipeline.py | modified test_validate_visual_stimulus_always_blocks() | ~691 |
+| 16:21 | Edited CHANGELOG.md | modified pipeline() | ~636 |
+| 16:21 | Edited DEBUG_LOG.md | expanded (+26 lines) | ~554 |
+
+## Session: 2026-07-29 16:57
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:55 | Diagnosed + fixed admin Google OAuth 500 | student_auth.py, backend (uvicorn --reload) | root cause: --reload mapper-state corruption; fix: docker restart dsat-backend; verified 200 OK + user logged in | ~5000 |
+| 16:56 | Logged bug-810 | .wolf/buglog.json | SQLAlchemy unitofwork mapper corruption under uvicorn --reload | ~400 |
+| 16:56 | Updated cerebrum + DEBUG_LOG + CHANGELOG | .wolf/cerebrum.md, DEBUG_LOG.md, CHANGELOG.md | Do-Not-Repeat + Key Learning + audit + changelog entry | ~600 |
+| 17:10 | Deleted stale PT4 mod02 backfill scripts | scripts/fix_pt4_2025_mod02_create.sql, scripts/gen_fix_pt4_2025_mod02.py | DB verified 33/33 active correct; scripts superseded by live DB; removed + anatomy.md updated | ~1200 |
+| 17:23 | Created scripts/fix_vocab_canonicalization.sql | — | ~2181 |
+| 17:18 | Took pre-repair backup | backups/dsat_dev_20260729_171846_pre_vocab_canonicalization.dump | pg_dump -Fc, 5.2MB, 286 TOC entries | ~300 |
+| 17:22 | Applied vocab canonicalization (grammar_role/skill_family/stimulus_mode) | scripts/fix_vocab_canonicalization.sql + align UPDATE | 4 low-conf rows flagged; then discovered annotation_jsonb is authoritative -> aligned column<-annotation (293 rows) | ~6500 |
+| 17:25 | Verified repair | DB | 0 strays in all 4 fields; diagnostic pool 707 grammar + 677 reading + 25 no-domain | ~1500 |
+| 17:26 | Logged bug-811 + cerebrum + DEBUG_LOG + CHANGELOG + anatomy | .wolf/*, DEBUG_LOG.md, CHANGELOG.md | bug-811; Key Learning: annotation_jsonb authoritative, column drifts | ~800 |
+| 17:27 | Edited APP/STUDENT_APP_REDUX/src/hooks/useDiagnosticTimer.ts | added 1 condition(s) | ~465 |
+| 17:27 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | 4→5 lines | ~84 |
+| 17:28 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | modified handleSubmitClick() | ~55 |
+| 17:28 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | expanded (+14 lines) | ~406 |
+| 17:28 | Edited APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx | expanded (+54 lines) | ~798 |
+| 17:28 | Edited APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx | 5→6 lines | ~96 |
+| 17:28 | Edited APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx | modified handleSubmitClick() | ~552 |
+| 17:29 | Edited APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx | expanded (+54 lines) | ~798 |
+| 17:29 | Edited APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx | expanded (+45 lines) | ~350 |
+| 17:29 | Edited APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDiagnosticTimer.test.tsx | 4→7 lines | ~48 |
+
+## Session: 2026-07-30 17:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:34 | Created ../../../tmp/stem_strays.sql | — | ~1101 |
+| 17:34 | Created ../../../tmp/stem_align_check.sql | — | ~1171 |
+
+## Session: 2026-07-30 18:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:52 | Created ../../../tmp/stem_audit.sql | — | ~575 |
+
+## Session: 2026-07-30 18:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 18:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:25 | Created scripts/fix_stem_type_canonicalization.sql | — | ~1429 |
+| 19:25 | Edited scripts/fix_stem_type_canonicalization.sql | 6→6 lines | ~58 |
+| 19:25 | Edited scripts/fix_stem_type_canonicalization.sql | 6→6 lines | ~75 |
+| 19:27 | Edited scripts/fix_stem_type_canonicalization.sql | inline fix | ~31 |
+| 19:29 | Created scripts/fix_stem_type_canonicalization.sql | — | ~1417 |
+| 19:29 | Edited scripts/fix_stem_type_canonicalization.sql | 2→2 lines | ~19 |
+| 19:30 | Edited backend/app/prompts/extract_prompt.py | 10→14 lines | ~231 |
+| 19:33 | Executed stem_type_key canonicalization (bug-812) | questions, question_annotations, extract_prompt.py | 940 col<-jsonb + 15 alias col + 13 alias jsonb + 1 add-key; 0 strays/0 disagree across 1410 active | ~1200 |
+| 19:33 | Logged bug-812 + cerebrum learnings + verified aliases | .wolf/buglog.json, .wolf/cerebrum.md | bug-812 logged, 2 learnings added, 47 aliases verified | ~600 |
+| 19:32 | Edited DEBUG_LOG.md | modified rows() | ~653 |
+| 21:16 | Created docs/superpowers/specs/2026-07-29-stimulus-type-picker-design.md | — | ~1114 |
+| 21:37 | Edited DEBUG_LOG.md | added optional chaining | ~311 |
+| 21:40 | Created docs/superpowers/plans/2026-07-29-stimulus-type-picker.md | — | ~9563 |
+| 21:40 | Edited docs/superpowers/plans/2026-07-29-stimulus-type-picker.md | 8→4 lines | ~62 |
+| 22:00 | Created .worktrees/stimulus-type-picker/.superpowers/sdd/2026-07-29-stimulus-type-picker/progress.md | — | ~248 |
+| 22:01 | Created .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx | — | ~600 |
+| 22:01 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | inline fix | ~18 |
+| 22:02 | Edited .worktrees/stimulus-type-picker/.wolf/buglog.json | added optional chaining | ~326 |
+
+## Session: 2026-07-30 23:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:31 | Edited scripts/gen_vocab.py | 3→5 lines | ~113 |
+| 23:31 | Edited scripts/gen_vocab.py | 2→4 lines | ~92 |
+| 23:32 | Edited .worktrees/stimulus-type-picker/DEBUG_LOG.md | added optional chaining | ~300 |
+
+## Session: 2026-07-30 23:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:32 | Edited .worktrees/stimulus-type-picker/backend/app/models/payload.py | modified ActivityDayCount() | ~75 |
+| 23:32 | Edited docker-compose.yml | 3→7 lines | ~102 |
+| 23:32 | Edited .worktrees/stimulus-type-picker/backend/app/routers/student.py | inline fix | ~35 |
+| 23:32 | Edited .worktrees/stimulus-type-picker/backend/app/routers/student.py | 2→3 lines | ~21 |
+| 23:32 | Edited .worktrees/stimulus-type-picker/backend/app/routers/student.py | modified get_stimulus_mode_counts() | ~342 |
+| 23:32 | Edited backend/app/routers/admin.py | added 2 import(s) | ~52 |
+| 23:32 | Edited backend/app/routers/admin.py | modified _load_vocab_file() | ~552 |
+| 23:32 | Created .worktrees/stimulus-type-picker/backend/tests/test_stimulus_mode_counts.py | — | ~793 |
+| 23:33 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/types/index.ts | 7→12 lines | ~67 |
+| 23:33 | Edited APP/ADMIN_APP/src/types/index.ts | expanded (+40 lines) | ~272 |
+| 23:33 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/api/client.ts | 2→5 lines | ~53 |
+| 23:33 | Edited APP/ADMIN_APP/src/api/client.ts | 5→7 lines | ~34 |
+| 23:33 | Edited APP/ADMIN_APP/src/api/client.ts | 4→9 lines | ~173 |
+| 23:33 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts | inline fix | ~23 |
+| 23:33 | Edited APP/ADMIN_APP/src/App.tsx | added 1 import(s) | ~55 |
+| 23:33 | Edited APP/ADMIN_APP/src/App.tsx | 1→2 lines | ~44 |
+| 23:33 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts | modified useStimulusCounts() | ~78 |
+| 23:33 | Edited APP/ADMIN_APP/src/components/Layout.tsx | 2→3 lines | ~36 |
+| 23:33 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts | 11→12 lines | ~107 |
+| 23:34 | Created APP/ADMIN_APP/src/pages/VocabularyGovernance.tsx | — | ~4506 |
+| 23:34 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts | added optional chaining | ~275 |
+| 23:33 | Added GET /admin/vocab/master + /admin/vocab/candidates endpoints; mounted ./vocabulary:/vocabulary:ro in docker-compose backend | docker-compose.yml, backend/app/routers/admin.py | routes return 403 w/o auth (registered ok), mount verified in-container | ~1.2k |
+| 23:33 | Built admin Vocabulary Governance page (candidate queue + canonical vocab tabs), wired route + nav | APP/ADMIN_APP/src/pages/VocabularyGovernance.tsx, App.tsx, Layout.tsx, client.ts, types/index.ts | tsc --noEmit passes | ~1.5k |
+| 23:35 | Created .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx | — | ~890 |
+| 23:36 | Created .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx | — | ~2311 |
+
+## Session: 2026-07-30 23:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:35 | Wrote KEYS_MASTER.md (49 vocabularies, 632 entries) generated from master.json, grouped by domain (system/shared/grammar/reading) + maintenance section | KEYS_MASTER.md | complete; both bug-813 constants present | ~1.4k |
+| 23:35 | Admin `npm run build` segfaults in rollup native (pre-existing env issue); tsc -b + vite dev boot both pass | — | use tsc as correctness gate | ~0.3k |
+| 23:37 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx | expanded (+43 lines) | ~515 |
+| 23:37 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | CSS: stimulus_mode_key | ~167 |

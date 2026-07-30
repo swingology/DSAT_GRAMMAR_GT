@@ -141,6 +141,11 @@ SYNTACTIC_TRAP_KEYS = (
     "temporal_sequence_ambiguity", "multiple",
 )
 
+# --- Grammar roles that always require a non-null syntactic_trap_key (policy subset of GRAMMAR_ROLE_KEYS) ---
+SYNTACTIC_TRAP_REQUIRED_ROLES = (
+    "agreement", "pronoun", "modifier", "verb_form", "sentence_boundary",
+)
+
 # --- V3 §12.1 distractor_type_key (option-level) ---
 DISTRACTOR_TYPE_KEYS = (
     "semantic_imprecision", "logical_mismatch", "scope_error", "tone_mismatch",
@@ -299,14 +304,6 @@ READING_QUESTION_FAMILY_KEYS = (
 # --- Grammar question families (subset of QUESTION_FAMILY_KEYS) ---
 GRAMMAR_QUESTION_FAMILY_KEYS = (
     "conventions_grammar", "expression_of_ideas",
-)
-
-# Grammar roles that always carry a structural trap. When grammar_role_key is one
-# of these, syntactic_trap_key must be non-null ("none" is only valid for a
-# genuinely unambiguous sentence). Shared by the annotation prompt (HARD ROUTING
-# RULES §3) and validate_annotation_completeness so prompt and validator agree.
-SYNTACTIC_TRAP_REQUIRED_ROLES = (
-    "agreement", "pronoun", "modifier", "verb_form", "sentence_boundary",
 )
 
 # --- Reading skill families ---

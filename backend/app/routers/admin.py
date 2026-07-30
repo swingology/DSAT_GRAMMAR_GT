@@ -1,11 +1,17 @@
 import asyncio
+import json
+import re
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from uuid import UUID
+from urllib.parse import urlparse
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select, delete, update, func, and_, case, text, cast, Float
+from fastapi import APIRouter, Depends, HTTPException, Query, File, Form, UploadFile
+from sqlalchemy import select, delete, update, func, and_, case, text, cast, Float, Integer
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi.responses import JSONResponse
 
 from typing import Any, Optional, List
 from pydantic import BaseModel
@@ -15,27 +21,67 @@ from app.auth import admin_required
 from app.models.db import (
     Question, QuestionAnnotation, QuestionVersion, QuestionOption,
     QuestionRelation, QuestionJob, QuestionAsset, LlmEvaluation, UserProgress,
-    QuestionStimulusAsset, GenerationBatch, ReviewRun, LlmReviewResult,
+    QuestionStimulusAsset, QuestionSourceSpan, StimulusExtractionJob,
+    GenerationBatch, ReviewRun, LlmReviewResult,
     ConsensusVerdict, ReviewerAdminOverride, AutoReleaseAuditLog,
     AdminQuestionAuditLog, User,
 )
 from app.config import get_settings
 from app.models.ontology import RELATION_TYPES
+from app.storage.object_store import put_object, public_url, local_path, load_storage_layout
 from app.models.payload import (
     AdminEditRequest, EvaluationScoreRequest, GenerationBatchRequest,
-    GeneratorModelStats, ReviewerModelStats, BatchAggregates, TokenUsageByProvider,
+    GeneratorModelStats, ReviewerModelStats, BatchAggregates, RecentBatchSummary,
+    GraphTagRequest,
+    TokenUsageByProvider,
     GenerationTrendPoint, RejectionReasonCount,
     GenerationAnalyticsResponse, ReviewAnalyticsResponse,
     BatchAnalyticsResponse, TrendAnalyticsResponse,
     QuestionMissRate, FocusAreaMissRate, CohortWeakSpotsResponse,
     AccuracyBucket, DomainPerformance, CohortSummaryResponse,
     TrapCohortStat, CohortTrapAnalyticsResponse,
-    TestSummary,
+    TestSummary, AdminQuestionListResponse,
 )
 from app.pipeline import amendment_review
 
 
 REGENERATE_MAX_ATTEMPTS_PER_QUESTION = 3
+
+
+def _pt_number_expr():
+    """Canonical practice-test number as a SQL Integer expression.
+
+    The PT# normally lives in source_exam_code (e.g. "01", "10"). For dirty
+    exam codes like "verbal"/"SAT" we fall back to the first run of digits in
+    source_test_name (e.g. "Bluebook Practice Test 5" -> 5, "Test02_ENG_..." -> 2).
+    Used by both list_tests (GROUP BY) and list_questions (WHERE), so the
+    explorer cards and the per-card question filter agree on the same PT.
+
+    Two-stage strip on test_name avoids the naive NULLIF(result, original) trap:
+    a purely-numeric test_name like "05" would make regexp_replace return "05"
+    which equals the original and falsely NULL-out; instead we strip leading
+    non-digits then trailing-from-first-non-digit, and only NULL on empty.
+    """
+    exam_digits = func.nullif(func.regexp_replace(Question.source_exam_code, '[^0-9]', '', 'g'), '')
+    name_digits = func.nullif(
+        func.regexp_replace(
+            func.regexp_replace(Question.source_test_name, '^[^0-9]*', ''),
+            '[^0-9].*$', '',
+        ),
+        '',
+    )
+    return cast(func.coalesce(exam_digits, name_digits), Integer)
+
+
+def _local_asset_path(storage_path: str) -> "Path":
+    """Resolve a local-s3/plain storage path to the on-disk file path."""
+    parsed = urlparse(storage_path)
+    local_scheme = load_storage_layout()["backends"].get("local_fs", {}).get("uri_scheme", "local-s3")
+    if not parsed.scheme or parsed.scheme == local_scheme:
+        bucket = parsed.netloc or "page_crops"
+        key = parsed.path.lstrip("/")
+        return local_path(bucket, key)
+    raise NotImplementedError(f"Cannot resolve non-local storage path {storage_path}")
 
 
 class EvaluationCreateRequest(BaseModel):
@@ -70,7 +116,86 @@ class RejectQuestionRequest(BaseModel):
     reason: Optional[str] = None
 
 
+class StimulusExtractRequest(BaseModel):
+    stimulus_type: str = "chart"
+    replace_existing: bool = False
+
+
 router = APIRouter(prefix="/admin", tags=["admin"])
+
+
+_VISUAL_STIMULUS_TYPES = {"table", "chart", "figure"}
+
+
+def _normalize_stimulus_type(stimulus_type: str | None) -> str:
+    normalized = (stimulus_type or "chart").strip().lower()
+    if normalized == "graph":
+        normalized = "chart"
+    if normalized not in _VISUAL_STIMULUS_TYPES:
+        raise HTTPException(status_code=400, detail=f"Unsupported stimulus_type: {stimulus_type}")
+    return normalized
+
+
+def _stimulus_kind(stimulus_type: str) -> str:
+    return {
+        "table": "table_crop",
+        "chart": "chart_crop",
+        "figure": "figure_crop",
+    }[stimulus_type]
+
+
+def _serialize_stimulus_extraction_job(job: StimulusExtractionJob) -> dict:
+    return {
+        "id": str(job.id),
+        "question_id": str(job.question_id),
+        "stimulus_type": job.stimulus_type,
+        "replace_existing": job.replace_existing,
+        "status": job.status,
+        "attempt_count": job.attempt_count,
+        "error_message": job.error_message,
+        "result_asset_id": str(job.result_asset_id) if job.result_asset_id else None,
+        "created_at": job.created_at.isoformat() if job.created_at else None,
+        "started_at": job.started_at.isoformat() if job.started_at else None,
+        "completed_at": job.completed_at.isoformat() if job.completed_at else None,
+        "updated_at": job.updated_at.isoformat() if job.updated_at else None,
+    }
+
+
+def _marker_source_metadata(question: Question) -> dict | None:
+    """Return the source coordinates required by the host Marker worker."""
+    exam_match = re.search(r"\d+", question.source_exam_code or "")
+    if not exam_match:
+        exam_match = re.search(r"\d+", question.source_test_name or "")
+    if not exam_match:
+        return None
+    if not question.source_section_code or not question.source_module_code:
+        return None
+    if question.source_question_number is None:
+        return None
+    return {
+        "exam": exam_match.group(0).zfill(2),
+        "section": question.source_section_code.zfill(2),
+        "module": question.source_module_code,
+        "question_number": question.source_question_number,
+    }
+
+
+def _serialize_stimulus_asset(
+    asset: QuestionStimulusAsset,
+    render_path: str | None = None,
+) -> dict[str, Any]:
+    path = render_path or asset.storage_path
+    return {
+        "id": str(asset.id),
+        "stimulus_type": asset.stimulus_type,
+        "storage_path": asset.storage_path,
+        "url": public_url(path),
+        "source_page_number": asset.source_page_number,
+        "title": asset.title,
+        "structured_data": asset.structured_data_jsonb,
+        "render_hints": asset.render_hints_jsonb,
+        "created_at": asset.created_at.isoformat() if asset.created_at else None,
+    }
 
 
 def _amendment_or_404(result: amendment_review.AmendmentOperationResult):
@@ -148,23 +273,73 @@ async def promote_amendment(
     )
 
 
-@router.get("/questions")
+# --- Controlled-vocabulary governance (read-only surfacing for the admin UI) ---
+# vocabulary/ holds master.json (the compiled enforcement manifest) and
+# candidates.json (the non-blocking review queue of off-vocab keys seen at ingest).
+# The directory is mounted read-only into the backend container at /vocabulary.
+# parents[3] resolves to the repo root on the host and to / in the container, so
+# the same expression finds the file in both dev and docker runs.
+_VOCAB_DIR = Path(__file__).resolve().parents[3] / "vocabulary"
+
+
+def _load_vocab_file(name: str) -> dict:
+    path = _VOCAB_DIR / name
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail=f"{name} not found on disk")
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=500, detail=f"{name} is not valid JSON: {exc}")
+
+
+@router.get("/vocab/master")
+async def get_vocab_master(_auth: str = Depends(admin_required)):
+    """Return the compiled controlled-vocabulary manifest (vocabulary/master.json).
+
+    Surfaces every declared vocabulary — its kind/domain/comment and the full
+    active+retired entry list — so the admin dashboard can render the canonical
+    key set per family. Read-only; edits go through master.json + gen_vocab.
+    """
+    return _load_vocab_file("master.json")
+
+
+@router.get("/vocab/candidates")
+async def get_vocab_candidates(_auth: str = Depends(admin_required)):
+    """Return the off-vocabulary candidate review queue (vocabulary/candidates.json).
+
+    Candidates are non-blocking keys the extraction LLM emitted that didn't match
+    any active vocabulary entry. They are never promoted directly — an admin
+    reviews them, approves a canonical replacement in a rule doc, and regenerates.
+    """
+    return _load_vocab_file("candidates.json")
+
+
+@router.get("/questions", response_model=AdminQuestionListResponse)
 async def list_questions(
-    practice_status: Optional[str] = Query(None, description="Filter by practice_status (draft/active/retired)"),
-    content_origin: Optional[str] = Query(None, description="Filter by content_origin (official/generated)"),
+    practice_status: Optional[str] = Query(
+        None,
+        pattern="^(draft|active|retired|rejected)$",
+        description="Filter by practice_status (draft/active/retired/rejected)",
+    ),
+    content_origin: Optional[str] = Query(
+        None,
+        pattern="^(official|unofficial|generated)$",
+        description="Filter by content_origin (official/unofficial/generated)",
+    ),
     source_release_year: Optional[int] = Query(None, description="Filter by official release year"),
-    source_test_name: Optional[str] = Query(None, description="Filter by source test name"),
-    source_exam_code: Optional[str] = Query(None, description="Filter by source exam code"),
+    pt_number: Optional[int] = Query(None, description="Filter by canonical PT# (derived from exam_code/test_name)"),
+    source_test_name: Optional[str] = Query(None, description="Filter by source test name (legacy)"),
+    source_exam_code: Optional[str] = Query(None, description="Filter by source exam code (legacy)"),
     source_subject_code: Optional[str] = Query(None, description="Filter by source subject code"),
     source_section_code: Optional[str] = Query(None, description="Filter by source section code"),
     source_module_code: Optional[str] = Query(None, description="Filter by source module code"),
-    sort_by_source: bool = Query(False, description="Sort by release/test/exam/module/question order"),
+    sort_by_source: bool = Query(False, description="Sort by release/PT/section/module/question order"),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    """List questions for admin review. Defaults to draft (pending review) queue."""
+    """List questions for admin review, optionally filtered by publication state."""
 
     stmt = select(Question)
     if practice_status:
@@ -173,6 +348,11 @@ async def list_questions(
         stmt = stmt.where(Question.content_origin == content_origin)
     if source_release_year is not None:
         stmt = stmt.where(Question.source_release_year == source_release_year)
+    if pt_number is not None:
+        # Filter by the derived canonical PT# so a merged explorer card (which
+        # may span several source_test_name/source_exam_code rows) selects all
+        # of its questions at once.
+        stmt = stmt.where(_pt_number_expr() == pt_number)
     if source_test_name:
         stmt = stmt.where(Question.source_test_name == source_test_name)
     if source_exam_code:
@@ -184,12 +364,15 @@ async def list_questions(
     if source_module_code:
         stmt = stmt.where(Question.source_module_code == source_module_code)
 
+    count_result = await db.execute(
+        select(func.count()).select_from(stmt.order_by(None).subquery())
+    )
+    total = count_result.scalar_one()
+
     if sort_by_source:
         stmt = stmt.order_by(
             Question.source_release_year.asc().nullslast(),
-            Question.source_test_name.asc().nullslast(),
-            Question.source_exam_code.asc().nullslast(),
-            Question.source_subject_code.asc().nullslast(),
+            _pt_number_expr().asc().nullslast(),
             Question.source_section_code.asc().nullslast(),
             Question.source_module_code.asc().nullslast(),
             Question.source_question_number.asc().nullslast(),
@@ -232,6 +415,35 @@ async def list_questions(
     else:
         opts_by_qid = {}
 
+    q_ids = [q.id for q in questions]
+    assets_by_qid: dict = {}
+    if q_ids:
+        asset_rows = await db.execute(
+            select(QuestionStimulusAsset).where(QuestionStimulusAsset.question_id.in_(q_ids))
+        )
+        assets = [
+            a for a in asset_rows.scalars().all()
+            if hasattr(a, "stimulus_type") and hasattr(a, "question_id")
+        ]
+        span_ids = [a.source_span_id for a in assets if getattr(a, "source_span_id", None)]
+        crop_by_span_id: dict[UUID, str] = {}
+        if span_ids:
+            span_rows = await db.execute(
+                select(QuestionSourceSpan).where(QuestionSourceSpan.id.in_(span_ids))
+            )
+            for span in span_rows.scalars().all():
+                if span.crop_path:
+                    crop_by_span_id[span.id] = span.crop_path
+        for asset in assets:
+            render_path = crop_by_span_id.get(asset.source_span_id) or asset.storage_path
+            assets_by_qid.setdefault(asset.question_id, []).append({
+                "id": str(asset.id),
+                "stimulus_type": asset.stimulus_type,
+                "url": public_url(render_path),
+                "title": asset.title,
+                "source_page_number": asset.source_page_number,
+            })
+
     items = []
     for q in questions:
         ann = ann_map.get(q.latest_annotation_id) if q.latest_annotation_id else None
@@ -250,6 +462,8 @@ async def list_questions(
             "source_section_code": q.source_section_code,
             "source_module_code": q.source_module_code,
             "source_question_number": q.source_question_number,
+            "source_has_graph": getattr(q, "source_has_graph", None),
+            "stimulus_mode_key": getattr(q, "stimulus_mode_key", None),
             "current_passage_text": q.current_passage_text,
             "current_question_text": q.current_question_text,
             "current_correct_option_label": q.current_correct_option_label,
@@ -258,55 +472,71 @@ async def list_questions(
             "annotation_stale": q.annotation_stale,
             "annotation": annotation,
             "options": options,
+            "stimulus_assets": assets_by_qid.get(q.id, []),
             "created_at": q.created_at.isoformat() if q.created_at else None,
         })
 
-    return items
+    return AdminQuestionListResponse(
+        questions=items,
+        total=total,
+        limit=limit,
+        offset=offset,
+    )
 
 
-@router.get("/tests", response_model=list[TestSummary])
+@router.get("/tests", response_model=list[TestSummary], response_model_exclude_none=True)
 async def list_tests(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    """Aggregate questions by source test/section/module for the admin test explorer."""
+    """Aggregate questions by canonical test/section/module for the admin test explorer.
+
+    Groups by (year, derived PT#, subject, section, module) rather than by the
+    raw source_test_name/source_exam_code, which vary for the same logical test
+    (e.g. "Bluebook Practice Test 5" vs "Test05_ENG_Sec01_Mod02B", or exam_code
+    "05" vs "verbal"). This collapses those duplicate rows into one card per
+    (Year · PT# · Sec## · Mod##).
+    """
+    pt = _pt_number_expr()
     stmt = (
         select(
             Question.source_release_year,
-            Question.source_test_name,
-            Question.source_exam_code,
+            pt.label("pt_number"),
             Question.source_subject_code,
             Question.source_section_code,
             Question.source_module_code,
             func.count(Question.id).label("question_count"),
+            # "approved" is not a valid practice_status_enum value (the enum is
+            # draft/active/retired/rejected); an approved question is published as
+            # "active". Counting "approved" here raised InvalidTextRepresentationError.
             func.count(
-                case((Question.practice_status.in_(("active", "approved")), 1))
+                case((Question.practice_status == "active", 1))
             ).label("approved_count"),
         )
         .group_by(
             Question.source_release_year,
-            Question.source_test_name,
-            Question.source_exam_code,
+            pt,
             Question.source_subject_code,
             Question.source_section_code,
             Question.source_module_code,
         )
         .order_by(
             Question.source_release_year.asc().nullslast(),
-            Question.source_test_name.asc().nullslast(),
+            pt.asc().nullslast(),
             Question.source_section_code.asc().nullslast(),
             Question.source_module_code.asc().nullslast(),
         )
     )
     result = await db.execute(stmt)
     return [
-        TestSummary(
-            source_release_year=r.source_release_year,
-            source_test_name=r.source_test_name,
-            source_exam_code=r.source_exam_code,
-            source_subject_code=r.source_subject_code,
-            source_section_code=r.source_section_code,
-            source_module_code=r.source_module_code,
+            TestSummary(
+                source_release_year=r.source_release_year,
+                pt_number=getattr(r, "pt_number", None),
+                source_test_name=getattr(r, "source_test_name", None),
+                source_exam_code=getattr(r, "source_exam_code", None),
+                source_subject_code=r.source_subject_code,
+                source_section_code=r.source_section_code,
+                source_module_code=r.source_module_code,
             question_count=r.question_count,
             approved_count=r.approved_count,
         )
@@ -733,7 +963,11 @@ async def list_generated_questions(
     consensus_verdict: Optional[str] = None,
     min_reviewer_disagreement: Optional[float] = None,
     overlap_status: Optional[str] = None,
-    practice_status: Optional[str] = Query("draft"),
+    practice_status: Optional[str] = Query(
+        None,
+        pattern="^(draft|active|retired|rejected)$",
+        description="Optional publication-state filter; omitted to browse all generated questions.",
+    ),
     created_from: Optional[str] = None,
     created_to: Optional[str] = None,
     limit: int = Query(25, ge=1, le=100),
@@ -907,7 +1141,7 @@ async def approve_generated_question(
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
 ):
-    return await approve_question(question_id, db=db, _auth=_auth)
+    return await _approve_question_impl(question_id, db, _auth)
 
 
 @router.post("/generated-questions/{question_id}/reject")
@@ -917,7 +1151,7 @@ async def reject_generated_question(
     db: AsyncSession = Depends(get_db),
     auth_token: str = Depends(admin_required),
 ):
-    return await reject_question(question_id, body=body, db=db, auth_token=auth_token)
+    return await _reject_question_impl(question_id, body, db, auth_token)
 
 
 @router.post("/generated-questions/{question_id}/regenerate")
@@ -1190,11 +1424,373 @@ async def edit_question(
     return {"id": str(q.id), "version": new_version.version_number, "changes": list(changes.keys())}
 
 
+@router.post("/questions/{question_id}/graph-tag")
+async def set_graph_tag(
+    question_id: str,
+    body: GraphTagRequest,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Toggle the curated provenance flag recording that the original source
+    question included a graph/figure. This is provenance metadata, not content,
+    so it does NOT create a new QuestionVersion or mark the annotation stale."""
+    qid = _parse_uuid(question_id)
+    q = await db.get(Question, qid)
+    if not q:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    before_value = q.source_has_graph
+    if body.has_graph == before_value:
+        return {"id": str(q.id), "source_has_graph": before_value, "changed": False}
+
+    q.source_has_graph = body.has_graph
+    q.updated_at = datetime.now(timezone.utc)
+
+    await _write_admin_audit(
+        qid=qid,
+        admin_token=_auth,
+        action="graph_tag",
+        before={"source_has_graph": before_value},
+        after={"source_has_graph": body.has_graph},
+        fields_changed=["source_has_graph"],
+        db=db,
+    )
+    await db.commit()
+    return {"id": str(q.id), "source_has_graph": body.has_graph, "changed": True}
+
+
+@router.post("/questions/{question_id}/extract-stimulus")
+async def extract_stimulus_asset(
+    question_id: str,
+    body: StimulusExtractRequest,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Extract a cropped visual stimulus image from the question's source page.
+
+    This is an admin curation action. It creates a QuestionStimulusAsset for the
+    student payload, but does not create a QuestionVersion or mark annotations
+    stale because the question text itself is unchanged.
+    """
+    from app.storage.crop_detector import (
+        RegionDetection,
+        crop_and_store,
+        detect_layout,
+        match_region_for_question,
+        match_stimulus_regions_for_question,
+    )
+
+    qid = _parse_uuid(question_id)
+    question = await db.get(Question, qid)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    stimulus_type = _normalize_stimulus_type(body.stimulus_type)
+
+    existing_rows = await db.execute(
+        select(QuestionStimulusAsset)
+        .where(
+            QuestionStimulusAsset.question_id == qid,
+            QuestionStimulusAsset.stimulus_type == stimulus_type,
+        )
+        .order_by(QuestionStimulusAsset.created_at.desc())
+    )
+    existing_assets = existing_rows.scalars().all()
+    if existing_assets and not body.replace_existing:
+        existing = existing_assets[0]
+        render_path = existing.storage_path
+        if existing.source_span_id:
+            span = await db.get(QuestionSourceSpan, existing.source_span_id)
+            if span and span.crop_path:
+                render_path = span.crop_path
+        return {
+            "created": False,
+            "queued": False,
+            "asset": _serialize_stimulus_asset(existing, render_path),
+            "job": None,
+            "message": "A stimulus asset already exists. Pass replace_existing=true to refresh it.",
+        }
+
+    source_rows = await db.execute(
+        select(QuestionSourceSpan)
+        .where(QuestionSourceSpan.question_id == qid)
+        .order_by(QuestionSourceSpan.created_at.desc())
+    )
+    source_spans = source_rows.scalars().all()
+    visual_span = next(
+        (
+            span for span in source_spans
+            if span.source_region_role in _VISUAL_STIMULUS_TYPES and span.crop_path
+            and span.source_region_role == stimulus_type
+        ),
+        None,
+    )
+
+    crop_path = visual_span.crop_path if visual_span else None
+    source_span = visual_span
+    if (
+        body.replace_existing
+        and visual_span
+        and visual_span.extraction_method == "backfill_marker"
+    ):
+        crop_path = None
+        source_span = None
+    question_span = next(
+        (
+            span for span in source_spans
+            if span.source_region_role == "question_block" and span.rendered_page_path
+        ),
+        None,
+    )
+
+    if crop_path is None and not question_span:
+        if not _marker_source_metadata(question):
+            raise HTTPException(
+                status_code=409,
+                detail=(
+                    "No rendered source page or complete official-source coordinates are available "
+                    "for this question. Upload a stimulus image manually."
+                ),
+            )
+
+        active_job_rows = await db.execute(
+            select(StimulusExtractionJob)
+            .where(
+                StimulusExtractionJob.question_id == qid,
+                StimulusExtractionJob.stimulus_type == stimulus_type,
+                StimulusExtractionJob.status.in_(("queued", "running")),
+            )
+            .order_by(StimulusExtractionJob.created_at.desc())
+        )
+        job = active_job_rows.scalars().first()
+        if not job:
+            job = StimulusExtractionJob(
+                id=uuid.uuid4(),
+                question_id=qid,
+                stimulus_type=stimulus_type,
+                replace_existing=body.replace_existing,
+                status="queued",
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc),
+            )
+            db.add(job)
+            await _write_admin_audit(
+                qid=qid,
+                admin_token=_auth,
+                action="queue_stimulus_extraction",
+                before={"source_has_graph": question.source_has_graph},
+                after={
+                    "stimulus_extraction_job_id": str(job.id),
+                    "stimulus_type": stimulus_type,
+                    "replace_existing": body.replace_existing,
+                },
+                fields_changed=["stimulus_extraction_jobs"],
+                db=db,
+            )
+            try:
+                await db.commit()
+            except IntegrityError:
+                await db.rollback()
+                active_job_rows = await db.execute(
+                    select(StimulusExtractionJob)
+                    .where(
+                        StimulusExtractionJob.question_id == qid,
+                        StimulusExtractionJob.stimulus_type == stimulus_type,
+                        StimulusExtractionJob.status.in_(("queued", "running")),
+                    )
+                    .order_by(StimulusExtractionJob.created_at.desc())
+                )
+                job = active_job_rows.scalars().first()
+                if not job:
+                    raise
+            else:
+                await db.refresh(job)
+
+        return JSONResponse(
+            status_code=202,
+            content={
+                "created": False,
+                "queued": True,
+                "asset": None,
+                "job": _serialize_stimulus_extraction_job(job),
+                "message": "Marker extraction was queued for the host worker.",
+            },
+        )
+
+    if body.replace_existing:
+        for existing_asset in existing_assets:
+            if not existing_asset.source_span_id:
+                try:
+                    path = _local_asset_path(existing_asset.storage_path)
+                    if path.exists():
+                        path.unlink()
+                except Exception:
+                    pass
+            await db.delete(existing_asset)
+        await db.flush()
+
+    if crop_path is None:
+        assert question_span is not None
+
+        page_images = [{
+            "storage_path": question_span.rendered_page_path,
+            "mime_type": "image/png",
+            "page_number": question_span.source_page_number,
+            "source_metadata": {
+                "source_test_name": question.source_test_name,
+                "source_exam_code": question.source_exam_code,
+                "source_section_code": question.source_section_code,
+                "source_module_code": question.source_module_code,
+                "source_question_number": question.source_question_number,
+            },
+        }]
+        layout_data = await detect_layout(page_images, get_settings())
+        matched_question = match_region_for_question(
+            layout_data,
+            {"source_question_number": question.source_question_number},
+            0,
+        )
+
+        if matched_question is None and question_span.diagnostics_jsonb:
+            bbox = question_span.diagnostics_jsonb.get("layout_bbox")
+            if isinstance(bbox, dict):
+                matched_question = RegionDetection(
+                    type="question_block",
+                    label=f"Q{question.source_question_number or ''}",
+                    page_index=0,
+                    bbox=bbox,
+                    question_number=question.source_question_number,
+                )
+
+        candidates = [
+            region for region in match_stimulus_regions_for_question(layout_data, matched_question)
+            if region.type == stimulus_type or (stimulus_type == "chart" and region.type == "chart")
+        ]
+        if not candidates:
+            raise HTTPException(
+                status_code=409,
+                detail=f"No {stimulus_type} region was detected near this question. Upload a crop manually.",
+            )
+
+        crop_result = crop_and_store(
+            candidates[0],
+            page_images,
+            qid,
+            kind=_stimulus_kind(stimulus_type),
+        )
+        if not crop_result:
+            raise HTTPException(
+                status_code=409,
+                detail="A visual region was detected, but the crop could not be stored.",
+            )
+
+        source_span = QuestionSourceSpan(
+            id=uuid.uuid4(),
+            question_id=qid,
+            question_job_id=question_span.question_job_id,
+            raw_asset_id=question_span.raw_asset_id,
+            source_page_number=question_span.source_page_number,
+            source_region_role=stimulus_type,
+            extraction_method="admin_layout_extract",
+            rendered_page_path=question_span.rendered_page_path,
+            crop_path=crop_result.storage_path,
+            layout_json_path=question_span.layout_json_path,
+            diagnostics_jsonb={
+                "layout_label": crop_result.region.label,
+                "layout_bbox": crop_result.region.bbox,
+                "source_question_span_id": str(question_span.id),
+            },
+            created_at=datetime.now(timezone.utc),
+        )
+        db.add(source_span)
+        await db.flush()
+        crop_path = crop_result.storage_path
+
+    asset = QuestionStimulusAsset(
+        id=uuid.uuid4(),
+        question_id=qid,
+        question_job_id=source_span.question_job_id if source_span else None,
+        raw_asset_id=source_span.raw_asset_id if source_span else None,
+        stimulus_type=stimulus_type,
+        storage_path=crop_path,
+        source_page_number=source_span.source_page_number if source_span else None,
+        source_span_id=source_span.id if source_span else None,
+        title=f"{stimulus_type.title()} from source question",
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(asset)
+
+    before_has_graph = question.source_has_graph
+    fields_changed = ["stimulus_assets"]
+    if stimulus_type == "chart" and question.source_has_graph is not True:
+        question.source_has_graph = True
+        fields_changed.append("source_has_graph")
+    question.updated_at = datetime.now(timezone.utc)
+
+    await _write_admin_audit(
+        qid=qid,
+        admin_token=_auth,
+        action="extract_stimulus_asset",
+        before={"source_has_graph": before_has_graph},
+        after={
+            "source_has_graph": question.source_has_graph,
+            "stimulus_asset_id": str(asset.id),
+            "stimulus_type": stimulus_type,
+            "storage_path": crop_path,
+        },
+        fields_changed=fields_changed,
+        db=db,
+    )
+    await db.commit()
+    await db.refresh(asset)
+
+    return {
+        "created": True,
+        "queued": False,
+        "asset": _serialize_stimulus_asset(asset, crop_path),
+        "job": None,
+        "message": "Extracted and stored the visual stimulus crop.",
+    }
+
+
+@router.get("/stimulus-extraction-jobs/{job_id}")
+async def get_stimulus_extraction_job(
+    job_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    parsed_job_id = _parse_uuid(job_id)
+    job = await db.get(StimulusExtractionJob, parsed_job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Stimulus extraction job not found")
+
+    payload = _serialize_stimulus_extraction_job(job)
+    payload["asset"] = None
+    if job.result_asset_id:
+        asset = await db.get(QuestionStimulusAsset, job.result_asset_id)
+        if asset:
+            render_path = asset.storage_path
+            if asset.source_span_id:
+                span = await db.get(QuestionSourceSpan, asset.source_span_id)
+                if span and span.crop_path:
+                    render_path = span.crop_path
+            payload["asset"] = _serialize_stimulus_asset(asset, render_path)
+    return payload
+
+
 @router.post("/questions/{question_id}/approve")
 async def approve_question(
     question_id: str,
     db: AsyncSession = Depends(get_db),
     _auth: str = Depends(admin_required),
+):
+    return await _approve_question_impl(question_id, db, _auth)
+
+
+async def _approve_question_impl(
+    question_id: str,
+    db: AsyncSession,
+    admin_token: str,
 ):
     qid = _parse_uuid(question_id)
     q = await db.get(Question, qid)
@@ -1225,13 +1821,13 @@ async def approve_question(
     admin_decision_id, override_count = await _write_reviewer_admin_overrides(
         qid=qid,
         admin_verdict="accept",
-        admin_token=_auth,
+        admin_token=admin_token,
         admin_notes=None,
         db=db,
     )
     await _write_admin_audit(
         qid=qid,
-        admin_token=_auth,
+        admin_token=admin_token,
         action="approve",
         before={"practice_status": prev_status},
         after={"practice_status": "active"},
@@ -1253,6 +1849,15 @@ async def reject_question(
     body: RejectQuestionRequest = RejectQuestionRequest(),
     db: AsyncSession = Depends(get_db),
     auth_token: str = Depends(admin_required),
+):
+    return await _reject_question_impl(question_id, body, db, auth_token)
+
+
+async def _reject_question_impl(
+    question_id: str,
+    body: RejectQuestionRequest,
+    db: AsyncSession,
+    auth_token: str,
 ):
     """Reject a question without destroying audit evidence.
 
@@ -1456,19 +2061,122 @@ async def get_stimulus_assets(
         .order_by(QuestionStimulusAsset.source_page_number, QuestionStimulusAsset.stimulus_type)
     )
     assets = result.scalars().all()
+    span_ids = [a.source_span_id for a in assets if a.source_span_id]
+    crop_by_span_id: dict[UUID, str] = {}
+    if span_ids:
+        span_rows = await db.execute(
+            select(QuestionSourceSpan).where(QuestionSourceSpan.id.in_(span_ids))
+        )
+        for span in span_rows.scalars().all():
+            if span.crop_path:
+                crop_by_span_id[span.id] = span.crop_path
     return [
-        {
-            "id": str(a.id),
-            "stimulus_type": a.stimulus_type,
-            "storage_path": a.storage_path,
-            "source_page_number": a.source_page_number,
-            "title": a.title,
-            "structured_data": a.structured_data_jsonb,
-            "render_hints": a.render_hints_jsonb,
-            "created_at": a.created_at.isoformat() if a.created_at else None,
-        }
+        _serialize_stimulus_asset(a, crop_by_span_id.get(a.source_span_id))
         for a in assets
     ]
+
+
+@router.post("/questions/{question_id}/stimulus-assets")
+async def upload_stimulus_asset(
+    question_id: str,
+    stimulus_type: str = Form(...),
+    file: UploadFile = File(...),
+    source_page_number: Optional[int] = Form(None),
+    title: Optional[str] = Form(None),
+    replace_asset_id: Optional[str] = Form(None),
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Upload a table/chart/figure image for a question. Optionally replace an existing asset."""
+    qid = _parse_uuid(question_id)
+    question = await db.get(Question, qid)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    type_key = stimulus_type.lower()
+    kind_map = {
+        "table": "table_crop",
+        "chart": "chart_crop",
+        "figure": "figure_crop",
+        "graph": "chart_crop",
+        "image": "figure_crop",
+    }
+    kind = kind_map.get(type_key)
+    if not kind:
+        raise HTTPException(status_code=400, detail=f"Unsupported stimulus_type: {stimulus_type}")
+
+    if not file.content_type or not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Uploaded file must be an image")
+
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty")
+
+    asset_id = uuid.uuid4()
+    ext = (file.filename or "").rsplit(".", 1)[-1].lower() or "png"
+    context = {
+        "question_id": str(qid),
+        "page_number": source_page_number or 1,
+        "crop_id": str(asset_id),
+        "ext": ext,
+    }
+    stored = put_object(
+        kind=kind,
+        context=context,
+        content=content,
+        filename=f"{asset_id}.{ext}",
+        mime_type=file.content_type,
+    )
+
+    if replace_asset_id:
+        old_id = _parse_uuid(replace_asset_id)
+        old_asset = await db.get(QuestionStimulusAsset, old_id)
+        if old_asset and old_asset.question_id == qid:
+            try:
+                old_path = _local_asset_path(old_asset.storage_path)
+                if old_path.exists():
+                    old_path.unlink()
+            except Exception:
+                pass
+            await db.delete(old_asset)
+
+    new_asset = QuestionStimulusAsset(
+        id=asset_id,
+        question_id=qid,
+        stimulus_type=stimulus_type,
+        storage_path=stored.storage_path,
+        source_page_number=source_page_number,
+        title=title,
+    )
+    db.add(new_asset)
+    await db.commit()
+    await db.refresh(new_asset)
+
+    return _serialize_stimulus_asset(new_asset)
+
+
+@router.delete("/questions/{question_id}/stimulus-assets/{asset_id}")
+async def delete_stimulus_asset(
+    question_id: str,
+    asset_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Delete a stimulus asset and remove its stored image file."""
+    qid = _parse_uuid(question_id)
+    aid = _parse_uuid(asset_id)
+    asset = await db.get(QuestionStimulusAsset, aid)
+    if not asset or asset.question_id != qid:
+        raise HTTPException(status_code=404, detail="Asset not found")
+    try:
+        path = _local_asset_path(asset.storage_path)
+        if path.exists():
+            path.unlink()
+    except Exception:
+        pass
+    await db.delete(asset)
+    await db.commit()
+    return {"deleted": True, "id": str(aid)}
 
 
 @router.post("/jobs/{job_id}/fail")
@@ -1759,12 +2467,19 @@ async def list_review_runs(
     )
     review_runs = runs.scalars().all()
 
+    results_by_run: dict[UUID, list[LlmReviewResult]] = {}
+    if review_runs:
+        result_rows = await db.execute(
+            select(LlmReviewResult).where(
+                LlmReviewResult.review_run_id.in_([run.id for run in review_runs])
+            )
+        )
+        for review_result in result_rows.scalars().all():
+            results_by_run.setdefault(review_result.review_run_id, []).append(review_result)
+
     result_list = []
     for run in review_runs:
-        result_rows = await db.execute(
-            select(LlmReviewResult).where(LlmReviewResult.review_run_id == run.id)
-        )
-        results = result_rows.scalars().all()
+        results = results_by_run.get(run.id, [])
         result_list.append({
             "review_run_id": str(run.id),
             "status": run.status,
@@ -1796,7 +2511,6 @@ async def list_review_runs(
 
 
 def _days_cutoff(days: int):
-    from datetime import timedelta
     return datetime.now(timezone.utc) - timedelta(days=days)
 
 
@@ -2127,6 +2841,28 @@ async def batch_analytics(
         avg_review_latency_ms=avg_review_latency_ms,
     )
 
+    recent_result = await db.execute(
+        select(GenerationBatch)
+        .where(GenerationBatch.created_at >= cutoff)
+        .order_by(GenerationBatch.created_at.desc())
+        .limit(20)
+    )
+    recent_batches = [
+        RecentBatchSummary(
+            id=str(batch.id),
+            status=batch.status,
+            requested_count=batch.requested_count,
+            created_count=batch.created_count or 0,
+            accepted_count=batch.accepted_count or 0,
+            rejected_count=batch.rejected_count or 0,
+            failed_count=batch.failed_count or 0,
+            needs_review_count=batch.needs_review_count or 0,
+            requested_by=batch.requested_by,
+            created_at=batch.created_at,
+        )
+        for batch in recent_result.scalars().all()
+    ]
+
     # --- Token usage by provider (same query as review analytics) ---
     token_rows = await db.execute(
         select(
@@ -2158,6 +2894,7 @@ async def batch_analytics(
     return BatchAnalyticsResponse(
         days=days,
         aggregates=aggregates,
+        recent_batches=recent_batches,
         token_usage=token_usage,
     )
 
@@ -2211,7 +2948,23 @@ async def analytics_export(
     """Full analytics export as JSON for offline analysis."""
     cutoff = _days_cutoff(days)
 
-    # Fetch all generated questions with their job info for export
+    latest_consensus = (
+        select(
+            ConsensusVerdict.question_id,
+            ConsensusVerdict.consensus_verdict,
+            ConsensusVerdict.average_realism,
+            ConsensusVerdict.max_copy_risk,
+            ConsensusVerdict.reviewer_disagreement,
+            ConsensusVerdict.high_disagreement_flag,
+            func.row_number().over(
+                partition_by=ConsensusVerdict.question_id,
+                order_by=ConsensusVerdict.created_at.desc(),
+            ).label("row_number"),
+        )
+        .subquery()
+    )
+
+    # Fetch all generated questions with generator and latest consensus data.
     rows = await db.execute(
         select(
             Question.id,
@@ -2223,11 +2976,23 @@ async def analytics_export(
             Question.created_at,
             QuestionJob.provider_name,
             QuestionJob.model_name,
+            latest_consensus.c.consensus_verdict,
+            latest_consensus.c.average_realism,
+            latest_consensus.c.max_copy_risk,
+            latest_consensus.c.reviewer_disagreement,
+            latest_consensus.c.high_disagreement_flag,
         )
         .outerjoin(QuestionJob, and_(
             QuestionJob.question_id == Question.id,
             QuestionJob.job_type == "generate",
         ))
+        .outerjoin(
+            latest_consensus,
+            and_(
+                latest_consensus.c.question_id == Question.id,
+                latest_consensus.c.row_number == 1,
+            ),
+        )
         .where(
             Question.content_origin == "generated",
             Question.created_at >= cutoff,
@@ -2237,15 +3002,6 @@ async def analytics_export(
 
     questions_export = []
     for row in rows.all():
-        # Get latest consensus verdict for this question
-        cv_result = await db.execute(
-            select(ConsensusVerdict)
-            .where(ConsensusVerdict.question_id == row.id)
-            .order_by(ConsensusVerdict.created_at.desc())
-            .limit(1)
-        )
-        cv = cv_result.scalars().first()
-
         questions_export.append({
             "question_id": str(row.id),
             "practice_status": row.practice_status,
@@ -2255,11 +3011,11 @@ async def analytics_export(
             "created_at": row.created_at.isoformat() if row.created_at else None,
             "generator_provider": row.provider_name,
             "generator_model": row.model_name,
-            "consensus_verdict": cv.consensus_verdict if cv else None,
-            "avg_realism": cv.average_realism if cv else None,
-            "max_copy_risk": cv.max_copy_risk if cv else None,
-            "reviewer_disagreement": cv.reviewer_disagreement if cv else None,
-            "high_disagreement": cv.high_disagreement_flag if cv else None,
+            "consensus_verdict": row.consensus_verdict,
+            "avg_realism": row.average_realism,
+            "max_copy_risk": row.max_copy_risk,
+            "reviewer_disagreement": row.reviewer_disagreement,
+            "high_disagreement": row.high_disagreement_flag,
         })
 
     return {
@@ -2500,7 +3256,7 @@ async def student_cohort_summary(
     total_students = total_r.scalars().first() or 0
 
     # Active this week
-    week_ago = now - __import__("datetime").timedelta(days=7)
+    week_ago = now - timedelta(days=7)
     active_r = await db.execute(
         select(func.count(UserProgress.user_id.distinct()))
         .where(UserProgress.timestamp >= week_ago)
@@ -2643,7 +3399,16 @@ async def trigger_span_annotation(
     try:
         result = await annotate_spans(qid, db)
     except ValueError as exc:
-        raise HTTPException(status_code=422, detail=str(exc)) from exc
+        raise HTTPException(
+            status_code=422,
+            detail={"error": str(exc), "details": {}},
+        ) from exc
     if result.get("status") == "failed":
-        raise HTTPException(status_code=422, detail=result)
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error": result.get("error") or "Span annotation failed",
+                "details": result,
+            },
+        )
     return result

@@ -8,7 +8,10 @@ const NAV = [
   { to: '/data', label: 'Data Management', icon: '📋' },
   { to: '/students', label: 'Student Performance', icon: '📈' },
   { to: '/pipeline', label: 'Pipeline & Backend', icon: '⚙️' },
+  { to: '/vocabulary', label: 'Vocabulary', icon: '🔑' },
 ]
+
+const APP_VERSION = import.meta.env.VITE_APP_VERSION || 'dev'
 
 export function Layout() {
   const [collapsed, setCollapsed] = useState(false)
@@ -35,6 +38,7 @@ export function Layout() {
           )}
           <button
             onClick={() => setCollapsed((v) => !v)}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             className="text-gray-400 hover:text-white transition p-1 rounded"
           >
             {collapsed ? '→' : '←'}
@@ -56,7 +60,7 @@ export function Layout() {
                 ].join(' ')
               }
             >
-              <span className="text-base flex-shrink-0">{item.icon}</span>
+              <span className="text-base flex-shrink-0" aria-hidden="true">{item.icon}</span>
               {!collapsed && <span className="truncate">{item.label}</span>}
             </NavLink>
           ))}
@@ -64,7 +68,7 @@ export function Layout() {
 
         {/* Footer */}
         <div className="px-4 py-3 border-t border-gray-800 text-xs text-gray-500">
-          {!collapsed && 'DSAT Admin v1'}
+          {!collapsed && `DSAT Admin ${APP_VERSION}`}
         </div>
       </aside>
 

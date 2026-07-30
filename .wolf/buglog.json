@@ -1,5 +1,41 @@
 [
   {
+    "id": "bug-813",
+    "timestamp": "2026-07-29T21:20:00-07:00",
+    "error_message": "Mixed Practice always shows \"No questions available right now.\" regardless of filters \u2014 no question ever renders.",
+    "file": "APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx",
+    "root_cause": "Line 136 reads `data?.questions?.[0]`, but GET /api/questions (backend/app/routers/student.py student_recall, response_model StudentQuestionsListResponse in backend/app/models/payload.py) returns `{items, inventory}` \u2014 there is no `questions` key. `question` is always null, so the page always falls through to the empty-state branch.",
+    "fix": "PENDING \u2014 scheduled as Task 0 of docs/superpowers/plans/2026-07-29-stimulus-type-picker.md: change `data?.questions?.[0]` to `data?.items?.[0]` with a regression test.",
+    "tags": [
+      "frontend",
+      "field-mismatch",
+      "MixedPracticePage",
+      "student-app"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-29T21:20:00-07:00"
+  },
+  {
+    "id": "bug-796",
+    "timestamp": "2026-07-28T18:25:00-07:00",
+    "error_message": "Test02_ENG_Sec01_Mod02A q1-27 missing passage_text or out of sync between questions.current_passage_text and question_versions.passage_text",
+    "file": "backend/app/models/db.py (data), backend/app/routers/ingest.py (ingestion)",
+    "root_cause": "Ingestion stored the passage sentence inside current_question_text for grammar/vocab questions and did not populate current_passage_text or question_versions.passage_text. Reading questions either had passages synced or only had current_passage_text without version passage_text (q12).",
+    "fix": "Copied canonical passage text and stems from matching Test02 module 02 questions into mod02A for q2,q4,q5,q6,q8,q9,q10,q13,q16,q19-q22,q24-q27. Synced q12 version passage_text from current_passage_text. Visually extracted remaining passages/stems from source PDF for q11,q14,q15,q17,q18,q23 and split passage from stem for q1,q3,q7. All 27 questions now have synced current_passage_text, current_question_text, question_versions.passage_text, and question_versions.question_text.",
+    "tags": [
+      "data-quality",
+      "passage-text",
+      "denormalized-column",
+      "Test02",
+      "mod02A",
+      "ingestion"
+    ],
+    "related_bugs": [],
+    "occurrences": 2,
+    "last_seen": "2026-07-28T19:15:00-07:00"
+  },
+  {
     "id": "bug-769",
     "timestamp": "2026-06-26T16:31:00-07:00",
     "error_message": "Grammar annotations truncated syntactic_trap_key to None, failing the non-null validator for roles agreement/pronoun/modifier/verb_form/sentence_boundary (Test_4: 5 blocking errors, 5/33 questions failed to persist)",
@@ -6698,5 +6734,612 @@
     "related_bugs": [],
     "occurrences": 1,
     "last_seen": "2026-07-15"
+  },
+  {
+    "id": "bug-787",
+    "timestamp": "2026-07-27T16:24:20.700063",
+    "error_message": "GET /admin/tests returned 500 Internal Server Error \u2014 Browse by Test showed 'Failed to load tests.'",
+    "file": "backend/app/routers/admin.py:302 (list_tests)",
+    "root_cause": "Query used practice_status.in_((\"active\",\"approved\")). \"approved\" is not a member of practice_status_enum (valid: draft/active/retired/rejected); approved questions are stored as status='active'. asyncpg raised InvalidTextRepresentationError. Same schema-drift class as the needs_review 500 (H4).",
+    "fix": "Changed approved_count case expression to practice_status == 'active' (dropped the invalid \"approved\" literal). Verified /admin/tests now returns 58 test rows and the filtered /admin/questions query returns the test's questions with sort_by_source=true.",
+    "tags": [
+      "practice_status_enum",
+      "schema-drift",
+      "admin-dashboard",
+      "data-management",
+      "browse-by-test",
+      "list_tests"
+    ],
+    "related_bugs": [
+      "H4 needs_review 500"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-27T16:24:20.700063"
+  },
+  {
+    "id": "bug-788",
+    "timestamp": "2026-07-27T16:37:51.422115",
+    "error_message": "Admin Data Management test cards used inconsistent raw source_test_name/source_exam_code labels with no year and no PT#; clicking a merged card (e.g. 2024 PT5 Mod02B spanning source rows with exam_code \"05\"/\"verbal\") filtered by source_test_name and returned 0 questions.",
+    "file": "backend/app/routers/admin.py (list_tests, list_questions), backend/app/models/payload.py (TestSummary), APP/ADMIN_APP/src/pages/DataManagement.tsx, src/types/index.ts",
+    "root_cause": "No canonical test id column exists; source_test_name is freeform (\"Bluebook Practice Test 5\" vs \"Test05_ENG_Sec01_Mod02B\") and source_exam_code is dirty (\"05\",\"verbal\",\"SAT\"). Grouping by those raw fields produced duplicate/ambiguous cards and the per-card filter (exact source_test_name) missed rows that belong to the same logical test.",
+    "fix": "Derive a canonical PT# server-side (_pt_number_expr: digits of source_exam_code, else first digit run of source_test_name via two-stage regexp_replace to avoid the NULLIF(result,original) trap on purely-numeric test_name). list_tests now GROUP BY (year, pt, subject, section, module) returning pt_number; list_questions gained a pt_number filter and sorts by pt_number; TestSummary gained pt_number (legacy source_test_name/exam_code kept optional, now null). Frontend renders cards as \"Year \u00b7 PT# \u00b7 Sec## \u00b7 Mod##\", question rows as \"Year \u00b7 PT# \u00b7 Sec## \u00b7 Mod## \u00b7 Q#\", and filters by pt_number. Cards dropped from 58 raw rows to 49 deduplicated.",
+    "tags": [
+      "admin-dashboard",
+      "data-management",
+      "test-naming",
+      "sql",
+      "postgres",
+      "schema-drift",
+      "frontend"
+    ],
+    "related_bugs": [
+      "bug-787"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-27T16:37:51.422131"
+  },
+  {
+    "id": "bug-789",
+    "timestamp": "2026-07-27T17:55:36.823336",
+    "error_message": "2024 PT9 module-2 questions were triplicated in the DB: each Q1-27 existed under source_module_code 02, 02A, and 02B (02B doubled), so the test explorer showed ~51q per module with 4x duplicated content. Also 4 other 2024 tests (PT1/PT2/PT4/PT5) had a stray plain \"02\" bucket that was actually the missing A/B variant, violating the Mod02-vs-Mod02A/Mod02B naming convention.",
+    "file": "DB: questions.source_module_code (2024 PT1/PT2/PT4/PT5/PT9); no app code changed this round",
+    "root_cause": "Ingestion created duplicate module-2 rows: the A (easier) variant was ingested as both 02 AND 02A, the B (harder) variant as 2x 02B. A and B are genuinely different questions (different text), so this was duplicated content, not a label clash. PT1/2/4/5 had a single mislabeled \"02\" bucket (the missing A or B variant).",
+    "fix": "(1) Relabeled the stray 02 bucket for PT1/PT4/PT5 -> 02A and PT2 -> 02B (the missing variant). (2) PT9: relabeled 02 -> 02A, then deduped each (qn,mod) pair keeping 1 row by priority [has user_progress > has audit log > active > earliest], reassigned 8 admin_question_audit_logs rows (question_id + question_version_id) to the surviving twin, deleted 50 questions + 50 annotations + 54 versions + 216 options in FK-safe order (options->annotations->versions; nulled latest_* pointers first). Backups: backup_pt9_{questions,annotations,versions,options}_2026_07_27 + backup_questions_2026_07_27. Result: 102 PT9 mod2 rows -> 52 (26x02A + 26x02B). Cards 49 -> 48. All module codes now follow the convention: single module-2 = Mod02; two variants = Mod02A + Mod02B.",
+    "tags": [
+      "data-dedup",
+      "postgres",
+      "module-code",
+      "pt9",
+      "admin-dashboard",
+      "fk-cascade",
+      "irreversible",
+      "backup"
+    ],
+    "related_bugs": [
+      "bug-788"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-27T17:55:36.823336"
+  },
+  {
+    "id": "bug-790",
+    "timestamp": "2026-07-27T18:50:00-07:00",
+    "error_message": "sqlalchemy.exc.ProgrammingError: (asyncpg) UndefinedColumnError: column questions.source_has_graph does not exist \u2014 even though `\\d questions` shows the column and alembic_version=035",
+    "file": "backend/app/models/db.py (new column) + live dsat-backend asyncpg pool",
+    "root_cause": "After ALTER TABLE adds a column via alembic, the running backend's asyncpg connection pool held prepared statements describing the OLD schema. `uvicorn --reload` reloaded the Python code (so new queries reference source_has_graph) but did NOT re-establish the connection pool, so asyncpg prepared the new SELECT against stale cached statement metadata and PostgreSQL rejected the unknown column.",
+    "fix": "`docker restart dsat-backend` to create a fresh connection pool that sees the new column. Apply schema migrations BEFORE the backend loads, or restart after any ALTER that adds columns to a live table.",
+    "tags": [
+      "asyncpg",
+      "alembic",
+      "schema-migration",
+      "prepared-statement-cache",
+      "connection-pool",
+      "backend"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-27T18:50:00-07:00"
+  },
+  {
+    "id": "bug-791",
+    "timestamp": "2026-07-28T03:46:55.771359+00:00",
+    "error_message": "detect_layout never produced regions: extract_json_from_text is object-only but the layout prompt asks for a bare JSON array; schema-compliant models (qwen2.5vl/qwen3-vl) return arrays the parser rejects, and glm-ocr returns a wrong-shape dict {question_block:[text...]} with no bboxes",
+    "file": "backend/app/storage/crop_detector.py",
+    "root_cause": "detect_layout used extract_json_from_text (returns dicts only) to parse array output; bare arrays became the first inner object (no regions key) -> empty; prose-prefixed arrays raised. This is why question_stimulus_assets had 0 rows and page-crops had 0 real PNGs.",
+    "fix": "Imported extract_json_array_from_text; detect_layout now accepts {regions:[...]}, any dict with a list-valued key (glm question_block), or a bare array, with the array extractor as a prose+array fallback. Also made _parse_region_list skip non-dict items (models emit bare question-number scalars). Bumped layout max_tokens 4096->8192 so qwen3-vl reasoning preamble + JSON array completes.",
+    "tags": [
+      "layout",
+      "detect_layout",
+      "ocr",
+      "stimulus",
+      "parser",
+      "vision"
+    ],
+    "related_bugs": [
+      "bug-790"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-28T03:46:55.771359+00:00"
+  },
+  {
+    "id": "bug-792",
+    "timestamp": "2026-07-28T03:46:55.771359+00:00",
+    "error_message": "VLM layout detection (glm-ocr, qwen2.5vl:7b, qwen3-vl:8b) is unreliable on dense 2-column DSAT verbal PDFs: misses entire pages (page 6 = real Q13 chart location returned no regions), mislabels question numbers (Q13 reported on page 9, out of order), imprecise bboxes (x+w>1.0). The accurate cloud model qwen3-vl:235b-instruct-cloud returns HTTP 410 Gone.",
+    "file": "backend/app/storage/crop_detector.py",
+    "root_cause": "Small local VLMs cannot reliably parse dense standardized test layouts. Deterministic pymupdf extraction confirms Q13 is on page 6 with a 104-drawing vector chart spike; VLMs miss it entirely.",
+    "fix": "UNRESOLVED \u2014 proposed pivot: deterministic layout via pymupdf (text blocks for question numbers + get_drawings clustering for chart/table regions) with VLM used only for chart-content annotation, not layout. Awaiting user decision.",
+    "tags": [
+      "layout",
+      "vision",
+      "qwen3-vl",
+      "ollama",
+      "stimulus",
+      "deterministic"
+    ],
+    "related_bugs": [
+      "bug-791"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-28T03:46:55.771359+00:00"
+  },
+  {
+    "id": "bug-793",
+    "timestamp": "2026-07-27T22:23:28.751026-07:00",
+    "error_message": "Backfilled stimulus assets rendered broken images in the student app and admin dashboard because asset.url pointed to a JSON manifest instead of the PNG crop",
+    "file": "backend/app/routers/student.py, backend/app/routers/admin.py",
+    "root_cause": "stimulus_backfill.py stores the structured-data manifest in QuestionStimulusAsset.storage_path and puts the actual crop PNG in the linked QuestionSourceSpan.crop_path. Both routers set url=public_url(asset.storage_path), so browsers tried to load application/json as an image.",
+    "fix": "Batch-load linked QuestionSourceSpan rows and use crop_path as the render URL when present; fall back to storage_path for admin-uploaded assets (which are images directly). Applied to student _load_stimulus_assets_by_question and admin list/get_stimulus_assets.",
+    "tags": [
+      "stimulus-assets",
+      "marker",
+      "backfill",
+      "admin",
+      "student",
+      "url"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-27T22:23:28.751026-07:00"
+  },
+  {
+    "id": "bug-794",
+    "timestamp": "2026-07-27T22:23:28.751026-07:00",
+    "error_message": "Static /assets endpoint in the dev stack returned 404 for crops written by host-side backfill scripts",
+    "file": "docker-compose.yml, backend/app/storage/object_store.py",
+    "root_cause": "object_store._resolve_local_root() resolves config default ../local_object_store relative to the backend root. On the host that is <repo>/local_object_store; inside the backend container (WORKDIR /app) it resolves to /local_object_store, which was not mounted, so the container served an empty directory.",
+    "fix": "Mount ./local_object_store:/local_object_store on the backend service and set OBJECT_STORAGE_LOCAL_ROOT=/local_object_store in its environment so host and container share the same object-store directory.",
+    "tags": [
+      "dev-stack",
+      "object-store",
+      "static-files",
+      "docker",
+      "assets"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-27T22:23:28.751026-07:00"
+  },
+  {
+    "id": "bug-795",
+    "timestamp": "2026-07-28T17:30:00.000000-07:00",
+    "error_message": "marker_single stimulus extraction exits 127 with ld.so relocation assertion failure during layout recognition",
+    "file": "tools/marker_worker/.venv/bin/marker_single, backend/scripts/stimulus_backfill.py",
+    "root_cause": "Binary ABI incompatibility between the uv-managed Python 3.12.11 interpreter, PyTorch 2.11.0+cu128 wheels, and system glibc 2.42. The dynamic linker crashes with elf_machine_rela_relative assertion while loading/running the surya layout model inside marker. This is a native-extension ABI mismatch, not a code path in stimulus_backfill.py.",
+    "fix": "Switched marker worker to CPU-only torch. Updated tools/marker_worker/pyproject.toml to pin torch==2.11.0+cpu and source it from the PyTorch CPU wheel index (https://download.pytorch.org/whl/cpu). Regenerated uv.lock, ran uv sync, and verified marker_single completes layout recognition on PT01_ENG_Sec01_Mod01.pdf page 12 with exit code 0. The host NVIDIA driver is too old for CUDA 12.8 anyway, so CPU-only is the correct configuration for this machine.",
+    "tags": [
+      "stimulus",
+      "marker",
+      "extraction",
+      "ld.so",
+      "glibc",
+      "pytorch",
+      "surya",
+      "abi",
+      "cpu-only"
+    ],
+    "related_bugs": [],
+    "occurrences": 4,
+    "last_seen": "2026-07-28T10:09:23.135000-07:00"
+  },
+  {
+    "id": "bug-796",
+    "timestamp": "2026-07-28T13:37:41.482971-07:00",
+    "error_message": "Test02_ENG_Sec01_Mod02B (2024 PT2 sec01 mod02B) questions missing current_passage_text for 16 of 27 questions",
+    "file": "questions table (Test02_ENG_Sec01_Mod02B rows), question_versions",
+    "root_cause": "Original ingestion batch on 2026-06-08 16:14 never populated current_passage_text or question_versions.passage_text for most sentence_only and passage_excerpt questions in this module. Only q5 and q20 were later patched via manual admin edits same day. No question_assets or question_source_spans rows exist for this test, so there is no stored OCR/crop to re-extract from automatically. Same class of bug as Test02_ENG_Sec01_Mod02A (already logged/fixed above in DEBUG_LOG.md).",
+    "fix": "Not yet fixed. User is manually pulling passage text from the source PDF and backfilling via the admin dashboard edit UI, question by question, following the same approach used for Mod02A.",
+    "tags": [
+      "ingestion",
+      "passage_text",
+      "data-integrity",
+      "admin-dashboard",
+      "Test02",
+      "Mod02B"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-07-28T13:37:41.482999-07:00"
+  },
+  {
+    "id": "bug-797",
+    "timestamp": "2026-07-28T15:31:11.895589-07:00",
+    "error_message": "Test03_ENG_Sec01_Mod02A missing questions q1, q3, q4, q6 from admin dashboard Data Management view (only 23 of 27 questions present)",
+    "file": "questions, question_versions, question_options tables; backend/archive/official/2024_Test03_ENG_Sec01_Mod02A_03_01_02A.yaml",
+    "root_cause": "questions.current_correct_option_label is NOT NULL with an A-D CHECK constraint. The ingestion pipeline resolves the correct answer from the annotation pass when extraction does not supply one; q1, q3, q4, q6 never received a completed annotation (archive YAML shows empty correct_option_label and missing/partial annotation blocks for exactly these 4), so the per-question SAVEPOINT persist step failed and was skipped during original ingestion, while the other 23 questions in the module persisted independently. No question_job_questions/audit-log/backup rows existed for these IDs, confirming they were never previously persisted (not a later deletion).",
+    "fix": "Rendered the source PDF pages for q1, q3, q4, q6 to PNG (text layer is empty/image-only) and read them directly to recover question text, passage, and options. Manually determined the correct answer for each from context (q1=B, q3=C, q4=B, q6=A) and inserted questions/question_versions/question_options rows using the existing deterministic question IDs from the archive YAML. Updated the archive YAML in place to match. All 27 questions in the module now persist correctly. Additionally, created question_annotations rows for all 4 (they had latest_annotation_id=NULL, which left Focus/Difficulty blank in the admin dashboard) with grammar_focus_key=precision_word_choice, per-question difficulty_overall (q1=low, q3=medium, q4=medium, q6=low), and needs_human_review=true.",
+    "tags": [
+      "ingestion",
+      "missing-questions",
+      "data-integrity",
+      "admin-dashboard",
+      "Test03",
+      "Mod02A",
+      "annotation-gap",
+      "annotation-missing"
+    ],
+    "related_bugs": [
+      "bug-796"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-28T15:31:11.895628-07:00"
+  },
+  {
+    "id": "bug-798",
+    "timestamp": "2026-07-28T16:11:52.592148-07:00",
+    "error_message": "Test04_ENG_Sec01_Mod02B missing questions q2, q3, q17, q23 from admin dashboard Data Management view (only 23 of 27 questions present)",
+    "file": "questions, question_versions, question_options, question_annotations tables; backend/archive/official/2024_Test04_ENG_Sec01_Mod02B_04_01_02B.yaml",
+    "root_cause": "Same class as bug-797: current_correct_option_label is NOT NULL/CHECK-constrained to A-D, and these 4 questions never received a completed annotation, so the per-question SAVEPOINT persist step failed and was skipped during original ingestion. q3 was more severe: the original extraction never captured the passage sentence at all (archive YAML had only the generic stem, and the stub annotation explicitly noted annotation_confidence=0.1 with explanation Cannot determine without the sentence text).",
+    "fix": "Recovered q2 and q3 passage text directly from the source PDF (image-only pages, no text layer). q17 and q23 already had full passage/options in the archive YAML, just no resolved answer. Determined correct answers by context (q2=B, q3=C, q17=D, q23=B) and inserted questions/question_versions/question_options/question_annotations rows for all 4, including grammar_focus_key/difficulty_overall/question_family_key so Focus/Difficulty display in the admin dashboard. Updated the archive YAML in place, including adding the previously-missing passage_text for q3.",
+    "tags": [
+      "ingestion",
+      "missing-questions",
+      "data-integrity",
+      "admin-dashboard",
+      "Test04",
+      "Mod02B",
+      "annotation-gap",
+      "extraction-gap"
+    ],
+    "related_bugs": [
+      "bug-796",
+      "bug-797"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-28T16:11:52.592180-07:00"
+  },
+  {
+    "id": "bug-799",
+    "timestamp": "2026-07-28T17:03:14.279398-07:00",
+    "error_message": "Test06_ENG_Sec01_Mod02B missing questions q6, q10, q25 from admin dashboard Data Management view (user reported q25; q6/q10 also found missing, only 24 of 27 present)",
+    "file": "questions, question_versions, question_options, question_annotations tables; backend/archive/official/2024_Test06_ENG_Sec01_Mod02B_06_01_02B.yaml",
+    "root_cause": "Same class as bug-797/bug-798: current_correct_option_label is NOT NULL/CHECK-constrained to A-D. q6 and q10 had a fully-written explanation_full in the archive YAML that named the correct answer in prose, but the discrete correct_option_label field was still empty and/or annotation completeness validation failed, so persistence was skipped. q25 had no annotation at all.",
+    "fix": "Extracted correct answers for q6 (C) and q10 (D) directly from the existing explanation_full prose in the archive YAML - no PDF lookup needed. Determined q25 (A) by elimination among the notes-based options (only one option states a similarity; the others state differences or cover only one item). Inserted questions/question_versions/question_options/question_annotations rows for all 3 and updated the archive YAML in place.",
+    "tags": [
+      "ingestion",
+      "missing-questions",
+      "data-integrity",
+      "admin-dashboard",
+      "Test06",
+      "Mod02B",
+      "annotation-gap"
+    ],
+    "related_bugs": [
+      "bug-796",
+      "bug-797",
+      "bug-798"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-28T17:03:14.279433-07:00"
+  },
+  {
+    "id": "bug-800",
+    "timestamp": "2026-07-28T19:00:39.220519-07:00",
+    "error_message": "Test08_ENG_Sec01_Mod02B missing question q4 from admin dashboard Data Management view (only 26 of 27 questions present)",
+    "file": "questions, question_versions, question_options, question_annotations tables; backend/archive/official/2024_Test08_ENG_Sec01_Mod02B_08_01_02B.yaml",
+    "root_cause": "Same class as bug-797/798/799: current_correct_option_label NOT NULL/CHECK-constrained, and the passage sentence for q4 was never captured during original extraction (archive YAML stub explicitly said Cannot determine without passage text, confidence 0.2). Test08 uniquely has no per-module split PDF - source is a single combined Test_08_VERBAL_Sections.pdf (81 pages = 3 modules x 27) plus a separate answer key PDF.",
+    "fix": "Recovered the passage sentence from absolute page 57 of Test_08_VERBAL_Sections.pdf (module-relative page 4 of Mod02B; mapping is 54 + (N-1)). Determined correct answer = A (repudiates) from context. Inserted questions/question_versions/question_options/question_annotations rows and updated the archive YAML in place, including the previously-missing passage_text field.",
+    "tags": [
+      "ingestion",
+      "missing-questions",
+      "data-integrity",
+      "admin-dashboard",
+      "Test08",
+      "Mod02B",
+      "extraction-gap",
+      "combined-pdf"
+    ],
+    "related_bugs": [
+      "bug-796",
+      "bug-797",
+      "bug-798",
+      "bug-799"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-28T19:00:39.220559-07:00"
+  },
+  {
+    "id": "bug-801",
+    "timestamp": "2026-07-29",
+    "error_message": "2024 PT9 Sec01 Mod02A q14 does not appear in the admin dashboard Data Management view (26 of 27 questions present)",
+    "file": "backend DB: questions/question_versions/question_options/question_annotations (source_exam_code='09', module '02A')",
+    "root_cause": "Same extraction-gap family as bug-797..800: the original OCR pass never captured q14's passage_text, so the archive YAML row has passage_text absent and correct_option_label ''. questions.current_correct_option_label is NOT NULL, so the row was silently dropped at insert. Verified q14 was NOT a dedupe casualty - absent from backup_pt9_questions_2026_07_27 and tmp_pt9_doomed.",
+    "fix": "Recovered the passage from absolute page 41 of 'TESTS/DATA_SRC/2024-2025 Tests Answers/Test09_ENG_Sec01.pdf' (image-only; Mod02A offset abs = 27 + N). Confirmed correct answer B against Answer Keys/TEST_09_Answer_Key.pdf (Module 2a Q14 = B). Inserted questions/question_versions/question_options/question_annotations using YAML UUID5 id cd9ba667-0f0b-5848-b498-36a2a74869ff and set latest_version_id + latest_annotation_id. Module now 27/27 with options resolving via latest_version_id.",
+    "tags": [
+      "ingestion",
+      "missing-question",
+      "pt9",
+      "mod02a",
+      "not-null",
+      "ocr",
+      "backfill"
+    ],
+    "related_bugs": [
+      "bug-797",
+      "bug-798",
+      "bug-799",
+      "bug-800"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29"
+  },
+  {
+    "id": "bug-802",
+    "timestamp": "2026-07-29",
+    "error_message": "PT11 (2025) questions contain the literal letter-spaced token 'b l a n k' instead of the '____' answer blank",
+    "file": "backend DB: questions.current_passage_text / current_question_text (source_exam_code='11'); analysis/calibration/*.json; analysis/v8/focus_evidence/*.json",
+    "root_cause": "The College Board accessible/nondigital PT11 PDFs render the answer blank as the letter-spaced word 'b l a n k' rather than an underscore run (0 occurrences of _{3,} in either module PDF). Ingestion carried the token through verbatim. Knock-on effect: the passage/stem splitter keys off '____' as its delimiter, so for 6 questions the passage and stem were merged into current_question_text and current_passage_text is NULL.",
+    "fix": "NOT FIXED - located and scoped only. Live in current_* for Mod01 q1-5,15,17-29 (19) and Mod02 q2,3,4,13 (4); Mod02's other 16 were cleaned to '____' by an earlier partial pass. Historical question_versions retain the token across most of Mod02. No archive YAML exists for PT11 (PT11_M1.yaml is a 1-question test fixture), so the DB is the only copy.",
+    "tags": [
+      "ingestion",
+      "pt11",
+      "ocr",
+      "placeholder",
+      "passage-split",
+      "data-quality",
+      "unresolved"
+    ],
+    "related_bugs": [
+      "bug-796"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29"
+  },
+  {
+    "id": "bug-803",
+    "timestamp": "2026-07-29T10:40:00-07:00",
+    "error_message": "2025 PT9 sec01 mod02 q2 shows a duplicate of q1 (Anita Desai) instead of the 'Predatory animals ... provide' question",
+    "file": "DB questions/question_versions/question_options/question_annotations; backend/archive/official/9_01_02.yaml; archive_generated/official/9_01_02.yaml",
+    "root_cause": "Ingestion rotated the module's first three questions: q1 got Teju Cole, q2 got a duplicate of the Anita Desai item (with the module's OCR header boilerplate baked into passage_text), q3 got Predatory animals. The source PDF order is Anita Desai, Predatory animals, Teju Cole. A prior session fixed q1 in place, which completed only one third of the rotation and left the duplicate at q2.",
+    "fix": "Migration fix_pt9_2025_mod02_q2_q3.sql: q2 (28687b6a) took the Predatory animals payload, q3 (1a0c20b6) took the Teju Cole payload, both copied verbatim from existing question_versions rows (da117d33 and the pre-fix q1 version a3782c17) so the blank-token form was preserved. Question UUIDs kept; new version 2 per target with matching options + annotations and repointed latest_version_id/latest_annotation_id. Correct labels moved with the content (q2 -> C, q3 -> B) and annotation stem/stimulus keys were updated. Both archive YAML mirrors were rewritten to match; archive_generated had never received the q1 fix, and backend/archive was missing question 31 entirely (the '32 vs 33' discrepancy) - q31 was spliced back after verifying its id and answer against the DB.",
+    "tags": [
+      "pt9",
+      "2025",
+      "mod02",
+      "official-ingest",
+      "question-rotation",
+      "duplicate-question",
+      "archive-yaml",
+      "yaml-drift",
+      "data-integrity"
+    ],
+    "related_bugs": [
+      "bug-801"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29T10:40:00-07:00"
+  },
+  {
+    "id": "bug-804",
+    "timestamp": "2026-07-29T19:34:32.928584+00:00",
+    "error_message": "2025 PT6 Sec01 Mod02 Q1-Q5 had passage_text jammed into current_question_text (passage NULL) and the 'Which choice completes the text with the most logical and precise word or phrase?' prompt missing \u2014 passage/stem splitter failure during ingestion.",
+    "file": "questions + question_versions (source: backend/archive/official/6_01_02.yaml canonical)",
+    "root_cause": "Ingestion passage/stem splitter (_split_passage_from_question in ingest.py) failed to split these 5 vocabulary-in-context items: the sentence-with-blank landed in current_question_text and passage_text stayed NULL, dropping the prompt. The other 28 questions in the module split correctly.",
+    "fix": "scripts/fix_pt6_2025_mod02_q1_q5_split.sql: in-place update (bug-245/796 pattern) backed up 5 questions + latest version rows, then set current_passage_text=sentence and current_question_text=prompt from canonical 6_01_02.yaml, mirrored onto question_versions via latest_version_id, set is_admin_edited/annotation_stale. Also fixed Q3 OCR artifact (_______ , -> _______,). Verified all 33 module rows now have passage+prompt.",
+    "tags": [
+      "passage-stem-split",
+      "ingestion",
+      "pt6",
+      "2025",
+      "mod02",
+      "admin-dashboard",
+      "data-fix"
+    ],
+    "related_bugs": [
+      "bug-113",
+      "bug-245",
+      "bug-796",
+      "bug-803"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29T19:34:32.928584+00:00"
+  },
+  {
+    "id": "bug-805",
+    "timestamp": "2026-07-29T13:32:00-07:00",
+    "error_message": "2025 PT5 Sec01 Mod02 question bank incomplete: 7 questions missing (Q3,4,5,20,22,27,29), 6 rows had NULL passage_text, 4 rows had wrong current_correct_option_label, 12 duplicate draft/active pairs, and source_test_name not normalized.",
+    "file": "scripts/fix_pt5_2025_mod02_cleanup.sql",
+    "root_cause": "Ingestion failed to create 7 sentence-only questions and left 6 others without passage_text; duplicate pairs (draft vs active/rejected) coexisted because uq_official_question_canonical_identity allows different source_test_name variants; 4 no-passage rows carried wrong correct answers; LLM-generated explanation MD (TEST05_sec01_mod02.md) had WRONG answer keys for Q22 (said C, official B) and Q23 (said D, official A).",
+    "fix": "Single-transaction SQL cleanup: (A) backed up + FK-safe deleted 12 dup rows across all 23 referencing tables (question_stimulus_assets was the only one with live dependents); (B) filled passage_text + corrected answers + explanations for 6 no-passage rows (Q19,21,23,24,25,28); (C) created 7 missing rows (Q3,4,5,20,22,27,29) via PL/pgSQL DO block with versions+options+annotations (minimal annotation, annotation_stale=true, needs_human_review=true); (D) normalized source_test_name to Test_5_digital_sec01_mod02. Verified: 33 qns 1-33, 0 missing passages, 0 dups, all 33 answers match official PDF key.",
+    "tags": [
+      "ingestion",
+      "dedup",
+      "pt5",
+      "mod02",
+      "official-questions",
+      "wrong-answer",
+      "missing-passage",
+      "fk-safe-delete",
+      "answer-key-verification"
+    ],
+    "related_bugs": [
+      "bug-796",
+      "bug-804"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29"
+  },
+  {
+    "id": "bug-806",
+    "timestamp": "2026-07-29T13:50:00-07:00",
+    "error_message": "2025 PT5 Sec01 Mod01 Q26 missing entirely from the question bank (no active, draft, or rejected row).",
+    "file": "scripts/fix_pt5_2025_mod01_q26_create.sql",
+    "root_cause": "Ingestion never created Q26. The gap extended to the archive YAML too \u2014 backend/archive/official/2025_5_01_01.yaml has 32 questions (max qn 33) with Q26 absent, so the question had to be sourced entirely from the test PDF (Test_5_digital_sec01_mod01.pdf) + the official answer-key PDF.",
+    "fix": "Created Q26 via PL/pgSQL DO block (questions + question_versions + 4 question_options + question_annotations) sourced from the PDF passage/stem/options and official answer key (correct=B, a punctuation-of-supplementary-elements item). Matched active-sibling storage: source_test_name=NULL, stimulus_mode_key=sentence_only, stem_type_key=standard_english_conventions (flat) / conform_to_standard_english (annotation). Minimal annotation with annotation_stale=true, needs_human_review=true. Verified: qn=26, correct=B, plen=317, 4 options, active. Module now has qn 1-33 with no gaps.",
+    "tags": [
+      "ingestion",
+      "missing-question",
+      "pt5",
+      "mod01",
+      "official-questions",
+      "pdf-sourced",
+      "punctuation"
+    ],
+    "related_bugs": [
+      "bug-805"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29"
+  },
+  {
+    "id": "bug-807",
+    "timestamp": "2026-07-29T15:00:00-07:00",
+    "error_message": "2025 PT4 Sec01 Mod02 (R&W Module 2) entirely absent from the DB \u2014 0 of 33 questions ingested (no question_assets/question_jobs row at all).",
+    "file": "scripts/gen_fix_pt4_2025_mod02.py, scripts/fix_pt4_2025_mod02_create.sql",
+    "root_cause": "Module was never run through the ingestion pipeline. Additionally the archive YAML (backend/archive/official/2025_4_01_02.yaml) itself was incomplete/wrong: Q7 missing entirely (two-column PDF layout caused pdftotext to skip it during archive generation) and Q13's YAML correct_option_label (A) plus graph structured_data both contradicted the official answer key/rationale (official=D).",
+    "fix": "Wrote gen_fix_pt4_2025_mod02.py to build a full 33-question backfill: 32 questions from the YAML (option shape used to recover the dropped sentence_only prompts) + Q7 sourced manually from the test PDF, all correct_option_label values forced to the verified official key (D,D,B,B,B,B,A,C,C,A,A,B,D,C,C,A,B,D,C,A,B,D,D,A,B,B,A,A,C,C,A,A,B). Q13 flagged needs_human_review with graph_structured_data_omitted=true (chart data untrustworthy, needs manual chart asset). Generated idempotent SQL (IF NOT EXISTS per question), took a table backup (backups/pre_pt4_mod02_backfill_20260729_145936.sql), applied it. Verified: 33/33 questions present, qn 1-33, 4 options + 1 version + 1 annotation each, all correct_option_label values match the official key.",
+    "tags": [
+      "ingestion",
+      "missing-module",
+      "pt4",
+      "mod02",
+      "official-questions",
+      "pdf-sourced",
+      "wrong-answer",
+      "missing-question",
+      "graph-stimulus"
+    ],
+    "related_bugs": [
+      "bug-805",
+      "bug-806"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29"
+  },
+  {
+    "id": "bug-808",
+    "timestamp": "2026-07-29T15:10:00-07:00",
+    "error_message": "2025 PT3 Sec01 Mod01 was live/active (23 questions) with no official source: no question_assets/question_jobs row, and no Test_3_digital_sec01_mod02.pdf, sat-practice-test-3-answers-digital.pdf, or 2025_3_01_02.yaml exists anywhere in the repo for Mod02. Test 3 (2025 vintage) is not part of the canonical VERBAL source set (only Tests 1, 4-11 have split module PDFs there).",
+    "file": "n/a (DB-only status change)",
+    "root_cause": "PT3 Mod01 content was ingested/entered without a traceable official source, and Mod02 was never sourced at all \u2014 user has no official source material for this test and asked to deactivate it rather than leave unverifiable content live.",
+    "fix": "Backed up questions table (backups/pre_pt3_retire_20260729_*.sql), then set practice_status='retired' on all 23 PT3 (2025, exam_code='3') questions. Non-destructive: rows remain in DB with all history/annotations intact but are excluded from all active-practice queries (student.py, questions.py, diagnostic/queries.py, generate.py all filter on practice_status='active'). Can be reactivated later if an official source is supplied.",
+    "tags": [
+      "ingestion",
+      "pt3",
+      "deactivation",
+      "no-official-source",
+      "data-integrity"
+    ],
+    "related_bugs": [
+      "bug-807"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29"
+  },
+  {
+    "id": "bug-809",
+    "timestamp": "2026-07-29T16:20:00-07:00",
+    "error_message": "Per-question 'blocking' validation errors during ingestion (e.g. missing chart/graph data for a Quantitative Command of Evidence question) caused the question to be silently dropped \u2014 never persisted in any status, not even draft. Root cause of PT4 Mod02 Q13 and PT5 Mod02's graph question needing manual SQL backfill instead of appearing in the review queue.",
+    "file": "backend/app/pipeline/validator.py, backend/app/routers/ingest.py, backend/tests/test_pipeline.py",
+    "root_cause": "validate_annotation_completeness's docstring claimed 'blocking prevents active promotion' but ingest.py's per-question loop treated any blocking error as a hard skip (continue) before persistence, for every blocking reason including narrow ones (missing table_data/graph_data only for command_of_evidence_quantitative skill family). Also: no rule flagged visual-stimulus questions for review independent of skill-family classification, and passage_text presence was never blocking-checked for non-visual questions.",
+    "fix": "User-directed policy: (1) added a blocking rule that fires whenever a question has a chart/graph/table stimulus (stimulus_mode_key in prose_plus_graph/prose_plus_table, or table_data/graph_data present) regardless of skill_family_key; (2) added a blocking rule requiring passage_text for non-visual questions (question_text + 4 options were already required). Kept all pre-existing blocking checks (grammar_role_key, skill_family_key, syntactic_trap_key, etc.) as-is per user decision. Changed ingest.py: _persist_single_question now takes force_draft; only blocking errors on question_text/options/correct_option_label (genuinely unusable data) still skip persistence \u2014 every other blocking reason persists the question as practice_status='draft' with needs_human_review=true instead of dropping it. Added 3 validator unit tests; fixed test_validate_official_question_passes fixture to include passage_text (matches real data: 662/687 sentence_only DB rows already have it). Full suite: 1124 passed, same 6 pre-existing unrelated failures.",
+    "tags": [
+      "ingestion",
+      "validation-policy",
+      "blocking-errors",
+      "silent-drop",
+      "draft-status",
+      "graph-stimulus",
+      "policy-change"
+    ],
+    "related_bugs": [
+      "bug-807"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29"
+  },
+  {
+    "id": "bug-810",
+    "timestamp": "2026-07-29T16:55:00-07:00",
+    "error_message": "POST /api/auth/google (and /api/auth/refresh) returns HTTP 500 with TypeError: tuple indices must be integers or slices, not NoneType, raised in SQLAlchemy unitofwork.py:371 lambda (lambda tup: tup[0]._props.get(tup[1].key) is tup[1].prop) during db.commit() in student_auth.py google_login (line ~166, writing user.refresh_token / refresh_token_expires). Google OAuth login was therefore broken on the admin app / tailscale endpoint.",
+    "file": "backend/app/routers/student_auth.py, backend/app/main.py (uvicorn --reload launch)",
+    "root_cause": "NOT a code or model bug. uvicorn --reload re-imported SQLAlchemy mappers in-place at ~16:18-16:19 (batch edit touching db.py model additions + payload.py + multiple routers) without cleanly tearing down the old mapper registry, poisoning the long-running worker's unit-of-work dependency-processor state (PopulateDict.__missing__ -> creator returned None in uow._mapper_for_dep). Every commit in the poisoned worker 500'd. Proven by reproducing the IDENTICAL commit in a fresh python process inside the same container -> returned COMMIT OK, proving models/DB were fine. Classic SQLAlchemy 2.0.x mapper-state corruption under live reload of multiple interdependent models.",
+    "fix": "docker restart dsat-backend (or kill the worker so uvicorn re-imports cleanly). Fresh process import re-registers mappers cleanly and clears the poisoned unit-of-work state. Verified: POST /api/auth/google -> 200 OK after restart, user confirmed successful login.",
+    "tags": [
+      "login",
+      "auth",
+      "google-oauth",
+      "sqlalchemy",
+      "uvicorn",
+      "reload",
+      "500",
+      "unitofwork",
+      "admin",
+      "tailscale"
+    ],
+    "related_bugs": [
+      "bug-779",
+      "bug-780"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29"
+  },
+  {
+    "id": "bug-811",
+    "timestamp": "2026-07-29T17:25:00-07:00",
+    "error_message": "Data-quality: ~150 active questions carried stray off-vocabulary keys that broke diagnostic targeting and stimulus-mode filtering. stimulus_mode_key column had 24 stray values (notes, graph, table, paragraph, prose_fiction, table_or_graph, data_interpretation, etc. \u2014 only 9 canonical exist); grammar_role_key had 19 strays; skill_family_key had 9 strays (all grammar-domain concepts misplaced into the reading field, e.g. 'Boundaries', 'Form Structure and Sense', 'agreement'). Stray skill_family/grammar_role values never match any diagnostic blueprint slot, so affected questions silently fell through to 'any active' fallback, degrading diagnostic targeting. Stimulus-mode filtering (practice recall reads questions.stimulus_mode_key column) missed whole question families.",
+    "file": "questions.stimulus_mode_key (column), question_annotations.annotation_jsonb (grammar_role_key/skill_family_key/stimulus_mode_key)",
+    "root_cause": "Validator tags unknown vocab keys as severity='review' (non-blocking, by design \u2014 validator.py:107 'LLM may return near-miss keys'), recording them to candidates.json but never blocking or canonicalizing. Nobody processed candidates.json, so strays accumulated. Additionally the denormalized questions.stimulus_mode_key column drifted from the authoritative annotation_jsonb value (293 rows disagreed pre-repair).",
+    "fix": "One-time DB data repair (scripts/fix_vocab_canonicalization.sql + align UPDATE), pre-fix backup backups/dsat_dev_20260729_171846_pre_vocab_canonicalization.dump. (1) grammar_role_key near-miss synonyms -> canonical (verb->verb_form, adjective->modifier, etc.); 2 reading-domain names (information_and_ideas, craft_and_structure) -> NULL + needs_human_review flag. (2) skill_family_key strays -> NULL (all 9 were grammar-domain misplacements with a grammar_role_key sibling carrying the domain). (3) stimulus_mode_key: aligned questions column <- annotation_jsonb->>'stimulus_mode_key' (latest_annotation_id) for all 293 disagreeing rows \u2014 annotation is the canonical authoritative source. Result: 0 strays in all 4 fields, column<->annotation 0 disagreements. 4 low-confidence rows flagged needs_human_review=true (conventions_grammar x2, information_and_ideas, craft_and_structure). stem_type_key strays intentionally NOT in scope. No pipeline/validator changes (scope = DB repair only).",
+    "tags": [
+      "data-quality",
+      "vocabulary",
+      "stimulus_mode_key",
+      "grammar_role_key",
+      "skill_family_key",
+      "diagnostic",
+      "filtering",
+      "canonicalization",
+      "annotation"
+    ],
+    "related_bugs": [
+      "bug-809"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29"
+  },
+  {
+    "id": "bug-812",
+    "timestamp": "2026-07-29T19:30:00",
+    "error_message": "~744 active questions carried stray non-canonical stem_type_key in questions.stem_type_key column (residual pre-fix Pass-1 emission labels); 211 additionally had column/jsonb both canonical but disagreeing; 13 jsonb strays + 1 no-key + 1 no-annotation edge rows. Diagnostic blueprint filters on annotation_jsonb.stem_type_key while practice recall reads the column -> inconsistent filtering.",
+    "file": "scripts/fix_stem_type_canonicalization.sql; backend/app/prompts/extract_prompt.py",
+    "root_cause": "Denormalized questions.stem_type_key drifted from authoritative question_annotations.annotation_jsonb (pre-canonicalize_stem/sanitizer era). sanitizer uses difflib fuzzy-match which left same-dimension strays unmapped; column never re-synced.",
+    "fix": "(1) Aligned column<-jsonb for 940 active rows where jsonb canonical & differs. (2) Same-dimension task->task alias-map (6 entries incl grammar_convention) applied to 15 edge rows: column for 15, jsonb for 13, added key for 1 no-key row. (3) Added 4 missing aliases to _STEM_ALIASES (choose_grammatically_correct_form, conventions_of_english, choose_logical_transition, synthesize_information_from_notes) for recurrence prevention. Post-state: 0 column strays, 0 jsonb strays, 0 col/jsonb disagreement across 1410 active questions.",
+    "tags": [
+      "stem_type_key",
+      "canonicalization",
+      "vocab",
+      "questions",
+      "annotation_jsonb",
+      "diagnostic",
+      "practice"
+    ],
+    "related_bugs": [
+      "bug-811",
+      "bug-762",
+      "bug-764"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29T19:30:00"
+  },
+  {
+    "id": "bug-813",
+    "timestamp": "2026-07-29T23:25:00",
+    "error_message": "gen_vocab --check reports DRIFT (exit 1): ontology.py out of sync with master.json + 15 unreviewed candidates > threshold 10. Running gen_vocab --generate DELETES two load-bearing hand-authored constants from ontology.py (GRAMMAR_QUESTION_FAMILY_KEYS, SYNTACTIC_TRAP_REQUIRED_ROLES) because they are not declared in master.json, breaking validator.py + annotate_prompt.py + test_validator_completeness.",
+    "file": "backend/app/models/ontology.py; vocabulary/master.json; scripts/gen_vocab.py",
+    "root_cause": "Two hand-authored config/subset constants live in the GENERATED ontology.py without a master.json declaration. Unlike GRAMMAR_FOCUS_KEYS/READING_FOCUS_KEYS (declared as derived_flat in master and preserved by --generate), these two have no manifest entry, so --generate wipes them.",
+    "fix": "NOT FIXED. Options: (a) declare GRAMMAR_QUESTION_FAMILY_KEYS and SYNTACTIC_TRAP_REQUIRED_ROLES in master.json as derived/policy sets so --generate preserves them; (b) move them out of generated ontology.py into a separate hand-maintained module. Also triage the 15-candidate backlog.",
+    "tags": [
+      "vocab-governance",
+      "gen_vocab",
+      "ontology",
+      "master.json",
+      "drift",
+      "footgun"
+    ],
+    "related_bugs": [
+      "bug-812"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-29T23:25:00"
   }
 ]

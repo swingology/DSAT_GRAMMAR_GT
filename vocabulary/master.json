@@ -1078,6 +1078,44 @@
       ]
     },
     {
+      "name": "SYNTACTIC_TRAP_REQUIRED_ROLES",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "Grammar roles that always require a non-null syntactic_trap_key (policy subset of GRAMMAR_ROLE_KEYS)",
+      "entries": [
+        {
+          "value": "agreement",
+          "status": "active",
+          "added": "2026-07-29",
+          "description": ""
+        },
+        {
+          "value": "pronoun",
+          "status": "active",
+          "added": "2026-07-29",
+          "description": ""
+        },
+        {
+          "value": "modifier",
+          "status": "active",
+          "added": "2026-07-29",
+          "description": ""
+        },
+        {
+          "value": "verb_form",
+          "status": "active",
+          "added": "2026-07-29",
+          "description": ""
+        },
+        {
+          "value": "sentence_boundary",
+          "status": "active",
+          "added": "2026-07-29",
+          "description": ""
+        }
+      ]
+    },
+    {
       "name": "DISTRACTOR_TYPE_KEYS",
       "kind": "flat",
       "domain": "shared",
@@ -2659,6 +2697,26 @@
           "value": "information_and_ideas",
           "status": "active",
           "added": "2026-05-18",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GRAMMAR_QUESTION_FAMILY_KEYS",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "Grammar question families (subset of QUESTION_FAMILY_KEYS)",
+      "entries": [
+        {
+          "value": "conventions_grammar",
+          "status": "active",
+          "added": "2026-07-29",
+          "description": ""
+        },
+        {
+          "value": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-07-29",
           "description": ""
         }
       ]

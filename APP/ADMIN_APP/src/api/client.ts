@@ -3,9 +3,26 @@ import {
   getAccessToken,
   getRefreshToken,
   setTokens,
+  type AuthProfile,
 } from '../auth/authStore'
+import type {
+  ActivityDay,
+  AutoReleaseStatus,
+  BatchAnalytics,
+  CohortWeakSpots,
+  GenerationAnalytics,
+  QuestionListResponse,
+  StimulusExtractResponse,
+  StimulusAsset,
+  StimulusExtractionJob,
+  StudentStats,
+  TestSummary,
+  User,
+  VocabMaster,
+  VocabCandidatesFile,
+} from '../types'
 
-const API_BASE = '/api'
+const API_BASE = (import.meta.env.VITE_API_BASE || '/api').replace(/\/$/, '')
 
 // Legacy static key — the backend still accepts it, and scripts depend on it. Leave
 // VITE_ADMIN_TOKEN unset for normal Google sign-in.
@@ -31,8 +48,7 @@ function toQuery(params: QueryParams): string {
 export interface CreateUserPayload {
   username: string
   email?: string | null
-  password?: string
-  role?: string
+  role?: 'student' | 'admin'
   is_active?: boolean
 }
 
@@ -43,6 +59,13 @@ export interface QuestionEditPayload {
   correct_option_label: string
   explanation_text?: string
   change_notes?: string
+}
+
+interface TokenResponse {
+  access_token: string
+  refresh_token: string
+  token_type: string
+  expires_in: number
 }
 
 /**
@@ -83,9 +106,12 @@ function refreshTokens(): Promise<boolean> {
 }
 
 function rawApiCall(endpoint: string, options: ApiCallOptions): Promise<Response> {
+  const isFormData = options.body instanceof FormData
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
     ...((options.headers as Record<string, string>) || {}),
+  }
+  if (!isFormData && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json'
   }
 
   if (ADMIN_TOKEN) headers['X-API-Key'] = ADMIN_TOKEN
@@ -98,7 +124,10 @@ function rawApiCall(endpoint: string, options: ApiCallOptions): Promise<Response
   return fetch(`${API_BASE}${endpoint}`, { ...options, headers })
 }
 
-export async function apiCall(endpoint: string, options: ApiCallOptions = {}) {
+export async function apiCall<T = unknown>(
+  endpoint: string,
+  options: ApiCallOptions = {},
+): Promise<T> {
   let res = await rawApiCall(endpoint, options)
 
   if (res.status === 401 && !options.skipAuthRetry && getRefreshToken()) {
@@ -128,14 +157,14 @@ export async function apiCall(endpoint: string, options: ApiCallOptions = {}) {
     error.status = res.status
     throw error
   }
-  if (res.status === 204) return null
-  return res.json()
+  if (res.status === 204) return null as T
+  return res.json() as Promise<T>
 }
 
 export const authApi = {
   /** Exchange a Google ID token (GIS popup credential) for our JWT pair. */
   googleLogin: (credential: string) =>
-    apiCall('/auth/google', {
+    apiCall<TokenResponse>('/auth/google', {
       method: 'POST',
       body: JSON.stringify({ credential }),
       skipAuthRetry: true,
@@ -144,83 +173,82 @@ export const authApi = {
   // Deliberately NOT skipAuthRetry: on a return visit the stored access token is
   // usually expired (minutes) while the refresh token is still good (days), so this
   // call must be allowed to refresh — that is what "remember me" rests on.
-  me: () => apiCall('/auth/me'),
+  me: () => apiCall<AuthProfile>('/auth/me'),
 
-  logout: () => apiCall('/auth/logout', { method: 'POST', skipAuthRetry: true }),
+  logout: () => apiCall<null>('/auth/logout', { method: 'POST', skipAuthRetry: true }),
 }
 
 export const adminApi = {
   // Users
-  listUsers: () => apiCall('/users'),
-  getUser: (id: number) => apiCall(`/users/${id}`),
-  createUser: (data: CreateUserPayload) => apiCall('/users', { method: 'POST', body: JSON.stringify(data) }),
-  updateUser: (id: number, data: { username?: string; email?: string | null; role?: string; is_active?: boolean }) =>
-    apiCall(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  listUsers: () => apiCall<User[]>('/users'),
+  createUser: (data: CreateUserPayload) => apiCall<User>('/users', { method: 'POST', body: JSON.stringify(data) }),
+  updateUser: (id: number, data: { username?: string; email?: string | null; role?: 'student' | 'admin'; is_active?: boolean }) =>
+    apiCall<User>(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   resetUserPassword: (id: number, newPassword: string) =>
-    apiCall(`/users/${id}/reset-password`, {
+    apiCall<null>(`/users/${id}/reset-password`, {
       method: 'POST',
       body: JSON.stringify({ new_password: newPassword }),
     }),
-  deleteUser: (id: number) => apiCall(`/users/${id}`, { method: 'DELETE' }),
+  deleteUser: (id: number) => apiCall<null>(`/users/${id}`, { method: 'DELETE' }),
 
   // Questions
   listQuestions: (params: QueryParams = {}) => {
     const q = toQuery(params)
-    return apiCall(`/admin/questions?${q}`)
+    return apiCall<QuestionListResponse>(`/admin/questions?${q}`)
   },
-  getQuestion: (id: string) => apiCall(`/admin/questions/${id}`),
-  getTests: () => apiCall('/admin/tests'),
+  getTests: () => apiCall<TestSummary[]>('/admin/tests'),
   approveQuestion: (id: string) => apiCall(`/admin/questions/${id}/approve`, { method: 'POST' }),
   rejectQuestion: (id: string, reason: string) =>
     apiCall(`/admin/questions/${id}/reject`, { method: 'POST', body: JSON.stringify({ reason }) }),
   editQuestion: (id: string, data: QuestionEditPayload) =>
     apiCall(`/admin/questions/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   deleteQuestion: (id: string) => apiCall(`/admin/questions/${id}`, { method: 'DELETE' }),
+  setGraphTag: (id: string, hasGraph: boolean) =>
+    apiCall(`/admin/questions/${id}/graph-tag`, { method: 'POST', body: JSON.stringify({ has_graph: hasGraph }) }),
 
-  // Jobs / generated questions
-  listJobs: (params: QueryParams = {}) => {
-    const q = toQuery(params)
-    return apiCall(`/admin/jobs?${q}`)
-  },
-  listGeneratedQuestions: (params: QueryParams = {}) => {
-    const q = toQuery(params)
-    return apiCall(`/admin/generated-questions?${q}`)
-  },
-  approveGenerated: (id: string) => apiCall(`/admin/generated-questions/${id}/approve`, { method: 'POST' }),
-  rejectGenerated: (id: string, reason: string) =>
-    apiCall(`/admin/generated-questions/${id}/reject`, { method: 'POST', body: JSON.stringify({ reason }) }),
+  // Stimulus assets
+  getStimulusAssets: (questionId: string) =>
+    apiCall<StimulusAsset[]>(`/admin/questions/${questionId}/stimulus-assets`),
+  uploadStimulusAsset: (questionId: string, formData: FormData) =>
+    apiCall<StimulusAsset>(`/admin/questions/${questionId}/stimulus-assets`, {
+      method: 'POST',
+      body: formData,
+    }),
+  deleteStimulusAsset: (questionId: string, assetId: string) =>
+    apiCall<{ deleted: boolean }>(`/admin/questions/${questionId}/stimulus-assets/${assetId}`, {
+      method: 'DELETE',
+    }),
+  extractStimulusAsset: (questionId: string, data: { stimulus_type?: string; replace_existing?: boolean } = {}) =>
+    apiCall<StimulusExtractResponse>(`/admin/questions/${questionId}/extract-stimulus`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  getStimulusExtractionJob: (jobId: string) =>
+    apiCall<StimulusExtractionJob>(`/admin/stimulus-extraction-jobs/${jobId}`),
 
   // Analytics
   getGenerationAnalytics: (params: QueryParams = {}) => {
     const q = toQuery(params)
-    return apiCall(`/admin/analytics/generation?${q}`)
-  },
-  getReviewAnalytics: (params: QueryParams = {}) => {
-    const q = toQuery(params)
-    return apiCall(`/admin/analytics/review?${q}`)
+    return apiCall<GenerationAnalytics>(`/admin/analytics/generation?${q}`)
   },
   getBatchAnalytics: (params: QueryParams = {}) => {
     const q = toQuery(params)
-    return apiCall(`/admin/analytics/batches?${q}`)
+    return apiCall<BatchAnalytics>(`/admin/analytics/batches?${q}`)
   },
-  getTrendAnalytics: (params: QueryParams = {}) => {
-    const q = toQuery(params)
-    return apiCall(`/admin/analytics/trends?${q}`)
-  },
-  getWeakSpots: (limit = 20) => apiCall(`/admin/analytics/weak-spots?limit=${limit}`),
+  getWeakSpots: (limit = 20) => apiCall<CohortWeakSpots>(`/admin/analytics/weak-spots?limit=${limit}`),
 
   // Student stats
-  getStudentStats: (userId: number) => apiCall(`/stats/${userId}`),
+  getStudentStats: (userId: number) => apiCall<StudentStats>(`/stats/${userId}`),
   getStudentActivity: (userId: number, days = 365) =>
-    apiCall(`/stats/${userId}/activity?days=${days}`),
-  getStudentRecommendations: (userToken: string) =>
-    apiCall('/study/recommendations', { method: 'POST', body: JSON.stringify({ user_token: userToken }) }),
-  getStudentMissed: (userToken: string) =>
-    apiCall(`/study/missed?user_token=${userToken}`),
+    apiCall<ActivityDay[]>(`/stats/${userId}/activity?days=${days}`),
 
   // Auto-release
-  getAutoReleaseStatus: () => apiCall('/admin/generation/auto-release/status'),
+  getAutoReleaseStatus: () => apiCall<AutoReleaseStatus>('/admin/generation/auto-release/status'),
   enableAutoRelease: () => apiCall('/admin/generation/auto-release/enable', { method: 'POST' }),
   disableAutoRelease: () => apiCall('/admin/generation/auto-release/disable', { method: 'POST' }),
-  getAutoReleaseAudit: () => apiCall('/admin/generation/auto-release/audit'),
+
+  // Controlled-vocabulary governance — read-only surfacing of master.json
+  // (canonical keys per family) and candidates.json (off-vocab review queue).
+  getVocabMaster: () => apiCall<VocabMaster>('/admin/vocab/master'),
+  getVocabCandidates: () => apiCall<VocabCandidatesFile>('/admin/vocab/candidates'),
 }
