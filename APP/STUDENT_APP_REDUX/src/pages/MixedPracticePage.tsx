@@ -110,16 +110,18 @@ export function MixedPracticePage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') ?? '10', 10) || 10))
+  const stimulusModeKey = searchParams.get('stimulus_mode_key') ?? undefined
   const [qIndex, setQIndex] = useState(0)
   const [answered, setAnswered] = useState(0)
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['mixed-practice', qIndex],
+    queryKey: ['mixed-practice', qIndex, stimulusModeKey],
     queryFn: () =>
       api.getQuestions({
         limit: 1,
         mode: 'practice',
         randomize: true,
+        ...(stimulusModeKey ? { stimulus_mode_key: stimulusModeKey } : {}),
       }),
   })
 
