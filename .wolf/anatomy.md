@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-30T06:37:59.694Z
-> Files: 1205 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-30T07:53:11.671Z
+> Files: 1207 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -123,11 +123,11 @@
 - `feedback_fix-logging-convention.md` — Branch**/**Commits** lines, then (~433 tok)
 - `feedback_frequent-memory-saves.md` — Frequent memory saves to survive crashes (~357 tok)
 - `feedback_generation-seeding.md` (~375 tok)
-- `feedback_gitbutler-workflow.md` (~551 tok)
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~1546 tok)
+- `MEMORY.md` — Memory Index (~1576 tok)
+- `project_admin-dashboard-phase0.md` (~351 tok)
 - `project_admin-dashboard-phase1-status.md` (~732 tok)
 - `project_admin-dashboard-plan.md` (~480 tok)
 - `project_annotation-shape-inconsistency.md` — Declares originally (~499 tok)
@@ -177,7 +177,7 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~296616 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~70212 tok)
+- `DEBUG_LOG.md` — Debug Log (~70567 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
@@ -482,7 +482,7 @@
 - `GrammarPractice.css` — Styles: 66 rules, 22 vars (~4286 tok)
 - `GrammarPractice.tsx` — GrammarPractice (~738 tok)
 - `PassageText.tsx` — Text within `text` that should be rendered with a plain underline. (~323 tok)
-- `StimulusAssets.tsx` — StimulusAssets (~205 tok)
+- `StimulusAssets.tsx` — Renders the visual stimulus (chart/figure/table crop) attached to a question. (~402 tok)
 - `UserMenu.tsx` — Signed-in identity + sign-out, shown on the dashboard. (~259 tok)
 
 ## APP/STUDENT_APP_REDUX/src/components/__tests__/
@@ -568,15 +568,19 @@
 - `DiagnosticHistoryPage.tsx` — DiagnosticHistoryPage (~275 tok)
 - `DiagnosticPage.tsx` — DiagnosticPage (~822 tok)
 - `LoginPage.tsx` — LoginPage (~856 tok)
-- `MixedPracticePage.tsx` — QuestionCard (~2093 tok)
+- `MixedPracticePage.tsx` — QuestionCard (~2233 tok)
 - `PracticeTestPage.tsx` — PRACTICE_TEST_SECONDS (~1476 tok)
 - `ProgressPage.tsx` — ── Inline SVG line chart ────────────────────────────────────────────────── (~2974 tok)
 - `ReviewMissedPage.tsx` — PAGE_SIZE (~4142 tok)
 
+## APP/STUDENT_APP_REDUX/src/pages/__tests__/
+
+- `MixedPracticePage.test.tsx` — mockedApi (~1747 tok)
+
 ## APP/STUDENT_APP_REDUX/src/types/
 
 - `grammar.ts` — Grammar-specific type definitions (aligned with rules_agent_v8.md) (~753 tok)
-- `index.ts` — Question served during a blueprint diagnostic — no answer key. (~1343 tok)
+- `index.ts` — A table/chart/figure asset linked to a question, served by the backend. (~1389 tok)
 
 ## APP/STUDENT_APP_REDUX/src/utils/
 
@@ -1487,8 +1491,8 @@
 
 ## backend/app/
 
-- `auth.py` — hash_password, verify_password, verify_and_update_password, create_access_token (~3575 tok)
-- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2281 tok)
+- `auth.py` — hash_password, verify_password, verify_and_update_password, create_access_token (~4224 tok)
+- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2385 tok)
 - `google_oauth.py` — Google Sign-In ID token verification. (~509 tok)
 - `main.py` — lifespan (~2281 tok)
 
@@ -1514,10 +1518,10 @@
 ## backend/app/models/
 
 - `annotation.py` — Pass 2 Pydantic schema — Question annotation output. (~1452 tok)
-- `db.py` — Declares QuestionJob (~10429 tok)
+- `db.py` — Declares QuestionJob (~11048 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5806 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~11497 tok)
+- `payload.py` — HTTP request/response models. (~11382 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1561,7 +1565,7 @@
 - `generate.py` (~16107 tok)
 - `ingest.py` (~47356 tok)
 - `student_auth.py` — API: 6 endpoints (~2486 tok)
-- `student.py` (~36597 tok)
+- `student.py` (~37528 tok)
 - `users.py` — API: 5 endpoints (~1095 tok)
 
 ## backend/app/services/
@@ -1574,7 +1578,7 @@
 ## backend/app/storage/
 
 - `crop_detector.py` — Layout detection, region matching, and image cropping for page-level provenance. (~3185 tok)
-- `object_store.py` — Config-driven object storage for local S3/Supabase-style ingestion assets. (~2107 tok)
+- `object_store.py` — Config-driven object storage for local S3/Supabase-style ingestion assets. (~2041 tok)
 - `yaml_export.py` — YAML export for persisted questions. (~1354 tok)
 
 ## backend/archive/official/
@@ -1673,6 +1677,7 @@
 - `test_span_annotator.py` — TASK-027 — span_annotator.py integration tests for annotate_spans(). (~3276 tok)
 - `test_span_label.py` — TASK-026 — span_label.py unit tests. (~1012 tok)
 - `test_span_validator.py` — TASK-025 — span_validator.py unit tests. (~2583 tok)
+- `test_stimulus_assets.py` — Tests for GET /api/stimulus-assets/{asset_id} — the visual-stimulus serving route. (~1543 tok)
 - `test_student_api_contracts.py` — Student-facing API contract tests. (~6554 tok)
 - `test_student_retrieval.py` — Phase 7 — Student Retrieval API Expansion tests. (~4606 tok)
 - `test_student_router.py` — test_student_recall_requires_auth, test_student_recall_with_auth, test_student_submit_invalid_uuid, (~510 tok)

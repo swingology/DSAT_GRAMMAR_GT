@@ -26,6 +26,17 @@ export interface StimulusModeCount {
   count: number
 }
 
+/** A table/chart/figure asset linked to a question, served by the backend. */
+export interface StimulusAsset {
+  id: string
+  stimulus_type: string
+  url: string
+  title?: string | null
+  source_page_number?: number | null
+  structured_data?: Record<string, unknown> | null
+  render_hints?: Record<string, unknown> | null
+}
+
 export interface Question {
   id: string
   text: string
@@ -34,10 +45,15 @@ export interface Question {
   difficulty: string
   explanation?: string
   content_origin?: string
+  stimulus_assets?: StimulusAsset[]
 }
 
 export interface StudentQuestion extends Question {
   options?: any[]
+  current_question_text?: string
+  current_passage_text?: string | null
+  stimulus_mode_key?: string | null
+  stimulus_assets?: StimulusAsset[]
 }
 
 // ── Diagnostic v1 Blueprint Types ─────────────────────────────────────────────

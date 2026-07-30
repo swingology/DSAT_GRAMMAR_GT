@@ -1,12 +1,13 @@
 import asyncio
 import logging
 import math
+import time
 import uuid as _uuid_module
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from typing import Any, Literal, Optional, Tuple
 
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query, HTTPException, Response
 from sqlalchemy import select, func, and_, or_, text, case, cast, Date
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
@@ -16,13 +17,16 @@ from app.database import get_db
 from app.diagnostic.queries import derive_domain
 from app.diagnostic.selector import DiagnosticBankExhaustedError, assemble_diagnostic
 from app.diagnostic.blueprint import BLUEPRINT_V1
-from app.auth import student_required, admin_or_student_required, student_jwt_required, admin_or_student_jwt_required
+from app.auth import student_required, admin_or_student_required, student_jwt_required, admin_or_student_jwt_required, stimulus_asset_access, sign_asset_url
+from app.storage.object_store import read_object
 from app.models.db import (
     Question, User, UserProgress, QuestionAnnotation, QuestionOption, TestSessionResults,
     GenerationBatch, QuestionJob, DiagnosticSession, SpacedRepetitionState,
+    QuestionStimulusAsset, QuestionSourceSpan,
 )
 from app.models.payload import (
     StudentQuestionResponse,
+    StimulusAssetResponse,
     StudentQuestionsListResponse,
     InventoryMetadata,
     UserProgressCreate,
@@ -353,6 +357,116 @@ def _build_question_filter_stmt(
     return stmt
 
 
+async def _load_stimulus_assets_by_question(
+    db: AsyncSession, question_ids: list[UUID]
+) -> dict[str, list[StimulusAssetResponse]]:
+    """Batch-load stimulus assets for a list of questions, mapped by question_id.
+
+    The student-facing ``url`` points at the authenticated serving route
+    (``/api/stimulus-assets/{id}``); the route resolves the local-s3 storage
+    path to image bytes server-side, so the browser never sees the raw
+    ``local-s3://`` handle. The linked source-span ``crop_path`` is preferred as
+    the renderable artifact when available (matches the admin browser).
+    """
+    if not question_ids:
+        return {}
+    result = await db.execute(
+        select(QuestionStimulusAsset).where(QuestionStimulusAsset.question_id.in_(question_ids))
+    )
+    assets = result.scalars().all()
+
+    span_ids = [a.source_span_id for a in assets if a.source_span_id]
+    crop_by_span_id: dict[UUID, str] = {}
+    if span_ids:
+        span_result = await db.execute(
+            select(QuestionSourceSpan).where(QuestionSourceSpan.id.in_(span_ids))
+        )
+        for span in span_result.scalars().all():
+            if span.crop_path:
+                crop_by_span_id[span.id] = span.crop_path
+
+    assets_by_qid: dict[str, list[StimulusAssetResponse]] = defaultdict(list)
+    settings = get_settings()
+    exp = int(time.time()) + settings.stimulus_signed_url_ttl_seconds
+    for asset in assets:
+        # crop_path is tracked separately for serving; url is the route, not the
+        # storage path, so students can't enumerate arbitrary local-s3 objects.
+        # The signed query string lets a browser <img> (no Authorization header)
+        # fetch the auth-gated crop; sig is bound to this asset_id + an expiry.
+        sig = sign_asset_url(str(asset.id), exp)
+        assets_by_qid[str(asset.question_id)].append(
+            StimulusAssetResponse(
+                id=str(asset.id),
+                stimulus_type=asset.stimulus_type,
+                url=f"/api/stimulus-assets/{asset.id}?sig={sig}&exp={exp}",
+                title=asset.title,
+                source_page_number=asset.source_page_number,
+                structured_data=asset.structured_data_jsonb,
+                render_hints=asset.render_hints_jsonb,
+            )
+        )
+    return dict(assets_by_qid)
+
+
+_STIMULUS_CONTENT_TYPES = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+}
+
+
+@router.get("/stimulus-assets/{asset_id}")
+async def serve_stimulus_asset(
+    asset_id: str,
+    db: AsyncSession = Depends(get_db),
+    auth: Tuple[str, str] = Depends(stimulus_asset_access),
+):
+    """Serve a single stimulus-asset artifact (chart/figure/table crop) as image bytes.
+
+    Auth accepts a signed URL (``?sig=...&exp=...``) so a browser ``<img`` can
+    fetch without an Authorization header, or a legacy ``X-API-Key`` for admin
+    tooling. Only serves assets attached to an ``active`` question, so
+    draft/retired/rejected content isn't reachable from the student app. Resolves
+    the local-s3 storage path (or the linked source-span crop) to bytes via
+    ``read_object``.
+    """
+    try:
+        aid = UUID(asset_id)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Asset not found")
+
+    asset = await db.get(QuestionStimulusAsset, aid)
+    if asset is None:
+        raise HTTPException(status_code=404, detail="Asset not found")
+
+    # Verify the parent question is active before serving.
+    parent = await db.get(Question, asset.question_id)
+    if parent is None or parent.practice_status != "active":
+        raise HTTPException(status_code=404, detail="Asset not found")
+
+    # Prefer the source-span crop when one is linked and stored.
+    storage_path = asset.storage_path
+    if asset.source_span_id:
+        span = await db.get(QuestionSourceSpan, asset.source_span_id)
+        if span is not None and span.crop_path:
+            storage_path = span.crop_path
+
+    try:
+        data = read_object(storage_path)
+    except (FileNotFoundError, NotImplementedError):
+        raise HTTPException(status_code=404, detail="Asset artifact missing")
+    except Exception:
+        logging.exception("Failed to read stimulus asset %s at %s", asset_id, storage_path)
+        raise HTTPException(status_code=500, detail="Asset could not be read")
+
+    suffix = "." + storage_path.rsplit(".", 1)[-1].lower() if "." in storage_path else ""
+    media_type = _STIMULUS_CONTENT_TYPES.get(suffix, "application/octet-stream")
+    return Response(content=data, media_type=media_type)
+
+
 @router.get("/questions", response_model=StudentQuestionsListResponse)
 async def student_recall(
     domain: Optional[str] = Query(None, description="Filter by domain: 'grammar' or 'reading'"),
@@ -367,6 +481,7 @@ async def student_recall(
     source_test_name: Optional[str] = Query(None),
     source_exam_code: Optional[str] = Query(None),
     sort_by_source: bool = Query(False, description="Sort by release/test/exam/module/question order"),
+    randomize: bool = Query(False, description="Shuffle results with ORDER BY random() (ignored when sort_by_source)"),
     exclude_seen: Optional[bool] = Query(None),
     user_token: Optional[str] = Query(None, description="Required for exclude_seen when student scope"),
     limit: int = Query(20, ge=1, le=100),
@@ -444,6 +559,10 @@ async def student_recall(
 
     # Fetch questions with pagination.
     fetch_stmt = filtered_stmt.offset(offset).limit(limit)
+    # Randomize serving order when requested (e.g. Mixed Practice). Skipped when
+    # sort_by_source is set — that path keeps the deterministic source ordering.
+    if randomize and not sort_by_source:
+        fetch_stmt = fetch_stmt.order_by(func.random())
     result = await db.execute(fetch_stmt)
     questions = result.unique().scalars().all()
 
@@ -471,6 +590,8 @@ async def student_recall(
                 opts_by_qid.setdefault(qid, []).append(opt)
     else:
         opts_by_qid = {}
+
+    stimulus_by_qid = await _load_stimulus_assets_by_question(db, [q.id for q in questions])
 
     items = []
     includes_generated = False
@@ -526,6 +647,7 @@ async def student_recall(
             reasoning_trap_key=ann_data.get("reasoning_trap_key"),
             explanation_short=ann_data.get("explanation_short"),
             solver_pattern_key=ann_data.get("solver_pattern_key"),
+            stimulus_assets=stimulus_by_qid.get(str(q.id), []),
         ))
 
     inventory = InventoryMetadata(
@@ -1303,6 +1425,8 @@ async def _fetch_pool_questions(
         )
         ann_map = {a.id: a for a in ann_rows.scalars().all()}
 
+    stimulus_by_qid = await _load_stimulus_assets_by_question(db, [q.id for q in questions])
+
     items = []
     for q in questions:
         ann = ann_map.get(q.latest_annotation_id) if q.latest_annotation_id else None
@@ -1333,6 +1457,7 @@ async def _fetch_pool_questions(
             source_section_code=q.source_section_code,
             source_module_code=q.source_module_code,
             options=[],  # Loaded separately if needed; omit here for speed.
+            stimulus_assets=stimulus_by_qid.get(str(q.id), []),
         ))
     return items
 

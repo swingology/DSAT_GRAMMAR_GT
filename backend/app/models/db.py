@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from sqlalchemy import (
     Column, String, Integer, SmallInteger, Float, Boolean, Text,
     ForeignKey, DateTime, Enum, JSON, UniqueConstraint, Index,
+    CheckConstraint, text,
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -278,6 +279,45 @@ class QuestionStimulusAsset(Base):
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
     question = relationship("Question", back_populates="stimulus_assets", foreign_keys=[question_id])
+
+
+class StimulusExtractionJob(Base):
+    """Tracks async extraction of a stimulus asset (graph/table/poem crop) for a question.
+
+    Table + constraints are created in the DB; this model only mirrors them so the
+    admin router can query/insert. Status is a varchar with a CHECK (not an Enum)
+    so worker transitions can write 'succeeded'/'failed' without an enum migration.
+    """
+    __tablename__ = "stimulus_extraction_jobs"
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('queued', 'running', 'succeeded', 'failed')",
+            name="ck_stimulus_extraction_jobs_status",
+        ),
+        Index("ix_stimulus_extraction_jobs_question_id", "question_id"),
+        Index("ix_stimulus_extraction_jobs_status_created", "status", "created_at"),
+        Index(
+            "uq_stimulus_extraction_jobs_active", "question_id", "stimulus_type",
+            unique=True, postgresql_where=text("status IN ('queued', 'running')"),
+        ),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id", ondelete="CASCADE"), nullable=False)
+    stimulus_type = Column(String(40), nullable=False)
+    replace_existing = Column(Boolean, nullable=False, default=False)
+    status = Column(String(20), nullable=False, default="queued")
+    attempt_count = Column(Integer, nullable=False, default=0)
+    worker_id = Column(String(120), nullable=True)
+    error_message = Column(Text, nullable=True)
+    result_asset_id = Column(UUID(as_uuid=True), ForeignKey("question_stimulus_assets.id", ondelete="SET NULL"), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+    question = relationship("Question", foreign_keys=[question_id])
+    result_asset = relationship("QuestionStimulusAsset", foreign_keys=[result_asset_id])
 
 
 class QuestionRelation(Base):

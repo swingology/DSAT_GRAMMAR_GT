@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     jwt_secret_key: str = "change-me-in-production"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
+    # Short-lived HMAC signature on /api/stimulus-assets/{id} URLs so a browser
+    # <img> (which cannot attach an Authorization header) can fetch auth-gated
+    # crops. Reuses jwt_secret_key as the signing secret. Maps onto real S3 /
+    # Supabase signed URLs when the object-store backend moves off local_fs.
+    stimulus_signed_url_ttl_seconds: int = 3600
 
     # Google OAuth (Sign in with Google). The client ID is public by design —
     # the backend verifies ID-token signatures against Google's public keys and

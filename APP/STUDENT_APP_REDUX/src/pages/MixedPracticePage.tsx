@@ -4,15 +4,20 @@ import { motion } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../api/client'
 import { useSubmitAnswer } from '../hooks/useDashboardData'
+import { getUserToken } from '../auth/authStore'
+import { StimulusAssets } from '../components/StimulusAssets'
+import type { StimulusAsset } from '../types'
 
 interface Question {
   id: string
   current_question_text: string
+  current_passage_text?: string | null
   options: Array<{ label: string; text: string }>
   explanation_short?: string
   grammar_focus_key?: string
   reading_focus_key?: string
   domain?: string
+  stimulus_assets?: StimulusAsset[]
 }
 
 function QuestionCard({
@@ -57,6 +62,12 @@ function QuestionCard({
           {(question.grammar_focus_key || question.reading_focus_key || '').replace(/_/g, ' ')}
         </p>
       )}
+      {question.current_passage_text && (
+        <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 rounded-lg p-4 mb-4 border border-gray-100 whitespace-pre-wrap">
+          {question.current_passage_text}
+        </div>
+      )}
+      <StimulusAssets assets={question.stimulus_assets} />
       <p className="text-gray-800 leading-relaxed mb-5">{question.current_question_text}</p>
 
       <div className="space-y-2">
@@ -111,17 +122,21 @@ export function MixedPracticePage() {
   const [searchParams] = useSearchParams()
   const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') ?? '10', 10) || 10))
   const stimulusModeKey = searchParams.get('stimulus_mode_key') ?? undefined
+  // Identity for seen-exclusion: without user_token the backend skips the
+  // "already answered" filter, so the same question would repeat every fetch.
+  const userToken = getUserToken()
   const [qIndex, setQIndex] = useState(0)
   const [answered, setAnswered] = useState(0)
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['mixed-practice', qIndex, stimulusModeKey],
+    queryKey: ['mixed-practice', qIndex, stimulusModeKey, userToken],
     queryFn: () =>
       api.getQuestions({
         limit: 1,
         mode: 'practice',
         randomize: true,
         ...(stimulusModeKey ? { stimulus_mode_key: stimulusModeKey } : {}),
+        ...(userToken ? { user_token: userToken } : {}),
       }),
   })
 

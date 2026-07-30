@@ -1,6 +1,11 @@
+import hashlib
+import hmac
 import secrets
+import time
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
+
+from fastapi import Query
 
 import bcrypt
 from fastapi import Depends, HTTPException, Security, status
@@ -109,6 +114,53 @@ def decode_token(token: str) -> dict:
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
+
+
+# --- Stimulus-asset signed URLs ---------------------------------------------
+# A browser <img src> cannot attach an Authorization header, so the student
+# app can't use JWT bearer to fetch auth-gated crop images. Instead the
+# backend embeds a short-lived HMAC signature in the asset URL query string
+# and the serving route verifies it without an auth header. This is the same
+# shape as S3 / Supabase signed URLs, so moving the object store off local_fs
+# only changes how the signature is minted, not the frontend contract.
+
+def sign_asset_url(asset_id: str, exp: int) -> str:
+    """Return an HMAC-SHA256 hex signature over ``{asset_id}.{exp}``."""
+    settings = get_settings()
+    secret = settings.jwt_secret_key.encode("utf-8")
+    msg = f"{asset_id}.{exp}".encode("utf-8")
+    return hmac.new(secret, msg, hashlib.sha256).hexdigest()
+
+
+def verify_asset_signature(asset_id: str, sig: str, exp: int) -> bool:
+    """True iff ``sig`` matches ``asset_id``/``exp`` and ``exp`` is in the future."""
+    if exp < int(time.time()):
+        return False
+    expected = sign_asset_url(asset_id, exp)
+    return hmac.compare_digest(expected, sig)
+
+
+async def stimulus_asset_access(
+    asset_id: str,
+    sig: Optional[str] = Query(None, description="HMAC signature for signed-URL access"),
+    exp: Optional[int] = Query(None, description="Signature expiry, unix epoch seconds"),
+    api_key: str = Security(api_key_header),
+) -> Tuple[str, str]:
+    """Auth for /api/stimulus-assets/{asset_id}.
+
+    Accepts either a signed URL (``?sig=...&exp=...``) for browser ``<img>``
+    fetches, or a legacy ``X-API-Key`` for admin tooling. Raises 403 otherwise.
+    """
+    if sig is not None and exp is not None:
+        if verify_asset_signature(asset_id, sig, exp):
+            return ("student", "signed")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid or expired asset signature")
+    settings = get_settings()
+    if api_key in settings.admin_api_key_list:
+        return ("admin", api_key)
+    if api_key in settings.student_api_key_list:
+        return ("student", api_key)
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authenticated")
 
 
 # --- Legacy API-key dependencies (backward compat) --------------------------

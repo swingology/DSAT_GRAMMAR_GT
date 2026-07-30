@@ -1,5 +1,27 @@
 # Debug Log
 
+## 2026-07-30 - Backend crash-loop blocks all login (missing Pydantic models after merge)
+Report created by: Claude Opus 5
+Git branch: `missed_question`
+Git checkpoint: `90f6752` — Merge branch 'stimulus-type-picker' into missed_question
+
+### Findings
+
+1. **Critical:** After the stimulus-type-picker merge, Google OAuth login fails because the
+   entire backend is down. `dsat-backend` container crash-loops on startup:
+   `ImportError: cannot import name 'RecentBatchSummary' from 'app.models.payload'`
+   (`backend/app/routers/admin.py:32`). With the backend unable to import `app.main`,
+   no endpoint is served — `POST /api/auth/google` is unreachable, so login appears broken.
+   - Root cause: the merge introduced `admin.py` imports for `RecentBatchSummary`,
+     `GraphTagRequest`, and `AdminQuestionListResponse`, but these three Pydantic models
+     were never added to `backend/app/models/payload.py`.
+   - Affected: `backend/app/routers/admin.py`, `backend/app/models/payload.py`.
+   - **Fixed:** Added the three models to `payload.py` (after `BatchAggregates`), with field
+     shapes derived from `admin.py` usage sites and the `GenerationBatch` DB model.
+     Verified `app.main` imports clean, backend startup completes, `/api/auth/me` → 401
+     (alive, unauth), `POST /api/auth/google` → 422 (alive, bad body). Frontend proxy on
+     :5174 forwards `/api/*` to `http://backend:8000` correctly. (bug-815)
+
 ## 2026-07-29 - MixedPracticePage never renders a question (field-name mismatch)
 Report created by: Claude Sonnet 5
 Git branch: `missed_question`

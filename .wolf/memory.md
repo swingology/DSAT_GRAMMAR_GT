@@ -5842,3 +5842,117 @@
 | 23:35 | Admin `npm run build` segfaults in rollup native (pre-existing env issue); tsc -b + vite dev boot both pass | — | use tsc as correctness gate | ~0.3k |
 | 23:37 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx | expanded (+43 lines) | ~515 |
 | 23:37 | Edited .worktrees/stimulus-type-picker/APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | CSS: stimulus_mode_key | ~167 |
+
+## Session: 2026-07-30 23:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:43 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 3→2 lines | ~63 |
+| 23:44 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_admin-dashboard-phase0.md | inline fix | ~35 |
+
+## Session: 2026-07-30 23:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:48 | Edited DEBUG_LOG.md | 2→1 lines | ~22 |
+| 23:50 | Edited DEBUG_LOG.md | modified High() | ~501 |
+| 23:52 | Resolved merge conflicts (bug-813 ID collision + DEBUG_LOG dup) | .wolf/buglog.json, DEBUG_LOG.md | gen_vocab bug renumbered bug-813→bug-814 (FIXED); MixedPracticePage bug-813 kept canonical; merge committed 90f6752 | ~600 |
+| 23:56 | Edited backend/app/models/db.py | 4→5 lines | ~52 |
+| 23:56 | Edited backend/app/models/db.py | modified StimulusExtractionJob() | ~631 |
+| 23:57 | Edited backend/app/storage/object_store.py | modified read_object() | ~255 |
+
+## Session: 2026-07-30 00:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 00:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:06 | Edited backend/app/models/payload.py | modified BatchAggregates() | ~203 |
+| 00:07 | Edited DEBUG_LOG.md | expanded (+22 lines) | ~405 |
+| 00:07 | Fixed backend crash-loop blocking Google OAuth login | backend/app/models/payload.py | Added RecentBatchSummary, GraphTagRequest, AdminQuestionListResponse; backend up, auth endpoints alive (bug-815) | ~12k |
+| 00:11 | Edited backend/app/routers/student.py | 8→9 lines | ~160 |
+| 00:11 | Edited backend/app/routers/student.py | 3→7 lines | ~114 |
+| 00:11 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | added 1 import(s) | ~42 |
+| 00:11 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | CSS: seen-exclusion, user_token | ~213 |
+| 00:12 | Edited APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx | CSS: getUserToken | ~111 |
+| 00:12 | Edited APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx | CSS: randomize, user_token | ~449 |
+| 00:17 | Edited backend/app/models/payload.py | modified StimulusAssetResponse() | ~168 |
+| 00:17 | Edited backend/app/models/payload.py | 4→5 lines | ~61 |
+| 00:17 | Edited backend/app/routers/student.py | 18→20 lines | ~272 |
+| 00:17 | Edited backend/app/routers/student.py | added 1 import(s) | ~56 |
+| 00:17 | Edited backend/app/routers/student.py | modified _load_stimulus_assets_by_question() | ~1223 |
+| 00:17 | Edited backend/app/routers/student.py | 11→13 lines | ~138 |
+| 00:17 | Edited backend/app/routers/student.py | 10→11 lines | ~133 |
+| 00:18 | Edited backend/app/routers/student.py | 7→9 lines | ~110 |
+| 00:18 | Edited backend/app/routers/student.py | 4→5 lines | ~64 |
+| 00:22 | Edited APP/STUDENT_APP_REDUX/src/types/index.ts | expanded (+16 lines) | ~237 |
+| 00:23 | Created APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx | — | ~402 |
+| 00:23 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | 13→17 lines | ~158 |
+| 00:23 | Edited APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx | expanded (+6 lines) | ~186 |
+
+## Session: 2026-07-30 00:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:24 | Edited APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx | expanded (+35 lines) | ~460 |
+| 00:25 | Created backend/tests/test_stimulus_assets.py | — | ~1543 |
+
+## Session: 2026-07-30 00:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 00:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 00:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 00:29
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 00:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 00:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 00:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 00:50
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:52 | Edited backend/app/config.py | 4→9 lines | ~146 |
+| 00:52 | Edited backend/app/auth.py | added 4 import(s) | ~48 |
+| 00:52 | Edited backend/app/auth.py | modified sign_asset_url() | ~718 |
+| 00:53 | Edited backend/app/routers/student.py | inline fix | ~45 |
+| 00:53 | Edited backend/app/routers/student.py | added 1 import(s) | ~24 |
+| 00:53 | Edited backend/app/routers/student.py | 16→21 lines | ~312 |
+| 00:53 | Edited backend/app/routers/student.py | modified serve_stimulus_asset() | ~201 |
+
+## Session: 2026-07-30 00:53
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 09:13
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

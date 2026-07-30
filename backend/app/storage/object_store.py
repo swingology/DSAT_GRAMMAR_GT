@@ -201,3 +201,14 @@ def read_object(storage_path: str) -> bytes:
     bucket = parsed.netloc
     key = parsed.path.lstrip("/")
     return local_path(bucket, key).read_bytes()
+
+
+def public_url(storage_path: str) -> str:
+    """Return a URL for a stored object's storage_path.
+
+    The local-fs backend has no public HTTP surface yet, so this returns the
+    object URI as-is (e.g. ``local-s3://bucket/key``). The admin
+    stimulus-asset browser treats it as an opaque handle until a dedicated
+    serving route is added. ``read_object`` can resolve it back to bytes.
+    """
+    return storage_path

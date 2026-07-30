@@ -5,6 +5,17 @@ from datetime import datetime
 from uuid import UUID
 
 
+class StimulusAssetResponse(BaseModel):
+    """A table/chart/figure asset linked to a question, served to students."""
+    id: str
+    stimulus_type: str
+    url: str
+    title: Optional[str] = None
+    source_page_number: Optional[int] = None
+    structured_data: Optional[dict] = None
+    render_hints: Optional[dict] = None
+
+
 class StudentQuestionResponse(BaseModel):
     """Student-facing question payload."""
     id: str
@@ -33,6 +44,7 @@ class StudentQuestionResponse(BaseModel):
     reasoning_trap_key: Optional[str] = None
     explanation_short: Optional[str] = None
     solver_pattern_key: Optional[str] = None
+    stimulus_assets: List[StimulusAssetResponse] = Field(default_factory=list)
 
     model_config = {"from_attributes": True}
 
@@ -756,6 +768,30 @@ class BatchAggregates(BaseModel):
     total_failed: int
     batch_count: int
     avg_review_latency_ms: Optional[float]
+
+
+class RecentBatchSummary(BaseModel):
+    id: str
+    status: str
+    requested_count: int
+    created_count: int
+    accepted_count: int
+    rejected_count: int
+    failed_count: int
+    needs_review_count: int
+    requested_by: str
+    created_at: Optional[datetime]
+
+
+class GraphTagRequest(BaseModel):
+    has_graph: bool
+
+
+class AdminQuestionListResponse(BaseModel):
+    questions: List[Dict[str, Any]]
+    total: int
+    limit: int
+    offset: int
 
 
 class TokenUsageByProvider(BaseModel):

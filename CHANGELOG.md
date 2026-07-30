@@ -12564,3 +12564,317 @@ _( 8 files changed, 576 insertions(+), 21 deletions(-))_
 **Untracked:** .claude/settings.local.json.tmp.41885.9c4395109e89 khan_add.md
 
 ---
+
+## Session snapshot — 2026-07-29 23:42:09 (session-end)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `8.3Gi/30Gi`
+
+**Uncommitted changes:** .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts DEBUG_LOG.md backend/app/models/payload.py backend/app/routers/student.py backend/tests/test_stimulus_mode_counts.py 
+_( 16 files changed, 562 insertions(+), 79 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:44:09 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `8.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md 
+_( 23 files changed, 593 insertions(+), 1577 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:44:23 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md 
+_( 23 files changed, 616 insertions(+), 1579 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:46:04 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md 
+_( 23 files changed, 630 insertions(+), 1582 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:48:20 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `8.3Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md 
+_( 23 files changed, 631 insertions(+), 1582 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:49:46 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md 
+_( 23 files changed, 638 insertions(+), 1582 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:49:49 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md 
+_( 23 files changed, 647 insertions(+), 1583 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:49:52 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md 
+_( 23 files changed, 656 insertions(+), 1584 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:49:56 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md 
+_( 23 files changed, 645 insertions(+), 1584 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:50:01 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `bf0a9dc` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/api/client.ts APP/STUDENT_APP_REDUX/src/hooks/__tests__/useDashboardData.test.ts APP/STUDENT_APP_REDUX/src/hooks/useDashboardData.ts APP/STUDENT_APP_REDUX/src/pages/ConceptSelectorPage.tsx APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/ConceptSelectorPage.test.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md 
+_( 23 files changed, 647 insertions(+), 1584 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:50:26 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 10 files changed, 129 insertions(+), 1503 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:50:29 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 10 files changed, 138 insertions(+), 1503 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:50:33 (session-end)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 10 files changed, 146 insertions(+), 1503 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:51:36 (session-end)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md 
+_( 10 files changed, 154 insertions(+), 1503 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-29 23:56:33 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backend/app/models/db.py 
+_( 11 files changed, 224 insertions(+), 1505 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:07:25 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/storage/object_store.py backups/backup.log 
+_( 16 files changed, 311 insertions(+), 1506 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:07:52 (session-end)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/storage/object_store.py backups/backup.log 
+_( 16 files changed, 322 insertions(+), 1506 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:09:36 (session-end)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/storage/object_store.py backups/backup.log 
+_( 16 files changed, 330 insertions(+), 1506 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:11:26 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 17 files changed, 348 insertions(+), 1507 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:11:29 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 17 files changed, 367 insertions(+), 1507 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:17:00 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `9Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 19 files changed, 469 insertions(+), 1511 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:17:12 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `9.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 19 files changed, 495 insertions(+), 1512 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:17:15 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `9.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 19 files changed, 511 insertions(+), 1512 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:17:36 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `9.3Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 19 files changed, 634 insertions(+), 1512 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:17:46 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `9.4Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 19 files changed, 652 insertions(+), 1513 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:17:55 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `9.6Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 19 files changed, 668 insertions(+), 1513 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:18:12 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `9.8Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 19 files changed, 685 insertions(+), 1513 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:18:16 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `9.6Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 19 files changed, 701 insertions(+), 1513 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 00:49:06 (session-end)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 20 files changed, 689 insertions(+), 1510 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
+
+---
+
+## Session snapshot — 2026-07-30 00:49:58 (session-end)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `6.9Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 20 files changed, 699 insertions(+), 1510 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
+
+---
+
+## Session snapshot — 2026-07-30 00:51:29 (session-end)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `7.0Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py backend/app/storage/object_store.py backups/backup.log 
+_( 20 files changed, 714 insertions(+), 1510 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
+
+---
+
+## Session snapshot — 2026-07-30 00:53:01 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `7.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/auth.py backend/app/config.py backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 22 files changed, 907 insertions(+), 1519 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
+
+---
+
+## Session snapshot — 2026-07-30 00:53:04 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `7.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/auth.py backend/app/config.py backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 22 files changed, 925 insertions(+), 1519 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
+
+---
+
+## Session snapshot — 2026-07-30 00:53:08 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `7.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/auth.py backend/app/config.py backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 22 files changed, 947 insertions(+), 1519 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
+
+---
+
+## Session snapshot — 2026-07-30 00:53:11 (50kb-written)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `7.1Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/auth.py backend/app/config.py backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 22 files changed, 966 insertions(+), 1519 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
+
+---
+
+## Session snapshot — 2026-07-30 00:53:26 (session-end)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `7.2Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/auth.py backend/app/config.py backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 22 files changed, 976 insertions(+), 1519 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
+
+---
+
+## Session snapshot — 2026-07-30 00:54:45 (session-end)
+_branch:_ `missed_question` · _commit:_ `90f6752` · _ram:_ `7.2Gi/30Gi`
+
+**Uncommitted changes:** .claude/skills/gitbutler/SKILL.md .claude/skills/gitbutler/references/concepts.md .claude/skills/gitbutler/references/examples.md .claude/skills/gitbutler/references/reference.md .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/pages/MixedPracticePage.tsx APP/STUDENT_APP_REDUX/src/pages/__tests__/MixedPracticePage.test.tsx APP/STUDENT_APP_REDUX/src/types/index.ts CHANGELOG.md DEBUG_LOG.md backend/app/auth.py backend/app/config.py backend/app/models/db.py backend/app/models/payload.py backend/app/routers/student.py 
+_( 22 files changed, 877 insertions(+), 1513 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx backend/tests/test_stimulus_assets.py 
+
+---

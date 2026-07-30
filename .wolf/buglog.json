@@ -7344,5 +7344,50 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-07-29T23:25:00"
+  },
+  {
+    "id": "bug-815",
+    "timestamp": "2026-07-30T07:10:00",
+    "error_message": "After merging stimulus-type-picker into missed_question, app cannot login via Google OAuth. Backend container dsat-backend crash-looping: ImportError: cannot import name RecentBatchSummary from app.models.payload (admin.py line 32). Entire backend down -> all endpoints (including POST /api/auth/google) unreachable.",
+    "file": "backend/app/models/payload.py",
+    "root_cause": "The merge brought admin.py changes that import RecentBatchSummary, GraphTagRequest, and AdminQuestionListResponse from app.models.payload, but those three Pydantic models were never defined in payload.py. admin.py fails to import -> app.main fails -> uvicorn worker dies on every reload -> backend never serves. OAuth login failure was a symptom of total backend outage, not an OAuth-specific bug.",
+    "fix": "Added three Pydantic models to backend/app/models/payload.py after BatchAggregates: RecentBatchSummary(id,status,requested_count,created_count,accepted_count,rejected_count,failed_count,needs_review_count,requested_by,created_at), GraphTagRequest(has_graph:bool), AdminQuestionListResponse(questions:List[Dict[str,Any]],total,limit,offset). Field shapes derived from admin.py usage sites and GenerationBatch db model. Verified: app.main imports clean, backend startup complete, /api/auth/me -> 401, POST /api/auth/google -> 422 (both alive).",
+    "tags": [
+      "merge",
+      "import-error",
+      "payload",
+      "admin",
+      "oauth",
+      "crash-loop",
+      "stimulus-type-picker"
+    ],
+    "related_bugs": [
+      "bug-814"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-30T07:10:00"
+  },
+  {
+    "id": "bug-816",
+    "timestamp": "2026-07-30T00:52:07.644285",
+    "error_message": "Figure/chart/table stimulus assets not rendering in Mixed Practice \u2014 <img> requests to /api/stimulus-assets/{id} return 403 for logged-in students.",
+    "file": "backend/app/routers/student.py (serve_stimulus_asset); backend/app/auth.py (admin_or_student_required); APP/STUDENT_APP_REDUX/src/components/StimulusAssets.tsx",
+    "root_cause": "Two compounding issues. (1) Browser <img src> cannot attach the Authorization: Bearer JWT header the student app uses, so the image request is unauthenticated. (2) serve_stimulus_asset is gated by admin_or_student_required, which ONLY accepts X-API-Key \u2014 no JWT bearer, no query-param/signed-URL fallback. Real students have no X-API-Key, only a JWT. Unauthenticated <img> -> 403 -> broken image. Storage system is NOT the problem: read_object resolves local-s3://page-crops/figures/{qid}/page_001/{id}.png correctly and the route returns valid PNG bytes (verified 200, 45954 bytes, 484x504) with an admin X-API-Key; 96 figure crop PNGs exist on disk.",
+    "fix": "PENDING. Recommended: short-lived signed URLs. _load_stimulus_assets_by_question embeds ?sig=<hmac>&exp=<epoch> in asset.url; serve_stimulus_asset verifies sig+expiry without auth headers. Storage-backend-agnostic \u2014 maps onto real S3/Supabase signed URLs via public_url() (already stubbed for this; storage_layout.yaml declares signed_url_ttl_seconds).",
+    "tags": [
+      "stimulus",
+      "rendering",
+      "auth",
+      "signed-url",
+      "img",
+      "mixed-practice",
+      "frontend",
+      "backend"
+    ],
+    "related_bugs": [
+      "bug-815"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-30T00:52:07.644306"
   }
 ]
