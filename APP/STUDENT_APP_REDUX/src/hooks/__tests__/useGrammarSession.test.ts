@@ -220,6 +220,39 @@ describe('useGrammarSession', () => {
     expect(feedback?.title).toContain('Correct')
   })
 
+  it('forwards focusKey as grammar_focus_key to the questions API', async () => {
+    vi.mocked(api.getQuestions).mockResolvedValue({
+      items: [mockQuestion],
+      matching_target_total: 1,
+    })
+
+    renderHook(() => useGrammarSession({ limit: 10, focusKey: 'verb_tense_consistency' }))
+
+    await waitFor(() => {
+      expect(api.getQuestions).toHaveBeenCalledWith({
+        domain: 'grammar',
+        limit: 10,
+        grammar_focus_key: 'verb_tense_consistency',
+      })
+    })
+  })
+
+  it('omits grammar_focus_key when no focusKey is given', async () => {
+    vi.mocked(api.getQuestions).mockResolvedValue({
+      items: [mockQuestion],
+      matching_target_total: 1,
+    })
+
+    renderHook(() => useGrammarSession({ limit: 10 }))
+
+    await waitFor(() => {
+      expect(api.getQuestions).toHaveBeenCalledWith({
+        domain: 'grammar',
+        limit: 10,
+      })
+    })
+  })
+
   it('handles API errors gracefully', async () => {
     vi.mocked(api.getQuestions).mockRejectedValueOnce(
       new Error('Network error')

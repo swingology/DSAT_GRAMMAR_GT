@@ -13,7 +13,8 @@ export function GrammarPractice({}: GrammarPracticeProps) {
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const limit = Math.min(50, Math.max(1, parseInt(params.get('limit') ?? '10', 10) || 10))
-  const grammar = useGrammarSession({ limit })
+  const focusKey = params.get('focus_key') ?? undefined
+  const grammar = useGrammarSession({ limit, focusKey })
 
   if (grammar.isLoading) {
     return (

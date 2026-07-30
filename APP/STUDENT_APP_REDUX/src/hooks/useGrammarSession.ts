@@ -10,7 +10,7 @@ import { api } from '../api/client'
 import { getUserToken } from '../auth/authStore'
 
 
-export function useGrammarSession({ limit = 10 }: { limit?: number } = {}) {
+export function useGrammarSession({ limit = 10, focusKey }: { limit?: number; focusKey?: string } = {}) {
   const [questions, setQuestions] = useState<any[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [totalAvailable, setTotalAvailable] = useState(0)
@@ -34,6 +34,7 @@ export function useGrammarSession({ limit = 10 }: { limit?: number } = {}) {
         const resp = await api.getQuestions({
           domain: 'grammar',
           limit,
+          ...(focusKey ? { grammar_focus_key: focusKey } : {}),
         })
         const items = resp?.items ?? []
         const total = resp?.matching_target_total ?? items.length
@@ -62,7 +63,7 @@ export function useGrammarSession({ limit = 10 }: { limit?: number } = {}) {
     }
 
     fetchQuestions()
-  }, [])
+  }, [focusKey])
 
   // Sync current question to state when index changes
   useEffect(() => {
