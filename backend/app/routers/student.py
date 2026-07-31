@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import math
+import random
 import time
 import uuid as _uuid_module
 from collections import Counter, defaultdict
@@ -484,6 +485,13 @@ async def student_recall(
     randomize: bool = Query(False, description="Shuffle results with ORDER BY random() (ignored when sort_by_source)"),
     exclude_seen: Optional[bool] = Query(None),
     user_token: Optional[str] = Query(None, description="Required for exclude_seen when student scope"),
+    weight_by_weakness: bool = Query(
+        False,
+        description="Bias randomized selection toward the student's weakest concepts "
+        "(requires randomize=true and a valid user_token; falls back to plain "
+        "random when the student has no weakness profile yet or the weighted "
+        "pick has no matching questions)",
+    ),
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
@@ -495,6 +503,29 @@ async def student_recall(
 
     # Determine effective exclude_seen: default True for students, False for admins.
     effective_exclude_seen = exclude_seen if exclude_seen is not None else (scope == "student")
+
+    async def _apply_seen_exclusion(stmt):
+        if not (effective_exclude_seen and user is not None):
+            return stmt
+        resurface_cutoff = datetime.now(timezone.utc) - timedelta(
+            days=settings.self_study_resurface_days
+        )
+        # Seen = correct answer (ever) OR wrong answer within the resurface window.
+        seen_subq = (
+            select(UserProgress.question_id)
+            .where(UserProgress.user_id == user.id)
+            .where(
+                or_(
+                    UserProgress.is_correct == True,  # noqa: E712
+                    and_(
+                        UserProgress.is_correct == False,  # noqa: E712
+                        UserProgress.timestamp >= resurface_cutoff,
+                    ),
+                )
+            )
+            .distinct()
+        )
+        return stmt.where(Question.id.not_in(seen_subq))
 
     base_stmt = _build_question_filter_stmt(
         domain=domain,
@@ -517,43 +548,63 @@ async def student_recall(
     )
     matching_target_total = count_total_result.scalars().first() or 0
 
-    # Build seen-exclusion subquery if requested.
-    filtered_stmt = base_stmt
-    if effective_exclude_seen and user_token:
+    # Resolve the user once when either downstream behavior needs it. Keep the
+    # existing total-count query first, and avoid a lookup when both features
+    # are disabled (including the default admin-scope behavior).
+    user: Optional[User] = None
+    should_resolve_user = bool(user_token) and (
+        effective_exclude_seen
+        or (weight_by_weakness and randomize and not sort_by_source)
+    )
+    if should_resolve_user:
         try:
             token_uuid = UUID(user_token)
         except ValueError:
             token_uuid = None
-
         if token_uuid is not None:
-            user_result = await db.execute(
-                select(User).where(User.user_token == token_uuid)
-            )
+            user_result = await db.execute(select(User).where(User.user_token == token_uuid))
             user = user_result.scalars().first()
-            if user is not None:
-                resurface_cutoff = datetime.now(timezone.utc) - timedelta(
-                    days=settings.self_study_resurface_days
-                )
-                # Seen = correct answer (ever) OR wrong answer within the resurface window.
-                seen_subq = (
-                    select(UserProgress.question_id)
-                    .where(UserProgress.user_id == user.id)
-                    .where(
-                        or_(
-                            UserProgress.is_correct == True,  # noqa: E712
-                            and_(
-                                UserProgress.is_correct == False,  # noqa: E712
-                                UserProgress.timestamp >= resurface_cutoff,
-                            ),
-                        )
-                    )
-                    .distinct()
-                )
-                filtered_stmt = base_stmt.where(Question.id.not_in(seen_subq))
 
-    # Count unseen-active for inventory metadata.
+    unweighted_filtered_stmt = await _apply_seen_exclusion(base_stmt)
+    filtered_stmt = unweighted_filtered_stmt
+
+    # Weakness-weighted selection: narrow to one weighted-random weak focus_key
+    # (composed with the caller's other filters — e.g. a stimulus_mode_key from
+    # the By Type picker), but only when it actually has unseen matches; a
+    # student with no progress history or an empty narrowed pool falls back to
+    # the plain unweighted filtered_stmt above.
+    if weight_by_weakness and randomize and not sort_by_source and user is not None:
+        targets = await _compute_weakness_targets(user, db, settings)
+        if domain:
+            targets = [t for t in targets if t.domain == domain]
+        pick = _weighted_focus_key_pick(targets)
+        if pick:
+            picked_domain, picked_focus_key = pick
+            weighted_base = _build_question_filter_stmt(
+                domain=domain or picked_domain,
+                difficulty=difficulty,
+                grammar_role_key=grammar_role_key,
+                grammar_focus_key=picked_focus_key if picked_domain == "grammar" else grammar_focus_key,
+                reading_skill_family_key=reading_skill_family_key,
+                reading_focus_key=picked_focus_key if picked_domain == "reading" else reading_focus_key,
+                stimulus_mode_key=stimulus_mode_key,
+                origin=origin,
+                source_release_year=source_release_year,
+                source_test_name=source_test_name,
+                source_exam_code=source_exam_code,
+                sort_by_source=sort_by_source,
+            )
+            weighted_filtered = await _apply_seen_exclusion(weighted_base)
+            weighted_count_result = await db.execute(
+                select(func.count()).select_from(weighted_filtered.subquery())
+            )
+            if (weighted_count_result.scalars().first() or 0) > 0:
+                filtered_stmt = weighted_filtered
+
+    # Count unseen-active for inventory metadata (reflects the caller's explicit
+    # filters, not the weakness-narrowed pool, so inventory warnings stay accurate).
     count_unseen_result = await db.execute(
-        select(func.count()).select_from(filtered_stmt.subquery())
+        select(func.count()).select_from(unweighted_filtered_stmt.subquery())
     )
     matching_unseen = count_unseen_result.scalars().first() or 0
 
@@ -845,6 +896,27 @@ def _weakness_score(miss_count: int, attempt_count: int, days_since_last: float)
     recency_weight = math.exp(-days_since_last / 14.0)
     volume_floor = math.sqrt(attempt_count)
     return miss_rate * recency_weight * volume_floor
+
+
+def _weighted_focus_key_pick(
+    targets: list[WeaknessTarget],
+    rng: Optional[random.Random] = None,
+) -> Optional[Tuple[str, str]]:
+    """Weighted-random pick of one (domain, focus_key) from weakness targets.
+
+    Selection probability is proportional to weakness_score, so this biases
+    toward the student's weakest concepts without pinning to a single one —
+    the "random but weighted" behavior Mixed Practice wants, as opposed to
+    the hard-priority ordering used by the adaptive module-2 selector.
+    """
+    if not targets:
+        return None
+    weights = [t.weakness_score for t in targets]
+    if sum(weights) <= 0:
+        return None
+    picker = rng or random
+    choice = picker.choices(targets, weights=weights, k=1)[0]
+    return (choice.domain, choice.focus_key)
 
 
 async def _resolve_user_by_token(user_token: str, db: AsyncSession) -> User:

@@ -156,8 +156,10 @@ async def _recall(db, auth=("student", "test"), **kwargs):
         source_test_name=None,
         source_exam_code=None,
         sort_by_source=False,
+        randomize=False,
         exclude_seen=None,
         user_token=None,
+        weight_by_weakness=False,
         limit=20,
         offset=0,
     )
