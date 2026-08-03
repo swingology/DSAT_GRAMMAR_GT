@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { api } from '../../api/client'
 import { useDiagnosticTimer } from '../../hooks/useDiagnosticTimer'
 import type { DiagnosticQuestion } from '../../types'
+import { QuestionIdBadge } from '../QuestionIdBadge'
 
 interface Props {
   sessionId: string
@@ -120,6 +121,7 @@ export function DiagnosticTestRunner({
             transition={{ duration: 0.18 }}
             className="bg-white border border-gray-200 rounded-xl p-6 mb-4"
           >
+            <QuestionIdBadge id={q.id} className="mb-3" />
             {/* Domain badge */}
             {q.domain && (
               <span className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3 block">

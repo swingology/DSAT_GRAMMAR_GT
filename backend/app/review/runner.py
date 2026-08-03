@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.database import async_session
-from app.llm.factory import get_provider
+from app.llm.factory import get_provider, resolve_base_url
 from app.llm.retry import with_retry
 from app.models.db import (
     Question, QuestionAnnotation, QuestionOption, QuestionVersion,
@@ -196,7 +196,7 @@ async def _call_review_provider(
     provider = get_provider(
         provider_name,
         api_key=api_key,
-        base_url=settings.ollama_base_url if provider_name == "ollama" else "",
+        base_url=resolve_base_url(provider_name, settings),
         default_model=model,
     )
     start = time.monotonic()

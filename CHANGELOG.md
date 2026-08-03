@@ -12926,3 +12926,445 @@ _branch:_ `missed_question` · _commit:_ `6cac136` · _ram:_ `7.8Gi/30Gi`
 _( 6 files changed, 141 insertions(+), 6 deletions(-))_
 
 ---
+
+## Session snapshot — 2026-07-30 10:19:25 (session-end)
+_branch:_ `main` · _commit:_ `373390b` · _ram:_ `7.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json 
+_( 1 file changed, 1 insertion(+), 1 deletion(-))_
+
+---
+
+## Session snapshot — 2026-07-30 10:26:46 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backend/app/routers/student.py 
+_( 6 files changed, 25 insertions(+), 5 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 10:26:52 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backend/app/routers/student.py 
+_( 6 files changed, 61 insertions(+), 5 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 10:27:01 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `7.7Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backend/app/routers/student.py 
+_( 6 files changed, 76 insertions(+), 5 deletions(-))_
+
+---
+
+## Session snapshot — 2026-07-30 10:28:26 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `7.6Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backend/app/routers/student.py 
+_( 6 files changed, 186 insertions(+), 42 deletions(-))_
+
+**Untracked:** backend/tests/test_weighted_focus_pick.py 
+
+---
+
+## Session snapshot — 2026-07-30 10:28:37 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `7.5Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backend/app/routers/student.py 
+_( 6 files changed, 204 insertions(+), 42 deletions(-))_
+
+**Untracked:** backend/tests/test_weighted_focus_pick.py 
+
+---
+
+## Session snapshot — 2026-07-30 10:28:41 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `7.5Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backend/app/routers/student.py 
+_( 6 files changed, 221 insertions(+), 42 deletions(-))_
+
+**Untracked:** backend/tests/test_weighted_focus_pick.py 
+
+---
+
+## Session snapshot — 2026-07-30 10:51:15 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backend/app/routers/student.py 
+_( 7 files changed, 267 insertions(+), 44 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/summary.md analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/validation_failures.json analysis/ingestion/PT01/run_2026-07-30_a5e6d368-f291-4e08-b9e0-871f1527e8fb/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-07-30 10:51:30 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.0Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backend/app/routers/student.py 
+_( 7 files changed, 278 insertions(+), 44 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/summary.md analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/validation_failures.json analysis/ingestion/PT01/run_2026-07-30_a5e6d368-f291-4e08-b9e0-871f1527e8fb/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-07-30 10:53:58 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.0Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backend/app/routers/student.py 
+_( 7 files changed, 298 insertions(+), 44 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/summary.md analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/validation_failures.json analysis/ingestion/PT01/run_2026-07-30_a5e6d368-f291-4e08-b9e0-871f1527e8fb/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-07-30 18:41:43 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `8.1Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md backend/app/routers/student.py backups/backup.log 
+_( 15 files changed, 275 insertions(+), 40 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/QuestionIdBadge.tsx analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/summary.md analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-30 18:42:40 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `8.2Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md backend/app/routers/student.py backups/backup.log 
+_( 15 files changed, 286 insertions(+), 41 deletions(-))_
+
+**Untracked:** APP/STUDENT_APP_REDUX/src/components/QuestionIdBadge.tsx analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/amendment_candidates.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/summary.md analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-07-30_0853cde4-01a7-4ad9-b187-a7c850ea9460/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-07-30 23:21:30 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.1Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 16 files changed, 335 insertions(+), 572 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-30 23:35:26 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.6Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 468 insertions(+), 575 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-30 23:36:14 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.5Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 505 insertions(+), 576 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-30 23:45:26 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.6Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 566 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-30 23:46:05 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.4Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 598 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-30 23:50:37 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.4Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 638 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-30 23:51:07 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.4Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 662 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 00:16:08 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 698 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 00:18:52 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 752 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 00:19:25 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 785 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 00:25:14 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 903 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 00:25:31 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 913 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 00:33:12 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 946 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 00:35:27 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 979 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 00:35:46 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 1036 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 00:36:23 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `10Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 1090 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 09:56:33 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `14Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 1112 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 11:36:08 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/routers/student.py backups/backup.log visual_stimulus_assets_plan.md 
+_( 17 files changed, 1125 insertions(+), 577 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 11:39:02 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.2Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/student.py 
+_( 22 files changed, 1263 insertions(+), 590 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 11:39:07 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.1Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 23 files changed, 1283 insertions(+), 592 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 11:39:14 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.2Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 23 files changed, 1301 insertions(+), 593 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 11:43:08 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `11Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 24 files changed, 1377 insertions(+), 595 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-07-31 11:49:55 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `373390b` · _ram:_ `9.5Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 26 files changed, 1458 insertions(+), 604 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-01 08:48:41 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `9.2Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1172 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-01 08:53:18 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1192 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-02 08:38:02 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1239 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-02 08:38:58 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1249 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-02 08:48:18 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1259 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-02 08:48:58 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1269 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-02 08:49:59 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1279 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-02 08:50:24 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1289 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-02 08:50:38 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1299 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---
+
+## Session snapshot — 2026-08-02 09:42:25 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `875eb67` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/STUDENT_APP_REDUX/src/components/QuestionCard.tsx APP/STUDENT_APP_REDUX/src/components/__tests__/QuestionCard.test.tsx APP/STUDENT_APP_REDUX/src/components/dashboard/DiagnosticTab.tsx APP/STUDENT_APP_REDUX/src/components/diagnostic/DiagnosticTestRunner.tsx APP/STUDENT_APP_REDUX/src/components/grammar/QuestionSection.tsx APP/STUDENT_APP_REDUX/src/components/practice/PracticeTestRunner.tsx CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/llm/anthropic_provider.py backend/app/llm/factory.py backend/app/llm/openai_provider.py backend/app/review/runner.py backend/app/routers/generate.py 
+_( 25 files changed, 1309 insertions(+), 574 deletions(-))_
+
+**Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
+
+---

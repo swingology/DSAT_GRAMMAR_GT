@@ -7,8 +7,16 @@ from app.llm.retry import with_retry
 
 
 class OpenAIProvider:
-    def __init__(self, api_key: str, default_model: str = "gpt-4o"):
-        self.client = openai.AsyncOpenAI(api_key=api_key, timeout=90.0)
+    def __init__(self, api_key: str, default_model: str = "gpt-4o", base_url: str = "", timeout: float = 90.0):
+        # base_url lets this provider target any OpenAI-compatible endpoint —
+        # notably the LiteLLM proxy fronting local Ollama models. Empty string
+        # means the OpenAI default; passing None to the SDK would do the same
+        # but reads as an accident.
+        self.client = openai.AsyncOpenAI(
+            api_key=api_key,
+            base_url=base_url or None,
+            timeout=timeout,
+        )
         self.default_model = default_model
 
     @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)

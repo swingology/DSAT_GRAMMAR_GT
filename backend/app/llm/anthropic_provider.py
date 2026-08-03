@@ -6,9 +6,27 @@ from app.llm.errors import LLMAPIError, token_usage_from_payload
 from app.llm.retry import with_retry
 
 
+def _first_text_block(response) -> str:
+    """Return the first text block's content, skipping non-text blocks.
+
+    response.content[0].text assumes the first block is text. That holds for
+    Anthropic's own models, but a reasoning model served through the LiteLLM
+    proxy (e.g. local qwen3.6:27b) puts a ThinkingBlock first, which has no
+    .text attribute. Select by block type instead of position.
+    """
+    for block in getattr(response, "content", []) or []:
+        text = getattr(block, "text", None)
+        if text is not None:
+            return text
+    return ""
+
+
 class AnthropicProvider:
-    def __init__(self, api_key: str, default_model: str = "claude-sonnet-4-6"):
-        self.client = anthropic.AsyncAnthropic(api_key=api_key)
+    def __init__(self, api_key: str, default_model: str = "claude-sonnet-4-6", base_url: str = ""):
+        # base_url lets this provider target the LiteLLM proxy, which exposes an
+        # Anthropic-compatible route alongside its OpenAI one. Empty string keeps
+        # the SDK's own default endpoint.
+        self.client = anthropic.AsyncAnthropic(api_key=api_key, base_url=base_url or None)
         self.default_model = default_model
 
     @with_retry(max_attempts=3, base_delay=1.0, max_delay=30.0)
@@ -39,7 +57,7 @@ class AnthropicProvider:
                 token_usage=token_usage_from_payload(getattr(exc, "body", None)),
             ) from exc
         latency_ms = int((time.time() - start) * 1000)
-        raw_text = response.content[0].text
+        raw_text = _first_text_block(response)
         token_usage = {
             "input": getattr(response.usage, "input_tokens", 0),
             "output": getattr(response.usage, "output_tokens", 0),
@@ -97,7 +115,7 @@ class AnthropicProvider:
                 token_usage=token_usage_from_payload(getattr(exc, "body", None)),
             ) from exc
         latency_ms = int((time.time() - start) * 1000)
-        raw_text = response.content[0].text
+        raw_text = _first_text_block(response)
         token_usage = {
             "input": getattr(response.usage, "input_tokens", 0),
             "output": getattr(response.usage, "output_tokens", 0),
@@ -156,7 +174,7 @@ class AnthropicProvider:
                 token_usage=token_usage_from_payload(getattr(exc, "body", None)),
             ) from exc
         latency_ms = int((time.time() - start) * 1000)
-        raw_text = response.content[0].text
+        raw_text = _first_text_block(response)
         token_usage = {
             "input": getattr(response.usage, "input_tokens", 0),
             "output": getattr(response.usage, "output_tokens", 0),

@@ -32,4 +32,6 @@ screenshot.png
 
 # DB backup dumps — rotated locally by scripts/backup_db.sh, never committed
 backups/*.dump
+backups/**/*.sql
 .worktrees/
+.gstack/

@@ -117,7 +117,7 @@ async def detect_layout(
     """
     from app.llm.ollama_provider import OllamaProvider
     from app.llm.base import ImageContent
-    from app.llm.factory import get_provider
+    from app.llm.factory import get_provider, resolve_base_url
     import base64
 
     attempts = []
@@ -141,7 +141,12 @@ async def detect_layout(
         attempts.append((
             "anthropic",
             model,
-            get_provider("anthropic", api_key=anthropic_api_key, default_model=model),
+            get_provider(
+                "anthropic",
+                api_key=anthropic_api_key,
+                base_url=resolve_base_url("anthropic", settings),
+                default_model=model,
+            ),
             False,
         ))
 

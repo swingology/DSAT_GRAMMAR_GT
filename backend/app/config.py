@@ -36,6 +36,12 @@ class Settings(BaseSettings):
     # LLM
     anthropic_api_key: str = ""
     openai_api_key: str = ""
+    # Point these at the LiteLLM proxy (http://litellm:4000 in compose,
+    # http://localhost:4000 on the host) to route OpenAI/Anthropic-shaped calls
+    # to local Ollama models instead of the hosted APIs. Empty = call the real
+    # vendor endpoint. See docs/litellm.md.
+    openai_base_url: str = ""
+    anthropic_base_url: str = ""
     ollama_base_url: str = "http://localhost:11434"
     ollama_max_concurrent: int = 8  # max parallel requests to Ollama (429 at ~20)
     annotation_max_concurrent: int = 1  # Ollama serializes GPU inference; >1 adds queue pressure with no throughput gain
@@ -53,10 +59,16 @@ class Settings(BaseSettings):
 
     # LLM defaults
     default_annotation_provider: str = "ollama"
-    default_annotation_model: str = "deepseek-v4-pro:cloud"
-    default_ollama_model: str = "deepseek-v4-pro:cloud"
+    # Local on-box inference. The previous default, deepseek-v4-pro:cloud, was
+    # reached through Ollama but executed remotely (:cloud suffix); qwen3.6:27b
+    # runs on this machine. See docs/litellm.md.
+    default_annotation_model: str = "qwen3.6:27b"
+    default_ollama_model: str = "qwen3.6:27b"
 
-    # Pass 3 span annotator — always uses Anthropic, never the default annotation provider
+    # Pass 3 span annotator — constructs AnthropicProvider directly rather than
+    # going through the factory. It now honours anthropic_base_url, so with the
+    # LiteLLM proxy configured this model name is served by local qwen3.6:27b.
+    # Set anthropic_base_url to "" to send it back to the hosted Anthropic API.
     span_annotator_model: str = "claude-sonnet-4-6"
     rules_version: str = "rules_agent_dsat_grammar_ingestion_generation_v8"
     official_auto_activate_for_testing: bool = False
@@ -121,11 +133,23 @@ class Settings(BaseSettings):
     generation_min_taxonomy_match_score: float = 7.5
     generation_max_copy_risk_score: float = 5.0
     generation_max_reviewer_disagreement: float = 1.5
-    # Review swarm composition (Phase 4 runner will use these)
-    generation_review_providers: str = "openai,anthropic,ollama"
+    # Review swarm composition (Phase 4 runner will use these).
+    #
+    # Reduced to a single local reviewer when the app moved to on-box inference.
+    # generation_max_reviewer_disagreement (above) gates on reviewers
+    # DISAGREEING, so pointing openai/anthropic/ollama at the same local model
+    # would produce three identical verdicts, ~0 disagreement, and a gate that
+    # always passes while appearing to be a three-way consensus. One honest
+    # reviewer is better than three fake ones.
+    #
+    # To restore a real swarm, add back "openai,anthropic" here and set
+    # openai_base_url/anthropic_base_url to "" so those providers reach the
+    # hosted APIs — or map their names to genuinely different local models in
+    # litellm/config.yaml. See docs/litellm.md.
+    generation_review_providers: str = "ollama"
     generation_review_openai_model: str = "gpt-4o"
     generation_review_anthropic_model: str = "claude-sonnet-4-6"
-    generation_review_ollama_model: str = "deepseek-v4-pro:cloud"
+    generation_review_ollama_model: str = "qwen3.6:27b"
     generation_review_max_concurrent: int = 6
     generation_review_max_retries: int = 2
 

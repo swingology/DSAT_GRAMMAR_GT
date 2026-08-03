@@ -7389,5 +7389,181 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-07-30T00:52:07.644306"
+  },
+  {
+    "id": "bug-817",
+    "timestamp": "2026-07-30T10:43:15-07:00",
+    "error_message": "Generation payload for command_of_evidence_quantitative targets sets stimulus_mode_key=\"table_or_graph\", which is NOT a canonical STIMULUS_MODE_KEYS value. Causes generated quantitative-evidence questions to fail validate_question (validator.py:144) / extract model (extract.py:33) and never reach active status.",
+    "file": "backend/app/routers/student.py:1250 (_build_generation_payload, command_of_evidence_quantitative branch)",
+    "root_cause": "Hardcoded non-vocab string \"table_or_graph\" instead of a canonical key. The controlled vocabulary has no single graph-or-table bucket \u2014 it splits into prose_plus_graph and prose_plus_table. DB currently clean (no table_or_graph rows) because validation rejects it before storage, but the generation path for quantitative-evidence is effectively broken.",
+    "fix": "PENDING. Use a canonical key: pick prose_plus_graph or prose_plus_table (or randomize/alternate between them) based on the quantitative_sub_pattern, or drop the override and let the source question's stimulus_mode_key flow through (generate.py:399-400 already prefers the source annotation's key).",
+    "tags": [
+      "stimulus",
+      "controlled-vocab",
+      "generation",
+      "validator",
+      "quantitative"
+    ],
+    "related_bugs": [
+      "bug-811"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-30T10:43:15-07:00"
+  },
+  {
+    "id": "bug-818",
+    "timestamp": "2026-07-30T10:43:15-07:00",
+    "error_message": "6 official synthesize_information questions (5 active) have stimulus_mode_key = NULL in both the column and annotation_jsonb. They are invisible in the By-Type picker (/questions/stimulus-counts groups only canonical keys) and unreachable via stimulus_mode_key filtering in Mixed Practice.",
+    "file": "DB: questions.stimulus_mode_key NULL rows (stem_type_key='synthesize_information'); picker backend/app/routers/student.py:710-738",
+    "root_cause": "These 'Choose Best Notes Synthesis' questions were never annotated with a stimulus_mode_key. Per the ontology they should be notes_bullets or notes_summary (the stimulus is bullet/notes form), so they belong in the existing Notes buckets but were skipped during annotation.",
+    "fix": "PENDING. Backfill: set stimulus_mode_key (and annotation_jsonb->stimulus_mode_key) for the 6 rows based on the actual stimulus form \u2014 likely notes_bullets. Then they appear under 'Notes & Bullets' in the picker.",
+    "tags": [
+      "stimulus",
+      "missing-data",
+      "annotation",
+      "picker",
+      "synthesize_information"
+    ],
+    "related_bugs": [
+      "bug-805",
+      "bug-806",
+      "bug-811"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-30T10:43:15-07:00"
+  },
+  {
+    "id": "bug-819",
+    "timestamp": "2026-07-30T23:59:00Z",
+    "error_message": "2024 PT1 Module 01 Q13 answer choices stored as bare years ('1800','1900','1950','2012') instead of the full year-pair comparison phrases in the source PDF, making the question unanswerable and its stored answer label meaningless.",
+    "file": "DB: questions / question_versions.choices_jsonb / question_options (question_id fb857823-10f1-5c19-b328-fb733978bb6d)",
+    "root_cause": "Ingestion of Test01_ENG_Sec01_Mod01.pdf p13 captured only the leading year token from each option instead of the whole option string ('1900 with the employment by sector in 1950.'). Stem also captured as 'complete the text?' instead of 'complete the statement?'. Because the stored labels no longer denoted the PDF's choices, the DB label C ('1950') did not correspond to PDF choice C.",
+    "fix": "Rewrote all four option_text values and choices_jsonb from the PDF; moved correct answer from label C to label A ('1900 with the employment by sector in 1950.') \u2014 the choice the existing explanation already reasoned about; corrected stem wording; rewrote the four stale single-year why_wrong/why_plausible rationales to describe year pairs. Verified option rows, choices_jsonb, and denormalized columns all agree; a drift scan across all 81 PT1 questions returned 0 inconsistencies. No user_progress rows existed, so no attempt data was invalidated.",
+    "tags": [
+      "ingestion",
+      "option-text",
+      "data-integrity",
+      "pt1",
+      "2024",
+      "answer-key",
+      "codex-audit"
+    ],
+    "related_bugs": [
+      "bug-805",
+      "bug-806",
+      "bug-811"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-30T23:59:00Z"
+  },
+  {
+    "id": "bug-820",
+    "timestamp": "2026-07-31T06:45:00Z",
+    "error_message": "2024 PT2 Module 01 Q19 option texts corrupted: choices A and B stored identically, and C and D end 'network;' where the source PDF has 'network,'. Three of four option texts differ from source; the correct option's text is among the corrupt ones.",
+    "file": "DB: questions / question_versions.choices_jsonb / question_options (Test02_ENG_Sec01_Mod01 q19)",
+    "root_cause": "Ingestion of Test02_ENG_Sec01_Mod01.pdf p19 normalized the trailing punctuation of every option to a semicolon, collapsing the comma/semicolon distinction that is the entire content of this punctuation question. Source: A ...network; / B ...network, / C ...network, / D ...network,",
+    "fix": "APPLIED 2026-07-31 via scripts/repair_pt2_audit.py. Restored all four option texts from the source PDF (A ends in semicolon; B/C/D end in comma) and moved the correct answer from label A to label C, since each product must keep its own date: Chickasaw Basic/2009, Chickasaw TV/2010, Rosetta Stone/2015. Rewrote the explanation and all four why_plausible/why_wrong rationales, which had been built on a wrong series segmentation placing the item break after Basic. Synced question_options, choices_jsonb, annotation_jsonb, and questions.current_* columns. Drift scan over all 81 PT2 rows returned 0 inconsistencies. Zero user_progress rows, so no attempt data invalidated.",
+    "tags": [
+      "ingestion",
+      "pt2",
+      "2024",
+      "option-text",
+      "punctuation",
+      "answer-key",
+      "audit"
+    ],
+    "related_bugs": [
+      "bug-819"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-31T07:10:00Z"
+  },
+  {
+    "id": "bug-821",
+    "timestamp": "2026-07-31T07:10:00Z",
+    "error_message": "2024 PT2 answer-key and content defects found reviewing 2024_PT2_audit.md: three wrong stored answers (M1 Q17 stored B, correct D; M2A Q11 stored C, correct D; M2B Q21 stored B, correct A), M2B Q7 passage duplicated from Q6 (Wigner crystal instead of Terropterus xiushanensis), and M2B Q19 explanation about an unrelated 1800s-quilt appositive.",
+    "file": "DB: questions / question_versions / question_options / question_annotations (Test02_ENG_Sec01_Mod01 q17, Mod02A q11, Mod02B q7/q19/q21)",
+    "root_cause": "LLM-generated answer keys and explanations were never validated against the source PDFs. Each wrong answer came with a confidently-worded rationale encoding a wrong theory of the question (e.g. M2A Q11 assumed the hypothesis predicted a zinc increase when the graph shows a decrease in both metals; M2B Q21 asserted a nonexistent rule that a semicolon must precede a conjunctive adverb). Q7 passage duplication is a separate ingestion defect where the previous question stimulus was carried forward.",
+    "fix": "Applied 2026-07-31 via scripts/repair_pt2_audit.py in one transaction. Corrected the three answer labels, replaced Q7 passage from the source PDF, and rewrote explanations plus all four per-option rationales on each of the six touched questions. Synced across all three storage surfaces; drift scan over 81 PT2 rows returned 0 inconsistencies.",
+    "tags": [
+      "answer-key",
+      "explanation",
+      "passage-duplication",
+      "pt2",
+      "2024",
+      "codex-audit",
+      "data-integrity"
+    ],
+    "related_bugs": [
+      "bug-819",
+      "bug-820"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-31T07:10:00Z"
+  },
+  {
+    "id": "bug-822",
+    "timestamp": "2026-07-31T08:30:00Z",
+    "error_message": "2024 PT3 Module 2B defects: Q13 stored answer C (correct B; C misreads the graph as ~13%/~11% when actual values are 17.3%/13.6%), Q19 stored answer A with choice C corrupted to \"nickname, however;\" duplicating B (source C is \"nickname, however,\"), and Q4 entirely absent from the DB.",
+    "file": "DB: questions / question_versions / question_options / question_annotations (Test03_ENG_Sec01_Mod02B q4/q13/q19)",
+    "root_cause": "Same pattern as PT1/PT2: LLM answer keys and explanations never validated against source PDFs. Q19 option C had its trailing comma normalized to a semicolon by ingestion, the exact character the question tests. Q4 was dropped entirely during ingestion. Both stored explanations argued for the wrong answer; Q19 stated the correct rule (commas both sides of parenthetical however) then chose the option lacking the second comma.",
+    "fix": "Applied 2026-07-31 via scripts/repair_pt3_audit.py in one transaction. Q13 C->B, Q19 A->C with option C text restored, Q4 inserted using the ingestion pipeline deterministic UUID5 so re-ingestion is idempotent. New explanations plus all four per-option rationales on each. Drift scan over 81 PT3 rows clean; M2B key now matches the audit key exactly.",
+    "tags": [
+      "answer-key",
+      "option-text",
+      "missing-question",
+      "pt3",
+      "2024",
+      "codex-audit",
+      "data-integrity"
+    ],
+    "related_bugs": [
+      "bug-819",
+      "bug-820",
+      "bug-821"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-31T08:30:00Z"
+  },
+  {
+    "id": "bug-823",
+    "timestamp": "2026-07-31T08:30:00Z",
+    "error_message": "Annotation UPDATE silently affected 0 rows when keyed on question_version_id (PT3 M2B Q13 during repair).",
+    "file": "DB: question_annotations.question_version_id (408 of 1489 rows)",
+    "root_cause": "408 of 1489 questions have a latest_annotation_id whose question_version_id points at a superseded version rather than latest_version_id. Joining annotations via question_version_id therefore misses ~27% of the table silently rather than erroring.",
+    "fix": "Repair scripts must reach annotations via questions.latest_annotation_id, not question_version_id. Fixed in scripts/repair_pt3_audit.py. The earlier PT2 repair was re-verified and is unaffected because it already used latest_annotation_id. The underlying stale-link condition across all 408 rows is NOT repaired and remains open.",
+    "tags": [
+      "data-integrity",
+      "annotations",
+      "stale-reference",
+      "query-pattern",
+      "open"
+    ],
+    "related_bugs": [
+      "bug-822"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-07-31T08:30:00Z"
+  },
+  {
+    "id": "bug-444",
+    "timestamp": "2026-08-01T08:48:14.739699",
+    "error_message": "Error response from daemon: setting up Pasta: pasta failed with exit code -1: *** stack smashing detected *** : terminated",
+    "file": "~/.config/containers/containers.conf",
+    "root_cause": "passt package 0.0~git20250503.587980c-2 ships a pasta binary that segfaults with a stack-smash on this host. podman rootless uses pasta as the default network cmd, so every container start (dsat-db, backend, frontend) failed.",
+    "fix": "Created ~/.config/containers/containers.conf with [network] default_rootless_network_cmd = \"slirp4netns\". slirp4netns 1.2.1 verified working; full start.sh stack now comes up.",
+    "tags": [
+      "podman",
+      "pasta",
+      "passt",
+      "slirp4netns",
+      "rootless",
+      "networking",
+      "start.sh",
+      "docker-compose"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-08-01T08:48:14.739699"
   }
 ]

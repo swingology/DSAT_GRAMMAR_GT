@@ -33,7 +33,23 @@ services:
       PYTHONUNBUFFERED: "1"
       # Extraction/annotation reach the host's Ollama daemon (glm-ocr + :cloud models).
       # Inside the container `localhost:11434` is the container itself, so route via host-gateway.
-      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_BASE_URL: ${DSAT_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      # Route openai/anthropic-shaped calls to the LiteLLM proxy, which serves
+      # them from local qwen3.6:27b. Requires the `llm` profile to be running:
+      #   docker compose --profile llm up -d litellm backend
+      # Set these to "" to send those providers back to the hosted vendor APIs.
+      OPENAI_BASE_URL: ${DSAT_OPENAI_BASE_URL:-http://litellm:4000}
+      ANTHROPIC_BASE_URL: ${DSAT_ANTHROPIC_BASE_URL:-http://litellm:4000}
+      # These are the credentials presented TO the LiteLLM proxy, so they must
+      # equal LITELLM_MASTER_KEY — not your real vendor keys. Note the `:-`
+      # default is NOT enough here: a real OPENAI_API_KEY exported in the host
+      # shell would win and the proxy would reject it as an unknown virtual key
+      # ("No connected db"). Pin them to the proxy key unconditionally, and
+      # override with DSAT_* only when pointing back at the hosted vendor APIs.
+      OPENAI_API_KEY: ${DSAT_OPENAI_API_KEY:-${LITELLM_MASTER_KEY:-sk-local-dev}}
+      ANTHROPIC_API_KEY: ${DSAT_ANTHROPIC_API_KEY:-${LITELLM_MASTER_KEY:-sk-local-dev}}
+      DEFAULT_ANNOTATION_MODEL: ${DSAT_ANNOTATION_MODEL:-qwen3.6:27b}
+      DEFAULT_OLLAMA_MODEL: ${DSAT_OLLAMA_MODEL:-qwen3.6:27b}
       # Align local filesystem object store with the host repo-root local_object_store.
       OBJECT_STORAGE_LOCAL_ROOT: /local_object_store
     extra_hosts:
@@ -41,6 +57,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      # required: false — the backend still starts if the `llm` profile is not
+      # active, in which case LLM calls fail at request time rather than boot.
+      litellm:
+        condition: service_healthy
+        required: false
     volumes:
       - ./backend:/app
       - ./local_object_store:/local_object_store
@@ -83,6 +104,32 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  # LiteLLM proxy — OpenAI/Anthropic-compatible gateway in front of the host's
+  # Ollama daemon. Opt-in via profile so the default `docker compose up` stack
+  # is unchanged; start with:  docker compose --profile llm up -d litellm
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    container_name: dsat-litellm
+    profiles: ["llm"]
+    ports:
+      - "127.0.0.1:${DSAT_LITELLM_PORT:-4000}:4000"
+    environment:
+      # Same host-gateway route the backend uses: inside a container
+      # localhost:11434 is the container itself, not the host's Ollama.
+      OLLAMA_HOST_URL: http://host.docker.internal:11434
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:-sk-local-dev}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./litellm/config.yaml:/app/config.yaml:ro
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveliness')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
 volumes:
   dsat_pgdata_linux:

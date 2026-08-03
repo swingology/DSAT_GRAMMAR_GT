@@ -1,5 +1,26 @@
 from app.llm.base import LLMProvider
 
+
+def resolve_base_url(provider_name: str, settings) -> str:
+    """Return the endpoint a provider should call, given current settings.
+
+    Centralizes what was previously duplicated (and slightly inconsistent) at
+    each get_provider call site. Returning "" means "use the vendor default",
+    so an unset *_base_url leaves hosted behaviour untouched.
+
+    Setting openai_base_url / anthropic_base_url points those providers at the
+    LiteLLM proxy, which serves local Ollama models behind OpenAI- and
+    Anthropic-compatible routes. See docs/litellm.md.
+    """
+    if provider_name == "ollama":
+        return settings.ollama_base_url
+    if provider_name == "openai":
+        return settings.openai_base_url
+    if provider_name == "anthropic":
+        return settings.anthropic_base_url
+    return ""
+
+
 # Keyed by (provider_name, api_key, base_url, default_model) so identical configs share one instance.
 _provider_cache: dict = {}
 # Flat list of all instantiated providers — used by close_all_providers().
@@ -18,10 +39,21 @@ def get_provider(
 
     if provider_name == "anthropic":
         from app.llm.anthropic_provider import AnthropicProvider
-        provider = AnthropicProvider(api_key=api_key, default_model=default_model or "claude-sonnet-4-6")
+        provider = AnthropicProvider(
+            api_key=api_key,
+            default_model=default_model or "claude-sonnet-4-6",
+            base_url=base_url,
+        )
     elif provider_name == "openai":
         from app.llm.openai_provider import OpenAIProvider
-        provider = OpenAIProvider(api_key=api_key, default_model=default_model or "gpt-4o")
+        # A local 27B model is much slower than a hosted API, so a proxied
+        # request gets the Ollama-scale timeout rather than the 90s default.
+        provider = OpenAIProvider(
+            api_key=api_key,
+            default_model=default_model or "gpt-4o",
+            base_url=base_url,
+            timeout=600.0 if base_url else 90.0,
+        )
     elif provider_name == "ollama":
         from app.llm.ollama_provider import OllamaProvider
         provider = OllamaProvider(

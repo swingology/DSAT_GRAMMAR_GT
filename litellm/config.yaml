@@ -1,0 +1,105 @@
+# LiteLLM proxy — routes all DSAT LLM traffic to local Ollama inference.
+#
+# Every model_name below is a name the DSAT backend already asks for. Each maps
+# onto the locally-installed qwen3.6:27b, so no application code needs to know
+# which engine actually serves a request. To move a name back to a hosted model,
+# change only its litellm_params here.
+#
+# Start:  docker compose --profile llm up -d litellm
+# Verify: curl -s localhost:4000/health/liveliness
+#
+# NOTE ON CONCURRENCY: backend/app/config.py records that Ollama returns 429 at
+# roughly 20 concurrent requests and that annotation is pinned to 1 because GPU
+# inference serializes. A proxy queues requests; it does not add GPU capacity.
+# The rpm/max_parallel_requests values below deliberately stay under those
+# limits — raising them reintroduces the 429s rather than increasing throughput.
+
+model_list:
+  # --- Primary annotation/extraction model -------------------------------
+  # The backend's default_ollama_model. Previously deepseek-v4-pro:cloud,
+  # which despite the ollama/ prefix executed remotely; this is now on-box.
+  - model_name: deepseek-v4-pro:cloud
+    litellm_params:
+      model: ollama_chat/qwen3.6:27b
+      api_base: os.environ/OLLAMA_HOST_URL
+      rpm: 60
+      max_parallel_requests: 4
+    model_info:
+      mode: chat
+
+  # --- Names the review swarm requests -----------------------------------
+  # generation_review_providers = "openai,anthropic,ollama" fans out to three
+  # providers for consensus. Mapping all three onto one local model means the
+  # swarm votes one opinion three times: agreement stops carrying information.
+  # These entries exist so the swarm RUNS locally; see docs/litellm.md before
+  # trusting its consensus verdicts.
+  - model_name: gpt-4o
+    litellm_params:
+      model: ollama_chat/qwen3.6:27b
+      api_base: os.environ/OLLAMA_HOST_URL
+      rpm: 60
+      max_parallel_requests: 4
+    model_info:
+      mode: chat
+
+  - model_name: claude-sonnet-4-6
+    litellm_params:
+      model: ollama_chat/qwen3.6:27b
+      api_base: os.environ/OLLAMA_HOST_URL
+      rpm: 60
+      max_parallel_requests: 4
+    model_info:
+      mode: chat
+
+  # --- Explicit local alias ----------------------------------------------
+  # Lets you set default_ollama_model: qwen3.6:27b directly and bypass the
+  # shadowed names above.
+  - model_name: qwen3.6:27b
+    litellm_params:
+      model: ollama_chat/qwen3.6:27b
+      api_base: os.environ/OLLAMA_HOST_URL
+      rpm: 60
+      max_parallel_requests: 4
+    model_info:
+      mode: chat
+
+  # --- Vision passthrough -------------------------------------------------
+  # OCR uses a separate client (parsers/ocr.py::DeepSeekOCRClient) that is NOT
+  # built on the LLMProvider interface, so it does not route through this proxy
+  # today. This entry is here so vision calls CAN be pointed at the proxy once
+  # that client is refactored; ocr_strategy still bypasses it for now.
+  - model_name: glm-ocr
+    litellm_params:
+      model: ollama_chat/glm-ocr:latest
+      api_base: os.environ/OLLAMA_HOST_URL
+      rpm: 30
+      max_parallel_requests: 2
+    model_info:
+      mode: chat
+
+litellm_settings:
+  drop_params: true          # silently drop params Ollama rejects (e.g. some sampling args)
+  request_timeout: 600       # a 27B model on local hardware is far slower than a hosted API
+  set_verbose: false
+  telemetry: false           # no phoning home; this is the point of running local
+
+  # qwen3.6 is a REASONING model: it emits a thinking block that is billed to
+  # completion_tokens before any user-visible content. Verified here — the same
+  # prompt at max_tokens=40 returned content='' with all 40 tokens consumed by
+  # reasoning, and at max_tokens=600 returned the answer after 123 tokens.
+  # Any caller sending a tight max_tokens will silently receive empty strings
+  # rather than an error. Callers in this repo default to max_tokens=4096
+  # (see llm/base.py and the provider complete() signatures), which is ample,
+  # but keep this in mind before lowering it or parsing strict JSON responses.
+
+router_settings:
+  routing_strategy: simple-shuffle
+  num_retries: 2
+  timeout: 600
+  allowed_fails: 3
+  cooldown_time: 30
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  # Local-only deployment: the proxy binds to 127.0.0.1 in compose, so the
+  # master key guards against other processes on this host, not the internet.

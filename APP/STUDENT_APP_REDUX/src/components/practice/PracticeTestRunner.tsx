@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { api } from '../../api/client'
 import { useDiagnosticTimer } from '../../hooks/useDiagnosticTimer'
+import { QuestionIdBadge } from '../QuestionIdBadge'
 
 export interface PracticeQuestion {
   id: string
@@ -122,6 +123,7 @@ export function PracticeTestRunner({ questions, timeLimitSeconds, userToken, onC
             transition={{ duration: 0.18 }}
             className="bg-white border border-gray-200 rounded-xl p-6 mb-4"
           >
+            <QuestionIdBadge id={q.id} className="mb-3" />
             {q.domain && (
               <span className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3 block">
                 {q.domain}{q.difficulty_overall ? ` · ${q.difficulty_overall}` : ''}

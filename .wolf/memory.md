@@ -6014,3 +6014,121 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 10:26 | Edited backend/app/routers/student.py | added 1 import(s) | ~20 |
+| 10:26 | Edited backend/app/routers/student.py | modified _weighted_focus_key_pick() | ~250 |
+| 10:27 | Edited backend/app/routers/student.py | modified _weighted_focus_key_pick() | ~40 |
+| 10:27 | Created backend/tests/test_weighted_focus_pick.py | — | ~584 |
+| 10:28 | Edited backend/app/routers/student.py | added 1 condition(s) | ~1640 |
+| 10:28 | Edited backend/app/routers/student.py | 1→2 lines | ~33 |
+| 10:28 | Edited backend/app/routers/student.py | 5→5 lines | ~84 |
+| 10:43 | stimulus-type tagging audit for pick-a-concept accuracy | backend/routers/student.py, KEYS_MASTER.md, DB | DB clean (9 canonical keys + 6 NULLs); found bug-817 (table_or_graph non-vocab in generation payload) + bug-818 (6 synthesize_information questions missing stimulus_mode_key); 3 minor source_has_graph mistags | ~6k |
+| 10:53 | Created invisible-null_questions.md | — | ~1395 |
+| 10:50 | wrote invisible-null_questions.md report (6 NULL stimulus rows w/ year/test/mod/Q#) | invisible-null_questions.md | all 6 are synthesize_information notes-bullets questions; 5 active + 1 rejected | ~1k |
+
+## Session: 2026-07-30 10:56
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 10:58
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 11:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-31 23:13
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:33 | Created ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/d0d9d53f-a051-42be-814f-ed2dbd170c05/scratchpad/fix_q13.sql | — | ~1086 |
+| 23:35 | Edited DEBUG_LOG.md | modified Medium() | ~836 |
+| 23:35 | Edited 2024_PT1_audit.md | expanded (+13 lines) | ~367 |
+| 23:35 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_pt1-2024-audit.md | — | ~527 |
+| 23:36 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 3→4 lines | ~73 |
+
+## Session: 2026-07-31 23:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:45 | Edited DEBUG_LOG.md | expanded (+67 lines) | ~1168 |
+| 23:50 | Edited 2024_PT2_audit.md | inline fix | ~65 |
+| 23:50 | Edited 2024_PT2_audit.md | "Chickasaw TV" → "Chickasaw Basic, in 2009;" | ~73 |
+| 23:50 | Edited 2024_PT2_audit.md | "online television network" → "online television network" | ~119 |
+| 23:50 | Edited 2024_PT2_audit.md | expanded (+26 lines) | ~381 |
+| 23:50 | Edited 2024_PT2_audit.md | "A C B C A B A D D A A B B" → "A C B C A B A D D A A B B" | ~15 |
+| 23:50 | Edited 2024_PT2_audit.md | 1→2 lines | ~38 |
+| 00:15 | Created scripts/repair_pt2_audit.py | — | ~6937 |
+| 00:15 | Edited scripts/repair_pt2_audit.py | 2→2 lines | ~84 |
+| 00:16 | Edited scripts/repair_pt2_audit.py | 2→2 lines | ~48 |
+| 00:18 | Edited 2024_PT2_audit.md | expanded (+9 lines) | ~223 |
+| 00:18 | Edited 2024_PT2_audit.md | expanded (+25 lines) | ~616 |
+| 00:18 | Edited DEBUG_LOG.md | expanded (+23 lines) | ~498 |
+| 00:25 | Edited DEBUG_LOG.md | expanded (+76 lines) | ~1295 |
+| 00:31 | Created scripts/repair_pt3_audit.py | — | ~6494 |
+| 00:32 | Edited scripts/repair_pt3_audit.py | inline fix | ~21 |
+| 00:33 | Edited scripts/repair_pt3_audit.py | modified sync_annotation_sql() | ~162 |
+| 00:33 | Edited scripts/repair_pt3_audit.py | 3→4 lines | ~69 |
+| 00:35 | Edited 2024_PT3_audit.md | expanded (+14 lines) | ~342 |
+| 00:35 | Edited 2024_PT3_audit.md | expanded (+28 lines) | ~651 |
+| 00:35 | Edited DEBUG_LOG.md | expanded (+40 lines) | ~747 |
+| 11:37 | Created litellm/config.yaml | — | ~1080 |
+| 11:38 | Edited backend/app/llm/openai_provider.py | modified __init__() | ~171 |
+| 11:38 | Edited backend/app/llm/anthropic_provider.py | modified __init__() | ~133 |
+| 11:38 | Edited backend/app/llm/factory.py | expanded (+11 lines) | ~208 |
+| 11:38 | Edited backend/app/config.py | expanded (+6 lines) | ~132 |
+| 11:38 | Edited backend/app/llm/factory.py | modified resolve_base_url() | ~280 |
+| 11:38 | Edited backend/app/review/runner.py | inline fix | ~17 |
+| 11:39 | Edited backend/app/review/runner.py | inline fix | ~17 |
+| 11:39 | Edited backend/app/routers/generate.py | inline fix | ~18 |
+| 11:39 | Edited backend/app/routers/generate.py | 3→3 lines | ~51 |
+| 11:39 | Edited docker-compose.yml | expanded (+26 lines) | ~341 |
+| 11:39 | Edited docker-compose.yml | expanded (+7 lines) | ~165 |
+| 11:42 | Edited litellm/config.yaml | expanded (+9 lines) | ~266 |
+| 11:42 | Created docs/litellm.md | — | ~1324 |
+| 11:49 | Edited backend/app/services/span_annotator.py | 4→9 lines | ~140 |
+| 11:49 | Edited backend/app/storage/crop_detector.py | 1→6 lines | ~62 |
+| 11:49 | Edited backend/app/storage/crop_detector.py | inline fix | ~18 |
+| 11:49 | Edited backend/app/config.py | 3→6 lines | ~101 |
+| 11:49 | Edited backend/app/config.py | expanded (+12 lines) | ~286 |
+| 11:50 | Edited backend/app/config.py | 2→5 lines | ~106 |
+| 11:50 | Edited docker-compose.yml | 7→10 lines | ~196 |
+| 11:50 | Edited docker-compose.yml | 3→8 lines | ~84 |
+| 11:52 | Edited docker-compose.yml | expanded (+6 lines) | ~183 |
+| 11:54 | Edited docs/litellm.md | expanded (+9 lines) | ~231 |
+| 11:54 | Edited docs/litellm.md | expanded (+15 lines) | ~237 |
+
+## Session: 2026-07-31 11:57
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-31 12:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-31 12:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-31 13:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-01 08:13
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:24 | Created ../.config/containers/containers.conf | — | ~72 |
+
+## Session: 2026-08-03 19:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:40 | Edited .gitignore | 2→3 lines | ~29 |

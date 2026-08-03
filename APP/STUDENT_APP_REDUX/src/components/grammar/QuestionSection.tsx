@@ -1,5 +1,6 @@
 import { findActiveKeyForToken } from '../../utils/sentenceTokenizer'
 import { useGrammarSession } from '../../hooks/useGrammarSession'
+import { QuestionIdBadge } from '../QuestionIdBadge'
 
 type GrammarSessionReturn = ReturnType<typeof useGrammarSession>
 
@@ -22,6 +23,8 @@ export function QuestionSection({ grammar }: QuestionSectionProps) {
       <div className="question-header">
         <h2>Select the best answer</h2>
       </div>
+
+      <QuestionIdBadge id={grammar.question.id} className="mb-3" />
 
       {/* Tokenized sentence with color-coordinated grammar highlighting */}
       <div className="sentence-box">

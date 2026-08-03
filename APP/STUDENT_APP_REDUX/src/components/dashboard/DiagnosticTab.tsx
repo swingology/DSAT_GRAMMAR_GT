@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api/client'
 import type { WeaknessTarget } from '../../types'
 import { getUserToken } from '../../auth/authStore'
+import { QuestionIdBadge } from '../QuestionIdBadge'
 
 
 type DiagnosticState = 'idle' | 'running' | 'done'
@@ -81,6 +82,7 @@ function DiagnosticQuestionCard({
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6">
+      <QuestionIdBadge id={question.id} className="mb-3" />
       <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide font-medium">
         {question.domain}{focusKey ? ` · ${focusKey}` : ''}
       </p>

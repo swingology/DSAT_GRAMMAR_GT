@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useSubmitAnswer } from '../hooks/useDashboardData'
 import type { SubmitSourceType } from '../api/client'
 import { StimulusAssets } from './StimulusAssets'
+import { QuestionIdBadge } from './QuestionIdBadge'
 import type { StimulusAsset } from '../types'
 
 export interface Question {
@@ -53,6 +54,7 @@ export function QuestionCard({
       transition={{ duration: 0.22, ease: 'easeOut' }}
       className="bg-white border border-gray-200 rounded-xl p-6"
     >
+      <QuestionIdBadge id={question.id} className="mb-3" />
       {question.domain && (
         <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">{question.domain}</p>
       )}

@@ -562,7 +562,7 @@ async def _select_source_question_ids_for_batch(
 
 
 async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_data: dict) -> str:
-    from app.llm.factory import get_provider
+    from app.llm.factory import get_provider, resolve_base_url
     from app.prompts.generate_prompt import build_generate_prompt_parts
     from app.prompts.annotate_prompt import build_annotate_prompt_parts
 
@@ -571,7 +571,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
         provider = get_provider(
             job.provider_name,
             api_key=_provider_api_key(settings, job.provider_name),
-            base_url=settings.ollama_base_url,
+            base_url=resolve_base_url(job.provider_name, settings),
             default_model=job.model_name,
         )
         source_examples = await _load_official_source_examples(db, request_data.get("source_question_ids"))

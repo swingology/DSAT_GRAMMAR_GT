@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-30T17:12:56.042Z
-> Files: 1220 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T02:40:40.525Z
+> Files: 1232 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -77,6 +77,10 @@
 - `commit-msg-1.3.txt` — Declares and (~140 tok)
 - `commit-msg-1.4.txt` (~17 tok)
 
+## ../../../tmp/claude-1000/-home-jb-DSAT-REDUX-MD/d0d9d53f-a051-42be-814f-ed2dbd170c05/scratchpad/
+
+- `fix_q13.sql` — Repair 2024 PT1 Module 01 Q13: option texts were ingested as bare years (~1086 tok)
+
 ## ../../../tmp/dsat-podman-clean/
 
 - `admin_dashboard_tasks.md` — Admin Dashboard Implementation Plan (~30779 tok)
@@ -126,7 +130,7 @@
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~1576 tok)
+- `MEMORY.md` — Memory Index (~1627 tok)
 - `project_admin-dashboard-phase0.md` (~351 tok)
 - `project_admin-dashboard-phase1-status.md` (~732 tok)
 - `project_admin-dashboard-plan.md` (~480 tok)
@@ -140,6 +144,7 @@
 - `project_gstack-skills-corrupted.md` (~472 tok)
 - `project_node-wasm-linux-fix.md` (~837 tok)
 - `project_oauth-login-feature.md` — ')` was hijacking `/src/api/client.ts` (added file-extension passthrough); quoted `text="…"` is an E (~2355 tok)
+- `project_pt1-2024-audit.md` (~522 tok)
 - `project_pt5-mod02-cleanup.md` (~1034 tok)
 - `project_rtk-path-fix.md` (~378 tok)
 - `project_student_tracking_prd.md` — Overview (~836 tok)
@@ -156,13 +161,20 @@
 
 - `ramlog.sh` — RAM usage logger — appends timestamped snapshots to ~/.ram_log.txt (~305 tok)
 
+## ../.config/containers/
+
+- `containers.conf` (~72 tok)
+
 ## ./
 
 - `.codex` (~0 tok)
 - `.dockerignore` (~62 tok)
 - `.gitattributes` — Git attributes (~12 tok)
-- `.gitignore` — Git ignore rules (~144 tok)
+- `.gitignore` — Git ignore rules (~186 tok)
 - `.nvmrc` (~1 tok)
+- `2024_PT1_audit.md` — 2024 Practice Test 1 Verbal Answer Audit (~3448 tok)
+- `2024_PT2_audit.md` — 2024 Practice Test 2 Verbal Answer Audit (~4425 tok)
+- `2024_PT3_audit.md` — 2024 Practice Test 3 Verbal Answer Audit (~3758 tok)
 - `2024_test3_answer_keys.md` — 2024 DSAT Test 3 — Answer Keys (~490 tok)
 - `2024_TESTS_STATUS.md` — 2024 Bluebook Tests — Ingestion Status (~1241 tok)
 - `ADMIN_DASHBOARD_DESIGN.md` — DSAT Admin Dashboard — Design & Implementation Plan (~6347 tok)
@@ -177,14 +189,14 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~296616 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~70567 tok)
+- `DEBUG_LOG.md` — Debug Log (~74671 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
 - `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7859 tok)
 - `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~4119 tok)
 - `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
-- `docker-compose.yml` — Docker Compose services (~992 tok)
+- `docker-compose.yml` — Docker Compose services (~1727 tok)
 - `Dockerfile.backend` (~180 tok)
 - `Dockerfile.frontend` (~123 tok)
 - `future_features.md` — Future Features & Outstanding Work (~8855 tok)
@@ -201,6 +213,7 @@
 - `ingestion_generation_summary.md` — Step-by-step breakdown of ingestion and generation pipelines, including all sub-steps, key differences, and shared components (~680 tok)
 - `INGESTION_PRD.md` — DSAT Backend PRD — Ingestion, Generation, and Student Practice (~7592 tok)
 - `INGESTION_README.md` — DSAT Backend — Ingestion Pipeline (~6616 tok)
+- `invisible-null_questions.md` — Invisible NULL-Stimulus Questions (~1308 tok)
 - `kimi_4q_comparison_report.md` — DSAT Question Generation Comparison Report (~2222 tok)
 - `MATH_ADAPTATION_PLAN.md` — MATH_ADAPTATION_PLAN.md (~2352 tok)
 - `missing_rules_v8.md` — missing_rules_v8.md (~7900 tok)
@@ -1526,7 +1539,7 @@
 ## backend/app/
 
 - `auth.py` — hash_password, verify_password, verify_and_update_password, create_access_token (~4224 tok)
-- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2385 tok)
+- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2798 tok)
 - `google_oauth.py` — Google Sign-In ID token verification. (~509 tok)
 - `main.py` — lifespan (~2281 tok)
 
@@ -1542,11 +1555,11 @@
 
 ## backend/app/llm/
 
-- `anthropic_provider.py` — AnthropicProvider: complete, complete_cached, complete_vision (~1751 tok)
+- `anthropic_provider.py` — AnthropicProvider: complete, complete_cached, complete_vision (~1823 tok)
 - `base.py` — class: complete, complete_cached, complete_vision (~586 tok)
-- `factory.py` — Keyed by (provider_name, api_key, base_url, default_model) so identical configs share one instance. (~609 tok)
+- `factory.py` — resolve_base_url, get_provider, get_ocr_client, close_all_providers (~938 tok)
 - `ollama_provider.py` — OllamaProvider: complete, complete_cached, complete_vision, close (~2043 tok)
-- `openai_provider.py` — OpenAIProvider: complete, complete_cached, complete_vision (~1270 tok)
+- `openai_provider.py` — OpenAIProvider: complete, complete_cached, complete_vision (~1382 tok)
 - `retry.py` — Retry wrapper for LLM provider calls with exponential backoff. (~843 tok)
 
 ## backend/app/models/
@@ -1590,28 +1603,28 @@
 - `auto_release.py` — Phase 10: Controlled auto-release logic. (~2958 tok)
 - `consensus.py` — Consensus gate — deterministic verdict from review-swarm scores. (~4416 tok)
 - `parser.py` — Parse and validate review swarm JSON output against the rubric schema. (~1050 tok)
-- `runner.py` — Review swarm runner — orchestrates multi-model review of generated questions. (~4689 tok)
+- `runner.py` — Review swarm runner — orchestrates multi-model review of generated questions. (~5212 tok)
 
 ## backend/app/routers/
 
 - `admin.py` — API: 9 endpoints (~37211 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
-- `generate.py` (~16107 tok)
+- `generate.py` (~16118 tok)
 - `ingest.py` (~47356 tok)
 - `student_auth.py` — API: 6 endpoints (~2486 tok)
-- `student.py` (~37528 tok)
+- `student.py` (~38427 tok)
 - `users.py` — API: 5 endpoints (~1095 tok)
 
 ## backend/app/services/
 
-- `span_annotator.py` — Pass 3 span annotation service. (~2370 tok)
+- `span_annotator.py` — Pass 3 span annotation service. (~2466 tok)
 - `span_label.py` — Generate a human-readable label for a passage span annotation. (~1680 tok)
 - `span_validator.py` — Validate LLM-produced token arrays against the passage text and vocabulary. (~1246 tok)
 - `span_vocab.py` — Single source of truth for all approved span annotation key sets. (~1284 tok)
 
 ## backend/app/storage/
 
-- `crop_detector.py` — Layout detection, region matching, and image cropping for page-level provenance. (~3185 tok)
+- `crop_detector.py` — Layout detection, region matching, and image cropping for page-level provenance. (~4110 tok)
 - `object_store.py` — Config-driven object storage for local S3/Supabase-style ingestion assets. (~2041 tok)
 - `yaml_export.py` — YAML export for persisted questions. (~1354 tok)
 
@@ -1719,6 +1732,7 @@
 - `test_users_router.py` — _EmptyResult: test_create_user_no_auth, test_create_user_missing_username, test_create_user_empty_us (~2551 tok)
 - `test_validator_completeness.py` — Tests for validate_annotation_completeness — the domain-aware taxonomy gate. (~1354 tok)
 - `test_vocab_sync.py` — Tests for the controlled-vocabulary source-of-truth system. (~925 tok)
+- `test_weighted_focus_pick.py` — Unit tests for the weakness-weighted focus key picker used by Mixed Practice. (~584 tok)
 
 ## diagnostic_task.md (~2.5k tokens)
 
@@ -1726,6 +1740,7 @@
 ## docs/
 
 - `c4_ingestion.md` — C4 Diagram — DSAT Ingestion Pipeline (~1772 tok)
+- `litellm.md` — Local inference via LiteLLM (~1524 tok)
 
 ## docs/PRD/
 
@@ -1765,6 +1780,10 @@
 - `Test_1_verbal_sec01_mod01_ANNOTATIONS.md` — Annotation chart + per-option distractor analysis for Test 1 verbal mod01 job (~9500 tok)
 - `Test_1_verbal_sec01_mod01_QUESTIONS.md` — Markdown backup of 33 ingested Test 1 verbal questions (stem/passage/choices/explanation) (~5600 tok)
 
+## litellm/
+
+- `config.yaml` — LiteLLM proxy — routes all DSAT LLM traffic to local Ollama inference. (~1258 tok)
+
 ## local_object_store/stimulus-assets/charts/e22a6533-19c8-5b62-b511-b254be102401/
 
 - `8d234175-93f6-4dc2-8ffe-091a2ea931ff.json` (~352 tok)
@@ -1789,6 +1808,8 @@
 - `quality_audit.py` — Quality audit for questions used in practice, diagnostic, and practice-test sections. (~3154 tok)
 - `reannotate_official_v7.py` — fetch_official_question_ids, submit_reannotate, poll_job, main (~2059 tok)
 - `reannotate_spans.py` — Bulk span-annotate grammar questions that are missing passage_spans. (~2722 tok)
+- `repair_pt2_audit.py` — One-time repair of 2024 PT2 verbal questions per 2024_PT2_audit.md review. (~6933 tok)
+- `repair_pt3_audit.py` — One-time repair of 2024 PT3 verbal questions per 2024_PT3_audit.md review. (~6614 tok)
 - `review_span_queue.py` — View and resolve entries in the span_review_queue table. (~1461 tok)
 
 ## scripts/v8/

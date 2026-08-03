@@ -158,9 +158,14 @@ async def annotate_spans(
     # 2. Build provider if not supplied
     if provider is None:
         settings = get_settings()
+        # base_url honours anthropic_base_url so this path follows the same
+        # local-inference routing as every other provider. Without it this
+        # constructor would keep calling the real Anthropic API even when the
+        # rest of the app is pointed at the LiteLLM proxy.
         provider = AnthropicProvider(
             api_key=settings.anthropic_api_key,
             default_model=settings.span_annotator_model,
+            base_url=settings.anthropic_base_url,
         )
 
     system = build_span_system_prompt()

@@ -35,6 +35,8 @@ describe('QuestionCard', () => {
 
   it('renders domain, focus key, passage, and options', () => {
     render(<QuestionCard question={question} onNext={vi.fn()} sourceType="drill" />)
+    expect(screen.getByText('Question ID:')).toBeInTheDocument()
+    expect(screen.getByText('q-1')).toBeInTheDocument()
     expect(screen.getByText('grammar')).toBeInTheDocument()
     expect(screen.getByText('verb tense consistency')).toBeInTheDocument()
     expect(screen.getByText('A passage.')).toBeInTheDocument()

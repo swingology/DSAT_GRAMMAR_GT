@@ -1,5 +1,257 @@
 # Debug Log
 
+## 2026-07-31 - 2024 PT3 answer audit review
+Report created by: Claude Opus 5
+Git branch: `weakness-weighted-mixed-practice`
+Git checkpoint: `373390b` — Update session tracking logs
+
+Reviewed `2024_PT3_audit.md` (authored by Codex) against the rendered source PDFs and the
+live database. All three modules are 27 pages / 27 questions, page N = question N. No
+official Test 03 answer key exists locally, so the audit's "provisional" framing is
+accurate. Scope: the 2 proposed answer changes, the missing-question claim, and the option
+-text finding. Database NOT modified — this was a review only.
+
+**Every substantive claim in this audit checked out.** Unlike PT1 and PT2, no finding
+required correction.
+
+### Findings
+
+1. **Confirmed:** Module 2B Q13 — proposed change C → **B** is correct. Graph values are
+   unambiguous at 300 dpi: spray coating 15.5% (lowest) / 17.3% (highest); spin coating
+   11.7% (lowest) / 13.6% (highest). B ("lowest performing spray ... higher than highest
+   performing spin") is true: 15.5 > 13.6. The stored answer C claims highest spray ≈13%
+   and highest spin ≈11%; both figures are wrong (actual 17.3 and 13.6), so C is false.
+
+2. **Confirmed:** Module 2B Q19 — proposed change A → **C** is correct. `however` is
+   parenthetical and needs commas on both sides: `resisted the godfather nickname,
+   however, feeling that ...`. Source choice C (`nickname, however,`) is the only option
+   satisfying that. The audit's transcription of all four source choices is exact.
+
+3. **Confirmed:** Module 2B Q4 is genuinely absent from the DB. A gap scan across all
+   three modules (1–27 each) returns exactly one missing slot — M2B Q4 — matching the
+   audit's claim of 81 source slots vs. 80 stored rows. Source page 4 confirms answer
+   **A** (`repudiates`): the stem's continuation "this rejection is evident in his series
+   Reservation Dogs" makes "rejects" the required sense.
+
+4. **Confirmed:** Module 2B Q19 choices B and C are stored identically (both
+   `nickname, however;`). Source C is `nickname, however,` with a comma. Same class of
+   punctuation-normalizing ingestion defect as PT1 Q13 (bug-819) and PT2 M1 Q19
+   (bug-820) — in each case the corrupted character is the one the question tests.
+
+5. **Medium — audit omission:** The audit states it covers "all 80 canonical PT3 database
+   rows" but never documents that Module 1 is stored under the legacy
+   `source_test_name = 'Bluebook Practice Test 3'`, not `Test03_ENG_Sec01_Mod01`. Only
+   Modules 2A and 2B use the `Test03_ENG_*` scheme. PT2's audit documented its equivalent
+   naming split explicitly; PT3's does not. A repair script written from the audit's own
+   framing (`WHERE source_test_name LIKE 'Test03_ENG%'`) silently selects 53 rows and
+   misses all 27 Module 1 rows. Same dual-naming defect previously seen in 2024 PT4.
+
+6. **Medium — additional, not in the audit:** Both flipped questions carry stored
+   explanations that argue for the wrong answer, and Q19's is internally contradictory.
+   Q19's explanation states the correct rule ("requires a comma before and after the
+   parenthetical adverb 'however'") and then selects choice A, which has no comma after
+   `however`, calling it "the best of the given choices" — while choice C satisfies the
+   rule the explanation just stated. Q13's explanation endorses C for "directly comparing
+   the highest efficiencies" without citing C's actual figures, attaching a true
+   relationship (spray > spin) to the option whose stated numbers are false. Any repair
+   must rewrite both explanations, not just the answer labels.
+
+### Verified sound
+
+- **Key-string internal consistency.** The audit's three proposed key strings were diffed
+  against the DB. Modules 1 and 2A match exactly across all 54 questions; Module 2B
+  differs at precisely Q13, Q19, and the missing Q4. The audit's summary tables, its
+  per-question verdict tables, and its key strings all agree — the defect found in PT2
+  (key string disagreeing with the audit's own verdict table at Q19) is absent here.
+- **No passage duplication.** A hash scan over all populated `current_passage_text` values
+  across all three PT3 modules returns zero duplicate groups. The PT2 Q7 defect (passage
+  copied from the preceding question) has no analogue in PT3, so the audit's silence on
+  this is correct rather than an oversight.
+
+### Resolution — applied 2026-07-31
+
+All three changes propagated to `dsat_dev` via `scripts/repair_pt3_audit.py` (single
+transaction, 26 statements, backup at `backups/pt3_audit_20260731/`). Applied: M2B Q13
+C→B, M2B Q19 A→C with choice C's option text restored to `nickname, however,`, and M2B Q4
+inserted with answer A. New explanations and all four per-option rationales written for
+each of the three. Module 2B's stored key now matches the audit's proposed key exactly
+across all 27 questions. PT3 row count is now 81.
+
+Q4's UUID (`8aea0ed6-bd26-5a13-a3a3-0aaba514d4e4`) was derived with the ingestion
+pipeline's own deterministic UUID5 scheme (`ingest.py::_official_question_uuid`, verified
+by reproducing the existing Q3 and Q5 IDs), so a future re-ingestion of this module is
+idempotent rather than duplicate-creating. Its annotation is flagged
+`needs_human_review: true` since the content is hand-written rather than model-generated.
+
+Verification: drift scan over all 81 PT3 rows returns zero mismatches on option text,
+`is_correct`, and answer label across `question_options`, `choices_jsonb`, and
+`annotation_jsonb`; every question has exactly one correct option and four distinct option
+texts. All five surfaces (questions.current_*, question_versions, question_options,
+annotation_jsonb scalars, annotation_jsonb.options[]) agree on all three repaired rows.
+
+7. **Medium — pre-existing, database-wide, found during this repair:** 408 of 1489 rows
+   have a `latest_annotation_id` pointing to an annotation whose `question_version_id` is
+   a superseded version. PT3 M2B Q13 is one, which surfaced as a silent `UPDATE 0` when
+   the repair script first keyed its annotation update on `question_version_id`. Fixed in
+   the script by targeting `questions.latest_annotation_id` instead. **The PT2 repair was
+   re-verified and is unaffected** — it already keyed on `latest_annotation_id`, and all
+   six of its annotations carry the correct answer despite two having stale version links.
+   Any future tooling that reaches annotations via `question_version_id` will silently
+   no-op on roughly 27% of the table.
+
+8. **Low — pre-existing, not repaired:** five PT3 questions have annotations with
+   incomplete option detail. M1 Q10's annotation has no `options` array at all; M2A Q1,
+   Q3, Q4, and Q6 carry `option_label` and `is_correct` but omit `option_text`. These
+   account for all 24 rows flagged by the post-repair drift scan. Stored answers are
+   correct in every case — only the annotation shape is sparse. Combined with the PT2
+   finding (M1 Q20 and M2B Q16 using `text`/`label` instead of
+   `option_text`/`option_label`), there are at least three distinct annotation option
+   shapes in the table, which any consumer or scan must handle.
+
+### Caveat on the 78 "keep" rows
+
+The key-string diff establishes that the audit and the DB agree; it does NOT establish
+that either is right. Both could be wrong together — that is exactly what happened in PT2,
+where the DB and the audit agreed on M1 Q17, M2A Q11, and M2B Q21 and all three were
+wrong. The 78 keeps rest on the audit's cross-test duplicate matching against PT4–PT11 and
+were not independently verified against source here.
+
+## 2026-07-30 - 2024 PT2 answer audit review
+Report created by: Claude Opus 5
+Git branch: `weakness-weighted-mixed-practice`
+Git checkpoint: `373390b` — Update session tracking logs
+
+Reviewed `2024_PT2_audit.md` (authored by Codex) against the scanned source PDFs and the
+live database. As with PT1, the PDFs are image-only and required page rendering. All three
+modules are 27 pages / 27 questions, so page N maps to question N. No official Test 02
+answer key exists locally, so the audit's "provisional" framing is accurate. Scope of this
+review was the 4 proposed answer changes plus the 3 integrity findings — the 77 "keep"
+rows were NOT independently verified (they rest on the audit's cross-test duplicate
+matching). Database was not modified.
+
+### Findings
+
+1. **Confirmed:** Module 01 Q17 — audit's proposed change B → **D** is correct. Choices A,
+   B, and C all place punctuation between the complementizer `that` and its content clause
+   (`the volume and speed of water...`), which is ungrammatical regardless of how the
+   `because of` coordination is analyzed. D is the only clean option. The audit's stated
+   rationale ("no punctuation belongs inside that structure") reaches the right answer but
+   describes the wrong discriminator.
+
+2. **High — audit is wrong:** Module 01 Q19 — the audit proposes A → **B**; the correct
+   answer is **C**. The passage is a three-item series in which each product carries its
+   own date: `Chickasaw Basic, in 2009` / `an online television network, Chickasaw TV, in
+   2010` / `a Rosetta Stone language course in Chickasaw, in 2015`. Only source choice C
+   (`Basic, in 2009; an online television network,`) preserves that pairing. The audit's
+   choice B (`Basic; in 2009,`) severs `Chickasaw Basic` from 2009 and re-attaches 2009 to
+   the TV network, contradicting the passage. The audit's Module 1 proposed key string is
+   therefore wrong at position 19.
+
+3. **High:** Module 01 Q19 option-text corruption is wider than the audit reports. The
+   audit states only that DB choices A and B are duplicates. Actual DB state: A and B are
+   identical (both `...network;`), and C and D also store `network;` where the source has
+   `network,`. Three of four option texts are corrupt. Because C is the correct answer,
+   the stored text of the correct option is itself wrong — "restore choice B" is
+   insufficient. Same class of ingestion defect as PT1 Q13 (bug-819).
+
+4. **Confirmed:** Module 02A Q11 — audit's proposed change C → **D** is correct. Graph
+   reads control zinc ~390 / iron ~625 ppm, kanamycin-exposed zinc ~300 / iron ~225 ppm.
+   D ("lower levels of iron and zinc than the control plants") is the only option that is
+   both factually true and responsive to the uptake-alteration hypothesis. The stored
+   answer C (zinc ~300 control / ~400 exposed) reverses the actual values and is false.
+
+5. **Confirmed:** Module 02B Q21 — audit's proposed change B → **A** is correct. Both A and
+   B are conventionally valid punctuation, so the discriminator is what `however`
+   contrasts. The contrast is between Okinaka sitting on the board and not deciding alone;
+   the third clause (approval by nine other experts) explains rather than contrasts, so
+   `however` belongs at the end of the first clause: `single-handedly, however;`.
+
+6. **Confirmed:** Module 02B Q7 — DB `current_passage_text` is the Wigner-crystal passage
+   copied from Q6, not the *Terropterus xiushanensis* passage the question asks about.
+   Verified against source page 7. Answer D is correct as stored.
+
+7. **Confirmed:** Module 02B Q19 — DB explanation describes a nonrestrictive appositive
+   `'the oldest dating back to the 1800s'` that appears nowhere in this question. The
+   source is the Bisa Butler quilt-portrait passage; answer B (`quilts, the`) is correct as
+   stored, forming the absolute phrase `quilts, the stitching barely visible`. Explanation
+   and distractor rationale JSONB need replacement.
+
+### Net effect on the audit's recommendations
+
+Of the 4 proposed answer changes, 3 are correct (M1 Q17, M2A Q11, M2B Q21) and 1 is wrong
+in its target (M1 Q19 → C, not B). All 3 integrity findings are real; finding #1 (Q19
+options) understates the corruption.
+
+### Resolution — applied 2026-07-31
+
+All findings above propagated to `dsat_dev` via `scripts/repair_pt2_audit.py` (single
+transaction, 46 statements, backup at `backups/pt2_audit_20260731/`). Applied: the four
+answer changes (M1 Q17→D, M1 Q19→C, M2A Q11→D, M2B Q21→A), M1 Q19's four option texts
+restored from source, M2B Q7's passage replaced, and new explanations plus rewritten
+per-option `why_plausible`/`why_wrong` rationales on all six questions. All four
+rationales were rewritten per question, not just the flipped pair, because the originals
+encoded a wrong theory of each question. Synced across `questions.current_*`,
+`question_versions` (`correct_option_label`, `explanation_text`, `choices_jsonb`,
+`passage_text`), `question_options`, and `annotation_jsonb.options[]`.
+
+Verification: drift scan across all 81 PT2 rows returns zero mismatches on option text,
+`is_correct`, and answer label across all three storage surfaces; every question has
+exactly one correct option and four distinct option texts. Zero `user_progress` rows
+existed on the six questions, so no attempt data was invalidated; edits were made in place
+rather than by minting new versions, matching the bug-819 precedent.
+
+Two incidental discoveries, neither touched: M1 Q20 and M2B Q16 store annotation options
+under `text`/`label` rather than `option_text`/`option_label` (content correct, key shape
+differs — the initial drift scan false-positived on these until made shape-aware). M2B Q8
+shares Q6/Q7's passage length but has distinct correct content, so the Wigner duplication
+was confined to Q7 as the audit reported.
+
+## 2026-07-30 - 2024 PT1 answer audit review + Module 01 Q13 option-text repair
+Report created by: Claude Opus 5
+Git branch: `weakness-weighted-mixed-practice`
+Git checkpoint: `373390b` — Update session tracking logs
+
+Reviewed `2024_PT1_audit.md` (authored by Codex) against the scanned source PDFs and the
+live database. The PDFs are image-only, so verification required page rendering rather
+than text extraction. No official Test 01 answer key exists (`Answer Keys/` holds only
+Tests 05–10), so the audit's "provisional" framing is accurate.
+
+### Findings
+
+1. ~~**High:** Module 01 Q13 answer choices stored as bare years (`1800`, `1900`, `1950`,
+   `2012`) instead of the source PDF's year-pair phrases. Because the stored labels no
+   longer denoted the PDF's choices, the DB label `C` did not correspond to PDF choice
+   `C`, making the question unanswerable and its answer label meaningless.~~
+   - Affected: `questions`, `question_versions.choices_jsonb`, `question_options`
+     (question_id `fb857823-10f1-5c19-b328-fb733978bb6d`)
+   - Stem was also stored as "complete the text?" instead of "complete the statement?"
+   - The four `why_wrong`/`why_plausible` rationales described single years, not pairs
+   - **Fixed:** Rewrote all four option texts and `choices_jsonb` from the PDF; moved the
+     correct answer to label `A` ("1900 with the employment by sector in 1950.") — the
+     choice the pre-existing explanation already reasoned about; corrected the stem;
+     rewrote the four distractor rationales. Verified all three storage locations agree.
+     A drift scan across all 81 PT1 questions returned 0 inconsistencies. No
+     `user_progress` rows existed, so no attempt data was invalidated. See bug-819.
+
+2. **Medium:** The audit lists Q13 in its summary table as an answer change "C → A" and
+   bakes `A` into its proposed Module 1 key, while its own data-integrity note concedes
+   the question is invalid until option texts are re-ingested. With bare years stored,
+   "change to A" asserted nothing. The correct verdict was *unusable pending re-ingest*.
+   - **Fixed:** Superseded by finding 1 — the options were re-ingested, so `A` is now a
+     meaningful and correct answer label.
+
+3. **Medium (open):** Module 01 Q21 (`antiquity, however;`) is duplicated across three
+   tests with byte-identical option text, and the DB disagrees with itself:
+   2024 PT1 M01 Q21 = `D`, but 2024 Test10 M02B Q18 = `C` and 2025 Test8 M01 Q24 = `C`.
+   Source-PDF review supports `C` (the "also" in clause 2 marks it as supporting evidence
+   for clause 1, not a contrast — so "however" attaches to clause 1). PT1 is the outlier.
+   - Not yet fixed; the remaining audit corrections (M1 Q11, Q17, Q21; M2A Q22) were
+     reviewed and confirmed but not propagated to the database.
+
+4. **Low:** Audit reasoning verified as correct on all five proposed changes
+   (M1 Q11 A→D, Q13 C→A, Q17 A→D, Q21 D→C; M2A Q22 C→D). The three proposed key strings
+   transcribe the audit's own per-question verdict columns without error.
+
 ## 2026-07-30 - Backend crash-loop blocks all login (missing Pydantic models after merge)
 Report created by: Claude Opus 5
 Git branch: `missed_question`
