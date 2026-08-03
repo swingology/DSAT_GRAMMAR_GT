@@ -1103,3 +1103,5 @@ Error response from daemon: can only create exec sessions on running containers:
 Error response from daemon: can only create exec sessions on running containers: container state improper
 [Sun Aug  2 18:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260802_180001.dump
 Error response from daemon: can only create exec sessions on running containers: container state improper
+[Sun Aug  2 20:00:01 PDT 2026] Starting backup → /home/jb/DSAT_REDUX_MD/backups/dsat_dev_20260802_200001.dump
+Error response from daemon: can only create exec sessions on running containers: container state improper

@@ -6,6 +6,41 @@
       "count": 1,
       "tokens": 144,
       "first_read": "2026-08-03T02:40:32.528Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_grammar_ingestion_generation_v8.md": {
+      "count": 8,
+      "tokens": 80075,
+      "first_read": "2026-08-03T03:00:39.493Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/rules_agent_dsat_reading_v3.md": {
+      "count": 5,
+      "tokens": 42176,
+      "first_read": "2026-08-03T03:00:52.684Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/backend/app/prompts/generate_prompt.py": {
+      "count": 1,
+      "tokens": 2308,
+      "first_read": "2026-08-03T03:00:55.413Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/backend/app/pipeline/rule_doc_patcher.py": {
+      "count": 1,
+      "tokens": 3041,
+      "first_read": "2026-08-03T03:00:55.578Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md": {
+      "count": 1,
+      "tokens": 74671,
+      "first_read": "2026-08-03T03:08:09.785Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md": {
+      "count": 15,
+      "tokens": 80075,
+      "first_read": "2026-08-03T03:13:17.023Z"
+    },
+    "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md": {
+      "count": 7,
+      "tokens": 42176,
+      "first_read": "2026-08-03T03:17:45.433Z"
     }
   },
   "files_written": [
@@ -14,14 +49,254 @@
       "action": "edit",
       "tokens": 31,
       "at": "2026-08-03T02:40:40.538Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/DEBUG_LOG.md",
+      "action": "edit",
+      "tokens": 1246,
+      "at": "2026-08-03T03:08:35.868Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 28,
+      "at": "2026-08-03T03:15:40.209Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 44,
+      "at": "2026-08-03T03:15:42.015Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 16,
+      "at": "2026-08-03T03:15:43.607Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 15,
+      "at": "2026-08-03T03:15:44.868Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 22,
+      "at": "2026-08-03T03:15:47.014Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 16,
+      "at": "2026-08-03T03:15:48.206Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 52,
+      "at": "2026-08-03T03:15:50.256Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 136,
+      "at": "2026-08-03T03:15:57.952Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 8,
+      "at": "2026-08-03T03:16:11.472Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 74,
+      "at": "2026-08-03T03:16:18.141Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 74,
+      "at": "2026-08-03T03:16:20.949Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 70,
+      "at": "2026-08-03T03:16:25.652Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 8,
+      "at": "2026-08-03T03:16:26.457Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 44,
+      "at": "2026-08-03T03:16:33.981Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 42,
+      "at": "2026-08-03T03:16:36.343Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 155,
+      "at": "2026-08-03T03:16:40.612Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 91,
+      "at": "2026-08-03T03:16:43.878Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 116,
+      "at": "2026-08-03T03:16:46.238Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 647,
+      "at": "2026-08-03T03:17:07.361Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 41,
+      "at": "2026-08-03T03:17:35.933Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 139,
+      "at": "2026-08-03T03:17:39.701Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md",
+      "action": "edit",
+      "tokens": 15,
+      "at": "2026-08-03T03:17:41.095Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 151,
+      "at": "2026-08-03T03:17:53.374Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 28,
+      "at": "2026-08-03T03:17:54.981Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 13,
+      "at": "2026-08-03T03:18:08.674Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 50,
+      "at": "2026-08-03T03:18:11.028Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 62,
+      "at": "2026-08-03T03:18:13.414Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 152,
+      "at": "2026-08-03T03:18:17.481Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 369,
+      "at": "2026-08-03T03:18:33.511Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 86,
+      "at": "2026-08-03T03:18:48.741Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 227,
+      "at": "2026-08-03T03:18:53.178Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/rules_agent_dsat_reading_v3.md",
+      "action": "edit",
+      "tokens": 160,
+      "at": "2026-08-03T03:19:12.158Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/split_rules.py",
+      "action": "create",
+      "tokens": 6061,
+      "at": "2026-08-03T03:22:04.483Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/split_rules.py",
+      "action": "edit",
+      "tokens": 30,
+      "at": "2026-08-03T03:22:27.656Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/split_rules.py",
+      "action": "edit",
+      "tokens": 37,
+      "at": "2026-08-03T03:22:29.242Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/split_rules.py",
+      "action": "edit",
+      "tokens": 50,
+      "at": "2026-08-03T03:22:31.472Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/README.md",
+      "action": "create",
+      "tokens": 1364,
+      "at": "2026-08-03T03:35:48.977Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/rules_refactor/TODO_out_of_scope.md",
+      "action": "create",
+      "tokens": 1595,
+      "at": "2026-08-03T03:36:21.465Z"
     }
   ],
   "edit_counts": {
-    ".gitignore": 1
+    ".gitignore": 1,
+    "DEBUG_LOG.md": 1,
+    "rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md": 22,
+    "rules_refactor/rules_agent_dsat_reading_v3.md": 10,
+    "rules_refactor/split_rules.py": 4,
+    "rules_refactor/README.md": 1,
+    "rules_refactor/TODO_out_of_scope.md": 1
   },
-  "anatomy_hits": 1,
+  "anatomy_hits": 8,
   "anatomy_misses": 0,
-  "repeated_reads_warned": 0,
+  "repeated_reads_warned": 31,
   "cerebrum_warnings": 0,
   "stop_count": 0
 }

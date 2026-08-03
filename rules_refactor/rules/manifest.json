@@ -1,0 +1,867 @@
+{
+  "version": "rules-refactor v1 (grammar v8.2-refactor + reading v3.1-refactor)",
+  "grammar": {
+    "skills": {
+      "absolute_phrase": {
+        "role": "modifier",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/absolute_phrase.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/absolute_phrase.md"
+        ]
+      },
+      "adjective_adverb_distinction": {
+        "role": "modifier",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/adjective_adverb_distinction.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/adjective_adverb_distinction.md"
+        ]
+      },
+      "affirmative_agreement": {
+        "role": "agreement",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/affirmative_agreement.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/affirmative_agreement.md"
+        ]
+      },
+      "apostrophe_use": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/apostrophe_use.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/apostrophe_use.md"
+        ]
+      },
+      "appositive_punctuation": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/appositive_punctuation.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/appositive_punctuation.md"
+        ]
+      },
+      "colon_dash_use": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/colon_dash_use.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/colon_dash_use.md"
+        ]
+      },
+      "comma_splice": {
+        "role": "sentence_boundary",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/comma_splice.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/comma_splice.md"
+        ]
+      },
+      "commonly_confused_words": {
+        "role": "expression_of_ideas",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/commonly_confused_words.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/commonly_confused_words.md"
+        ]
+      },
+      "comparative_structures": {
+        "role": "modifier",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/comparative_structures.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/comparative_structures.md"
+        ]
+      },
+      "conjunction_usage": {
+        "role": "parallel_structure",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/conjunction_usage.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/conjunction_usage.md"
+        ]
+      },
+      "conjunctive_adverb_usage": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/conjunctive_adverb_usage.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/conjunctive_adverb_usage.md"
+        ]
+      },
+      "data_interpretation_claims": {
+        "role": "expression_of_ideas",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/data_interpretation_claims.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/data_interpretation_claims.md"
+        ]
+      },
+      "determiners_articles": {
+        "role": "agreement",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/determiners_articles.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/determiners_articles.md"
+        ]
+      },
+      "elliptical_constructions": {
+        "role": "parallel_structure",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/elliptical_constructions.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/elliptical_constructions.md"
+        ]
+      },
+      "emphasis_meaning_shifts": {
+        "role": "expression_of_ideas",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/emphasis_meaning_shifts.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/emphasis_meaning_shifts.md"
+        ]
+      },
+      "end_punctuation_question_statement": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/end_punctuation_question_statement.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/end_punctuation_question_statement.md"
+        ]
+      },
+      "hyphen_usage": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/hyphen_usage.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/hyphen_usage.md"
+        ]
+      },
+      "illogical_comparison": {
+        "role": "modifier",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/illogical_comparison.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/illogical_comparison.md"
+        ]
+      },
+      "logical_predication": {
+        "role": "modifier",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/logical_predication.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/logical_predication.md"
+        ]
+      },
+      "logical_relationships": {
+        "role": "expression_of_ideas",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/logical_relationships.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/logical_relationships.md"
+        ]
+      },
+      "modifier_placement": {
+        "role": "modifier",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/modifier_placement.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/modifier_placement.md"
+        ]
+      },
+      "negation": {
+        "role": "verb_form",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/negation.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/negation.md"
+        ]
+      },
+      "noun_countability": {
+        "role": "agreement",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/noun_countability.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/noun_countability.md"
+        ]
+      },
+      "parallel_structure": {
+        "role": "parallel_structure",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/parallel_structure.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/parallel_structure.md"
+        ]
+      },
+      "possessive_contraction": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/possessive_contraction.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/possessive_contraction.md"
+        ]
+      },
+      "precision_word_choice": {
+        "role": "expression_of_ideas",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/precision_word_choice.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/precision_word_choice.md"
+        ]
+      },
+      "preposition_idiom": {
+        "role": "expression_of_ideas",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/preposition_idiom.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/preposition_idiom.md"
+        ]
+      },
+      "pronoun_antecedent_agreement": {
+        "role": "agreement",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/pronoun_antecedent_agreement.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/pronoun_antecedent_agreement.md"
+        ]
+      },
+      "pronoun_case": {
+        "role": "pronoun",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/pronoun_case.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/pronoun_case.md"
+        ]
+      },
+      "pronoun_clarity": {
+        "role": "pronoun",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/pronoun_clarity.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/pronoun_clarity.md"
+        ]
+      },
+      "punctuation_comma": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/punctuation_comma.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/punctuation_comma.md"
+        ]
+      },
+      "quotation_punctuation": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/quotation_punctuation.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/quotation_punctuation.md"
+        ]
+      },
+      "redundancy_concision": {
+        "role": "expression_of_ideas",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/redundancy_concision.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/redundancy_concision.md"
+        ]
+      },
+      "register_style_consistency": {
+        "role": "expression_of_ideas",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/register_style_consistency.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/register_style_consistency.md"
+        ]
+      },
+      "relative_pronouns": {
+        "role": "modifier",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/relative_pronouns.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/relative_pronouns.md"
+        ]
+      },
+      "run_on_sentence": {
+        "role": "sentence_boundary",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/run_on_sentence.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/run_on_sentence.md"
+        ]
+      },
+      "semicolon_use": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/semicolon_use.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/semicolon_use.md"
+        ]
+      },
+      "sentence_boundary": {
+        "role": "sentence_boundary",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/sentence_boundary.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/sentence_boundary.md"
+        ]
+      },
+      "sentence_fragment": {
+        "role": "sentence_boundary",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/sentence_fragment.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/sentence_fragment.md"
+        ]
+      },
+      "subject_verb_agreement": {
+        "role": "agreement",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/subject_verb_agreement.md",
+          "grammar/examples/subject_verb_agreement.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/subject_verb_agreement.md"
+        ]
+      },
+      "transition_logic": {
+        "role": "expression_of_ideas",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/transition_logic.md",
+          "grammar/conditional/transitions.md",
+          "grammar/examples/transition_logic.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/transition_logic.md",
+          "grammar/conditional/transitions.md"
+        ]
+      },
+      "unnecessary_internal_punctuation": {
+        "role": "punctuation",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/unnecessary_internal_punctuation.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/unnecessary_internal_punctuation.md"
+        ]
+      },
+      "verb_form": {
+        "role": "verb_form",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/verb_form.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/verb_form.md"
+        ]
+      },
+      "verb_tense_consistency": {
+        "role": "verb_form",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/verb_tense_consistency.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/verb_tense_consistency.md"
+        ]
+      },
+      "voice_active_passive": {
+        "role": "verb_form",
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/voice_active_passive.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/skills/voice_active_passive.md"
+        ]
+      }
+    },
+    "stem_type_overrides": {
+      "choose_best_notes_synthesis": {
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/generation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/conditional/notes_synthesis.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "grammar/annotation_core.md",
+          "grammar/taxonomy.md",
+          "grammar/conditional/notes_synthesis.md"
+        ]
+      }
+    },
+    "do_not_generate": [
+      "affirmative_agreement",
+      "negation"
+    ]
+  },
+  "reading": {
+    "skills": {
+      "command_of_evidence_textual": {
+        "focus_keys": [
+          "evidence_supports_claim",
+          "evidence_weakens_claim",
+          "evidence_illustrates_claim",
+          "evidence_explains_claim",
+          "evidence_qualifies_claim"
+        ],
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/generation_core.md",
+          "reading/style_fingerprint.md",
+          "reading/skills/command_of_evidence_textual.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/annotation_core.md",
+          "reading/skills/command_of_evidence_textual.md"
+        ]
+      },
+      "command_of_evidence_quantitative": {
+        "focus_keys": [
+          "data_supports_claim",
+          "data_weakens_claim",
+          "data_completes_example",
+          "data_comparison",
+          "data_trend"
+        ],
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/generation_core.md",
+          "reading/style_fingerprint.md",
+          "reading/skills/command_of_evidence_quantitative.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/annotation_core.md",
+          "reading/skills/command_of_evidence_quantitative.md"
+        ]
+      },
+      "central_ideas_and_details": {
+        "focus_keys": [
+          "central_idea",
+          "main_purpose",
+          "passage_summary",
+          "supporting_detail",
+          "character_or_author_detail"
+        ],
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/generation_core.md",
+          "reading/style_fingerprint.md",
+          "reading/skills/central_ideas_and_details.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/annotation_core.md",
+          "reading/skills/central_ideas_and_details.md"
+        ]
+      },
+      "inferences": {
+        "focus_keys": [
+          "causal_inference",
+          "motivational_inference",
+          "implication_inference",
+          "predictive_inference",
+          "cross_text_inference"
+        ],
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/generation_core.md",
+          "reading/style_fingerprint.md",
+          "reading/skills/inferences.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/annotation_core.md",
+          "reading/skills/inferences.md"
+        ]
+      },
+      "words_in_context": {
+        "focus_keys": [
+          "contextual_meaning",
+          "connotation_fit",
+          "precision_fit",
+          "register_fit",
+          "underlined_word_meaning",
+          "polarity_fit",
+          "figurative_language_meaning"
+        ],
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/generation_core.md",
+          "reading/style_fingerprint.md",
+          "reading/skills/words_in_context.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/annotation_core.md",
+          "reading/skills/words_in_context.md"
+        ]
+      },
+      "text_structure_and_purpose": {
+        "focus_keys": [
+          "overall_purpose",
+          "sentence_function",
+          "structural_pattern",
+          "author_stance"
+        ],
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/generation_core.md",
+          "reading/style_fingerprint.md",
+          "reading/skills/text_structure_and_purpose.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/annotation_core.md",
+          "reading/skills/text_structure_and_purpose.md"
+        ]
+      },
+      "cross_text_connections": {
+        "focus_keys": [
+          "text2_response_to_text1",
+          "both_texts_agree",
+          "texts_disagree",
+          "text2_qualifies_text1",
+          "text2_contradicts_text1",
+          "methodological_critique",
+          "expectation_violation"
+        ],
+        "generate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/generation_core.md",
+          "reading/style_fingerprint.md",
+          "reading/skills/cross_text_connections.md"
+        ],
+        "annotate": [
+          "shared/00_mode_and_schemas.md",
+          "reading/core_taxonomy.md",
+          "reading/annotation_core.md",
+          "reading/skills/cross_text_connections.md"
+        ]
+      }
+    }
+  }
+}

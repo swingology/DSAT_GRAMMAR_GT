@@ -1,5 +1,66 @@
 # Debug Log
 
+## 2026-08-02 - Rules-doc coverage review (grammar v8 / reading v3) + prompt loader audit
+Report created by: Claude Fable 5
+Git branch: `weakness-weighted-mixed-practice`
+Git checkpoint: `1ec3fb2` — Fix LiteLLM local inference routing and add PT audit tooling
+
+Full-document review of `rules_agent_dsat_grammar_ingestion_generation_v8.md` (6,994 lines)
+and `rules_agent_dsat_reading_v3.md` (3,110 lines) plus their consumers in
+`backend/app/prompts/`. Review only — no fixes applied yet.
+
+### Findings
+
+1. **High:** `backend/app/prompts/generate_prompt.py` labels the reading rules file
+   `"Reading v3"` (line 9) but the section extractor (line 53) and domain filter
+   (line 106) both compare against `"Reading v2"`. Reading-targeted generation via
+   `build_generate_prompt_parts` therefore loads **zero rules context**, and
+   grammar/"both" calls append the **entire ~42k-token reading doc raw** instead of the
+   curated section list.
+2. **High:** grammar v8 — `absolute_phrase` is a production focus key (D.2.5 L5475,
+   Appendix V L6471) but is **missing from the D.8.1 role→focus enforcement table**
+   (L5826). B.13 check #1 validates against D.8.1, so every valid `absolute_phrase`
+   item fails generation validation.
+3. **Medium:** reading v3 — Appendix V `REASONING_TRAP_KEYS` omits `scope_error` and
+   `relationship_fabrication`, both defined at length in body §10.2 (L570–575). If the
+   appendix mirrors validator enums, body-legal annotations fail validation.
+4. **Medium:** grammar v8 — duplicated `### logical_predication` B.3 entry (L1925 and
+   L2871) with **contradictory** trap/failure-mode classifications for the same
+   sub-patterns; duplicated `### comparative_structures` (L1998 full, L3689 stub with
+   conflicting definition).
+5. **Medium:** grammar v8 B.4 tables use `comma_fix_illusion` (L4206, L4223) and
+   `transition_assumption` (L4360–4361) in the plausibility-source column — both are
+   `student_failure_mode_key` values, not valid `plausibility_source_key` values.
+   B.3 L1992 uses trap key `nominalization_obscures_subject` as a failure mode; L1952
+   uses `tense_confusion`, which exists in no vocabulary.
+6. **Medium:** reading v3 — title line, Purpose block, and `model_version` example all
+   still say **v2** while the footer declares v3.0; grammar v8 Appendix V blocks carry
+   stale "V3 §" section labels from two versions ago; grammar footer says v8.1 while
+   all schema examples emit `rules_agent_v8.0`.
+7. **Medium:** body-vs-appendix enum drift in both docs: stimulus modes (appendix-only
+   `notes_summary`), stem types (~15 appendix keys never defined in either body, plus
+   near-duplicate `choose_words_in_context`/`choose_word_in_context`), passage
+   architectures (10 appendix keys undefined in reading body; 10 body keys undefined in
+   grammar B.7), topic domains (§23.2 says 7, appendix has 9), failure modes (appendix
+   missing `wrong_time_window`, `same_direction_assumption` claimed by §19.7).
+8. **Medium:** grammar v8 — `affirmative_agreement` and `negation` are simultaneously
+   production keys with full B.3/B.4 generation guidance AND flagged "do not use in
+   generation" (D.2.2 L5455, D.2.4 L5469, D.8.3 L5849). 16 of 44 focus keys have no
+   `target_frequency_band` assignment despite the field being a mandatory generation
+   input (B.1.1).
+9. **Low:** miscounts and dead references — grammar A.3 says "five top-level sections"
+   but lists six; B.13 says "25 checks" with 29 rows; amendment process cited as "C.7"
+   (L26, L56) but lives in C.5; reading §2.2 cites experimental architectures as §15.2
+   (they are §15.3); reading §19.7 claims 29 failure modes over a 28-row table.
+10. **Low:** reading v3 ghost fields — `evidence_scope_key`, `evidence_location_key`,
+    `semantic_relation_key`, `option_error_focus_key`, `distractor_strength` appear in
+    required JSON shapes with no allowed-value lists (grammar C.1.3 defines some of
+    them; reading defines none). `poem` stimulus mode is enumerated but has zero
+    governing rules in either doc.
+11. **Note (drift process):** all 3 pending amendments in `vocabulary/amendments/pending/`
+    have empty `rationale` fields; one (`verb_form` → READING_SKILL_FAMILY_KEYS, parent
+    `conventions_grammar`) is a cross-domain leak that should be rejected or re-routed.
+
 ## 2026-07-31 - 2024 PT3 answer audit review
 Report created by: Claude Opus 5
 Git branch: `weakness-weighted-mixed-practice`

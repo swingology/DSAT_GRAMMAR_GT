@@ -13368,3 +13368,382 @@ _( 25 files changed, 1309 insertions(+), 574 deletions(-))_
 **Untracked:** 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md 
 
 ---
+
+## Session snapshot — 2026-08-02 19:41:13 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.8Gi/30Gi`
+
+_No uncommitted changes._
+
+---
+
+## Session snapshot — 2026-08-02 20:01:57 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 31 insertions(+), 2 deletions(-))_
+
+---
+
+## Session snapshot — 2026-08-02 20:05:21 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.3Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 39 insertions(+), 2 deletions(-))_
+
+---
+
+## Session snapshot — 2026-08-02 20:08:35 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 6 files changed, 124 insertions(+), 5 deletions(-))_
+
+---
+
+## Session snapshot — 2026-08-02 20:09:51 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 491 insertions(+), 328 deletions(-))_
+
+---
+
+## Session snapshot — 2026-08-02 20:15:40 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 517 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:15:42 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 534 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:15:43 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 551 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:15:44 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 568 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:15:47 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 585 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:15:48 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 602 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:15:50 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 619 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:15:57 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 636 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:11 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 653 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:18 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 670 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:20 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 687 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:25 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 704 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:26 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 721 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:33 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 738 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:36 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 755 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:40 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 772 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:43 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 789 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:16:46 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 806 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:17:07 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 823 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:17:35 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 840 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:17:39 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 857 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:17:41 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 874 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:17:53 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 898 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:17:54 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 915 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:18:08 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 932 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:18:11 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 949 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:18:13 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 966 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:18:17 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 983 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:18:33 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 1000 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:18:48 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 1017 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:18:53 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 1034 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:19:12 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 1051 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md rules_refactor/rules_agent_dsat_reading_v3.md rules_refactor/rules_agent_dsat_review_v1.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:22:29 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 1084 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/rules/grammar/annotation_core.md rules_refactor/rules/grammar/conditional/notes_synthesis.md rules_refactor/rules/grammar/conditional/transitions.md rules_refactor/rules/grammar/examples/subject_verb_agreement.md rules_refactor/rules/grammar/examples/transition_logic.md 
+
+---
+
+## Session snapshot — 2026-08-02 20:36:45 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `1ec3fb2` · _ram:_ `8.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 7 files changed, 1120 insertions(+), 329 deletions(-))_
+
+**Untracked:** rules_refactor/README.md rules_refactor/TODO_out_of_scope.md rules_refactor/rules/grammar/annotation_core.md rules_refactor/rules/grammar/conditional/notes_synthesis.md rules_refactor/rules/grammar/conditional/transitions.md 
+
+---

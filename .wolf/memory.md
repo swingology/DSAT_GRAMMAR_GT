@@ -6132,3 +6132,44 @@
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
 | 19:40 | Edited .gitignore | 2→3 lines | ~29 |
+| 20:08 | Edited DEBUG_LOG.md | modified Note() | ~1163 |
+| 20:08 | Rules-doc review: full inventories of grammar v8 + reading v3 via 2 subagents; found generate_prompt Reading v2/v3 label bug, D.8.1 absolute_phrase omission, body-vs-appendix enum drift; logged to DEBUG_LOG + buglog | DEBUG_LOG.md, .wolf/buglog.json | review complete, fixes pending | ~350k |
+| 20:15 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 2→2 lines | ~26 |
+| 20:15 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 2→2 lines | ~41 |
+| 20:15 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | inline fix | ~15 |
+| 20:15 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 25 → 29 | ~14 |
+| 20:15 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 25 → 29 | ~20 |
+| 20:15 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | inline fix | ~15 |
+| 20:15 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | inline fix | ~49 |
+| 20:15 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 4→7 lines | ~127 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | removed 74 lines | ~8 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | modified items() | ~69 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 5→5 lines | ~69 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 4→7 lines | ~65 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | removed 8 lines | ~7 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 3→3 lines | ~41 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | "comma_fix_illusion" → "punctuation_style_bias" | ~39 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 2→2 lines | ~145 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 3→7 lines | ~85 |
+| 20:16 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+6 lines) | ~108 |
+| 20:17 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | expanded (+12 lines) | ~604 |
+| 20:17 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 3→3 lines | ~38 |
+| 20:17 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | 1→2 lines | ~130 |
+| 20:17 | Edited rules_refactor/rules_agent_dsat_grammar_ingestion_generation_v8.md | "rules_agent_dsat_reading_" → "rules_agent_dsat_reading_" | ~14 |
+| 20:17 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | 10→13 lines | ~141 |
+| 20:17 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | 15.2 → 15.3 | ~26 |
+| 20:18 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | inline fix | ~12 |
+| 20:18 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | inline fix | ~47 |
+| 20:18 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | inline fix | ~58 |
+| 20:18 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | 10→13 lines | ~142 |
+| 20:18 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | 23→23 lines | ~344 |
+| 20:18 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | inline fix | ~80 |
+| 20:18 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | modified note() | ~212 |
+| 20:19 | Edited rules_refactor/rules_agent_dsat_reading_v3.md | 2→3 lines | ~149 |
+| 20:22 | Created rules_refactor/split_rules.py | — | ~6061 |
+| 20:22 | Edited rules_refactor/split_rules.py | 2→2 lines | ~30 |
+| 20:22 | Edited rules_refactor/split_rules.py | 2→2 lines | ~37 |
+| 20:22 | Edited rules_refactor/split_rules.py | modified exists() | ~50 |
+| 20:35 | Created rules_refactor/README.md | — | ~1273 |
+| 20:36 | Created rules_refactor/TODO_out_of_scope.md | — | ~1488 |
+| 20:30 | Rules refactor sandbox complete: corrected grammar v8.2-refactor + reading v3.1-refactor copies, split_rules.py emits 65 modules + manifest with full line coverage; semicolon_use gen load 80k->10k tokens | rules_refactor/ | done, adoption TODO written | ~120k |

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T02:40:40.525Z
-> Files: 1232 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T03:36:21.454Z
+> Files: 1237 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -189,7 +189,7 @@
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~296616 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
-- `DEBUG_LOG.md` — Debug Log (~74671 tok)
+- `DEBUG_LOG.md` — Debug Log (~75746 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
@@ -1787,6 +1787,14 @@
 ## local_object_store/stimulus-assets/charts/e22a6533-19c8-5b62-b511-b254be102401/
 
 - `8d234175-93f6-4dc2-8ffe-091a2ea931ff.json` (~352 tok)
+
+## rules_refactor/
+
+- `README.md` — Project documentation (~1193 tok)
+- `rules_agent_dsat_grammar_ingestion_generation_v8.md` — rules_agent_dsat_grammar_ingestion_generation_v8.md (~79699 tok)
+- `rules_agent_dsat_reading_v3.md` — rules_agent_dsat_reading_v3.md (~42504 tok)
+- `split_rules.py` — Split the corrected DSAT rules monoliths into composable prompt modules. (~6080 tok)
+- `TODO_out_of_scope.md` — Adoption TODO — changes outside rules_refactor/ (~1395 tok)
 
 ## scripts/
 

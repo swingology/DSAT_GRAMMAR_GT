@@ -1,0 +1,46 @@
+{
+  "grammar": {
+    "file": "rules_agent_dsat_grammar_ingestion_generation_v8.md",
+    "total_lines": 6945,
+    "unassigned_nonblank_ranges": [],
+    "lines_per_module": {
+      "SKIP:generated VOCAB appendix (validator-side; source = vocabulary/master.json)": 728,
+      "SKIP:quick-index (human navigation aid)": 67,
+      "SKIP:source title line": 1,
+      "grammar/annotation_core.md": 334,
+      "grammar/conditional/notes_synthesis.md": 147,
+      "grammar/conditional/transitions.md": 62,
+      "grammar/examples": 309,
+      "grammar/future_anatomy.md": 134,
+      "grammar/generation_core.md": 642,
+      "grammar/skills": 3808,
+      "grammar/taxonomy.md": 476,
+      "shared/00_mode_and_schemas.md": 236
+    }
+  },
+  "reading": {
+    "file": "rules_agent_dsat_reading_v3.md",
+    "total_lines": 3127,
+    "unassigned_nonblank_ranges": [],
+    "lines_per_module": {
+      "SKIP:generated VOCAB appendix (validator-side; source = vocabulary/master.json)": 696,
+      "SKIP:source title line": 1,
+      "reading/annotation_core.md": 77,
+      "reading/core_taxonomy.md": 676,
+      "reading/core_taxonomy.md(19.7 summary)": 39,
+      "reading/generation_core.md": 632,
+      "reading/skills(16.9)": 66,
+      "reading/skills(§13 intro)": 2,
+      "reading/skills(§19 intro)": 9,
+      "reading/skills(§7 intro)": 4,
+      "reading/skills/central_ideas_and_details.md": 34,
+      "reading/skills/command_of_evidence_quantitative.md": 100,
+      "reading/skills/command_of_evidence_textual.md": 75,
+      "reading/skills/cross_text_connections.md": 63,
+      "reading/skills/inferences.md": 108,
+      "reading/skills/text_structure_and_purpose.md": 120,
+      "reading/skills/words_in_context.md": 117,
+      "reading/style_fingerprint.md": 307
+    }
+  }
+}
