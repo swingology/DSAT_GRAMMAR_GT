@@ -6173,3 +6173,7 @@
 | 20:35 | Created rules_refactor/README.md | — | ~1273 |
 | 20:36 | Created rules_refactor/TODO_out_of_scope.md | — | ~1488 |
 | 20:30 | Rules refactor sandbox complete: corrected grammar v8.2-refactor + reading v3.1-refactor copies, split_rules.py emits 65 modules + manifest with full line coverage; semicolon_use gen load 80k->10k tokens | rules_refactor/ | done, adoption TODO written | ~120k |
+| 17:27 | Created MATH/rules_agent_dsat_math_v1.md | — | ~11317 |
+| 09:05 | Authored MATH/rules_agent_dsat_math_v1.md — math ontology (4 domains, 19 skills, 26 archetypes, 60+ trap keys, 34 named methods) matching grammar/reading doc conventions | MATH/rules_agent_dsat_math_v1.md | created | ~12k |
+| 20:20 | Created MATH/MATH_TODO.md | — | ~2253 |
+| 09:20 | Wrote MATH/MATH_TODO.md — 6-phase math adoption plan (vocab promotion, SPR schema, validator branches, KaTeX, OCR eval gate, sympy-verified generation); grounded in db.py:93 NOT NULL + validator.py:54 4-option findings | MATH/MATH_TODO.md | created | ~6k |

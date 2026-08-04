@@ -283,6 +283,18 @@
       "action": "create",
       "tokens": 1595,
       "at": "2026-08-03T03:36:21.465Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/MATH/rules_agent_dsat_math_v1.md",
+      "action": "create",
+      "tokens": 12126,
+      "at": "2026-08-04T00:27:07.027Z"
+    },
+    {
+      "file": "/home/jb/DSAT_REDUX_MD/MATH/MATH_TODO.md",
+      "action": "create",
+      "tokens": 2414,
+      "at": "2026-08-04T03:20:26.604Z"
     }
   ],
   "edit_counts": {
@@ -292,7 +304,9 @@
     "rules_refactor/rules_agent_dsat_reading_v3.md": 10,
     "rules_refactor/split_rules.py": 4,
     "rules_refactor/README.md": 1,
-    "rules_refactor/TODO_out_of_scope.md": 1
+    "rules_refactor/TODO_out_of_scope.md": 1,
+    "MATH/rules_agent_dsat_math_v1.md": 1,
+    "MATH/MATH_TODO.md": 1
   },
   "anatomy_hits": 8,
   "anatomy_misses": 0,

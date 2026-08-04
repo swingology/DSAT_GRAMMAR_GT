@@ -13747,3 +13747,66 @@ _( 7 files changed, 1120 insertions(+), 329 deletions(-))_
 **Untracked:** rules_refactor/README.md rules_refactor/TODO_out_of_scope.md rules_refactor/rules/grammar/annotation_core.md rules_refactor/rules/grammar/conditional/notes_synthesis.md rules_refactor/rules/grammar/conditional/transitions.md 
 
 ---
+
+## Session snapshot — 2026-08-02 20:41:12 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `8190a6d` · _ram:_ `7.9Gi/30Gi`
+
+_No uncommitted changes._
+
+---
+
+## Session snapshot — 2026-08-02 21:12:20 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `8190a6d` · _ram:_ `8.1Gi/30Gi`
+
+**Uncommitted changes:** CHANGELOG.md 
+_( 1 file changed, 7 insertions(+))_
+
+---
+
+## Session snapshot — 2026-08-03 17:21:19 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `8190a6d` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** CHANGELOG.md backups/backup.log 
+_( 2 files changed, 35 insertions(+))_
+
+---
+
+## Session snapshot — 2026-08-03 17:27:26 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `8190a6d` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backups/backup.log 
+_( 5 files changed, 59 insertions(+), 3 deletions(-))_
+
+**Untracked:** MATH/rules_agent_dsat_math_v1.md 
+
+---
+
+## Session snapshot — 2026-08-03 17:27:40 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `8190a6d` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backups/backup.log 
+_( 5 files changed, 69 insertions(+), 3 deletions(-))_
+
+**Untracked:** MATH/rules_agent_dsat_math_v1.md 
+
+---
+
+## Session snapshot — 2026-08-03 20:17:58 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `8190a6d` · _ram:_ `9.3Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backups/backup.log 
+_( 5 files changed, 83 insertions(+), 3 deletions(-))_
+
+**Untracked:** MATH/rules_agent_dsat_math_v1.md 
+
+---
+
+## Session snapshot — 2026-08-03 20:20:52 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `8190a6d` · _ram:_ `9.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backups/backup.log 
+_( 5 files changed, 103 insertions(+), 3 deletions(-))_
+
+**Untracked:** MATH/MATH_TODO.md MATH/rules_agent_dsat_math_v1.md 
+
+---

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T03:36:21.454Z
-> Files: 1237 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T03:20:26.593Z
+> Files: 1239 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -690,6 +690,11 @@
 ## FRONTEND/src/types/
 
 - `index.ts` — Exports QuestionOption, Question, InventoryMetadata, QuestionsResponse + 2 more (~434 tok)
+
+## MATH/
+
+- `MATH_TODO.md` — MATH_TODO — Adding DSAT Math to the Existing Backend (~2112 tok)
+- `rules_agent_dsat_math_v1.md` — DSAT Math ontology v1: 4 domains, 19 official skills, 26 question archetypes each with Topic/Trap/Intuition/Named Method/Process; ~60 math_trap_keys, 34-method registry, SPR/MC/Desmos rules; all keys proposed, not yet in master.json (~10610 tok)
 
 ## TESTS/DATA_SRC/2024-2025 Tests Answers/
 
