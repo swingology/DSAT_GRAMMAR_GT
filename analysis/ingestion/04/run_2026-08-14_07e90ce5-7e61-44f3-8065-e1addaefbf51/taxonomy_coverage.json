@@ -1,0 +1,86 @@
+{
+  "job_id": "07e90ce5-7e61-44f3-8065-e1addaefbf51",
+  "source_exam_code": "04",
+  "created_at": "2026-08-14T18:12:08.118611+00:00",
+  "hashes": {
+    "master_json_hash": "1d84a6b27946456a249e7077e59015395bd2eb503438b58b18e6fda086f6e71d",
+    "reading_rules_hash": "767795f6a672591fa6134afde5f11503213a7bba6c1e7a9e9890e2c3ec001367",
+    "grammar_rules_hash": "8cbd1ea6e6ec1bfdfa2f5c2a0bd67b0983b53557517bed61ccb7abc361faf216",
+    "ontology_hash": "f7624ca86a27df7af57c84b93a3fac2196ddd4febb46d7fd776a4804187ec60c"
+  },
+  "question_count": 27,
+  "field_counts": {
+    "question_family_key": {
+      "craft_and_structure": 6,
+      "information_and_ideas": 7,
+      "conventions_grammar": 7,
+      "expression_of_ideas": 7
+    },
+    "grammar_role_key": {
+      "punctuation": 3,
+      "sentence_boundary": 2,
+      "agreement": 1,
+      "verb_form": 1,
+      "expression_of_ideas": 4
+    },
+    "grammar_focus_key": {
+      "unnecessary_internal_punctuation": 1,
+      "sentence_boundary": 2,
+      "apostrophe_use": 1,
+      "subject_verb_agreement": 1,
+      "appositive_punctuation": 1,
+      "verb_form": 1,
+      "transition_logic": 1,
+      "precision_word_choice": 2,
+      "data_interpretation_claims": 1
+    },
+    "skill_family_key": {
+      "words_in_context": 6,
+      "central_ideas_and_details": 3,
+      "command_of_evidence_textual": 1,
+      "command_of_evidence_quantitative": 1,
+      "inferences": 2,
+      "Form, Structure, and Sense": 4,
+      "Boundaries": 3,
+      "Transitions": 1,
+      "Rhetorical Synthesis": 6
+    },
+    "reading_focus_key": {
+      "polarity_fit": 1,
+      "contextual_meaning": 5,
+      "supporting_detail": 1,
+      "central_idea": 2,
+      "evidence_illustrates_claim": 1,
+      "data_completes_example": 1,
+      "implication_inference": 1,
+      "causal_inference": 1
+    },
+    "reasoning_trap_key": {
+      "polarity_mismatch": 1,
+      "semantic_relatedness_without_precision": 4,
+      "detail_trap": 3,
+      "topical_relevance_without_logical_connection": 2,
+      "partial_match": 1,
+      "overreach": 1
+    },
+    "stimulus_mode_key": {
+      "passage_excerpt": 11,
+      "prose_single": 2,
+      "prose_plus_graph": 1,
+      "sentence_only": 6,
+      "notes_bullets": 6
+    },
+    "stem_type_key": {
+      "choose_word_in_context": 5,
+      "choose_detail": 1,
+      "choose_main_idea": 2,
+      "choose_best_quote": 1,
+      "choose_best_completion_from_data": 1,
+      "most_logically_completes": 2,
+      "conform_to_standard_english": 5,
+      "complete_the_text": 2,
+      "choose_best_transition": 1,
+      "choose_best_notes_synthesis": 6
+    }
+  }
+}

@@ -38,9 +38,20 @@
       "source_module_code": "01",
       "source_question_number": 25,
       "official_evidence": "The question asks to emphasize a difference between two portraits using bulleted notes, a classic Rhetorical Synthesis task."
+    },
+    {
+      "source_job_id": "0bc97bfc-41be-40ad-812b-dbfcafa11073",
+      "source_exam_code": "04",
+      "source_subject_code": "verbal",
+      "source_section_code": "01",
+      "source_module_code": "02",
+      "source_question_number": 27,
+      "official_evidence": "Bluebook Practice Test 4, Question 27 (notes_bullets, choose_best_notes_synthesis)"
     }
   ],
-  "review_notes": [],
+  "review_notes": [
+    "{\"conflicts\": {\"current_best_fit\": {\"existing\": \"unknown\", \"incoming\": \"data_interpretation_claims\"}, \"definition\": {\"existing\": \"Rhetorical Synthesis is a distinct SAT question type that does not fit neatly under existing grammar_focus_keys like 'emphasis_meaning_shifts'. It requires synthesizing notes to achieve a specific rhetorical goal (e.g., emphasize a difference, introduce a topic, make a comparison). A dedicated key would improve classification accuracy.\", \"incoming\": \"Synthesizing information from bulleted notes to achieve a specific rhetorical goal (e.g., explain and exemplify, compare, argue).\"}, \"master_json_patch\": {\"existing\": {\"affected_vocab\": \"GRAMMAR_FOCUS_BY_ROLE\", \"description\": \"Rhetorical Synthesis is a distinct SAT question type that does not fit neatly under existing grammar_focus_keys like 'emphasis_meaning_shifts'. It requires synthesizing notes to achieve a specific rhetorical goal (e.g., emphasize a difference, introduce a topic, make a comparison). A dedicated key would improve classification accuracy.\", \"parent_key\": \"expression_of_ideas\", \"proposed_value\": \"rhetorical_synthesis\"}, \"incoming\": {\"affected_vocab\": \"GRAMMAR_FOCUS_BY_ROLE\", \"description\": \"Synthesizing information from bulleted notes to achieve a specific rhetorical goal (e.g., explain and exemplify, compare, argue).\", \"parent_key\": \"expression_of_ideas\", \"proposed_value\": \"rhetorical_synthesis\"}}, \"official_evidence\": {\"existing\": \"The question asks to emphasize a difference between two portraits using bulleted notes, a classic Rhetorical Synthesis task.\", \"incoming\": \"Bluebook Practice Test 4, Question 27 (notes_bullets, choose_best_notes_synthesis)\"}, \"rule_doc_patch\": {\"existing\": {\"after\": \"- `rhetorical_synthesis` — Rhetorical Synthesis is a distinct SAT question type that does not fit neatly under existing grammar_focus_keys like 'emphasis_meaning_shifts'. It requires synthesizing notes to achieve a specific rhetorical goal (e.g., emphasize a difference, introduce a topic, make a comparison). A dedicated key would improve classification accuracy.\", \"before\": \"TBD\", \"rationale\": \"The question asks to emphasize a difference between two portraits using bulleted notes, a classic Rhetorical Synthesis task.\", \"target_section\": \"Grammar taxonomy section\"}, \"incoming\": {\"after\": \"- `rhetorical_synthesis` — Synthesizing information from bulleted notes to achieve a specific rhetorical goal (e.g., explain and exemplify, compare, argue).\", \"before\": \"data_interpretation_claims\", \"rationale\": \"Bluebook Practice Test 4, Question 27 (notes_bullets, choose_best_notes_synthesis)\", \"target_section\": \"Reading taxonomy section\"}}, \"why_current_rules_are_insufficient\": {\"existing\": \"Rhetorical Synthesis is a distinct SAT question type that does not fit neatly under existing grammar_focus_keys like 'emphasis_meaning_shifts'. It requires synthesizing notes to achieve a specific rhetorical goal (e.g., emphasize a difference, introduce a topic, make a comparison). A dedicated key would improve classification accuracy.\", \"incoming\": \"data_interpretation_claims is intended for quantitative data (tables/graphs), not for synthesizing textual notes. A dedicated key would improve classification accuracy for Rhetorical Synthesis questions.\"}}, \"source_job_id\": \"0bc97bfc-41be-40ad-812b-dbfcafa11073\", \"source_question_number\": 27, \"type\": \"conflicting_duplicate_proposal\"}"
+  ],
   "admin_decision": null,
   "created_at": "2026-05-31T17:50:09.033550Z",
   "updated_at": "2026-05-31T17:50:09.033551Z"

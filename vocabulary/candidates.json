@@ -202,10 +202,12 @@
       "value": "Form, Structure, and Sense",
       "field": "skill_family_key",
       "first_seen": "2026-06-26T22:56:06.787043+00:00",
-      "last_seen": "2026-06-26T22:56:07.069896+00:00",
-      "occurrences": 4,
+      "last_seen": "2026-08-14T19:06:12.905015+00:00",
+      "occurrences": 10,
       "job_ids": [
-        "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a"
+        "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a",
+        "07e90ce5-7e61-44f3-8065-e1addaefbf51",
+        "719db6e8-0a8f-41b8-9ec6-b2abc1e847d7"
       ],
       "contexts": [
         "sanitized→null"
@@ -216,10 +218,12 @@
       "value": "Boundaries",
       "field": "skill_family_key",
       "first_seen": "2026-06-26T22:56:06.928029+00:00",
-      "last_seen": "2026-06-26T22:56:06.928029+00:00",
-      "occurrences": 1,
+      "last_seen": "2026-08-14T19:06:12.969752+00:00",
+      "occurrences": 7,
       "job_ids": [
-        "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a"
+        "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a",
+        "07e90ce5-7e61-44f3-8065-e1addaefbf51",
+        "719db6e8-0a8f-41b8-9ec6-b2abc1e847d7"
       ],
       "contexts": [
         "sanitized→null"
@@ -230,10 +234,12 @@
       "value": "Transitions",
       "field": "skill_family_key",
       "first_seen": "2026-06-26T22:56:07.140519+00:00",
-      "last_seen": "2026-06-26T22:56:07.282378+00:00",
-      "occurrences": 3,
+      "last_seen": "2026-08-14T19:06:13.166691+00:00",
+      "occurrences": 7,
       "job_ids": [
-        "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a"
+        "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a",
+        "07e90ce5-7e61-44f3-8065-e1addaefbf51",
+        "719db6e8-0a8f-41b8-9ec6-b2abc1e847d7"
       ],
       "contexts": [
         "sanitized→null"
@@ -244,10 +250,11 @@
       "value": "Rhetorical Synthesis",
       "field": "skill_family_key",
       "first_seen": "2026-06-26T22:56:07.351919+00:00",
-      "last_seen": "2026-06-26T22:56:07.436295+00:00",
-      "occurrences": 2,
+      "last_seen": "2026-08-14T18:12:08.049624+00:00",
+      "occurrences": 5,
       "job_ids": [
-        "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a"
+        "e8b32fc4-3fbd-4662-a2d0-8fe711b1365a",
+        "07e90ce5-7e61-44f3-8065-e1addaefbf51"
       ],
       "contexts": [
         "sanitized→null"

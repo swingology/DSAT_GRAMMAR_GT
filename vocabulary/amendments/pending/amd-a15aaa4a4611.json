@@ -1,0 +1,47 @@
+{
+  "amendment_id": "amd-a15aaa4a4611",
+  "status": "pending",
+  "source_job_id": "0bc97bfc-41be-40ad-812b-dbfcafa11073",
+  "source_exam_code": "04",
+  "source_subject_code": "verbal",
+  "source_section_code": "01",
+  "source_module_code": "02",
+  "source_question_number": 19,
+  "content_origin": "official",
+  "affected_doc": "grammar",
+  "proposal_type": "new_controlled_vocab_key",
+  "affected_vocab": "GRAMMAR_FOCUS_BY_ROLE",
+  "proposed_value": "correct_verb_form",
+  "parent_key": "verb_form",
+  "definition": "No existing semantic_relation_key accurately describes a correct finite verb choice. 'correct_agreement' is for subject-verb agreement, not verb form. A new key is needed for correct verb form selection.",
+  "current_best_fit": "unknown",
+  "why_current_rules_are_insufficient": "No existing semantic_relation_key accurately describes a correct finite verb choice. 'correct_agreement' is for subject-verb agreement, not verb form. A new key is needed for correct verb form selection.",
+  "official_evidence": "Option A: 'explains' is the correct finite verb.",
+  "rule_doc_patch": {
+    "target_section": "Grammar taxonomy section",
+    "before": "TBD",
+    "after": "- `correct_verb_form` — No existing semantic_relation_key accurately describes a correct finite verb choice. 'correct_agreement' is for subject-verb agreement, not verb form. A new key is needed for correct verb form selection.",
+    "rationale": "Option A: 'explains' is the correct finite verb."
+  },
+  "master_json_patch": {
+    "affected_vocab": "GRAMMAR_FOCUS_BY_ROLE",
+    "proposed_value": "correct_verb_form",
+    "parent_key": "verb_form",
+    "description": "No existing semantic_relation_key accurately describes a correct finite verb choice. 'correct_agreement' is for subject-verb agreement, not verb form. A new key is needed for correct verb form selection."
+  },
+  "supporting_examples": [
+    {
+      "source_job_id": "0bc97bfc-41be-40ad-812b-dbfcafa11073",
+      "source_exam_code": "04",
+      "source_subject_code": "verbal",
+      "source_section_code": "01",
+      "source_module_code": "02",
+      "source_question_number": 19,
+      "official_evidence": "Option A: 'explains' is the correct finite verb."
+    }
+  ],
+  "review_notes": [],
+  "admin_decision": null,
+  "created_at": "2026-08-14T18:36:49.330674Z",
+  "updated_at": "2026-08-14T18:36:49.330675Z"
+}

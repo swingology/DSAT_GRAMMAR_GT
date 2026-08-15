@@ -1,0 +1,94 @@
+{
+  "job_id": "719db6e8-0a8f-41b8-9ec6-b2abc1e847d7",
+  "hashes": {
+    "master_json_hash": "1d84a6b27946456a249e7077e59015395bd2eb503438b58b18e6fda086f6e71d",
+    "reading_rules_hash": "767795f6a672591fa6134afde5f11503213a7bba6c1e7a9e9890e2c3ec001367",
+    "grammar_rules_hash": "8cbd1ea6e6ec1bfdfa2f5c2a0bd67b0983b53557517bed61ccb7abc361faf216",
+    "ontology_hash": "f7624ca86a27df7af57c84b93a3fac2196ddd4febb46d7fd776a4804187ec60c"
+  },
+  "validation_errors": [
+    {
+      "question_index": 9,
+      "step": "validating",
+      "errors": [
+        {
+          "severity": "review",
+          "field": "explanation",
+          "message": "No explanation text provided"
+        },
+        {
+          "severity": "blocking",
+          "field": "graphic_data",
+          "message": "Quantitative Command of Evidence: table_data or graph_data not present"
+        }
+      ],
+      "source_question_number": "10"
+    },
+    {
+      "question_index": 16,
+      "step": "validating",
+      "errors": [
+        {
+          "severity": "blocking",
+          "field": "syntactic_trap_key",
+          "message": "syntactic_trap_key required (non-'none') for grammar_role_key 'sentence_boundary'; got None"
+        },
+        {
+          "severity": "review",
+          "field": "skill_family_key",
+          "message": "Grammar-domain questions must not populate skill_family_key (reading-only)"
+        }
+      ],
+      "source_question_number": "17"
+    },
+    {
+      "question_index": 19,
+      "step": "validating",
+      "errors": [
+        {
+          "severity": "blocking",
+          "field": "syntactic_trap_key",
+          "message": "syntactic_trap_key required (non-'none') for grammar_role_key 'agreement'; got None"
+        },
+        {
+          "severity": "review",
+          "field": "skill_family_key",
+          "message": "Grammar-domain questions must not populate skill_family_key (reading-only)"
+        }
+      ],
+      "source_question_number": "20"
+    },
+    {
+      "question_index": 26,
+      "step": "validating",
+      "errors": [
+        {
+          "severity": "blocking",
+          "field": "grammar_role_key",
+          "message": "Grammar-domain questions require grammar_role_key"
+        },
+        {
+          "severity": "blocking",
+          "field": "grammar_focus_key",
+          "message": "Grammar-domain questions require grammar_focus_key"
+        },
+        {
+          "severity": "review",
+          "field": "skill_family_key",
+          "message": "Grammar-domain questions must not populate skill_family_key (reading-only)"
+        }
+      ],
+      "source_question_number": "27"
+    },
+    {
+      "step": "module_completeness",
+      "severity": "review",
+      "field": "question_count",
+      "issue": "extraction_shortfall",
+      "expected_count": 33,
+      "extracted_count": 27,
+      "created_count": 23,
+      "detail": "official module expected 33 questions, extracted 27, created 23"
+    }
+  ]
+}
