@@ -972,7 +972,9 @@ class SRProgressResponse(BaseModel):
 
 
 class TestSummary(BaseModel):
+    content_origin: Optional[str] = None
     source_release_year: Optional[int] = None
+    pt_number: Optional[int] = None
     source_test_name: Optional[str] = None
     source_exam_code: Optional[str] = None
     source_subject_code: Optional[str] = None

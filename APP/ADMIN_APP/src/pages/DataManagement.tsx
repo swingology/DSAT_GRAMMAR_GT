@@ -279,22 +279,91 @@ function TestBrowser({ onSelectTest }: { onSelectTest: (t: TestSummary) => void 
     return <div className="p-8 text-center text-gray-400 text-sm">No source test data found.</div>
   }
 
+  const originLabels: Record<string, string> = {
+    official: 'Official',
+    unofficial: 'Unofficial',
+    generated: 'Generated',
+  }
+  const originOrder = ['official', 'unofficial', 'generated']
+
+  // Backend sorts by content_origin, then year/PT for official rows and by
+  // source_test_name for unofficial rows — so grouping here just buckets
+  // consecutive same-key runs rather than re-sorting.
+  const byOrigin = new Map<string, TestSummary[]>()
+  for (const t of tests) {
+    const origin = t.content_origin ?? 'official'
+    const list = byOrigin.get(origin)
+    if (list) list.push(t)
+    else byOrigin.set(origin, [t])
+  }
+
+  const originKeys = [...byOrigin.keys()].sort(
+    (a, b) => originOrder.indexOf(a) - originOrder.indexOf(b),
+  )
+
+  function groupBy<T extends TestSummary>(items: T[], keyFn: (t: T) => string): { key: string; items: T[] }[] {
+    const groups: { key: string; items: T[] }[] = []
+    for (const t of items) {
+      const key = keyFn(t)
+      const last = groups[groups.length - 1]
+      if (last && last.key === key) last.items.push(t)
+      else groups.push({ key, items: [t] })
+    }
+    return groups
+  }
+
+  function TestCard({ t }: { t: TestSummary }) {
+    return (
+      <button
+        onClick={() => onSelectTest(t)}
+        className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-blue-300 hover:shadow-sm transition"
+      >
+        <p className="text-sm font-semibold text-gray-800">
+          {t.source_release_year ? `${t.source_release_year} · ` : ''}
+          {t.pt_number != null ? `PT${t.pt_number}` : (t.source_test_name ?? 'Unknown')}
+          {t.source_section_code ? ` Sec${t.source_section_code}` : ''}
+          {t.source_module_code ? ` Mod${t.source_module_code}` : ''}
+        </p>
+        <p className="text-xs text-gray-500 mt-1">
+          {t.question_count} questions · {t.approved_count} approved
+        </p>
+      </button>
+    )
+  }
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-      {tests.map((t, i) => (
-        <button
-          key={i}
-          onClick={() => onSelectTest(t)}
-          className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-blue-300 hover:shadow-sm transition"
-        >
-          <p className="text-sm font-semibold text-gray-800">
-            {t.source_test_name ?? 'Unknown'} {t.source_section_code ?? ''} {t.source_module_code ?? ''}
-          </p>
-          <p className="text-xs text-gray-500 mt-1">
-            {t.question_count} questions · {t.approved_count} approved
-          </p>
-        </button>
-      ))}
+    <div className="space-y-8">
+      {originKeys.map((origin) => {
+        const items = byOrigin.get(origin)!
+        const isUnofficial = origin === 'unofficial'
+        // Unofficial has no official PT#, so subcategorize by source name
+        // (e.g. "CrackAP") instead of by year.
+        const subGroups = isUnofficial
+          ? groupBy(items, (t) => t.source_test_name ?? 'Unknown source')
+          : groupBy(items, (t) => String(t.source_release_year ?? 'Unknown year'))
+
+        return (
+          <div key={origin}>
+            <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3 pb-1 border-b border-gray-200">
+              {originLabels[origin] ?? origin}
+            </h2>
+            <div className="space-y-6">
+              {subGroups.map((g, gi) => (
+                <div key={gi}>
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+                    {g.key}
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {g.items.map((t, i) => (
+                      <TestCard key={i} t={t} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -313,7 +382,13 @@ export function DataManagement() {
   const browsingTests = mode === 'tests' && !testFilter
 
   const params: QueryParams = { limit, offset: (page - 1) * limit }
-  if (status !== 'all') params.practice_status = status
+  if (status === 'needs_review') {
+    // needs_review is a question_jobs.status value, not a practice_status
+    // value (practice_status is publication state: draft/active/retired/rejected).
+    params.job_status = status
+  } else if (status !== 'all') {
+    params.practice_status = status
+  }
   if (origin !== 'all') params.content_origin = origin
   if (testFilter) {
     if (testFilter.source_release_year != null) params.source_release_year = testFilter.source_release_year

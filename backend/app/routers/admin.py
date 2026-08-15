@@ -20,7 +20,7 @@ from app.database import get_db
 from app.auth import admin_required
 from app.models.db import (
     Question, QuestionAnnotation, QuestionVersion, QuestionOption,
-    QuestionRelation, QuestionJob, QuestionAsset, LlmEvaluation, UserProgress,
+    QuestionRelation, QuestionJob, QuestionJobQuestion, QuestionAsset, LlmEvaluation, UserProgress,
     QuestionStimulusAsset, QuestionSourceSpan, StimulusExtractionJob,
     GenerationBatch, ReviewRun, LlmReviewResult,
     ConsensusVerdict, ReviewerAdminOverride, AutoReleaseAuditLog,
@@ -326,6 +326,15 @@ async def list_questions(
         pattern="^(official|unofficial|generated)$",
         description="Filter by content_origin (official/unofficial/generated)",
     ),
+    job_status: Optional[str] = Query(
+        None,
+        pattern="^(pending|parsing|extracting|overlap_checking|validating|approved|needs_review|failed)$",
+        description=(
+            "Filter by the ingestion job's status (question_jobs.status) via "
+            "question_job_questions — distinct from practice_status, which is "
+            "the question's publication state. Use this for 'needs_review'."
+        ),
+    ),
     source_release_year: Optional[int] = Query(None, description="Filter by official release year"),
     pt_number: Optional[int] = Query(None, description="Filter by canonical PT# (derived from exam_code/test_name)"),
     source_test_name: Optional[str] = Query(None, description="Filter by source test name (legacy)"),
@@ -346,6 +355,14 @@ async def list_questions(
         stmt = stmt.where(Question.practice_status == practice_status)
     if content_origin:
         stmt = stmt.where(Question.content_origin == content_origin)
+    if job_status:
+        stmt = stmt.where(
+            Question.id.in_(
+                select(QuestionJobQuestion.question_id)
+                .join(QuestionJob, QuestionJob.id == QuestionJobQuestion.job_id)
+                .where(QuestionJob.status == job_status)
+            )
+        )
     if source_release_year is not None:
         stmt = stmt.where(Question.source_release_year == source_release_year)
     if pt_number is not None:
@@ -491,17 +508,25 @@ async def list_tests(
 ):
     """Aggregate questions by canonical test/section/module for the admin test explorer.
 
-    Groups by (year, derived PT#, subject, section, module) rather than by the
-    raw source_test_name/source_exam_code, which vary for the same logical test
-    (e.g. "Bluebook Practice Test 5" vs "Test05_ENG_Sec01_Mod02B", or exam_code
-    "05" vs "verbal"). This collapses those duplicate rows into one card per
-    (Year · PT# · Sec## · Mod##).
+    Official content groups by (year, derived PT#, subject, section, module)
+    rather than by the raw source_test_name/source_exam_code, which vary for
+    the same logical test (e.g. "Bluebook Practice Test 5" vs
+    "Test05_ENG_Sec01_Mod02B", or exam_code "05" vs "verbal"). This collapses
+    those duplicate rows into one card per (Year · PT# · Sec## · Mod##).
+
+    Unofficial content has no official PT#, so it groups instead by
+    (source_test_name as the source/site label, subject, section, module) —
+    e.g. source_test_name="CrackAP" becomes its own subcategory card. The
+    frontend nests these under a synthetic "Unofficial" bucket keyed off
+    content_origin, sub-keyed by source_test_name.
     """
     pt = _pt_number_expr()
     stmt = (
         select(
+            Question.content_origin,
             Question.source_release_year,
             pt.label("pt_number"),
+            Question.source_test_name,
             Question.source_subject_code,
             Question.source_section_code,
             Question.source_module_code,
@@ -514,15 +539,19 @@ async def list_tests(
             ).label("approved_count"),
         )
         .group_by(
+            Question.content_origin,
             Question.source_release_year,
             pt,
+            Question.source_test_name,
             Question.source_subject_code,
             Question.source_section_code,
             Question.source_module_code,
         )
         .order_by(
+            Question.content_origin.asc(),
             Question.source_release_year.asc().nullslast(),
             pt.asc().nullslast(),
+            Question.source_test_name.asc().nullslast(),
             Question.source_section_code.asc().nullslast(),
             Question.source_module_code.asc().nullslast(),
         )
@@ -530,10 +559,10 @@ async def list_tests(
     result = await db.execute(stmt)
     return [
             TestSummary(
+                content_origin=r.content_origin,
                 source_release_year=r.source_release_year,
                 pt_number=getattr(r, "pt_number", None),
-                source_test_name=getattr(r, "source_test_name", None),
-                source_exam_code=getattr(r, "source_exam_code", None),
+                source_test_name=r.source_test_name,
                 source_subject_code=r.source_subject_code,
                 source_section_code=r.source_section_code,
                 source_module_code=r.source_module_code,

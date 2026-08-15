@@ -94,6 +94,7 @@ export interface QuestionOption {
 }
 
 export interface TestSummary {
+  content_origin?: 'official' | 'unofficial' | 'generated'
   source_release_year?: number
   pt_number?: number
   source_test_name?: string
