@@ -35,3 +35,6 @@ backups/*.dump
 backups/**/*.sql
 .worktrees/
 .gstack/
+
+# Deprecated code snapshot — not part of the active app
+__deprecated_code/
