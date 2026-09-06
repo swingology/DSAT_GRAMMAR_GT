@@ -256,6 +256,10 @@ class GenerationBatchRequest(BaseModel):
 
     # --- Source examples (caller-supplied; auto-selected when empty) ---
     source_question_ids: Optional[List[str]] = None
+    # The one official question this batch is modelled on. Stored as a real FK
+    # (Question.derived_from_question_id) on every generated row, and always
+    # included in source_question_ids so the model sees it as an example.
+    derived_from_question_id: Optional[str] = None
 
     # --- Optional provider/model override (operational; stripped from lineage) ---
     provider_name: Optional[str] = None

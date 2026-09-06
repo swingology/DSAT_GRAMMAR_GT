@@ -11,7 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, File, Form, Upload
 from sqlalchemy import select, delete, update, func, and_, case, text, cast, Float, Integer
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 
 from typing import Any, Optional, List
 from pydantic import BaseModel
@@ -834,7 +834,12 @@ async def _serialize_generated_candidates(
         annotation_row = ann_map.get(question.latest_annotation_id) if question.latest_annotation_id else None
         annotation = annotation_row.annotation_jsonb if annotation_row else None
         explanation = annotation_row.explanation_jsonb if annotation_row else None
+        generation_profile = annotation_row.generation_profile_jsonb if annotation_row else None
         job = latest_job_by_qid.get(question.id)
+        # Phase 5 self-check block emitted by the generation prompt; lives in the
+        # raw pass-1 payload and is not copied onto the annotation.
+        pass1 = job.pass1_json if job and isinstance(job.pass1_json, dict) else {}
+        self_check = pass1.get("self_check") if isinstance(pass1.get("self_check"), dict) else None
         batch = batch_by_id.get(job.generation_batch_id) if job and job.generation_batch_id else None
         consensus = latest_consensus_by_qid.get(question.id)
         review_run = latest_run_by_qid.get(question.id)
@@ -884,12 +889,18 @@ async def _serialize_generated_candidates(
             "explanation_text": question.current_explanation_text,
             "annotation": annotation,
             "annotation_explanation": explanation,
+            "generation_profile": _json_safe(generation_profile) if generation_profile else None,
+            "self_check": _json_safe(self_check) if self_check else None,
+            "generation_source_set": _json_safe(question.generation_source_set or {}),
+            "derived_from_question_id": str(question.derived_from_question_id) if question.derived_from_question_id else None,
             "options": [
                 {
                     "label": opt.option_label,
                     "text": opt.option_text,
                     "is_correct": opt.is_correct,
                     "distractor_type_key": opt.distractor_type_key,
+                    "plausibility_source_key": opt.plausibility_source_key,
+                    "precision_score": opt.precision_score,
                     "why_plausible": opt.why_plausible,
                     "why_wrong": opt.why_wrong,
                     "student_failure_mode_key": opt.student_failure_mode_key,
@@ -1162,6 +1173,28 @@ async def get_generated_question(
         raise HTTPException(status_code=404, detail="Generated question not found")
     items = await _serialize_generated_candidates([question], db)
     return items[0]
+
+
+@router.get("/generated-questions/{question_id}/report", response_class=PlainTextResponse)
+async def get_generated_question_report(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """Markdown audit report: lineage, generation_profile, passage, options,
+    annotation template, generator self-check, and review-swarm verdicts —
+    the same walkthrough shape as a hand-written question analysis."""
+    from app.reports.generated_question_report import render_generated_question_report
+
+    qid = _parse_uuid(question_id)
+    question = await db.get(Question, qid)
+    if not question or question.content_origin != "generated":
+        raise HTTPException(status_code=404, detail="Generated question not found")
+    items = await _serialize_generated_candidates([question], db)
+    return PlainTextResponse(
+        render_generated_question_report(items[0]),
+        media_type="text/markdown; charset=utf-8",
+    )
 
 
 @router.post("/generated-questions/{question_id}/approve")

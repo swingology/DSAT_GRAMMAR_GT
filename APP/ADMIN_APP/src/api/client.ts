@@ -10,7 +10,12 @@ import type {
   AutoReleaseStatus,
   BatchAnalytics,
   CohortWeakSpots,
+  GeneratedQuestionDetail,
   GenerationAnalytics,
+  GenerationBatchJobs,
+  GenerationBatchRequest,
+  GenerationBatchResponse,
+  GenerationBatchStatus,
   QuestionListResponse,
   StimulusExtractResponse,
   StimulusAsset,
@@ -31,6 +36,8 @@ const ADMIN_TOKEN = import.meta.env.VITE_ADMIN_TOKEN || ''
 interface ApiCallOptions extends RequestInit {
   /** Skip the 401 silent-refresh interceptor (used by the auth calls themselves). */
   skipAuthRetry?: boolean
+  /** Return the raw body as text instead of parsing JSON (markdown/CSV endpoints). */
+  asText?: boolean
 }
 
 /** Query-string params: values are stringified; undefined entries are skipped. */
@@ -158,6 +165,7 @@ export async function apiCall<T = unknown>(
     throw error
   }
   if (res.status === 204) return null as T
+  if (options.asText) return res.text() as Promise<T>
   return res.json() as Promise<T>
 }
 
@@ -251,4 +259,19 @@ export const adminApi = {
   // (canonical keys per family) and candidates.json (off-vocab review queue).
   getVocabMaster: () => apiCall<VocabMaster>('/admin/vocab/master'),
   getVocabCandidates: () => apiCall<VocabCandidatesFile>('/admin/vocab/candidates'),
+
+  // Generated-question candidates (draft inbox) + Markdown audit report
+  getGeneratedQuestion: (id: string) => apiCall<GeneratedQuestionDetail>(`/admin/generated-questions/${id}`),
+  getGeneratedQuestionReport: (id: string) =>
+    apiCall<string>(`/admin/generated-questions/${id}/report`, { asText: true }),
+}
+
+/** Question generation — the /generate router (batch create + polling). */
+export const generateApi = {
+  createBatch: (body: GenerationBatchRequest) =>
+    apiCall<GenerationBatchResponse>('/generate/batches', { method: 'POST', body: JSON.stringify(body) }),
+  getBatch: (id: string) => apiCall<GenerationBatchStatus>(`/generate/batches/${id}`),
+  getBatchJobs: (id: string) => apiCall<GenerationBatchJobs>(`/generate/batches/${id}/questions`),
+  retryFailed: (id: string) =>
+    apiCall<{ batch_id: string; retried_count: number }>(`/generate/batches/${id}/retry-failed`, { method: 'POST' }),
 }

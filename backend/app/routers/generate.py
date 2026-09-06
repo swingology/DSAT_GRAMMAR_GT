@@ -1287,6 +1287,10 @@ async def create_generation_batch(
         )
 
     # Validate caller-supplied source IDs (request-time, exact match per Q9).
+    # A reference question (derived_from_question_id) is always also a source
+    # example, so it gets the same official/domain validation as the rest.
+    if body.derived_from_question_id and body.derived_from_question_id not in (body.source_question_ids or []):
+        body.source_question_ids = [body.derived_from_question_id, *(body.source_question_ids or [])]
     domain = _domain_for_batch(body)
     parsed_source_ids = await _validate_source_question_ids(
         db, body.source_question_ids, domain

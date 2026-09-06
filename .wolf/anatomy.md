@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-05T16:39:00.638Z
-> Files: 1247 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-06T05:18:09.820Z
+> Files: 1251 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -170,7 +170,7 @@
 - `.codex` (~0 tok)
 - `.dockerignore` (~62 tok)
 - `.gitattributes` — Git attributes (~12 tok)
-- `.gitignore` — Git ignore rules (~206 tok)
+- `.gitignore` — Git ignore rules (~228 tok)
 - `.nvmrc` (~1 tok)
 - `2024_PT1_audit.md` — 2024 Practice Test 1 Verbal Answer Audit (~3448 tok)
 - `2024_PT2_audit.md` — 2024 Practice Test 2 Verbal Answer Audit (~4425 tok)
@@ -188,17 +188,17 @@
 - `ARXIV-IDEAS.md` — ArXiv Paper Ideas (~1499 tok)
 - `cache_feature_plan.md` — Overlap Detection Corpus Cache Implementation Plan (~4895 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
-- `CHANGELOG.md` — CHANGELOG (~296616 tok)
+- `CHANGELOG.md` — CHANGELOG (~302255 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
 - `CLEANUP.md` — Repo Cleanup Audit (~1912 tok)
-- `DEBUG_LOG.md` — Debug Log (~75746 tok)
+- `DEBUG_LOG.md` — Debug Log (~76540 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
 - `diagnostic_task.md` — Diagnostic Test — Execution Tasks (~7859 tok)
 - `DIAGNOSTIC_TEST_PLAN.md` — Diagnostic Test Redesign — Plan (~4119 tok)
 - `DOCKER_COMPOSE.md` — Docker Compose Setup (~987 tok)
-- `docker-compose.yml` — Docker Compose services (~1727 tok)
+- `docker-compose.yml` — Docker Compose services (~1796 tok)
 - `Dockerfile.backend` (~180 tok)
 - `Dockerfile.frontend` (~123 tok)
 - `future_features.md` — Future Features & Outstanding Work (~8855 tok)
@@ -452,16 +452,16 @@
 
 - `.nvmrc` (~1 tok)
 - `package.json` — Node.js package manifest (~272 tok)
-- `vite.config.ts` — Declares env (~408 tok)
+- `vite.config.ts` — Declares env (~435 tok)
 
 ## APP/ADMIN_APP/src/
 
-- `App.tsx` — queryClient (~636 tok)
+- `App.tsx` — queryClient (~667 tok)
 - `index.css` — Styles: 2 rules (~63 tok)
 
 ## APP/ADMIN_APP/src/api/
 
-- `client.ts` — Skip the 401 silent-refresh interceptor (used by the auth calls themselves). (~2614 tok)
+- `client.ts` — Skip the 401 silent-refresh interceptor (used by the auth calls themselves). (~2956 tok)
 
 ## APP/ADMIN_APP/src/auth/
 
@@ -474,7 +474,7 @@
 ## APP/ADMIN_APP/src/components/
 
 - `ConfirmModal.tsx` — ConfirmModal (~437 tok)
-- `Layout.tsx` — NAV (~1056 tok)
+- `Layout.tsx` — NAV (~1071 tok)
 
 ## APP/ADMIN_APP/src/hooks/
 
@@ -483,6 +483,7 @@
 ## APP/ADMIN_APP/src/pages/
 
 - `DataManagement.tsx` — StatusBadge (~7584 tok)
+- `Generate.tsx` — Everything the form holds, so a preset or the auto-saved draft restores it 1:1. (~10529 tok)
 - `LoginPage.tsx` — LoginPage (~1069 tok)
 - `PipelinePerformance.tsx` — StatCard — renders table (~3288 tok)
 - `StudentPerformance.tsx` — AccuracyBar (~1986 tok)
@@ -1561,7 +1562,7 @@
 ## backend/app/
 
 - `auth.py` — hash_password, verify_password, verify_and_update_password, create_access_token (~4224 tok)
-- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2798 tok)
+- `config.py` — Settings: cors_origins_list, admin_api_key_list, student_api_key_list, get_settings (~2908 tok)
 - `google_oauth.py` — Google Sign-In ID token verification. (~509 tok)
 - `main.py` — lifespan (~2281 tok)
 
@@ -1590,7 +1591,7 @@
 - `db.py` — Declares QuestionJob (~11048 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5806 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~11404 tok)
+- `payload.py` — HTTP request/response models. (~11484 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1614,11 +1615,16 @@
 
 - `annotate_prompt.py` — Pass 2 prompt — annotates extracted question data using current DSAT rules. (~8653 tok)
 - `extract_prompt.py` — Pass 1 prompt — extracts structured question data from raw text. (~3444 tok)
-- `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~2308 tok)
+- `generate_prompt.py` — Generation prompt — produces new DSAT-style questions from a specification. (~3153 tok)
 - `layout_prompt.py` — GLM-OCR layout-detection prompt — identifies question/table/chart/figure regions (~670 tok)
 - `review_prompt.py` — Review prompt — composes rubric + grammar canon + optional reading rules + question context. (~2278 tok)
 - `span_prompt.py` — Pass 3 prompt — sentence span annotation for grammar practice highlighting. (~5366 tok)
 - `stimulus_prompt.py` — Vision prompt for annotating cropped stimulus regions (tables, charts, figures). (~543 tok)
+
+## backend/app/reports/
+
+- `__init__.py` (~0 tok)
+- `generated_question_report.py` — Render a generated question's stored lineage, annotation, options, generator (~3592 tok)
 
 ## backend/app/review/
 
@@ -1629,9 +1635,9 @@
 
 ## backend/app/routers/
 
-- `admin.py` — API: 9 endpoints (~37588 tok)
+- `admin.py` — API: 9 endpoints (~38146 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
-- `generate.py` (~16118 tok)
+- `generate.py` (~16223 tok)
 - `ingest.py` (~47356 tok)
 - `student_auth.py` — API: 6 endpoints (~2486 tok)
 - `student.py` (~38427 tok)
@@ -1728,6 +1734,7 @@
 - `test_generate_batches.py` — Phase 1 (generation factory) — batch endpoint, request validation, (~5374 tok)
 - `test_generate_router.py` — test_generate_questions_valid_body, test_generate_compare_valid_body, test_generate_run_invalid_uuid (~1404 tok)
 - `test_generate_runner.py` — Phase 2 (generation factory) — runner, failure classification, batch (~8810 tok)
+- `test_generated_question_report.py` — Renderer check for the generated-question Markdown report (pure function, (~1256 tok)
 - `test_google_auth.py` — Tests for Google OAuth sign-in and the JWT-aware admin_required guard. (~3704 tok)
 - `test_ingest_router.py` — test_resolve_provider_and_model_uses_default_ollama_model, test_resolve_provider_and_model_respects_ (~8845 tok)
 - `test_ingestion_analysis.py` — Tests for ingestion analysis reports and re-appraisal creation. (~1792 tok)

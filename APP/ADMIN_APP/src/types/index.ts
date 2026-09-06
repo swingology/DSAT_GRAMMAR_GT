@@ -247,3 +247,102 @@ export interface VocabCandidatesFile {
   schema_version: number
   candidates: VocabCandidate[]
 }
+
+// --- Question generation (POST /generate/batches + admin generated-questions) ---
+
+export type ReleasePolicy = 'admin_review_required' | 'auto_release_on_accept' | 'dry_run'
+
+/** Mirrors backend GenerationBatchRequest; the server enforces per-domain mandatory fields. */
+export interface GenerationBatchRequest {
+  requested_count: number
+  release_policy?: ReleasePolicy
+  skip_review?: boolean
+  source_question_ids?: string[]
+  derived_from_question_id?: string
+  provider_name?: string
+  model_name?: string
+  difficulty_overall: string
+  stimulus_mode_key?: string
+  stem_type_key?: string
+  // grammar
+  target_grammar_role_key?: string
+  target_grammar_focus_key?: string
+  target_syntactic_trap_key?: string
+  target_frequency_band?: string
+  test_format_key?: string
+  target_transition_subtype_key?: string
+  distractor_transition_subtypes?: string[]
+  target_synthesis_goal_key?: string
+  target_audience_knowledge_key?: string
+  target_required_content_key?: string
+  distractor_synthesis_failures?: string[]
+  // reading
+  target_skill_family_key?: string
+  target_reading_focus_key?: string
+  target_test_construct_key?: string
+  target_craft_subconstruct_key?: string
+  target_reasoning_trap_key?: string
+  target_distractor_pattern?: string[]
+  passage_structure_pattern?: string
+  polarity_context?: string
+  target_sentence_function_role?: string
+  quantitative_sub_pattern?: string
+  passage_architecture_key?: string
+  inference_type_note?: string
+  two_part_claim?: boolean
+  question_family_key?: string
+}
+
+export interface GenerationBatchResponse {
+  id: string
+  status: string
+  requested_count: number
+  created_at?: string
+  job_ids: string[]
+  idempotent_replay: boolean
+}
+
+export interface GenerationBatchStatus {
+  id: string
+  status: string
+  requested_count: number
+  created_count: number
+  accepted_count: number
+  rejected_count: number
+  failed_count: number
+  needs_review_count: number
+  release_policy: string
+  created_at?: string
+  updated_at?: string
+}
+
+export interface GenerationBatchJob {
+  id: string
+  status: string
+  question_id: string | null
+  retry_count: number
+  validation_errors?: unknown[] | null
+  created_at?: string
+}
+
+export interface GenerationBatchJobs {
+  batch_id: string
+  status: string
+  jobs: GenerationBatchJob[]
+}
+
+export interface GeneratedQuestionDetail {
+  id: string
+  practice_status: 'draft' | 'active' | 'retired' | 'rejected'
+  official_overlap_status?: string
+  domain?: 'grammar' | 'reading' | null
+  question_text: string
+  passage_text?: string | null
+  correct_option_label: string
+  annotation?: Record<string, unknown> | null
+  options: { label: string; text: string; is_correct: boolean; distractor_type_key?: string | null }[]
+  consensus?: { consensus_verdict: string; reviewer_count: number; average_realism?: number | null } | null
+  review_results?: { provider_name: string; model_name: string; verdict: string }[]
+  derived_from_question_id?: string | null
+  source_examples?: { id: string }[]
+}

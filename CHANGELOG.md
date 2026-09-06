@@ -5,6 +5,61 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-09-05 — Generation quality: bug-824 fix, phase-based prompt, Anthropic generator, admin Generate page + reports
+
+**Model:** Claude Fable 5.1
+**Branch:** `RULES_REFACTOR_v3`
+**Commits:** uncommitted working tree
+
+**Fix (High, bug-824):** `backend/app/prompts/generate_prompt.py` filtered the reading rules
+file against the label `"Reading v2"` while registering it as `"Reading v3"`, so any
+generation request targeting the reading domain loaded **zero** rules context. Both
+comparisons now match; the curated extraction also gained §22 (Passage Style Fingerprint)
+and §23 (Generation Protocol), which reading generation had never seen.
+
+**Generation prompt:** `GENERATE_SYSTEM_PROMPT` rewritten as an explicit 5-phase process
+(profile → passage → stem → options → self-check) with a required `self_check` output
+object and a direction-of-effect check for causal/comparative distractors — the failure
+mode found in the manual `sample_questions_claude.md` pass. Model-agnostic; extra output
+keys pass through `_normalize_generated_question` untouched.
+
+**Provider routing:** generate/annotate default to `anthropic` / `claude-opus-5`; review
+swarm reviewer is `ollama` / `kimi-k3:cloud`. `backend/.env` covers direct runs; a new
+gitignored root `.env` supplies `DSAT_ANTHROPIC_BASE_URL=""`, `DSAT_ANTHROPIC_API_KEY`,
+`DSAT_ANNOTATION_MODEL` for Docker Compose. `docker-compose.yml` switched the base-URL
+substitutions from `${VAR:-default}` to `${VAR-default}` — the colon form treated an empty
+override as unset, so the documented "set to \"\" for the hosted API" never worked.
+Stale `claude-sonnet-4-6` ids fixed where reachable (`span_annotator_model`,
+`generation_review_anthropic_model`, `SPAN_ANNOTATOR_MODEL`).
+
+**Admin Generate page (`/generate`):** pick an official reference question (test/module
+picker + filter), auto-fill every mandatory `GenerationBatchRequest` field from its
+annotation (incl. `target_distractor_pattern` from the reference's distractor keys),
+queue a batch, watch jobs live, approve/reject inline, open the per-question report.
+`GenerationBatchRequest` gains `derived_from_question_id`, stored as the existing
+`Question.derived_from_question_id` FK on every generated row and always included in
+`source_question_ids`.
+
+**Report endpoint:** `GET /admin/generated-questions/{id}/report` → `text/markdown`
+rendered by `backend/app/reports/generated_question_report.py` (pure function, tested):
+lineage, generation_profile, passage stats, stem, options table with distractor keys,
+annotation template, generator self-check, reviewer scores + consensus, validation
+notes. `_serialize_generated_candidates` now also returns `generation_profile`,
+`self_check`, `generation_source_set`, `derived_from_question_id`, and per-option
+`plausibility_source_key` / `precision_score`.
+
+Files: `backend/app/prompts/generate_prompt.py`, `backend/app/config.py`, `backend/.env`,
+`.env` (new, ignored), `.gitignore`, `docker-compose.yml`, `backend/app/models/payload.py`,
+`backend/app/routers/generate.py`, `backend/app/routers/admin.py`,
+`backend/app/reports/generated_question_report.py` (new),
+`backend/tests/test_generated_question_report.py` (new), `APP/ADMIN_APP/vite.config.ts`,
+`APP/ADMIN_APP/src/{App.tsx,components/Layout.tsx,api/client.ts,types/index.ts}`,
+`APP/ADMIN_APP/src/pages/Generate.tsx` (new). Pre-existing failures left untouched:
+3 in `test_backend_regressions.py` (settings mock lacks `anthropic_base_url`), 4 in
+`test_admin_router.py`, tsc errors in `PipelinePerformance.tsx`/`UserManagement.tsx`.
+
+---
+
 ## 2026-07-13 — Google OAuth login, Phase 2 (student app)
 
 **Model:** Claude Opus 4.8
@@ -14715,5 +14770,253 @@ _branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `1
 _( 51 files changed, 2248 insertions(+), 6830 deletions(-))_
 
 **Untracked:** AGENT_HARNESS_PROPOSAL.md CANONICAL_VOCABULARIES.md CLEANUP.md TESTS/AGENTS.md UPFOR_DELETE.md 
+
+---
+
+## Session snapshot — 2026-09-05 18:05:47 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `6f0f3be` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json 
+_( 1 file changed, 1 insertion(+), 1 deletion(-))_
+
+---
+
+## Session snapshot — 2026-09-05 20:05:59 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 12 insertions(+), 1 deletion(-))_
+
+**Untracked:** chatgpt_refactor_rules/CANONCIAL_VOCABULARIES_CGPT.md chatgpt_refactor_rules/README.md chatgpt_refactor_rules/refactor_plan_cgpt.md chatgpt_refactor_rules/rules/grammar/annotation_core.md chatgpt_refactor_rules/rules/grammar/conditional/notes_synthesis.md 
+
+---
+
+## Session snapshot — 2026-09-05 21:19:15 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `17Gi/31Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 22 insertions(+), 1 deletion(-))_
+
+**Untracked:** chatgpt_refactor_rules/CANONCIAL_VOCABULARIES_CGPT.md chatgpt_refactor_rules/README.md chatgpt_refactor_rules/refactor_plan_cgpt.md chatgpt_refactor_rules/rules/grammar/annotation_core.md chatgpt_refactor_rules/rules/grammar/conditional/notes_synthesis.md 
+
+---
+
+## Session snapshot — 2026-09-05 21:27:18 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `16Gi/31Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 32 insertions(+), 1 deletion(-))_
+
+**Untracked:** chatgpt_refactor_rules/CANONCIAL_VOCABULARIES_CGPT.md chatgpt_refactor_rules/README.md chatgpt_refactor_rules/refactor_plan_cgpt.md chatgpt_refactor_rules/rules/grammar/annotation_core.md chatgpt_refactor_rules/rules/grammar/conditional/notes_synthesis.md 
+
+---
+
+## Session snapshot — 2026-09-05 21:27:57 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `16Gi/31Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 42 insertions(+), 1 deletion(-))_
+
+**Untracked:** chatgpt_refactor_rules/CANONCIAL_VOCABULARIES_CGPT.md chatgpt_refactor_rules/README.md chatgpt_refactor_rules/refactor_plan_cgpt.md chatgpt_refactor_rules/rules/grammar/annotation_core.md chatgpt_refactor_rules/rules/grammar/conditional/notes_synthesis.md 
+
+---
+
+## Session snapshot — 2026-09-05 21:29:13 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `16Gi/31Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 52 insertions(+), 1 deletion(-))_
+
+**Untracked:** chatgpt_refactor_rules/CANONCIAL_VOCABULARIES_CGPT.md chatgpt_refactor_rules/README.md chatgpt_refactor_rules/refactor_plan_cgpt.md chatgpt_refactor_rules/rules/grammar/annotation_core.md chatgpt_refactor_rules/rules/grammar/conditional/notes_synthesis.md 
+
+---
+
+## Session snapshot — 2026-09-05 21:38:04 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `17Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backups/backup.log 
+_( 9 files changed, 231 insertions(+), 27 deletions(-))_
+
+**Untracked:** chatgpt_refactor_rules/CANONCIAL_VOCABULARIES_CGPT.md chatgpt_refactor_rules/README.md chatgpt_refactor_rules/refactor_plan_cgpt.md chatgpt_refactor_rules/rules/grammar/annotation_core.md chatgpt_refactor_rules/rules/grammar/conditional/notes_synthesis.md 
+
+---
+
+## Session snapshot — 2026-09-05 21:38:21 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `17Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backups/backup.log 
+_( 9 files changed, 288 insertions(+), 27 deletions(-))_
+
+**Untracked:** chatgpt_refactor_rules/CANONCIAL_VOCABULARIES_CGPT.md chatgpt_refactor_rules/README.md chatgpt_refactor_rules/refactor_plan_cgpt.md chatgpt_refactor_rules/rules/grammar/annotation_core.md chatgpt_refactor_rules/rules/grammar/conditional/notes_synthesis.md 
+
+---
+
+## Session snapshot — 2026-09-05 21:41:32 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `17Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml 
+_( 12 files changed, 653 insertions(+), 358 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 21:41:49 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `17Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml 
+_( 12 files changed, 663 insertions(+), 358 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 21:48:30 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `17Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml 
+_( 12 files changed, 673 insertions(+), 358 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 21:54:15 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `17Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml 
+_( 12 files changed, 683 insertions(+), 358 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 21:59:04 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `17Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backups/backup.log docker-compose.yml 
+_( 13 files changed, 745 insertions(+), 361 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 21:59:08 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `17Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backups/backup.log docker-compose.yml 
+_( 13 files changed, 767 insertions(+), 361 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 21:59:13 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `18Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backups/backup.log docker-compose.yml 
+_( 13 files changed, 790 insertions(+), 361 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 21:59:19 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `18Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backups/backup.log docker-compose.yml 
+_( 13 files changed, 829 insertions(+), 361 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 21:59:26 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `18Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/models/payload.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/app/routers/generate.py backups/backup.log docker-compose.yml 
+_( 15 files changed, 865 insertions(+), 363 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 22:00:37 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/models/payload.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/app/routers/generate.py backups/backup.log docker-compose.yml 
+_( 20 files changed, 1080 insertions(+), 367 deletions(-))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 22:03:58 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/models/payload.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/app/routers/generate.py backups/backup.log docker-compose.yml 
+_( 20 files changed, 1106 insertions(+), 367 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/pages/Generate.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 22:05:19 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `20Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/models/payload.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/app/routers/generate.py backups/backup.log docker-compose.yml 
+_( 20 files changed, 1180 insertions(+), 368 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/pages/Generate.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 22:05:47 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `20Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/models/payload.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/app/routers/generate.py backups/backup.log docker-compose.yml 
+_( 20 files changed, 1190 insertions(+), 368 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/pages/Generate.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 22:17:40 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/models/payload.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/app/routers/generate.py backups/backup.log docker-compose.yml 
+_( 20 files changed, 1214 insertions(+), 368 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/pages/Generate.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 22:17:44 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/models/payload.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/app/routers/generate.py backups/backup.log docker-compose.yml 
+_( 20 files changed, 1238 insertions(+), 368 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/pages/Generate.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 22:17:56 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/models/payload.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/app/routers/generate.py backups/backup.log docker-compose.yml 
+_( 20 files changed, 1262 insertions(+), 368 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/pages/Generate.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 22:18:27 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/App.tsx APP/ADMIN_APP/src/api/client.ts APP/ADMIN_APP/src/components/Layout.tsx APP/ADMIN_APP/src/types/index.ts APP/ADMIN_APP/vite.config.ts CHANGELOG.md DEBUG_LOG.md backend/app/config.py backend/app/models/payload.py backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/app/routers/generate.py backups/backup.log docker-compose.yml 
+_( 20 files changed, 1279 insertions(+), 368 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/pages/Generate.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
 
 ---

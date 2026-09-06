@@ -9,6 +9,7 @@ const NAV = [
   { to: '/students', label: 'Student Performance', icon: '📈' },
   { to: '/pipeline', label: 'Pipeline & Backend', icon: '⚙️' },
   { to: '/vocabulary', label: 'Vocabulary', icon: '🔑' },
+  { to: '/generate', label: 'Generate', icon: '✨' },
 ]
 
 const APP_VERSION = import.meta.env.VITE_APP_VERSION || 'dev'

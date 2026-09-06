@@ -1,5 +1,45 @@
 # Debug Log
 
+## 2026-09-05 - Generation pipeline upgrade: fix bug-824, phase-based prompt, provider routing
+Report created by: Claude Sonnet 5
+Git branch: `weakness-weighted-mixed-practice`
+Git checkpoint: `6f0f3be` — Move deprecated frontend/ingestion code to __deprecated_code/, add research docs
+
+### Findings
+
+1. **High (fixed):** bug-824 (see 2026-08-02 finding #1 below) — reading-domain
+   generation requests loaded zero rules context due to a `"Reading v2"`/`"Reading v3"`
+   label mismatch in `generate_prompt.py`. Fixed; curated extraction also now includes
+   the style-fingerprint and generation-protocol sections it was missing even in the
+   "both"-domain fallback path.
+2. **Medium:** `GENERATE_SYSTEM_PROMPT` (`generate_prompt.py`) previously requested
+   output fields with no required reasoning order or self-check step, so a single LLM
+   call could satisfy the schema without actually working through style/quality gates.
+   **Fixed:** rewrote as an explicit 5-phase process (profile → passage → stem →
+   options → self-check) with a mandatory `self_check` output object, including a
+   direction-of-effect verification step for causal/comparative distractors — the
+   single most common failure mode found during manual rules-alignment generation
+   (see `sample_questions_claude.md`, Item 6 findings).
+3. **Medium:** `default_annotation_provider`/`default_annotation_model` (drives both
+   the generate and annotate passes) defaulted to local `ollama`/`qwen3.6:27b`.
+   Switched default to `anthropic`/`claude-opus-5` for one-shot generation quality.
+   Requires `ANTHROPIC_BASE_URL=""` (hosted API, not the LiteLLM proxy) and a real
+   `ANTHROPIC_API_KEY` — set in `backend/.env` for non-Docker runs and in a new
+   root-level `.env` (`DSAT_ANTHROPIC_BASE_URL`, `DSAT_ANTHROPIC_API_KEY`,
+   `DSAT_ANNOTATION_MODEL`) for Docker Compose runs, since `docker-compose.yml`
+   pins those three vars as explicit container env vars that override `backend/.env`.
+4. **Low:** review swarm's sole active reviewer (`generation_review_ollama_model`)
+   switched from `qwen3.6:27b` to `kimi-k3:cloud` per user request — still genuinely
+   independent from the now-Anthropic generator, so this remains an honest single
+   reviewer, not fake multi-provider consensus (see 2026-07-31 decision below).
+5. **Low:** `claude-sonnet-4-6` is a stale/invalid model id present in 9 locations
+   across the backend (`config.py` x2, `generate.py`, `ingest.py` x2,
+   `crop_detector.py`, `factory.py`, `anthropic_provider.py` default, `dashboard.py`
+   display string). Fixed the two in `config.py` (`generation_review_anthropic_model`,
+   `span_annotator_model`) and `backend/.env`'s `SPAN_ANNOTATOR_MODEL` since they're
+   live/reachable; the rest are unreached fallback defaults or a display string and
+   were left as-is — out of scope for this change, flagged for a follow-up sweep.
+
 ## 2026-08-02 - Rules-doc coverage review (grammar v8 / reading v3) + prompt loader audit
 Report created by: Claude Fable 5
 Git branch: `weakness-weighted-mixed-practice`
@@ -11,12 +51,16 @@ and `rules_agent_dsat_reading_v3.md` (3,110 lines) plus their consumers in
 
 ### Findings
 
-1. **High:** `backend/app/prompts/generate_prompt.py` labels the reading rules file
+1. ~~**High:** `backend/app/prompts/generate_prompt.py` labels the reading rules file
    `"Reading v3"` (line 9) but the section extractor (line 53) and domain filter
    (line 106) both compare against `"Reading v2"`. Reading-targeted generation via
    `build_generate_prompt_parts` therefore loads **zero rules context**, and
    grammar/"both" calls append the **entire ~42k-token reading doc raw** instead of the
-   curated section list.
+   curated section list.~~
+   **Fixed (2026-09-05, bug-824):** both comparisons now match `"Reading v3"`; the
+   curated extraction list also gained `## 22. Passage Style Fingerprint` and
+   `## 23. Generation Protocol` (previously reading generation never saw the style
+   gate or generation-profile-first protocol at all).
 2. **High:** grammar v8 — `absolute_phrase` is a production focus key (D.2.5 L5475,
    Appendix V L6471) but is **missing from the D.8.1 role→focus enforcement table**
    (L5826). B.13 check #1 validates against D.8.1, so every valid `absolute_phrase`

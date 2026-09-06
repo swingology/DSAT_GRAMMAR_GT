@@ -10,6 +10,7 @@ import { DataManagement } from './pages/DataManagement'
 import { StudentPerformance } from './pages/StudentPerformance'
 import { PipelinePerformance } from './pages/PipelinePerformance'
 import { VocabularyGovernance } from './pages/VocabularyGovernance'
+import { Generate } from './pages/Generate'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { ToastProvider } from './components/Toast'
 
@@ -42,6 +43,7 @@ function AppRoutes() {
               <Route path="/students" element={<StudentPerformance />} />
               <Route path="/pipeline" element={<PipelinePerformance />} />
               <Route path="/vocabulary" element={<VocabularyGovernance />} />
+              <Route path="/generate" element={<Generate />} />
             </Route>
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>

@@ -1,5 +1,8 @@
 .DS_Store
 **/.DS_Store
+
+# Docker Compose host-level overrides (DSAT_* vars) — carries real API keys
+/.env
 **/settings.local.json
 *_pages/
 local_object_store/**

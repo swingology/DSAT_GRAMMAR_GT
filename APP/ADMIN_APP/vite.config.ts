@@ -29,6 +29,10 @@ export default defineConfig(({ mode }) => {
           target: backendOrigin,
           rewrite: (p: string) => p.replace(/^\/api/, ''),
         },
+        '/api/generate': {
+          target: backendOrigin,
+          rewrite: (p: string) => p.replace(/^\/api/, ''),
+        },
         '/api': backendOrigin,
       },
     },

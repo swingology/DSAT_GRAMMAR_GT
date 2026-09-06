@@ -38,8 +38,11 @@ services:
       # them from local qwen3.6:27b. Requires the `llm` profile to be running:
       #   docker compose --profile llm up -d litellm backend
       # Set these to "" to send those providers back to the hosted vendor APIs.
-      OPENAI_BASE_URL: ${DSAT_OPENAI_BASE_URL:-http://litellm:4000}
-      ANTHROPIC_BASE_URL: ${DSAT_ANTHROPIC_BASE_URL:-http://litellm:4000}
+      # Note: uses the ${VAR-default} form (no colon), not ${VAR:-default} — the
+      # colon form treats "set but empty" the same as "unset" and would silently
+      # keep routing to the proxy even with DSAT_*_BASE_URL="" in the root .env.
+      OPENAI_BASE_URL: ${DSAT_OPENAI_BASE_URL-http://litellm:4000}
+      ANTHROPIC_BASE_URL: ${DSAT_ANTHROPIC_BASE_URL-http://litellm:4000}
       # These are the credentials presented TO the LiteLLM proxy, so they must
       # equal LITELLM_MASTER_KEY — not your real vendor keys. Note the `:-`
       # default is NOT enough here: a real OPENAI_API_KEY exported in the host

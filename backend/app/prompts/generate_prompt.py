@@ -50,7 +50,7 @@ def _generation_sections(label: str, rules_text: str) -> str:
                 ("# PART E", "## Reference Quick-Index"),
             ],
         )
-    if label == "Reading v2":
+    if label == "Reading v3":
         return _extract_sections(
             rules_text,
             [
@@ -64,7 +64,9 @@ def _generation_sections(label: str, rules_text: str) -> str:
                 ("## 16. Generation Rules", "## 17."),
                 ("## 17. Disambiguation Rules", "## 18."),
                 ("## 19. Student Failure Mode Keys", "## 20."),
-                ("## 21. Validator Checklist", None),
+                ("## 21. Validator Checklist", "## 22."),
+                ("## 22. Passage Style Fingerprint", "## 23."),
+                ("## 23. Generation Protocol", "## Appendix"),
             ],
         )
     return rules_text
@@ -103,7 +105,7 @@ def _load_generation_rule_context(domain: str = "both") -> str:
     for label, filename in _GENERATION_RULE_FILES:
         if domain == "grammar" and label != "Grammar v8":
             continue
-        if domain == "reading" and label != "Reading v2":
+        if domain == "reading" and label != "Reading v3":
             continue
         path = os.path.join(_ROOT_DIR, filename)
         if not os.path.exists(path):
@@ -117,7 +119,44 @@ def _load_generation_rule_context(domain: str = "both") -> str:
 
 GENERATE_SYSTEM_PROMPT = """You are a DSAT question generation specialist following the current DSAT grammar and reading guide specifications.
 
-Generate a complete SAT-style question matching the given specification. Your output must include:
+Work through these phases in order, silently, before writing final output. Each phase's
+result constrains the next — do not write the passage before Phase 1 is fixed, and do not
+write options before the passage exists.
+
+PHASE 1 — Profile. Fix generation_profile first: target skill/focus/trap keys, passage
+architecture (if any), difficulty, and — critically — a target_distractor_pattern naming
+each wrong option's failure type BEFORE the passage is drafted. Distractors bolted on after
+the fact tend to share one failure reason; deciding the three distinct failure types up
+front prevents that.
+
+PHASE 2 — Passage. Draft the passage to the length and register the rules reference below
+specifies for this item's stimulus/skill type. Reread it once and check, sentence by
+sentence: length variation, hedging/attribution language, at least one appositive or
+definitional aside for any technical term, and that no required piece of evidence for the
+correct answer sits more than one sentence away from where it is needed. If the draft
+fails any check, rewrite the passage — do not patch around it in the options.
+
+PHASE 3 — Stem. Use the canonical stem wording for the declared stem_type_key.
+
+PHASE 4 — Options. Write the correct option first, tied to a specific quoted or
+paraphrased span of the passage. Then write each distractor to its assigned failure type
+from Phase 1. For every distractor whose wrongness depends on a causal, comparative, or
+directional claim (e.g. "X increases/decreases Y," "A is more/less than B"): explicitly
+restate what that claim would predict if it were true, and confirm that prediction
+contradicts — not accidentally matches — the passage's actual stated result. This check
+catches the single most common generation failure: a distractor that is meant to be wrong
+but, worked through, is actually consistent with the passage. Confirm no two distractors
+fail for the same reason, and that at least two of the four options would survive a
+skimming first read (an option only a highly attentive reader eliminates immediately is a
+weak distractor).
+
+PHASE 5 — Self-check. Before emitting output, verify: every option has a distinct
+distractor_type_key and a why_wrong naming a specific textual defeater; the correct option
+is not the longest, most hedged, or most detailed option by construction; no invented
+key or field exists outside the ones this prompt and the rules reference define; if a
+reasoning trap or passage architecture was declared, the passage actually instantiates it.
+
+Your final output must include:
 1. question: passage_text, question_text, options (4 labeled A-D), correct_option_label
 2. classification: domain-appropriate keys and difficulty fields
    - Grammar / Expression of Ideas: grammar_role_key, grammar_focus_key, syntactic_trap_key
@@ -126,11 +165,16 @@ Generate a complete SAT-style question matching the given specification. Your ou
 4. reasoning: primary_rule, trap_mechanism, correct_answer_reasoning
 5. generation_profile: target keys, passage_template, frequency_band
 6. review: annotation_confidence, needs_human_review
+7. self_check: {distractor_directions_verified: bool, failure_types_distinct: bool,
+   architecture_instantiated: bool, notes: string — anything the checks above caught and
+   fixed, or "none" if the first draft already passed}
 
 Rules:
 - Passage must be 20-40 words for sentence_only items
 - Formal academic register, no contractions or slang
-- Self-contained meaning (no outside knowledge needed)
+- Self-contained meaning (no outside knowledge needed) — every premise the correct answer
+  depends on, including any experimental manipulation and its trigger, must appear on the
+  page, not be assumed
 - At least one grammar distractor must target the declared syntactic trap
 - At least one reading distractor must target the declared reasoning trap or test construct
 - No two distractors may fail for the exact same reason

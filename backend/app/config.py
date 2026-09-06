@@ -58,18 +58,19 @@ class Settings(BaseSettings):
     object_storage_local_root: str = "../local_object_store"
 
     # LLM defaults
-    default_annotation_provider: str = "ollama"
-    # Local on-box inference. The previous default, deepseek-v4-pro:cloud, was
-    # reached through Ollama but executed remotely (:cloud suffix); qwen3.6:27b
-    # runs on this machine. See docs/litellm.md.
-    default_annotation_model: str = "qwen3.6:27b"
+    # Generate + annotate (pass 1/2 of the generation pipeline) run on whichever
+    # provider/model is set here. Set to the strongest one-shot Anthropic model
+    # for generation quality; requires anthropic_base_url = "" (hosted API, not
+    # the local LiteLLM proxy) and a real anthropic_api_key. See docs/litellm.md.
+    default_annotation_provider: str = "anthropic"
+    default_annotation_model: str = "claude-opus-5"
     default_ollama_model: str = "qwen3.6:27b"
 
     # Pass 3 span annotator — constructs AnthropicProvider directly rather than
     # going through the factory. It now honours anthropic_base_url, so with the
     # LiteLLM proxy configured this model name is served by local qwen3.6:27b.
     # Set anthropic_base_url to "" to send it back to the hosted Anthropic API.
-    span_annotator_model: str = "claude-sonnet-4-6"
+    span_annotator_model: str = "claude-sonnet-5"
     rules_version: str = "rules_agent_dsat_grammar_ingestion_generation_v8"
     official_auto_activate_for_testing: bool = False
 
@@ -146,10 +147,15 @@ class Settings(BaseSettings):
     # openai_base_url/anthropic_base_url to "" so those providers reach the
     # hosted APIs — or map their names to genuinely different local models in
     # litellm/config.yaml. See docs/litellm.md.
+    #
+    # The single ollama reviewer below is a genuinely independent model from
+    # the anthropic generator above (default_annotation_provider/model), so
+    # this is still an honest second opinion, not the fake-consensus case the
+    # note above warns about.
     generation_review_providers: str = "ollama"
     generation_review_openai_model: str = "gpt-4o"
-    generation_review_anthropic_model: str = "claude-sonnet-4-6"
-    generation_review_ollama_model: str = "qwen3.6:27b"
+    generation_review_anthropic_model: str = "claude-sonnet-5"
+    generation_review_ollama_model: str = "kimi-k3:cloud"
     generation_review_max_concurrent: int = 6
     generation_review_max_retries: int = 2
 
