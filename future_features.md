@@ -4,13 +4,39 @@ Consolidated from `future_tasks.md` and `_deprecated/rules_v*/future_plans.md`.
 
 ---
 
+## COMPLETED
+
+Moved here after repo-state review on 2026-08-11. This does not include live QA,
+designqc, performance checks, or the three admin items reclassified as still open.
+
+- [x] **Student missed-question backend tests** — `GET /api/study/missed` has endpoint
+  and contract coverage for success/empty response shape, accepted domain/sort/limit
+  parameters, missing token, and invalid user token behavior.
+- [x] **Admin auth guard** — admin routes are protected by the app-level admin guard,
+  with login plus JWT/refresh-token API handling.
+- [x] **Grammar passage span storage/read path** — `question_annotations.passage_spans`,
+  `span_annotated_at`, `span_review_queue`, admin span annotation, student response
+  summaries, and token fallback priority are implemented.
+- [x] **Grammar anatomy/concept highlighting** — frontend consumes `anatomy_present`
+  and `concepts_present`, merges token-level `anatomy` and `concept_tags`, renders
+  a "Grammar Concepts" group, and preserves legacy flat `tags` support.
+- [x] **Spaced repetition** — SM-2 state, review/due/progress endpoints, and the
+  dashboard widget are implemented.
+- [x] **Progress over time** — progress trend, domain trend, focus summary endpoints,
+  and the student Progress page are implemented.
+- [x] **Passage-based student rendering** — student question surfaces render
+  `current_passage_text` alongside questions.
+- [x] **Admin UI live QA** — verified against the live backend with an authenticated
+  admin session; admin pages load and approve/reject mutations persist.
+
+---
+
 ## QA — Student App
 
 Phases 1–5 of `APP/STUDENT_APP_REDUX/` are complete. Remaining QA:
 
 - [ ] **Manual QA** — walk the full student journey with a real `VITE_TEST_USER_TOKEN` against the live backend: load dashboard → view weak concepts → run diagnostic → answer questions → check test mode → verify missed questions tab populates
 - [ ] **designqc** — run `openwolf designqc --url http://localhost:5173` for visual polish review; check spacing, typography, color contrast, responsive layout
-- [ ] **Backend endpoint tests** — add pytest tests for `GET /api/study/missed` covering: success response, domain filter, sort_by options, empty result, invalid token
 - [ ] **Performance check** — measure `/study/recommendations` fetch latency, React Query cache hit rates, no N+1 queries on backend
 
 ---
@@ -19,8 +45,6 @@ Phases 1–5 of `APP/STUDENT_APP_REDUX/` are complete. Remaining QA:
 
 `APP/ADMIN_APP/` Phase 2 (frontend) is scaffolded. Remaining:
 
-- [ ] **QA Admin UI** — run against live backend with a real admin token; verify all 4 pages load, filters work, approve/reject mutations persist
-- [ ] **Auth guard** — add admin token validation and redirect to login if token is missing or invalid
 - [ ] **designqc** — run `openwolf designqc --url http://localhost:5174` for visual polish
 - [ ] **Student Performance deep-dive** — add cohort view: accuracy across all students per focus key, which questions have the highest miss rates system-wide
 - [ ] **Data Management — question detail page** — click into a single question to view full annotation, version history, audit log, and edit form
@@ -77,6 +101,10 @@ Validator passes 1–6 exist. Pass 7 and automated repair loop are missing.
 ---
 
 ## Grammar Practice — Anatomy Highlighting (Backend Plan)
+
+Core implementation items from this section are now tracked in **COMPLETED**. This
+section remains as schema/taxonomy reference and for any future backfill or quality
+work that is not yet separately ticketed.
 
 The local tokenizer (Pass 2 in `sentenceTokenizer.ts`) uses heuristics for structural
 annotation: prepositional phrases, subject, and appositives. This is approximate — it
@@ -534,10 +562,7 @@ parallel → expression of ideas → syntactic traps).
 
 Ideas not in current scope but worth tracking:
 
-- [ ] **Spaced repetition** — resurface missed questions using SM-2 or similar algorithm instead of fixed resurface window
-- [ ] **Progress over time** — chart student accuracy trend by week/month per domain
 - [ ] **Full test simulation** — two-module adaptive test (mod01 → mod02 higher/lower based on mod01 score), with score estimate at the end
-- [ ] **Passage-based questions** — student UI support for displaying passages alongside questions (currently grammar-only)
 
 ---
 

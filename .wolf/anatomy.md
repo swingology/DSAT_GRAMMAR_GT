@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T03:20:26.593Z
-> Files: 1239 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-05T16:39:00.638Z
+> Files: 1247 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -170,7 +170,7 @@
 - `.codex` (~0 tok)
 - `.dockerignore` (~62 tok)
 - `.gitattributes` — Git attributes (~12 tok)
-- `.gitignore` — Git ignore rules (~186 tok)
+- `.gitignore` — Git ignore rules (~206 tok)
 - `.nvmrc` (~1 tok)
 - `2024_PT1_audit.md` — 2024 Practice Test 1 Verbal Answer Audit (~3448 tok)
 - `2024_PT2_audit.md` — 2024 Practice Test 2 Verbal Answer Audit (~4425 tok)
@@ -185,10 +185,12 @@
 - `ADMIN_DASHBOARD_WIREFRAMES.md` — DSAT Admin Dashboard — Wireframes & Component Guide (~7794 tok)
 - `annotate_refactor_task.md` — Annotation Pipeline Refactor — Task Sheet (~1558 tok)
 - `answer_obfuscation_report.md` — Answer Obfuscation Report (~1379 tok)
+- `ARXIV-IDEAS.md` — ArXiv Paper Ideas (~1499 tok)
 - `cache_feature_plan.md` — Overlap Detection Corpus Cache Implementation Plan (~4895 tok)
 - `CB_ANSWERS_QUESTIONS_ANALYSIS.md` — College Board PT4 Answer-Question Analysis (~19484 tok)
 - `CHANGELOG.md` — CHANGELOG (~296616 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
+- `CLEANUP.md` — Repo Cleanup Audit (~1912 tok)
 - `DEBUG_LOG.md` — Debug Log (~75746 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
@@ -205,6 +207,7 @@
 - `GENERATION_ARCHITECTURE.md` — Generation Architecture (~1067 tok)
 - `GRAMMAR_REDUX_PRD.md` — GRAMMAR_REDUX_PRD.md (~6945 tok)
 - `GRAMMAR_REDUX_TASKS.md` — GRAMMAR_REDUX_TASKS.md (~19210 tok)
+- `grammar_rules_todo.md` — Grammar Rules TODO — Stem Key Taxonomy (~2126 tok)
 - `grammar-app.html` — SAT Grammar Practice (~11817 tok)
 - `INCONSISTENT_KEYS_LIST.md` — Inconsistent Taxonomy Keys in Official Question Annotations (~1473 tok)
 - `incorrect_questions_plan.md` — Incorrect Questions Review — Plan (~4801 tok)
@@ -229,6 +232,7 @@
 - `rules_agent_dsat_review_v1.md` — DSAT Generated Question Review Rubric v1 (~3578 tok)
 - `RULES_ANATOMY.md` — Rules Files Anatomy (~1192 tok)
 - `rules_v1_v2_analysis_report.md` — Rules V1 vs V2 Analysis Report (~2729 tok)
+- `sample_questions_claude.md` — Sample Question Analysis — DSAT Inference Items (PT10 Sec01 Mod02 Q17, Coll/Bianchi census item + ge (~15775 tok)
 - `start.sh` — One-shot launcher for the DSAT apps: (~1713 tok)
 - `STUDENT_AUTH_TASKS.md` — DSAT Student Auth — Task List (~2028 tok)
 - `STUDENT_FRONTEND_TASKS.md` — DSAT Student Frontend — Task List (~5330 tok)
@@ -277,6 +281,19 @@
 ## .claude/skills/start-app/
 
 - `SKILL.md` — start-app (~593 tok)
+
+## .claude/worktrees/agent-a884d3bb7ff2360b2/
+
+- `DEBUG_LOG.md` — Debug Log (~70964 tok)
+
+## .claude/worktrees/agent-ae6d74d63fd950f21/
+
+- `DEBUG_LOG.md` — Debug Log (~71659 tok)
+
+## .claude/worktrees/agent-ae6d74d63fd950f21/.wolf/
+
+- `buglog.json` — Declares in (~82723 tok)
+- `memory.md` — Memory (~121265 tok)
 
 ## .pytest_cache/
 
@@ -465,7 +482,7 @@
 
 ## APP/ADMIN_APP/src/pages/
 
-- `DataManagement.tsx` — Canonical practice-test number for a question, mirroring the backend's (~12012 tok)
+- `DataManagement.tsx` — StatusBadge (~7584 tok)
 - `LoginPage.tsx` — LoginPage (~1069 tok)
 - `PipelinePerformance.tsx` — StatCard — renders table (~3288 tok)
 - `StudentPerformance.tsx` — AccuracyBar (~1986 tok)
@@ -474,7 +491,7 @@
 
 ## APP/ADMIN_APP/src/types/
 
-- `index.ts` — Exports User, QuestionAnnotation, StimulusAsset, StimulusExtractionJob + 22 more (~1587 tok)
+- `index.ts` — Exports User, QuestionAnnotation, StimulusAsset, StimulusExtractionJob + 22 more (~1604 tok)
 
 ## APP/STUDENT_APP_REDUX/
 
@@ -1573,7 +1590,7 @@
 - `db.py` — Declares QuestionJob (~11048 tok)
 - `ontology.py` — Allowed keys, enums, and constants for the current DSAT ruleset. (~5806 tok)
 - `options.py` — Per-option Pydantic schema — V3 §10 option-level analysis. (~847 tok)
-- `payload.py` — HTTP request/response models. (~11382 tok)
+- `payload.py` — HTTP request/response models. (~11404 tok)
 - `vocab_candidates.py` — Controlled-vocabulary review queue. (~1565 tok)
 
 ## backend/app/parsers/
@@ -1612,7 +1629,7 @@
 
 ## backend/app/routers/
 
-- `admin.py` — API: 9 endpoints (~37211 tok)
+- `admin.py` — API: 9 endpoints (~37588 tok)
 - `dashboard.py` — Local admin dashboard for ingestion, generation, and inspection. (~14762 tok)
 - `generate.py` (~16118 tok)
 - `ingest.py` (~47356 tok)

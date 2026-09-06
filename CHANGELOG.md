@@ -13810,3 +13810,910 @@ _( 5 files changed, 103 insertions(+), 3 deletions(-))_
 **Untracked:** MATH/MATH_TODO.md MATH/rules_agent_dsat_math_v1.md 
 
 ---
+
+## Session snapshot — 2026-08-03 20:22:26 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9.6Gi/30Gi`
+
+_No uncommitted changes._
+
+---
+
+## Session snapshot — 2026-08-03 20:23:17 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** CHANGELOG.md 
+_( 1 file changed, 7 insertions(+))_
+
+---
+
+## Session snapshot — 2026-08-08 15:49:29 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 5 files changed, 218 insertions(+), 313 deletions(-))_
+
+---
+
+## Session snapshot — 2026-08-08 15:52:46 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 5 files changed, 278 insertions(+), 294 deletions(-))_
+
+---
+
+## Session snapshot — 2026-08-08 16:24:36 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `8.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 298 insertions(+), 292 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md 
+
+---
+
+## Session snapshot — 2026-08-08 16:39:51 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `8.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 308 insertions(+), 292 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md 
+
+---
+
+## Session snapshot — 2026-08-10 15:58:36 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9.2Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 333 insertions(+), 310 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md 
+
+---
+
+## Session snapshot — 2026-08-14 08:44:04 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 507 insertions(+), 6825 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:45:41 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9.9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 517 insertions(+), 6825 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:46:03 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 527 insertions(+), 6825 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:46:55 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 537 insertions(+), 6825 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:47:49 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 547 insertions(+), 6825 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:50:00 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9.4Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 557 insertions(+), 6825 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:50:52 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 567 insertions(+), 6825 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:52:55 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 577 insertions(+), 6825 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:54:30 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 599 insertions(+), 6812 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:55:14 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 609 insertions(+), 6812 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 08:59:11 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 623 insertions(+), 6811 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:03:09 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 652 insertions(+), 6808 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:03:35 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 675 insertions(+), 6804 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:03:47 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 691 insertions(+), 6801 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:04:25 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 701 insertions(+), 6801 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:14:33 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 718 insertions(+), 6798 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:22:01 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 728 insertions(+), 6798 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:26:47 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 738 insertions(+), 6798 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:29:49 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 748 insertions(+), 6798 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:36:51 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 758 insertions(+), 6798 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:40:30 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 768 insertions(+), 6798 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:45:47 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 778 insertions(+), 6798 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:50:17 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `21Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 788 insertions(+), 6798 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 09:55:03 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 802 insertions(+), 6797 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 10:08:59 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 825 insertions(+), 6796 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 10:24:13 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 866 insertions(+), 6792 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 10:48:17 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 876 insertions(+), 6792 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 10:50:34 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 886 insertions(+), 6792 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 11:13:42 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 51 files changed, 912 insertions(+), 6804 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 11:42:52 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 52 files changed, 934 insertions(+), 6805 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 11:43:57 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 52 files changed, 944 insertions(+), 6805 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 11:45:11 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `22Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 52 files changed, 954 insertions(+), 6805 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:06:29 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 52 files changed, 970 insertions(+), 6805 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:16:13 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 52 files changed, 988 insertions(+), 6803 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:18:03 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 52 files changed, 998 insertions(+), 6803 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:21:07 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 53 files changed, 1023 insertions(+), 6800 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:21:19 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 53 files changed, 1054 insertions(+), 6797 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:22:03 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 54 files changed, 1077 insertions(+), 6796 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:48:25 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 55 files changed, 1105 insertions(+), 6791 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:48:40 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 55 files changed, 1115 insertions(+), 6791 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:51:06 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 55 files changed, 1125 insertions(+), 6791 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:55:08 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 55 files changed, 1135 insertions(+), 6791 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 12:58:27 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 55 files changed, 1145 insertions(+), 6791 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 18:54:10 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 55 files changed, 1164 insertions(+), 6791 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 18:57:40 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 55 files changed, 1214 insertions(+), 6801 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 19:15:24 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 55 files changed, 1251 insertions(+), 6804 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 19:16:06 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts 
+_( 56 files changed, 1330 insertions(+), 6795 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 19:16:23 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts 
+_( 56 files changed, 1340 insertions(+), 6795 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 19:17:48 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts 
+_( 56 files changed, 1350 insertions(+), 6795 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 20:20:44 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts 
+_( 56 files changed, 1363 insertions(+), 6795 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 20:20:47 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts 
+_( 56 files changed, 1373 insertions(+), 6795 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 20:23:01 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `a69103f` · _ram:_ `11Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/types/index.ts CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts 
+_( 56 files changed, 1383 insertions(+), 6795 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 21:05:25 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `dd4009d` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 52 files changed, 1263 insertions(+), 6771 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 21:11:51 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `2d045c9` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1242 insertions(+), 6758 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 21:14:54 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `2d045c9` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1252 insertions(+), 6758 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-14 21:15:58 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `2d045c9` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1262 insertions(+), 6758 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-17 15:36:44 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `2d045c9` · _ram:_ `6.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1222 insertions(+), 6829 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md __deprecated_code/FRONTEND/.env.example __deprecated_code/FRONTEND/.gitignore __deprecated_code/FRONTEND/README.md __deprecated_code/FRONTEND/eslint.config.js 
+
+---
+
+## Session snapshot — 2026-08-21 10:26:00 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `2d045c9` · _ram:_ `7.1Gi/14Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1379 insertions(+), 6829 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/00_SAT Grammar - Table of Contents.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/01_Essential Grammar Terms.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/Adverbs.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/Colons Semicolons and Dashes.md 
+
+---
+
+## Session snapshot — 2026-08-21 10:27:47 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `2d045c9` · _ram:_ `7.5Gi/14Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1390 insertions(+), 6829 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/00_SAT Grammar - Table of Contents.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/01_Essential Grammar Terms.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/Adverbs.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/Colons Semicolons and Dashes.md 
+
+---
+
+## Session snapshot — 2026-08-22 06:18:05 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `2d045c9` · _ram:_ `10Gi/15Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1425 insertions(+), 6829 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/00_SAT Grammar - Table of Contents.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/01_Essential Grammar Terms.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/Adverbs.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/Colons Semicolons and Dashes.md 
+
+---
+
+## Session snapshot — 2026-08-22 06:19:50 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `2d045c9` · _ram:_ `10Gi/15Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1435 insertions(+), 6829 deletions(-))_
+
+**Untracked:** ARXIV-IDEAS.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/00_SAT Grammar - Table of Contents.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/01_Essential Grammar Terms.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/Adverbs.md PRIOR_RESEARCH/SAT_GRAMMAR-20260819T195743Z-1-001/SAT_GRAMMAR/Colons Semicolons and Dashes.md 
+
+---
+
+## Session snapshot — 2026-08-22 06:21:41 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `10Gi/15Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1448 insertions(+), 6816 deletions(-))_
+
+---
+
+## Session snapshot — 2026-08-22 06:21:59 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `10Gi/15Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1456 insertions(+), 6816 deletions(-))_
+
+---
+
+## Session snapshot — 2026-08-22 06:23:03 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `10Gi/15Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1464 insertions(+), 6816 deletions(-))_
+
+**Untracked:** UPFOR_DELETE.md 
+
+---
+
+## Session snapshot — 2026-08-22 08:26:07 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.6Gi/15Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1481 insertions(+), 6830 deletions(-))_
+
+**Untracked:** UPFOR_DELETE.md 
+
+---
+
+## Session snapshot — 2026-08-22 08:34:37 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.6Gi/15Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1500 insertions(+), 6823 deletions(-))_
+
+**Untracked:** UPFOR_DELETE.md 
+
+---
+
+## Session snapshot — 2026-08-22 08:44:35 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.6Gi/15Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1510 insertions(+), 6823 deletions(-))_
+
+**Untracked:** UPFOR_DELETE.md 
+
+---
+
+## Session snapshot — 2026-08-22 08:46:42 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.4Gi/15Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 1524 insertions(+), 6816 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md 
+
+---
+
+## Session snapshot — 2026-09-04 23:42:58 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 2019 insertions(+), 6830 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md 
+
+---
+
+## Session snapshot — 2026-09-04 23:48:09 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 2033 insertions(+), 6823 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-04 23:51:37 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.7Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts FRONTEND/src/api/stats.ts 
+_( 50 files changed, 2047 insertions(+), 6820 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 00:04:27 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.8Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2087 insertions(+), 6807 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 00:32:01 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `10Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2111 insertions(+), 6804 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 06:25:05 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.4Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2105 insertions(+), 6826 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 06:33:37 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.4Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2125 insertions(+), 6814 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 06:34:27 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2139 insertions(+), 6811 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 06:34:32 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2153 insertions(+), 6808 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 06:34:40 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2167 insertions(+), 6805 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 06:34:51 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2181 insertions(+), 6802 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 06:34:59 (50kb-written)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2195 insertions(+), 6799 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 06:35:35 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.5Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2211 insertions(+), 6799 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 09:39:05 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `9.6Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2230 insertions(+), 6796 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CLEANUP.md UPFOR_DELETE.md grammar_rules_todo.md sample_questions_claude.md 
+
+---
+
+## Session snapshot — 2026-09-05 16:29:36 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2255 insertions(+), 6794 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CANONICAL_VOCABULARIES.md CLEANUP.md UPFOR_DELETE.md grammar_rules_todo.md 
+
+---
+
+## Session snapshot — 2026-09-05 16:41:19 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `23Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2265 insertions(+), 6794 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CANONICAL_VOCABULARIES.md CLEANUP.md TESTS/AGENTS.md UPFOR_DELETE.md 
+
+---
+
+## Session snapshot — 2026-09-05 17:56:57 (session-end)
+_branch:_ `weakness-weighted-mixed-practice` · _commit:_ `3d79288` · _ram:_ `13Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md FRONTEND/.env.example FRONTEND/.gitignore FRONTEND/README.md FRONTEND/eslint.config.js FRONTEND/index.html FRONTEND/package-lock.json FRONTEND/package.json FRONTEND/postcss.config.js FRONTEND/public/favicon.svg FRONTEND/public/icons.svg FRONTEND/src/App.css FRONTEND/src/App.tsx FRONTEND/src/api/inventory.ts FRONTEND/src/api/questions.ts 
+_( 51 files changed, 2248 insertions(+), 6830 deletions(-))_
+
+**Untracked:** AGENT_HARNESS_PROPOSAL.md CANONICAL_VOCABULARIES.md CLEANUP.md TESTS/AGENTS.md UPFOR_DELETE.md 
+
+---

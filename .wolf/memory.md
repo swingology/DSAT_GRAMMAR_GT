@@ -6177,3 +6177,97 @@
 | 09:05 | Authored MATH/rules_agent_dsat_math_v1.md — math ontology (4 domains, 19 skills, 26 archetypes, 60+ trap keys, 34 named methods) matching grammar/reading doc conventions | MATH/rules_agent_dsat_math_v1.md | created | ~12k |
 | 20:20 | Created MATH/MATH_TODO.md | — | ~2253 |
 | 09:20 | Wrote MATH/MATH_TODO.md — 6-phase math adoption plan (vocab promotion, SPR schema, validator branches, KaTeX, OCR eval gate, sympy-verified generation); grounded in db.py:93 NOT NULL + validator.py:54 4-option findings | MATH/MATH_TODO.md | created | ~6k |
+
+## Session: 2026-08-08 15:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:24 | Created ARXIV-IDEAS.md | — | ~1599 |
+
+## Session: 2026-08-10 14:29
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-14 08:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:54 | Edited .claude/worktrees/agent-a884d3bb7ff2360b2/DEBUG_LOG.md | expanded (+28 lines) | ~450 |
+| 09:03 | Edited .claude/worktrees/agent-ae6d74d63fd950f21/DEBUG_LOG.md | modified page() | ~1192 |
+| 09:03 | Edited .claude/worktrees/agent-ae6d74d63fd950f21/.wolf/buglog.json | modified page() | ~835 |
+| 09:03 | Edited .claude/worktrees/agent-ae6d74d63fd950f21/.wolf/memory.md | expanded (+6 lines) | ~170 |
+| 12:21 | Edited backend/app/routers/admin.py | 8→8 lines | ~119 |
+| 12:21 | Edited backend/app/routers/admin.py | expanded (+17 lines) | ~632 |
+| 12:21 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | CSS: state | ~105 |
+| 12:48 | Edited backend/app/models/payload.py | modified TestSummary() | ~110 |
+| 12:48 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | 3→5 lines | ~90 |
+| 18:57 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added 1 condition(s) | ~495 |
+| 19:15 | Edited backend/app/routers/admin.py | modified list_tests() | ~865 |
+| 19:15 | Edited backend/app/models/payload.py | modified TestSummary() | ~121 |
+| 19:15 | Edited APP/ADMIN_APP/src/types/index.ts | 11→12 lines | ~98 |
+| 19:16 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added 1 condition(s) | ~931 |
+
+## Session: 2026-08-17 15:24
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-18 09:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-21 10:24
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:27 | appended review notes + 9 new paper directions | research_paper_ideas.md | ok | ~2k |
+
+## Session: 2026-08-22 06:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 06:21 | Edited .gitignore | 2→5 lines | ~26 |
+
+## Session: 2026-08-22 08:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:46 | Created CLEANUP.md | — | ~2040 |
+
+## Session: 2026-08-23 08:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-05 23:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:48 | Created sample_questions_claude.md | — | ~2423 |
+| 23:51 | Edited sample_questions_claude.md | expanded (+103 lines) | ~2758 |
+| 00:03 | Created sample_questions_claude.md | — | ~7171 |
+| 00:05 | Rewrote sample_questions_claude.md against rules_refactor reading rules (§10/§12/§13.4/§15/§22/§23); flagged DB option-key drift (scope_extension/outside_knowledge not in §12.1); added extra-hard stacked-architecture inference item | sample_questions_claude.md | done | ~9k |
+| 00:25 | Edited sample_questions_claude.md | 1→3 lines | ~55 |
+| 00:30 | Opus 5 re-run: added Item 4 (indirect_effect_mediation + predictive_inference, extra-hard) to sample_questions_claude.md; flagged §22.2 S2 clause-density vs §23.7 exemplar contradiction | sample_questions_claude.md | done | ~11k |
+| 00:45 | Advisor review of Item 4: fixed missing aphid trigger (§16.5) + re-keyed distractor D to fill §16.9 predictive_inference slots; all 3 distractors now survive first pass | sample_questions_claude.md | done | ~4k |
+
+## Session: 2026-09-05 01:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 06:32 | Edited sample_questions_claude.md | 3→5 lines | ~164 |
+| 06:33 | Edited sample_questions_claude.md | modified trap() | ~5424 |
+| 06:34 | Edited sample_questions_claude.md | inline fix | ~254 |
+| 06:34 | Edited sample_questions_claude.md | inline fix | ~32 |
+| 06:34 | Edited sample_questions_claude.md | inline fix | ~178 |
+| 06:34 | Edited sample_questions_claude.md | "t caught by any existing " → "t caught by any existing " | ~370 |
+| 06:34 | Edited sample_questions_claude.md | 1→2 lines | ~218 |
+| 01:15 | Annotated user-supplied Coll/Bianchi census item (Item 5) + generated linguistic mirror (Item 6) in sample_questions_claude.md; advisor caught a passage_architecture_key miscode and a reversed-direction distractor in my own generated C option before finalizing | sample_questions_claude.md | fixed pre-report | ~9k |
+| 09:39 | Created grammar_rules_todo.md | — | ~2268 |
+
+## Session: 2026-09-06 17:56
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
