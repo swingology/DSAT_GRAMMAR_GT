@@ -7600,5 +7600,79 @@
     "related_bugs": [],
     "occurrences": 1,
     "last_seen": "2026-08-02"
+  },
+  {
+    "id": "bug-826",
+    "timestamp": "2026-09-06",
+    "error_message": "docker compose up: unable to get image 'dsat_redux_md-frontend': failed to convert ImageData to ImageInspect: readlink /home/jb/.local/share/containers/storage/overlay: invalid argument",
+    "file": "~/.local/share/containers/storage (podman rootless store)",
+    "root_cause": "ext4 corruption on root fs (nvme0n1p2, 95% full): one inode inside overlay layer ea32457f.../diff/.../yaml/nodes.py unreadable ('structure needs cleaning'); podman system check found 310 damaged images, 10 containers, 32 layers; backend/frontend image layer dirs missing on disk",
+    "fix": "podman system check --repair --force (2 passes) removed damaged layers/images/containers (DB volume dsat_redux_md_dsat_pgdata_linux untouched), then docker compose up -d --build. Orphan layer ea32457f... still undeletable until fsck at boot: sudo tune2fs -c 1 /dev/nvme0n1p2 && reboot",
+    "tags": [
+      "podman",
+      "overlay",
+      "ext4",
+      "storage-corruption",
+      "docker-compose",
+      "dev-stack"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-09-06"
+  },
+  {
+    "id": "bug-827",
+    "timestamp": "2026-09-09",
+    "error_message": "Official cross-text question stem field contains an explanation sentence instead of the stem",
+    "file": "questions.current_question_text (id 4718df8c-400c-549b-9c97-39686a7db0ba, Test_9_digital_sec01_mod01 Q9)",
+    "root_cause": "question_versions v1 held the correct stem; v2 (latest, id 2f5ceddf) was written with an explanation sentence in question_text and questions.current_question_text was synced from it",
+    "fix": "2026-09-09: UPDATE questions.current_question_text and question_versions.question_text (v2) to the official stem 'Based on the texts, how would Focarelli and Panetta (Text 2) most likely respond to Fan's findings (Text 1)?'; verified via join on latest_version_id. Status: closed",
+    "tags": [
+      "data-quality",
+      "cross-text",
+      "ingestion",
+      "stem"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-09-09",
+    "status": "closed"
+  },
+  {
+    "id": "bug-828",
+    "timestamp": "2026-09-12",
+    "error_message": "19 of 752 extracted questions had empty passage / whole stimulus in stem",
+    "file": "CB_QUESTION_BANK/09_2026/extract_cb_bank.py",
+    "root_cause": "question phrases not in the stem-detection alternation: 15x 'As used in the text', plus 'Information in the text', 'The text makes', 'Taken together', 'Assuming' (mid-line starts that defeat the backward line walk)",
+    "fix": "single QUESTION_START phrase list shared by line-start walk (STEM_START) and in-stem re-split (Q_SPLIT); added empty-passage validation so the failure mode can't pass silently",
+    "tags": [
+      "pymupdf",
+      "pdf-parsing",
+      "cb-question-bank",
+      "extraction"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-09-12",
+    "status": "closed"
+  },
+  {
+    "id": "bug-829",
+    "timestamp": "2026-09-12",
+    "error_message": "alembic upgrade head: Can't locate revision identified by '036'",
+    "file": "backend/migrations/versions/035_cb_question_id.py",
+    "root_cause": "dev DB alembic_version was stamped 036 with no corresponding migration file in repo or git history (stray manual bump); schema matched 034 exactly, no real DDL behind the stamp",
+    "fix": "reset alembic_version to 034, ran alembic upgrade head to apply new 035_cb_question_id migration (adds questions.cb_question_id VARCHAR(8) UNIQUE); backfilled 55 rows by passage-matching CB_QUESTION_BANK/09_2026/09_2026_New_Verbal_Bank.json against official DB questions",
+    "tags": [
+      "alembic",
+      "migrations",
+      "data-integrity",
+      "cb-question-bank",
+      "dedup"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-09-12",
+    "status": "closed"
   }
 ]

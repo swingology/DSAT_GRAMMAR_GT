@@ -1,5 +1,44 @@
 # Debug Log
 
+## 2026-09-12 - Orphaned alembic revision stamp + CB question ID backfill (bug-829)
+Report created by: Claude Sonnet 5
+Git branch: `RULES_REFACTOR_v3`
+Git checkpoint: `63e893b` — Fix reading rules loader (bug-824), phase-based generation prompt, admin Generate page + reports
+
+### Findings
+
+1. ~~**Medium:** `alembic_version` in the dev DB was stamped `036`, but no migration file `036` exists anywhere in the repo or git history — `alembic upgrade head` failed with "Can't locate revision identified by '036'". Schema for all tables touched by recent migrations (033-034) matched exactly what those files produce, so no real DDL was hiding behind the stamp — likely a stray manual bump.~~
+   - Found while adding migration `035_cb_question_id.py`.
+   - **Fixed:** Reset `alembic_version` to `034` (the true last-applied migration) and ran `alembic upgrade head`, which applied `035` cleanly. No data or schema was touched by the reset — only the version bookkeeping.
+
+2. **Gap (by design, not a bug):** `questions` had no column to track College Board's own Question Bank ID, so re-releases of official questions through both the Question Bank and official test PDFs had no key to dedupe/sync on.
+   - **Fixed:** Added migration `035_cb_question_id.py` — `questions.cb_question_id VARCHAR(8) UNIQUE NULL`. Backfilled 55 rows by matching `CB_QUESTION_BANK/09_2026/09_2026_New_Verbal_Bank.json` (752 items) against official DB questions on normalized passage text (54 exact + 1 fuzzy ≥0.997, no duplicate targets). Report: `CB_QUESTION_BANK/09_2026/db_overlap_check.md`. Remaining 697 bank items have no official-DB match and are candidates for net-new ingestion.
+
+## 2026-09-09 - Cross-text stem audit: explanation stored as question stem (bug-827)
+Report created by: Claude Fable 5.1
+Git branch: `RULES_REFACTOR_v3`
+Git checkpoint: `63e893b` — Fix reading rules loader (bug-824), phase-based generation prompt, admin Generate page + reports
+
+### Findings
+
+1. ~~**Medium:** Official question `4718df8c-400c-549b-9c97-39686a7db0ba` (Test_9_digital_sec01_mod01 Q9, Fan / Focarelli & Panetta cross-text item) had an explanation sentence in `questions.current_question_text` and in `question_versions.question_text` for its latest version (v2, `2f5ceddf`). Version 1 held the correct stem, so the v2 write overwrote the stem with explanation text.~~
+   - Found while listing all cross-text stems (28 official items).
+   - **Fixed:** Both rows updated to the official stem "Based on the texts, how would Focarelli and Panetta (Text 2) most likely respond to Fan's findings (Text 1)?" and verified via join on `latest_version_id`. Logged as bug-827 (closed). Open question: what wrote v2 — check admin edit audit log for this question id.
+
+## 2026-09-06 - Dev stack fails to start: podman overlay storage damaged by ext4 corruption
+Report created by: Claude Fable 5.1
+Git branch: `RULES_REFACTOR_v3`
+Git checkpoint: `63e893b` — Fix reading rules loader (bug-824), phase-based generation prompt, admin Generate page + reports
+
+### Findings
+
+1. ~~**High:** `docker compose up` fails with `readlink .../containers/storage/overlay: invalid argument` for the backend and frontend images.~~
+   - Root cause is ext4 corruption on the root partition (`/dev/nvme0n1p2`, 95% full): one inode under overlay layer `ea32457f...` reads as `structure needs cleaning`, and `podman system check` reported 310 damaged images / 10 containers / 32 layers.
+   - **Fixed:** `podman system check --repair --force` (two passes) pruned the damaged storage; the Postgres volume `dsat_redux_md_dsat_pgdata_linux` was not touched. Stack rebuilt with `docker compose up -d --build`. (bug-826)
+
+2. **Medium:** Orphan layer dir `ea32457f...` cannot be deleted until the filesystem is checked offline.
+   - Pending user action: `sudo tune2fs -c 1 /dev/nvme0n1p2` then reboot to force fsck, then `podman system check --repair`.
+
 ## 2026-09-05 - Generation pipeline upgrade: fix bug-824, phase-based prompt, provider routing
 Report created by: Claude Sonnet 5
 Git branch: `weakness-weighted-mixed-practice`
