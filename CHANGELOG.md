@@ -15830,3 +15830,136 @@ _( 83 files changed, 1864 insertions(+), 49229 deletions(-))_
 **Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
 
 ---
+
+## Session snapshot — 2026-09-18 20:30:09 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `16Gi/30Gi`
+
+_No uncommitted changes._
+
+---
+
+## Session snapshot — 2026-09-19 03:37:26 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 15 insertions(+), 2 deletions(-))_
+
+---
+
+## Session snapshot — 2026-09-19 03:38:13 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 23 insertions(+), 2 deletions(-))_
+
+---
+
+## Session snapshot — 2026-09-19 03:40:06 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 31 insertions(+), 2 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 03:44:29 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backups/backup.log 
+_( 5 files changed, 57 insertions(+), 7 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 03:45:35 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backups/backup.log 
+_( 5 files changed, 67 insertions(+), 7 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 03:46:29 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backups/backup.log 
+_( 5 files changed, 84 insertions(+), 7 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 03:48:44 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md CHANGELOG.md backups/backup.log 
+_( 5 files changed, 101 insertions(+), 7 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 10:29:30 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 105 insertions(+), 25 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 10:29:48 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 115 insertions(+), 25 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 10:30:34 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 124 insertions(+), 24 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 10:31:28 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 135 insertions(+), 25 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 10:32:53 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 145 insertions(+), 25 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---
+
+## Session snapshot — 2026-09-19 11:13:44 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `2a5128a` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json CHANGELOG.md backups/backup.log 
+_( 6 files changed, 155 insertions(+), 25 deletions(-))_
+
+**Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
+
+---

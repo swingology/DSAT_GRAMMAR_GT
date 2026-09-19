@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T17:01:48.962Z
-> Files: 1261 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-19T10:48:35.261Z
+> Files: 1262 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -204,6 +204,7 @@
 - `docker-compose.yml` — Docker Compose services (~1796 tok)
 - `Dockerfile.backend` (~180 tok)
 - `Dockerfile.frontend` (~123 tok)
+- `DOMAINS_SKILLS.md` — DOMAINS_SKILLS — Sep 2026 CB Verbal Bank (~238 tok)
 - `future_features.md` — Future Features & Outstanding Work (~8855 tok)
 - `FUTURE_FEATURES.md` — Future Features (~12323 tok)
 - `future_tasks.md` — Future Tasks (~219 tok)
@@ -1884,4 +1885,3 @@
 - `APP/STUDENT_APP_REDUX/src/utils/underline.ts` — extractUnderline() + findUnderlineSpan(): parses `underlined: <text>` annotation from question stem, matches span in passage (exact → whitespace/quote-folded) (~900 tok)
 - `candidates.json` (~348 tok)
 - `master.json` (~31436 tok)
-

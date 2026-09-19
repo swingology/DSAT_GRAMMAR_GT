@@ -6429,3 +6429,12 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 03:44 | Created DOMAINS_SKILLS.md | — | ~1035 |
+| 03:45 | Parsed VERBAL PDFs for domain/skill combos -> DOMAINS_SKILLS.md | CB_QUESTION_BANK/NEW_QUESTION_SETS/VERBAL/*.pdf, DOMAINS_SKILLS.md | 10 canonical combos, 1845-question universe confirmed | ~3000 |
+| 03:46 | Created DOMAINS_SKILLS.md | — | ~204 |
+| 03:48 | Created DOMAINS_SKILLS.md | — | ~254 |
+
+## Session: 2026-09-19 04:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

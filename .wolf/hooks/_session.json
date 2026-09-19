@@ -1,28 +1,12 @@
 {
-  "session_id": "session-2026-09-19-1718",
-  "started": "2026-09-19T00:18:37.350Z",
-  "files_read": {
-    "/tmp/claude-1000/-home-jb-DSAT-REDUX-MD/5b54af5a-7bd0-4562-8200-9a10187f1039/tasks/barhvdjrq.output": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-09-19T03:00:50.716Z"
-    },
-    "/home/jb/.zshenv": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-09-19T03:06:24.074Z"
-    },
-    "/tmp/claude-1000/-home-jb-DSAT-REDUX-MD/5b54af5a-7bd0-4562-8200-9a10187f1039/tasks/bpydg8iq5.output": {
-      "count": 1,
-      "tokens": 0,
-      "first_read": "2026-09-19T03:17:42.451Z"
-    }
-  },
+  "session_id": "session-2026-09-19-0403",
+  "started": "2026-09-19T11:03:43.247Z",
+  "files_read": {},
   "files_written": [],
   "edit_counts": {},
   "anatomy_hits": 0,
-  "anatomy_misses": 3,
+  "anatomy_misses": 0,
   "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 3
+  "stop_count": 6
 }
