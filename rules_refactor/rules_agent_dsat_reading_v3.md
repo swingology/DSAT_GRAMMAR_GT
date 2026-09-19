@@ -1282,6 +1282,7 @@ Do not generate four random options. Each distractor must have a deliberate reas
 
 - A specific wrong-answer trap type (`reasoning_trap_key`)
 - A plausibility source (`plausibility_source_key`)
+- A canonical active `student_failure_mode_key` naming the student mistake
 - A clear, articulable error (`why_wrong`)
 
 For every generated reading item, design the three distractors as:
@@ -1327,22 +1328,15 @@ or implausible on first read.
 
 ### 16.4 Distractor quality gate
 
-Before finalizing options, verify:
+Apply the shared generation quality contract (grammar companion Part E,
+loaded as `shared/01_generation_quality.md`) once alongside these reading
+rules. It defines correctness, canonical failure-mode metadata, plausibility,
+diversity, clue control, option homogeneity, and difficulty minima.
 
-- **Incorrectness:** each distractor is clearly wrong for a named reason in
-  `why_wrong`; no distractor is defensibly co-correct
-- **Plausibility:** each distractor maps to a common partial-reading mistake and
-  has a non-null `plausibility_source_key`
-- **Diversity:** no two distractors express the same wrong idea or fail through
-  the same reasoning path
-- **Construct alignment:** every wrong answer fails the target construct rather
-  than failing because of random topic mismatch
-- **Clue control:** the key is not consistently longer, more precise, more
-  academic, or more grammatically polished than the distractors
-- **Option homogeneity:** all options share comparable syntax, abstraction
-  level, register, and semantic category
-- **Separation margin:** the key must remain the single best answer, but hard
-  items should have at least two distractors that survive first-pass elimination
+For reading, each wrong answer must fail the target evidence or reasoning
+construct. Name the precise scope, polarity, attribution, relationship, or
+meaning error in `why_wrong`; unrelated topic mismatch is not sufficient.
+Use §16.3 and §16.9 for skill-specific distractor construction.
 
 ### 16.5 Generation must match SAT style
 
@@ -1713,6 +1707,7 @@ question, confirm:
 - [ ] `paired_passage_text` is populated for Cross-Text items
 - [ ] `table_data` or `graph_data` is populated for Quantitative CoE items
 - [ ] Every option has `distractor_type_key`, `why_plausible`, and `why_wrong`
+- [ ] For generated items, every distractor has a canonical active `student_failure_mode_key` and `plausibility_source_key`; its failure mechanism is distinct
 - [ ] Exactly one option has `is_correct: true` and `distractor_type_key: "correct"`
 - [ ] `precision_score: 3` is assigned only to the correct option
 - [ ] `evidence_span_text` identifies the passage span anchoring the correct answer
@@ -2304,14 +2299,11 @@ Look up the `target_reading_focus_key` in the §16.9 table and verify the genera
 
 **Step 4e — Apply the distractor quality gate (§16.4)**
 
-Before finalizing options, run the seven-criterion quality gate from §16.4. Every criterion must pass:
-- Incorrectness — each distractor has a named reason in `why_wrong`
-- Plausibility — each distractor maps to a real student error pattern with a non-null `plausibility_source_key`
-- Diversity — no two distractors fail through the same reasoning path
-- Construct alignment — every wrong answer fails the target construct, not random topic mismatch
-- Clue control — the key is not longer, more precise, or more polished than distractors
-- Option homogeneity — all options share syntax, abstraction level, register, and semantic category
-- Separation margin — the key is the single best answer; hard items have ≥2 distractors that survive first-pass elimination
+Before finalizing options, apply §16.4 and the shared generation gate.
+Check each named defeater against the passage; all three hard-item
+distractors must be plausible on first read yet unambiguously wrong after
+careful analysis. Do not count an alternative defensible answer as a
+successful distractor.
 
 ---
 

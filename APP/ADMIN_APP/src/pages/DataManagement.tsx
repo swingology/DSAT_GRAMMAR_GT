@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi, type QueryParams } from '../api/client'
+import { IdChip, IdListPanel } from '../components/IdChip'
 import type { Question, TestSummary } from '../types'
+
+const ID_LIST_KEY = 'admin:idList'
 
 type StatusFilter = 'all' | 'active' | 'draft' | 'needs_review' | 'rejected'
 type OriginFilter = 'all' | 'official' | 'generated' | 'admin_created'
@@ -90,7 +93,7 @@ function QuestionDetailModal({ question, onClose }: { question: Question; onClos
               {question.source_test_name ?? 'Question'}
               {question.source_question_number ? ` #${question.source_question_number}` : ''}
             </h2>
-            <p className="text-xs text-gray-400 font-mono">{question.id}</p>
+            <IdChip id={question.id} />
           </div>
           <div className="flex items-center gap-2">
             {question.annotation_stale && (
@@ -379,6 +382,17 @@ export function DataManagement() {
   const [testFilter, setTestFilter] = useState<TestSummary | null>(null)
   const limit = 25
 
+  // Collected question ids — survives navigation so a list can be built across pages/tests.
+  const [idList, setIdList] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem(ID_LIST_KEY) ?? '[]') } catch { return [] }
+  })
+  const updateIdList = (next: string[]) => {
+    setIdList(next)
+    try { localStorage.setItem(ID_LIST_KEY, JSON.stringify(next)) } catch { /* storage unavailable */ }
+  }
+  const toggleId = (id: string) =>
+    updateIdList(idList.includes(id) ? idList.filter((x) => x !== id) : [...idList, id])
+
   const browsingTests = mode === 'tests' && !testFilter
 
   const params: QueryParams = { limit, offset: (page - 1) * limit }
@@ -538,7 +552,9 @@ export function DataManagement() {
                         <p className="text-gray-800 line-clamp-2 text-xs leading-relaxed hover:underline">
                           {q.current_question_text}
                         </p>
-                        <p className="text-gray-400 font-mono text-xs mt-0.5">{q.id.slice(0, 8)}…</p>
+                        <div className="mt-1">
+                          <IdChip id={q.id} collected={idList.includes(q.id)} onToggleCollect={toggleId} />
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         <StatusBadge status={q.practice_status} />
@@ -608,6 +624,8 @@ export function DataManagement() {
           </div>
         </div>
       )}
+
+      <IdListPanel ids={idList} onClear={() => updateIdList([])} onRemove={(id) => updateIdList(idList.filter((x) => x !== id))} />
 
       {rejectTarget && (
         <RejectModal

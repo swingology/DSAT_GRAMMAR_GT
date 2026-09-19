@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { adminApi, generateApi, type QueryParams } from '../api/client'
+import { IdChip } from '../components/IdChip'
 import type {
   GenerationBatchJob,
   GenerationBatchRequest,
@@ -246,6 +247,15 @@ function testLabel(t: TestSummary): string {
   return parts.filter(Boolean).join(' · ')
 }
 
+const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
+
+/** Provenance line for an ID-looked-up question, which may be from any test. */
+function sourceLabel(q: Question): string {
+  const pt = q.source_exam_code ?? q.source_test_name
+  return [q.source_release_year, pt && `PT${pt}`, q.source_section_code && `Sec${q.source_section_code}`,
+    q.source_module_code && `Mod${q.source_module_code}`].filter(Boolean).join(' · ')
+}
+
 function testParams(t: TestSummary): QueryParams {
   const p: QueryParams = { content_origin: 'official', sort_by_source: true, limit: 200 }
   if (t.source_release_year != null) p.source_release_year = t.source_release_year
@@ -288,7 +298,17 @@ export function Generate() {
     queryFn: () => adminApi.listQuestions(testParams(test as TestSummary)),
     enabled: !!test,
   })
+  // A filter box holding a full UUID means "find this question anywhere in the
+  // bank" — the test/module dropdown is ignored so a pasted id resolves without
+  // the admin knowing which module it came from.
+  const idLookup = UUID_RE.test(filter.trim()) ? filter.trim() : null
+  const idQuestion = useQuery({
+    queryKey: ['questions', 'byId', idLookup],
+    queryFn: () => adminApi.listQuestions({ question_id: idLookup as string, limit: 1 }),
+    enabled: !!idLookup,
+  })
   const candidates = useMemo(() => {
+    if (idLookup) return idQuestion.data?.questions ?? []
     const rows: Question[] = moduleQuestions.data?.questions ?? []
     const f = filter.trim().toLowerCase()
     if (!f) return rows
@@ -296,7 +316,7 @@ export function Generate() {
       String(q.source_question_number ?? '').includes(f) || q.current_question_text.toLowerCase().includes(f)
         || (q.current_passage_text ?? '').toLowerCase().includes(f),
     )
-  }, [moduleQuestions.data, filter])
+  }, [moduleQuestions.data, idQuestion.data, idLookup, filter])
 
   // --- target spec ------------------------------------------------------
   // The form auto-restores from the last visit; presets are named snapshots.
@@ -518,16 +538,26 @@ export function Generate() {
             </select>
             <input
               className={inputCls}
-              placeholder="Filter by Q# or text"
+              placeholder="Filter by Q# or text, or paste a question ID"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              disabled={!test}
             />
+            <button
+              type="button"
+              onClick={() => setFilter('')}
+              disabled={!filter}
+              title="Clear search"
+              className="shrink-0 border border-gray-200 rounded-md px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-800 disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-default"
+            >
+              Clear
+            </button>
           </div>
 
-          {test && (
+          {(test || idLookup) && (
             <div className="max-h-64 overflow-y-auto border border-gray-100 rounded-md divide-y divide-gray-100">
-              {moduleQuestions.isLoading && <div className="p-3 text-sm text-gray-400">Loading…</div>}
+              {(idLookup ? idQuestion.isLoading : moduleQuestions.isLoading) && (
+                <div className="p-3 text-sm text-gray-400">Loading…</div>
+              )}
               {candidates.map((q) => {
                 const d = domainOf(q)
                 const a = q.annotation ?? {}
@@ -538,14 +568,18 @@ export function Generate() {
                     onClick={() => pickReference(q)}
                     className={`w-full text-left px-3 py-2 text-sm hover:bg-blue-50 ${reference?.id === q.id ? 'bg-blue-50' : ''}`}
                   >
-                    <span className="font-mono text-xs text-gray-500 mr-2">Q{q.source_question_number ?? '?'}</span>
+                    <span className="font-mono text-xs text-gray-500 mr-2">
+                      {idLookup ? `${sourceLabel(q)} · Q${q.source_question_number ?? '?'}` : `Q${q.source_question_number ?? '?'}`}
+                    </span>
                     <span className="text-xs text-gray-500 mr-2">{d ?? 'unannotated'} · {focus || '—'} · {str(a.difficulty_overall) || '?'}</span>
                     <span className="text-gray-700 line-clamp-1">{q.current_question_text}</span>
                   </button>
                 )
               })}
-              {!moduleQuestions.isLoading && candidates.length === 0 && (
-                <div className="p-3 text-sm text-gray-400">No questions match.</div>
+              {!(idLookup ? idQuestion.isLoading : moduleQuestions.isLoading) && candidates.length === 0 && (
+                <div className="p-3 text-sm text-gray-400">
+                  {idLookup ? 'No question with that ID.' : 'No questions match.'}
+                </div>
               )}
             </div>
           )}
@@ -558,7 +592,7 @@ export function Generate() {
           )}
           {reference && (
             <div className="rounded-md bg-gray-50 border border-gray-100 p-3 text-sm space-y-2">
-              <div className="text-xs text-gray-500 font-mono">{reference.id}</div>
+              <IdChip id={reference.id} />
               {reference.current_passage_text && (
                 <p className="text-gray-700 whitespace-pre-wrap">{reference.current_passage_text}</p>
               )}

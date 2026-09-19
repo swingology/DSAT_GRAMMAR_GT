@@ -1,0 +1,104 @@
+{
+  "question": {
+    "passage_text": "To investigate whether musical training improves pattern learning, psychologist Elena Marín asked musicians and nonmusicians to identify tone sequences governed by an unfamiliar ordering rule. Both groups received equal practice. Musicians heard closely spaced pitches, whereas nonmusicians heard widely separated pitches; the ordering rule was identical. A separate pilot study had found that closer pitch spacing reduced accuracy even when listeners were told the rule beforehand. In Marín’s study, the groups attained the same accuracy. Thus, although the scores appear to indicate comparable learning, ______",
+    "question_text": "Which choice most logically completes the text?",
+    "correct_option_label": "C"
+  },
+  "classification": {
+    "question_family_key": "information_and_ideas",
+    "reading_skill_family_key": "inferences",
+    "reading_focus_key": "implication_inference",
+    "stem_type_key": "most_logically_completes",
+    "answer_mechanism_key": "inference",
+    "solver_pattern_key": "identify_logical_gap",
+    "reasoning_trap_key": "cause_effect_misalignment",
+    "grammar_role_key": null,
+    "grammar_focus_key": null,
+    "target_test_construct_key": "inference_boundary_control",
+    "difficulty_overall": "high"
+  },
+  "options": [
+    {
+      "option_label": "A",
+      "option_text": "the common ordering rule makes the scores comparable measures of learning, since the difference in pitch spacing affected the sounds rather than their underlying arrangement.",
+      "is_correct": false,
+      "distractor_type_key": "partial_match",
+      "plausibility_source_key": "partial_truth",
+      "student_failure_mode_key": "constraint_ignored",
+      "why_plausible": "Identical rules and practice sound like adequate experimental control.",
+      "why_wrong": "The pilot shows that spacing changes accuracy even with the rule known; identical ordering rules do not neutralize this influence."
+    },
+    {
+      "option_label": "B",
+      "option_text": "the musicians’ performance identifies pitch discrimination as the principal benefit of musical training, since they matched the other group while distinguishing more closely spaced tones.",
+      "is_correct": false,
+      "distractor_type_key": "overreach",
+      "plausibility_source_key": "common_sense_appeal",
+      "student_failure_mode_key": "overreading",
+      "why_plausible": "Musical experience and closely spaced pitches make a sensory advantage intuitively credible.",
+      "why_wrong": "Neither a training intervention nor an isolated comparison of sensory and learning benefits was performed; the principal benefit of training cannot be identified."
+    },
+    {
+      "option_label": "C",
+      "option_text": "the scores cannot distinguish equivalent learning from a musician advantage offset by greater listening difficulty, since the two groups were assessed under different perceptual demands.",
+      "is_correct": true,
+      "distractor_type_key": "correct",
+      "plausibility_source_key": null,
+      "student_failure_mode_key": null,
+      "why_plausible": "Equal measured accuracy need not imply equal learning when listening difficulty differs.",
+      "why_wrong": null
+    },
+    {
+      "option_label": "D",
+      "option_text": "the comparison places the nonmusicians at a disadvantage in demonstrating learning, since their more widely spaced tones provided a less demanding test of the ordering rule.",
+      "is_correct": false,
+      "distractor_type_key": "inverted_logic",
+      "plausibility_source_key": "rhetorical_surface_similarity",
+      "student_failure_mode_key": "wrong_comparison_direction",
+      "why_plausible": "An easier task can sound less informative about ability, tempting a reversal of which group faced the confound.",
+      "why_wrong": "The passage measures accuracy, not opportunities to demonstrate sophistication. The stated pilot establishes that closer spacing makes accurate performance harder; the proposed disadvantage reverses that direction."
+    }
+  ],
+  "review": {
+    "needs_human_review": true,
+    "review_notes": "Study-design isolation-limit inference. C identifies non-identifiability rather than claiming an actual musician advantage. High is the authoring target, not an empirically calibrated difficulty. Fictional researcher and studies. No external similarity/competition measurement or independent reviewer."
+  },
+  "provenance": {
+    "author": "Codex assistant in this conversation; no separate model/provider call",
+    "date": "2026-09-06",
+    "rules_standard": "1.0.0",
+    "source_question_id": "063675a5-e319-5c9c-a8fd-b7846009bc5e",
+    "source_database": "dsat_dev on dsat-db, read via SELECT",
+    "source_locator": {
+      "release_year": 2025,
+      "exam": "10",
+      "section": "01",
+      "module": "02",
+      "question_number": 17
+    },
+    "source_content_origin": "official (database label)",
+    "source_answer": "A",
+    "source_focus": "implication_inference",
+    "source_summary": "The stored capuchin-cognition item compares performance on tasks with unequal physical demands; apparent cognitive differences may reflect those demands. The new item changes topic, sensory modality, and observed outcome: equal scores can conceal a difference.",
+    "rules_consulted": [
+      "chatgpt_refactor_rules/rules/shared/01_generation_quality.md",
+      "chatgpt_refactor_rules/rules/reading/skills/inferences.md",
+      "chatgpt_refactor_rules/rules/reading/style_fingerprint.md",
+      "chatgpt_refactor_rules/rules/reading/generation_core.md (relevant difficulty and quality sections)"
+    ],
+    "vocabulary_source": "vocabulary/master.json",
+    "database_writes": false,
+    "provider_token_usage": null,
+    "provider_latency_seconds": null,
+    "metrics_note": "No separate inference API call; provider token/latency metrics unavailable. Text lengths are measured below."
+  },
+  "measurements": {
+    "passage_words": 85,
+    "option_words": {
+      "A": 25,
+      "B": 25,
+      "C": 25,
+      "D": 26
+    }
+  }
+}

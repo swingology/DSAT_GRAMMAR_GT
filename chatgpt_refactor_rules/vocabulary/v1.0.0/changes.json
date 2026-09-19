@@ -1,0 +1,155 @@
+{
+  "standard_version": "1.0.0",
+  "date": "2026-09-06",
+  "approval_basis": "User requested a College Board-aligned starting standard with vocabulary change tracking.",
+  "release_status": "established_reference_baseline",
+  "runtime_activation": false,
+  "database_migration_applied": false,
+  "changes": [
+    {
+      "change_id": "VOC-0001",
+      "kind": "baseline_freeze",
+      "old_version": null,
+      "new_version": "1.0.0",
+      "production_keys_added": [],
+      "production_keys_renamed": [],
+      "production_keys_removed": [],
+      "production_keys_reparented": [],
+      "database_action": "none",
+      "historical_annotation_action": "preserve unchanged",
+      "reason": "Freeze all categories/entries, including duplicate values under different parents; no silent semantic migration."
+    },
+    {
+      "change_id": "VOC-0002",
+      "kind": "add_reference_hierarchy",
+      "added_reference_ids": [
+        "cb.information_and_ideas",
+        "cb.craft_and_structure",
+        "cb.expression_of_ideas",
+        "cb.standard_english_conventions",
+        "cb.central_ideas_and_details",
+        "cb.command_of_evidence",
+        "cb.inferences",
+        "cb.words_in_context",
+        "cb.text_structure_and_purpose",
+        "cb.cross_text_connections",
+        "cb.rhetorical_synthesis",
+        "cb.transitions",
+        "cb.boundaries",
+        "cb.form_structure_and_sense",
+        "cb.command_of_evidence.textual",
+        "cb.command_of_evidence.quantitative",
+        "cb.boundaries.between_sentences",
+        "cb.boundaries.within_sentences",
+        "cb.subject_verb_agreement",
+        "cb.pronoun_antecedent_agreement",
+        "cb.verb_finiteness",
+        "cb.verb_tense_and_aspect",
+        "cb.subject_modifier_placement",
+        "cb.genitives_and_plurals"
+      ],
+      "database_action": "none",
+      "reason": "Official assessment classification gets a separate reference namespace; local IDs are not current API enum values."
+    },
+    {
+      "change_id": "VOC-0003",
+      "kind": "add_crosswalk_and_collision_policy",
+      "database_action": "none",
+      "reason": "Field-scoped, evidence-sensitive mapping prevents publisher/research labels overwriting production meanings.",
+      "rollback": "Reference artifacts can be retired in a later release; no stored data has been transformed."
+    }
+  ],
+  "candidate_queue_evidence": {
+    "source": "vocabulary/candidates.json",
+    "observed_on": "2026-09-06",
+    "is_database_census": false,
+    "collisions": [
+      {
+        "vocab": "READING_SKILL_FAMILY_KEYS",
+        "value": "rhetorical_synthesis",
+        "field": "skill_family_key",
+        "occurrences": 2,
+        "first_seen": "2026-05-31T15:56:05.923484+00:00",
+        "last_seen": "2026-06-01T11:00:09.107294+00:00",
+        "contexts": [
+          "sanitized→null"
+        ]
+      },
+      {
+        "vocab": "READING_SKILL_FAMILY_KEYS",
+        "value": "boundaries",
+        "field": "skill_family_key",
+        "occurrences": 2,
+        "first_seen": "2026-06-01T04:53:30.024343+00:00",
+        "last_seen": "2026-06-01T10:24:35.719717+00:00",
+        "contexts": [
+          "sanitized→null"
+        ]
+      },
+      {
+        "vocab": "READING_SKILL_FAMILY_KEYS",
+        "value": "Form, Structure, and Sense",
+        "field": "skill_family_key",
+        "occurrences": 10,
+        "first_seen": "2026-06-26T22:56:06.787043+00:00",
+        "last_seen": "2026-08-14T19:06:12.905015+00:00",
+        "contexts": [
+          "sanitized→null"
+        ]
+      },
+      {
+        "vocab": "READING_SKILL_FAMILY_KEYS",
+        "value": "Boundaries",
+        "field": "skill_family_key",
+        "occurrences": 7,
+        "first_seen": "2026-06-26T22:56:06.928029+00:00",
+        "last_seen": "2026-08-14T19:06:12.969752+00:00",
+        "contexts": [
+          "sanitized→null"
+        ]
+      },
+      {
+        "vocab": "READING_SKILL_FAMILY_KEYS",
+        "value": "Transitions",
+        "field": "skill_family_key",
+        "occurrences": 7,
+        "first_seen": "2026-06-26T22:56:07.140519+00:00",
+        "last_seen": "2026-08-14T19:06:13.166691+00:00",
+        "contexts": [
+          "sanitized→null"
+        ]
+      },
+      {
+        "vocab": "READING_SKILL_FAMILY_KEYS",
+        "value": "Rhetorical Synthesis",
+        "field": "skill_family_key",
+        "occurrences": 5,
+        "first_seen": "2026-06-26T22:56:07.351919+00:00",
+        "last_seen": "2026-08-14T18:12:08.049624+00:00",
+        "contexts": [
+          "sanitized→null"
+        ]
+      }
+    ]
+  },
+  "future_change_required_fields": [
+    "change_id",
+    "old_version",
+    "new_version",
+    "date",
+    "approved_amendment",
+    "reviewer",
+    "old_term",
+    "new_term",
+    "relationship",
+    "source_evidence",
+    "affected_consumers",
+    "migration_script",
+    "dry_run_counts",
+    "ambiguous_records",
+    "original_annotation_version",
+    "derived_annotation_version",
+    "validation_results",
+    "rollback_reference"
+  ]
+}

@@ -41,3 +41,6 @@ backups/**/*.sql
 
 # Deprecated code snapshot — not part of the active app
 __deprecated_code/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

@@ -326,6 +326,14 @@ async def list_questions(
         pattern="^(official|unofficial|generated)$",
         description="Filter by content_origin (official/unofficial/generated)",
     ),
+    question_id: Optional[str] = Query(
+        None,
+        pattern="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        description=(
+            "Look up one question by its UUID. Bank-wide: ignores every other "
+            "source filter so a pasted ID resolves without knowing its test/module."
+        ),
+    ),
     job_status: Optional[str] = Query(
         None,
         pattern="^(pending|parsing|extracting|overlap_checking|validating|approved|needs_review|failed)$",
@@ -351,6 +359,10 @@ async def list_questions(
     """List questions for admin review, optionally filtered by publication state."""
 
     stmt = select(Question)
+    if question_id:
+        # Bank-wide ID lookup: an explicit UUID wins over the source filters, so
+        # a pasted ID resolves without the caller knowing its test/module.
+        stmt = stmt.where(Question.id == question_id)
     if practice_status:
         stmt = stmt.where(Question.practice_status == practice_status)
     if content_origin:
@@ -363,22 +375,22 @@ async def list_questions(
                 .where(QuestionJob.status == job_status)
             )
         )
-    if source_release_year is not None:
+    if source_release_year is not None and not question_id:
         stmt = stmt.where(Question.source_release_year == source_release_year)
-    if pt_number is not None:
+    if pt_number is not None and not question_id:
         # Filter by the derived canonical PT# so a merged explorer card (which
         # may span several source_test_name/source_exam_code rows) selects all
         # of its questions at once.
         stmt = stmt.where(_pt_number_expr() == pt_number)
-    if source_test_name:
+    if source_test_name and not question_id:
         stmt = stmt.where(Question.source_test_name == source_test_name)
-    if source_exam_code:
+    if source_exam_code and not question_id:
         stmt = stmt.where(Question.source_exam_code == source_exam_code)
-    if source_subject_code:
+    if source_subject_code and not question_id:
         stmt = stmt.where(Question.source_subject_code == source_subject_code)
-    if source_section_code:
+    if source_section_code and not question_id:
         stmt = stmt.where(Question.source_section_code == source_section_code)
-    if source_module_code:
+    if source_module_code and not question_id:
         stmt = stmt.where(Question.source_module_code == source_module_code)
 
     count_result = await db.execute(

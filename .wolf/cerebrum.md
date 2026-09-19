@@ -7,6 +7,7 @@
 ## User Preferences
 
 <!-- How the user likes things done. Code style, tools, patterns, communication. -->
+- **Plan-doc reviews stay on paper (2026-09-12):** when asked to review a plan doc for gaps/conflicts, deliver findings as written open decision points recorded in the doc — do NOT fire AskUserQuestion decision prompts or bundle side-effect writes (memory/appends) into the same turn. User: "i just wanted a plan not any db execution."
 - **Admin modals must close on Escape key (2026-07-28)** — every modal dialog in the admin Data Management section should dismiss when the user presses Escape. Implement via a shared `useEscapeKey` hook in `APP/ADMIN_APP/src/hooks/` and call it from each modal component (`ConfirmModal`, `RejectModal`, `QuestionDetailModal`, etc.).
 - **Module-code convention (2026-07-27):** `Mod02` is the STANDARD label for a test's single module-2 section. `Mod02A`/`Mod02B` are used ONLY when a test has two module-2 sections (the DSAT stage-2 adaptive easy/hard pair). Do NOT blanket-normalize `02`→`02A`; relabel a stray `02` to whichever of `02A`/`02B` is absent for that test.
 - **Test card naming convention (2026-07-27):** admin Data Management test cards must read `Year · PT# · Sec## · Mod##`, and question rows `Year · PT# · Sec## · Mod## · Q#`. Year is required (was missing before). See bug-788.

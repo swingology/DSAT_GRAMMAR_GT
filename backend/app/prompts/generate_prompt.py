@@ -130,10 +130,10 @@ the fact tend to share one failure reason; deciding the three distinct failure t
 front prevents that.
 
 PHASE 2 — Passage. Draft the passage to the length and register the rules reference below
-specifies for this item's stimulus/skill type. Reread it once and check, sentence by
-sentence: length variation, hedging/attribution language, at least one appositive or
-definitional aside for any technical term, and that no required piece of evidence for the
-correct answer sits more than one sentence away from where it is needed. If the draft
+specifies for this item's stimulus/skill type. Apply the selected domain's style guidance:
+sentence variation, attribution and hedging where appropriate, and enough context to
+understand technical terms. Evidence may span sentences when the reading skill requires
+integration; every premise needed for the answer must be available in the passage. If the draft
 fails any check, rewrite the passage — do not patch around it in the options.
 
 PHASE 3 — Stem. Use the canonical stem wording for the declared stem_type_key.
@@ -146,9 +146,9 @@ restate what that claim would predict if it were true, and confirm that predicti
 contradicts — not accidentally matches — the passage's actual stated result. This check
 catches the single most common generation failure: a distractor that is meant to be wrong
 but, worked through, is actually consistent with the passage. Confirm no two distractors
-fail for the same reason, and that at least two of the four options would survive a
-skimming first read (an option only a highly attentive reader eliminates immediately is a
-weak distractor).
+fail for the same reason. For high difficulty, all three distractors must be plausible
+on a first read; for medium, at least two must. Each must be demonstrably wrong after
+careful analysis. Never sacrifice exactly one defensible answer for competition.
 
 PHASE 5 — Self-check. Before emitting output, verify: every option has a distinct
 distractor_type_key and a why_wrong naming a specific textual defeater; the correct option
@@ -161,7 +161,8 @@ Your final output must include:
 2. classification: domain-appropriate keys and difficulty fields
    - Grammar / Expression of Ideas: grammar_role_key, grammar_focus_key, syntactic_trap_key
    - Reading: question_family_key, reading_skill_family_key, reading_focus_key; grammar keys null
-3. options: per-option analysis with distractor_type_key, why_plausible, why_wrong, precision_score
+3. options: per-option analysis with distractor_type_key, why_plausible, why_wrong, precision_score;
+   every distractor also needs a canonical student_failure_mode_key and plausibility_source_key
 4. reasoning: primary_rule, trap_mechanism, correct_answer_reasoning
 5. generation_profile: target keys, passage_template, frequency_band
 6. review: annotation_confidence, needs_human_review
@@ -175,7 +176,7 @@ Rules:
 - Self-contained meaning (no outside knowledge needed) — every premise the correct answer
   depends on, including any experimental manipulation and its trigger, must appear on the
   page, not be assumed
-- At least one grammar distractor must target the declared syntactic trap
+- At least one grammar distractor must target the declared syntactic trap when non-null and not none
 - At least one reading distractor must target the declared reasoning trap or test construct
 - No two distractors may fail for the exact same reason
 - correct option may appear in any position (A-D)
@@ -184,7 +185,7 @@ Rules:
 
 def build_generate_prompt(generation_request: dict, source_examples: list = None) -> tuple[str, str]:
     """Build system and user prompts for question generation."""
-    rules_context = _load_generation_rule_context()
+    rules_context = _generation_context(generation_request)
     user_parts = [f"Generation request:\n{json.dumps(generation_request, indent=2)}"]
     if source_examples:
         user_parts.append(
@@ -213,7 +214,7 @@ def build_generate_prompt_parts(
     user           — the generation request JSON + optional source examples; fresh each call.
     """
     domain = _infer_generation_domain(generation_request)
-    system_static = _load_generation_rule_context(domain)
+    system_static = _generation_context(generation_request, domain)
     system_dynamic = GENERATE_SYSTEM_PROMPT
 
     user_parts = [f"Generation request:\n{json.dumps(generation_request, indent=2)}"]
@@ -226,3 +227,14 @@ def build_generate_prompt_parts(
         )
     user = "\n".join(user_parts)
     return system_static, system_dynamic, user
+
+
+def _generation_context(request: dict, domain: str = "both") -> str:
+    mode = os.environ.get("DSAT_GENERATION_RULES_MODE", "legacy")
+    if mode == "modules":
+        from app.prompts.rule_modules import load_generation_modules
+
+        return load_generation_modules(request)
+    if mode != "legacy":
+        raise ValueError(f"Unknown DSAT_GENERATION_RULES_MODE: {mode}")
+    return _load_generation_rule_context(domain)

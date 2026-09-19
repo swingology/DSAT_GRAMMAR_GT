@@ -6307,3 +6307,125 @@
 | 22:17 | Edited APP/ADMIN_APP/src/pages/Generate.tsx | CSS: settings, hover | ~180 |
 | 22:17 | Edited APP/ADMIN_APP/src/pages/Generate.tsx | CSS: Presets | ~508 |
 | 22:18 | Edited APP/ADMIN_APP/src/pages/Generate.tsx | inline fix | ~28 |
+| 23:49 | Created APP/ADMIN_APP/src/components/IdChip.tsx | — | ~989 |
+| 23:50 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | CSS: admin | ~60 |
+| 23:50 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | inline fix | ~12 |
+| 23:50 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | added error handling | ~182 |
+| 23:50 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | slice() → includes() | ~53 |
+| 23:50 | Edited APP/ADMIN_APP/src/pages/DataManagement.tsx | 1→3 lines | ~45 |
+| 23:50 | Edited APP/ADMIN_APP/src/pages/Generate.tsx | inline fix | ~12 |
+| 23:50 | Edited APP/ADMIN_APP/src/pages/Generate.tsx | added 1 import(s) | ~34 |
+
+## Session: 2026-09-06 12:07
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:20 | Diagnosed+repaired podman overlay corruption (ext4, bug-826); rebuilding stack | .wolf/buglog.json, DEBUG_LOG.md | repaired, fsck pending | ~15k |
+
+## Session: 2026-09-06 14:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-07 17:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:31 | Created ../.claude/plans/gleaming-stargazing-flurry.md | — | ~813 |
+| 00:58 | research: diffusion vs controlled generation for item gen; 2 deep-research runs (209 agents) | diffusion_generation_research.md | done: seed-vector approach refuted, AR+annotation recommended | ~90k |
+| 09:04 | Generate tab: paste a question ID to look up a reference bank-wide | admin.py, Generate.tsx, test_admin_router.py, CHANGELOG.md | done: 6/6 live cases + unit test + negative control pass | ~25k |
+
+## Session: 2026-09-09 19:59
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-09 20:11
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 20:21 | Generated 20 trap-engineered inference items (12 sci / 8 biz) seeded from 111-item extraction + web trap research | generated_test/inference_20q_science_business_traps.md | done | ~45k |
+| 21:20 | Split answer key + explanations into companion KEY file | generated_test/inference_20q_*_KEY.md | done | ~2k |
+| 21:21 | Converted questions + KEY markdown to .docx via pypandoc-binary (no system pandoc) | generated_test/inference_20q_*traps*.docx | done | ~1k |
+| 10:30 | Fixed bug-827: repaired stem on question 4718df8c (questions + question_versions v2); DEBUG_LOG + buglog closed | DB, DEBUG_LOG.md, .wolf/buglog.json | done | ~3k |
+
+## Session: 2026-09-10 13:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-12 22:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-12 22:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-12 23:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-12 08:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:15 | Reviewed CB_QUESTION_BANK PDFs: 1845 unique CB R&W items, 669 dup vs DB, ~1176 new; Sep trio canonical | CB_QUESTION_BANK/ | review done | ~12k |
+| 08:12 | Created ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/project_cb-question-bank-review.md | — | ~464 |
+| 08:12 | Edited ../.claude/projects/-home-jb-DSAT-REDUX-MD/memory/MEMORY.md | 1→2 lines | ~86 |
+| 08:19 | Created CB_QUESTION_BANK/09_2026/extract_cb_bank.py | — | ~1803 |
+| 08:19 | Edited CB_QUESTION_BANK/09_2026/extract_cb_bank.py | modified items() | ~67 |
+| 08:19 | Edited CB_QUESTION_BANK/09_2026/extract_cb_bank.py | 2→2 lines | ~23 |
+| 08:20 | Edited CB_QUESTION_BANK/09_2026/extract_cb_bank.py | modified in() | ~65 |
+| 08:20 | Edited CB_QUESTION_BANK/09_2026/extract_cb_bank.py | modified start() | ~247 |
+
+## Session: 2026-09-12 08:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:26 | Edited CB_QUESTION_BANK/09_2026/extract_cb_bank.py | expanded (+10 lines) | ~152 |
+| 08:26 | Edited CB_QUESTION_BANK/09_2026/extract_cb_bank.py | 5→6 lines | ~110 |
+| 08:26 | Edited CB_QUESTION_BANK/09_2026/extract_cb_bank.py | modified endswith() | ~51 |
+| 08:27 | Fixed 19 empty-passage items in bank extractor (shared QUESTION_START phrases, empty-passage validation); 752/752 pass, 0 empty passages | CB_QUESTION_BANK/09_2026/extract_cb_bank.py, 09_2026_New_Verbal_Bank.json | clean extraction, 985KB JSON | ~8k |
+| 08:32 | Created CB_QUESTION_BANK/09_2026/verify_cb_bank.py | — | ~1780 |
+| 08:32 | Edited CB_QUESTION_BANK/09_2026/verify_cb_bank.py | 3→6 lines | ~100 |
+| 08:41 | Ran data-integrity verification of bank JSON vs PDF (verify_cb_bank.py): 752/752 pass — 0 fidelity/metadata/dup failures; 73 initial flags were verifier's own narrow vocab invariant (two official CB stem formats), not data corruption | CB_QUESTION_BANK/09_2026/verify_cb_bank.py, 09_2026_New_Verbal_Bank.json | clean, exit 0 | ~9k |
+| 08:38 | Created backend/migrations/versions/035_cb_question_id.py | — | ~181 |
+| 08:40 | Edited DEBUG_LOG.md | modified Gap() | ~470 |
+| 08:40 | Edited DEBUG_LOG.md | inline fix | ~23 |
+| 08:46 | Created db_migration.md | — | ~2040 |
+| 08:52 | Created ontology_reorganization_plan.md | — | ~1531 |
+| 08:54 | Edited db_migration.md | modified CUTTING() | ~1592 |
+
+## Session: 2026-09-12 09:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:20 | Edited db_migration.md | inline fix | ~12 |
+| 09:20 | Edited db_migration.md | 3→5 lines | ~86 |
+| 09:20 | Edited db_migration.md | 3→7 lines | ~123 |
+| 09:20 | Edited db_migration.md | expanded (+68 lines) | ~977 |
+| 09:21 | db_migration.md review folded into doc: 4 open decisions recorded, tree fixes (topic_broad, grammar_role spans both families), Phase 4 drift checklist added | db_migration.md | doc-only edits, no DB execution | ~3k |
+| 09:42 | Created db_migration.md | — | ~3674 |
+| 09:59 | Created .claude/rules/graft-for-agents.md | — | ~263 |
+| 10:01 | Created .claude/commands/ga.md | — | ~65 |
+
+## Session: 2026-09-16 19:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:11 | Created RESEARCH_TODO.md: benchmark gap assessment for research paper | RESEARCH_TODO.md | ok | ~1200 |
+| 19:12 | Merged RESEARCH_TODO.md gap assessment into RESEARCH_PAPER_TODO.md, deleted standalone file, fixed link in IDEAS | RESEARCH_PAPER_TODO.md | ok | ~800 |
+
+## Session: 2026-09-16 13:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-19 17:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

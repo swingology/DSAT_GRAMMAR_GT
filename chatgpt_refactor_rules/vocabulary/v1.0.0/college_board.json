@@ -1,0 +1,193 @@
+{
+  "standard_version": "1.0.0",
+  "status": "reference_baseline_not_runtime_enum",
+  "id_authority": "Local cb.* identifiers; labels and hierarchy sourced from College Board",
+  "sources": [
+    {
+      "id": "cb-framework-3.01",
+      "url": "https://satsuite.collegeboard.org/media/pdf/assessment-framework-for-digital-sat-suite.pdf",
+      "version": "3.01",
+      "publication": "August 2024",
+      "table": "A33",
+      "printed_pages": [
+        184,
+        185
+      ],
+      "pdf_pages_one_based": [
+        194,
+        195
+      ],
+      "verified_on": "2026-09-06"
+    }
+  ],
+  "terms": [
+    {
+      "id": "cb.information_and_ideas",
+      "label": "Information and Ideas",
+      "kind": "domain",
+      "parent": null,
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.craft_and_structure",
+      "label": "Craft and Structure",
+      "kind": "domain",
+      "parent": null,
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.expression_of_ideas",
+      "label": "Expression of Ideas",
+      "kind": "domain",
+      "parent": null,
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.standard_english_conventions",
+      "label": "Standard English Conventions",
+      "kind": "domain",
+      "parent": null,
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.central_ideas_and_details",
+      "label": "Central Ideas and Details",
+      "kind": "skill",
+      "parent": "cb.information_and_ideas",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.command_of_evidence",
+      "label": "Command of Evidence",
+      "kind": "skill",
+      "parent": "cb.information_and_ideas",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.inferences",
+      "label": "Inferences",
+      "kind": "skill",
+      "parent": "cb.information_and_ideas",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.words_in_context",
+      "label": "Words in Context",
+      "kind": "skill",
+      "parent": "cb.craft_and_structure",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.text_structure_and_purpose",
+      "label": "Text Structure and Purpose",
+      "kind": "skill",
+      "parent": "cb.craft_and_structure",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.cross_text_connections",
+      "label": "Cross-Text Connections",
+      "kind": "skill",
+      "parent": "cb.craft_and_structure",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.rhetorical_synthesis",
+      "label": "Rhetorical Synthesis",
+      "kind": "skill",
+      "parent": "cb.expression_of_ideas",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.transitions",
+      "label": "Transitions",
+      "kind": "skill",
+      "parent": "cb.expression_of_ideas",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.boundaries",
+      "label": "Boundaries",
+      "kind": "skill",
+      "parent": "cb.standard_english_conventions",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.form_structure_and_sense",
+      "label": "Form, Structure, and Sense",
+      "kind": "skill",
+      "parent": "cb.standard_english_conventions",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.command_of_evidence.textual",
+      "label": "Textual",
+      "kind": "testing_point",
+      "parent": "cb.command_of_evidence",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.command_of_evidence.quantitative",
+      "label": "Quantitative",
+      "kind": "testing_point",
+      "parent": "cb.command_of_evidence",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.boundaries.between_sentences",
+      "label": "Between Sentences",
+      "kind": "testing_point",
+      "parent": "cb.boundaries",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.boundaries.within_sentences",
+      "label": "Within Sentences",
+      "kind": "testing_point",
+      "parent": "cb.boundaries",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.subject_verb_agreement",
+      "label": "Subject-Verb Agreement",
+      "kind": "testing_point",
+      "parent": "cb.form_structure_and_sense",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.pronoun_antecedent_agreement",
+      "label": "Pronoun-Antecedent Agreement",
+      "kind": "testing_point",
+      "parent": "cb.form_structure_and_sense",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.verb_finiteness",
+      "label": "Verb Finiteness",
+      "kind": "testing_point",
+      "parent": "cb.form_structure_and_sense",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.verb_tense_and_aspect",
+      "label": "Verb Tense and Aspect",
+      "kind": "testing_point",
+      "parent": "cb.form_structure_and_sense",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.subject_modifier_placement",
+      "label": "Subject-Modifier Placement",
+      "kind": "testing_point",
+      "parent": "cb.form_structure_and_sense",
+      "source_id": "cb-framework-3.01"
+    },
+    {
+      "id": "cb.genitives_and_plurals",
+      "label": "Genitives and Plurals",
+      "kind": "testing_point",
+      "parent": "cb.form_structure_and_sense",
+      "source_id": "cb-framework-3.01"
+    }
+  ]
+}

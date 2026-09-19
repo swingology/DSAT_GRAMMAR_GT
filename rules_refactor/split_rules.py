@@ -190,11 +190,13 @@ def split_grammar(doc: Doc) -> dict:
         doc.slice(r"^## B\.3\.0 ", r"^## B\.3 Passage", "grammar/generation_core.md"),
         doc.slice(r"^## B\.7 ", r"^## B\.12 ", "grammar/generation_core.md"),
         doc.slice(r"^## B\.13 ", r"^# PART C", "grammar/generation_core.md"),
-        doc.slice(r"^# PART E", r"^#+ Reference Quick-Index", "grammar/generation_core.md"),
     ]
     write_module("grammar/generation_core.md",
-                 "Grammar Generation Core (B.1–B.2, B.3.0, B.7–B.11, B.13–B.15, Part E)",
+                 "Grammar Generation Core (B.1–B.2, B.3.0, B.7–B.11, B.13–B.15)",
                  "\n".join(gen_core_parts))
+    write_module("shared/01_generation_quality.md", "Shared DSAT Generation Quality",
+                 doc.slice(r"^# PART E", r"^#+ Reference Quick-Index",
+                           "shared/01_generation_quality.md"))
 
     ann_core = (
         doc.slice(r"^# PART C", r"^# PART D", "grammar/annotation_core.md")
@@ -214,7 +216,7 @@ def split_grammar(doc: Doc) -> dict:
 
     write_module("grammar/future_anatomy.md",
                  "Sentence Anatomy Keys — future Pass-3 span annotation (D.10)",
-                 doc.slice(r"^## D\.10 ", r"^#+ Reference Quick-Index",
+                 doc.slice(r"^## D\.10 ", r"^# PART E",
                            "grammar/future_anatomy.md"))
 
     write_module("grammar/conditional/transitions.md",
@@ -297,6 +299,7 @@ def split_grammar(doc: Doc) -> dict:
         entry = {
             "role": GRAMMAR_ROLE_BY_FOCUS[k],
             "generate": ["shared/00_mode_and_schemas.md",
+                         "shared/01_generation_quality.md",
                          "grammar/generation_core.md",
                          "grammar/taxonomy.md",
                          f"grammar/skills/{k}.md", *cond],
@@ -312,6 +315,7 @@ def split_grammar(doc: Doc) -> dict:
     manifest["stem_type_overrides"] = {
         "choose_best_notes_synthesis": {
             "generate": ["shared/00_mode_and_schemas.md",
+                         "shared/01_generation_quality.md",
                          "grammar/generation_core.md",
                          "grammar/taxonomy.md",
                          "grammar/conditional/notes_synthesis.md"],
@@ -436,8 +440,10 @@ def split_reading(doc: Doc) -> dict:
         manifest["skills"][family] = {
             "focus_keys": READING_FOCUS_BY_FAMILY[family],
             "generate": ["shared/00_mode_and_schemas.md",
+                         "shared/01_generation_quality.md",
                          "reading/core_taxonomy.md",
                          "reading/generation_core.md",
+                         "reading/annotation_core.md",
                          "reading/style_fingerprint.md",
                          f"reading/skills/{family}.md"],
             "annotate": ["shared/00_mode_and_schemas.md",

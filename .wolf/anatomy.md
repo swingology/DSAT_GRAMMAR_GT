@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-06T05:18:09.820Z
-> Files: 1251 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T17:01:48.962Z
+> Files: 1261 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../
 
@@ -109,6 +109,7 @@
 - `floofy-splashing-globe.md` — Plan: Fix Frontend and Run Dev Stack (~264 tok)
 - `foamy-watching-zephyr.md` — Student Auth System — Implementation Plan (~2359 tok)
 - `generic-rolling-parnas.md` — Crop / Layout Provenance Implementation Plan (~3582 tok)
+- `gleaming-stargazing-flurry.md` — Plan: Diffusion vs. controlled LLM generation research report (~762 tok)
 - `squishy-giggling-dolphin.md` — Plan: Separate Passage Text from Question Text in Extraction Pipeline (~1307 tok)
 - `steady-moseying-music.md` — Phase 3: Review Swarm Rubric — Implementation Plan (~4357 tok)
 - `vivid-giggling-riddle.md` — Plan: Benchmark Markdown Reports + SUMMARY.md Auto-Update (~959 tok)
@@ -130,13 +131,14 @@
 - `feedback_nodejs-wasm-issue.md` — Node.js WASM Compilation Issue in Linux Environment (~405 tok)
 - `glm_ocr_testing.md` — GLM-OCR Local Pipeline Testing (~398 tok)
 - `ingestion_two_phase_glm_ocr.md` — DSAT 2-Phase Ingestion: GLM-OCR + DeepSeek (~1082 tok)
-- `MEMORY.md` — Memory Index (~1627 tok)
+- `MEMORY.md` — Memory Index (~1671 tok)
 - `project_admin-dashboard-phase0.md` (~351 tok)
 - `project_admin-dashboard-phase1-status.md` (~732 tok)
 - `project_admin-dashboard-plan.md` (~480 tok)
 - `project_annotation-shape-inconsistency.md` — Declares originally (~499 tok)
 - `project_backend-option-versioning.md` (~244 tok)
 - `project_bookmarks-tailscale.md` (~285 tok)
+- `project_cb-question-bank-review.md` (~464 tok)
 - `project_diagnostic_stats_architecture.md` (~439 tok)
 - `project_diagnostic_status.md` — Decisions locked (2026-06-23) (~677 tok)
 - `project_dual-user-routers.md` (~210 tok)
@@ -191,7 +193,8 @@
 - `CHANGELOG.md` — CHANGELOG (~302255 tok)
 - `CLAUDE.md` — OpenWolf (~850 tok)
 - `CLEANUP.md` — Repo Cleanup Audit (~1912 tok)
-- `DEBUG_LOG.md` — Debug Log (~76540 tok)
+- `db_migration.md` — CB Question Bank Ingestion — Requirements (~3445 tok)
+- `DEBUG_LOG.md` — Debug Log (~77513 tok)
 - `DEEPSEEK_OCR.md` — DeepSeek OCR — Local Setup Guide (~3151 tok)
 - `DEPLOYMENT.md` — DEPLOYMENT.md (~1646 tok)
 - `dev_server.py` — Simple frontend server with API proxy. (~306 tok)
@@ -221,6 +224,7 @@
 - `MATH_ADAPTATION_PLAN.md` — MATH_ADAPTATION_PLAN.md (~2352 tok)
 - `missing_rules_v8.md` — missing_rules_v8.md (~7900 tok)
 - `OCR_INGESTION_PLAN.md` — OCR Ingestion System Plan — DSAT Grammar Backend (~3762 tok)
+- `ontology_reorganization_plan.md` — Plan — reorganize CB bank content under a unified ontology (~1436 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark dir for OCR/LLM benchmark runners + HTMX dashboard (~600 tok)
 - `plan_benchmarking_backend.md` — Plan: backend/benchmark Directory (~830 tok)
 - `qwen3_test01_q01.md` — Test 01 - Question 1 (~329 tok)
@@ -252,9 +256,14 @@
 - `settings.json` (~750 tok)
 - `settings.local.json` (~926 tok)
 
+## .claude/commands/
+
+- `ga.md` (~61 tok)
+
 ## .claude/rules/
 
 - `debug-log.md` — DEBUG_LOG.md Rule (~376 tok)
+- `graft-for-agents.md` — Graft for spawned agents/subagents (~247 tok)
 - `openwolf.md` (~313 tok)
 
 ## .claude/skills/dev-stack/
@@ -474,6 +483,7 @@
 ## APP/ADMIN_APP/src/components/
 
 - `ConfirmModal.tsx` — ConfirmModal (~437 tok)
+- `IdChip.tsx` — Full id in a monospace box. Click copies it; an optional "+" toggles it in a (~989 tok)
 - `Layout.tsx` — NAV (~1071 tok)
 
 ## APP/ADMIN_APP/src/hooks/
@@ -482,8 +492,8 @@
 
 ## APP/ADMIN_APP/src/pages/
 
-- `DataManagement.tsx` — StatusBadge (~7584 tok)
-- `Generate.tsx` — Everything the form holds, so a preset or the auto-saved draft restores it 1:1. (~10529 tok)
+- `DataManagement.tsx` — ID_LIST_KEY (~7819 tok)
+- `Generate.tsx` — Everything the form holds, so a preset or the auto-saved draft restores it 1:1. (~10530 tok)
 - `LoginPage.tsx` — LoginPage (~1069 tok)
 - `PipelinePerformance.tsx` — StatCard — renders table (~3288 tok)
 - `StudentPerformance.tsx` — AccuracyBar (~1986 tok)
@@ -658,6 +668,11 @@
 - `keyColors.test.ts` — Declares a (~817 tok)
 - `sentenceTokenizer.spans.test.ts` — Declares raw (~944 tok)
 - `underline.test.ts` — Declares stem (~1103 tok)
+
+## CB_QUESTION_BANK/09_2026/
+
+- `extract_cb_bank.py` — Extract CB MyPractice question-bank PDF(s) into LLM-readable JSON. (~2166 tok)
+- `verify_cb_bank.py` — Data-integrity verification: question-bank JSON vs its source PDF. (~1816 tok)
 
 ## DIAGNOSTIC_TEST_PLAN.md (~1.6k tokens)
 
@@ -1701,6 +1716,7 @@
 - `032_test_session_results.py` — Add test_session_results table for adaptive module 2 routing. (~471 tok)
 - `033_passage_spans.py` — Add passage_spans columns to question_annotations and span_review_queue table. (~706 tok)
 - `035_add_source_has_graph.py` — Add nullable Boolean `source_has_graph` to questions (curated admin provenance flag: original question had a graph/figure). Revises 034. (~180 tok)
+- `035_cb_question_id.py` — Add College Board question bank ID for dedup/sync. (~181 tok)
 
 ## backend/scripts/
 
@@ -1868,3 +1884,4 @@
 - `APP/STUDENT_APP_REDUX/src/utils/underline.ts` — extractUnderline() + findUnderlineSpan(): parses `underlined: <text>` annotation from question stem, matches span in passage (exact → whitespace/quote-folded) (~900 tok)
 - `candidates.json` (~348 tok)
 - `master.json` (~31436 tok)
+

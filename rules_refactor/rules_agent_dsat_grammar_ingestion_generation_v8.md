@@ -1192,10 +1192,12 @@ exploits the tonal smoothness of the prose: because the second clause
 elaborates or extends the first, students reach for a comma or a colon, both
 of which leave the clauses fused or mis-typed.
 
-Distractors: a bare comma (comma splice), a colon (mis-types the second clause
-as a definition/list rather than a coordinate IC), and a period with
-capitalization that severs a tight elaborative link the passage marks as
-single-thought.
+Distractors must be invalid in the actual sentence, not merely less preferred.
+A bare comma can create a comma splice. A period with correct capitalization
+may also correctly separate two independent clauses; never reject it merely
+for breaking a close connection. A colon can correctly introduce an explanation.
+Do not offer these as wrong alternatives when they are defensible. Redesign
+the sentence or choices so each distractor has a concrete convention violation.
 
 Classify with `syntactic_trap_key: "early_clause_anchor"` and
 `student_failure_mode_key: "comma_fix_illusion"`. Note
@@ -4586,11 +4588,8 @@ On failure after 3 retries, return the error for that item index and halt.
 
 ### Topic rotation
 
-1. No two consecutive items may share the same `topic_broad`.
-2. No two items within a 5-item window may share the same `topic_fine`.
-3. If structural similarity exceeds 80% (same structure with only noun
-   substitution), regenerate the passage.
-4. Respect `avoid_recent_exam_ids` when provided.
+Apply the shared batch-history and externally measured similarity rules in
+E.4. The workflow supplies history and measurements; do not self-score.
 
 ### Option ordering
 
@@ -5980,171 +5979,121 @@ These anatomy tags only appear on blank slots, not on ordinary word spans.
 
 # PART E — QUALITY PROTOCOLS
 
----
+This is the shared generation contract for grammar and reading. Load it once
+per item, alongside the selected skill rules and style guidance. These gates
+take precedence over weaker difficulty minima elsewhere in the rulebooks.
 
-## E.1 SAT Realism and Distractor Competition
+## E.1 Correctness and Difficulty
 
-### E.1.1 Core principle
+Exactly one answer must be defensible under the stem, passage, and target
+rule. Establish that answer from the passage before drafting distractors.
+Never weaken correctness to make the choices more competitive.
 
-Hard SAT questions are difficult because distractors are close to correct,
-wrong answers are attractive, elimination requires precise reasoning, and
-multiple answers appear initially plausible. Difficulty must come from
-distractor competition, not obscure vocabulary.
+For high difficulty, all three distractors must survive a plausible first
+read; for medium, at least two must. All three must function at every level:
+each needs an articulable student mistake, even when that mistake is easy to
+spot in a low-difficulty item. Use tight distractor distance for hard items;
+competition must resolve under careful analysis, not remain ambiguous.
 
-### E.1.2 Distractor distance
+Grammar difficulty comes from the required parsing and convention checks.
+Reading difficulty comes from evidence integration, scope, attribution,
+polarity, or rhetorical distinctions. A missing syntactic trap does not cap
+reading difficulty. For grammar with no syntactic trap, justify difficulty
+through the actual convention and competing choices; do not invent a trap.
 
-```json
-{ "distractor_distance": "tight" }
-```
+## E.2 Shared Option-Quality Gate
 
-Allowed values: `wide`, `moderate`, `tight`. `tight` required for realistic
-hard SAT items.
+For every distractor in both domains:
+- Assign a canonical active `student_failure_mode_key`, a
+  `plausibility_source_key`, and a precise `why_wrong`.
+- Use a distinct primary failure mechanism; introduce no unrelated second
+  error. Explain the mechanism in `why_plausible`; do not invent enum keys
+  or copy a reasoning-trap key into the student-failure field.
+- If no active key fits, revise the distractor or request an amendment and
+  human review; never silently manufacture a production key.
+- Ensure the option fails the target construct, not an unrelated surface flaw.
+  Grammar distractors may contain a fragment, agreement error, or other
+  violation when that violation is what the item tests.
+- Insert each option into its context (or evaluate the full answer statement).
+  Reject gibberish, unrelated awkwardness, and accidental grammatical clues.
+  This is a contextual plausibility check, not a requirement that every
+  grammar distractor form a correct sentence.
+- Match register, semantic category, abstraction, and approximate length.
+  Vary grammatical form when the tested distinction requires it.
+- Do not signal the key through unique polish, length, hedging, or copied
+  wording. Each wrong answer must have a specific textual or rule-based
+  defeater; no distractor may be co-correct.
 
-### E.1.3 Distractor competition score
+Use the skill-specific distractor recipe to realize these gates. Grammar
+targets the declared syntactic mechanism when present; reading targets its
+declared reasoning trap or construct. Do not impose grammar-only trap fields
+on reading items.
 
-```json
-{ "distractor_competition_score": 0.91 }
-```
+## E.3 DSAT Style and Evidence
 
-Minimum acceptable: 0.75. Preferred: 0.85+.
+Keep the selected skill's canonical stem wording, passage length, and
+construction patterns. Reading must retain §22's style fingerprint: sentence
+variation, domain-appropriate attribution and hedging, and contextual
+explanations of technical terms. Do not force scientific prose onto literary
+passages. Grammar retains the focus-specific passage and option patterns.
 
-### E.1.4 Answer separation strength
+When official examples are supplied, use them to calibrate prose, stem form,
+and option construction. Preserve original content: do not copy the example
+or merely substitute names and nouns. Never claim to have consulted examples
+that were not supplied.
 
-```json
-{ "answer_separation_strength": "low" }
-```
+## E.4 Batch Diversity and Anti-Clone Checks
 
-Official hard SAT items usually use `low`.
+The backend/workflow owns batch history and similarity measurement for both
+domains. It supplies recent topics, excluded exam IDs, and any measured
+similarity feedback. Honor those supplied constraints:
+- No consecutive items with the same `topic_broad`.
+- No repeated `topic_fine` within five items.
+- Respect `avoid_recent_exam_ids`.
+- Regenerate when externally measured structural similarity exceeds 0.75.
 
-### E.1.5 Plausible wrong count
+Do not invent history, similarity scores, or a successful check when the
+inputs are absent. Missing measurements remain unverified for downstream
+review; a model's self-assessment is not an anti-clone measurement.
 
-```json
-{ "plausible_wrong_count": 3 }
-```
+## E.5 External Evaluation and Provenance
 
-Preferred production target: 3.
+`official_similarity_score`, `structural_similarity_score`,
+`distractor_competition_score`, and `empirical_difficulty_estimate` are
+externally supplied evaluation results, not numbers for the generator to
+invent. Omit unavailable optional scores and identify unverified checks in
+`review.review_notes`. Never fabricate a passing value to satisfy a schema.
 
----
+Existing evaluation targets (official similarity >= 0.82, preferred >= 0.90;
+competition >= 0.75) are provisional workflow thresholds only when an
+external evaluator and documented rubric produce those measurements. They
+do not establish realism on their own. Empirical difficulty requires response
+data or an identified calibrated estimator, not model intuition.
 
-## E.2 Robust Distractor Engineering Protocol
+The workflow records actual model/rule versions, source-example identifiers,
+timestamps, and executed generation stages. Human override logs record real
+reviewer changes and reasons. The generator may describe its actual reasoning
+steps, but must not claim validator execution, review, or overrides that did
+not occur. Record provenance through the existing output contract; do not
+add undeclared fields.
 
-Each distractor must satisfy:
+## E.6 Final Generation Gate
 
-1. One distinct failure mode only
-2. One identifiable student failure mechanism (`student_failure_mode_key`)
-3. No accidental second error
-4. Plausible formal English
-5. Must survive first-pass elimination
-6. Must compete under time pressure
-7. Must be wrong for a specific named reason
+Before output, verify:
+- Exactly four choices and exactly one defensible answer.
+- Each distractor has a canonical student failure mode, plausibility source,
+  and specific defeater; no two use the same primary failure mechanism.
+- Three plausible distractors for high difficulty; at least two for medium.
+- Contextual plausibility and answer-clue checks pass.
+- Selected skill rules, canonical stem, and domain style requirements pass.
+- Any unavailable external quality checks are reported as unverified.
+- Conditional metadata is present only where applicable: transition subtype,
+  notes-synthesis goal/audience/content and distractor failures, and module
+  format/count for requests that generate a complete module.
 
-### E.2.1 Shared option-quality gate
-
-Before finalizing any generated item, verify:
-
-- **Incorrectness:** no distractor is defensibly co-correct with the key
-- **Plausibility:** each distractor maps to a named student mistake and has
-  a non-null `plausibility_source_key`
-- **Diversity:** no two distractors fail through the same reasoning path or
-  duplicate the same wrong idea
-- **Construct alignment:** each distractor fails the tested grammar/usage
-  construct, not an unrelated side issue
-- **Clue control:** the key is not consistently longer, more precise, more
-  academic, more idiomatic, or more polished than the distractors
-- **Option homogeneity:** all four options share comparable syntax, register,
-  abstraction level, and semantic category
-- **Separation margin:** the key remains the single best answer, while hard
-  items include at least two distractors that survive first-pass elimination
-
-Each question must include:
-
-- A primary trap distractor (targets the declared syntactic trap)
-- A formal-sounding wrong answer (uses `formal_register_match`)
-- A close semantic competitor (tight distractor distance)
-
-The best hard SAT distractors are almost correct but not precise enough.
-
----
-
-## E.3 Ground Truth Comparison
-
-```json
-{ "official_similarity_score": 0.93 }
-```
-
-Compared against PT1–PT6, Bluebook, and official released College Board items.
-Production minimum: 0.82. Preferred: 0.90+.
-
----
-
-## E.4 Anti-Clone Protection
-
-```json
-{ "structural_similarity_score": 0.81, "rewrite_required": true }
-```
-
-If similarity > 0.75: regenerate passage.
-
----
-
-## E.5 Empirical Difficulty Calibration
-
-```json
-{ "empirical_difficulty_estimate": 0.64 }
-```
-
-Represents predicted miss rate.
-
----
-
-## E.6 Human Override Resolution
-
-```json
-{
-  "human_override_log": {
-    "original_classification": "semicolon_use",
-    "reviewer_change": "conjunctive_adverb_usage",
-    "reason": "Semicolon required because conjunctive adverb follows."
-  }
-}
-```
-
----
-
-## E.7 Generation Provenance and Audit Trail
-
-```json
-{
-  "generation_provenance": {
-    "source_template_used": "agreement_template_v2",
-    "generation_chain": ["passage_generated", "distractors_generated", "validator_adjusted"]
-  }
-}
-```
-
----
-
-## E.8 Final Validation
-
-Before output validate:
-
-- `distractor_distance` present on each distractor
-- `student_failure_mode_key` present for every distractor
-- `distractor_competition_score` >= 0.75
-- `plausible_wrong_count` >= 2
-- `answer_separation_strength` calibrated
-- `passage_architecture_key` valid (from B.7) when stimulus is passage-length
-- `official_similarity_score` >= threshold
-- `structural_similarity_score` acceptable (not > 0.75)
-- `empirical_difficulty_estimate` assigned
-- Provenance complete
-- `transition_subtype_key` present on classification and all options for `transition_logic` items
-- `synthesis_goal_key`, `audience_knowledge_key`, `required_content_key` present for all `choose_best_notes_synthesis` items
-- `synthesis_distractor_failure` present on all three wrong options for notes synthesis items
-- `test_format_key` present on all generated modules
-- Module question count matches `test_format_key`
-
-If any fail: regenerate.
+Revise the earliest affected component on failure. Preserve the existing
+three-retry limit; after exhaustion, return the defined failure response
+instead of emitting an ambiguous question.
 
 ---
 

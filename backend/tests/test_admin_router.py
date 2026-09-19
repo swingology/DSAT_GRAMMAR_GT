@@ -844,3 +844,70 @@ def test_admin_list_tests_aggregates_by_source():
         "question_count": 33,
         "approved_count": 30,
     }]
+
+
+def test_admin_list_questions_by_id_ignores_source_filters():
+    """A pasted question_id must resolve bank-wide.
+
+    The Generate tab's reference picker lets an admin paste a UUID without
+    selecting the test/module it belongs to, so an explicit id has to win over
+    every source filter rather than intersecting with them.
+    """
+    from fastapi.testclient import TestClient
+    from app.main import app
+    from app.database import get_db
+
+    captured: list = []
+    qid = "79c8eb6b-6120-54c6-ad3e-5c2b89e24a50"
+
+    class _Result:
+        def unique(self):
+            return self
+
+        def scalars(self):
+            return self
+
+        def all(self):
+            return []
+
+        def scalar_one(self):
+            return 0
+
+    class FakeSession:
+        async def execute(self, stmt):
+            captured.append(stmt)
+            return _Result()
+
+    async def _override_get_db():
+        yield FakeSession()
+
+    app.dependency_overrides[get_db] = _override_get_db
+    try:
+        with TestClient(app) as c:
+            resp = c.get(
+                "/admin/questions",
+                params={
+                    "question_id": qid,
+                    # Deliberately wrong: the id must override all of these.
+                    "source_release_year": 1999,
+                    "source_exam_code": "99",
+                    "source_section_code": "sec99",
+                    "source_module_code": "mod99",
+                },
+                headers=AUTH,
+            )
+            bad = c.get("/admin/questions", params={"question_id": "not-a-uuid"}, headers=AUTH)
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+
+    assert resp.status_code == 200
+    # A UUID column will not render with literal_binds, so inspect bound params.
+    compiled = captured[0].compile()
+    bound = {str(v) for v in compiled.params.values()}
+    assert "questions.id" in str(compiled), "id filter missing from query"
+    assert qid in bound, "id filter missing from query"
+    for leaked in ("1999", "99", "sec99", "mod99"):
+        assert leaked not in bound, f"source filter {leaked} leaked into an id lookup"
+
+    # A malformed id is rejected by the route pattern, not passed to the DB.
+    assert bad.status_code == 422

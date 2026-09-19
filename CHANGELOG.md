@@ -5,6 +5,37 @@ Agent/model varies by entry; see each entry's `Model` line.
 
 ---
 
+## 2026-09-07 — Generate tab: look up a reference question by pasting its ID
+
+**Model:** Claude Fable 5.1
+**Branch:** `RULES_REFACTOR_v3`
+**Commits:** uncommitted working tree
+
+**Feature:** The Generate tab's reference picker could only reach a question by first
+selecting its test/module in the dropdown, then narrowing with the filter box, which
+matched Q#, question text, and passage text only. A question ID was unusable: the filter
+never compared `q.id`, the input was disabled until a module was chosen, and the fetch
+only ever loaded the selected module. Pasting a UUID returned "No questions match".
+
+`GET /admin/questions` gained a `question_id` query param (UUID-patterned, so a malformed
+id 422s at the route rather than erroring in the DB). When present it selects on
+`Question.id` and **skips every source filter** — release year, PT#, test name, exam code,
+subject, section, module — so a pasted id resolves bank-wide without the caller knowing
+which module it came from. Absent the param, filtering is byte-for-byte unchanged.
+
+`Generate.tsx` reuses the existing filter box rather than adding a control: a full UUID
+switches it to a bank-wide id lookup and the test/module dropdown is ignored; anything else
+filters within the selected module exactly as before. The input is now always enabled, the
+result row shows provenance (`2025 · PT7 · Sec01 · Mod02 · Q9`) on an id hit since the
+question can come from any test, and the empty state distinguishes "No question with that
+ID" from "No questions match".
+
+**Tests:** `test_admin_list_questions_by_id_ignores_source_filters` asserts the id reaches
+the query and that four deliberately-wrong source filters do not leak into it, plus the 422
+on a malformed id. Negative control confirmed: removing one `and not question_id` guard
+fails the test. `test_admin_router.py` goes 22 → 23 passing; its 4 pre-existing failures
+(fake session lacks `scalar_one`) are unchanged and unrelated.
+
 ## 2026-09-05 — Generation quality: bug-824 fix, phase-based prompt, Anthropic generator, admin Generate page + reports
 
 **Model:** Claude Fable 5.1
@@ -15018,5 +15049,784 @@ _branch:_ `RULES_REFACTOR_v3` · _commit:_ `6f0f3be` · _ram:_ `19Gi/31Gi`
 _( 20 files changed, 1279 insertions(+), 368 deletions(-))_
 
 **Untracked:** APP/ADMIN_APP/src/pages/Generate.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 22:20:32 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/31Gi`
+
+_No uncommitted changes._
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 23:28:19 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** CHANGELOG.md 
+_( 1 file changed, 9 insertions(+))_
+
+**Untracked:** analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json analysis/ingestion/PT01/run_2026-09-06_f4b39277-b4d0-482d-8a48-cd2dc263ca3b/amendment_candidates.json 
+
+---
+
+## Session snapshot — 2026-09-05 23:50:04 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md 
+_( 5 files changed, 53 insertions(+), 7 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/IdChip.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 23:50:10 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/pages/DataManagement.tsx CHANGELOG.md 
+_( 5 files changed, 91 insertions(+), 8 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/IdChip.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 23:50:14 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CHANGELOG.md 
+_( 6 files changed, 120 insertions(+), 11 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/IdChip.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-05 23:50:46 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/hooks/_session.json .wolf/memory.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CHANGELOG.md 
+_( 6 files changed, 138 insertions(+), 11 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/IdChip.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-06 12:20:20 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml sample_questions_claude.md 
+_( 14 files changed, 176 insertions(+), 2082 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/IdChip.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-06 14:17:43 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `26Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml sample_questions_claude.md 
+_( 14 files changed, 190 insertions(+), 2082 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/IdChip.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-06 14:17:52 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `27Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml sample_questions_claude.md 
+_( 14 files changed, 205 insertions(+), 2082 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/IdChip.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-06 17:33:11 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml sample_questions_claude.md 
+_( 14 files changed, 223 insertions(+), 2082 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/IdChip.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-06 17:50:04 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml sample_questions_claude.md 
+_( 14 files changed, 233 insertions(+), 2082 deletions(-))_
+
+**Untracked:** APP/ADMIN_APP/src/components/IdChip.tsx analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/amendment_candidates.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/summary.md analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/taxonomy_coverage.json analysis/ingestion/PT01/run_2026-09-06_46806974-648e-467e-87dd-eb372f44faad/validation_failures.json 
+
+---
+
+## Session snapshot — 2026-09-06 23:00:56 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 503 insertions(+), 4775 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-06 23:01:24 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 513 insertions(+), 4775 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-06 23:06:05 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 523 insertions(+), 4775 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-06 23:58:10 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `18Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 533 insertions(+), 4775 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 00:28:22 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 545 insertions(+), 4774 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 00:32:22 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 559 insertions(+), 4767 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 00:41:40 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 569 insertions(+), 4761 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 00:51:07 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 587 insertions(+), 4759 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 00:58:20 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 609 insertions(+), 4755 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 08:51:32 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backups/backup.log docker-compose.yml question_selection_plan.md question_selection_tasks.md 
+_( 32 files changed, 631 insertions(+), 4755 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 09:05:08 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 791 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 09:13:31 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 801 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 09:14:25 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 820 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-07 09:17:56 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 830 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-08 08:51:27 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 876 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-08 09:05:36 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 886 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-08 20:05:48 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 899 insertions(+), 4790 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-08 20:21:24 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 917 insertions(+), 4790 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-08 20:28:40 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 927 insertions(+), 4790 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-08 21:18:13 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `19Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 937 insertions(+), 4790 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-08 21:20:07 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 949 insertions(+), 4790 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-08 21:21:35 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `20Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 960 insertions(+), 4790 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-09 10:26:05 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `25Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 1338 insertions(+), 5115 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-09 10:31:14 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `24Gi/31Gi`
+
+**Uncommitted changes:** .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log docker-compose.yml 
+_( 34 files changed, 1360 insertions(+), 5114 deletions(-))_
+
+**Untracked:** .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py .claude/skills/deep-question-analysis/scripts/test_fetch_question.py APP/ADMIN_APP/src/components/IdChip.tsx 
+
+---
+
+## Session snapshot — 2026-09-10 13:13:20 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1484 insertions(+), 5117 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-11 22:46:21 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1549 insertions(+), 5117 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 07:59:45 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1582 insertions(+), 5117 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:01:06 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1595 insertions(+), 5117 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:12:46 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1613 insertions(+), 5108 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:26:54 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1642 insertions(+), 5105 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:27:53 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1653 insertions(+), 5105 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:28:21 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1357 insertions(+), 4780 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:32:00 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1367 insertions(+), 4780 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:33:10 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1387 insertions(+), 4774 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:33:26 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1398 insertions(+), 4774 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:34:16 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1408 insertions(+), 4774 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:36:03 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1418 insertions(+), 4774 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:40:33 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1455 insertions(+), 4765 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:40:46 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1469 insertions(+), 4762 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:41:07 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1498 insertions(+), 4762 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:46:43 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1513 insertions(+), 4758 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:52:58 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1529 insertions(+), 4755 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 08:54:24 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1546 insertions(+), 4750 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:15:42 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1520 insertions(+), 4794 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:20:51 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1544 insertions(+), 4777 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:21:04 (50kb-written)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1555 insertions(+), 4777 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:21:15 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1566 insertions(+), 4777 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:43:09 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1582 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:43:36 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1592 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:46:58 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1602 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:49:51 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1612 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:57:21 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1622 insertions(+), 4770 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-12 09:59:43 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1638 insertions(+), 4767 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/rules/graft-for-agents.md .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md 
+
+---
+
+## Session snapshot — 2026-09-12 10:02:04 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1661 insertions(+), 4765 deletions(-))_
+
+**Untracked:** .claude/commands/ga.md .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/rules/graft-for-agents.md .claude/skills/deep-question-analysis/REFERENCE.md 
+
+---
+
+## Session snapshot — 2026-09-12 10:03:53 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `63e893b` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/buglog.json .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md DEBUG_LOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py 
+_( 37 files changed, 1671 insertions(+), 4765 deletions(-))_
+
+**Untracked:** .claude/commands/ga.md .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/rules/graft-for-agents.md .claude/skills/deep-question-analysis/REFERENCE.md 
+
+---
+
+## Session snapshot — 2026-09-12 10:05:07 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log 
+_( 35 files changed, 1567 insertions(+), 4764 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-15 19:08:19 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log 
+_( 35 files changed, 1671 insertions(+), 4793 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-15 19:11:04 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py backups/backup.log 
+_( 35 files changed, 1684 insertions(+), 4793 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-15 19:12:45 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md RESERACH_PAPER_TODO.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1694 insertions(+), 5444 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-15 19:15:56 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `12Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md RESERACH_PAPER_TODO.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1704 insertions(+), 5444 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-15 19:28:57 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md RESERACH_PAPER_TODO.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1714 insertions(+), 5444 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-16 18:05:34 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md RESERACH_PAPER_TODO.md backend/app/prompts/generate_prompt.py backend/app/routers/admin.py backend/tests/test_admin_router.py 
+_( 36 files changed, 1753 insertions(+), 5444 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-18 17:19:36 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md RESERACH_PAPER_TODO.md admin_dashboard_plan.md admin_dashboard_tasks.md backend/app/prompts/generate_prompt.py 
+_( 49 files changed, 1814 insertions(+), 13655 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-18 20:00:12 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .codex .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md CLEANUP.md FUTURE_FEATURES.md GRAMMAR_REDUX_PRD.md 
+_( 82 files changed, 1828 insertions(+), 48948 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-18 20:00:47 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .codex .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md CLEANUP.md FUTURE_FEATURES.md GRAMMAR_REDUX_PRD.md 
+_( 82 files changed, 1838 insertions(+), 48948 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-18 20:00:58 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .codex .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md CLEANUP.md FUTURE_FEATURES.md GRAMMAR_REDUX_PRD.md 
+_( 82 files changed, 1848 insertions(+), 48942 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
+
+---
+
+## Session snapshot — 2026-09-18 20:19:15 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `b12e582` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .claude/settings.json .codex .gitignore .wolf/anatomy.md .wolf/cerebrum.md .wolf/hooks/_session.json .wolf/memory.md .wolf/token-ledger.json 2024_PT1_audit.md 2024_PT2_audit.md 2024_PT3_audit.md 2024_PT4_audit.md 2025_PT1_ANSWERS.md APP/ADMIN_APP/src/pages/DataManagement.tsx APP/ADMIN_APP/src/pages/Generate.tsx CANONICAL_VOCABULARIES.md CHANGELOG.md CLEANUP.md FUTURE_FEATURES.md GRAMMAR_REDUX_PRD.md 
+_( 83 files changed, 1864 insertions(+), 49229 deletions(-))_
+
+**Untracked:** .claude/helpers/graft-hooks.cjs .claude/helpers/graft-statusline.cjs .claude/skills/deep-question-analysis/REFERENCE.md .claude/skills/deep-question-analysis/SKILL.md .claude/skills/deep-question-analysis/scripts/fetch_question.py 
 
 ---
