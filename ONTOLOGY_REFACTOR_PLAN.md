@@ -6,6 +6,34 @@
 
 ---
 
+## Governing constraint: ADDITIVE ONLY
+
+**This refactor adds a field per question. It does not rewrite, replace, or remove existing
+annotation data.** Every task below is bound by this. Concretely:
+
+| Rule | Consequence |
+|---|---|
+| No existing vocabulary is deleted or renamed | `GRAMMAR_ROLE_KEYS`, `GRAMMAR_FOCUS_KEYS`, `READING_*`, `STEM_TYPE_KEYS` all keep their current values and meanings |
+| `skill_family_key` is **added** to grammar questions, never substituted for `grammar_role_key` | roles become a *child* layer by documentation and validator rule, not by data movement |
+| Writes are **field-level merges** into the existing `question_annotations` row | `annotation_jsonb` gains one key; every other key is byte-identical afterward |
+| No new `QuestionVersion`, no `change_source='reprocess'` | the current-version pointer never moves, so hand-corrections stay current |
+| `user_progress` gains a column; existing columns are not remapped | historical attempt rows keep pointing at the vocabulary they were written with |
+
+**Precedent in this codebase:** `backend/app/services/span_annotator.py:229` does exactly this —
+`ann.passage_spans = {...}` plus `ann.span_annotated_at`, committed on the existing row. It is the
+model for every write in Phase 4, and `scripts/reannotate_spans.py` is the model for the bulk driver.
+
+**What this rules out:** `POST /ingest/reannotate/{id}` and
+`scripts/reannotate_official_v7.py`. `_run_reannotate_pipeline` regenerates the *entire* annotation
+from the LLM and writes a fresh `QuestionVersion` — correct for a v3→v7 rules migration, wrong here.
+Adding one classification field must not put the other ~40 annotation keys back through a model.
+
+**Rollback:** because every write is one added key, rollback is
+`annotation_jsonb = annotation_jsonb - 'skill_family_key'` plus dropping the added column. No restore
+from backup, no version surgery.
+
+---
+
 ## Part 1 — Source data audit (COMPLETE)
 
 Independent re-parse of every verbal PDF, extracting `Question ID` / `Domain` / `Skill` /
@@ -139,7 +167,10 @@ question_family_key   (4)  ← CB Domain          [unchanged]
 
 New `GRAMMAR_SKILL_FAMILY_KEYS = ("boundaries", "form_structure_and_sense", "transitions",
 "rhetorical_synthesis")`. `SKILL_FAMILY_KEYS = READING + GRAMMAR` (11 total; 10 CB skills, CoE
-split in two). `skill_family_key` becomes universal and **required** for every verbal question.
+split in two). `skill_family_key` becomes **legal** for every verbal question — a widened
+enum, not a narrowed one. `grammar_role_key` keeps every value and every meaning it has today;
+"re-parenting" is a documentation and validator-whitelist change, not data movement. Nothing in
+`annotation_jsonb` is removed or rewritten.
 
 ### 2.4 The grammar map — three buckets, only one costs LLM calls
 
@@ -202,15 +233,16 @@ prove or disprove the §2.4 grammar map, and it sets the true "new questions" co
 
 ### 2.6 Migration hazards carried forward
 
-1. **Hand-corrected annotations.** `_run_reannotate_pipeline` writes a fresh `QuestionVersion`
-   from LLM output — manual fixes (bug-819 PT1 Q13, bug-805 PT5 mod02, bug-811 vocab repair)
-   survive in history but stop being current. Exclusion predicate:
-   `questions.is_admin_edited = true`, plus any question with a `question_versions` row where
-   `change_source = 'admin_edit'`.
-2. **`user_progress` is not migrated by reannotate.** `question_domain`,
-   `missed_grammar_focus_key`, `missed_reading_focus_key`, `missed_reading_skill_family_key`
-   (`backend/app/models/db.py:552-558`) are denormalized onto historical attempt rows. Rename a
-   key and the weakness profile silently degrades. Needs its own backfill using the same map.
+1. **Hand-corrected annotations.** *Largely neutralized by the additive-only constraint* — a
+   field-level merge cannot demote a manual fix, because no new version is written. The residual
+   risk is narrow: if a `skill_family_key` was already set by hand, do not overwrite it. Predicate
+   for "leave this field alone": `questions.is_admin_edited = true` **and** the key is already
+   present. This replaces the blanket exclusion the earlier draft required.
+2. **`user_progress` denormalized keys.** `question_domain`, `missed_grammar_focus_key`,
+   `missed_reading_focus_key`, `missed_reading_skill_family_key` (`backend/app/models/db.py:552-558`)
+   are copied onto historical attempt rows. Under additive-only these are **not remapped** — no key
+   is renamed, so nothing goes stale. The work is to *add* `missed_skill_family_key` and backfill it
+   for past attempts by joining to the question's newly-populated value. Old columns stay as written.
 3. **Migration cursor.** `question_annotations.rules_version` is stamped per annotation — use it
    to select un-migrated rows. `questions.annotation_stale` is the right flag for the queue.
 4. **Safety property.** Blocking validation errors route a job to `needs_review` rather than
@@ -232,8 +264,10 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 - [ ] **TASK-01** Decide `stem_type_key` relationship (§2.5): derived-and-asserted, or documented
       as orthogonal. Record as an ADR under `docs/adr/`.
 - [ ] **TASK-02** Decide whether `skill_family_key` becomes **required** (non-null) for all verbal
-      questions, or stays optional during migration. Recommendation: optional during, required at
-      the end, enforced by validator flip in TASK-22.
+      questions, or stays optional. Recommendation: stays **optional** in the Pydantic model
+      throughout — a required field would make every not-yet-filled legacy annotation fail
+      validation, which is the one way an additive change can still break reads. Enforce
+      completeness with the TASK-24 assertion instead of with the validator.
 
 ### Phase 1 — Lock the source of truth
 
@@ -291,27 +325,37 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 ### Phase 4 — Data migration
 
-- [ ] **TASK-19** **[DB]** Deterministic remap (Buckets A + B): a Python/SQL script that reads
-      `cb_skill_map.json` and writes `skill_family_key` into `annotation_jsonb` **in place**,
-      versioned, `change_source='reprocess'`. Must be idempotent and dry-runnable.
-      **Excludes `is_admin_edited = true`.** [TASK-09, TASK-14]
+*Every task in this phase is an additive field-level merge. See the governing constraint above.*
+
+- [ ] **TASK-19** **[DB]** Deterministic fill (Buckets A + B): a script that reads
+      `cb_skill_map.json` and **adds** `skill_family_key` to the existing
+      `question_annotations.annotation_jsonb` — a JSONB key merge on the current row. No new
+      `QuestionVersion`, no other key touched. Idempotent, dry-runnable, with a diff report proving
+      only the one key changed. Skips rows that already carry the key. Model it on
+      `span_annotator.py:229`, drive it like `scripts/reannotate_spans.py`. [TASK-09, TASK-14]
 - [ ] **TASK-20** **[DB]** Mark Bucket C residue with `annotation_stale = true`; report the count
-      per domain before spending anything. [TASK-19]
-- [ ] **TASK-21** **[DB]** Scoped LLM reannotate over Bucket C only, reusing
-      `POST /reannotate/{question_id}` (it synthesizes `pass1_json` from DB state — no PDF, no
-      re-extraction). Adapt `scripts/reannotate_official_v7.py`, which did the v3→v7 migration
-      the same way. [TASK-20, TASK-10]
-- [ ] **TASK-22** **[DB]** Backfill `user_progress`: add `question_skill_family_key`, and remap
-      `question_domain` / `missed_*` keys through `cb_skill_map.json` so historical attempts keep
-      pointing at live vocabulary. Without this the weakness profile degrades silently. [TASK-19]
-- [ ] **TASK-23** **[DB]** Hand-corrected set: review the excluded `is_admin_edited` questions and
-      apply `skill_family_key` manually (should be a small list — size it in TASK-19's dry run).
-      [TASK-19]
+      per domain before spending anything on model calls. [TASK-19]
+- [ ] **TASK-21** **[DB]** **Narrow skill classifier** for Bucket C — a new service that sends the
+      question plus the 10 legal (domain, skill) pairs and asks for `skill_family_key` **and
+      nothing else**, then merges that single key into the existing annotation row. Modeled on
+      `annotate_spans()`, *not* on `_run_reannotate_pipeline` — the full reannotate path is
+      explicitly out of bounds here because it would regenerate ~40 unrelated keys and move the
+      version pointer. [TASK-20, TASK-10]
+- [ ] **TASK-22** **[DB]** `user_progress`: **add** `missed_skill_family_key` (and index it);
+      backfill for historical attempts by joining to the question's new value. Existing
+      `question_domain` / `missed_*` columns are left exactly as written — nothing is remapped,
+      because nothing was renamed. [TASK-19]
+- [ ] **TASK-23** **[DB]** Reconcile the small set where `skill_family_key` was already present and
+      disagrees with `cb_skill_map.json`. These are the only genuine conflicts; review by hand and
+      keep the human value unless the CB label says otherwise. Size it in TASK-19's dry run. [TASK-19]
 
 ### Phase 5 — Verify
 
 - [ ] **TASK-24** **[DB]** Assert every active verbal question has a `skill_family_key` and that
-      the (family, skill) pair is one of the 10 legal combinations. Zero exceptions. [TASK-21..23]
+      the (family, skill) pair is one of the 10 legal combinations. Zero exceptions.
+      **Plus the additive check:** diff every touched `annotation_jsonb` against a pre-migration
+      snapshot and assert `skill_family_key` is the *only* key that differs, everywhere. If any
+      other key moved, the migration was destructive and must be rolled back. [TASK-21..23]
 - [ ] **TASK-25** **[DB]** Re-run the calibration crosstab (TASK-07b) post-migration: agreement
       with CB ground truth should be ~100% on the matched set. This is the acceptance gate. [TASK-24]
 - [ ] **TASK-26** **[DB]** Verify the weakness profile and diagnostic pool still return sane
