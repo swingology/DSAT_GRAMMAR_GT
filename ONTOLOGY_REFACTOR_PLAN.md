@@ -183,6 +183,23 @@ that drifts from `skill_family_key` (cf. bug-811, "stem_type strays still open")
 and assert consistency in the validator, or (b) formally document `stem_type_key` as a
 *surface-form* axis orthogonal to the *skill* axis, and add a cross-check. Do not leave it implicit.
 
+### 2.7 Unresolved: how much of the CB bank is already in the DB
+
+Two figures are on record from the same date (2026-09-12) and they disagree:
+
+| Source | Denominator | Matched | Method |
+|---|---|---|---|
+| `09_2026/db_overlap_check.md` (committed) | 752 (Bank subset) | **55** | exact/near-exact stem match, ≥0.997 |
+| Project memory note | 1,845 (full pool) | **669** | 27 direct stem + 642 passage+stem, sample-verified |
+
+Different scope and different matchers, so both can be internally correct: 55/752 strict-on-a-subset
+vs 669/1,845 fuzzy-on-everything (36% of the bank; 44% of the DB's 1,514 official verbal questions).
+Neither has been re-verified — Postgres is down, see hazard 5.
+
+This is not a bookkeeping detail. It sets the size of the calibration set that TASK-07b uses to
+prove or disprove the §2.4 grammar map, and it sets the true "new questions" count for TASK-27
+(~697 vs ~1,176). **Resolve it first (TASK-07a).**
+
 ### 2.6 Migration hazards carried forward
 
 1. **Hand-corrected annotations.** `_run_reannotate_pipeline` writes a fresh `QuestionVersion`
@@ -233,17 +250,20 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 ### Phase 2 — Validate the map before writing it
 
-- [ ] **TASK-07** **[DB]** Build the 55-question calibration crosstab from
-      `09_2026/db_overlap_check.md`: CB `skill` (ground truth) × existing
-      `grammar_role_key` / `skill_family_key`. This is the cheapest thing that can falsify the
-      §2.4 map. *Caveat: n=55, skewed to CB ∩ official tests — validates reading well, grammar
-      thinly. Do not oversell the result.* [TASK-00]
-- [ ] **TASK-08** **[DB]** Extend calibration: match more of the 1,845 against the DB by
-      normalized stem text (the overlap script already does fuzzy matching at ≥0.997). Target
-      ≥200 matched grammar questions before trusting Bucket B. [TASK-07]
+- [ ] **TASK-07a** **[DB]** **Reconcile the two conflicting overlap figures** (§2.7) by
+      re-running the match over all 1,845 against the live DB. Commit the script and the result;
+      the existing `db_overlap_check.md` covers only the 752-item Bank and must be superseded by a
+      full-pool artifact. *The calibration-set size for everything below depends on this.* [TASK-00]
+- [ ] **TASK-07b** **[DB]** Build the calibration crosstab over whatever TASK-07a returns:
+      CB `skill` (ground truth) × existing `grammar_role_key` / `skill_family_key`. This is the
+      cheapest thing that can falsify the §2.4 map. At n≈669 it carries the grammar side; at
+      n≈55 it validates reading only and Bucket B stays unproven. [TASK-07a]
+- [ ] **TASK-08** **[DB]** If TASK-07a lands near the low figure, extend coverage by matching on
+      normalized passage+stem rather than stem alone (the method the 669 figure used). Target
+      ≥200 matched **grammar** questions before trusting Bucket B. [TASK-07b]
 - [ ] **TASK-09** Write `vocabulary/mappings/cb_skill_map.json` — the explicit old→new map with a
       per-entry `bucket: A|B|C` and a `confidence` field. This file is the single artifact that
-      both the deterministic remap and the `user_progress` backfill read. [TASK-07, TASK-08]
+      both the deterministic remap and the `user_progress` backfill read. [TASK-07b, TASK-08]
 - [ ] **TASK-10** Hand-adjudicate a 30-question sample from Bucket C to estimate LLM agreement
       rate before committing to a full LLM pass. [TASK-09]
 
@@ -292,7 +312,7 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 - [ ] **TASK-24** **[DB]** Assert every active verbal question has a `skill_family_key` and that
       the (family, skill) pair is one of the 10 legal combinations. Zero exceptions. [TASK-21..23]
-- [ ] **TASK-25** **[DB]** Re-run the calibration crosstab (TASK-07) post-migration: agreement
+- [ ] **TASK-25** **[DB]** Re-run the calibration crosstab (TASK-07b) post-migration: agreement
       with CB ground truth should be ~100% on the matched set. This is the acceptance gate. [TASK-24]
 - [ ] **TASK-26** **[DB]** Verify the weakness profile and diagnostic pool still return sane
       results (`backend/app/diagnostic/queries.py` — `derive_domain` may now be replaceable by a
