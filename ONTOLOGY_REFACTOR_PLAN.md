@@ -273,14 +273,17 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 - [x] **TASK-03** ~~Fix the `DOMAINS_SKILLS.md` footnote: the `Cross-text Connections` casing
       variant occurs **3×** (MED, HARD, Results11), not 2×.~~ **Done 2026-09-20** — footnote corrected, verification provenance added. [§1.4]
-- [ ] **TASK-04** Promote `scratchpad/audit_cb.py` to `CB_QUESTION_BANK/09_2026/audit_labels.py`
-      as a committed, re-runnable integrity check (the nine assertions in §1.3).
-- [ ] **TASK-05** Re-extract the bank JSON over the **full 1,845** (not 752), sourcing text from
-      the Bank PDF and difficulty + correct answer from the difficulty splits. Output
-      `09_2026_New_Verbal_Bank_full.json`. [TASK-04]
-- [ ] **TASK-06** Re-run the CoE textual/quantitative stem check over all 1,845 CoE questions
-      (277, vs the 123 audited). Confirm zero `figure|chart|bar graph` leakage before locking the
-      derivation. [TASK-05]
+- [x] **TASK-04** ~~Promote `scratchpad/audit_cb.py` to `CB_QUESTION_BANK/09_2026/audit_labels.py`
+      as a committed, re-runnable integrity check.~~ **Done 2026-09-20** — `audit_labels.py`,
+      10 assertions, exits non-zero on failure; all pass. Replaced the two ad-hoc scripts.
+- [x] **TASK-05** ~~Re-extract the bank JSON over the **full 1,845**.~~ **Done 2026-09-20** —
+      `build_full_bank.py` → `09_2026_New_Verbal_Bank_full.json`, 1,845 records, every one with
+      difficulty and correct answer. *Simpler than planned:* the three difficulty PDFs carry full
+      passage/stem/choices too, so they are the sole source and the Bank PDF is only a cross-check
+      (label agreement on all 752 — passes). Surfaced and fixed a parser bug (bug-831). [TASK-04]
+- [x] **TASK-06** ~~Re-run the CoE textual/quantitative stem check over all 277 CoE questions.~~
+      **Done 2026-09-20** — 277 CoE → **133 quantitative / 144 textual**; zero of the 144 textual
+      stems contain `figure|chart|bar graph|graphic|diagram|data`. Derivation is safe to lock. [TASK-05]
 
 ### Phase 2 — Validate the map before writing it
 
@@ -320,8 +323,12 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
       skills as the top grammar layer and roles as children. Bump `rules_version`. [TASK-13]
 - [ ] **TASK-17** Update the annotate prompt (`backend/app/prompts/annotate_prompt.py`) to request
       `skill_family_key` for grammar questions. [TASK-16]
-- [ ] **TASK-18** Migration: add `questions.source_bank_question_id VARCHAR(8)` (indexed) so the
-      1,845 CB IDs are first-class. No such column exists today. [TASK-13]
+- [x] **TASK-18** ~~Migration: add `questions.source_bank_question_id VARCHAR(8)`. No such column
+      exists today.~~ **Superseded 2026-09-20 — the column already existed.** Migration
+      `035_cb_question_id.py` added `questions.cb_question_id VARCHAR(8)` with a unique constraint,
+      but the ORM model never declared it, so it was invisible to the app (bug-830). Declared it on
+      `Question`, matching the migration exactly. **No new migration needed.** Remaining work moves
+      to TASK-27 (populate it). [TASK-13]
 
 ### Phase 4 — Data migration
 
@@ -363,7 +370,8 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
       direct `question_family_key` read). [TASK-22]
 - [ ] **TASK-27** Ingest the 1,845 CB questions with `source_bank_question_id` populated and
       CB-supplied `question_family_key` / `skill_family_key` taken as **ground truth**, bypassing
-      LLM classification for those two fields. ~1,170 are new to the DB. [TASK-18, TASK-24]
+      LLM classification for those two fields. Populate `questions.cb_question_id` (see TASK-18) as
+      the external dedupe key. New-question count depends on TASK-07a (~697 or ~1,176). [TASK-24]
 - [ ] **TASK-28** CHANGELOG entry + DEBUG_LOG audit entry; update `.wolf/cerebrum.md` with the
       new ontology shape.
 

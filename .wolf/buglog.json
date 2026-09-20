@@ -7674,5 +7674,42 @@
     "occurrences": 1,
     "last_seen": "2026-09-12",
     "status": "closed"
+  },
+  {
+    "id": "bug-830",
+    "timestamp": "2026-09-20",
+    "error_message": "questions.cb_question_id exists in the database (migration 035) but is absent from the SQLAlchemy Question model; no code reads or writes it",
+    "file": "backend/app/models/db.py",
+    "root_cause": "migration 035_cb_question_id.py was written and applied without a matching Column() declaration on the ORM model, so the column is invisible to the application layer",
+    "fix": "declared cb_question_id = Column(String(8), nullable=True, unique=True) on Question, matching the migration exactly (unique constraint only, no separate index, since Postgres backs the constraint with one)",
+    "tags": [
+      "schema-drift",
+      "orm",
+      "migration",
+      "cb-question-bank",
+      "ontology-refactor"
+    ],
+    "related_bugs": [
+      "bug-829"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-09-20"
+  },
+  {
+    "id": "bug-831",
+    "timestamp": "2026-09-20",
+    "error_message": "extract_cb_bank.py: question eb5814a5 parsed with an empty passage; the whole passage was absorbed into the stem",
+    "file": "CB_QUESTION_BANK/09_2026/extract_cb_bank.py",
+    "root_cause": "QUESTION_START matched the literal 'It can be' but the stem reads 'It can most reasonably be inferred from the text that...', so the backward walk from choice A never found a stem boundary and consumed the passage",
+    "fix": "broadened the alternation to 'It can (?:most )?(?:reasonably )?be'; re-extracting the committed 752-question baseline afterwards produced zero changed records, and all 1,845 questions now validate clean",
+    "tags": [
+      "parser",
+      "regex",
+      "pdf-extraction",
+      "cb-question-bank"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-09-20"
   }
 ]

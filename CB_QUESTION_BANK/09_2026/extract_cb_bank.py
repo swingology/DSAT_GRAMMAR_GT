@@ -42,7 +42,7 @@ SKILL_FAMILY = {
 # research stems), so both the line-anchored walk and the in-stem re-split
 # key off this list.
 QUESTION_START = (
-    r"Which|What|According to|Based on|In which|It can be"
+    r"Which|What|According to|Based on|In which|It can (?:most )?(?:reasonably )?be"
     r"|As used in the text|Information in the text|The text makes"
     r"|Taken together|Assuming"
 )

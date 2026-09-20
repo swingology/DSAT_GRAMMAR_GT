@@ -84,6 +84,9 @@ class Question(Base):
     source_section_code = Column(String(10), nullable=True)
     source_module_code = Column(String(10), nullable=True)
     source_question_number = Column(Integer, nullable=True)
+    # College Board MyPractice bank ID (8 hex). Stable across CB exports, so it is the
+    # external dedupe key for bank ingests. Added by migration 035.
+    cb_question_id = Column(String(8), nullable=True, unique=True)
     stimulus_mode_key = Column(String(100), nullable=True)
     stem_type_key = Column(String(100), nullable=True)
     current_question_text = Column(Text, nullable=False)
