@@ -15,4 +15,6 @@ Unique domain × skill combinations as they appear on the test, deduplicated acr
 | Standard English Conventions | Boundaries |
 | Standard English Conventions | Form, Structure, and Sense |
 
-*Each skill appears with exactly one domain — no cross-domain combinations. Raw label count is 11 (one `Cross-text Connections` casing variant each in MED and HARD, normalized above).*
+*Each skill appears with exactly one domain — no cross-domain combinations. Raw label count is 11: a `Cross-text Connections` casing variant occurs 3 times (once each in MED, HARD, and `MyPractice - Question Bank - Results11.pdf`) against 61 correct `Cross-Text Connections`, normalized above.*
+
+*Verified 2026-09-20 against all nine verbal PDFs (4,465 label rows, 1,845 unique question IDs): zero conflicting Domain, Skill, Difficulty, or Correct Answer values across repeated IDs; zero blanks. `EASY ∪ MED ∪ HARD` partitions the 1,845 exactly, with no overlap. Re-run with `CB_QUESTION_BANK/09_2026/audit_cb.py` + `dedup.py`. Question counts per pair and the full audit are in [`ONTOLOGY_REFACTOR_PLAN.md`](ONTOLOGY_REFACTOR_PLAN.md).*

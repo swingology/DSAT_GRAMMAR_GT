@@ -220,8 +220,8 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 ### Phase 1 — Lock the source of truth
 
-- [ ] **TASK-03** Fix the `DOMAINS_SKILLS.md` footnote: the `Cross-text Connections` casing
-      variant occurs **3×** (MED, HARD, Results11), not 2×. [§1.4]
+- [x] **TASK-03** ~~Fix the `DOMAINS_SKILLS.md` footnote: the `Cross-text Connections` casing
+      variant occurs **3×** (MED, HARD, Results11), not 2×.~~ **Done 2026-09-20** — footnote corrected, verification provenance added. [§1.4]
 - [ ] **TASK-04** Promote `scratchpad/audit_cb.py` to `CB_QUESTION_BANK/09_2026/audit_labels.py`
       as a committed, re-runnable integrity check (the nine assertions in §1.3).
 - [ ] **TASK-05** Re-extract the bank JSON over the **full 1,845** (not 752), sourcing text from
