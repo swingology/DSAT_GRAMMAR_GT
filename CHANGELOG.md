@@ -15963,3 +15963,93 @@ _( 6 files changed, 155 insertions(+), 25 deletions(-))_
 **Untracked:** ._.DS_Store CB_QUESTION_BANK/._.DS_Store CB_QUESTION_BANK/._NEW_QUESTION_SETS CB_QUESTION_BANK/NEW_QUESTION_SETS/._.DS_Store CB_QUESTION_BANK/NEW_QUESTION_SETS/._Math 
 
 ---
+
+## Session snapshot — 2026-09-19 11:16:22 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `da02823` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json 
+_( 1 file changed, 1 insertion(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-20 10:42:50 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `da02823` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 35 insertions(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-20 10:45:12 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `da02823` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 45 insertions(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-20 10:54:41 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `88a17ef` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 55 insertions(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-20 11:09:58 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `88a17ef` · _ram:_ `14Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 65 insertions(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-20 11:11:35 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `dc00179` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 75 insertions(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-20 11:12:32 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `dc00179` · _ram:_ `13Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 85 insertions(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-20 12:04:59 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `d5863c7` · _ram:_ `15Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 97 insertions(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-20 12:17:56 (session-end)
+_branch:_ `RULES_REFACTOR_v3` · _commit:_ `4470066` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 107 insertions(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
