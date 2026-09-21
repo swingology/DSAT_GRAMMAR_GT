@@ -32,6 +32,7 @@ from app.parsers.pdf_parser import parse_pdf
 from app.parsers.json_parser import extract_json_from_text, normalize_annotation, canonicalize_annotation
 from app.pipeline.orchestrator import JobOrchestrator
 from app.pipeline.validator import validate_question, validate_annotation_completeness
+from app.pipeline.skill_key import apply_skill_key
 from app.pipeline.annotation_sanitizer import sanitize_annotation_keys
 from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields, apply_option_annotations
 from app.models.payload import JobResponse, ReannotateRequest, OCRJobResult, OCRBenchmarkResponse
@@ -1146,6 +1147,7 @@ async def _persist_single_question(
     _canonical_stem = annotate_json.get("stem_type_key")
     if _canonical_stem:
         question.stem_type_key = _canonical_stem
+    apply_skill_key(question, annotate_json)
 
     correct_label = _resolve_correct_option_label(q_data, annotate_json)
     opt_analyses = option_analyses_by_label(annotate_json)
@@ -3683,6 +3685,7 @@ async def _run_reannotate_pipeline(job: QuestionJob, db: AsyncSession):
     _canonical_stem = annotate_json.get("stem_type_key")
     if _canonical_stem:
         question.stem_type_key = _canonical_stem
+    apply_skill_key(question, annotate_json)
     question.annotation_stale = False
     question.updated_at = now
 

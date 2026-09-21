@@ -496,6 +496,22 @@ frame was the superseded design.** Verdicts:
 - **R3 — 15 of the 17 NULL rows are active**, and 16 of the 17 are almost certainly Words in
   Context (89%). Quick to hand-label once the `manual` guard exists.
 
+## Part 2f — An existing standard already required this (found 2026-09-20)
+
+`chatgpt_refactor_rules/` holds a versioned vocabulary standard (v1.0.0, 2026-09-06): the official
+CB hierarchy (`college_board.json`), a crosswalk from internal keys to official IDs, a change
+ledger, and a lock that hashes `master.json` and `ontology.py`. **It was on this branch's base and
+this plan did not find it until a drift test failed.** Its adoption path says: *"Add a versioned
+official classification representation alongside existing internal classification. Do not
+overload reading-only fields."* — Option B, stated two weeks earlier.
+
+- This refactor is now recorded as **release v1.1.0** (VOC-0004 to VOC-0007), as the standard
+  requires; `verify_standard.py` passes and `v1.0.0/` is untouched.
+- The v1.0.0 crosswalk was tested against CB ground truth: **95.5% row agreement**, 23 of 27
+  testable entries ≥ 95% pure. Its two weak grammar entries are the same two the derived map marks
+  `review`. Two independent routes to the same mapping.
+- Any future vocabulary change must add a release there, not just edit `master.json`.
+
 ## Part 3 — Task list
 
 Dependencies in brackets. Tasks marked **[DB]** are blocked until the port question is settled.
@@ -603,15 +619,8 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 - [ ] **TASK-29** *(follow-up, outside this refactor)* Point difficulty-driven readers — adaptive
       module 2, diagnostic pool, weakness profile — at `cb_difficulty` where non-null, falling back
       to `difficulty_overall`. Needs its own review: it changes student-facing behaviour.
-- [ ] **TASK-30** **Future writes — highest priority.** Nothing sets `skill_key` on new questions:
-      `Question(...)` is built only at `routers/ingest.py:1075` and `routers/generate.py:703`, and
-      neither sets it; reannotate (`ingest.py:3679`) can make a `map`/`annotation` value stale.
-      Extract `resolve()` / `load_rules()` / `QUANT_STEM` from `scripts/fill_skill_key.py` into one
-      pure module under `backend/app/`, call it after the annotation is attached at those three
-      sites (guard reannotate with `skill_key_source != 'cb'`), read `stem_type_key` from the
-      annotation first (generated rows never set the column), and add one small test file. The
-      `cb_*` columns cannot be set at insert — their hook is the batch chain in Part 2c; add it to
-      the ingestion runbook.
+- [x] **TASK-30** ~~**Future writes — highest priority.** Nothing sets `skill_key` on new questions: `Question(...)` is built only at `routers/ingest.py:1075` and `routers/generate.py:703`, and neither sets it; reannotate (`ingest.py:3679`) can make a `map`/`annotation` value stale. Extract `resolve()` / `load_rules()` / `QUANT_STEM` from `scripts/fill_skill_key.py` into one pure module under `backend/app/`, call it after the annotation is attached at those three sites (guard reannotate with `skill_key_source != 'cb'`), read `stem_type_key` from the annotation first (generated rows never set the column), and add one small test file. The `cb_*` columns cannot be set at insert — their hook is the batch chain in Part 2c; add it to the ingestion runbook.~~
+      **Done 2026-09-20** — `backend/app/pipeline/skill_key.py` (`resolve_skill_key`, `apply_skill_key`) called at `ingest.py:1150`, `ingest.py:3688` and `generate.py:758`; `scripts/fill_skill_key.py` now imports it (re-run changes 0 rows, so behaviour is identical); 12 tests in `tests/test_skill_key.py`. A `manual` label is never overwritten, and a label is never replaced with nothing. Full suite: no new failures against a clean checkout of the branch base.
 - [ ] **TASK-31** Guard the column's vocabulary: a CHECK constraint on `questions.skill_key`, or a
       `questions`-column pass in `scripts/check_vocab_consistency.py` (it scans only JSONB today).
 - [ ] **TASK-32** Fix two now-false comments in `vocabulary/master.json` ("Parent layer of

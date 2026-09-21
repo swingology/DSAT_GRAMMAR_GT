@@ -4,7 +4,8 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RELEASE = Path(__file__).resolve().parent / "vocabulary" / "v1.0.0"
+# Always the latest release. Earlier release directories are frozen and never edited.
+RELEASE = Path(__file__).resolve().parent / "vocabulary" / "v1.1.0"
 
 
 def verify(root=ROOT, release=RELEASE):
@@ -39,7 +40,7 @@ def verify(root=ROOT, release=RELEASE):
     identities = {(v["name"], e["value"], e.get("parent"))
                   for v in master["vocabularies"] for e in v["entries"]}
     required_categories = {"QUESTION_FAMILY_KEYS", "READING_SKILL_FAMILY_KEYS",
-                           "GRAMMAR_FOCUS_BY_ROLE"}
+                           "GRAMMAR_FOCUS_BY_ROLE", "SKILL_FAMILY_BY_QUESTION_FAMILY"}
     required = {identity for identity in identities if identity[0] in required_categories}
     required.add(("STEM_TYPE_KEYS", "choose_best_notes_synthesis", None))
     mappings = json.loads((release / "crosswalk.json").read_text())["mappings"]
@@ -80,5 +81,5 @@ if __name__ == "__main__":
     except (OSError, ValueError, KeyError, TypeError) as exc:
         problems = [f"Invalid baseline: {exc}"]
     print("\n".join(problems) if problems else
-          "v1.0.0 OK: official hierarchy, complete legacy crosswalk, hashes, and rule snapshots match")
+          f"{RELEASE.name} OK: official hierarchy, complete legacy crosswalk, hashes, and rule snapshots match")
     raise SystemExit(bool(problems))

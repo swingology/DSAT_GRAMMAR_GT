@@ -1,0 +1,143 @@
+{
+  "standard_version": "1.1.0",
+  "previous_version": "1.0.0",
+  "date": "2026-09-20",
+  "approval_basis": "Repository owner direction in working session 2026-09-20: store College Board labels in their own columns; keep generated primary keys; additive only; Option B (do not overload the reading-only skill_family_key). No rule-document amendment exists for VOC-0004: amendment promotion can only add a value to an existing vocabulary and cannot create one.",
+  "release_status": "recorded_pending_owner_confirmation",
+  "release_kind": "minor — adds compatible terms and mappings; nothing renamed, removed, split, merged or reparented",
+  "runtime_activation": true,
+  "database_migration_applied": true,
+  "changes": [
+    {
+      "change_id": "VOC-0004",
+      "kind": "add_production_vocabulary",
+      "identity": {
+        "old_version": "1.0.0",
+        "new_version": "1.1.0",
+        "date": "2026-09-20",
+        "approved_amendment": null,
+        "reviewer": "repository owner (confirmation pending)"
+      },
+      "meaning": {
+        "added_categories": [
+          "SKILL_FAMILY_BY_QUESTION_FAMILY (hierarchical, parent QUESTION_FAMILY_KEYS, derives SKILL_FAMILY_KEYS)",
+          "GRAMMAR_SKILL_FAMILY_KEYS (flat subset)"
+        ],
+        "production_keys_added": [
+          "cross_text_connections",
+          "text_structure_and_purpose",
+          "words_in_context",
+          "rhetorical_synthesis",
+          "transitions",
+          "central_ideas_and_details",
+          "command_of_evidence_textual",
+          "command_of_evidence_quantitative",
+          "inferences",
+          "boundaries",
+          "form_structure_and_sense"
+        ],
+        "production_keys_renamed": [],
+        "production_keys_removed": [],
+        "production_keys_reparented": [],
+        "mapping_relationship": "equivalent to the official skill; Command of Evidence equivalent to the official testing points",
+        "note": "SKILL_FAMILY_KEYS has 11 values for the 10 official skills because Command of Evidence is split textual/quantitative, as READING_SKILL_FAMILY_KEYS already did."
+      },
+      "evidence": {
+        "source": "College Board MyPractice Question Bank exports, Sep 2026; CB_QUESTION_BANK/09_2026/audit_labels.py",
+        "finding": "1,845 unique questions, exactly 10 Domain x Skill pairs, zero label conflicts across 4,465 label rows",
+        "reason": "Grammar-domain questions had no field able to hold an official skill: skill_family_key is validator-restricted to reading values."
+      },
+      "compatibility": "new concept; every existing category, key, parent and meaning unchanged",
+      "consumers": {
+        "model_fields": [
+          "questions.skill_key",
+          "questions.skill_key_source"
+        ],
+        "jsonb_annotations": "none — annotation_jsonb is not written",
+        "writers": [
+          "backend/app/pipeline/skill_key.py via ingest, generate and reannotate",
+          "scripts/fill_skill_key.py"
+        ],
+        "readers": "none yet",
+        "prompts": "unchanged — the skill is derived, not emitted by a model",
+        "validators": "unchanged; the reading-only checks on skill_family_key are retained deliberately"
+      },
+      "database_action": "see VOC-0006",
+      "historical_annotation_action": "preserve unchanged",
+      "rollback": "Remove the two vocabularies from vocabulary/master.json and regenerate with scripts/gen_vocab.py --generate."
+    },
+    {
+      "change_id": "VOC-0005",
+      "kind": "add_source_label_columns",
+      "identity": {
+        "old_version": "1.0.0",
+        "new_version": "1.1.0",
+        "date": "2026-09-20",
+        "reviewer": "repository owner (direction given in session)"
+      },
+      "meaning": "questions.cb_question_id, cb_domain_key, cb_skill_key, cb_difficulty retain College Board's own labels (STANDARD.md adoption step 2: retain source labels). cb_skill_key holds the 10 official skills with Command of Evidence unsplit. cb_question_id changed from UNIQUE to a plain index because the database stores about two copies of each question.",
+      "evidence": {
+        "matcher": "CB_QUESTION_BANK/09_2026/match_bank_to_db.py",
+        "result": "733 bank questions matched to 1,414 of 1,514 official rows; 11 held for human review; 0 rows claimed by two bank IDs",
+        "artifact": "CB_QUESTION_BANK/09_2026/db_overlap_full.json"
+      },
+      "compatibility": "new columns; no existing column or JSONB key changed",
+      "migration": {
+        "revision": "backend/migrations/versions/036_cb_label_columns.py",
+        "script": "CB_QUESTION_BANK/09_2026/fill_cb_columns.py",
+        "selection": "rows matched on passage+stem text and answer choices",
+        "dry_run": "1,414 rows, 733 distinct questions",
+        "validation": "0 partially labelled rows; 0 questions whose copies disagree; pairs are exactly the 10 official ones; second run changed 0 rows; checksum guard on all non-cb columns"
+      },
+      "rollback": {
+        "backup": "backups/cb_columns_pre_migration_20260920_221833.dump",
+        "procedure": "alembic downgrade 035"
+      }
+    },
+    {
+      "change_id": "VOC-0006",
+      "kind": "derive_official_classification",
+      "identity": {
+        "old_version": "1.0.0",
+        "new_version": "1.1.0",
+        "date": "2026-09-20",
+        "reviewer": "repository owner (Option B chosen in session)"
+      },
+      "meaning": "questions.skill_key carries the official skill for every question, alongside the internal classification (STANDARD.md adoption steps 2-4). skill_key_source records the method: cb, annotation, map, or manual.",
+      "evidence": {
+        "crosswalk_validation": "v1.0.0 crosswalk.json agrees with College Board ground truth on 95.5% of matched rows; 23 of 27 testable entries are >=95% pure. The two weak grammar entries, comma_splice (71%) and run_on_sentence (90%), are the same two the derived map marks review.",
+        "derived_map": "vocabulary/mappings/cb_skill_map.json, generated by CB_QUESTION_BANK/09_2026/calibration_report.py; rules are auto-applied only at n>=5 and purity>=95%"
+      },
+      "compatibility": "new column; annotation_jsonb untouched",
+      "migration": {
+        "revision": "backend/migrations/versions/037_skill_key.py",
+        "script": "scripts/fill_skill_key.py",
+        "dry_run": {
+          "questions": 1514,
+          "resolved": 1497,
+          "by_source": {
+            "cb": 1414,
+            "annotation": 54,
+            "map": 29
+          },
+          "unresolved": 17
+        },
+        "ambiguous": "17 rows left NULL for review rather than guessed (16 are complete_the_text / expression_of_ideas / precision_word_choice, which is 89% Words in Context)",
+        "validation": "annotation_jsonb checksum identical before and after; second run changed 0 rows; 12 unit tests in backend/tests/test_skill_key.py"
+      },
+      "history": "original annotations and versions preserved; no QuestionVersion written",
+      "known_conflicts_preserved": "existing annotations disagree with College Board on 201 question_family_key values and 22 reading skill_family_key values, and 79 Words in Context rows are annotated as grammar. Reported, not rewritten.",
+      "rollback": {
+        "backup": "backups/skill_key_pre_migration_20260920_222915.dump",
+        "procedure": "alembic downgrade 036"
+      }
+    },
+    {
+      "change_id": "VOC-0007",
+      "kind": "regenerate_derived_artifacts",
+      "database_action": "none",
+      "reason": "backend/app/models/ontology.py and the VOCAB appendix of rules_agent_dsat_grammar_ingestion_generation_v8.md regenerated from master.json. The appendix also gained two blocks that were missing before this release (SYNTACTIC_TRAP_REQUIRED_ROLES, GRAMMAR_QUESTION_FAMILY_KEYS). No accepted value changed.",
+      "rollback": "git revert"
+    }
+  ]
+}

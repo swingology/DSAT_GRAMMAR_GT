@@ -1,5 +1,37 @@
 # Debug Log
 
+## 2026-09-20 - Ontology refactor audit: CB skill adoption (bug-830 to bug-834)
+Report created by: Claude Opus 5 / Claude Fable 5.1
+Git branch: `ONTOLOGY_REFACTOR_CB_SKILLS`
+Git checkpoint: `4f6d253` — Record Option B in the refactor plan and disposition the Codex review
+
+### Findings
+
+1. ~~**High:** `questions.cb_question_id` existed in the database (migration 035) but was never declared on the SQLAlchemy `Question` model, so the column was invisible to the application (bug-830).~~
+   - **Fixed:** declared on the model; migration 036 later relaxed it from UNIQUE to a plain index because the DB stores ~2 copies of each question.
+
+2. ~~**Medium:** `extract_cb_bank.py` lost the whole passage of question `eb5814a5` into its stem — the stem-start pattern matched `It can be` but not `It can most reasonably be` (bug-831).~~
+   - **Fixed:** pattern broadened; re-extracting the committed 752-question baseline changed 0 records.
+
+3. ~~**Medium:** the `Cross-text Connections` casing variant produced a 12th key, `cross-text_connections`, on 3 bank records (bug-832).~~
+   - **Fixed:** label canonicalized before the key is derived.
+
+4. ~~**High:** the derived skill map measured rule purity only over rows whose CB skill is a grammar skill, so `expression_of_ideas/precision_word_choice` looked like a 100% Rhetorical Synthesis signal when 89% of those rows are Words in Context (bug-834).~~
+   - **Fixed:** purity computed over every matched row; 16 rows that would have been mislabelled are left NULL.
+
+5. **High (open):** `difficulty_overall` (LLM estimate) agrees with College Board's official difficulty on only ~39% of matched rows; it says `high` on 3 rows where CB says Hard on 481 (bug-833).
+   - Not rewritten. `questions.cb_difficulty` now holds CB's rating; switching difficulty-driven readers is TASK-29.
+
+6. **High (design hazard, avoided):** eight sites treat the mere presence of `skill_family_key` as "reading question" — `diagnostic/queries.py:40,91`, `routers/student.py:323`, `review/auto_release.py:83`, `pipeline/validator.py:306`, `models/payload.py:203`, `prompts/generate_prompt.py:75`, `ADMIN_APP/src/pages/Generate.tsx:184`. Filling that key on grammar rows would have misrouted them into reading pools without rewriting any data.
+   - Avoided by carrying the skill in a new column, `questions.skill_key`. `chatgpt_refactor_rules/STANDARD.md` (2026-09-06) already required this: "Do not overload reading-only fields."
+
+7. **Medium (open):** existing annotations disagree with College Board on 201 `question_family_key` values and 22 reading `skill_family_key` values; 79 Words in Context rows are annotated as grammar. The annotation's routing domain contradicts the skill's domain on 103 active rows.
+   - Reported, not rewritten — needs owner sign-off. Readers of `skill_key` must derive the domain from the skill.
+
+8. **Medium (open):** the bank JSON carries a field named `skill_family_key` holding grammar values on 819 of 1,845 records; importing it into `annotation_jsonb` would recreate finding 6. Flagged on TASK-27.
+
+9. **Low (open, pre-existing):** 15 backend tests fail identically on this branch and on its base (`test_admin_router` x4, `test_backend_regressions` x3, `test_student_retrieval` x4, `test_review_runner` x2, `test_config`, `test_vocab_sync`). Scripts run from the repo root crash in `Settings()` because the root `.env` holds two variables the settings model forbids; run DB scripts from `backend/`.
+
 ## 2026-09-12 - Orphaned alembic revision stamp + CB question ID backfill (bug-829)
 Report created by: Claude Sonnet 5
 Git branch: `RULES_REFACTOR_v3`

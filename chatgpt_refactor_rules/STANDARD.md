@@ -123,6 +123,32 @@ explicit migration. Reusing a retired ID for another meaning is prohibited.
 6. Verify on reviewed annotation examples and matched generated items, then
    activate writers. Keep old-version readers and rollback artifacts.
 
-This release establishes the starting standard and compatibility record.
+## Release v1.1.0 (2026-09-20) — official skill adopted in the database
+
+Minor release: adds compatible terms and mappings. Nothing was renamed, removed, split,
+merged or reparented, and no historical annotation was changed. Ledger:
+`vocabulary/v1.1.0/changes.json` (VOC-0004 to VOC-0007).
+
+- **Adoption steps 1-4 are done.** Collisions were measured against the actual database
+  (step 1). The official classification sits *alongside* the internal one in new columns —
+  `questions.skill_key` plus College Board's source labels in `cb_*` — and the reading-only
+  `skill_family_key` was deliberately not overloaded (step 2). Classifications are derived
+  from College Board's own labels where a bank match exists, otherwise from a crosswalk
+  derived from those labels; ambiguous keys stay NULL for review (step 3). Both fills were
+  dry-run first with counts recorded (step 4).
+- **The v1.0.0 crosswalk was tested against College Board ground truth** and agrees on
+  95.5% of matched rows. Its two weak grammar entries, `comma_splice` and
+  `run_on_sentence`, are the same two the derived map sends to review.
+- **Steps 5-6 remain:** no reader uses `skill_key` yet. Every reader must take the domain
+  from the skill, never from the annotation's routing domain — they disagree on about 100
+  official rows.
+- **Not versioned per row.** `skill_key` values are production keys from
+  `SKILL_FAMILY_BY_QUESTION_FAMILY`; v1.1.0's crosswalk maps each one to its official ID.
+  A per-row standard-version column was not added; add it with the first change that alters
+  an existing key's meaning.
+- To verify: `python3 chatgpt_refactor_rules/verify_standard.py`. It checks the latest
+  release; `vocabulary/v1.0.0/` stays frozen as released.
+
+v1.0.0 established the starting standard and compatibility record.
 Runtime adapter implementation, database migration, semantic term promotion,
 and measured question-quality evaluation are subsequent tracked work.

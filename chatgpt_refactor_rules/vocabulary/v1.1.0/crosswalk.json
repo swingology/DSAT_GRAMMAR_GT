@@ -1,0 +1,930 @@
+{
+  "standard_version": "1.1.0",
+  "status": "reference_mapping_not_executable_migration",
+  "mapping_authority": "Project interpretation of College Board A33, not a publisher-endorsed crosswalk",
+  "identity": [
+    "category",
+    "value",
+    "parent"
+  ],
+  "scope": "All current question families, reading skill families, grammar focus entries, and notes-synthesis stem. All other master categories remain internal and unchanged. v1.1.0 adds SKILL_FAMILY_BY_QUESTION_FAMILY, whose entries are production keys defined to equal the official skills.",
+  "mappings": [
+    {
+      "legacy": {
+        "category": "QUESTION_FAMILY_KEYS",
+        "value": "conventions_grammar",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.standard_english_conventions"
+      ],
+      "relationship": "related",
+      "reason": "Reporting-domain crosswalk; confirm the assessed task for historical records, especially legacy Expression of Ideas usage.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "QUESTION_FAMILY_KEYS",
+        "value": "expression_of_ideas",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.expression_of_ideas"
+      ],
+      "relationship": "related",
+      "reason": "Reporting-domain crosswalk; confirm the assessed task for historical records, especially legacy Expression of Ideas usage.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "QUESTION_FAMILY_KEYS",
+        "value": "craft_and_structure",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.craft_and_structure"
+      ],
+      "relationship": "related",
+      "reason": "Reporting-domain crosswalk; confirm the assessed task for historical records, especially legacy Expression of Ideas usage.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "QUESTION_FAMILY_KEYS",
+        "value": "information_and_ideas",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.information_and_ideas"
+      ],
+      "relationship": "related",
+      "reason": "Reporting-domain crosswalk; confirm the assessed task for historical records, especially legacy Expression of Ideas usage.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "READING_SKILL_FAMILY_KEYS",
+        "value": "command_of_evidence_textual",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.command_of_evidence.textual"
+      ],
+      "relationship": "equivalent",
+      "reason": "Equivalent category meaning; this mapping does not verify that an old item was classified correctly.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "READING_SKILL_FAMILY_KEYS",
+        "value": "command_of_evidence_quantitative",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.command_of_evidence.quantitative"
+      ],
+      "relationship": "equivalent",
+      "reason": "Equivalent category meaning; this mapping does not verify that an old item was classified correctly.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "READING_SKILL_FAMILY_KEYS",
+        "value": "central_ideas_and_details",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.central_ideas_and_details"
+      ],
+      "relationship": "equivalent",
+      "reason": "Equivalent category meaning; this mapping does not verify that an old item was classified correctly.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "READING_SKILL_FAMILY_KEYS",
+        "value": "inferences",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.inferences"
+      ],
+      "relationship": "equivalent",
+      "reason": "Equivalent category meaning; this mapping does not verify that an old item was classified correctly.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "READING_SKILL_FAMILY_KEYS",
+        "value": "words_in_context",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.words_in_context"
+      ],
+      "relationship": "equivalent",
+      "reason": "Equivalent category meaning; this mapping does not verify that an old item was classified correctly.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "READING_SKILL_FAMILY_KEYS",
+        "value": "text_structure_and_purpose",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.text_structure_and_purpose"
+      ],
+      "relationship": "equivalent",
+      "reason": "Equivalent category meaning; this mapping does not verify that an old item was classified correctly.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "READING_SKILL_FAMILY_KEYS",
+        "value": "cross_text_connections",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.cross_text_connections"
+      ],
+      "relationship": "equivalent",
+      "reason": "Equivalent category meaning; this mapping does not verify that an old item was classified correctly.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "sentence_fragment",
+        "parent": "sentence_boundary"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "comma_splice",
+        "parent": "sentence_boundary"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "run_on_sentence",
+        "parent": "sentence_boundary"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "sentence_boundary",
+        "parent": "sentence_boundary"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "subject_verb_agreement",
+        "parent": "agreement"
+      },
+      "official_targets": [
+        "cb.subject_verb_agreement"
+      ],
+      "relationship": "related",
+      "reason": "Related official testing point; legacy focus definitions and item evidence must be checked before treating it as an exact alias.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "pronoun_antecedent_agreement",
+        "parent": "agreement"
+      },
+      "official_targets": [
+        "cb.pronoun_antecedent_agreement"
+      ],
+      "relationship": "related",
+      "reason": "Related official testing point; legacy focus definitions and item evidence must be checked before treating it as an exact alias.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "noun_countability",
+        "parent": "agreement"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "determiners_articles",
+        "parent": "agreement"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "affirmative_agreement",
+        "parent": "agreement"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "verb_tense_consistency",
+        "parent": "verb_form"
+      },
+      "official_targets": [
+        "cb.verb_tense_and_aspect"
+      ],
+      "relationship": "related",
+      "reason": "Related official testing point; legacy focus definitions and item evidence must be checked before treating it as an exact alias.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "verb_form",
+        "parent": "verb_form"
+      },
+      "official_targets": [
+        "cb.verb_finiteness",
+        "cb.verb_tense_and_aspect"
+      ],
+      "relationship": "unresolved",
+      "reason": "Broad legacy focus bundles constructions; select a testing point from the item, never assign both automatically.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "voice_active_passive",
+        "parent": "verb_form"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "negation",
+        "parent": "verb_form"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "modifier_placement",
+        "parent": "modifier"
+      },
+      "official_targets": [
+        "cb.subject_modifier_placement"
+      ],
+      "relationship": "related",
+      "reason": "Related official testing point; legacy focus definitions and item evidence must be checked before treating it as an exact alias.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "comparative_structures",
+        "parent": "modifier"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "illogical_comparison",
+        "parent": "modifier"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "adjective_adverb_distinction",
+        "parent": "modifier"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "logical_predication",
+        "parent": "modifier"
+      },
+      "official_targets": [
+        "cb.subject_modifier_placement"
+      ],
+      "relationship": "related",
+      "reason": "Some existing recipes involve modifier placement; the broad internal key is not an exact synonym.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "relative_pronouns",
+        "parent": "modifier"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "absolute_phrase",
+        "parent": "modifier"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "punctuation_comma",
+        "parent": "punctuation"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "colon_dash_use",
+        "parent": "punctuation"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "semicolon_use",
+        "parent": "punctuation"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "conjunctive_adverb_usage",
+        "parent": "punctuation"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "apostrophe_use",
+        "parent": "punctuation"
+      },
+      "official_targets": [
+        "cb.genitives_and_plurals"
+      ],
+      "relationship": "related",
+      "reason": "Related official testing point; legacy focus definitions and item evidence must be checked before treating it as an exact alias.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "possessive_contraction",
+        "parent": "punctuation"
+      },
+      "official_targets": [
+        "cb.genitives_and_plurals"
+      ],
+      "relationship": "related",
+      "reason": "Related official testing point; legacy focus definitions and item evidence must be checked before treating it as an exact alias.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "appositive_punctuation",
+        "parent": "punctuation"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "hyphen_usage",
+        "parent": "punctuation"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "quotation_punctuation",
+        "parent": "punctuation"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "unnecessary_internal_punctuation",
+        "parent": "punctuation"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "end_punctuation_question_statement",
+        "parent": "punctuation"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "narrower",
+      "reason": "Internal focus maps to the broad skill; between/within-sentence testing point requires the actual construction.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "parallel_structure",
+        "parent": "parallel_structure"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "elliptical_constructions",
+        "parent": "parallel_structure"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "conjunction_usage",
+        "parent": "parallel_structure"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "pronoun_case",
+        "parent": "pronoun"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "pronoun_clarity",
+        "parent": "pronoun"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "pronoun_antecedent_agreement",
+        "parent": "pronoun"
+      },
+      "official_targets": [
+        "cb.pronoun_antecedent_agreement"
+      ],
+      "relationship": "related",
+      "reason": "Related official testing point; legacy focus definitions and item evidence must be checked before treating it as an exact alias.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "redundancy_concision",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "precision_word_choice",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "register_style_consistency",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "logical_relationships",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "emphasis_meaning_shifts",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "data_interpretation_claims",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "transition_logic",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [
+        "cb.transitions"
+      ],
+      "relationship": "related",
+      "reason": "Use Transitions only when choosing the logical connector; punctuation around a connector may instead test Boundaries.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "commonly_confused_words",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "GRAMMAR_FOCUS_BY_ROLE",
+        "value": "preposition_idiom",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [],
+      "relationship": "unresolved",
+      "reason": "Retain internal concept for compatibility/supporting annotation. No standalone official-target equivalence is established by this baseline; inspect assessed task and evidence.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "STEM_TYPE_KEYS",
+        "value": "choose_best_notes_synthesis",
+        "parent": null
+      },
+      "official_targets": [
+        "cb.rhetorical_synthesis"
+      ],
+      "relationship": "related",
+      "reason": "Route hint only: confirm notes and the rhetorical goal; a stem is an item form, not a skill alias.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "cross_text_connections",
+        "parent": "craft_and_structure"
+      },
+      "official_targets": [
+        "cb.cross_text_connections"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "text_structure_and_purpose",
+        "parent": "craft_and_structure"
+      },
+      "official_targets": [
+        "cb.text_structure_and_purpose"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "words_in_context",
+        "parent": "craft_and_structure"
+      },
+      "official_targets": [
+        "cb.words_in_context"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "rhetorical_synthesis",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [
+        "cb.rhetorical_synthesis"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "transitions",
+        "parent": "expression_of_ideas"
+      },
+      "official_targets": [
+        "cb.transitions"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "central_ideas_and_details",
+        "parent": "information_and_ideas"
+      },
+      "official_targets": [
+        "cb.central_ideas_and_details"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "command_of_evidence_textual",
+        "parent": "information_and_ideas"
+      },
+      "official_targets": [
+        "cb.command_of_evidence.textual"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "command_of_evidence_quantitative",
+        "parent": "information_and_ideas"
+      },
+      "official_targets": [
+        "cb.command_of_evidence.quantitative"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "inferences",
+        "parent": "information_and_ideas"
+      },
+      "official_targets": [
+        "cb.inferences"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "boundaries",
+        "parent": "conventions_grammar"
+      },
+      "official_targets": [
+        "cb.boundaries"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    },
+    {
+      "legacy": {
+        "category": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+        "value": "form_structure_and_sense",
+        "parent": "conventions_grammar"
+      },
+      "official_targets": [
+        "cb.form_structure_and_sense"
+      ],
+      "relationship": "equivalent",
+      "reason": "Production key introduced in v1.1.0 to carry the official skill in questions.skill_key; defined as the official term, so the mapping is exact. Command of Evidence is held at testing-point level.",
+      "migration_action": "preserve_original",
+      "automatic_database_rewrite": false
+    }
+  ]
+}

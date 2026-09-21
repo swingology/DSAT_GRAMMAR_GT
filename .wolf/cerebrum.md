@@ -14,6 +14,12 @@
 
 ## Key Learnings
 
+- (2026-09-20) `chatgpt_refactor_rules/` is a versioned vocabulary STANDARD with a hash lock over master.json / ontology.py / rules docs. ANY vocabulary change needs a new release dir (`vocabulary/vX.Y.Z/`) + ledger entry, or `tests/test_vocabulary_standard.py` fails. Read `STANDARD.md` BEFORE planning ontology work — it already says "do not overload reading-only fields".
+- (2026-09-20) `skill_family_key` is reading-only BY DESIGN: eight sites infer "reading question" from its presence. The universal CB skill is the column `questions.skill_key` (+ `skill_key_source`), set by `app/pipeline/skill_key.py`. Readers must derive the domain from the skill, never mix it with derive_domain.
+- (2026-09-20) Run DB scripts from `backend/` (`cd backend && .venv-jb/bin/python ../scripts/x.py`): from the repo root `Settings()` rejects two vars in the root `.env`.
+- (2026-09-20) 15 backend tests fail on the branch base too (admin_router x4, backend_regressions x3, student_retrieval x4, review_runner x2, config, vocab_sync). To tell new failures from old, diff against a `git worktree` of the base commit.
+
+
 - (2026-09-20) DB is `localhost:5437/dsat_dev` (container `dsat-db`); `docker start dsat-db` alone is enough for read-only analysis.
 - (2026-09-20) The DB holds ~2 copies of most official questions (2024 + 2025 releases, untitled re-imports): 1,414 rows = 733 distinct CB questions. Any per-question write must be keyed on row id and reach every copy. md5 of text undercounts duplicates (whitespace differs).
 - (2026-09-20) Matching CB bank text to DB text: compare passage+stem as ONE string plus the choices. CB keeps the "The student wants to..." goal sentence in the stem; the DB stores it in the passage.

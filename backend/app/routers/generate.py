@@ -28,6 +28,7 @@ from app.models.db import (
 )
 from app.parsers.json_parser import extract_json_from_text, normalize_annotation, canonicalize_annotation
 from app.pipeline.validator import validate_question, validate_annotation_completeness
+from app.pipeline.skill_key import apply_skill_key
 from app.pipeline.annotation_sanitizer import sanitize_annotation_keys
 from app.pipeline.option_hydration import option_analyses_by_label, option_annotation_fields
 from app.pipeline.overlap import detect_overlaps, persist_overlap_relations
@@ -754,6 +755,7 @@ async def _run_generate_pipeline(job: QuestionJob, db: AsyncSession, request_dat
             await db.flush()
             question.latest_annotation_id = annotation_id
             question.latest_version_id = version_id
+            apply_skill_key(question, annotate_json)
 
             opt_analyses = option_analyses_by_label(annotate_json)
             for opt in generated.get("options", []):
