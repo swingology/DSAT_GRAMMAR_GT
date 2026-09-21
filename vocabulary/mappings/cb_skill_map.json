@@ -1,10 +1,194 @@
 {
-  "_doc": "Derived by CB_QUESTION_BANK/09_2026/calibration_report.py from CB ground truth. Do not hand-edit; re-run to regenerate. Apply in order: stem_type_key, then role/focus, then role. Only 'deterministic' rules may be auto-applied.",
+  "_doc": "Derived by CB_QUESTION_BANK/09_2026/calibration_report.py from CB ground truth. Do not hand-edit; re-run to regenerate. Apply in order: question text, then stem_type_key, role/focus, role. Only 'deterministic' rules may be auto-applied.",
   "thresholds": {
     "min_n": 5,
     "min_purity": 0.95
   },
   "calibration_rows": 1414,
+  "by_question_text": [
+    {
+      "key": "which choice completes the text so that it conforms to the conventions of standard english",
+      "skill_key": "boundaries",
+      "n": 421,
+      "purity": 0.506,
+      "status": "review",
+      "counts": {
+        "form_structure_and_sense": 208,
+        "boundaries": 213
+      }
+    },
+    {
+      "key": "which choice completes the text with the most logical and precise word or phrase",
+      "skill_key": "words_in_context",
+      "n": 219,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "words_in_context": 219
+      }
+    },
+    {
+      "key": "which choice completes the text with the most logical transition",
+      "skill_key": "transitions",
+      "n": 194,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "transitions": 194
+      }
+    },
+    {
+      "key": "which choice most effectively uses relevant information from the notes to accomplish this goal",
+      "skill_key": "rhetorical_synthesis",
+      "n": 193,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "rhetorical_synthesis": 193
+      }
+    },
+    {
+      "key": "which choice most logically completes the text",
+      "skill_key": "inferences",
+      "n": 140,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "inferences": 140
+      }
+    },
+    {
+      "key": "which choice best states the main idea of the text",
+      "skill_key": "central_ideas_and_details",
+      "n": 52,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "central_ideas_and_details": 52
+      }
+    },
+    {
+      "key": "which choice best states the main purpose of the text",
+      "skill_key": "text_structure_and_purpose",
+      "n": 49,
+      "purity": 0.98,
+      "status": "deterministic",
+      "counts": {
+        "text_structure_and_purpose": 48,
+        "central_ideas_and_details": 1
+      }
+    },
+    {
+      "key": "which choice best describes the overall structure of the text",
+      "skill_key": "text_structure_and_purpose",
+      "n": 28,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "text_structure_and_purpose": 28
+      }
+    },
+    {
+      "key": "which choice most effectively uses data from the table to complete the statement",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 24,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_quantitative": 24
+      }
+    },
+    {
+      "key": "which choice best describes the function of the underlined portion in the text as a whole",
+      "skill_key": "text_structure_and_purpose",
+      "n": 21,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "text_structure_and_purpose": 21
+      }
+    },
+    {
+      "key": "which choice best describes the function of the underlined sentence in the text as a whole",
+      "skill_key": "text_structure_and_purpose",
+      "n": 20,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "text_structure_and_purpose": 20
+      }
+    },
+    {
+      "key": "which choice most effectively uses data from the graph to complete the statement",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 9,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_quantitative": 9
+      }
+    },
+    {
+      "key": "which choice most effectively uses data from the table to complete the text",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 9,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_quantitative": 9
+      }
+    },
+    {
+      "key": "which choice most effectively uses data from the table to complete the example",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 8,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_quantitative": 8
+      }
+    },
+    {
+      "key": "which choice most effectively uses data from the graph to complete the text",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 6,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_quantitative": 6
+      }
+    },
+    {
+      "key": "based on the texts both authors would most likely agree with which statement",
+      "skill_key": "cross_text_connections",
+      "n": 6,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "cross_text_connections": 6
+      }
+    },
+    {
+      "key": "which choice best describes data from the graph that support the researchers conclusion",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 5,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_quantitative": 5
+      }
+    },
+    {
+      "key": "which finding if true would most directly support the researchers hypothesis",
+      "skill_key": "command_of_evidence_textual",
+      "n": 5,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_textual": 5
+      }
+    }
+  ],
   "by_stem_type_key": [
     {
       "key": "complete_the_text",

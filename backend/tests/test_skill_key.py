@@ -5,6 +5,7 @@ from app.models.ontology import SKILL_FAMILY_KEYS
 from app.pipeline.skill_key import apply_skill_key, load_rules, resolve_skill_key
 
 RULES = (
+    {"which choice completes the text with the most logical transition": "transitions"},  # by wording
     {"choose_best_transition": "transitions"},                 # by stem_type_key
     {"punctuation/colon_dash_use": "boundaries"},              # by role/focus
     {"agreement": "form_structure_and_sense"},                 # by role
@@ -33,6 +34,19 @@ def test_command_of_evidence_split_by_stem():
 
 def test_unknown_cb_label_is_not_trusted():
     assert resolve(cb_skill_key="not_a_cb_skill") == (None, None)
+
+
+def test_cb_wording_outranks_an_llm_annotation():
+    stem = "Which choice completes the text with the most logical transition?"
+    assert resolve(stem_text=stem, annotation={"skill_family_key": "inferences"}) == (
+        "transitions", "question_text")
+
+
+def test_wording_is_matched_on_the_last_sentence():
+    # Rhetorical Synthesis opens with a goal sentence the database keeps in the passage.
+    stem = ("The student wants to compare the two. Which choice completes the text with the "
+            "most logical transition?")
+    assert resolve(stem_text=stem) == ("transitions", "question_text")
 
 
 def test_existing_reading_skill_is_reused():
@@ -89,8 +103,13 @@ def test_apply_does_not_erase_a_label_when_nothing_resolves():
 
 
 def test_shipped_map_only_yields_legal_skills():
-    by_stem, by_focus, by_role = load_rules()
+    by_text, by_stem, by_focus, by_role = load_rules()
     assert by_stem, "cb_skill_map.json missing or has no deterministic stem rules"
-    for table in (by_stem, by_focus, by_role):
+    assert by_text["which choice completes the text with the most logical and precise word or phrase"] \
+        == "words_in_context"
+    # ambiguous on purpose: this wording is split between Boundaries and Form, Structure, and Sense
+    assert "which choice completes the text so that it conforms to the conventions of standard english" \
+        not in by_text
+    for table in (by_text, by_stem, by_focus, by_role):
         assert set(table.values()) <= set(SKILL_FAMILY_KEYS)
     assert by_stem["choose_best_transition"] == "transitions"

@@ -50,7 +50,30 @@ copy per question — see ONTOLOGY_REFACTOR_PLAN.md §2.9.
 
 Rule is `deterministic` at n ≥ 5 and purity ≥ 95%; otherwise `review`.
 
-### 1. By `stem_type_key` — apply first
+### 0. By question wording — apply first (College Board's wording and label; no DB, no LLM)
+
+| last sentence of the question | → skill | n | purity | status |
+|---|---|---|---|---|
+| `which choice completes the text so that it conforms to the conventions of standard english` | boundaries | 421 | 50.6% | review |
+| `which choice completes the text with the most logical and precise word or phrase` | words_in_context | 219 | 100.0% | deterministic |
+| `which choice completes the text with the most logical transition` | transitions | 194 | 100.0% | deterministic |
+| `which choice most effectively uses relevant information from the notes to accomplish this goal` | rhetorical_synthesis | 193 | 100.0% | deterministic |
+| `which choice most logically completes the text` | inferences | 140 | 100.0% | deterministic |
+| `which choice best states the main idea of the text` | central_ideas_and_details | 52 | 100.0% | deterministic |
+| `which choice best states the main purpose of the text` | text_structure_and_purpose | 49 | 98.0% | deterministic |
+| `which choice best describes the overall structure of the text` | text_structure_and_purpose | 28 | 100.0% | deterministic |
+| `which choice most effectively uses data from the table to complete the statement` | command_of_evidence_quantitative | 24 | 100.0% | deterministic |
+| `which choice best describes the function of the underlined portion in the text as a whole` | text_structure_and_purpose | 21 | 100.0% | deterministic |
+| `which choice best describes the function of the underlined sentence in the text as a whole` | text_structure_and_purpose | 20 | 100.0% | deterministic |
+| `which choice most effectively uses data from the graph to complete the statement` | command_of_evidence_quantitative | 9 | 100.0% | deterministic |
+| `which choice most effectively uses data from the table to complete the text` | command_of_evidence_quantitative | 9 | 100.0% | deterministic |
+| `which choice most effectively uses data from the table to complete the example` | command_of_evidence_quantitative | 8 | 100.0% | deterministic |
+| `which choice most effectively uses data from the graph to complete the text` | command_of_evidence_quantitative | 6 | 100.0% | deterministic |
+| `based on the texts both authors would most likely agree with which statement` | cross_text_connections | 6 | 100.0% | deterministic |
+| `which choice best describes data from the graph that support the researchers conclusion` | command_of_evidence_quantitative | 5 | 100.0% | deterministic |
+| `which finding if true would most directly support the researchers hypothesis` | command_of_evidence_textual | 5 | 100.0% | deterministic |
+
+### 1. By `stem_type_key`
 
 | stem_type_key | → skill | n | purity | status |
 |---|---|---|---|---|

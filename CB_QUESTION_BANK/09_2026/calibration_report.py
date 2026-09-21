@@ -18,6 +18,7 @@ Usage: python3 calibration_report.py
 import collections
 import json
 import pathlib
+import re
 
 HERE = pathlib.Path(__file__).resolve().parent
 MAP_OUT = HERE.parent.parent / "vocabulary" / "mappings" / "cb_skill_map.json"
@@ -26,6 +27,37 @@ MIN_N, MIN_PURITY = 5, 0.95
 GRAMMAR = ["Boundaries", "Form, Structure, and Sense", "Transitions", "Rhetorical Synthesis"]
 KEY = {"Boundaries": "boundaries", "Form, Structure, and Sense": "form_structure_and_sense",
        "Transitions": "transitions", "Rhetorical Synthesis": "rhetorical_synthesis"}
+
+
+def question_key(text: str) -> str:
+    """Normalised LAST sentence of a question. Must match app.pipeline.skill_key.question_key.
+
+    The last sentence, because a Rhetorical Synthesis question opens with a goal sentence
+    ("The student wants to...") that the database stores in the passage instead.
+    """
+    last = re.split(r"(?<=[.?!])\s+", text.strip())[-1]
+    return re.sub(r"[^a-z]+", " ", last.lower()).strip()
+
+
+def text_rules() -> list[dict]:
+    """P(CB skill | question wording), over College Board's own 1,845 questions.
+
+    Independent of the database and of any LLM annotation: both the wording and the label
+    are College Board's. The strongest signal available for a question with no CB match.
+    """
+    master = json.load(open(HERE.parent / "cb_verbal_master.json"))["questions"]
+    ct = collections.defaultdict(collections.Counter)
+    for q in master:
+        ct[question_key(q["question"])][q["skill_key"]] += 1
+    out = []
+    for k, c in ct.items():
+        skill, top = c.most_common(1)[0]
+        n = sum(c.values())
+        if n >= MIN_N:
+            out.append({"key": k, "skill_key": skill, "n": n, "purity": round(top / n, 3),
+                        "status": "deterministic" if top / n >= MIN_PURITY else "review",
+                        "counts": dict(c)})
+    return sorted(out, key=lambda r: -r["n"])
 
 
 def coe(k):  # CB has one Command of Evidence label; the DB splits it in two
@@ -75,6 +107,7 @@ def main():
     by_stem = rules(M, lambda m: m["db"]["stem_type_key"])
     by_focus = rules(M, lambda m: f"{m['db']['gr']}/{m['db']['gf']}")
     by_role = rules(M, lambda m: m["db"]["gr"])
+    by_text = text_rules()
 
     agree = sum(1 for m in R if coe(m["db"]["sf"]) == coe(m["cb"]["skill_family_key"]))
     missing = sum(1 for m in R if not m["db"]["sf"])
@@ -91,10 +124,11 @@ def main():
     MAP_OUT.parent.mkdir(parents=True, exist_ok=True)
     MAP_OUT.write_text(json.dumps({
         "_doc": "Derived by CB_QUESTION_BANK/09_2026/calibration_report.py from CB ground truth. "
-                "Do not hand-edit; re-run to regenerate. Apply in order: stem_type_key, then "
-                "role/focus, then role. Only 'deterministic' rules may be auto-applied.",
+                "Do not hand-edit; re-run to regenerate. Apply in order: question text, then "
+                "stem_type_key, role/focus, role. Only 'deterministic' rules may be auto-applied.",
         "thresholds": {"min_n": MIN_N, "min_purity": MIN_PURITY},
         "calibration_rows": len(M),
+        "by_question_text": by_text,
         "by_stem_type_key": by_stem, "by_role_and_focus": by_focus, "by_role": by_role,
     }, indent=2) + "\n")
 
@@ -147,7 +181,11 @@ copy per question — see ONTOLOGY_REFACTOR_PLAN.md §2.9.
 
 Rule is `deterministic` at n ≥ {MIN_N} and purity ≥ {MIN_PURITY:.0%}; otherwise `review`.
 
-### 1. By `stem_type_key` — apply first
+### 0. By question wording — apply first (College Board's wording and label; no DB, no LLM)
+
+{md_table(by_text, 'last sentence of the question')}
+
+### 1. By `stem_type_key`
 
 {md_table(by_stem, 'stem_type_key')}
 

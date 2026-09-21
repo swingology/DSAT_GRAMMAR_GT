@@ -7,9 +7,12 @@ a reading question" (diagnostic.queries.derive_domain, the practice filter, auto
 Source, in order of trust:
   cb          questions.cb_skill_key is set -> College Board's own label. Command of
               Evidence is split textual / quantitative by the stem.
+  question_text  the question's wording matches a College Board boilerplate stem that maps to
+              one skill (>=95% pure over CB's own 1,845 questions). Both the wording and the
+              label are College Board's, so this outranks anything an LLM annotated.
   annotation  the annotation already carries a legal reading skill_family_key.
   map         vocabulary/mappings/cb_skill_map.json, deterministic rules only, in order:
-              stem_type_key, role/focus, role.
+              stem_type_key, role/focus, role. Calibrated on LLM-assigned keys.
   manual      set by a person. Never produced here and never overwritten here.
 
 Anyone reading skill_key must derive the domain from the skill (SKILL_FAMILY_BY_QUESTION_FAMILY),
@@ -35,24 +38,31 @@ MAP_PATH = Path(__file__).resolve().parents[3] / "vocabulary" / "mappings" / "cb
 # 0/144 textual stems (ONTOLOGY_REFACTOR_PLAN.md §1.6, TASK-06).
 QUANT_STEM = re.compile(r"\b(graph|table|data in the)\b", re.I)
 
-Rules = tuple[dict[str, str], dict[str, str], dict[str, str]]
+Rules = tuple[dict[str, str], dict[str, str], dict[str, str], dict[str, str]]
+
+
+def question_key(text: str | None) -> str:
+    """Normalised last sentence. Must match calibration_report.question_key."""
+    last = re.split(r"(?<=[.?!])\s+", (text or "").strip())[-1]
+    return re.sub(r"[^a-z]+", " ", last.lower()).strip()
 
 
 @lru_cache(maxsize=1)
 def load_rules() -> Rules:
-    """(by_stem_type_key, by_role/focus, by_role) — deterministic rules only."""
+    """(by_question_text, by_stem_type_key, by_role/focus, by_role) — deterministic only."""
     try:
         data = json.loads(MAP_PATH.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         # Degrade to cb + annotation sources rather than failing an ingest.
         logger.warning("skill map unavailable at %s (%s); map-sourced skill_key disabled", MAP_PATH, exc)
-        return {}, {}, {}
+        return {}, {}, {}, {}
 
     def pick(rows: list[dict]) -> dict[str, str]:
         return {r["key"]: r["skill_key"] for r in rows
                 if r["status"] == "deterministic" and r["skill_key"] in SKILL_FAMILY_KEYS}
 
-    return pick(data["by_stem_type_key"]), pick(data["by_role_and_focus"]), pick(data["by_role"])
+    return (pick(data.get("by_question_text", [])), pick(data["by_stem_type_key"]),
+            pick(data["by_role_and_focus"]), pick(data["by_role"]))
 
 
 def resolve_skill_key(
@@ -71,10 +81,14 @@ def resolve_skill_key(
             skill += "_quantitative" if QUANT_STEM.search(stem_text or "") else "_textual"
         return (skill, "cb") if skill in SKILL_FAMILY_KEYS else (None, None)
 
+    by_text, by_stem, by_focus, by_role = rules if rules is not None else load_rules()
+    wording = question_key(stem_text)
+    if wording in by_text:
+        return by_text[wording], "question_text"
+
     if ann.get("skill_family_key") in READING_SKILL_FAMILY_KEYS:
         return ann["skill_family_key"], "annotation"
 
-    by_stem, by_focus, by_role = rules if rules is not None else load_rules()
     # The annotation's stem_type_key is the canonical one; generated questions never
     # set the questions.stem_type_key column at all.
     stem_type = ann.get("stem_type_key") or stem_type_key
