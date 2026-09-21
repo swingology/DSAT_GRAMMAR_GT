@@ -3048,6 +3048,125 @@
       ]
     },
     {
+      "name": "SKILL_FAMILY_BY_QUESTION_FAMILY",
+      "kind": "hierarchical",
+      "domain": "shared",
+      "comment": "skill_family_key for every verbal question, grouped by question family. Mirrors College Board's Domain x Skill taxonomy (DOMAINS_SKILLS.md); legal (family, skill) pairs are exactly these",
+      "parent_set": "QUESTION_FAMILY_KEYS",
+      "derived_flat": "SKILL_FAMILY_KEYS",
+      "entries": [
+        {
+          "value": "cross_text_connections",
+          "parent": "craft_and_structure",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Cross-Text Connections"
+        },
+        {
+          "value": "text_structure_and_purpose",
+          "parent": "craft_and_structure",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Text Structure and Purpose"
+        },
+        {
+          "value": "words_in_context",
+          "parent": "craft_and_structure",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Words in Context"
+        },
+        {
+          "value": "rhetorical_synthesis",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Rhetorical Synthesis — use notes to meet a stated rhetorical goal"
+        },
+        {
+          "value": "transitions",
+          "parent": "expression_of_ideas",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Transitions — choose the logical connective"
+        },
+        {
+          "value": "central_ideas_and_details",
+          "parent": "information_and_ideas",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Central Ideas and Details"
+        },
+        {
+          "value": "command_of_evidence_textual",
+          "parent": "information_and_ideas",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Command of Evidence (textual evidence); CB publishes one Command of Evidence label"
+        },
+        {
+          "value": "command_of_evidence_quantitative",
+          "parent": "information_and_ideas",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Command of Evidence (graph or table); CB publishes one Command of Evidence label"
+        },
+        {
+          "value": "inferences",
+          "parent": "information_and_ideas",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Inferences"
+        },
+        {
+          "value": "boundaries",
+          "parent": "conventions_grammar",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Boundaries — sentence and clause boundaries, and the punctuation that marks them"
+        },
+        {
+          "value": "form_structure_and_sense",
+          "parent": "conventions_grammar",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Form, Structure, and Sense — agreement, verb form, pronouns, modifiers, possessives"
+        }
+      ]
+    },
+    {
+      "name": "GRAMMAR_SKILL_FAMILY_KEYS",
+      "kind": "flat",
+      "domain": "grammar",
+      "comment": "Grammar skill families (subset of SKILL_FAMILY_KEYS). Parent layer of grammar_role_key",
+      "entries": [
+        {
+          "value": "boundaries",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Boundaries — sentence and clause boundaries, and the punctuation that marks them"
+        },
+        {
+          "value": "form_structure_and_sense",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Form, Structure, and Sense — agreement, verb form, pronouns, modifiers, possessives"
+        },
+        {
+          "value": "transitions",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Transitions — choose the logical connective"
+        },
+        {
+          "value": "rhetorical_synthesis",
+          "status": "active",
+          "added": "2026-09-20",
+          "description": "CB skill: Rhetorical Synthesis — use notes to meet a stated rhetorical goal"
+        }
+      ]
+    },
+    {
       "name": "TEST_CONSTRUCT_KEYS",
       "kind": "flat",
       "domain": "reading",

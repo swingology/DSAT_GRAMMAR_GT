@@ -7011,3 +7011,34 @@ regenerate. They stay in lockstep with the validator enums in
 - `conventions_grammar`
 - `expression_of_ideas`
 <!-- VOCAB:grammar:GRAMMAR_QUESTION_FAMILY_KEYS END -->
+
+<!-- VOCAB:shared:SKILL_FAMILY_BY_QUESTION_FAMILY START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`SKILL_FAMILY_BY_QUESTION_FAMILY`** — skill_family_key for every verbal question, grouped by question family. Mirrors College Board's Domain x Skill taxonomy (DOMAINS_SKILLS.md); legal (family, skill) pairs are exactly these
+
+- **`craft_and_structure`**
+  - `cross_text_connections` — CB skill: Cross-Text Connections
+  - `text_structure_and_purpose` — CB skill: Text Structure and Purpose
+  - `words_in_context` — CB skill: Words in Context
+- **`expression_of_ideas`**
+  - `rhetorical_synthesis` — CB skill: Rhetorical Synthesis — use notes to meet a stated rhetorical goal
+  - `transitions` — CB skill: Transitions — choose the logical connective
+- **`information_and_ideas`**
+  - `central_ideas_and_details` — CB skill: Central Ideas and Details
+  - `command_of_evidence_textual` — CB skill: Command of Evidence (textual evidence); CB publishes one Command of Evidence label
+  - `command_of_evidence_quantitative` — CB skill: Command of Evidence (graph or table); CB publishes one Command of Evidence label
+  - `inferences` — CB skill: Inferences
+- **`conventions_grammar`**
+  - `boundaries` — CB skill: Boundaries — sentence and clause boundaries, and the punctuation that marks them
+  - `form_structure_and_sense` — CB skill: Form, Structure, and Sense — agreement, verb form, pronouns, modifiers, possessives
+<!-- VOCAB:shared:SKILL_FAMILY_BY_QUESTION_FAMILY END -->
+
+<!-- VOCAB:grammar:GRAMMAR_SKILL_FAMILY_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`GRAMMAR_SKILL_FAMILY_KEYS`** — Grammar skill families (subset of SKILL_FAMILY_KEYS). Parent layer of grammar_role_key
+
+- `boundaries` — CB skill: Boundaries — sentence and clause boundaries, and the punctuation that marks them
+- `form_structure_and_sense` — CB skill: Form, Structure, and Sense — agreement, verb form, pronouns, modifiers, possessives
+- `transitions` — CB skill: Transitions — choose the logical connective
+- `rhetorical_synthesis` — CB skill: Rhetorical Synthesis — use notes to meet a stated rhetorical goal
+<!-- VOCAB:grammar:GRAMMAR_SKILL_FAMILY_KEYS END -->

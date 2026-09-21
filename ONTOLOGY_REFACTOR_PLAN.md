@@ -404,6 +404,46 @@ update question_annotations a
 `_quantitative` by the stem regex. Conflict reporting (TASK-23) becomes three plain queries
 comparing `cb_domain_key` / `cb_skill_key` with the annotation.
 
+## Part 2d — BLOCKER found in Phase 3: `skill_family_key` presence means "reading" (2026-09-20)
+
+The target shape in §2.3 — widen `skill_family_key` so grammar questions carry it too — **is not
+safe as written.** The codebase encodes, deliberately and in several places, the invariant that
+`skill_family_key` is reading-only and that its mere *presence* identifies a reading question:
+
+| Site | What it does | After a grammar fill |
+|---|---|---|
+| `diagnostic/queries.py:40` `derive_domain` | `if ann.get("skill_family_key"): return "reading"` — checked **before** grammar | every grammar question classified as reading |
+| `diagnostic/queries.py:91` | reading pool = `skill_family_key IS NOT NULL` | grammar questions enter the reading diagnostic pool |
+| `routers/student.py:323` | reading practice filter, same predicate | grammar questions served as reading practice |
+| `review/auto_release.py:83` | reading checked first, by presence | generated grammar questions released as reading |
+| `pipeline/validator.py:306` | flags *"Grammar-domain questions must not populate skill_family_key (reading-only)"* | every filled row raises a review error |
+
+Safe as-is (grammar checked first, or membership rather than presence): `routers/generate.py:370`,
+`pipeline/amendments.py:306`, `prompts/annotate_prompt.py:498`, `diagnostic/blueprint.py:128`.
+
+None of the five reference the `READING_SKILL_FAMILY_KEYS` constant, so a search for it does not
+find them; they were found by auditing every reader of the field. **There may be more** in
+scripts, reports and the two frontends — a presence check is invisible to the type system.
+
+**What this means for ADDITIVE ONLY.** The constraint has to hold for *meaning*, not just bytes.
+Filling an existing key on rows that never had it rewrites no data, yet silently changes what four
+student-facing code paths do. That is not additive. Adding a **new** key cannot break an existing
+reader, by construction.
+
+**Two ways forward — needs the user's decision:**
+
+- **A. Widen `skill_family_key` anyway** and fix all five sites to infer domain from
+  `question_family_key` / `cb_domain_key`. One universal key, no redundancy. But it edits
+  student-facing query paths, and correctness depends on having found *every* presence check.
+- **B. Leave `skill_family_key` exactly as it is** (reading-only) and carry the universal CB skill
+  in a **new** field. Zero existing readers affected; redundant with `skill_family_key` on reading
+  rows. **Recommended** — it is the only option that is additive in meaning.
+
+Already done and valid under either option: `SKILL_FAMILY_BY_QUESTION_FAMILY`, `SKILL_FAMILY_KEYS`
+and `GRAMMAR_SKILL_FAMILY_KEYS` are in `master.json` / `ontology.py`. They define the legal values
+and the 10 legal (family, skill) pairs for whichever field ends up holding them. **TASK-14 (widen
+the validator) is on hold** until A or B is chosen.
+
 ## Part 3 — Task list
 
 Dependencies in brackets. Tasks marked **[DB]** are blocked until the port question is settled.
@@ -451,14 +491,13 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 ### Phase 3 — Ontology change (code, no data)
 
-- [ ] **TASK-11** Merge `vocabulary/amendments/pending/amd-1a6b9e6c9e18.json` (rhetorical
-      synthesis) — resolve the recorded `conflicting_duplicate_proposal` first.
-- [ ] **TASK-12** Edit `vocabulary/master.json`: add `GRAMMAR_SKILL_FAMILY_KEYS` (4) and
-      `SKILL_FAMILY_KEYS` (11); re-parent `GRAMMAR_ROLE_KEYS` under the grammar families;
-      re-parent `READING_SKILL_FAMILY_KEYS` under `READING_QUESTION_FAMILY_KEYS`. [TASK-11]
-- [ ] **TASK-13** `python scripts/gen_vocab.py --generate` → regenerate
-      `backend/app/models/ontology.py`. Never hand-edit it. [TASK-12]
-- [ ] **TASK-14** Widen `QuestionAnnotation.validate_skill_family_key`
+- [x] **TASK-11** ~~Merge `vocabulary/amendments/pending/amd-1a6b9e6c9e18.json` (rhetorical synthesis) — resolve the recorded `conflicting_duplicate_proposal` first.~~
+      **Superseded 2026-09-20** — do *not* merge. The amendment proposes `rhetorical_synthesis` as a `grammar_focus_key` under `expression_of_ideas`; CB makes it a *skill*, sibling of Transitions. It should be rejected in favour of the skill-level key, through the amendment review flow.
+- [x] **TASK-12** ~~Edit `vocabulary/master.json`: add `GRAMMAR_SKILL_FAMILY_KEYS` (4) and `SKILL_FAMILY_KEYS` (11); re-parent `GRAMMAR_ROLE_KEYS` under the grammar families; re-parent `READING_SKILL_FAMILY_KEYS` under `READING_QUESTION_FAMILY_KEYS`. [TASK-11]~~
+      **Done 2026-09-20** — added `SKILL_FAMILY_BY_QUESTION_FAMILY` (hierarchical, parent `QUESTION_FAMILY_KEYS`, derives `SKILL_FAMILY_KEYS`) and `GRAMMAR_SKILL_FAMILY_KEYS`. No existing set touched. *Direct structural edit:* `promote_amendment` can only add a value to an existing vocabulary, so a new set cannot come through the amendment path. No re-parenting of roles was done — see Part 2d.
+- [x] **TASK-13** ~~`python scripts/gen_vocab.py --generate` → regenerate `backend/app/models/ontology.py`. Never hand-edit it. [TASK-12]~~
+      **Done 2026-09-20** — `ontology.py` and the rules-doc appendix regenerated; 56 vocab/blueprint tests pass. Pre-existing appendix drift was committed separately first. `--check` still reports 15 unreviewed candidates (pre-existing).
+- [ ] **TASK-14** **ON HOLD — see Part 2d.** Widen `QuestionAnnotation.validate_skill_family_key`
       (`backend/app/models/annotation.py:101`) from `READING_SKILL_FAMILY_KEYS` to
       `SKILL_FAMILY_KEYS`. [TASK-13]
 - [ ] **TASK-15** Add a validator rule: `skill_family_key` must be a child of the declared
@@ -533,3 +572,157 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 The single highest-value early task is **TASK-07**. It costs almost nothing and is the only cheap
 thing that can prove the §2.4 grammar map wrong before it is written into `master.json`.
+
+---
+
+## CODEX REVIEW AND SUGGESTIONS
+
+**Review date:** 2026-09-20. This section records the code-backed review and accounts for the
+additive-only constraint and Phase 2 results added since the original review. Results marked
+complete elsewhere in this plan were not independently rerun for this review.
+
+### Overall assessment and intended scope
+
+**Yes: this should primarily be a classification refactor.** Give every verbal question a
+consistent domain → skill classification while preserving the existing detailed grammar roles,
+focus keys, traps, distractor annotations, explanations, and question content. Ingestion should
+populate and validate the classification; generation should accept it as a targeting constraint.
+The extraction process and question-writing methodology should change only slightly.
+
+The direction makes sense, but classification fields currently control runtime behavior. An
+additive data change can therefore still break generation routing, student retrieval, and
+diagnostics. The compatibility work below must precede the data fill.
+
+### 1. Critical: replace reading-only routing assumptions before migration
+
+The code inspected during the review treats the presence of a skill family as evidence that a
+question is reading:
+
+- `backend/app/diagnostic/queries.py:derive_domain` returns `reading` for any populated
+  `skill_family_key`; `build_pool_stmt` uses non-null skill family to select the reading pool.
+- `backend/app/models/payload.py:_GenerationTargetRequest._require_supported_generation_target`
+  interprets `target_skill_family_key` as a reading target and requires reading focus alongside it.
+- `backend/app/prompts/generate_prompt.py:_infer_generation_domain` routes that target to reading.
+- `backend/app/prompts/rule_modules.py:load_generation_modules` rejects a grammar focus plus
+  skill family as conflicting grammar/reading targets.
+- Student filters and the admin generation UI also contain skill-presence checks; include these
+  consumers in the compatibility audit.
+
+**Suggestion:** add explicit Phase 3 tasks for request validation, prompt routing, module
+selection, student/diagnostic filters, and UI classification. Distinguish the four CB domains
+from the application's two `grammar`/`reading` routing groups. Do not simply return the four-valued
+`question_family_key` from a helper whose callers expect two routing values. Define legacy and
+conflicting-annotation behavior, particularly for the domain disagreements reported in §2b.5.
+
+### 2. Critical: widen every validator and sanitizer, not only Pydantic
+
+`backend/app/pipeline/annotation_sanitizer.py` maps `skill_family_key` to
+`READING_SKILL_FAMILY_KEYS`; new grammar values can be replaced or nulled.
+`backend/app/pipeline/validator.py:validate_annotation_completeness` explicitly flags grammar
+questions containing a skill family. `backend/app/models/vocab_fields.py` and the vocabulary
+consistency scanner also encode reading-only mappings.
+
+**Suggestion:** update these consumers with TASK-14/15, including aliases and prompt allowed-key
+lists. Validate the final persisted annotation after normalization/sanitization. The general
+claim in §2.6 that invalid ontology always stops at `needs_review` is too strong: the inspected
+full-reannotation path sanitizes after validation, and a direct JSONB fill needs its own checks.
+
+### 3. Model classification and detailed annotation without a false single-parent tree
+
+The proposed diagram makes grammar roles children of individual skills, but the mapping itself
+places a role such as `punctuation` under multiple skills. Some focus keys also need per-question
+classification. Calling the change documentation-only does not remove that ambiguity.
+
+**Suggestion:** keep domain → skill as the classification hierarchy and role → focus as the
+existing detailed annotation, with explicit compatibility relationships between them. Preserve
+fine-grained keys rather than forcing each role into one parent skill. TASK-11's pending amendment
+adds `rhetorical_synthesis` to `GRAMMAR_FOCUS_BY_ROLE`; that is a separate choice from adding the
+same string as a skill family and should not be treated as the prerequisite that creates it.
+
+### 4. Preserve the narrow classification-only migration
+
+The original TASK-21 proposed full reannotation. The inspected `_run_reannotate_pipeline` in
+`backend/app/routers/ingest.py` replaces annotations, explanations, and option analyses, updates
+stem type, and creates a new question version. That exceeded the intended scope.
+
+**Addressed by the revised plan:** the additive-only constraint and revised TASK-19–21 prohibit
+that path and favor CB labels, then mappings, then narrow adjudication. Keep this restriction.
+For model-assisted residue, accept only the classification result and preserve all other fields.
+
+**Remaining details:** define whether “absent” includes a missing JSON key, JSON null, and an empty
+string. Protect existing nonempty classifications regardless of whether an admin-edit flag is
+set. Apply the missing-value predicate atomically so a concurrent manual edit is not overwritten.
+
+### 5. Make rollback and migration bookkeeping precise
+
+The rollback expression near the top of the plan must **not** be applied to all annotations:
+reading questions already have legitimate skill values, and questions may receive new values
+after the migration. Record exactly which annotation IDs the migration changed and each field's
+prior presence/value. Roll back only those changes, with a check that the current value still
+matches the migration's write.
+
+Use that record for resumability and audit. A global `rules_version` is not a reliable cursor for
+an additive field fill that intentionally leaves existing annotation provenance unchanged.
+Likewise, ensure `annotation_stale` does not send classification-only residue to full reannotation.
+Compare JSONB structurally excluding the added field; serialized byte order is not the invariant.
+
+### 6. Source completeness and identity: original gaps and revised status
+
+The original TASK-05 could not obtain all 1,845 questions' text from the 752-item Bank PDF. The
+revised TASK-05 reports using the full difficulty-split PDFs, which addresses that source gap.
+The original stem-only matching proposal was unsafe for repeated question instructions; §2b now
+reports matching passage+stem and choices, which addresses that design gap.
+
+**Remaining checks:** verify graphics, tables, paired passages, choices, and answer alignment;
+label/count agreement alone does not prove complete question extraction. Resolve the 11 flagged
+matches before treating them as ground truth. For import, identify and label canonical existing
+copies before inserting new rows, so a null `cb_question_id` does not cause a duplicate insertion.
+Retain the uniqueness constraint and canonical-copy approach proposed in §2.9. A pre-check alone
+would not prevent concurrent duplicate inserts if uniqueness were removed.
+
+### 7. Update both runtime rule-loading paths
+
+TASK-16 names modular rules, but `backend/app/prompts/generate_prompt.py` defaults
+`DSAT_GENERATION_RULES_MODE` to `legacy`, and `annotate_prompt.py` loads monolithic grammar and
+reading rule files. Editing only `rules_refactor/rules/grammar/` will not update all active paths.
+
+**Suggestion:** specify the authoritative rule sources and generation process, update both
+supported modes and annotation instructions, and verify consistent vocabulary and routing.
+
+### 8. Correct acceptance criteria and cover future writes
+
+- There are **11 internal domain–skill pairs**, mapped to **10 CB pairs**, because Command of
+  Evidence is split internally. TASK-15/24 must distinguish these counts.
+- ADDITIVE ONLY deliberately preserves the 22 existing skill disagreements and 201 domain
+  disagreements reported in §2b.5. TASK-24's zero-invalid-pair requirement and TASK-25's near-total
+  agreement gate cannot simply assume those conflicts were corrected. Define an explicit legacy
+  exception report or separately authorize corrections; require every newly added value to meet
+  the agreed rules. Do not silently write a new skill against an incompatible preserved domain.
+- The reported map threshold of n ≥ 5 and purity ≥ 95% is an empirical heuristic, not proof of
+  deterministic correctness. Deduplicate calibration by CB question ID so repeated DB copies do
+  not inflate evidence; review known counterexamples before automatically applying a rule to
+  unmatched questions. Keep validation examples separate from examples used to derive the map.
+- TASK-24 covers every active verbal question, but TASK-20 currently names only unmatched
+  official rows. Explicitly include generated/unofficial rows or narrow the completion scope.
+- TASK-22 needs the schema migration, future answer-submission writers, and intended readers for
+  `missed_skill_family_key`, not just a historical backfill. Define its value on correct attempts
+  and whether the backfill represents current classification rather than classification at the
+  time of the original attempt.
+- Add focused checks that grammar stays in grammar pools; both generation modes accept the new
+  targets; valid grammar skills survive sanitization; classification changes preserve all other
+  annotations and version pointers; and rerunning migration/import makes no additional changes.
+- Refresh superseded counts, prerequisites, and task references. For example, TASK-27 still lists
+  old estimated new-item counts despite §2b reporting 1,101 new and 11 requiring review.
+
+### Recommended scope and sequence
+
+Describe the deliverable as **“universal verbal skill classification, preserving existing
+detailed annotations and pipeline behavior.”** Complete routing/validation compatibility first,
+then perform the audited additive fill, then verify both stored-data and runtime invariants.
+Keep existing progress keys unchanged, as the revised plan now requires. Treat the 1,845-question
+bank import as a separate follow-on deliverable rather than a prerequisite for completing the
+classification refactor.
+
+**Review boundary:** plan and source-code inspection only; no PDF audit, database migration,
+runtime test, or independent verification of the newly recorded Phase 2 results was performed
+as part of this review.

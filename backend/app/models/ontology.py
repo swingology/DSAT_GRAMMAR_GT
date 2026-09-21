@@ -352,6 +352,34 @@ READING_FOCUS_KEYS = tuple(
     k for keys in READING_FOCUS_BY_SKILL_FAMILY.values() for k in keys
 )
 
+# --- skill_family_key for every verbal question, grouped by question family. Mirrors College Board's Domain x Skill taxonomy (DOMAINS_SKILLS.md); legal (family, skill) pairs are exactly these ---
+SKILL_FAMILY_BY_QUESTION_FAMILY = {
+    "craft_and_structure": (
+        "cross_text_connections", "text_structure_and_purpose",
+        "words_in_context",
+    ),
+    "expression_of_ideas": (
+        "rhetorical_synthesis", "transitions",
+    ),
+    "information_and_ideas": (
+        "central_ideas_and_details", "command_of_evidence_textual",
+        "command_of_evidence_quantitative", "inferences",
+    ),
+    "conventions_grammar": (
+        "boundaries", "form_structure_and_sense",
+    ),
+}
+
+SKILL_FAMILY_KEYS = tuple(
+    k for keys in SKILL_FAMILY_BY_QUESTION_FAMILY.values() for k in keys
+)
+
+# --- Grammar skill families (subset of SKILL_FAMILY_KEYS). Parent layer of grammar_role_key ---
+GRAMMAR_SKILL_FAMILY_KEYS = (
+    "boundaries", "form_structure_and_sense", "transitions",
+    "rhetorical_synthesis",
+)
+
 # --- Reading v2 target_test_construct_key ---
 TEST_CONSTRUCT_KEYS = (
     "contextual_semantic_precision", "rhetorical_function_precision",
