@@ -12,6 +12,10 @@ flat extraction destroys are kept:
   underline  the underlined words are recorded (a filled stroke under the words)
   rationale  College Board's explanation is included
 
+Page breaks: a question starts a page and may run on. Choices and rationales that continue
+on the next page are followed (13 and 194 questions). A stimulus that crossed a page would
+be flagged `needs_review` and fail verify_master.py; none does today.
+
 Every verbal PDF under CB_QUESTION_BANK/ is read. A question that appears in several
 PDFs is stored once, from the copy that has an answer and rationale, with every PDF it
 appears in listed under `appears_in`. Adding a new CB export and re-running is enough.
@@ -255,6 +259,12 @@ def parse_question(doc, pages: list[int]) -> dict | None:
             choices[cur] += " " + l.text
     choices = {k: clean(v) for k, v in choices.items()}
     stim_lines = body[:ci]
+    # Bullets, tables, figures and underlines are read from page one's drawings. No question
+    # in the Sep 2026 corpus has a stimulus that crosses a page; if a future export does, say
+    # so loudly rather than quietly treating page two as plain prose.
+    review = ["stimulus or question crosses a page break — bullets, table cells and "
+              "underlines on the later page are not detected"] if any(
+        l.page != pages[0] for l in stim_lines) else []
 
     # ---- figure: every CrimsonText line is graph text
     fig_lines = [l for l in stim_lines if l.font.startswith("Crimson") and l.page == pages[0]]
@@ -403,6 +413,7 @@ def parse_question(doc, pages: list[int]) -> dict | None:
         "underlined": underlined_text(first, band, skip),
         "stimulus": stimulus,
         "rationale": paragraphs(rat),
+        **({"needs_review": review} if review else {}),
     }
 
 

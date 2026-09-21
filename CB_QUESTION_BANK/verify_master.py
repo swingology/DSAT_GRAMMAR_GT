@@ -6,7 +6,12 @@ Two independent extractions of the same PDFs must agree: the layout-based master
 (09_2026/09_2026_New_Verbal_Bank_full.json). The flat one loses structure but not
 words, so word-for-word agreement means the master dropped and invented nothing.
 
+With --pdf it also re-reads the PDFs and checks the rationale — which the flat file
+never held — and every question that crosses a PAGE BREAK: the master may contain no word
+the raw pages lack, and may omit only the page-header words that raw text interleaves.
+
 Usage: python3 CB_QUESTION_BANK/verify_master.py [-v]
+       uv run --with pymupdf python CB_QUESTION_BANK/verify_master.py --pdf
 """
 import collections
 import json
@@ -40,6 +45,43 @@ def all_stimulus_text(q: dict) -> str:
     return " ".join(parts)
 
 
+HEADER_WORDS = set("assessment sat test reading and writing domain skill difficulty".split())
+
+
+def check_against_pdfs(M: list[dict], fails) -> None:
+    import pymupdf
+    by_id = {q["question_id"]: q for q in M}
+    crossing = collections.Counter()
+    for rel in sorted({q["source_pdf"] for q in M}):
+        doc = pymupdf.open(HERE / rel)
+        starts = [i for i in range(len(doc)) if "Question ID" in doc[i].get_text()]
+        for n, p0 in enumerate(starts):
+            end = starts[n + 1] if n + 1 < len(starts) else len(doc)
+            raw = "\n".join(doc[p].get_text() for p in range(p0, end)).replace("\xa0", " ")
+            qid = re.search(r"Question ID ([0-9a-f]{8})", raw).group(1)
+            q = by_id[qid]
+            if q["source_pdf"] != rel:
+                continue
+            m = re.search(r"\nRationale\n(.*?)\nQuestion Difficulty:", raw, re.S)
+            if not m:
+                fails["no rationale found in the raw pages"].append(qid)
+                continue
+            # digit super/subscripts are dropped or reordered by raw text: compare words only
+            nodigits = lambda c: collections.Counter({k: n for k, n in c.items() if not k.isdigit()})
+            mine, ref = nodigits(words(" ".join(q["rationale"]))), nodigits(words(m.group(1)))
+            label_words = HEADER_WORDS | set(words(q["domain"] + " " + q["skill"]))
+            if mine - ref:
+                fails["rationale has words the PDF lacks"].append(qid)
+            if set(ref - mine) - label_words:
+                fails["rationale is missing words from the PDF"].append(qid)
+            if end - p0 > 1:
+                body = raw.split(f"ID: {qid} Answer")[0]
+                crossing["body (choices) crosses the page" if body.count("\n") and
+                         doc[p0].get_text().replace("\xa0", " ").count(f"ID: {qid} Answer") == 0
+                         else "only the rationale crosses the page"] += 1
+    print(f"page breaks: {dict(crossing)}")
+
+
 def main() -> None:
     M = json.load(open(HERE / "cb_verbal_master.json"))["questions"]
     F = {q["question_id"]: q for q in
@@ -55,6 +97,8 @@ def main() -> None:
 
     for q in M:
         qid, s, f = q["question_id"], q["stimulus"], F.get(q["question_id"])
+        if q.get("needs_review"):
+            fails["flagged needs_review by the builder"].append(qid)
         for k in ("domain", "skill", "passage", "question"):
             if not q[k]:
                 fails[f"empty {k}"].append(qid)
@@ -113,6 +157,8 @@ def main() -> None:
                     print(f"  {qid} [{s['kind']}] only-new={dict((new - old).most_common(6))} "
                           f"only-old={dict((old - new).most_common(6))}")
 
+    if "--pdf" in sys.argv:
+        check_against_pdfs(M, fails)
     print(f"{len(M)} questions | kinds {dict(collections.Counter(q['stimulus']['kind'] for q in M))}")
     print(f"underlined spans recorded: {sum(1 for q in M if q['underlined'])}")
     print(f"super/subscripts recovered in: {sum(1 for q in M if any(c in json.dumps(q, ensure_ascii=False) for c in SUPSUB))} questions")
