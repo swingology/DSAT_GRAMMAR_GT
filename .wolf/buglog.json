@@ -7711,5 +7711,24 @@
     "related_bugs": [],
     "occurrences": 1,
     "last_seen": "2026-09-20"
+  },
+  {
+    "id": "bug-832",
+    "timestamp": "2026-09-20",
+    "error_message": "CB bank JSON carried a 12th skill_family_key 'cross-text_connections' on 3 records",
+    "file": "CB_QUESTION_BANK/09_2026/extract_cb_bank.py",
+    "root_cause": "the 'Cross-text Connections' casing variant missed the SKILL_FAMILY lookup and fell through to the fallback slugger; an earlier fix canonicalized the display label after the key had already been derived",
+    "fix": "canonicalize the skill label inside parse_block before key derivation; bank now has exactly 11 keys",
+    "tags": [
+      "cb-question-bank",
+      "parser",
+      "vocabulary",
+      "ontology-refactor"
+    ],
+    "related_bugs": [
+      "bug-831"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-09-20"
   }
 ]
