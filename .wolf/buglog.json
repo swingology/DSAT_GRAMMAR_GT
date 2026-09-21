@@ -7787,5 +7787,26 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-09-20"
+  },
+  {
+    "id": "bug-836",
+    "timestamp": "2026-09-21",
+    "error_message": "25 official questions (23 active) have the PASSAGE stored in current_question_text, current_passage_text NULL, and no question stem at all; students see a passage with no question. 19 are 2024 Bluebook Practice Test 1 module 02A (Q2-8, 13-17, 19-25), 4 are an untitled 2024 module 02 (Q1-4), 2 are rejected PT9 rows",
+    "file": "backend/app/routers/ingest.py",
+    "root_cause": "not yet diagnosed; the whole 2024 PT1 m02A module was ingested without stems, which points at an extraction pass that put the stimulus in question_text and dropped the stem. backend/scripts/split_passage_from_question_text.py exists for a related defect but cannot help here because the stem is absent, not merged",
+    "fix": "NOT FIXED \u2014 repairing question text is a rewrite and needs owner sign-off. The CB master bank (CB_QUESTION_BANK/cb_verbal_master.json) holds the true stem for each and can supply it once these rows are matched by passage. Found because they could not be resolved to a skill_key",
+    "tags": [
+      "data-quality",
+      "ingestion",
+      "missing-stem",
+      "student-facing",
+      "pt1-2024"
+    ],
+    "related_bugs": [
+      "bug-819",
+      "bug-827"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-09-21"
   }
 ]

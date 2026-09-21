@@ -149,6 +149,18 @@ merged or reparented, and no historical annotation was changed. Ledger:
 - To verify: `python3 chatgpt_refactor_rules/verify_standard.py`. It checks the latest
   release; `vocabulary/v1.0.0/` stays frozen as released.
 
+## Release v1.2.0 (2026-09-21) — question-wording rules
+
+Minor release; vocabulary unchanged (`master.snapshot.json` is byte-identical to v1.1.0).
+Ledger: `vocabulary/v1.2.0/changes.json` (VOC-0008 to VOC-0010).
+
+- `skill_key` can now be derived from College Board's own question wording, ahead of any
+  LLM-assigned key: the wording and the label are both College Board's.
+- The bank match reads the layout-based master bank: 745 bank questions on 1,457 rows, with
+  every earlier pair kept. 1,513 of 1,514 questions now carry `skill_key`.
+- **Lock scope corrected:** the derived skill map is no longer hashed (it regenerates on every
+  matcher run); the rules in effect are recorded in the ledger instead.
+
 v1.0.0 established the starting standard and compatibility record.
 Runtime adapter implementation, database migration, semantic term promotion,
 and measured question-quality evaluation are subsequent tracked work.

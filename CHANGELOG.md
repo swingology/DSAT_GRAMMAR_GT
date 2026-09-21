@@ -33,6 +33,11 @@ now grammar questions could not: `skill_family_key` is validator-restricted to r
   tables as cells, graphs as PNG + labels, underlined words, super/subscripts and rationales
   are all preserved. Leads each record with domain, skill, passage, question, choices.
 
+- **2026-09-21.** `skill_key` derived from College Board's own question wording where no CB
+  match exists (`question_text` source); matcher re-pointed at the master bank — 1,457 rows now
+  carry CB labels, 1,513 / 1,514 carry `skill_key`. Conflict report in
+  `analysis/cb_annotation_conflicts.md`. Standard release v1.2.0.
+
 **Additive only.** `annotation_jsonb` was not written; no `QuestionVersion` was created; a
 checksum guard in both fill scripts aborts if any other column moves. `skill_family_key`
 stays reading-only on purpose: eight sites infer "reading question" from its presence.
@@ -16211,6 +16216,46 @@ _branch:_ `ONTOLOGY_REFACTOR_CB_SKILLS` · _commit:_ `095cd12` · _ram:_ `16Gi/3
 
 **Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
 _( 3 files changed, 107 insertions(+), 1 deletion(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-20 23:40:44 (session-end)
+_branch:_ `ONTOLOGY_REFACTOR_CB_SKILLS` · _commit:_ `ef512ec` · _ram:_ `16Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json backups/backup.log 
+_( 2 files changed, 86 insertions(+), 4 deletions(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-21 00:08:09 (session-end)
+_branch:_ `ONTOLOGY_REFACTOR_CB_SKILLS` · _commit:_ `3d0d4a1` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 99 insertions(+), 4 deletions(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-21 00:12:46 (session-end)
+_branch:_ `ONTOLOGY_REFACTOR_CB_SKILLS` · _commit:_ `3d0d4a1` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/hooks/_session.json CHANGELOG.md backups/backup.log 
+_( 3 files changed, 109 insertions(+), 4 deletions(-))_
+
+**Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
+
+---
+
+## Session snapshot — 2026-09-21 01:04:55 (session-end)
+_branch:_ `ONTOLOGY_REFACTOR_CB_SKILLS` · _commit:_ `9fc8827` · _ram:_ `17Gi/30Gi`
+
+**Uncommitted changes:** .wolf/buglog.json .wolf/hooks/_session.json CB_QUESTION_BANK/09_2026/match_bank_to_db.py CHANGELOG.md DEBUG_LOG.md backups/backup.log 
+_( 6 files changed, 167 insertions(+), 8 deletions(-))_
 
 **Untracked:** CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Equivalent expressions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear Functions.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Advanced Math/Nonlinear equations and systems.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear equations in one variable and in two variables.pdf CB_QUESTION_BANK/NEW_QUESTION_SETS/Math/Algebra/Linear functions (2).pdf 
 

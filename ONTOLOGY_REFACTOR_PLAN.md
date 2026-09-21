@@ -539,6 +539,38 @@ graphs are not digitised; that needs a vision model.
 master uses `skill_key`, removing risk R1), and structure is no longer lost. `match_bank_to_db.py`
 still reads the flat file; re-point it at the master before the import.
 
+## Part 2h — State after 2026-09-21
+
+| | |
+|---|---|
+| Questions carrying `skill_key` | **1,513 / 1,514** — `cb` 1,457 · `question_text` 36 · `annotation` 12 · `map` 8 |
+| Rows carrying College Board's four labels | **1,457** = 745 distinct CB questions (was 1,414 / 733) |
+| Bank questions new to the DB | 1,099 · held for human review: 1 (`b802f640`) |
+| Standard release | v1.2.0 (`chatgpt_refactor_rules/vocabulary/v1.2.0/`) |
+
+**New derivation signal — College Board's question wording** (`skill_key_source = question_text`),
+applied after a CB label and *before* any LLM-assigned key. Over CB's own 1,845 questions:
+"most logical and precise word or phrase" → Words in Context 219/219; "most logical transition" →
+Transitions 194/194; "most logically completes the text" → Inferences 140/140. The Standard English
+conventions stem splits 213/208 and is deliberately not a rule. Matching uses the last sentence, because
+the DB keeps a notes question's goal sentence in the passage.
+
+**The matcher now reads the master bank** (prose only) and accepts a DB row that lost its stem when
+its text equals the CB passage. All 1,414 earlier pairs kept, 0 lost, 0 changed CB ID. On the 35 rows
+whose source upgraded to `cb`, the inferred skill already equalled CB's label — 35/35.
+
+**Conflict report:** `analysis/cb_annotation_conflicts.md` (`scripts/cb_conflict_report.py`, read-only).
+Of 1,456 CB-labelled annotated rows: difficulty differs on 835; `question_family_key` differs on 162 and
+is missing on 46; reading `skill_family_key` is wrong on 22 and missing on 111; **87 reading questions
+are served as grammar and 26 grammar questions as reading** — live routing bugs. Nothing was corrected.
+
+**Open defects found, not fixed (owner's call — they are rewrites):**
+- bug-836 — 25 questions (23 active) hold the passage in `current_question_text` with no stem; 19 are
+  2024 Bluebook PT1 m02A. The master bank has the true stem for each.
+- `2470222a` (active, the one question without a `skill_key`) stores choices A and B as the same text,
+  `through,` — an extraction defect. It is a Boundaries question by inspection; left unlabelled because
+  `manual` is reserved for a person.
+
 ## Part 3 — Task list
 
 Dependencies in brackets. Tasks marked **[DB]** are blocked until the port question is settled.
@@ -615,17 +647,12 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
       **Done 2026-09-20, differently** — `questions.skill_key` filled from `cb_skill_key` by `scripts/fill_skill_key.py`; no JSONB merge (Part 2e).
 - [x] **TASK-20** ~~**[DB]** **Map fill** — for rows where `cb_skill_key IS NULL` (100 official + generated / unofficial), apply `cb_skill_map.json` in order (stem → role/focus → role), `deterministic` rules only. Same additive write. Rows landing on a `review` rule get `annotation_stale = true` and are counted, not guessed. [TASK-19]~~
       **Done 2026-09-20, differently** — same script; 29 rows from the deterministic map, 54 from an existing reading skill. `annotation_stale` is **not** used; unresolved rows stay NULL.
-- [ ] **TASK-21** *(re-scoped)* First add `and skill_key_source is distinct from 'manual'` to the UPDATE in `fill_skill_key.py` so a re-run never overwrites a hand label; then hand-label the 17 NULL rows (15 active; 16 are very likely Words in Context). Original text: **[DB]** Residue only — whatever TASK-20 left on `review` rules (expected: a
-      few dozen rows, chiefly `comma_splice` and `logical_relationships`). Hand-label if the count
-      is small; build the narrow single-key classifier only if it is not. The full reannotate path
-      stays out of bounds. *Originally scoped as an LLM pass over most of `expression_of_ideas`;
-      Phase 2 showed that is unnecessary.* [TASK-20]
+- [x] **TASK-21** ~~*(re-scoped)* First add `and skill_key_source is distinct from 'manual'` to the UPDATE in `fill_skill_key.py` so a re-run never overwrites a hand label; then hand-label the 17 NULL rows (15 active; 16 are very likely Words in Context). Original text: **[DB]** Residue only — whatever TASK-20 left on `review` rules (expected: a few dozen rows, chiefly `comma_splice` and `logical_relationships`). Hand-label if the count is small; build the narrow single-key classifier only if it is not. The full reannotate path stays out of bounds. *Originally scoped as an LLM pass over most of `expression_of_ideas`; Phase 2 showed that is unnecessary.* [TASK-20]~~
+      **Done 2026-09-21** — `manual` guard added; 16 of the 17 NULLs resolved without hand-labelling (8 by question wording, 8 by matching the stemless rows to the CB bank). 1 remains: `2470222a`.
 - [x] **TASK-22** ~~**[DB]** `user_progress`: **add** `missed_skill_family_key` (and index it); backfill for historical attempts by joining to the question's new value. Existing `question_domain` / `missed_*` columns are left exactly as written — nothing is remapped, because nothing was renamed. [TASK-19]~~
       **Replaced (Option B)** — no new `user_progress` column and no backfill. Readers **join** `user_progress` to `questions.skill_key`, as `question-type-performance` already does for `stem_type_key` (`student.py:3065`). Denormalise only if the join proves slow.
-- [ ] **TASK-23** **[DB]** **Conflict report, not a rewrite** — plain SQL comparing the `cb_*`
-      columns with the annotation: `question_family_key` ≠ `cb_domain_key`, reading
-      `skill_family_key` ≠ `cb_skill_key`, Words in Context rows carrying a `grammar_role_key`
-      (§2b.5). Correcting them is a rewrite and needs the user's sign-off. [TASK-19]
+- [x] **TASK-23** ~~**[DB]** **Conflict report, not a rewrite** — plain SQL comparing the `cb_*` columns with the annotation: `question_family_key` ≠ `cb_domain_key`, reading `skill_family_key` ≠ `cb_skill_key`, Words in Context rows carrying a `grammar_role_key` (§2b.5). Correcting them is a rewrite and needs the user's sign-off. [TASK-19]~~
+      **Done 2026-09-21** — `scripts/cb_conflict_report.py` → `analysis/cb_annotation_conflicts.md` + `.json`. Report only; see Part 2h.
 
 ### Phase 5 — Verify
 

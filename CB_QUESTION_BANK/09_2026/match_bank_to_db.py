@@ -4,7 +4,7 @@
 READ-ONLY. Never writes to the database.
 
 Matching is two independent signals, both of which must agree:
-  text     — normalized passage+stem, compared as ONE string
+  text     — normalized passage+stem, compared as ONE string (prose only, from the master)
   choices  — the four answer-choice texts, order-independent
 
 Passage and stem are deliberately concatenated before comparison. The two
@@ -32,7 +32,7 @@ import asyncpg
 
 HERE = pathlib.Path(__file__).resolve().parent
 DSN = "postgresql://dsat:dsat_dev@localhost:5437/dsat_dev"
-BANK = HERE / "09_2026_New_Verbal_Bank_full.json"
+BANK = HERE.parent / "cb_verbal_master.json"  # layout-based master; see build_master.py
 TEXT_MIN, CHOICE_MIN = 0.90, 0.90
 # Second acceptance path: identical choices carry the match even when the text
 # diverges (CB inlines graph axis numbers and table cells into the passage; the DB
@@ -86,12 +86,28 @@ async def load_db() -> list[dict]:
     return rows
 
 
+def from_master(q: dict) -> dict:
+    """Master record -> the flat shape the matcher compares.
+
+    Prose only: the database stores neither graph axis numbers nor table cells in the
+    passage, so leaving them out brings the two texts closer than the old flat file did.
+    """
+    s = q["stimulus"]
+    prose = list(s["paragraphs"]) + s.get("notes", [])
+    for t in s.get("texts", []):
+        prose += t["paragraphs"]
+    return {"question_id": q["question_id"], "passage": " ".join(prose), "stem": q["question"],
+            "choices": q["choices"], "domain": q["domain"], "skill": q["skill"],
+            "difficulty": q["difficulty"], "correct_answer": q["correct_answer"],
+            "question_family_key": q["domain_key"], "skill_family_key": q["skill_key"]}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--bank", default=str(BANK))
     args = ap.parse_args()
 
-    bank = json.load(open(args.bank))["questions"]
+    bank = [from_master(q) for q in json.load(open(args.bank))["questions"]]
     db = asyncio.run(load_db())
 
     # Block on shared 4-word shingles over passage+stem so we never do the full
@@ -123,7 +139,10 @@ def main() -> None:
         distinctive = len(c) >= DISTINCTIVE_CHOICE_CHARS
         accepted = [x for x in scored if
                     (x[1] >= TEXT_MIN and x[2] >= CHOICE_MIN) or
-                    (distinctive and x[2] >= IDENTICAL_CHOICES and x[1] >= LOOSE_TEXT_MIN)]
+                    (distinctive and x[2] >= IDENTICAL_CHOICES and x[1] >= LOOSE_TEXT_MIN) or
+                    # The DB row lost its question stem: the passage sits in question_text and
+                    # passage_text is NULL. Compare against the CB passage alone.
+                    (not x[0]["pt"] and x[2] >= CHOICE_MIN and ratio(p, x[0]["_stem"]) >= 0.97)]
         pool = accepted or [max(scored, key=lambda x: min(x[1], x[2]))]
         for r, ts, cs in pool:
           rec = {

@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 # Always the latest release. Earlier release directories are frozen and never edited.
-RELEASE = Path(__file__).resolve().parent / "vocabulary" / "v1.1.0"
+RELEASE = Path(__file__).resolve().parent / "vocabulary" / "v1.2.0"
 
 
 def verify(root=ROOT, release=RELEASE):

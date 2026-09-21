@@ -1,0 +1,178 @@
+{
+  "standard_version": "1.2.0",
+  "previous_version": "1.1.0",
+  "date": "2026-09-21",
+  "approval_basis": "Repository owner asked to continue the refactor (working session 2026-09-21). No vocabulary key was added, renamed or removed; master.snapshot.json is byte-identical to v1.1.0.",
+  "release_status": "recorded_pending_owner_confirmation",
+  "release_kind": "minor — adds compatible mappings (question-wording rules); no accepted value changed",
+  "runtime_activation": true,
+  "database_migration_applied": true,
+  "changes": [
+    {
+      "change_id": "VOC-0008",
+      "kind": "add_derivation_signal",
+      "identity": {
+        "old_version": "1.1.0",
+        "new_version": "1.2.0",
+        "date": "2026-09-21",
+        "reviewer": "repository owner (confirmation pending)"
+      },
+      "meaning": "questions.skill_key may now be derived from College Board's question wording (skill_key_source = 'question_text'), applied after a College Board label and before any LLM-assigned key. Matching uses the normalised last sentence of the question.",
+      "evidence": {
+        "source": "CB_QUESTION_BANK/cb_verbal_master.json, 1,845 College Board questions",
+        "method": "P(skill | wording); a rule is used only at n>=5 and purity>=95%",
+        "rules_in_effect": [
+          {
+            "key": "which choice completes the text with the most logical and precise word or phrase",
+            "skill_key": "words_in_context",
+            "n": 219,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice completes the text with the most logical transition",
+            "skill_key": "transitions",
+            "n": 194,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice most effectively uses relevant information from the notes to accomplish this goal",
+            "skill_key": "rhetorical_synthesis",
+            "n": 193,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice most logically completes the text",
+            "skill_key": "inferences",
+            "n": 140,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice best states the main idea of the text",
+            "skill_key": "central_ideas_and_details",
+            "n": 52,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice best states the main purpose of the text",
+            "skill_key": "text_structure_and_purpose",
+            "n": 49,
+            "purity": 0.98
+          },
+          {
+            "key": "which choice best describes the overall structure of the text",
+            "skill_key": "text_structure_and_purpose",
+            "n": 28,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice most effectively uses data from the table to complete the statement",
+            "skill_key": "command_of_evidence_quantitative",
+            "n": 24,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice best describes the function of the underlined portion in the text as a whole",
+            "skill_key": "text_structure_and_purpose",
+            "n": 21,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice best describes the function of the underlined sentence in the text as a whole",
+            "skill_key": "text_structure_and_purpose",
+            "n": 20,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice most effectively uses data from the graph to complete the statement",
+            "skill_key": "command_of_evidence_quantitative",
+            "n": 9,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice most effectively uses data from the table to complete the text",
+            "skill_key": "command_of_evidence_quantitative",
+            "n": 9,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice most effectively uses data from the table to complete the example",
+            "skill_key": "command_of_evidence_quantitative",
+            "n": 8,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice most effectively uses data from the graph to complete the text",
+            "skill_key": "command_of_evidence_quantitative",
+            "n": 6,
+            "purity": 1.0
+          },
+          {
+            "key": "based on the texts both authors would most likely agree with which statement",
+            "skill_key": "cross_text_connections",
+            "n": 6,
+            "purity": 1.0
+          },
+          {
+            "key": "which choice best describes data from the graph that support the researchers conclusion",
+            "skill_key": "command_of_evidence_quantitative",
+            "n": 5,
+            "purity": 1.0
+          },
+          {
+            "key": "which finding if true would most directly support the researchers hypothesis",
+            "skill_key": "command_of_evidence_textual",
+            "n": 5,
+            "purity": 1.0
+          }
+        ],
+        "counterexample": "'Which choice completes the text so that it conforms to the conventions of Standard English?' is 213 Boundaries / 208 Form, Structure, and Sense and is deliberately not a rule."
+      },
+      "compatibility": "new derivation method; vocabulary unchanged",
+      "consumers": {
+        "writers": [
+          "backend/app/pipeline/skill_key.py",
+          "scripts/fill_skill_key.py"
+        ],
+        "readers": "none yet"
+      },
+      "migration": {
+        "script": "scripts/fill_skill_key.py",
+        "dry_run": "49 rows changed: 8 previously NULL resolved, 41 source upgrades, 2 values corrected where an annotation contradicted College Board's wording",
+        "validation": "second run changed 0 rows; annotation_jsonb checksum unchanged; 14 unit tests"
+      },
+      "rollback": "git revert the resolver and re-run scripts/fill_skill_key.py --apply"
+    },
+    {
+      "change_id": "VOC-0009",
+      "kind": "refresh_source_label_match",
+      "identity": {
+        "old_version": "1.1.0",
+        "new_version": "1.2.0",
+        "date": "2026-09-21"
+      },
+      "meaning": "The bank-to-database match now reads the layout-based master bank (prose only, without graph axis numbers) and accepts a database row that has lost its question stem when its text equals the College Board passage.",
+      "evidence": {
+        "before": "733 bank questions on 1,414 rows; 11 for review",
+        "after": "745 bank questions on 1,457 rows; 1 for review",
+        "safety": "all 1,414 earlier pairs kept, 0 lost, 0 rows changed College Board ID, 0 collisions; on the 35 rows whose source upgraded to cb the previously inferred skill already equalled College Board's label"
+      },
+      "migration": {
+        "scripts": [
+          "CB_QUESTION_BANK/09_2026/match_bank_to_db.py",
+          "CB_QUESTION_BANK/09_2026/fill_cb_columns.py",
+          "scripts/fill_skill_key.py"
+        ],
+        "result": "1,513 of 1,514 questions carry skill_key (cb 1,457; question_text 36; annotation 12; map 8); 1 left NULL"
+      },
+      "rollback": {
+        "backup": "backups/cb_refresh_pre_20260921_010712.dump"
+      }
+    },
+    {
+      "change_id": "VOC-0010",
+      "kind": "lock_scope_correction",
+      "database_action": "none",
+      "reason": "v1.1.0 put vocabulary/mappings/cb_skill_map.json in the hash lock. That file is a derived, regenerable artifact: its counts change on every matcher run and every new College Board export even when no rule's outcome changes, so hashing it would force a release per export. It is removed from the lock. The rules actually in effect are recorded in the ledger instead (VOC-0008), and backend/tests/test_skill_key.py fails if the shipped map yields an illegal skill. backend/app/pipeline/skill_key.py stays locked, as the other enforcement inputs are."
+    }
+  ]
+}
