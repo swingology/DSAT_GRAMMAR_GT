@@ -231,6 +231,29 @@ This is not a bookkeeping detail. It sets the size of the calibration set that T
 prove or disprove the §2.4 grammar map, and it sets the true "new questions" count for TASK-27
 (~697 vs ~1,176). **Resolve it first (TASK-07a).**
 
+### 2.8 Identity: generated PK, CB ID as a data field (DECIDED 2026-09-20)
+
+`questions.id` stays the generated UUID primary key. `cb_question_id` is a **plain nullable data
+column** — never a key, never a join target in place of `id`. Migration 035 already provides it
+(`VARCHAR(8) UNIQUE`); it is now declared on the model (bug-830).
+
+**Consequence for bank ingest.** Official-test questions get a deterministic **UUIDv5** from
+`_official_question_uuid` (`backend/app/routers/ingest.py:132`), keyed on
+`exam:subject:section:module:question_number`. Re-ingesting the same practice test therefore
+produces the same UUID and is idempotent by construction. (54 of the 55 IDs in
+`db_overlap_check.md` are v5; 1 is v4.)
+
+CB bank questions carry **no test/section/module/question number**, so that derivation does not
+apply and they fall through to `uuid.uuid4()` (`ingest.py:1027`). That is the intended behaviour —
+but it means **the UUIDv5 idempotency guard does not cover bank ingest**. Re-running the ingest
+would insert duplicate rows under fresh random UUIDs.
+
+**Therefore:** `cb_question_id` is the idempotency key for bank ingest. TASK-27 must upsert on it
+(`ON CONFLICT (cb_question_id) DO NOTHING`, or an explicit pre-check), not rely on UUID derivation.
+Do **not** extend `_official_question_uuid` to hash bank content — that would make the PK depend on
+question text, so any later text correction would change the primary key and orphan every
+`user_progress`, `question_versions`, and `question_annotations` row pointing at it.
+
 ### 2.6 Migration hazards carried forward
 
 1. **Hand-corrected annotations.** *Largely neutralized by the additive-only constraint* — a
@@ -368,10 +391,12 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 - [ ] **TASK-26** **[DB]** Verify the weakness profile and diagnostic pool still return sane
       results (`backend/app/diagnostic/queries.py` — `derive_domain` may now be replaceable by a
       direct `question_family_key` read). [TASK-22]
-- [ ] **TASK-27** Ingest the 1,845 CB questions with `source_bank_question_id` populated and
-      CB-supplied `question_family_key` / `skill_family_key` taken as **ground truth**, bypassing
-      LLM classification for those two fields. Populate `questions.cb_question_id` (see TASK-18) as
-      the external dedupe key. New-question count depends on TASK-07a (~697 or ~1,176). [TASK-24]
+- [ ] **TASK-27** Ingest the 1,845 CB questions: `questions.id` generated as usual,
+      `cb_question_id` populated, and CB-supplied `question_family_key` / `skill_family_key`
+      taken as **ground truth**, bypassing LLM classification for those two fields.
+      **Upsert on `cb_question_id`** — bank questions get `uuid.uuid4()` PKs, so the UUIDv5
+      idempotency guard that protects official-test ingest does not apply here (§2.8).
+      New-question count depends on TASK-07a (~697 or ~1,176). [TASK-24]
 - [ ] **TASK-28** CHANGELOG entry + DEBUG_LOG audit entry; update `.wolf/cerebrum.md` with the
       new ontology shape.
 
