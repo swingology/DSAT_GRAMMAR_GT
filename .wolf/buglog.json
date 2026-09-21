@@ -7767,5 +7767,25 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-09-20"
+  },
+  {
+    "id": "bug-835",
+    "timestamp": "2026-09-20",
+    "error_message": "Flat CB bank extraction loses structure and corrupts 13 choices: page-header text ('Assessment SAT Test Reading and Writing\u2026') leaks into the last answer choice of questions that spill onto a second page; graph axis numbers are mashed into 62 passages; all 204 note lists lose their bullets; super/subscripts (NH3, 13C, cm2) are dropped; underlines are not recorded",
+    "file": "CB_QUESTION_BANK/09_2026/extract_cb_bank.py",
+    "root_cause": "it parses page.get_text() plain text, which has no fonts, positions or drawings, so it cannot tell graph text from prose, a bullet from a line, a header from a choice, or a subscript from a number",
+    "fix": "new layout-based builder CB_QUESTION_BANK/build_master.py -> cb_verbal_master.json (fonts separate graph text, dot drawings mark bullets, strokes mark underlines, find_tables clipped to the stimulus gives cells, word positions restore super/subscripts, bodies may span pages). verify_master.py cross-checks it word-for-word against the flat file and found the 13 corrupted choices. The flat file is kept only as that oracle and as matcher input",
+    "tags": [
+      "cb-question-bank",
+      "pdf-extraction",
+      "layout",
+      "master-base"
+    ],
+    "related_bugs": [
+      "bug-831",
+      "bug-832"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-09-20"
   }
 ]

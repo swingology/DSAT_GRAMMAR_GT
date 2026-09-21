@@ -30,6 +30,9 @@ Git checkpoint: `4f6d253` — Record Option B in the refactor plan and dispositi
 
 8. **Medium (open):** the bank JSON carries a field named `skill_family_key` holding grammar values on 819 of 1,845 records; importing it into `annotation_jsonb` would recreate finding 6. Flagged on TASK-27.
 
+10. ~~**Medium:** the flat CB bank extraction corrupts 13 answer choices (page header leaks into the last choice of questions that spill onto a second page), mashes graph axis numbers into 62 passages, drops the bullets from all 204 note lists, and loses super/subscripts and underlines (bug-835).~~
+   - **Fixed:** layout-based `CB_QUESTION_BANK/build_master.py` → `cb_verbal_master.json`; `verify_master.py` cross-checks it word-for-word against the flat file. The flat file remains only as that oracle and as matcher input.
+
 9. **Low (open, pre-existing):** 15 backend tests fail identically on this branch and on its base (`test_admin_router` x4, `test_backend_regressions` x3, `test_student_retrieval` x4, `test_review_runner` x2, `test_config`, `test_vocab_sync`). Scripts run from the repo root crash in `Settings()` because the root `.env` holds two variables the settings model forbids; run DB scripts from `backend/`.
 
 ## 2026-09-12 - Orphaned alembic revision stamp + CB question ID backfill (bug-829)

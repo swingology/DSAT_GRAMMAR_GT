@@ -512,6 +512,33 @@ overload reading-only fields."* — Option B, stated two weeks earlier.
   `review`. Two independent routes to the same mapping.
 - Any future vocabulary change must add a release there, not just edit `master.json`.
 
+## Part 2g — Master base of the PDFs (2026-09-20)
+
+`CB_QUESTION_BANK/cb_verbal_master.json` — 1,845 questions from all nine verbal PDFs, built from
+page **layout** by `CB_QUESTION_BANK/build_master.py` and checked by `verify_master.py`.
+Each record leads with `domain`, `skill`, `passage`, `question`, `choices`; then `question_id`,
+`difficulty`, `correct_answer`, `domain_key`, `skill_key`, `underlined`, a structured `stimulus`,
+`rationale`, `source_pdf`, `appears_in`.
+
+| Structure | How it is recovered | Count |
+|---|---|---|
+| bulleted notes | small filled dots left of the line | 204 (= every Rhetorical Synthesis question) |
+| Text 1 / Text 2 | the label lines | 61 (= every Cross-Text question) |
+| tables → header + rows | ruled grid, `find_tables` clipped to the stimulus | 71 |
+| graphs → PNG + title / axis / legend text, kept **out of** the passage | all graph text is set in CrimsonText | 62 (`figures/`) |
+| underlined words | filled stroke under the words | 145 (100 "underlined" stems + 45 Words in Context targets) |
+| super/subscripts (NH₃, ¹³C, cm², ⁸⁷Sr/⁸⁶Sr) | small digit words placed by x position | 15 questions |
+| rationale | text after the answer, across page breaks | 1,845 |
+
+Verified word-for-word against the older flat extraction: identical stimulus + question words on
+all 1,845, identical labels and answers. The check also exposed 13 corrupted choices **in the flat
+file** (page header leaked into the last choice — bug-835). Bar heights and line positions inside
+graphs are not digitised; that needs a vision model.
+
+**This clears two TASK-27 preconditions:** the misleading `skill_family_key` field is gone (the
+master uses `skill_key`, removing risk R1), and structure is no longer lost. `match_bank_to_db.py`
+still reads the flat file; re-point it at the master before the import.
+
 ## Part 3 — Task list
 
 Dependencies in brackets. Tasks marked **[DB]** are blocked until the port question is settled.
