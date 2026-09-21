@@ -26,8 +26,6 @@ SOURCES = [
 ]
 CROSS_CHECK = "09_2026_New_Verbal_Bank.pdf"
 
-# CB label defect: lowercase 't' appears 3x across MED / HARD / Results11.
-SKILL_CANON = {"Cross-text Connections": "Cross-Text Connections"}
 
 
 def main() -> None:
@@ -42,7 +40,6 @@ def main() -> None:
         print(f"{len(qs):5d}  {src}")
         problems += validate(qs)
         for q in qs:
-            q["skill"] = SKILL_CANON.get(q["skill"], q["skill"])
             q["source_pdf"] = src
             if q["question_id"] in merged:
                 sys.exit(f"FATAL: duplicate id {q['question_id']} across difficulty PDFs")
@@ -58,7 +55,7 @@ def main() -> None:
         m = merged.get(q["question_id"])
         if m is None:
             mismatches.append(f"{q['question_id']} in Bank but not in difficulty union")
-        elif (m["domain"], m["skill"]) != (q["domain"], SKILL_CANON.get(q["skill"], q["skill"])):
+        elif (m["domain"], m["skill"]) != (q["domain"], q["skill"]):
             mismatches.append(f"{q['question_id']} label mismatch vs Bank PDF")
     if mismatches:
         sys.exit("FATAL cross-check:\n  " + "\n  ".join(mismatches[:20]))

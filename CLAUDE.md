@@ -40,7 +40,7 @@ Start the full development stack with:
 - Frontend: http://localhost:5173
 - Backend: http://localhost:8000
 - API Docs: http://localhost:8000/docs
-- Database: localhost:5434 (dsat / dsat_dev)
+- Database: localhost:5437, database `dsat_dev` (user `dsat` / password `dsat_dev`)
 
 ## Python Environment
 

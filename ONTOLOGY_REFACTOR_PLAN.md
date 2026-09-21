@@ -276,16 +276,91 @@ question text, so any later text correction would change the primary key and orp
 
 ---
 
+## Part 2b — Phase 2 results (2026-09-20)
+
+Full detail: `CB_QUESTION_BANK/09_2026/db_overlap_full.md`. Scripts: `match_bank_to_db.py`
+(read-only matcher), `calibration_report.py` (derives the map).
+
+### 2b.1 Overlap — resolved
+
+**733 of the 1,845 bank questions are already in the DB, covering 1,414 of its 1,514 official
+rows (93.4%).** 11 need human review; 1,101 are new. Zero DB rows claimed by two bank IDs.
+Both earlier figures were right for what they measured: 55 was a strict stem matcher on the
+752-item subset; 669 was passage+stem on the full pool. §2.7 is closed.
+
+Matching is two signals — normalized passage+stem *as one string*, and the four choices. Scoring
+passage and stem separately rejects true matches, because CB keeps the "The student wants to…"
+goal sentence in the stem and the DB stores it in the passage.
+
+### 2b.2 The DB stores each question ~2 times
+
+| DB copies per bank question | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|
+| bank questions | 267 | 301 | 118 | 44 | 3 |
+
+1,414 rows are 733 distinct questions — the same item ingested from the 2024 and 2025 releases
+and from untitled re-imports. (An md5 check found only 177 groups; whitespace differs between
+copies.) **Every per-question write must reach every copy**, so the fill is keyed on `db_id`
+from `db_overlap_full.json`, not on `cb_question_id`.
+
+### 2b.3 The consequence: CB ground truth replaces most of the map
+
+93% of official rows take their skill **directly from the CB label** — no inference, no map, no
+model. The old→new map is needed only for the ~100 unmatched official rows and for generated /
+unofficial questions. This removes almost all of the LLM work originally planned for Phase 4.
+
+### 2b.4 The map — §2.4 was partly wrong, now derived from data
+
+`vocabulary/mappings/cb_skill_map.json` is generated from 655 grammar calibration rows; each rule
+carries `n` and `purity`, and is `deterministic` only at n ≥ 5 and purity ≥ 95%. Corrections to
+the hand-written §2.4 table, which is **superseded**:
+
+| §2.4 claimed | Data says |
+|---|---|
+| `punctuation_comma`, `unnecessary_internal_punctuation` need LLM adjudication | 96.4% / 95.5% **Boundaries** — deterministic |
+| `end_punctuation_question_statement`, `quotation_punctuation` → Form/Structure/Sense | **Boundaries**, 9/9 and 2/2 |
+| all of role `sentence_boundary` → Boundaries | `sentence_fragment` is 3/3 **Form/Structure/Sense**; `comma_splice` only 71% pure |
+| most of `expression_of_ideas` needs LLM adjudication | `transition_logic` → Transitions 159/159; the rest → Rhetorical Synthesis, except `logical_relationships` (79%) |
+
+`stem_type_key` is the strongest single signal: `choose_best_notes_synthesis` /
+`synthesize_information` → Rhetorical Synthesis (145/145), `choose_best_transition` → Transitions
+(48/48). This settles TASK-01 empirically: derive from `stem_type_key` first, then role/focus.
+Deterministic coverage of the 655: role/focus 544, stem 193, role 151.
+
+### 2b.5 Existing annotations disagree with CB — needs a decision
+
+| Check against CB ground truth | Result |
+|---|---|
+| `question_family_key` (domain) agrees | 1,213 / 1,414 (85.8%) |
+| Reading `skill_family_key` agrees | 633 / 759 — 104 missing, **22 present but wrong** |
+| Words in Context rows annotated as a *grammar* question | **79** (`expression_of_ideas` / `precision_word_choice`) |
+
+Under ADDITIVE ONLY the fill **adds `skill_family_key` where it is absent and touches nothing
+else**. It does not correct the 22 wrong skills or the 201 domain disagreements — those are
+reported, not rewritten (TASK-23). Overwriting an existing value with the CB label is defensible
+(CB is the authority) but it is a rewrite, so it is **the user's call, not this migration's**.
+
+### 2.9 `cb_question_id` is UNIQUE but questions are duplicated — needs a decision
+
+Migration 035 made `questions.cb_question_id` `UNIQUE`. With ~2 DB copies per question, only one
+copy can carry the ID, so 681 of the 1,414 matched rows can never be labelled with it. Options:
+(a) drop the unique constraint so every copy carries its CB ID — simplest, but bank-ingest
+idempotency (§2.8) then needs a `WHERE NOT EXISTS` pre-check instead of `ON CONFLICT`;
+(b) keep it unique and label only the canonical copy, pointing the others at it via the existing
+`canonical_official_question_id`; (c) de-duplicate the DB first. **Recommend (b)** — it is
+additive, uses a column that already exists for exactly this, and keeps §2.8 intact. Not blocking:
+the skill fill keys on `db_id` and does not depend on the outcome.
+
 ## Part 3 — Task list
 
 Dependencies in brackets. Tasks marked **[DB]** are blocked until the port question is settled.
 
 ### Phase 0 — Prerequisites & decisions
 
-- [ ] **TASK-00** Resolve the 5434/5437 DSN discrepancy; bring the dev stack up; pin one DSN in
-      `scripts/*.py`. *Blocks every [DB] task.*
-- [ ] **TASK-01** Decide `stem_type_key` relationship (§2.5): derived-and-asserted, or documented
-      as orthogonal. Record as an ADR under `docs/adr/`.
+- [x] **TASK-00** ~~Resolve the 5434/5437 DSN discrepancy; bring the dev stack up; pin one DSN in `scripts/*.py`. *Blocks every [DB] task.*~~
+      **Done 2026-09-20** — the running `dsat-db` container maps **5437**, database `dsat_dev`; all 8 scripts already agree. `CLAUDE.md` (5434) was the outlier and is corrected.
+- [x] **TASK-01** ~~Decide `stem_type_key` relationship (§2.5): derived-and-asserted, or documented as orthogonal. Record as an ADR under `docs/adr/`.~~
+      **Done 2026-09-20** — settled empirically (§2b.4): `stem_type_key` is 100% pure for the two EoI skills, so it is applied *first*, then role/focus. ADR still to be written.
 - [ ] **TASK-02** Decide whether `skill_family_key` becomes **required** (non-null) for all verbal
       questions, or stays optional. Recommendation: stays **optional** in the Pydantic model
       throughout — a required field would make every not-yet-filled legacy annotation fail
@@ -310,22 +385,16 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 ### Phase 2 — Validate the map before writing it
 
-- [ ] **TASK-07a** **[DB]** **Reconcile the two conflicting overlap figures** (§2.7) by
-      re-running the match over all 1,845 against the live DB. Commit the script and the result;
-      the existing `db_overlap_check.md` covers only the 752-item Bank and must be superseded by a
-      full-pool artifact. *The calibration-set size for everything below depends on this.* [TASK-00]
-- [ ] **TASK-07b** **[DB]** Build the calibration crosstab over whatever TASK-07a returns:
-      CB `skill` (ground truth) × existing `grammar_role_key` / `skill_family_key`. This is the
-      cheapest thing that can falsify the §2.4 map. At n≈669 it carries the grammar side; at
-      n≈55 it validates reading only and Bucket B stays unproven. [TASK-07a]
-- [ ] **TASK-08** **[DB]** If TASK-07a lands near the low figure, extend coverage by matching on
-      normalized passage+stem rather than stem alone (the method the 669 figure used). Target
-      ≥200 matched **grammar** questions before trusting Bucket B. [TASK-07b]
-- [ ] **TASK-09** Write `vocabulary/mappings/cb_skill_map.json` — the explicit old→new map with a
-      per-entry `bucket: A|B|C` and a `confidence` field. This file is the single artifact that
-      both the deterministic remap and the `user_progress` backfill read. [TASK-07b, TASK-08]
-- [ ] **TASK-10** Hand-adjudicate a 30-question sample from Bucket C to estimate LLM agreement
-      rate before committing to a full LLM pass. [TASK-09]
+- [x] **TASK-07a** ~~**[DB]** **Reconcile the two conflicting overlap figures** (§2.7) by re-running the match over all 1,845 against the live DB. Commit the script and the result; the existing `db_overlap_check.md` covers only the 752-item Bank and must be superseded by a full-pool artifact. *The calibration-set size for everything below depends on this.* [TASK-00]~~
+      **Done 2026-09-20** — 733 bank questions ↔ 1,414 DB rows; `db_overlap_full.json` / `.md` supersede `db_overlap_check.md` (§2b.1).
+- [x] **TASK-07b** ~~**[DB]** Build the calibration crosstab over whatever TASK-07a returns: CB `skill` (ground truth) × existing `grammar_role_key` / `skill_family_key`. This is the cheapest thing that can falsify the §2.4 map. At n≈669 it carries the grammar side; at n≈55 it validates reading only and Bucket B stays unproven. [TASK-07a]~~
+      **Done 2026-09-20** — crosstab over 655 grammar + 759 reading rows; falsified four claims in §2.4 (§2b.4).
+- [x] **TASK-08** ~~**[DB]** If TASK-07a lands near the low figure, extend coverage by matching on normalized passage+stem rather than stem alone (the method the 669 figure used). Target ≥200 matched **grammar** questions before trusting Bucket B. [TASK-07b]~~
+      **Done 2026-09-20** — not needed — 07a landed at the high figure with 655 grammar calibration rows, well past the ≥200 target.
+- [x] **TASK-09** ~~Write `vocabulary/mappings/cb_skill_map.json` — the explicit old→new map with a per-entry `bucket: A|B|C` and a `confidence` field. This file is the single artifact that both the deterministic remap and the `user_progress` backfill read. [TASK-07b, TASK-08]~~
+      **Done 2026-09-20** — `vocabulary/mappings/cb_skill_map.json`, **derived** by `calibration_report.py` rather than hand-written; every rule carries n, purity and a deterministic/review status.
+- [x] **TASK-10** ~~Hand-adjudicate a 30-question sample from Bucket C to estimate LLM agreement rate before committing to a full LLM pass. [TASK-09]~~
+      **Done 2026-09-20** — moot — the residue needing a model shrank from 'most of expression_of_ideas' to a handful of `review` rules; adjudicate those directly in TASK-21.
 
 ### Phase 3 — Ontology change (code, no data)
 
@@ -357,27 +426,29 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 *Every task in this phase is an additive field-level merge. See the governing constraint above.*
 
-- [ ] **TASK-19** **[DB]** Deterministic fill (Buckets A + B): a script that reads
-      `cb_skill_map.json` and **adds** `skill_family_key` to the existing
-      `question_annotations.annotation_jsonb` — a JSONB key merge on the current row. No new
-      `QuestionVersion`, no other key touched. Idempotent, dry-runnable, with a diff report proving
-      only the one key changed. Skips rows that already carry the key. Model it on
-      `span_annotator.py:229`, drive it like `scripts/reannotate_spans.py`. [TASK-09, TASK-14]
-- [ ] **TASK-20** **[DB]** Mark Bucket C residue with `annotation_stale = true`; report the count
-      per domain before spending anything on model calls. [TASK-19]
-- [ ] **TASK-21** **[DB]** **Narrow skill classifier** for Bucket C — a new service that sends the
-      question plus the 10 legal (domain, skill) pairs and asks for `skill_family_key` **and
-      nothing else**, then merges that single key into the existing annotation row. Modeled on
-      `annotate_spans()`, *not* on `_run_reannotate_pipeline` — the full reannotate path is
-      explicitly out of bounds here because it would regenerate ~40 unrelated keys and move the
-      version pointer. [TASK-20, TASK-10]
+- [ ] **TASK-19** **[DB]** **Ground-truth fill** — for the 1,414 matched rows, **add**
+      `skill_family_key` from the CB label, keyed on `db_id` from `db_overlap_full.json` so every
+      duplicate copy is reached (§2b.2). JSONB key merge on the existing annotation row; no new
+      `QuestionVersion`; no other key touched. **Only where the key is absent** — existing values
+      are never overwritten (§2b.5). Dry-run by default, with a before/after diff proving one key
+      changed. Model it on `span_annotator.py:229`. [TASK-14]
+- [ ] **TASK-20** **[DB]** **Map fill** — for the ~100 official rows with no CB match, apply
+      `cb_skill_map.json` in order (stem → role/focus → role), `deterministic` rules only. Same
+      additive write as TASK-19. Rows landing on a `review` rule get `annotation_stale = true` and
+      are counted, not guessed. [TASK-19]
+- [ ] **TASK-21** **[DB]** Residue only — whatever TASK-20 left on `review` rules (expected: a
+      few dozen rows, chiefly `comma_splice` and `logical_relationships`). Hand-label if the count
+      is small; build the narrow single-key classifier only if it is not. The full reannotate path
+      stays out of bounds. *Originally scoped as an LLM pass over most of `expression_of_ideas`;
+      Phase 2 showed that is unnecessary.* [TASK-20]
 - [ ] **TASK-22** **[DB]** `user_progress`: **add** `missed_skill_family_key` (and index it);
       backfill for historical attempts by joining to the question's new value. Existing
       `question_domain` / `missed_*` columns are left exactly as written — nothing is remapped,
       because nothing was renamed. [TASK-19]
-- [ ] **TASK-23** **[DB]** Reconcile the small set where `skill_family_key` was already present and
-      disagrees with `cb_skill_map.json`. These are the only genuine conflicts; review by hand and
-      keep the human value unless the CB label says otherwise. Size it in TASK-19's dry run. [TASK-19]
+- [ ] **TASK-23** **[DB]** **Conflict report, not a rewrite** — list every row where an existing
+      value disagrees with CB: 22 wrong reading `skill_family_key`, 201 `question_family_key`
+      disagreements, 79 Words in Context rows annotated as grammar (§2b.5). Correcting them is a
+      rewrite and needs the user's sign-off. [TASK-19]
 
 ### Phase 5 — Verify
 

@@ -119,6 +119,9 @@ def parse_block(block: str) -> dict:
 
     domain = parse_label_value(lines, "Domain", list(FAMILY_BY_DOMAIN))
     skill = parse_label_value(lines, "Skill", list(SKILL_FAMILY))
+    # CB prints "Cross-text Connections" (lowercase t) on a few records. Canonicalize
+    # BEFORE deriving the key, or the fallback slugger emits "cross-text_connections".
+    skill = {"cross-text connections": "Cross-Text Connections"}.get(skill.lower(), skill)
     difficulty = ""
     m = re.search(r"Question Difficulty: (\w+)", block)
     if m:

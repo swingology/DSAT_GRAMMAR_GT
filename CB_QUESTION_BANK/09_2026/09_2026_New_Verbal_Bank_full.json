@@ -15778,7 +15778,7 @@
     {
       "question_id": "7cc8d51f",
       "question_family_key": "craft_and_structure",
-      "skill_family_key": "cross-text_connections",
+      "skill_family_key": "cross_text_connections",
       "domain": "Craft and Structure",
       "skill": "Cross-Text Connections",
       "difficulty": "Medium",
@@ -28900,7 +28900,7 @@
     {
       "question_id": "df7bc1cf",
       "question_family_key": "craft_and_structure",
-      "skill_family_key": "cross-text_connections",
+      "skill_family_key": "cross_text_connections",
       "domain": "Craft and Structure",
       "skill": "Cross-Text Connections",
       "difficulty": "Hard",
