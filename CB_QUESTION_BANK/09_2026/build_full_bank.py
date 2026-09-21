@@ -6,6 +6,10 @@ zero overlap — see ONTOLOGY_REFACTOR_PLAN.md §1.2) and, unlike the 752-item
 Bank PDF, each record carries Question Difficulty and Correct Answer. So they
 are the sole source; the Bank PDF is used only as a cross-check.
 
+To backfill a new CB export: add its PDF to SOURCES, run audit_labels.py, then
+re-run this. Output is keyed and sorted by question_id, so existing records are
+unchanged and new ones slot in; downstream ingest upserts on cb_question_id.
+
 Usage: uv run --with pymupdf python build_full_bank.py [-o OUT]
 """
 import argparse
@@ -21,7 +25,6 @@ SOURCES = [
     "MyPractice - Question Bank - Results - Verbal Hard.pdf",
 ]
 CROSS_CHECK = "09_2026_New_Verbal_Bank.pdf"
-EXPECTED_TOTAL = 1845
 
 # CB label defect: lowercase 't' appears 3x across MED / HARD / Results11.
 SKILL_CANON = {"Cross-text Connections": "Cross-Text Connections"}
@@ -45,8 +48,9 @@ def main() -> None:
                 sys.exit(f"FATAL: duplicate id {q['question_id']} across difficulty PDFs")
             merged[q["question_id"]] = q
 
-    if len(merged) != EXPECTED_TOTAL:
-        sys.exit(f"FATAL: {len(merged)} unique ids, expected {EXPECTED_TOTAL}")
+    # No pinned total: the bank grows as CB publishes more. Duplicate IDs across
+    # sources are the real failure and are caught above; audit_labels.py reports
+    # count drift against bank_manifest.json.
 
     # cross-check: every Bank PDF question must be present with identical labels
     mismatches = []

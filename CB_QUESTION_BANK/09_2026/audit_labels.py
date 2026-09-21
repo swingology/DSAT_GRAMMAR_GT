@@ -1,15 +1,26 @@
 #!/usr/bin/env python
 """TASK-04 — re-runnable label-integrity audit for the CB verbal PDFs.
 
-Re-parses every verbal PDF with logic independent of extract_cb_bank.py and
-asserts the nine invariants recorded in ONTOLOGY_REFACTOR_PLAN.md §1.
-Exit 0 if all hold, 1 otherwise. Run after adding or replacing any source PDF.
+Re-parses every verbal PDF found under CB_QUESTION_BANK/ with logic independent
+of extract_cb_bank.py, then checks two different kinds of thing:
 
-Usage: uv run --with pymupdf python audit_labels.py [-v]
+  STRUCTURAL INVARIANTS — must hold for any CB export, at any corpus size.
+  A violation is a hard failure (exit 1).
+
+  SNAPSHOT COUNTS — totals as of the last accepted corpus, kept in
+  bank_manifest.json. Growth is expected: new PDFs and rising counts are
+  REPORTED, not failed. Re-run with --accept to record the new snapshot.
+
+That split is what makes this safe to re-run as College Board publishes more
+questions. Pinning the totals would turn every future export into a red build.
+
+Usage:
+  uv run --with pymupdf python audit_labels.py [-v]
+  uv run --with pymupdf python audit_labels.py --accept   # after adding PDFs
 """
 import argparse
 import collections
-import itertools
+import json
 import pathlib
 import re
 import sys
@@ -17,20 +28,22 @@ import sys
 import pymupdf
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent  # CB_QUESTION_BANK/
-PDFS = [
-    "09_2026/09_2026_New_Verbal_Bank.pdf",
-    "09_2026/09_2026_New_Verbal_Bank  - Questions ONLY.pdf",
-    "09_2026/MyPractice - Question Bank - Results - easy.pdf",
-    "09_2026/MyPractice - Question Bank - Results medium.pdf",
-    "09_2026/MyPractice - Question Bank - Results - Verbal Hard.pdf",
-    "MyPractice - Question Bank - Results - exclude active.pdf",
-    "MyPractice - Question Bank - Results part 2.pdf",
-    "MyPractice - Question Bank - Results11.pdf",
-    "MyPractice - Question Bank - part 1 page 1-5.pdf",
-]
-DIFFICULTY_SPLITS = PDFS[2:5]
-EXPECTED_UNIQUE = 1845
-EXPECTED_ROWS = 4465
+MANIFEST = pathlib.Path(__file__).resolve().parent / "bank_manifest.json"
+# Verbal only. NEW_QUESTION_SETS/VERBAL duplicates 09_2026 byte-for-byte, and
+# macOS AppleDouble sidecars (._name) are not real PDFs.
+EXCLUDE_DIRS = {"Math", "NEW_QUESTION_SETS"}
+
+
+def discover() -> list[str]:
+    """Every verbal source PDF under CB_QUESTION_BANK/, newest exports included."""
+    found = []
+    for path in sorted(ROOT.rglob("*.pdf")):
+        rel = path.relative_to(ROOT)
+        if any(part in EXCLUDE_DIRS for part in rel.parts) or path.name.startswith("._"):
+            continue
+        found.append(str(rel))
+    return found
+
 # The 10 legal (Domain, Skill) pairs — DOMAINS_SKILLS.md is the source of truth.
 LEGAL_PAIRS = {
     ("Craft and Structure", "Cross-Text Connections"),
@@ -95,13 +108,17 @@ def parse(path: pathlib.Path) -> list[dict]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("-v", "--verbose", action="store_true")
+    ap.add_argument("--accept", action="store_true",
+                    help="record the current corpus as the new snapshot in bank_manifest.json")
     args = ap.parse_args()
 
+    pdfs = discover()
+    if not pdfs:
+        sys.exit("FATAL: no verbal PDFs found under CB_QUESTION_BANK/")
+
     per_pdf, rows = {}, []
-    for rel in PDFS:
+    for rel in pdfs:
         path = ROOT / rel
-        if not path.exists():
-            sys.exit(f"FATAL: missing source PDF {rel}")
         recs = parse(path)
         per_pdf[rel] = recs
         rows.extend(recs)
@@ -116,18 +133,22 @@ def main() -> None:
             failures.append(name)
 
     ids = {p: {r["qid"] for r in recs} for p, recs in per_pdf.items()}
-    union = set().union(*(ids[p] for p in DIFFICULTY_SPLITS))
     all_ids = {r["qid"] for r in rows}
+    prev = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {}
 
-    print("\nCB verbal label audit\n" + "-" * 60)
-    check("1. row count", len(rows) == EXPECTED_ROWS, f"{len(rows)} (expected {EXPECTED_ROWS})")
-    check("2. unique question IDs", len(all_ids) == EXPECTED_UNIQUE,
-          f"{len(all_ids)} (expected {EXPECTED_UNIQUE})")
-    overlaps = [(a, b, len(ids[a] & ids[b])) for a, b in itertools.combinations(DIFFICULTY_SPLITS, 2)]
-    check("3. EASY/MED/HARD are disjoint", all(n == 0 for *_, n in overlaps),
-          "; ".join(f"{a.split('- ')[-1]}∩{b.split('- ')[-1]}={n}" for a, b, n in overlaps if n))
-    check("4. difficulty union covers every ID", all_ids == union,
-          f"{len(all_ids - union)} outside the union")
+    print("\nCB verbal label audit — STRUCTURAL INVARIANTS\n" + "-" * 60)
+    check("1. no duplicate IDs within a single PDF",
+          all(len(ids[p]) == len(per_pdf[p]) for p in pdfs),
+          "; ".join(f"{p}: {len(per_pdf[p]) - len(ids[p])} dup" for p in pdfs
+                    if len(ids[p]) != len(per_pdf[p])))
+    # Every ID must be resolvable to a difficulty and an answer by SOME pdf in the
+    # corpus. Which PDF supplies it is not fixed, so no filename is hardcoded.
+    have_diff = {r["qid"] for r in rows if r["difficulty"]}
+    have_ans = {r["qid"] for r in rows if r["correct"]}
+    check("2. every ID resolves to a difficulty somewhere", all_ids == have_diff,
+          f"{len(all_ids - have_diff)} without difficulty in any PDF")
+    check("3. every ID resolves to a correct answer somewhere", all_ids == have_ans,
+          f"{len(all_ids - have_ans)} without an answer in any PDF")
 
     conflicts = {}
     for f in ("domain", "difficulty", "correct"):
@@ -141,27 +162,53 @@ def main() -> None:
         skill_seen[r["qid"]].add(SKILL_CANON.get(r["skill_raw"], r["skill_raw"]))
     conflicts["skill"] = [q for q, v in skill_seen.items() if len(v) > 1]
     for f in ("domain", "skill", "difficulty", "correct"):
-        check(f"5.{f} — no cross-PDF conflicts", not conflicts[f],
+        check(f"4.{f} — no cross-PDF conflicts", not conflicts[f],
               f"{len(conflicts[f])} conflicting: {conflicts[f][:5]}")
 
-    check("6. no blank Domain or Skill",
+    check("5. no blank Domain or Skill",
           all(r["domain"] and r["skill_raw"] for r in rows),
           f"{sum(1 for r in rows if not r['domain'] or not r['skill_raw'])} blank")
-    check("7. every ID has difficulty and a correct answer",
-          all(any(r["difficulty"] for r in rows if r["qid"] == q) for q in union) and
-          all(q in {r['qid'] for r in rows if r['correct']} for q in all_ids),
-          "")
 
     pairs = {(r["domain"], SKILL_CANON.get(r["skill_raw"], r["skill_raw"])) for r in rows}
-    check("8. exactly the 10 legal Domain x Skill pairs", pairs == LEGAL_PAIRS,
-          f"unexpected={sorted(pairs - LEGAL_PAIRS)} missing={sorted(LEGAL_PAIRS - pairs)}")
-    check("9. SAT Reading and Writing only",
+    # Subset, not equality: a partial export may legitimately lack some pairs.
+    # An UNKNOWN pair is the real failure — it means CB changed the taxonomy and
+    # DOMAINS_SKILLS.md plus the ontology need revisiting before ingest.
+    check("6. no Domain x Skill pair outside the 10 known", not (pairs - LEGAL_PAIRS),
+          f"unexpected={sorted(pairs - LEGAL_PAIRS)}")
+    if pairs != LEGAL_PAIRS:
+        print(f"  [note] pairs absent from this corpus: {sorted(LEGAL_PAIRS - pairs)}")
+    check("7. SAT Reading and Writing only",
           {(r["assessment"], r["test"]) for r in rows} == {("SAT", "Reading and Writing")},
           str(collections.Counter((r["assessment"], r["test"]) for r in rows)))
 
+    print("\nSNAPSHOT — growth is expected, these never fail the run\n" + "-" * 60)
     defects = sum(1 for r in rows if r["skill_raw"] in SKILL_CANON)
-    check(f"10. casing defects == {EXPECTED_CASING_DEFECTS}", defects == EXPECTED_CASING_DEFECTS,
-          f"found {defects}")
+    cur = {"pdfs": {p: len(per_pdf[p]) for p in pdfs}, "rows": len(rows),
+           "unique_ids": len(all_ids), "casing_defects": defects}
+    if not prev:
+        print("  no manifest yet — run with --accept to record this corpus as the baseline")
+    else:
+        for label, key in (("rows", "rows"), ("unique IDs", "unique_ids"),
+                           ("casing defects", "casing_defects")):
+            was, now = prev.get(key), cur[key]
+            mark = "same" if was == now else ("+%d" % (now - was) if now > was else "%d" % (now - was))
+            print(f"  {label}: {was} -> {now} ({mark})")
+        added = sorted(set(cur["pdfs"]) - set(prev.get("pdfs", {})))
+        removed = sorted(set(prev.get("pdfs", {})) - set(cur["pdfs"]))
+        changed = [p for p in cur["pdfs"] if p in prev.get("pdfs", {})
+                   and prev["pdfs"][p] != cur["pdfs"][p]]
+        for p in added:
+            print(f"  NEW    {p} ({cur['pdfs'][p]} questions)")
+        for p in removed:
+            print(f"  GONE   {p} (was {prev['pdfs'][p]})")
+        for p in changed:
+            print(f"  CHANGED {p}: {prev['pdfs'][p]} -> {cur['pdfs'][p]}")
+        if not (added or removed or changed):
+            print("  corpus unchanged since the recorded snapshot")
+
+    if args.accept:
+        MANIFEST.write_text(json.dumps(cur, indent=2, ensure_ascii=False) + "\n")
+        print(f"\n  recorded snapshot -> {MANIFEST.name}")
 
     if args.verbose:
         print("\nDomain x Skill over the canonical pool:")
