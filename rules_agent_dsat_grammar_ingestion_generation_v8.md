@@ -6992,3 +6992,22 @@ regenerate. They stay in lockstep with the validator enums in
 - `blocked_overlap` — Unresolved official overlap blocks approval
 - `insufficient_reviews` — Fewer than 2 reviewers succeeded
 <!-- VOCAB:system:CONSENSUS_VERDICTS END -->
+
+<!-- VOCAB:grammar:SYNTACTIC_TRAP_REQUIRED_ROLES START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`SYNTACTIC_TRAP_REQUIRED_ROLES`** — Grammar roles that always require a non-null syntactic_trap_key (policy subset of GRAMMAR_ROLE_KEYS)
+
+- `agreement`
+- `pronoun`
+- `modifier`
+- `verb_form`
+- `sentence_boundary`
+<!-- VOCAB:grammar:SYNTACTIC_TRAP_REQUIRED_ROLES END -->
+
+<!-- VOCAB:grammar:GRAMMAR_QUESTION_FAMILY_KEYS START -->
+<!-- generated from vocabulary/master.json — do not hand-edit -->
+**`GRAMMAR_QUESTION_FAMILY_KEYS`** — Grammar question families (subset of QUESTION_FAMILY_KEYS)
+
+- `conventions_grammar`
+- `expression_of_ideas`
+<!-- VOCAB:grammar:GRAMMAR_QUESTION_FAMILY_KEYS END -->
