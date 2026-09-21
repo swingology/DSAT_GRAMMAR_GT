@@ -28,9 +28,11 @@ model for every write in Phase 4, and `scripts/reannotate_spans.py` is the model
 from the LLM and writes a fresh `QuestionVersion` — correct for a v3→v7 rules migration, wrong here.
 Adding one classification field must not put the other ~40 annotation keys back through a model.
 
-**Rollback:** because every write is one added key, rollback is
-`annotation_jsonb = annotation_jsonb - 'skill_family_key'` plus dropping the added column. No restore
-from backup, no version surgery.
+**Rollback:** `alembic downgrade 036` drops `skill_key` / `skill_key_source`; `downgrade 035` also
+drops the `cb_*` label columns. Exact and total, because every write went to new columns.
+~~`annotation_jsonb - 'skill_family_key'`~~ — **never run this.** It was written for the
+superseded design and would strip 735 legitimate *reading* values. Nothing in `annotation_jsonb`
+was written by this refactor, so there is nothing there to roll back.
 
 ---
 
@@ -444,6 +446,56 @@ and `GRAMMAR_SKILL_FAMILY_KEYS` are in `master.json` / `ontology.py`. They defin
 and the 10 legal (family, skill) pairs for whichever field ends up holding them. **TASK-14 (widen
 the validator) is on hold** until A or B is chosen.
 
+## Part 2e — OPTION B DECIDED AND APPLIED (2026-09-20); Codex review disposition
+
+**Decision (user, 2026-09-20): Option B.** `skill_family_key` in `annotation_jsonb` stays
+reading-only and untouched. The universal skill lives in a new column:
+
+| Column | Holds | State |
+|---|---|---|
+| `questions.skill_key` | one of the **11** `SKILL_FAMILY_KEYS` (CB's 10 skills, Command of Evidence split in two) | 1,497 / 1,514 filled |
+| `questions.skill_key_source` | `cb` (1,414) · `annotation` (54) · `map` (29) | 17 left NULL on purpose |
+
+Migration `037_skill_key.py`; filled by `scripts/fill_skill_key.py` (dry-run default, one
+transaction, idempotent, checksum guard proves `annotation_jsonb` did not move). Backup:
+`backups/skill_key_pre_migration_20260920_222915.dump`.
+
+**This supersedes §2.3's target shape, Part 2c's JSONB-merge SQL, and every task that mentions
+writing `skill_family_key`.** The reading-only validators, sanitizer and consistency scanner are no
+longer things to widen — they are now *guards* for the invariant the presence checks rely on.
+
+**Rule for every future reader of `skill_key`: derive the domain from the skill** (each skill has
+exactly one domain — `SKILL_FAMILY_BY_QUESTION_FAMILY`). Never combine `skill_key` with
+`derive_domain` / `question_domain`: on 103 active rows the annotation's routing domain contradicts
+the skill's domain (77 Words in Context rows routed "grammar", 26 grammar-skill rows routed
+"reading"), and mixing them yields rows like "grammar / words_in_context".
+
+### Codex review — disposition
+
+A subagent verified every Codex claim against the code. **Its citations were all accurate; its
+frame was the superseded design.** Verdicts:
+
+| # | Codex suggestion | Verdict |
+|---|---|---|
+| 1 | Replace reading-only routing assumptions first | **Moot under B.** It did find three presence sites Part 2d missed — `models/payload.py:203`, `prompts/generate_prompt.py:75` + `rule_modules.py:25`, `ADMIN_APP/src/pages/Generate.tsx:184` — more reasons for B, not work |
+| 2 | Widen every validator and sanitizer | **Moot — do the opposite.** Keep them reading-only. Real gap: nothing enforces `skill_key ∈ SKILL_FAMILY_KEYS` outside the one-shot fill script → TASK-31 |
+| 3 | No false single-parent tree | **Already done.** Residue: two now-false comments in `master.json` → TASK-32 |
+| 4 | Keep the migration narrow | **Already done.** Column equivalent: re-running the fill would overwrite a hand correction → `manual` guard, TASK-21 |
+| 5 | Precise rollback and bookkeeping | **Moot**, except the dangerous rollback paragraph — fixed above |
+| 6 | Source completeness and identity | Fold the 11 review matches and an extraction-fidelity check into TASK-27. **Reject** "keep `cb_question_id` UNIQUE" — contradicts the settled decision |
+| 7 | Both runtime rule-loading paths | Factually right (generation defaults to `legacy` monolith docs; `rules_refactor/` modules are opt-in and never used for annotation). **Moot**: the skill is a derived column, not something the LLM emits. TASK-16 shrinks to an optional doc note; TASK-17 is cancelled |
+| 8 | Acceptance criteria and future writes | **Adopt — the most important item.** → TASK-30 |
+
+**Risks neither Codex nor this plan had caught:**
+
+- **R1 — TASK-27 would recreate the Part 2d blocker.** The bank JSON carries a field literally
+  named `skill_family_key`, and 819 of its 1,845 records hold *grammar* values in it. Seeding the
+  annotation from it would route every new grammar question as reading. The import must write to
+  `questions.skill_key` (source `cb`) and put only reading values — or none — in the annotation.
+- **R2 — routing domain vs skill domain disagree on 103 active rows** — see the reader rule above.
+- **R3 — 15 of the 17 NULL rows are active**, and 16 of the 17 are almost certainly Words in
+  Context (89%). Quick to hand-label once the `manual` guard exists.
+
 ## Part 3 — Task list
 
 Dependencies in brackets. Tasks marked **[DB]** are blocked until the port question is settled.
@@ -497,16 +549,14 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
       **Done 2026-09-20** — added `SKILL_FAMILY_BY_QUESTION_FAMILY` (hierarchical, parent `QUESTION_FAMILY_KEYS`, derives `SKILL_FAMILY_KEYS`) and `GRAMMAR_SKILL_FAMILY_KEYS`. No existing set touched. *Direct structural edit:* `promote_amendment` can only add a value to an existing vocabulary, so a new set cannot come through the amendment path. No re-parenting of roles was done — see Part 2d.
 - [x] **TASK-13** ~~`python scripts/gen_vocab.py --generate` → regenerate `backend/app/models/ontology.py`. Never hand-edit it. [TASK-12]~~
       **Done 2026-09-20** — `ontology.py` and the rules-doc appendix regenerated; 56 vocab/blueprint tests pass. Pre-existing appendix drift was committed separately first. `--check` still reports 15 unreviewed candidates (pre-existing).
-- [ ] **TASK-14** **ON HOLD — see Part 2d.** Widen `QuestionAnnotation.validate_skill_family_key`
-      (`backend/app/models/annotation.py:101`) from `READING_SKILL_FAMILY_KEYS` to
-      `SKILL_FAMILY_KEYS`. [TASK-13]
-- [ ] **TASK-15** Add a validator rule: `skill_family_key` must be a child of the declared
-      `question_family_key` (the 10-pair table in `DOMAINS_SKILLS.md` is the whitelist). This is
-      what makes an invalid pairing impossible rather than merely unlikely. [TASK-14]
-- [ ] **TASK-16** Update grammar rules docs under `rules_refactor/rules/grammar/` to describe
-      skills as the top grammar layer and roles as children. Bump `rules_version`. [TASK-13]
-- [ ] **TASK-17** Update the annotate prompt (`backend/app/prompts/annotate_prompt.py`) to request
-      `skill_family_key` for grammar questions. [TASK-16]
+- [x] **TASK-14** ~~**ON HOLD — see Part 2d.** Widen `QuestionAnnotation.validate_skill_family_key` (`backend/app/models/annotation.py:101`) from `READING_SKILL_FAMILY_KEYS` to `SKILL_FAMILY_KEYS`. [TASK-13]~~
+      **Won't do (Option B)** — the reading-only Pydantic check is now a guard, not a limitation.
+- [x] **TASK-15** ~~Add a validator rule: `skill_family_key` must be a child of the declared `question_family_key` (the 10-pair table in `DOMAINS_SKILLS.md` is the whitelist). This is what makes an invalid pairing impossible rather than merely unlikely. [TASK-14]~~
+      **Won't do (Option B)** — pair legality is enforced on `skill_key` instead; see TASK-31. Note there are **11** internal pairs, not 10 (Command of Evidence is split).
+- [x] **TASK-16** ~~Update grammar rules docs under `rules_refactor/rules/grammar/` to describe skills as the top grammar layer and roles as children. Bump `rules_version`. [TASK-13]~~
+      **Reduced (Option B)** — optional one-paragraph note that the CB skill is a derived column, in the root monolith docs as well as `rules_refactor/`. No `rules_version` bump: nothing the LLM sees changes.
+- [x] **TASK-17** ~~Update the annotate prompt (`backend/app/prompts/annotate_prompt.py`) to request `skill_family_key` for grammar questions. [TASK-16]~~
+      **Cancelled (Option B)** — asking the LLM for a grammar `skill_family_key` would trip `annotation.py:106` and `validator.py:306`, and the sanitizer would null it.
 - [x] **TASK-18** ~~Migration: add `questions.source_bank_question_id VARCHAR(8)`. No such column
       exists today.~~ **Superseded 2026-09-20 — the column already existed.** Migration
       `035_cb_question_id.py` added `questions.cb_question_id VARCHAR(8)` with a unique constraint,
@@ -518,25 +568,17 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 *Every task in this phase is an additive field-level merge. See the governing constraint above.*
 
-- [ ] **TASK-19** **[DB]** **Skill fill from `cb_skill_key`** — the join in Part 2c: add
-      `skill_family_key` to the latest annotation of every row where `cb_skill_key` is set and the
-      annotation has none. CoE split by stem regex. JSONB key merge; no new `QuestionVersion`; no
-      other key touched; existing values never overwritten. Dry-run default with a checksum guard,
-      same pattern as `fill_cb_columns.py`. **Blocked on TASK-14** — the four grammar values are
-      not legal until the validator is widened. [TASK-14]
-- [ ] **TASK-20** **[DB]** **Map fill** — for rows where `cb_skill_key IS NULL` (100 official +
-      generated / unofficial), apply `cb_skill_map.json` in order (stem → role/focus → role),
-      `deterministic` rules only. Same additive write. Rows landing on a `review` rule get
-      `annotation_stale = true` and are counted, not guessed. [TASK-19]
-- [ ] **TASK-21** **[DB]** Residue only — whatever TASK-20 left on `review` rules (expected: a
+- [x] **TASK-19** ~~**[DB]** **Skill fill from `cb_skill_key`** — the join in Part 2c: add `skill_family_key` to the latest annotation of every row where `cb_skill_key` is set and the annotation has none. CoE split by stem regex. JSONB key merge; no new `QuestionVersion`; no other key touched; existing values never overwritten. Dry-run default with a checksum guard, same pattern as `fill_cb_columns.py`. **Blocked on TASK-14** — the four grammar values are not legal until the validator is widened. [TASK-14]~~
+      **Done 2026-09-20, differently** — `questions.skill_key` filled from `cb_skill_key` by `scripts/fill_skill_key.py`; no JSONB merge (Part 2e).
+- [x] **TASK-20** ~~**[DB]** **Map fill** — for rows where `cb_skill_key IS NULL` (100 official + generated / unofficial), apply `cb_skill_map.json` in order (stem → role/focus → role), `deterministic` rules only. Same additive write. Rows landing on a `review` rule get `annotation_stale = true` and are counted, not guessed. [TASK-19]~~
+      **Done 2026-09-20, differently** — same script; 29 rows from the deterministic map, 54 from an existing reading skill. `annotation_stale` is **not** used; unresolved rows stay NULL.
+- [ ] **TASK-21** *(re-scoped)* First add `and skill_key_source is distinct from 'manual'` to the UPDATE in `fill_skill_key.py` so a re-run never overwrites a hand label; then hand-label the 17 NULL rows (15 active; 16 are very likely Words in Context). Original text: **[DB]** Residue only — whatever TASK-20 left on `review` rules (expected: a
       few dozen rows, chiefly `comma_splice` and `logical_relationships`). Hand-label if the count
       is small; build the narrow single-key classifier only if it is not. The full reannotate path
       stays out of bounds. *Originally scoped as an LLM pass over most of `expression_of_ideas`;
       Phase 2 showed that is unnecessary.* [TASK-20]
-- [ ] **TASK-22** **[DB]** `user_progress`: **add** `missed_skill_family_key` (and index it);
-      backfill for historical attempts by joining to the question's new value. Existing
-      `question_domain` / `missed_*` columns are left exactly as written — nothing is remapped,
-      because nothing was renamed. [TASK-19]
+- [x] **TASK-22** ~~**[DB]** `user_progress`: **add** `missed_skill_family_key` (and index it); backfill for historical attempts by joining to the question's new value. Existing `question_domain` / `missed_*` columns are left exactly as written — nothing is remapped, because nothing was renamed. [TASK-19]~~
+      **Replaced (Option B)** — no new `user_progress` column and no backfill. Readers **join** `user_progress` to `questions.skill_key`, as `question-type-performance` already does for `stem_type_key` (`student.py:3065`). Denormalise only if the join proves slow.
 - [ ] **TASK-23** **[DB]** **Conflict report, not a rewrite** — plain SQL comparing the `cb_*`
       columns with the annotation: `question_family_key` ≠ `cb_domain_key`, reading
       `skill_family_key` ≠ `cb_skill_key`, Words in Context rows carrying a `grammar_role_key`
@@ -544,23 +586,37 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 ### Phase 5 — Verify
 
-- [ ] **TASK-24** **[DB]** Assert every active verbal question has a `skill_family_key` and that
+- [ ] **TASK-24** *(re-scoped)* Gate is now: every active question has a non-null `skill_key` in `SKILL_FAMILY_KEYS`. Pair legality is checked against the domain **derived from the skill**, never the annotation's family. Original text: **[DB]** Assert every active verbal question has a `skill_family_key` and that
       the (family, skill) pair is one of the 10 legal combinations. Zero exceptions.
       **Plus the additive check:** diff every touched `annotation_jsonb` against a pre-migration
       snapshot and assert `skill_family_key` is the *only* key that differs, everywhere. If any
       other key moved, the migration was destructive and must be rolled back. [TASK-21..23]
-- [ ] **TASK-25** **[DB]** Re-run the calibration crosstab (TASK-07b) post-migration: agreement
-      with CB ground truth should be ~100% on the matched set. This is the acceptance gate. [TASK-24]
+- [x] **TASK-25** ~~**[DB]** Re-run the calibration crosstab (TASK-07b) post-migration: agreement with CB ground truth should be ~100% on the matched set. This is the acceptance gate. [TASK-24]~~
+      **Dropped** — tautological now: `skill_key` equals the CB label by construction on matched rows. Replace with an eyeball check of the 29 `map` rows.
 - [ ] **TASK-26** **[DB]** Verify the weakness profile and diagnostic pool still return sane
       results (`backend/app/diagnostic/queries.py` — `derive_domain` may now be replaceable by a
       direct `question_family_key` read). [TASK-22]
-- [ ] **TASK-27** Ingest the ~1,101 CB questions new to the DB: `questions.id` generated as usual,
+- [ ] **TASK-27** *(see R1, Part 2e — do not seed annotation `skill_family_key` with grammar values; rename the bank JSON field to `skill_key` first; resolve or exclude the 11 review matches; verify graphics / paired-passage extraction)* Ingest the ~1,101 CB questions new to the DB: `questions.id` generated as usual,
       all four `cb_*` columns populated at insert, and `question_family_key` / `skill_family_key`
       seeded from them instead of LLM-classified. Idempotency by `WHERE NOT EXISTS` on
       `cb_question_id` (Part 2c). [TASK-24]
 - [ ] **TASK-29** *(follow-up, outside this refactor)* Point difficulty-driven readers — adaptive
       module 2, diagnostic pool, weakness profile — at `cb_difficulty` where non-null, falling back
       to `difficulty_overall`. Needs its own review: it changes student-facing behaviour.
+- [ ] **TASK-30** **Future writes — highest priority.** Nothing sets `skill_key` on new questions:
+      `Question(...)` is built only at `routers/ingest.py:1075` and `routers/generate.py:703`, and
+      neither sets it; reannotate (`ingest.py:3679`) can make a `map`/`annotation` value stale.
+      Extract `resolve()` / `load_rules()` / `QUANT_STEM` from `scripts/fill_skill_key.py` into one
+      pure module under `backend/app/`, call it after the annotation is attached at those three
+      sites (guard reannotate with `skill_key_source != 'cb'`), read `stem_type_key` from the
+      annotation first (generated rows never set the column), and add one small test file. The
+      `cb_*` columns cannot be set at insert — their hook is the batch chain in Part 2c; add it to
+      the ingestion runbook.
+- [ ] **TASK-31** Guard the column's vocabulary: a CHECK constraint on `questions.skill_key`, or a
+      `questions`-column pass in `scripts/check_vocab_consistency.py` (it scans only JSONB today).
+- [ ] **TASK-32** Fix two now-false comments in `vocabulary/master.json` ("Parent layer of
+      grammar_role_key"; "skill_family_key for every verbal question") and regenerate. Low priority:
+      dedupe calibration by `cb_question_id` in `calibration_report.py`.
 - [ ] **TASK-28** CHANGELOG entry + DEBUG_LOG audit entry; update `.wolf/cerebrum.md` with the
       new ontology shape.
 
