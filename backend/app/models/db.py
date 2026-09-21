@@ -84,9 +84,15 @@ class Question(Base):
     source_section_code = Column(String(10), nullable=True)
     source_module_code = Column(String(10), nullable=True)
     source_question_number = Column(Integer, nullable=True)
-    # College Board MyPractice bank ID (8 hex). Stable across CB exports, so it is the
-    # external dedupe key for bank ingests. Added by migration 035.
-    cb_question_id = Column(String(8), nullable=True, unique=True)
+    # College Board's own labels, kept apart from the LLM-derived annotation_jsonb.
+    # Null on anything CB did not publish (generated, unofficial, unmatched official).
+    # cb_question_id is the 8-hex MyPractice bank ID. It is NOT unique: the same CB
+    # question exists here more than once (2024/2025 releases, re-imports) and every
+    # copy carries its labels. Migrations 035 + 036.
+    cb_question_id = Column(String(8), nullable=True, index=True)
+    cb_domain_key = Column(String(50), nullable=True)   # one of QUESTION_FAMILY_KEYS
+    cb_skill_key = Column(String(50), nullable=True, index=True)  # CB's 10 skills, CoE unsplit
+    cb_difficulty = Column(String(10), nullable=True)   # easy | medium | hard, as CB rates it
     stimulus_mode_key = Column(String(100), nullable=True)
     stem_type_key = Column(String(100), nullable=True)
     current_question_text = Column(Text, nullable=False)

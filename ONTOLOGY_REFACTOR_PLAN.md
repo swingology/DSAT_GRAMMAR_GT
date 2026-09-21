@@ -351,6 +351,59 @@ idempotency (§2.8) then needs a `WHERE NOT EXISTS` pre-check instead of `ON CON
 additive, uses a column that already exists for exactly this, and keeps §2.8 intact. Not blocking:
 the skill fill keys on `db_id` and does not depend on the outcome.
 
+## Part 2c — CB label columns (DONE 2026-09-20) — the merge now keys on these
+
+College Board's four labels are first-class columns on `questions`, kept apart from the
+LLM-derived `annotation_jsonb`:
+
+| Column | Holds | Filled |
+|---|---|---|
+| `cb_question_id` | CB's 8-hex bank ID | 1,414 rows / 733 distinct questions |
+| `cb_domain_key` | one of the 4 `QUESTION_FAMILY_KEYS` | 1,414 |
+| `cb_skill_key` | one of CB's **10** skills — `command_of_evidence` is *not* split | 1,414 |
+| `cb_difficulty` | `easy` / `medium` / `hard`, as CB rates it | 1,414 |
+
+Null on the 100 official rows with no CB match and on all generated / unofficial questions.
+Migration `036_cb_label_columns.py`; filled by `CB_QUESTION_BANK/09_2026/fill_cb_columns.py`
+(dry-run by default, one transaction, idempotent — a second run changes 0 rows, and a checksum
+guard aborts if any non-`cb_` column moves). Pre-migration backup:
+`backups/cb_columns_pre_migration_20260920_221833.dump`.
+
+**§2.9 is decided:** `cb_question_id` went from `UNIQUE` to a plain index, because every copy of a
+duplicated question carries its labels. Consequence for §2.8: bank ingest (TASK-27) can no longer
+use `ON CONFLICT (cb_question_id)`; it pre-checks `WHERE NOT EXISTS` instead.
+
+**Why `cb_skill_key` keeps Command of Evidence whole.** The textual/quantitative split is this
+project's refinement, not College Board's. The column records what CB said; the split is derived
+from it at merge time (stem regex, 174/174 agreement with existing annotations — §2b.5).
+
+**`cb_difficulty` vs `difficulty_overall`.** The existing key is a model estimate and agrees with
+CB on only ~39% of matched rows (easy→low, hard→high); it says `high` on 3 rows where CB says Hard
+on 481. Both are kept. Anything difficulty-driven — adaptive module 2, the diagnostic pool —
+should prefer `cb_difficulty` where it is non-null. Switching those readers is a separate change,
+not part of this refactor (TASK-29).
+
+**Backfill path for future CB exports:** add the PDF → `audit_labels.py` → `build_full_bank.py` →
+`match_bank_to_db.py` → `fill_cb_columns.py --apply`. Every step is idempotent.
+
+### How the merge changes
+
+The skill fill no longer reads a JSON file or infers anything for matched rows. It is a join:
+
+```sql
+-- additive: only where the annotation has no skill yet
+update question_annotations a
+   set annotation_jsonb = a.annotation_jsonb || jsonb_build_object('skill_family_key', <derived>)
+  from questions q
+ where a.id = q.latest_annotation_id
+   and q.cb_skill_key is not null
+   and coalesce(a.annotation_jsonb->>'skill_family_key', '') = '';
+```
+
+`<derived>` is `q.cb_skill_key`, except `command_of_evidence`, which becomes `_textual` or
+`_quantitative` by the stem regex. Conflict reporting (TASK-23) becomes three plain queries
+comparing `cb_domain_key` / `cb_skill_key` with the annotation.
+
 ## Part 3 — Task list
 
 Dependencies in brackets. Tasks marked **[DB]** are blocked until the port question is settled.
@@ -426,16 +479,16 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 
 *Every task in this phase is an additive field-level merge. See the governing constraint above.*
 
-- [ ] **TASK-19** **[DB]** **Ground-truth fill** — for the 1,414 matched rows, **add**
-      `skill_family_key` from the CB label, keyed on `db_id` from `db_overlap_full.json` so every
-      duplicate copy is reached (§2b.2). JSONB key merge on the existing annotation row; no new
-      `QuestionVersion`; no other key touched. **Only where the key is absent** — existing values
-      are never overwritten (§2b.5). Dry-run by default, with a before/after diff proving one key
-      changed. Model it on `span_annotator.py:229`. [TASK-14]
-- [ ] **TASK-20** **[DB]** **Map fill** — for the ~100 official rows with no CB match, apply
-      `cb_skill_map.json` in order (stem → role/focus → role), `deterministic` rules only. Same
-      additive write as TASK-19. Rows landing on a `review` rule get `annotation_stale = true` and
-      are counted, not guessed. [TASK-19]
+- [ ] **TASK-19** **[DB]** **Skill fill from `cb_skill_key`** — the join in Part 2c: add
+      `skill_family_key` to the latest annotation of every row where `cb_skill_key` is set and the
+      annotation has none. CoE split by stem regex. JSONB key merge; no new `QuestionVersion`; no
+      other key touched; existing values never overwritten. Dry-run default with a checksum guard,
+      same pattern as `fill_cb_columns.py`. **Blocked on TASK-14** — the four grammar values are
+      not legal until the validator is widened. [TASK-14]
+- [ ] **TASK-20** **[DB]** **Map fill** — for rows where `cb_skill_key IS NULL` (100 official +
+      generated / unofficial), apply `cb_skill_map.json` in order (stem → role/focus → role),
+      `deterministic` rules only. Same additive write. Rows landing on a `review` rule get
+      `annotation_stale = true` and are counted, not guessed. [TASK-19]
 - [ ] **TASK-21** **[DB]** Residue only — whatever TASK-20 left on `review` rules (expected: a
       few dozen rows, chiefly `comma_splice` and `logical_relationships`). Hand-label if the count
       is small; build the narrow single-key classifier only if it is not. The full reannotate path
@@ -445,10 +498,10 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
       backfill for historical attempts by joining to the question's new value. Existing
       `question_domain` / `missed_*` columns are left exactly as written — nothing is remapped,
       because nothing was renamed. [TASK-19]
-- [ ] **TASK-23** **[DB]** **Conflict report, not a rewrite** — list every row where an existing
-      value disagrees with CB: 22 wrong reading `skill_family_key`, 201 `question_family_key`
-      disagreements, 79 Words in Context rows annotated as grammar (§2b.5). Correcting them is a
-      rewrite and needs the user's sign-off. [TASK-19]
+- [ ] **TASK-23** **[DB]** **Conflict report, not a rewrite** — plain SQL comparing the `cb_*`
+      columns with the annotation: `question_family_key` ≠ `cb_domain_key`, reading
+      `skill_family_key` ≠ `cb_skill_key`, Words in Context rows carrying a `grammar_role_key`
+      (§2b.5). Correcting them is a rewrite and needs the user's sign-off. [TASK-19]
 
 ### Phase 5 — Verify
 
@@ -462,12 +515,13 @@ Dependencies in brackets. Tasks marked **[DB]** are blocked until the port quest
 - [ ] **TASK-26** **[DB]** Verify the weakness profile and diagnostic pool still return sane
       results (`backend/app/diagnostic/queries.py` — `derive_domain` may now be replaceable by a
       direct `question_family_key` read). [TASK-22]
-- [ ] **TASK-27** Ingest the 1,845 CB questions: `questions.id` generated as usual,
-      `cb_question_id` populated, and CB-supplied `question_family_key` / `skill_family_key`
-      taken as **ground truth**, bypassing LLM classification for those two fields.
-      **Upsert on `cb_question_id`** — bank questions get `uuid.uuid4()` PKs, so the UUIDv5
-      idempotency guard that protects official-test ingest does not apply here (§2.8).
-      New-question count depends on TASK-07a (~697 or ~1,176). [TASK-24]
+- [ ] **TASK-27** Ingest the ~1,101 CB questions new to the DB: `questions.id` generated as usual,
+      all four `cb_*` columns populated at insert, and `question_family_key` / `skill_family_key`
+      seeded from them instead of LLM-classified. Idempotency by `WHERE NOT EXISTS` on
+      `cb_question_id` (Part 2c). [TASK-24]
+- [ ] **TASK-29** *(follow-up, outside this refactor)* Point difficulty-driven readers — adaptive
+      module 2, diagnostic pool, weakness profile — at `cb_difficulty` where non-null, falling back
+      to `difficulty_overall`. Needs its own review: it changes student-facing behaviour.
 - [ ] **TASK-28** CHANGELOG entry + DEBUG_LOG audit entry; update `.wolf/cerebrum.md` with the
       new ontology shape.
 

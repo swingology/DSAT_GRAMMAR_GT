@@ -7730,5 +7730,23 @@
     ],
     "occurrences": 1,
     "last_seen": "2026-09-20"
+  },
+  {
+    "id": "bug-833",
+    "timestamp": "2026-09-20",
+    "error_message": "DB difficulty_overall disagrees with College Board's official difficulty on ~61% of matched official rows; 'high' appears on 3 rows where CB rates 481 Hard",
+    "file": "backend/app/models/db.py",
+    "root_cause": "difficulty_overall is an LLM estimate made at annotation time with no calibration against CB's rating, and it systematically compresses toward 'medium'",
+    "fix": "not overwritten (additive-only). Added questions.cb_difficulty (migration 036) holding CB's rating on 1,414 rows; switching difficulty-driven readers to prefer it is tracked as TASK-29",
+    "tags": [
+      "difficulty",
+      "calibration",
+      "cb-question-bank",
+      "data-quality",
+      "ontology-refactor"
+    ],
+    "related_bugs": [],
+    "occurrences": 1,
+    "last_seen": "2026-09-20"
   }
 ]
