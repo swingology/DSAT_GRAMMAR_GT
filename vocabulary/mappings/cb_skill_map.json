@@ -4,760 +4,1144 @@
     "min_n": 5,
     "min_purity": 0.95
   },
-  "calibration_rows": 655,
+  "calibration_rows": 1414,
   "by_stem_type_key": [
     {
       "key": "complete_the_text",
-      "skill_family_key": "transitions",
-      "n": 215,
-      "purity": 0.507,
+      "skill_key": "words_in_context",
+      "n": 350,
+      "purity": 0.349,
       "status": "review",
       "counts": {
-        "Transitions": 109,
-        "Form, Structure, and Sense": 56,
-        "Boundaries": 50
+        "transitions": 109,
+        "form_structure_and_sense": 56,
+        "words_in_context": 122,
+        "boundaries": 50,
+        "inferences": 12,
+        "command_of_evidence_quantitative": 1
       }
     },
     {
       "key": "conform_to_standard_english",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 179,
       "purity": 0.536,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 96,
-        "Boundaries": 83
+        "form_structure_and_sense": 96,
+        "boundaries": 83
       }
     },
     {
       "key": "choose_best_notes_synthesis",
-      "skill_family_key": "rhetorical_synthesis",
+      "skill_key": "rhetorical_synthesis",
       "n": 99,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Rhetorical Synthesis": 99
+        "rhetorical_synthesis": 99
+      }
+    },
+    {
+      "key": "most_logically_completes",
+      "skill_key": "inferences",
+      "n": 78,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "inferences": 78
+      }
+    },
+    {
+      "key": "choose_best_support",
+      "skill_key": "command_of_evidence_textual",
+      "n": 69,
+      "purity": 0.783,
+      "status": "review",
+      "counts": {
+        "command_of_evidence_quantitative": 13,
+        "command_of_evidence_textual": 54,
+        "central_ideas_and_details": 2
+      }
+    },
+    {
+      "key": "choose_sentence_function",
+      "skill_key": "text_structure_and_purpose",
+      "n": 61,
+      "purity": 0.984,
+      "status": "deterministic",
+      "counts": {
+        "text_structure_and_purpose": 60,
+        "central_ideas_and_details": 1
       }
     },
     {
       "key": "choose_best_grammar_revision",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 56,
       "purity": 0.536,
       "status": "review",
       "counts": {
-        "Boundaries": 30,
-        "Form, Structure, and Sense": 26
+        "boundaries": 30,
+        "form_structure_and_sense": 26
+      }
+    },
+    {
+      "key": "choose_words_in_context",
+      "skill_key": "words_in_context",
+      "n": 52,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "words_in_context": 52
+      }
+    },
+    {
+      "key": "choose_word_in_context",
+      "skill_key": "words_in_context",
+      "n": 50,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "words_in_context": 50
       }
     },
     {
       "key": "choose_best_transition",
-      "skill_family_key": "transitions",
+      "skill_key": "transitions",
       "n": 48,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Transitions": 48
+        "transitions": 48
+      }
+    },
+    {
+      "key": "choose_detail",
+      "skill_key": "central_ideas_and_details",
+      "n": 48,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "central_ideas_and_details": 48
       }
     },
     {
       "key": "synthesize_information",
-      "skill_family_key": "rhetorical_synthesis",
+      "skill_key": "rhetorical_synthesis",
       "n": 46,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Rhetorical Synthesis": 46
+        "rhetorical_synthesis": 46
       }
     },
     {
-      "key": "synthesize_notes",
-      "skill_family_key": "rhetorical_synthesis",
-      "n": 4,
-      "purity": 1.0,
+      "key": "choose_main_idea",
+      "skill_key": "central_ideas_and_details",
+      "n": 43,
+      "purity": 0.791,
       "status": "review",
       "counts": {
-        "Rhetorical Synthesis": 4
-      }
-    },
-    {
-      "key": "choose_transition",
-      "skill_family_key": "transitions",
-      "n": 3,
-      "purity": 1.0,
-      "status": "review",
-      "counts": {
-        "Transitions": 3
-      }
-    },
-    {
-      "key": "logical_transition",
-      "skill_family_key": "transitions",
-      "n": 1,
-      "purity": 1.0,
-      "status": "review",
-      "counts": {
-        "Transitions": 1
-      }
-    },
-    {
-      "key": "conventions_of_standard_english",
-      "skill_family_key": "boundaries",
-      "n": 1,
-      "purity": 1.0,
-      "status": "review",
-      "counts": {
-        "Boundaries": 1
-      }
-    },
-    {
-      "key": "compare_contributions",
-      "skill_family_key": "rhetorical_synthesis",
-      "n": 1,
-      "purity": 1.0,
-      "status": "review",
-      "counts": {
-        "Rhetorical Synthesis": 1
+        "central_ideas_and_details": 34,
+        "text_structure_and_purpose": 8,
+        "command_of_evidence_quantitative": 1
       }
     },
     {
       "key": "choose_best_illustration",
-      "skill_family_key": "rhetorical_synthesis",
+      "skill_key": "command_of_evidence_textual",
+      "n": 41,
+      "purity": 0.976,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_textual": 40,
+        "rhetorical_synthesis": 1
+      }
+    },
+    {
+      "key": "choose_best_completion_from_data",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 38,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_quantitative": 38
+      }
+    },
+    {
+      "key": "choose_main_purpose",
+      "skill_key": "text_structure_and_purpose",
+      "n": 36,
+      "purity": 0.944,
+      "status": "review",
+      "counts": {
+        "text_structure_and_purpose": 34,
+        "central_ideas_and_details": 2
+      }
+    },
+    {
+      "key": "choose_text_relationship",
+      "skill_key": "cross_text_connections",
+      "n": 21,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "cross_text_connections": 21
+      }
+    },
+    {
+      "key": "choose_structure_description",
+      "skill_key": "text_structure_and_purpose",
+      "n": 17,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "text_structure_and_purpose": 17
+      }
+    },
+    {
+      "key": "choose_command_of_evidence_quantitative",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 16,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "command_of_evidence_quantitative": 16
+      }
+    },
+    {
+      "key": "choose_best_weakener",
+      "skill_key": "command_of_evidence_textual",
+      "n": 11,
+      "purity": 0.818,
+      "status": "review",
+      "counts": {
+        "command_of_evidence_textual": 9,
+        "command_of_evidence_quantitative": 2
+      }
+    },
+    {
+      "key": "choose_best_inference",
+      "skill_key": "central_ideas_and_details",
+      "n": 8,
+      "purity": 0.75,
+      "status": "review",
+      "counts": {
+        "central_ideas_and_details": 6,
+        "inferences": 2
+      }
+    },
+    {
+      "key": "synthesize_notes",
+      "skill_key": "rhetorical_synthesis",
+      "n": 4,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "rhetorical_synthesis": 4
+      }
+    },
+    {
+      "key": "choose_cross_text_connection",
+      "skill_key": "cross_text_connections",
+      "n": 4,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "cross_text_connections": 4
+      }
+    },
+    {
+      "key": "choose_transition",
+      "skill_key": "transitions",
+      "n": 3,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "transitions": 3
+      }
+    },
+    {
+      "key": "complete_the_text_logically",
+      "skill_key": "inferences",
+      "n": 3,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "inferences": 3
+      }
+    },
+    {
+      "key": "choose_command_of_evidence_textual",
+      "skill_key": "command_of_evidence_textual",
+      "n": 3,
+      "purity": 0.667,
+      "status": "review",
+      "counts": {
+        "command_of_evidence_textual": 2,
+        "inferences": 1
+      }
+    },
+    {
+      "key": "select_supporting_quotation",
+      "skill_key": "command_of_evidence_textual",
+      "n": 2,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "command_of_evidence_textual": 2
+      }
+    },
+    {
+      "key": "find_evidence",
+      "skill_key": "central_ideas_and_details",
+      "n": 2,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "central_ideas_and_details": 2
+      }
+    },
+    {
+      "key": "comprehension_detail",
+      "skill_key": "central_ideas_and_details",
+      "n": 2,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "central_ideas_and_details": 2
+      }
+    },
+    {
+      "key": "interpret_data",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 2,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "command_of_evidence_quantitative": 2
+      }
+    },
+    {
+      "key": "analyze_text_structure",
+      "skill_key": "text_structure_and_purpose",
+      "n": 2,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "text_structure_and_purpose": 2
+      }
+    },
+    {
+      "key": "inference",
+      "skill_key": "central_ideas_and_details",
+      "n": 2,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "central_ideas_and_details": 2
+      }
+    },
+    {
+      "key": "logical_transition",
+      "skill_key": "transitions",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Rhetorical Synthesis": 1
+        "transitions": 1
+      }
+    },
+    {
+      "key": "use_table_data_to_complete_statement",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "command_of_evidence_quantitative": 1
+      }
+    },
+    {
+      "key": "character_description",
+      "skill_key": "central_ideas_and_details",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "central_ideas_and_details": 1
+      }
+    },
+    {
+      "key": "complete_the_argument",
+      "skill_key": "inferences",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "inferences": 1
+      }
+    },
+    {
+      "key": "function_of_text_element",
+      "skill_key": "text_structure_and_purpose",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "text_structure_and_purpose": 1
+      }
+    },
+    {
+      "key": "analyze_structure",
+      "skill_key": "text_structure_and_purpose",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "text_structure_and_purpose": 1
+      }
+    },
+    {
+      "key": "analyze_function_of_sentence",
+      "skill_key": "text_structure_and_purpose",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "text_structure_and_purpose": 1
+      }
+    },
+    {
+      "key": "support_claim_with_evidence",
+      "skill_key": "command_of_evidence_textual",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "command_of_evidence_textual": 1
+      }
+    },
+    {
+      "key": "vocabulary_in_context",
+      "skill_key": "words_in_context",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "words_in_context": 1
+      }
+    },
+    {
+      "key": "inference_about_character_behavior",
+      "skill_key": "central_ideas_and_details",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "central_ideas_and_details": 1
+      }
+    },
+    {
+      "key": "conventions_of_standard_english",
+      "skill_key": "boundaries",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "boundaries": 1
+      }
+    },
+    {
+      "key": "choose_agreement_across_texts",
+      "skill_key": "cross_text_connections",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "cross_text_connections": 1
+      }
+    },
+    {
+      "key": "identify_function",
+      "skill_key": "text_structure_and_purpose",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "text_structure_and_purpose": 1
+      }
+    },
+    {
+      "key": "use_graph_data_to_complete_statement",
+      "skill_key": "command_of_evidence_quantitative",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "command_of_evidence_quantitative": 1
+      }
+    },
+    {
+      "key": "illustrate_claim_with_quotation",
+      "skill_key": "command_of_evidence_textual",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "command_of_evidence_textual": 1
+      }
+    },
+    {
+      "key": "compare_contributions",
+      "skill_key": "rhetorical_synthesis",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "rhetorical_synthesis": 1
+      }
+    },
+    {
+      "key": "function_of_underlined_sentence",
+      "skill_key": "text_structure_and_purpose",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "text_structure_and_purpose": 1
       }
     },
     {
       "key": "choose_correct_grammar_and_transition",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 1
+        "form_structure_and_sense": 1
       }
     }
   ],
   "by_role_and_focus": [
     {
       "key": "expression_of_ideas/transition_logic",
-      "skill_family_key": "transitions",
+      "skill_key": "transitions",
       "n": 159,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Transitions": 159
-      }
-    },
-    {
-      "key": "agreement/subject_verb_agreement",
-      "skill_family_key": "form_structure_and_sense",
-      "n": 46,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Form, Structure, and Sense": 46
-      }
-    },
-    {
-      "key": "expression_of_ideas/data_interpretation_claims",
-      "skill_family_key": "rhetorical_synthesis",
-      "n": 41,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Rhetorical Synthesis": 41
-      }
-    },
-    {
-      "key": "expression_of_ideas/emphasis_meaning_shifts",
-      "skill_family_key": "rhetorical_synthesis",
-      "n": 37,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Rhetorical Synthesis": 37
-      }
-    },
-    {
-      "key": "verb_form/verb_tense_consistency",
-      "skill_family_key": "form_structure_and_sense",
-      "n": 36,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Form, Structure, and Sense": 36
-      }
-    },
-    {
-      "key": "punctuation/punctuation_comma",
-      "skill_family_key": "boundaries",
-      "n": 28,
-      "purity": 0.964,
-      "status": "deterministic",
-      "counts": {
-        "Boundaries": 27,
-        "Form, Structure, and Sense": 1
-      }
-    },
-    {
-      "key": "None/None",
-      "skill_family_key": "rhetorical_synthesis",
-      "n": 27,
-      "purity": 0.889,
-      "status": "review",
-      "counts": {
-        "Rhetorical Synthesis": 24,
-        "Transitions": 2,
-        "Boundaries": 1
-      }
-    },
-    {
-      "key": "verb_form/verb_form",
-      "skill_family_key": "form_structure_and_sense",
-      "n": 26,
-      "purity": 0.962,
-      "status": "deterministic",
-      "counts": {
-        "Form, Structure, and Sense": 25,
-        "Boundaries": 1
-      }
-    },
-    {
-      "key": "expression_of_ideas/logical_relationships",
-      "skill_family_key": "rhetorical_synthesis",
-      "n": 24,
-      "purity": 0.792,
-      "status": "review",
-      "counts": {
-        "Rhetorical Synthesis": 19,
-        "Form, Structure, and Sense": 5
-      }
-    },
-    {
-      "key": "punctuation/unnecessary_internal_punctuation",
-      "skill_family_key": "boundaries",
-      "n": 22,
-      "purity": 0.955,
-      "status": "deterministic",
-      "counts": {
-        "Form, Structure, and Sense": 1,
-        "Boundaries": 21
-      }
-    },
-    {
-      "key": "punctuation/appositive_punctuation",
-      "skill_family_key": "boundaries",
-      "n": 21,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Boundaries": 21
-      }
-    },
-    {
-      "key": "punctuation/colon_dash_use",
-      "skill_family_key": "boundaries",
-      "n": 18,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Boundaries": 18
-      }
-    },
-    {
-      "key": "sentence_boundary/sentence_boundary",
-      "skill_family_key": "boundaries",
-      "n": 16,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Boundaries": 16
-      }
-    },
-    {
-      "key": "sentence_boundary/comma_splice",
-      "skill_family_key": "boundaries",
-      "n": 14,
-      "purity": 0.714,
-      "status": "review",
-      "counts": {
-        "Boundaries": 10,
-        "Form, Structure, and Sense": 4
-      }
-    },
-    {
-      "key": "modifier/modifier_placement",
-      "skill_family_key": "form_structure_and_sense",
-      "n": 13,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Form, Structure, and Sense": 13
-      }
-    },
-    {
-      "key": "expression_of_ideas/None",
-      "skill_family_key": "rhetorical_synthesis",
-      "n": 13,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Rhetorical Synthesis": 13
-      }
-    },
-    {
-      "key": "agreement/pronoun_antecedent_agreement",
-      "skill_family_key": "form_structure_and_sense",
-      "n": 12,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Form, Structure, and Sense": 12
-      }
-    },
-    {
-      "key": "punctuation/apostrophe_use",
-      "skill_family_key": "form_structure_and_sense",
-      "n": 11,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Form, Structure, and Sense": 11
-      }
-    },
-    {
-      "key": "punctuation/semicolon_use",
-      "skill_family_key": "boundaries",
-      "n": 10,
-      "purity": 1.0,
-      "status": "deterministic",
-      "counts": {
-        "Boundaries": 10
-      }
-    },
-    {
-      "key": "sentence_boundary/run_on_sentence",
-      "skill_family_key": "boundaries",
-      "n": 10,
-      "purity": 0.9,
-      "status": "review",
-      "counts": {
-        "Boundaries": 9,
-        "Form, Structure, and Sense": 1
+        "transitions": 159
       }
     },
     {
       "key": "expression_of_ideas/precision_word_choice",
-      "skill_family_key": "rhetorical_synthesis",
-      "n": 9,
+      "skill_key": "words_in_context",
+      "n": 83,
+      "purity": 0.892,
+      "status": "review",
+      "counts": {
+        "rhetorical_synthesis": 9,
+        "words_in_context": 74
+      }
+    },
+    {
+      "key": "agreement/subject_verb_agreement",
+      "skill_key": "form_structure_and_sense",
+      "n": 46,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Rhetorical Synthesis": 9
+        "form_structure_and_sense": 46
+      }
+    },
+    {
+      "key": "expression_of_ideas/data_interpretation_claims",
+      "skill_key": "rhetorical_synthesis",
+      "n": 41,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "rhetorical_synthesis": 41
+      }
+    },
+    {
+      "key": "expression_of_ideas/emphasis_meaning_shifts",
+      "skill_key": "rhetorical_synthesis",
+      "n": 37,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "rhetorical_synthesis": 37
+      }
+    },
+    {
+      "key": "verb_form/verb_tense_consistency",
+      "skill_key": "form_structure_and_sense",
+      "n": 36,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "form_structure_and_sense": 36
+      }
+    },
+    {
+      "key": "punctuation/punctuation_comma",
+      "skill_key": "boundaries",
+      "n": 28,
+      "purity": 0.964,
+      "status": "deterministic",
+      "counts": {
+        "boundaries": 27,
+        "form_structure_and_sense": 1
+      }
+    },
+    {
+      "key": "verb_form/verb_form",
+      "skill_key": "form_structure_and_sense",
+      "n": 26,
+      "purity": 0.962,
+      "status": "deterministic",
+      "counts": {
+        "form_structure_and_sense": 25,
+        "boundaries": 1
+      }
+    },
+    {
+      "key": "expression_of_ideas/logical_relationships",
+      "skill_key": "rhetorical_synthesis",
+      "n": 25,
+      "purity": 0.76,
+      "status": "review",
+      "counts": {
+        "rhetorical_synthesis": 19,
+        "form_structure_and_sense": 5,
+        "words_in_context": 1
+      }
+    },
+    {
+      "key": "punctuation/unnecessary_internal_punctuation",
+      "skill_key": "boundaries",
+      "n": 22,
+      "purity": 0.955,
+      "status": "deterministic",
+      "counts": {
+        "form_structure_and_sense": 1,
+        "boundaries": 21
+      }
+    },
+    {
+      "key": "punctuation/appositive_punctuation",
+      "skill_key": "boundaries",
+      "n": 21,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "boundaries": 21
+      }
+    },
+    {
+      "key": "punctuation/colon_dash_use",
+      "skill_key": "boundaries",
+      "n": 18,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "boundaries": 18
+      }
+    },
+    {
+      "key": "sentence_boundary/sentence_boundary",
+      "skill_key": "boundaries",
+      "n": 16,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "boundaries": 16
+      }
+    },
+    {
+      "key": "sentence_boundary/comma_splice",
+      "skill_key": "boundaries",
+      "n": 14,
+      "purity": 0.714,
+      "status": "review",
+      "counts": {
+        "boundaries": 10,
+        "form_structure_and_sense": 4
+      }
+    },
+    {
+      "key": "modifier/modifier_placement",
+      "skill_key": "form_structure_and_sense",
+      "n": 13,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "form_structure_and_sense": 13
+      }
+    },
+    {
+      "key": "agreement/pronoun_antecedent_agreement",
+      "skill_key": "form_structure_and_sense",
+      "n": 12,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "form_structure_and_sense": 12
+      }
+    },
+    {
+      "key": "punctuation/apostrophe_use",
+      "skill_key": "form_structure_and_sense",
+      "n": 11,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "form_structure_and_sense": 11
+      }
+    },
+    {
+      "key": "punctuation/semicolon_use",
+      "skill_key": "boundaries",
+      "n": 10,
+      "purity": 1.0,
+      "status": "deterministic",
+      "counts": {
+        "boundaries": 10
+      }
+    },
+    {
+      "key": "sentence_boundary/run_on_sentence",
+      "skill_key": "boundaries",
+      "n": 10,
+      "purity": 0.9,
+      "status": "review",
+      "counts": {
+        "boundaries": 9,
+        "form_structure_and_sense": 1
       }
     },
     {
       "key": "punctuation/conjunctive_adverb_usage",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 8,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Boundaries": 8
+        "boundaries": 8
       }
     },
     {
       "key": "punctuation/end_punctuation_question_statement",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 7,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Boundaries": 7
+        "boundaries": 7
       }
     },
     {
       "key": "modifier/logical_predication",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 6,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Form, Structure, and Sense": 6
+        "form_structure_and_sense": 6
       }
     },
     {
       "key": "pronoun/pronoun_antecedent_agreement",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 5,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Form, Structure, and Sense": 5
+        "form_structure_and_sense": 5
       }
     },
     {
       "key": "sentence_boundary/sentence_fragment",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 3,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 3
+        "form_structure_and_sense": 3
       }
     },
     {
       "key": "expression_of_ideas/redundancy_concision",
-      "skill_family_key": "rhetorical_synthesis",
+      "skill_key": "rhetorical_synthesis",
       "n": 3,
       "purity": 0.667,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 1,
-        "Rhetorical Synthesis": 2
+        "form_structure_and_sense": 1,
+        "rhetorical_synthesis": 2
       }
     },
     {
       "key": "punctuation/quotation_punctuation",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 2,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 2
+        "boundaries": 2
       }
     },
     {
       "key": "sentence_boundary/end_punctuation_question_statement",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 2,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 2
+        "boundaries": 2
       }
     },
     {
       "key": "expression_of_ideas/synthesis_of_information",
-      "skill_family_key": "rhetorical_synthesis",
+      "skill_key": "rhetorical_synthesis",
       "n": 2,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Rhetorical Synthesis": 2
+        "rhetorical_synthesis": 2
       }
     },
     {
       "key": "verb_form/verb_tense",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 2,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 2
+        "form_structure_and_sense": 2
       }
     },
     {
       "key": "pronoun/pronoun_case",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 2,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 2
+        "form_structure_and_sense": 2
       }
     },
     {
       "key": "punctuation/possessive_contraction",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 2,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 2
+        "form_structure_and_sense": 2
       }
     },
     {
       "key": "punctuation/punctuation_semicolon",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     },
     {
       "key": "pronoun/pronoun_clarity",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 1
+        "form_structure_and_sense": 1
       }
     },
     {
       "key": "sentence_boundary/semicolon_use",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     },
     {
       "key": "modifier/absolute_phrase",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 1
+        "form_structure_and_sense": 1
+      }
+    },
+    {
+      "key": "verb_form/word_choice",
+      "skill_key": "words_in_context",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "words_in_context": 1
       }
     },
     {
       "key": "expression_of_ideas/register_style_consistency",
-      "skill_family_key": "rhetorical_synthesis",
+      "skill_key": "rhetorical_synthesis",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Rhetorical Synthesis": 1
+        "rhetorical_synthesis": 1
       }
     },
     {
       "key": "expression_of_ideas/synthesize_information",
-      "skill_family_key": "rhetorical_synthesis",
+      "skill_key": "rhetorical_synthesis",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Rhetorical Synthesis": 1
+        "rhetorical_synthesis": 1
+      }
+    },
+    {
+      "key": "expression_of_ideas/word_choice",
+      "skill_key": "words_in_context",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "words_in_context": 1
       }
     },
     {
       "key": "punctuation/sentence_boundary",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     },
     {
       "key": "punctuation/introductory_phrase_punctuation",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
+      }
+    },
+    {
+      "key": "modifier/word_choice",
+      "skill_key": "words_in_context",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "words_in_context": 1
       }
     },
     {
       "key": "parallel_structure/conjunction_usage",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     },
     {
       "key": "punctuation/supplementary_phrase_punctuation",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     },
     {
       "key": "punctuation/supplementary_element_punctuation",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
-      }
-    },
-    {
-      "key": "None/semicolon_comma_conjunctive_adverb",
-      "skill_family_key": "boundaries",
-      "n": 1,
-      "purity": 1.0,
-      "status": "review",
-      "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     },
     {
       "key": "punctuation/colon_usage",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     },
     {
       "key": "expression_of_ideas/similarity_emphasis",
-      "skill_family_key": "rhetorical_synthesis",
+      "skill_key": "rhetorical_synthesis",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Rhetorical Synthesis": 1
+        "rhetorical_synthesis": 1
       }
     },
     {
       "key": "punctuation/subject_aux_inversion_and_punctuation",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     },
     {
       "key": "expression_of_ideas/rhetorical_synthesis",
-      "skill_family_key": "rhetorical_synthesis",
+      "skill_key": "rhetorical_synthesis",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Rhetorical Synthesis": 1
+        "rhetorical_synthesis": 1
+      }
+    },
+    {
+      "key": "expression_of_ideas/precision",
+      "skill_key": "words_in_context",
+      "n": 1,
+      "purity": 1.0,
+      "status": "review",
+      "counts": {
+        "words_in_context": 1
       }
     },
     {
       "key": "punctuation/colon_introducing_explanation",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     },
     {
       "key": "modifier/illogical_comparison",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 1
+        "form_structure_and_sense": 1
       }
     }
   ],
   "by_role": [
     {
       "key": "expression_of_ideas",
-      "skill_family_key": "transitions",
-      "n": 292,
-      "purity": 0.545,
+      "skill_key": "transitions",
+      "n": 369,
+      "purity": 0.431,
       "status": "review",
       "counts": {
-        "Transitions": 159,
-        "Rhetorical Synthesis": 127,
-        "Form, Structure, and Sense": 6
+        "transitions": 159,
+        "rhetorical_synthesis": 127,
+        "words_in_context": 77,
+        "form_structure_and_sense": 6
       }
     },
     {
       "key": "punctuation",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 137,
       "purity": 0.891,
       "status": "review",
       "counts": {
-        "Form, Structure, and Sense": 15,
-        "Boundaries": 122
+        "form_structure_and_sense": 15,
+        "boundaries": 122
       }
     },
     {
       "key": "verb_form",
-      "skill_family_key": "form_structure_and_sense",
-      "n": 64,
-      "purity": 0.984,
+      "skill_key": "form_structure_and_sense",
+      "n": 65,
+      "purity": 0.969,
       "status": "deterministic",
       "counts": {
-        "Form, Structure, and Sense": 63,
-        "Boundaries": 1
+        "form_structure_and_sense": 63,
+        "words_in_context": 1,
+        "boundaries": 1
       }
     },
     {
       "key": "agreement",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 58,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Form, Structure, and Sense": 58
+        "form_structure_and_sense": 58
       }
     },
     {
       "key": "sentence_boundary",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 46,
       "purity": 0.826,
       "status": "review",
       "counts": {
-        "Boundaries": 38,
-        "Form, Structure, and Sense": 8
-      }
-    },
-    {
-      "key": null,
-      "skill_family_key": "rhetorical_synthesis",
-      "n": 28,
-      "purity": 0.857,
-      "status": "review",
-      "counts": {
-        "Rhetorical Synthesis": 24,
-        "Transitions": 2,
-        "Boundaries": 2
+        "boundaries": 38,
+        "form_structure_and_sense": 8
       }
     },
     {
       "key": "modifier",
-      "skill_family_key": "form_structure_and_sense",
-      "n": 21,
-      "purity": 1.0,
+      "skill_key": "form_structure_and_sense",
+      "n": 22,
+      "purity": 0.955,
       "status": "deterministic",
       "counts": {
-        "Form, Structure, and Sense": 21
+        "form_structure_and_sense": 21,
+        "words_in_context": 1
       }
     },
     {
       "key": "pronoun",
-      "skill_family_key": "form_structure_and_sense",
+      "skill_key": "form_structure_and_sense",
       "n": 8,
       "purity": 1.0,
       "status": "deterministic",
       "counts": {
-        "Form, Structure, and Sense": 8
+        "form_structure_and_sense": 8
       }
     },
     {
       "key": "parallel_structure",
-      "skill_family_key": "boundaries",
+      "skill_key": "boundaries",
       "n": 1,
       "purity": 1.0,
       "status": "review",
       "counts": {
-        "Boundaries": 1
+        "boundaries": 1
       }
     }
   ]

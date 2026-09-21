@@ -93,6 +93,13 @@ class Question(Base):
     cb_domain_key = Column(String(50), nullable=True)   # one of QUESTION_FAMILY_KEYS
     cb_skill_key = Column(String(50), nullable=True, index=True)  # CB's 10 skills, CoE unsplit
     cb_difficulty = Column(String(10), nullable=True)   # easy | medium | hard, as CB rates it
+    # Universal skill for every verbal question — one of SKILL_FAMILY_KEYS. Deliberately a
+    # separate column: skill_family_key in annotation_jsonb stays reading-only because
+    # several readers infer "reading" from its presence. skill_key_source records where the
+    # value came from: cb (College Board label) | annotation (existing reading
+    # skill_family_key) | map (vocabulary/mappings/cb_skill_map.json). Migration 037.
+    skill_key = Column(String(50), nullable=True, index=True)
+    skill_key_source = Column(String(20), nullable=True)
     stimulus_mode_key = Column(String(100), nullable=True)
     stem_type_key = Column(String(100), nullable=True)
     current_question_text = Column(Text, nullable=False)

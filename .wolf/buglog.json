@@ -7748,5 +7748,24 @@
     "related_bugs": [],
     "occurrences": 1,
     "last_seen": "2026-09-20"
+  },
+  {
+    "id": "bug-834",
+    "timestamp": "2026-09-20",
+    "error_message": "cb_skill_map.json rule expression_of_ideas/precision_word_choice -> rhetorical_synthesis reported 100% purity (9/9) but is 89% Words in Context over all rows",
+    "file": "CB_QUESTION_BANK/09_2026/calibration_report.py",
+    "root_cause": "selection bias: rule purity was computed only over rows whose CB skill is a grammar skill, which excluded the 74 Words in Context rows carrying the same grammar-looking role/focus annotation",
+    "fix": "compute P(CB skill | key) over every matched row carrying the key; the rule is now 'review' and 16 unmatched rows are correctly left NULL instead of mislabelled. Map also gained deterministic reading stem rules",
+    "tags": [
+      "calibration",
+      "selection-bias",
+      "skill-map",
+      "ontology-refactor"
+    ],
+    "related_bugs": [
+      "bug-832"
+    ],
+    "occurrences": 1,
+    "last_seen": "2026-09-20"
   }
 ]

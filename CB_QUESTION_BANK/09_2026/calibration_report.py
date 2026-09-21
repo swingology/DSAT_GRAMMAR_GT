@@ -33,15 +33,25 @@ def coe(k):  # CB has one Command of Evidence label; the DB splits it in two
 
 
 def rules(rows, keyfn):
+    """P(CB skill | key), over EVERY matched row that carries the key.
+
+    Must not be restricted to rows whose CB skill is a grammar skill: that hides
+    the rows where a grammar-looking annotation sits on a reading question (79 Words
+    in Context rows are annotated expression_of_ideas/precision_word_choice) and
+    makes an unreliable rule look 100% pure.
+    """
     ct = collections.defaultdict(collections.Counter)
     for m in rows:
-        ct[keyfn(m)][m["cb"]["skill"]] += 1
+        k = keyfn(m)
+        if k is None or "None" in str(k).split("/"):
+            continue
+        ct[k][m["cb"]["skill_family_key"]] += 1
     out = []
     for k, c in ct.items():
         skill, top = c.most_common(1)[0]
         n = sum(c.values())
         purity = top / n
-        out.append({"key": k, "skill_family_key": KEY[skill], "n": n,
+        out.append({"key": k, "skill_key": skill, "n": n,
                     "purity": round(purity, 3),
                     "status": "deterministic" if n >= MIN_N and purity >= MIN_PURITY else "review",
                     "counts": dict(c)})
@@ -51,7 +61,7 @@ def rules(rows, keyfn):
 def md_table(rs, label):
     lines = [f"| {label} | → skill | n | purity | status |", "|---|---|---|---|---|"]
     for r in rs:
-        lines.append(f"| `{r['key']}` | {r['skill_family_key']} | {r['n']} | "
+        lines.append(f"| `{r['key']}` | {r['skill_key']} | {r['n']} | "
                      f"{r['purity']:.1%} | {r['status']} |")
     return "\n".join(lines)
 
@@ -62,9 +72,9 @@ def main():
     G = [m for m in M if m["cb"]["skill"] in GRAMMAR]
     R = [m for m in M if m["cb"]["skill"] not in GRAMMAR]
 
-    by_stem = rules(G, lambda m: m["db"]["stem_type_key"])
-    by_focus = rules(G, lambda m: f"{m['db']['gr']}/{m['db']['gf']}")
-    by_role = rules(G, lambda m: m["db"]["gr"])
+    by_stem = rules(M, lambda m: m["db"]["stem_type_key"])
+    by_focus = rules(M, lambda m: f"{m['db']['gr']}/{m['db']['gf']}")
+    by_role = rules(M, lambda m: m["db"]["gr"])
 
     agree = sum(1 for m in R if coe(m["db"]["sf"]) == coe(m["cb"]["skill_family_key"]))
     missing = sum(1 for m in R if not m["db"]["sf"])
@@ -84,7 +94,7 @@ def main():
                 "Do not hand-edit; re-run to regenerate. Apply in order: stem_type_key, then "
                 "role/focus, then role. Only 'deterministic' rules may be auto-applied.",
         "thresholds": {"min_n": MIN_N, "min_purity": MIN_PURITY},
-        "calibration_rows": len(G),
+        "calibration_rows": len(M),
         "by_stem_type_key": by_stem, "by_role_and_focus": by_focus, "by_role": by_role,
     }, indent=2) + "\n")
 
@@ -133,7 +143,7 @@ copy per question — see ONTOLOGY_REFACTOR_PLAN.md §2.9.
 | Words in Context rows annotated as a *grammar* question | {wic_as_grammar} |
 | CoE textual/quantitative regex agrees with DB | {coe_ok}/{len(coe_rows)} |
 
-## Grammar map, derived ({len(G)} calibration rows)
+## Skill map, derived ({len(M)} calibration rows — all matched rows, not only grammar)
 
 Rule is `deterministic` at n ≥ {MIN_N} and purity ≥ {MIN_PURITY:.0%}; otherwise `review`.
 
@@ -150,14 +160,14 @@ Rule is `deterministic` at n ≥ {MIN_N} and purity ≥ {MIN_PURITY:.0%}; otherw
 {md_table(by_role, 'role')}
 
 Rows covered by a deterministic rule: stem {det(by_stem)}, role/focus {det(by_focus)},
-role {det(by_role)} of {len(G)}.
+role {det(by_role)} of {len(M)}.
 """
     (HERE / "db_overlap_full.md").write_text(report)
     print(f"wrote db_overlap_full.md and {MAP_OUT.relative_to(HERE.parent.parent)}")
     print(f"domain agree {fam}/{len(M)} | reading skill agree {agree}/{len(R)} "
           f"missing {missing} wrong {wrong} | WIC-as-grammar {wic_as_grammar}")
     print(f"deterministic coverage: stem {det(by_stem)} | role/focus {det(by_focus)} "
-          f"| role {det(by_role)} of {len(G)}")
+          f"| role {det(by_role)} of {len(M)}")
 
 
 if __name__ == "__main__":

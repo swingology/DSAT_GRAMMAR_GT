@@ -46,7 +46,7 @@ copy per question — see ONTOLOGY_REFACTOR_PLAN.md §2.9.
 | Words in Context rows annotated as a *grammar* question | 79 |
 | CoE textual/quantitative regex agrees with DB | 174/174 |
 
-## Grammar map, derived (655 calibration rows)
+## Skill map, derived (1414 calibration rows — all matched rows, not only grammar)
 
 Rule is `deterministic` at n ≥ 5 and purity ≥ 95%; otherwise `review`.
 
@@ -54,18 +54,55 @@ Rule is `deterministic` at n ≥ 5 and purity ≥ 95%; otherwise `review`.
 
 | stem_type_key | → skill | n | purity | status |
 |---|---|---|---|---|
-| `complete_the_text` | transitions | 215 | 50.7% | review |
+| `complete_the_text` | words_in_context | 350 | 34.9% | review |
 | `conform_to_standard_english` | form_structure_and_sense | 179 | 53.6% | review |
 | `choose_best_notes_synthesis` | rhetorical_synthesis | 99 | 100.0% | deterministic |
+| `most_logically_completes` | inferences | 78 | 100.0% | deterministic |
+| `choose_best_support` | command_of_evidence_textual | 69 | 78.3% | review |
+| `choose_sentence_function` | text_structure_and_purpose | 61 | 98.4% | deterministic |
 | `choose_best_grammar_revision` | boundaries | 56 | 53.6% | review |
+| `choose_words_in_context` | words_in_context | 52 | 100.0% | deterministic |
+| `choose_word_in_context` | words_in_context | 50 | 100.0% | deterministic |
 | `choose_best_transition` | transitions | 48 | 100.0% | deterministic |
+| `choose_detail` | central_ideas_and_details | 48 | 100.0% | deterministic |
 | `synthesize_information` | rhetorical_synthesis | 46 | 100.0% | deterministic |
+| `choose_main_idea` | central_ideas_and_details | 43 | 79.1% | review |
+| `choose_best_illustration` | command_of_evidence_textual | 41 | 97.6% | deterministic |
+| `choose_best_completion_from_data` | command_of_evidence_quantitative | 38 | 100.0% | deterministic |
+| `choose_main_purpose` | text_structure_and_purpose | 36 | 94.4% | review |
+| `choose_text_relationship` | cross_text_connections | 21 | 100.0% | deterministic |
+| `choose_structure_description` | text_structure_and_purpose | 17 | 100.0% | deterministic |
+| `choose_command_of_evidence_quantitative` | command_of_evidence_quantitative | 16 | 100.0% | deterministic |
+| `choose_best_weakener` | command_of_evidence_textual | 11 | 81.8% | review |
+| `choose_best_inference` | central_ideas_and_details | 8 | 75.0% | review |
 | `synthesize_notes` | rhetorical_synthesis | 4 | 100.0% | review |
+| `choose_cross_text_connection` | cross_text_connections | 4 | 100.0% | review |
 | `choose_transition` | transitions | 3 | 100.0% | review |
+| `complete_the_text_logically` | inferences | 3 | 100.0% | review |
+| `choose_command_of_evidence_textual` | command_of_evidence_textual | 3 | 66.7% | review |
+| `select_supporting_quotation` | command_of_evidence_textual | 2 | 100.0% | review |
+| `find_evidence` | central_ideas_and_details | 2 | 100.0% | review |
+| `comprehension_detail` | central_ideas_and_details | 2 | 100.0% | review |
+| `interpret_data` | command_of_evidence_quantitative | 2 | 100.0% | review |
+| `analyze_text_structure` | text_structure_and_purpose | 2 | 100.0% | review |
+| `inference` | central_ideas_and_details | 2 | 100.0% | review |
 | `logical_transition` | transitions | 1 | 100.0% | review |
+| `use_table_data_to_complete_statement` | command_of_evidence_quantitative | 1 | 100.0% | review |
+| `character_description` | central_ideas_and_details | 1 | 100.0% | review |
+| `complete_the_argument` | inferences | 1 | 100.0% | review |
+| `function_of_text_element` | text_structure_and_purpose | 1 | 100.0% | review |
+| `analyze_structure` | text_structure_and_purpose | 1 | 100.0% | review |
+| `analyze_function_of_sentence` | text_structure_and_purpose | 1 | 100.0% | review |
+| `support_claim_with_evidence` | command_of_evidence_textual | 1 | 100.0% | review |
+| `vocabulary_in_context` | words_in_context | 1 | 100.0% | review |
+| `inference_about_character_behavior` | central_ideas_and_details | 1 | 100.0% | review |
 | `conventions_of_standard_english` | boundaries | 1 | 100.0% | review |
+| `choose_agreement_across_texts` | cross_text_connections | 1 | 100.0% | review |
+| `identify_function` | text_structure_and_purpose | 1 | 100.0% | review |
+| `use_graph_data_to_complete_statement` | command_of_evidence_quantitative | 1 | 100.0% | review |
+| `illustrate_claim_with_quotation` | command_of_evidence_textual | 1 | 100.0% | review |
 | `compare_contributions` | rhetorical_synthesis | 1 | 100.0% | review |
-| `choose_best_illustration` | rhetorical_synthesis | 1 | 100.0% | review |
+| `function_of_underlined_sentence` | text_structure_and_purpose | 1 | 100.0% | review |
 | `choose_correct_grammar_and_transition` | form_structure_and_sense | 1 | 100.0% | review |
 
 ### 2. By `grammar_role_key/grammar_focus_key`
@@ -73,26 +110,24 @@ Rule is `deterministic` at n ≥ 5 and purity ≥ 95%; otherwise `review`.
 | role/focus | → skill | n | purity | status |
 |---|---|---|---|---|
 | `expression_of_ideas/transition_logic` | transitions | 159 | 100.0% | deterministic |
+| `expression_of_ideas/precision_word_choice` | words_in_context | 83 | 89.2% | review |
 | `agreement/subject_verb_agreement` | form_structure_and_sense | 46 | 100.0% | deterministic |
 | `expression_of_ideas/data_interpretation_claims` | rhetorical_synthesis | 41 | 100.0% | deterministic |
 | `expression_of_ideas/emphasis_meaning_shifts` | rhetorical_synthesis | 37 | 100.0% | deterministic |
 | `verb_form/verb_tense_consistency` | form_structure_and_sense | 36 | 100.0% | deterministic |
 | `punctuation/punctuation_comma` | boundaries | 28 | 96.4% | deterministic |
-| `None/None` | rhetorical_synthesis | 27 | 88.9% | review |
 | `verb_form/verb_form` | form_structure_and_sense | 26 | 96.2% | deterministic |
-| `expression_of_ideas/logical_relationships` | rhetorical_synthesis | 24 | 79.2% | review |
+| `expression_of_ideas/logical_relationships` | rhetorical_synthesis | 25 | 76.0% | review |
 | `punctuation/unnecessary_internal_punctuation` | boundaries | 22 | 95.5% | deterministic |
 | `punctuation/appositive_punctuation` | boundaries | 21 | 100.0% | deterministic |
 | `punctuation/colon_dash_use` | boundaries | 18 | 100.0% | deterministic |
 | `sentence_boundary/sentence_boundary` | boundaries | 16 | 100.0% | deterministic |
 | `sentence_boundary/comma_splice` | boundaries | 14 | 71.4% | review |
 | `modifier/modifier_placement` | form_structure_and_sense | 13 | 100.0% | deterministic |
-| `expression_of_ideas/None` | rhetorical_synthesis | 13 | 100.0% | deterministic |
 | `agreement/pronoun_antecedent_agreement` | form_structure_and_sense | 12 | 100.0% | deterministic |
 | `punctuation/apostrophe_use` | form_structure_and_sense | 11 | 100.0% | deterministic |
 | `punctuation/semicolon_use` | boundaries | 10 | 100.0% | deterministic |
 | `sentence_boundary/run_on_sentence` | boundaries | 10 | 90.0% | review |
-| `expression_of_ideas/precision_word_choice` | rhetorical_synthesis | 9 | 100.0% | deterministic |
 | `punctuation/conjunctive_adverb_usage` | boundaries | 8 | 100.0% | deterministic |
 | `punctuation/end_punctuation_question_statement` | boundaries | 7 | 100.0% | deterministic |
 | `modifier/logical_predication` | form_structure_and_sense | 6 | 100.0% | deterministic |
@@ -109,18 +144,21 @@ Rule is `deterministic` at n ≥ 5 and purity ≥ 95%; otherwise `review`.
 | `pronoun/pronoun_clarity` | form_structure_and_sense | 1 | 100.0% | review |
 | `sentence_boundary/semicolon_use` | boundaries | 1 | 100.0% | review |
 | `modifier/absolute_phrase` | form_structure_and_sense | 1 | 100.0% | review |
+| `verb_form/word_choice` | words_in_context | 1 | 100.0% | review |
 | `expression_of_ideas/register_style_consistency` | rhetorical_synthesis | 1 | 100.0% | review |
 | `expression_of_ideas/synthesize_information` | rhetorical_synthesis | 1 | 100.0% | review |
+| `expression_of_ideas/word_choice` | words_in_context | 1 | 100.0% | review |
 | `punctuation/sentence_boundary` | boundaries | 1 | 100.0% | review |
 | `punctuation/introductory_phrase_punctuation` | boundaries | 1 | 100.0% | review |
+| `modifier/word_choice` | words_in_context | 1 | 100.0% | review |
 | `parallel_structure/conjunction_usage` | boundaries | 1 | 100.0% | review |
 | `punctuation/supplementary_phrase_punctuation` | boundaries | 1 | 100.0% | review |
 | `punctuation/supplementary_element_punctuation` | boundaries | 1 | 100.0% | review |
-| `None/semicolon_comma_conjunctive_adverb` | boundaries | 1 | 100.0% | review |
 | `punctuation/colon_usage` | boundaries | 1 | 100.0% | review |
 | `expression_of_ideas/similarity_emphasis` | rhetorical_synthesis | 1 | 100.0% | review |
 | `punctuation/subject_aux_inversion_and_punctuation` | boundaries | 1 | 100.0% | review |
 | `expression_of_ideas/rhetorical_synthesis` | rhetorical_synthesis | 1 | 100.0% | review |
+| `expression_of_ideas/precision` | words_in_context | 1 | 100.0% | review |
 | `punctuation/colon_introducing_explanation` | boundaries | 1 | 100.0% | review |
 | `modifier/illogical_comparison` | form_structure_and_sense | 1 | 100.0% | review |
 
@@ -128,15 +166,14 @@ Rule is `deterministic` at n ≥ 5 and purity ≥ 95%; otherwise `review`.
 
 | role | → skill | n | purity | status |
 |---|---|---|---|---|
-| `expression_of_ideas` | transitions | 292 | 54.5% | review |
+| `expression_of_ideas` | transitions | 369 | 43.1% | review |
 | `punctuation` | boundaries | 137 | 89.1% | review |
-| `verb_form` | form_structure_and_sense | 64 | 98.4% | deterministic |
+| `verb_form` | form_structure_and_sense | 65 | 96.9% | deterministic |
 | `agreement` | form_structure_and_sense | 58 | 100.0% | deterministic |
 | `sentence_boundary` | boundaries | 46 | 82.6% | review |
-| `None` | rhetorical_synthesis | 28 | 85.7% | review |
-| `modifier` | form_structure_and_sense | 21 | 100.0% | deterministic |
+| `modifier` | form_structure_and_sense | 22 | 95.5% | deterministic |
 | `pronoun` | form_structure_and_sense | 8 | 100.0% | deterministic |
 | `parallel_structure` | boundaries | 1 | 100.0% | review |
 
-Rows covered by a deterministic rule: stem 193, role/focus 544,
-role 151 of 655.
+Rows covered by a deterministic rule: stem 615, role/focus 522,
+role 153 of 1414.
