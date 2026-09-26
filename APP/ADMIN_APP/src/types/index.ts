@@ -63,6 +63,8 @@ export interface Question {
   current_explanation_text?: string
   is_admin_edited?: boolean
   annotation_stale?: boolean
+  open_issue_count?: number
+  cb_question_id?: string | null
   annotation?: QuestionAnnotation | null
   source_release_year?: number
   source_test_name?: string
@@ -71,12 +73,31 @@ export interface Question {
   source_section_code?: string
   source_module_code?: string
   source_question_number?: number
+  source_pt_number?: number | null
   source_has_graph?: boolean | null
   stimulus_mode_key?: string | null
   options?: QuestionOption[]
   stimulus_assets?: StimulusAsset[]
   updated_at?: string
   created_at?: string
+}
+
+export type IssueType =
+  | 'missing_graph' | 'wrong_answer_key' | 'bad_options' | 'wrong_source_info'
+  | 'passage_problem' | 'typo_formatting' | 'duplicate' | 'bad_explanation' | 'other'
+
+export interface QuestionIssue {
+  id: string
+  question_id: string
+  issue_type: IssueType
+  note: string | null
+  status: 'open' | 'resolved'
+  reported_by_role: 'admin' | 'student'
+  reporter_user_id: number | null
+  resolution: 'approved' | 'edited' | 'rejected' | null
+  resolution_note: string | null
+  created_at: string | null
+  resolved_at: string | null
 }
 
 export interface QuestionListResponse {

@@ -23,7 +23,7 @@ from app.storage.object_store import read_object
 from app.models.db import (
     Question, User, UserProgress, QuestionAnnotation, QuestionOption, TestSessionResults,
     GenerationBatch, QuestionJob, DiagnosticSession, SpacedRepetitionState,
-    QuestionStimulusAsset, QuestionSourceSpan,
+    QuestionStimulusAsset, QuestionSourceSpan, QuestionIssue,
 )
 from app.models.payload import (
     StudentQuestionResponse,
@@ -31,6 +31,7 @@ from app.models.payload import (
     StudentQuestionsListResponse,
     InventoryMetadata,
     UserProgressCreate,
+    StudentIssueReport,
     UserStats,
     ActivityDayCount,
     StimulusModeCountResponse,
@@ -742,6 +743,52 @@ async def get_stimulus_mode_counts(
         )
         for key in STIMULUS_MODE_KEYS
     ]
+
+
+@router.post("/questions/{question_id}/report", status_code=201)
+async def report_question_issue(
+    question_id: str,
+    body: StudentIssueReport,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(student_required),
+):
+    """A student flags a problem with a question.
+
+    The question stays live; the report lands in the admin issue list. One open
+    report per student, question and issue type.
+    """
+    try:
+        qid = UUID(question_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid question_id")
+    user = await _resolve_user_by_token(body.user_token, db)
+    if not await db.get(Question, qid):
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    duplicate = (await db.execute(
+        select(QuestionIssue.id).where(
+            QuestionIssue.question_id == qid,
+            QuestionIssue.reporter_user_id == user.id,
+            QuestionIssue.issue_type == body.issue_type,
+            QuestionIssue.status == "open",
+        ).limit(1)
+    )).scalar_one_or_none()
+    if duplicate is not None:
+        raise HTTPException(status_code=409, detail="You already reported this problem")
+
+    issue = QuestionIssue(
+        id=_uuid_module.uuid4(),
+        question_id=qid,
+        issue_type=body.issue_type,
+        note=(body.note or "").strip() or None,
+        status="open",
+        reported_by_role="student",
+        reporter_user_id=user.id,
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(issue)
+    await db.commit()
+    return {"id": str(issue.id), "status": "open"}
 
 
 @router.post("/submit")

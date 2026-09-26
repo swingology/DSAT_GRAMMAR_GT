@@ -1,3 +1,4 @@
+import re
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy import (
@@ -5,6 +6,7 @@ from sqlalchemy import (
     ForeignKey, DateTime, Enum, JSON, UniqueConstraint, Index,
     CheckConstraint, text,
 )
+from sqlalchemy import event, inspect
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
@@ -84,6 +86,10 @@ class Question(Base):
     source_section_code = Column(String(10), nullable=True)
     source_module_code = Column(String(10), nullable=True)
     source_question_number = Column(Integer, nullable=True)
+    # Canonical practice-test number. The raw source_test_name/source_exam_code stay
+    # as provenance; this is what grouping, filtering and labels use. Set by the
+    # before_insert/before_update listeners below (derive_pt_number). Migration 039.
+    source_pt_number = Column(SmallInteger, nullable=True, index=True)
     # College Board's own labels, kept apart from the LLM-derived annotation_jsonb.
     # Null on anything CB did not publish (generated, unofficial, unmatched official).
     # cb_question_id is the 8-hex MyPractice bank ID. It is NOT unique: the same CB
@@ -137,6 +143,44 @@ class Question(Base):
     incoming_relations = relationship("QuestionRelation", back_populates="to_question", foreign_keys="[QuestionRelation.to_question_id]")
     progress_records = relationship("UserProgress", back_populates="question", foreign_keys="[UserProgress.question_id]")
     spaced_repetition_records = relationship("SpacedRepetitionState", back_populates="question", foreign_keys="[SpacedRepetitionState.question_id]")
+
+
+def derive_pt_number(exam_code: str | None, test_name: str | None) -> int | None:
+    """Practice-test number from the raw source fields.
+
+    The PT# normally lives in source_exam_code ("04", "4"). For codes with no
+    digits ("verbal", "SAT") it falls back to the first digit run of
+    source_test_name ("Bluebook Practice Test 5" -> 5, "Test02_ENG_..." -> 2).
+    Anything outside 1-99 (e.g. exam code "2026_Official_Bank") is not a
+    practice test and yields None.
+    """
+    digits = re.sub(r"\D", "", exam_code or "")
+    if not digits:
+        match = re.search(r"\d+", test_name or "")
+        digits = match.group(0) if match else ""
+    number = int(digits) if digits else None
+    return number if number is not None and 1 <= number <= 99 else None
+
+
+@event.listens_for(Question, "before_insert")
+def _set_pt_number_on_insert(mapper, connection, target):
+    # Every ingestion path (official PDF ingest, generation, scripts using the ORM)
+    # goes through here, so a new question can't land without its PT#.
+    if target.source_pt_number is None:
+        target.source_pt_number = derive_pt_number(target.source_exam_code, target.source_test_name)
+
+
+@event.listens_for(Question, "before_update")
+def _set_pt_number_on_update(mapper, connection, target):
+    # Re-derive when the raw source fields change, unless the same update sets the
+    # PT# explicitly (an admin correction wins).
+    attrs = inspect(target).attrs
+    source_changed = (
+        attrs.source_exam_code.history.has_changes()
+        or attrs.source_test_name.history.has_changes()
+    )
+    if source_changed and not attrs.source_pt_number.history.has_changes():
+        target.source_pt_number = derive_pt_number(target.source_exam_code, target.source_test_name)
 
 
 class QuestionVersion(Base):
@@ -748,3 +792,32 @@ class SpanReviewQueue(Base):
 
     question = relationship("Question", foreign_keys=[question_id])
     annotation = relationship("QuestionAnnotation", foreign_keys=[annotation_id])
+
+
+class QuestionIssue(Base):
+    """A problem flagged on a question by an admin or a student.
+
+    Flagging never changes the question: it stays live until an admin resolves
+    the issue as approved (no change needed), edited, or rejected. issue_type is
+    validated against a fixed list in the API layer, not a DB CHECK, so new types
+    don't need a migration. No relationship to Question on purpose: the FK cascades
+    in the DB, and an ORM relationship would null question_id on delete instead.
+    """
+    __tablename__ = "question_issues"
+    __table_args__ = (
+        Index("ix_question_issues_question_status", "question_id", "status"),
+    )
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id = Column(UUID(as_uuid=True), ForeignKey("questions.id", ondelete="CASCADE"), nullable=False)
+    issue_type = Column(String(40), nullable=False)
+    note = Column(Text, nullable=True)
+    status = Column(String(20), nullable=False, default="open")  # open | resolved
+    reported_by_role = Column(String(10), nullable=False)  # admin | student
+    reporter_user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    reported_by_admin_token = Column(String(128), nullable=True)
+    resolution = Column(String(20), nullable=True)  # approved | edited | rejected
+    resolution_note = Column(Text, nullable=True)
+    resolved_by_admin_token = Column(String(128), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
+    resolved_at = Column(DateTime(timezone=True), nullable=True)

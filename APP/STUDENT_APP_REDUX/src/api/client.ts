@@ -171,6 +171,12 @@ export const api = {
       body: data,
     }),
 
+  reportQuestionIssue: (questionId: string, data: { user_token: string; issue_type: string; note?: string }) =>
+    apiCall(`/questions/${encodeURIComponent(questionId)}/report`, {
+      method: 'POST',
+      body: data,
+    }),
+
   getStats: (userId: number) =>
     apiCall(`/stats/${userId}`),
 

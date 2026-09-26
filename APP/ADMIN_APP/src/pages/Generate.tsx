@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { adminApi, generateApi, type QueryParams } from '../api/client'
 import { IdChip } from '../components/IdChip'
+import { ptLabel, questionSourceLabel } from '../utils/sourceLabel'
 import type {
   GenerationBatchJob,
   GenerationBatchRequest,
@@ -240,7 +241,7 @@ function specFromReference(q: Question, domain: Domain): { spec: Spec; distracto
 function testLabel(t: TestSummary): string {
   const parts = [
     t.source_release_year,
-    t.pt_number != null ? `PT${t.pt_number}` : t.source_test_name ?? t.source_exam_code,
+    t.pt_number != null ? ptLabel(t.pt_number) : t.source_test_name ?? t.source_exam_code,
     t.source_section_code && `Sec ${t.source_section_code}`,
     t.source_module_code && `Mod ${t.source_module_code}`,
   ]
@@ -250,11 +251,8 @@ function testLabel(t: TestSummary): string {
 const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
 
 /** Provenance line for an ID-looked-up question, which may be from any test. */
-function sourceLabel(q: Question): string {
-  const pt = q.source_exam_code ?? q.source_test_name
-  return [q.source_release_year, pt && `PT${pt}`, q.source_section_code && `Sec${q.source_section_code}`,
-    q.source_module_code && `Mod${q.source_module_code}`].filter(Boolean).join(' · ')
-}
+const sourceLabel = (q: Question) =>
+  questionSourceLabel({ ...q, source_question_number: undefined })
 
 function testParams(t: TestSummary): QueryParams {
   const p: QueryParams = { content_origin: 'official', sort_by_source: true, limit: 200 }

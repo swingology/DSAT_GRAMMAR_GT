@@ -115,6 +115,35 @@ class QuestionDetailResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+# Issue types an admin can flag. Students get a subset: they can't judge source
+# metadata or duplicates.
+AdminIssueType = Literal[
+    "missing_graph", "wrong_answer_key", "bad_options", "wrong_source_info",
+    "passage_problem", "typo_formatting", "duplicate", "bad_explanation", "other",
+]
+StudentIssueType = Literal[
+    "missing_graph", "wrong_answer_key", "bad_options",
+    "passage_problem", "typo_formatting", "bad_explanation", "other",
+]
+
+
+class QuestionIssueCreate(BaseModel):
+    issue_type: AdminIssueType
+    note: Optional[str] = Field(None, max_length=2000)
+
+
+class StudentIssueReport(BaseModel):
+    user_token: str
+    issue_type: StudentIssueType
+    note: Optional[str] = Field(None, max_length=1000)
+
+
+class QuestionIssueResolve(BaseModel):
+    # approved = question is fine as-is; edited = admin fixed it; rejected = pulled from practice.
+    resolution: Literal["approved", "edited", "rejected"]
+    note: Optional[str] = Field(None, max_length=2000)
+
+
 class UserProgressCreate(BaseModel):
     user_token: str
     question_id: str

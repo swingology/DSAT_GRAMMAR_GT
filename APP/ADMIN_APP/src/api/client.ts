@@ -16,6 +16,8 @@ import type {
   GenerationBatchRequest,
   GenerationBatchResponse,
   GenerationBatchStatus,
+  IssueType,
+  QuestionIssue,
   QuestionListResponse,
   StimulusExtractResponse,
   StimulusAsset,
@@ -211,6 +213,17 @@ export const adminApi = {
   editQuestion: (id: string, data: QuestionEditPayload) =>
     apiCall(`/admin/questions/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   deleteQuestion: (id: string) => apiCall(`/admin/questions/${id}`, { method: 'DELETE' }),
+  listQuestionIssues: (id: string) => apiCall<QuestionIssue[]>(`/admin/questions/${id}/issues`),
+  flagQuestionIssue: (id: string, issueType: IssueType, note?: string) =>
+    apiCall<QuestionIssue>(`/admin/questions/${id}/issues`, {
+      method: 'POST',
+      body: JSON.stringify({ issue_type: issueType, note }),
+    }),
+  resolveQuestionIssues: (id: string, resolution: 'approved' | 'edited' | 'rejected', note?: string) =>
+    apiCall(`/admin/questions/${id}/issues/resolve`, {
+      method: 'POST',
+      body: JSON.stringify({ resolution, note }),
+    }),
   setGraphTag: (id: string, hasGraph: boolean) =>
     apiCall(`/admin/questions/${id}/graph-tag`, { method: 'POST', body: JSON.stringify({ has_graph: hasGraph }) }),
 

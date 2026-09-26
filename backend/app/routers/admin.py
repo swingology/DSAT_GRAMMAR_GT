@@ -8,7 +8,7 @@ from uuid import UUID
 from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, HTTPException, Query, File, Form, UploadFile
-from sqlalchemy import select, delete, update, func, and_, case, text, cast, Float, Integer
+from sqlalchemy import select, delete, update, func, and_, or_, case, text, cast, Float, Integer, String
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import JSONResponse, PlainTextResponse
@@ -24,7 +24,7 @@ from app.models.db import (
     QuestionStimulusAsset, QuestionSourceSpan, StimulusExtractionJob,
     GenerationBatch, ReviewRun, LlmReviewResult,
     ConsensusVerdict, ReviewerAdminOverride, AutoReleaseAuditLog,
-    AdminQuestionAuditLog, User,
+    AdminQuestionAuditLog, User, QuestionIssue,
 )
 from app.config import get_settings
 from app.models.ontology import RELATION_TYPES
@@ -41,6 +41,7 @@ from app.models.payload import (
     AccuracyBucket, DomainPerformance, CohortSummaryResponse,
     TrapCohortStat, CohortTrapAnalyticsResponse,
     TestSummary, AdminQuestionListResponse,
+    QuestionIssueCreate, QuestionIssueResolve,
 )
 from app.pipeline import amendment_review
 
@@ -48,29 +49,58 @@ from app.pipeline import amendment_review
 REGENERATE_MAX_ATTEMPTS_PER_QUESTION = 3
 
 
-def _pt_number_expr():
-    """Canonical practice-test number as a SQL Integer expression.
+_UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
+_ID_PREFIX_RE = re.compile(r"^[0-9a-f-]{4,35}$", re.I)
+_SOURCE_TOKEN_RE = re.compile(
+    r"(?P<year>(?:19|20)\d{2})(?!\d)"
+    r"|(?:pt|(?:practice\s*)?test)\s*(?P<pt>\d{1,2})(?!\d)"
+    r"|s(?:ec(?:tion)?)?\s*(?P<sec>\d{1,2})(?!\d)"
+    r"|m(?:od(?:ule)?)?\s*(?P<mod>\d{1,2}[ab]?)(?![\da-z])"
+    r"|q(?:uestion)?\s*(?P<q>\d{1,3})(?!\d)",
+    re.I,
+)
+_SOURCE_SEPARATORS = set(" \t·.,;:/|-_#")
 
-    The PT# normally lives in source_exam_code (e.g. "01", "10"). For dirty
-    exam codes like "verbal"/"SAT" we fall back to the first run of digits in
-    source_test_name (e.g. "Bluebook Practice Test 5" -> 5, "Test02_ENG_..." -> 2).
-    Used by both list_tests (GROUP BY) and list_questions (WHERE), so the
-    explorer cards and the per-card question filter agree on the same PT.
 
-    Two-stage strip on test_name avoids the naive NULLIF(result, original) trap:
-    a purely-numeric test_name like "05" would make regexp_replace return "05"
-    which equals the original and falsely NULL-out; instead we strip leading
-    non-digits then trailing-from-first-non-digit, and only NULL on empty.
+def _parse_question_search(raw: str) -> dict:
+    """Classify the admin search box input.
+
+    Precedence: full UUID > source reference ("2025 PT5 M2 Q12") > ID prefix
+    (hex with at least one digit, so words like "face" stay text) > text.
     """
-    exam_digits = func.nullif(func.regexp_replace(Question.source_exam_code, '[^0-9]', '', 'g'), '')
-    name_digits = func.nullif(
-        func.regexp_replace(
-            func.regexp_replace(Question.source_test_name, '^[^0-9]*', ''),
-            '[^0-9].*$', '',
-        ),
-        '',
-    )
-    return cast(func.coalesce(exam_digits, name_digits), Integer)
+    q = raw.strip()
+    if _UUID_RE.match(q):
+        return {"kind": "id", "value": q.lower()}
+
+    parts: dict[str, str] = {}
+    consumed = 0
+    for m in _SOURCE_TOKEN_RE.finditer(q):
+        if not set(q[consumed:m.start()]) <= _SOURCE_SEPARATORS:
+            break
+        key = m.lastgroup
+        if key in parts:
+            break
+        parts[key] = m.group(key)
+        consumed = m.end()
+    else:
+        if parts and set(q[consumed:]) <= _SOURCE_SEPARATORS:
+            ref: dict[str, Any] = {}
+            if "year" in parts:
+                ref["year"] = int(parts["year"])
+            if "pt" in parts:
+                ref["pt"] = int(parts["pt"])
+            if "sec" in parts:
+                ref["section"] = parts["sec"].zfill(2)
+            if "mod" in parts:
+                digits = parts["mod"].rstrip("abAB")
+                ref["module"] = digits.zfill(2) + parts["mod"][len(digits):].upper()
+            if "q" in parts:
+                ref["question_number"] = int(parts["q"])
+            return {"kind": "source", "value": ref}
+
+    if _ID_PREFIX_RE.match(q) and any(c.isdigit() for c in q):
+        return {"kind": "id_prefix", "value": q.lower()}
+    return {"kind": "text", "value": q}
 
 
 def _local_asset_path(storage_path: str) -> "Path":
@@ -334,6 +364,22 @@ async def list_questions(
             "source filter so a pasted ID resolves without knowing its test/module."
         ),
     ),
+    q: Optional[str] = Query(
+        None,
+        max_length=200,
+        description=(
+            "Smart search: a full UUID or ID prefix (bank-wide, ignores status/origin "
+            "filters), a source reference like '2025 PT5 M2 Q12', or free text "
+            "matched against question and passage text."
+        ),
+    ),
+    has_open_issues: Optional[bool] = Query(
+        None,
+        description=(
+            "true: only questions with open flagged issues, or official questions "
+            "with no College Board bank ID (cb_question_id)"
+        ),
+    ),
     job_status: Optional[str] = Query(
         None,
         pattern="^(pending|parsing|extracting|overlap_checking|validating|approved|needs_review|failed)$",
@@ -363,11 +409,53 @@ async def list_questions(
         # Bank-wide ID lookup: an explicit UUID wins over the source filters, so
         # a pasted ID resolves without the caller knowing its test/module.
         stmt = stmt.where(Question.id == question_id)
-    if practice_status:
+
+    search = _parse_question_search(q) if q and q.strip() else None
+    id_search = search is not None and search["kind"] in ("id", "id_prefix")
+    if search:
+        kind, value = search["kind"], search["value"]
+        if kind == "id":
+            stmt = stmt.where(Question.id == value)
+        elif kind == "id_prefix":
+            stmt = stmt.where(cast(Question.id, String).like(value + "%"))
+        elif kind == "source":
+            if "year" in value:
+                stmt = stmt.where(Question.source_release_year == value["year"])
+            if "pt" in value:
+                stmt = stmt.where(Question.source_pt_number == value["pt"])
+            if "section" in value:
+                stmt = stmt.where(Question.source_section_code == value["section"])
+            if "module" in value:
+                # "M2" matches 02, 02A and 02B.
+                stmt = stmt.where(Question.source_module_code.like(value["module"] + "%"))
+            if "question_number" in value:
+                stmt = stmt.where(Question.source_question_number == value["question_number"])
+        else:
+            escaped = value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+            pattern = f"%{escaped}%"
+            stmt = stmt.where(or_(
+                Question.current_question_text.ilike(pattern, escape="\\"),
+                Question.current_passage_text.ilike(pattern, escape="\\"),
+                Question.current_paired_passage_text.ilike(pattern, escape="\\"),
+            ))
+        # A search replaces the explorer's test/module scoping.
+        source_release_year = pt_number = None
+        source_test_name = source_exam_code = None
+        source_subject_code = source_section_code = source_module_code = None
+
+    if practice_status and not id_search:
         stmt = stmt.where(Question.practice_status == practice_status)
-    if content_origin:
+    if content_origin and not id_search:
         stmt = stmt.where(Question.content_origin == content_origin)
-    if job_status:
+    if has_open_issues:
+        # Rule-based issue: an official question should map to a CB bank item.
+        stmt = stmt.where(or_(
+            Question.id.in_(
+                select(QuestionIssue.question_id).where(QuestionIssue.status == "open")
+            ),
+            and_(Question.content_origin == "official", Question.cb_question_id.is_(None)),
+        ))
+    if job_status and not id_search:
         stmt = stmt.where(
             Question.id.in_(
                 select(QuestionJobQuestion.question_id)
@@ -381,7 +469,7 @@ async def list_questions(
         # Filter by the derived canonical PT# so a merged explorer card (which
         # may span several source_test_name/source_exam_code rows) selects all
         # of its questions at once.
-        stmt = stmt.where(_pt_number_expr() == pt_number)
+        stmt = stmt.where(Question.source_pt_number == pt_number)
     if source_test_name and not question_id:
         stmt = stmt.where(Question.source_test_name == source_test_name)
     if source_exam_code and not question_id:
@@ -401,7 +489,7 @@ async def list_questions(
     if sort_by_source:
         stmt = stmt.order_by(
             Question.source_release_year.asc().nullslast(),
-            _pt_number_expr().asc().nullslast(),
+            Question.source_pt_number.asc().nullslast(),
             Question.source_section_code.asc().nullslast(),
             Question.source_module_code.asc().nullslast(),
             Question.source_question_number.asc().nullslast(),
@@ -473,6 +561,15 @@ async def list_questions(
                 "source_page_number": asset.source_page_number,
             })
 
+    open_issue_counts: dict = {}
+    if q_ids:
+        issue_rows = await db.execute(
+            select(QuestionIssue.question_id, func.count())
+            .where(QuestionIssue.question_id.in_(q_ids), QuestionIssue.status == "open")
+            .group_by(QuestionIssue.question_id)
+        )
+        open_issue_counts = dict(issue_rows.all())
+
     items = []
     for q in questions:
         ann = ann_map.get(q.latest_annotation_id) if q.latest_annotation_id else None
@@ -491,6 +588,7 @@ async def list_questions(
             "source_section_code": q.source_section_code,
             "source_module_code": q.source_module_code,
             "source_question_number": q.source_question_number,
+            "source_pt_number": q.source_pt_number,
             "source_has_graph": getattr(q, "source_has_graph", None),
             "stimulus_mode_key": getattr(q, "stimulus_mode_key", None),
             "current_passage_text": q.current_passage_text,
@@ -499,6 +597,8 @@ async def list_questions(
             "current_explanation_text": q.current_explanation_text,
             "is_admin_edited": q.is_admin_edited,
             "annotation_stale": q.annotation_stale,
+            "open_issue_count": open_issue_counts.get(q.id, 0),
+            "cb_question_id": q.cb_question_id,
             "annotation": annotation,
             "options": options,
             "stimulus_assets": assets_by_qid.get(q.id, []),
@@ -532,7 +632,7 @@ async def list_tests(
     frontend nests these under a synthetic "Unofficial" bucket keyed off
     content_origin, sub-keyed by source_test_name.
     """
-    pt = _pt_number_expr()
+    pt = Question.source_pt_number
     stmt = (
         select(
             Question.content_origin,
@@ -1979,6 +2079,140 @@ async def _reject_question_impl(
         "admin_decision_id": str(admin_decision_id),
         "reviewer_admin_override_count": override_count,
     }
+
+
+def _issue_to_dict(issue: QuestionIssue) -> dict:
+    return {
+        "id": str(issue.id),
+        "question_id": str(issue.question_id),
+        "issue_type": issue.issue_type,
+        "note": issue.note,
+        "status": issue.status,
+        "reported_by_role": issue.reported_by_role,
+        "reporter_user_id": issue.reporter_user_id,
+        "resolution": issue.resolution,
+        "resolution_note": issue.resolution_note,
+        "created_at": issue.created_at.isoformat() if issue.created_at else None,
+        "resolved_at": issue.resolved_at.isoformat() if issue.resolved_at else None,
+    }
+
+
+@router.get("/questions/{question_id}/issues")
+async def list_question_issues(
+    question_id: str,
+    db: AsyncSession = Depends(get_db),
+    _auth: str = Depends(admin_required),
+):
+    """All issues on a question, open ones first, then newest first."""
+    qid = _parse_uuid(question_id)
+    rows = await db.execute(
+        select(QuestionIssue)
+        .where(QuestionIssue.question_id == qid)
+        .order_by((QuestionIssue.status == "open").desc(), QuestionIssue.created_at.desc())
+    )
+    return [_issue_to_dict(i) for i in rows.scalars().all()]
+
+
+@router.post("/questions/{question_id}/issues", status_code=201)
+async def flag_question_issue(
+    question_id: str,
+    body: QuestionIssueCreate,
+    db: AsyncSession = Depends(get_db),
+    auth_token: str = Depends(admin_required),
+):
+    """Flag a problem. The question stays live until an admin resolves it."""
+    qid = _parse_uuid(question_id)
+    if not await db.get(Question, qid):
+        raise HTTPException(status_code=404, detail="Question not found")
+    note = (body.note or "").strip() or None
+    issue = QuestionIssue(
+        id=uuid.uuid4(),
+        question_id=qid,
+        issue_type=body.issue_type,
+        note=note,
+        status="open",
+        reported_by_role="admin",
+        reported_by_admin_token=auth_token,
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(issue)
+    await _write_admin_audit(
+        qid=qid,
+        admin_token=auth_token,
+        action="flag_issue",
+        before=None,
+        after={"issue_id": str(issue.id), "issue_type": body.issue_type},
+        change_notes=note,
+        db=db,
+    )
+    await db.commit()
+    return _issue_to_dict(issue)
+
+
+@router.post("/questions/{question_id}/issues/resolve")
+async def resolve_question_issues(
+    question_id: str,
+    body: QuestionIssueResolve,
+    db: AsyncSession = Depends(get_db),
+    auth_token: str = Depends(admin_required),
+):
+    """Resolve every open issue on a question with one admin decision.
+
+    approved: the question is fine as-is; it is not touched.
+    edited:   requires an admin edit saved after the oldest open issue was raised.
+    rejected: runs the normal reject path in the same transaction.
+    """
+    qid = _parse_uuid(question_id)
+    q = await db.get(Question, qid)
+    if not q:
+        raise HTTPException(status_code=404, detail="Question not found")
+    open_issues = (await db.execute(
+        select(QuestionIssue).where(QuestionIssue.question_id == qid, QuestionIssue.status == "open")
+    )).scalars().all()
+    if not open_issues:
+        raise HTTPException(status_code=409, detail="No open issues on this question")
+
+    if body.resolution == "edited":
+        oldest = min(i.created_at for i in open_issues)
+        edit_id = (await db.execute(
+            select(AdminQuestionAuditLog.id).where(
+                AdminQuestionAuditLog.question_id == qid,
+                AdminQuestionAuditLog.action == "edit",
+                AdminQuestionAuditLog.created_at >= oldest,
+            ).limit(1)
+        )).scalar_one_or_none()
+        if edit_id is None:
+            raise HTTPException(
+                status_code=409,
+                detail="Save an edit to the question before resolving its issues as edited",
+            )
+
+    now = datetime.now(timezone.utc)
+    note = (body.note or "").strip() or None
+    for issue in open_issues:
+        issue.status = "resolved"
+        issue.resolution = body.resolution
+        issue.resolution_note = note
+        issue.resolved_by_admin_token = auth_token
+        issue.resolved_at = now
+    await _write_admin_audit(
+        qid=qid,
+        admin_token=auth_token,
+        action="resolve_issues",
+        before={"open_issue_ids": [str(i.id) for i in open_issues]},
+        after={"resolution": body.resolution},
+        change_notes=note,
+        db=db,
+    )
+
+    if body.resolution == "rejected":
+        reason = note or "Issues: " + ", ".join(sorted({i.issue_type for i in open_issues}))
+        # _reject_question_impl commits, so the issue updates land in the same transaction.
+        result = await _reject_question_impl(question_id, RejectQuestionRequest(reason=reason), db, auth_token)
+        return {**result, "resolved_issue_count": len(open_issues)}
+
+    await db.commit()
+    return {"id": str(qid), "resolution": body.resolution, "resolved_issue_count": len(open_issues)}
 
 
 @router.delete("/questions/{question_id}")
